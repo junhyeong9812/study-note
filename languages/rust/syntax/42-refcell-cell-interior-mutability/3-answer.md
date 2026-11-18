@@ -366,13 +366,13 @@ For more information about this error, try `rustc --explain E0277`.
 ### 8. ★★★ `match` 조사 대상은 문장 끝까지 · `if` 조건은 조건 직후 · 2024 는 `if let` 의 `else` 만
 
 - ★★★ Reference(Destructors · Temporary scopes) — **`if`·`while` 의 (패턴이 아닌) 조건식은 임시값 스코프**다 → 조건 평가가 끝나면 가드가 버려진다.
-- ★★★ **`match` 의 조사 대상은 임시값 스코프가 아니다** — 「그 임시값은 **문장의 끝까지** 산다」 → 팔 전체가 가드를 쥔 채 돈다.
+- ★★★ **`match` 의 조사 대상은 임시값 스코프가 아니다** — 「그 임시값은 **문장의 끝까지** 산다」 → 팔 전체가 가드를 잡은 채 돈다.
 - ★★ **2024 가 바꾼 것** — **`if let` 임시값은 `else` 블록 전에** 버려진다. then 본문은 그대로다(2번). 꼬리식 임시값도 2024 에서 좁혀졌다 — [11번 주제](../11-borrow-checker-rejections/) 10번의 E0597 이 그 자리다.
 
 ### 9. ★★ `RefCell already borrowed` — 옛 형식은 `expect` 가 붙인 것 · 나머지 둘은 std 의 `debug_refcell` 빌드
 
 - ★★ **1.92 — `RefCell already borrowed`**(3번 · 서머리 (4)의 `-C debug-assertions` 판도 한 글자도 같다).
-- ★★★ **`already borrowed: BorrowMutError`** 는 `expect("already borrowed")` 가 오류 값의 `Debug` 를 붙이던 **옛 형식**이다 — **1.92 의 패닉에는 안 나온다.** 그 이름은 4번의 `Debug` 에서만 보인다. **어느 판에서 바뀌었는지는 확인하지 못했다.**
+- ★★★ **`already borrowed: BorrowMutError`** 는 `expect("already borrowed")` 가 오류 값의 `Debug` 를 붙이던 **옛 형식**이다 — **1.92 의 패닉에는 안 나온다.** 그 이름은 4번의 `Debug` 에서만 보인다. **어느 버전에서 바뀌었는지는 확인하지 못했다.**
 - ★★ std 소스(로컬 `src/core/cell.rs.html`)의 넷 중 **`; a previous borrow was at {}`** 가 붙은 둘은 `#[cfg(feature = "debug_refcell")]` 갈래 — **std 를 그 기능으로 빌드해야** 나온다. **`-C debug-assertions` 는 사용자 코드의 플래그라 안 켜진다**(서머리 (4)).
 
 ### 10. ★★ 카운터는 `Cell`, 같은 `Vec` 은 `RefCell` — `Cell<String>` 은 `take`/`replace`
@@ -396,7 +396,7 @@ For more information about this error, try `rustc --explain E0277`.
 | 컴파일 대 런타임 | `r42_pair_ref` · `r42_pair_cell` · `r42_pair_cell_da` | 3 | **E0502** · `101` · `101`(같은 문구) |
 | 문구의 출처 | `r42_msg` — std 소스 grep | 1 | 넷(둘은 `debug_refcell`) |
 | `try_` · `Cell` · `!Sync` · 조합 | `r42_try` · `r42_cell` · `r42_cell_get` · `r42_sync` · `r42_sync_mutex` · `r42_rc_refcell` | 6 | `Err` · `hits 3` · **E0599** · **E0277** · `1` · `strong 3` |
-| **안 던진 것** — 속도 · 크기 · `Ref::map` · `debug_refcell` 로 std 재빌드 · `RwLock` 판 | — | 0 | ★ 「안 던졌다」로 표시했다 |
+| **실행하지 않은 것** — 속도 · 크기 · `Ref::map` · `debug_refcell` 로 std 재빌드 · `RwLock` 판 | — | 0 | ★ 「실행하지 않았다」로 표시했다 |
 
 **구현 의존 항목**(버전·환경이 바뀌면 **다시 찍어야 하는** 것).
 

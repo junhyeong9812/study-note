@@ -15,7 +15,7 @@
 | 폼이 처음부터 틀렸다 | `:invalid` | **아무도 아무것도 안 해도** 켜져 있다 |
 | 사용자가 **틀리게 만들었다** | `:user-invalid` | 사람이 **건드리고 떠난 뒤에만** |
 
-- ★ **`:focus` 와 `:focus-visible` 이 갈리는 자리가 이 주제의 과녁이다.** 같은 요소·같은 포커스인데 **입력 방식**에 따라 하나는 켜지고 하나는 안 켜진다.
+- ★ **`:focus` 와 `:focus-visible` 이 달라지는 자리가 이 주제의 과녁이다.** 같은 요소·같은 포커스인데 **입력 방식**에 따라 하나는 켜지고 하나는 안 켜진다.
 - ★ **`:invalid` 와 `:user-invalid` 는 시점이 다르다.** 앞엣것은 페이지가 뜬 순간 이미 켜져 있고, 뒤엣것은 사람이 손대고 나간 다음이다.
 - 그리고 **순서 문제**가 하나 있다 — `:link`·`:visited`·`:hover`·`:active` 는 **명시도가 전부 같아서** 쓰는 순서가 승부를 정한다((6) 절).
 
@@ -43,7 +43,7 @@
 
 ## 이 주제가 답하려는 질문
 
-1. `:focus` 와 `:focus-visible` 이 **어떤 입력에서 갈리는가** — 그리고 요소 종류에 따라 또 갈리는가.
+1. `:focus` 와 `:focus-visible` 이 **어떤 입력에서 달라지는가** — 그리고 요소 종류에 따라 또 달라지는가.
 2. `:invalid` 가 **언제부터 켜져 있는가**, `:user-invalid` 는 정확히 **무엇을 기다리는가**.
 3. `:link`·`:visited`·`:hover`·`:active` 를 **왜 그 순서로 써야 하는가** — 명시도가 아니라 무엇이 정하는가.
 
@@ -393,7 +393,7 @@ a:link    { color: blue; }
 - [`../README.md`](../README.md) — CSS 문법·API 주제 목록(이 주제는 10번) · Baseline 표
 - [`../08-basic-selectors-and-combinators/2-summary.md`](../08-basic-selectors-and-combinators/2-summary.md) — **선행.** `[checked]` 같은 속성 선택자와 조합자. **거기는 트리 모양으로 고르는 정적인 그물, 여기는 입력으로 켜지는 그물**
 - [`../09-structural-pseudo-classes/2-summary.md`](../09-structural-pseudo-classes/2-summary.md) — 같은 「의사 클래스」이지만 **트리 위치**로 판정하는 쪽. 입력과 무관하다
-- [`../01-cascade-and-priority/2-summary.md`](../01-cascade-and-priority/2-summary.md) — **LVHA 가 왜 순서로 갈리는지의 정본**(명시도 동점 → 6단계 등장 순서)
+- [`../01-cascade-and-priority/2-summary.md`](../01-cascade-and-priority/2-summary.md) — **LVHA 가 왜 순서로 나뉘는지의 정본**(명시도 동점 → 6단계 등장 순서)
 - [`../02-specificity/2-summary.md`](../02-specificity/2-summary.md) — 의사 클래스가 `(A, B, C)` 의 **B 자리**라는 것의 정본
 - [`../11-is-where-not/2-summary.md`](../11-is-where-not/2-summary.md) — 상태 선택자 여럿을 `:is()` 로 묶을 때 명시도가 어떻게 되나
 - [목록의 **12번 주제**](../12-has-relational-selector/)(`:has()`) — `.field:has(:focus)` 처럼 **자손의 상태를 부모로** 끌어올리는 것

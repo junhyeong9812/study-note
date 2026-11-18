@@ -209,7 +209,7 @@
 |---|---|---|---|---|
 | `MimeType(String, String, Map)` `:153` | 파서가 부르는 생성자. type·subtype 소문자화 + 파라미터 복사 | (type, subtype, 누산 맵) -> 인스턴스 | `buildMimeType` `:458` | 병합이 실제로 일어나는 자리 |
 | `parameters` (필드) `:104` | **결과 맵**. `unmodifiableMap`으로 봉인 | - | `getParameter`/`getParameters`/`toString` | 이쪽 규칙(대소문자 무시)이 처음부터 옳았다 |
-| `createParametersMap(Map)` `:230` | 누산 맵을 `LinkedCaseInsensitiveMap`으로 복사하며 토큰 검사 | `Map` -> 봉인된 `Map` | 생성자 `:160` | `map.put(k, v)`의 반환값을 `forEach` 람다가 버린다. 소실이 무음이 되는 지점 `:235` |
+| `createParametersMap(Map)` `:230` | 누산 맵을 `LinkedCaseInsensitiveMap`으로 복사하며 토큰 검사 | `Map` -> 봉인된 `Map` | 생성자 `:160` | `map.put(k, v)`의 반환값을 `forEach` 람다가 버린다. 소실이 드러나지 않게 되는 지점 `:235` |
 | `checkParameters(String, String)` `:244` | 이름은 토큰, 값은 토큰이거나 따옴표 문자열이어야 함 | (이름, 값) -> void 또는 IAE | `createParametersMap`의 forEach | 대소문자는 보지 않으므로 이 검사로는 결함이 안 걸린다 |
 | `PARAM_CHARSET` `:59` | 상수 `"charset"` | - | 생성자 `:161`, `getCharset` | 결과 맵이 대소문자 무시라 `CHARSET=`로 와도 여기서 잡힌다 |
 | `TOKEN` `:61` | RFC 2616 2.2 토큰 문자 집합(BitSet) | - | `checkToken` | 범위 밖 |
@@ -259,7 +259,7 @@ A는 정상, B는 정확 중복(수정 전에도 걸리던 것), C는 결함 케
 | 그 반환값의 소비 | 해당 없음 | 해당 없음 | `forEach` 람다가 **버린다** `:235`. [!] 조용한 소실 |
 | 최종 결과 | `text/plain;charset=utf-8` | `InvalidMimeTypeException` | `text/plain;DUPE="2"` (예외 없음) |
 
-수정 후에는 C의 두 번째 행부터 갈린다.
+수정 후에는 C의 두 번째 행부터 달라진다.
 
 | 단계 | C, 수정 후 |
 |---|---|

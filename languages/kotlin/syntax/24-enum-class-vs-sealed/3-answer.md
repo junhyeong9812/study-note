@@ -58,7 +58,7 @@ I RED BLUE
 | `H` | `[LColor;` | `values()` 는 **배열**이라 `List` API 가 없다 |
 | `I` | `RED BLUE` | ★ **방어 복사** — 내 배열만 바뀌었다 |
 
-- ★★ `C`/`D` 가 갈리는 이유 — `values()` 는 **`$VALUES.clone()`** 을 돌려주고, `entries` 는 `$ENTRIES` 를 **그대로** 돌려준다(2번의 `javap`).
+- ★★ `C`/`D` 가 달라지는 이유 — `values()` 는 **`$VALUES.clone()`** 을 돌려주고, `entries` 는 `$ENTRIES` 를 **그대로** 돌려준다(2번의 `javap`).
 - `I` 줄이 그 결과다 — 내가 받은 배열의 0번을 `BLUE` 로 덮어도 **다음 `values()` 는 원본을 다시 복사**하므로 `RED` 가 나온다. **원본을 못 건드리게 하려고 매번 복사하는 것**이다.
 - ★ 그래서 반복에는 `entries` 가 낫다 — 할당이 없고 `List` 연산이 붙는다. ★ **다만 이 문서는 시간을 재지 않았다.** 근거는 「`clone()` 호출이 있고 없고」이지 속도 측정이 아니다.
 - ★ `entries` 는 **1.9** 부터다. 그 이전 코드는 `values()` 를 쓴다.
@@ -169,7 +169,7 @@ E java.lang.NullPointerException
 - `E java.lang.NullPointerException` — `describe(impossible)` 이 `r.amount!!` 에서 터진다.
 - ★★ **근본 원인은 `describe` 가 아니라 `PayResult`** 다. `!!` 는 **설계가 이미 허용해 버린 구멍을 런타임으로 미뤄 둔 표시**일 뿐이다. `describe` 를 아무리 고쳐도 `B` 같은 객체는 계속 만들어진다.
 
-### 4. ★★ `!!` 가 **한 개도 없다** — 그리고 `D` 와 `E` 가 갈린다
+### 4. ★★ `!!` 가 **한 개도 없다** — 그리고 `D` 와 `E` 가 달라진다
 
 **출력**
 
@@ -217,7 +217,7 @@ F 3 3
 | `F` | `3 3` | `Success` 인스턴스 셋이 `distinct()` 후에도 셋 |
 
 - `describe` 에 **`!!` 가 0개**다. `Success` 안에서 `amount` 는 **`Int`**(널 불가), `Failure` 안에서 `reason` 은 **`String`** 이다. 3번은 두 개였다.
-- ★★ `D`/`E` 가 갈리는 이유 — `Success` 는 **`data class`** 라 호출할 때마다 새 객체를 만들고, `Pending` 은 **`data object`** 라 객체가 하나다([22번 주제](../22-data-class-generated-members/)).
+- ★★ `D`/`E` 가 달라지는 이유 — `Success` 는 **`data class`** 라 호출할 때마다 새 객체를 만들고, `Pending` 은 **`data object`** 라 객체가 하나다([22번 주제](../22-data-class-generated-members/)).
 - ★ `F` 가 「같은 변형의 인스턴스를 여럿」의 증거다. `enum` 으로는 **`SUCCESS` 를 금액별로 여러 개 만들 수 없다.**
 
 ### 5. ★★ 에러 **세 줄** — 없는 파라미터, 빠진 파라미터, 없는 프로퍼티
@@ -577,9 +577,9 @@ javac 21.0.5
 (exit 0)
 ```
 
-★ **흔들리는 칸과 안 흔들리는 칸**(제출 전 재대조에서 「고칠 것」과 「설계상 다른 것」을 가르는 선언이다)
+★ **실행마다 달라지는 항목과 달라지지 않는 항목**(제출 전 재대조에서 「고칠 것」과 「설계상 다른 것」을 가르는 선언이다)
 
-| 흔들린다 | 안 흔들린다 |
+| 실행마다 달라진다 | 달라지지 않는다 |
 |---|---|
 | 스택트레이스의 **JDK 내부 프레임 줄 번호**(`Enum.java:293`) — 이 JDK 판의 것 | 예외 **타입·메시지**(`No enum constant Status.PENDING`) |
 | `sealedSubclasses` 의 **원소 순서** — **정렬해서 찍어 피했다**(6번) | `Color.entries` 의 **선언 순서** — 계약이다 |
@@ -596,7 +596,7 @@ javac 21.0.5
 | `modelenum.kt` | ★★★ **불가능한 상태가 경고 없이 만들어지는 것** · `!!` 가 런타임에 터지는 것 | `kotlinc` → `java` |
 | `modelsealed.kt` | ★★ `!!` 가 **0개**인 것 · 같은 변형의 **인스턴스가 여럿**인 것 | `kotlinc` → `java` |
 | `modelbad.kt` | ★★ 같은 값을 **sealed 로는 못 만드는 것**(에러 3줄) | `kotlinc` (컴파일 실패가 결과) |
-| `enumref.kt` | `entries` 대 `sealedSubclasses` · `isEnum` 이 갈리는 것 | `kotlinc` → `java` (`kotlin-reflect`) |
+| `enumref.kt` | `entries` 대 `sealedSubclasses` · `isEnum` 이 달라지는 것 | `kotlinc` → `java` (`kotlin-reflect`) |
 | `enumwhen.kt` | **`enum` 도 완결성이 요구되는 것** — `sealed` 와 같은 문구 | `kotlinc` (컴파일 실패가 결과) |
 | `enumforbid.kt` | `data`·`sealed` 수식어 금지 · 상속 금지 · `equals` 가 `final` 인 것 | `kotlinc` (컴파일 실패가 결과) |
 | `enumfail.kt` | ★ `valueOf` 실패 **예외 전문**(마커를 표준 오류로) | `kotlinc` → `java` (**예외로 죽는 것이 결과**) |
@@ -610,9 +610,9 @@ javac 21.0.5
 **★ 못 잰 것** — 「`entries` 는 1.9 부터」는 **이 환경에서 잴 수 없다.** 2.4.20 이 옛 `-language-version` 을 거부하므로 **1.8 판에서 `entries` 가 없다는 것을 직접 못 보인다.**
 확인한 것은 「**2.4.20 에서 `entries` 와 `values()` 가 어떻게 다른가**」이고, 「언제부터인가」는 Kotlin 목록([`../README.md`](../README.md))의 판 이력을 인용한 것이다.
 
-**★ 던져 봤더니 예상과 달랐던 것 — 두 건**
+**★ 실행해 봤더니 예상과 달랐던 것 — 두 건**
 
-1. ★★ **`Color.entries === Color.entries` 가 참이었다.** 「`entries` 도 뷰 객체를 매번 새로 감싸겠지」라고 예상했는데 **`$ENTRIES` 라는 정적 필드를 그대로 돌려준다**(1번·2번). `values()` 와 갈리는 지점이 「복사냐 뷰냐」가 아니라 「**매번 새로 만드느냐 아니냐**」였다.
+1. ★★ **`Color.entries === Color.entries` 가 참이었다.** 「`entries` 도 뷰 객체를 매번 새로 감싸겠지」라고 예상했는데 **`$ENTRIES` 라는 정적 필드를 그대로 돌려준다**(1번·2번). `values()` 와 달라지는 지점이 「복사냐 뷰냐」가 아니라 「**매번 새로 만드느냐 아니냐**」였다.
 2. ★★ **`data class Ok1 : Base()` 는 되는데 `data enum class` 는 안 된다.** [22번 주제](../22-data-class-generated-members/)에서 `data class` 가 남을 상속하는 것은 통과했기에 `enum` 에도 `data` 를 얹을 수 있을 줄 알았는데 「`modifier 'data' is not applicable to 'enum class'.`」였다(`enumforbid.kt`). 이유는 같은 파일의 다른 에러가 말해 준다 — **`equals` 가 이미 `final`** 이라 `data` 가 만들 자리가 없다.
 
 **안 터진 것도 출력이다** — 3번의 `PayResult(SUCCESS, reason = "카드 거절")` 은 **경고 한 줄 없이** 컴파일되고 `toString` 까지 멀쩡히 찍힌다.

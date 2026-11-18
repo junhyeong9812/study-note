@@ -140,7 +140,7 @@ print("cells that differ from the template text: %d / %d  (raised: %d · warned:
       % (changed + raised, total, raised, len(warned)))
 ```
 
-### 5. ★★★ 한 탐침을 두 판에 (예측)
+### 5. ★★★ 한 probe를 두 판에 (예측)
 
 ```text
 e46_vgrid.sh 를 돌린다 — 탐침을 python3.11 과 python3 에 각각 먹이고 나란히 놓는다. 표 전체와 마지막 줄을 적는다.
@@ -289,7 +289,7 @@ show('re.search(r"\\bcat\\b", "a cat").span()', lambda: re.search(r"\bcat\b", "a
 ### 8. ★★ 컴파일 캐시 — 무엇이 약속이고 무엇이 판의 사정인가 (경계)
 
 * `re.compile(p) is re.compile(p)` 가 참인 것, 플래그만 다르면 거짓인 것, `re.purge()` 뒤에 거짓인 것 중 **문서가 약속한 것**은?
-* 5번 표의 캐시 행을 두 판에서 견주면 무엇을 말해 주나 — 그리고 「`re.compile` 이 빠르다」를 이 문서가 **왜 적지 않나**?
+* 5번 표의 캐시 행을 두 버전에서 견주면 무엇을 말해 주나 — 그리고 「`re.compile` 이 빠르다」를 이 문서가 **왜 적지 않나**?
 
 ### 9. 층 가르기 (경계)
 

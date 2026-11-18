@@ -38,7 +38,7 @@ public void handleMessage(Message<byte[]> message) {
 }
 ```
 
-내보내는 것은 세션 종류에 따라 갈린다.
+내보내는 것은 세션 종류에 따라 달라진다.
 
 `spring-messaging` / `org.springframework.messaging.simp.stomp` / `StompBrokerRelayMessageHandler.java` L752-L756 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-messaging/src/main/java/org/springframework/messaging/simp/stomp/StompBrokerRelayMessageHandler.java#L752-L756))
 

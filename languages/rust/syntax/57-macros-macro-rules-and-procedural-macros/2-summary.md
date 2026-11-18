@@ -24,15 +24,15 @@ tokio-macros-2.7.2.crate
 
 - ★★★ **nightly 가 없다** — `rustup toolchain list` 에 `stable` 하나. 확장 결과를 찍는 `-Zunpretty=expanded` 는 **못 쓴다**((4)).
 
-★★★ **본체 창 — ① 「같은 일을 함수로 쓰면」 격자다.** 줄마다 **매크로 판과 함수 판**을 각각 컴파일·실행하고, 스크립트가 마지막 줄에 **「함수 판이 매크로 판과 갈린 칸 N / M」** 을 센다.
+★★★ **핵심 창 — ① 「같은 일을 함수로 쓰면」 격자다.** 줄마다 **매크로 판과 함수 판**을 각각 컴파일·실행하고, 스크립트가 마지막 줄에 **「함수 판이 매크로 판과 달라진 항목 N / M」** 을 센다.
 
-## 흔들리는 칸 / 안 흔들리는 칸
+## 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| 안 흔들린다 | ★★★ **격자의 갈린 칸 수** · 각 칸의 에러 번호 | 같은 rustc 판에서 고정이다 |
-| 안 흔들린다 | 절차 매크로가 **컴파일 중에** 표준 오류로 찍는 입력·출력 토큰 문자열 | 같은 판에서 고정 — ★ 단 **`to_string()` 의 공백은 판이 오르면 바뀔 수 있다**고 std 가 적는다((5)) |
-| 안 흔들린다 | E0061 · E0308 · E0425 · E0401 · E0432 · 번호 없는 절차 매크로 에러의 문구 · 종료 코드 | 같은 판에서 고정 |
+| 달라지지 않는다 | ★★★ **격자의 달라진 항목 수** · 각 칸의 에러 번호 | 같은 rustc 버전에서 고정이다 |
+| 달라지지 않는다 | 절차 매크로가 **컴파일 중에** 표준 오류로 찍는 입력·출력 토큰 문자열 | 같은 버전에서 고정 — ★ 단 **`to_string()` 의 공백은 버전이 오르면 바뀔 수 있다**고 std 가 적는다((5)) |
+| 달라지지 않는다 | E0061 · E0308 · E0425 · E0401 · E0432 · 번호 없는 절차 매크로 에러의 문구 · 종료 코드 | 같은 버전에서 고정 |
 
 ★ 정규화 규칙은 **기본 넷**만 쓴다. 이 편의 블록에는 걸리는 칸이 없었다.
 
@@ -81,11 +81,11 @@ C 갈래 [42번](../../../c/syntax/42-function-like-macro-pitfalls/) — **C 매
 
 ## 동작 방식
 
-### (0) 이 주제가 쓰는 창 — 본체는 ① 「함수로 쓰면」 격자다
+### (0) 이 주제가 쓰는 창 — 핵심은 ① 「함수로 쓰면」 격자다
 
 | 창 | 무엇을 보여 주나 | 이 주제에서 |
 |---|---|---|
-| ① ★★★ **매크로 판 × 함수 판 격자** | 함수가 **못 하는** 칸과 그 에러 번호 | ★ **본체**((1)) |
+| ① ★★★ **매크로 판 × 함수 판 격자** | 함수가 **못 하는** 칸과 그 에러 번호 | ★ **핵심**((1)) |
 | ② ★★★ **출력 값**(Rust 대 C) | 매크로 안의 이름이 바깥을 **가리나** | 쓴다((2)) |
 | ③ ★★ **컴파일러 진단** | 정의 순서 · 위생 · 절차 매크로의 자리 | 쓴다((2)·(3)·(5)) |
 | ④ ★★ **`stringify!`·`concat!` 흔적** · 절차 매크로의 `eprintln!` | 확장이 **무엇을 만들었나** | 쓴다((4)·(5)) |
@@ -219,12 +219,12 @@ rows where the function result differs from the macro result: 6 / 7
 (exit 0)
 ```
 
-- ★★★ **「함수 판이 매크로 판과 갈린 칸 6 / 7」** — 함수가 **같은 결과를 낸 것은 `square` 하나**뿐이다(대조용 줄). 이 0 이 아닌 1 이 있어야 격자가 「매크로가 늘 이긴다」로 읽히지 않는다.
+- ★★★ **「함수 판이 매크로 판과 달라진 항목 6 / 7」** — 함수가 **같은 결과를 낸 것은 `square` 하나**뿐이다(대조용 줄). 이 0 이 아닌 1 이 있어야 격자가 「매크로가 늘 이긴다」로 읽히지 않는다.
 - ★★★ **컴파일 에러로 막힌 넷** — `variadic`(E0061 — 인자 개수가 서명에 고정) · `mixed`(E0308 — 슬라이스는 원소 타입이 하나) · `ident`(E0425 — 함수 인자는 **값**이라 `hello` 라는 **이름**을 받지 못한다) · `impls`(E0401 — 함수 몸통의 `impl` 은 함수의 타입 인자를 못 쓴다).
 - ★★★ **돌기는 도는데 결과가 다른 둘** — `text`: 함수는 **이미 계산된 `7`** 만 받아 `7 = 7`. 매크로는 `stringify!($e)` 로 **식의 원문** `a * 3 + 1` 을 찍었다. `return`: 함수 안의 `return 0` 은 **함수 자신**을 빠져나와 호출한 쪽이 계속 돈다(`reached with 0` 이 찍히고 `1`). 매크로의 `return 0` 은 **호출한 함수**를 빠져나갔다(`reached` 가 한 번 · `0`).
 - ★★ **에러가 아니라 「다른 답」인 칸이 더 위험하다** — `text`·`return` 은 함수 판도 **컴파일되고 돈다.** 격자가 출력을 나란히 두지 않았으면 못 봤다.
 
-**막힌 칸 둘의 전문.**
+**막힌 항목 둘의 전문.**
 
 ```text
 ===== 소스: r57_fn_variadic.rs =====
@@ -657,7 +657,7 @@ For more information about this error, try `rustc --explain E0432`.
 (exit 1)
 ```
 
-- ★★ **E0432 — unresolved import `proc_macro`** — `proc_macro` 크레이트는 `rustc` 단독으로는 **자동으로 안 보인다.** cargo 는 그것을 넘겨 준다(아래 cargo 판의 `-v` 흔적).
+- ★★ **E0432 — unresolved import `proc_macro`** — `proc_macro` 크레이트는 `rustc` 단독으로는 **자동으로 안 보인다.** cargo 는 그것을 넘겨 준다(아래 cargo 버전의 `-v` 흔적).
 
 **최소판의 한계 — 제네릭 구조체.**
 
@@ -742,7 +742,7 @@ For more information about an error, try `rustc --explain E0404`.
 ```
 
 - ★★★ **`input : struct Wrap<T>(T);`** — 토큰을 문자열로 바꾸면 **`Wrap<T>(T);` 가 공백 없이 한 낱말**이 되어, 「`struct` 다음 낱말」을 이름으로 잡은 이 최소판이 **`impl Wrap<T>(T); { … }`** 라는 말이 안 되는 코드를 냈다 → 에러 다섯(「proc-macro derive produced unparsable tokens」 · E0404 · E0412 …).
-- ★★★ **그래서 `syn` 이 있다** — 토큰을 **구조(이름 · 제네릭 · 필드)** 로 파싱해 주는 라이브러리다. 절차 매크로는 **「토큰을 받아 토큰을 돌려준다」가 계약의 전부**라, 그 사이의 분석은 전부 매크로 작성자의 몫이다. ★★★ **std 가 이 최소판의 방식을 직접 말린다** — `impl Display for TokenStream`: 「Note: the exact form of the output is subject to change, e.g. there might be changes in the whitespace used between tokens. Therefore, **you should not do any kind of simple substring matching on the output string** (as produced by `to_string`) to implement a proc macro … Instead, you should work at the `TokenTree` level」. 이 편의 문자열판은 **외부 크레이트 없이 자리를 보이기 위한 것**이고, `Point` 판이 된 것은 **이 판의 공백 배치에 기댄 우연**이다.
+- ★★★ **그래서 `syn` 이 있다** — 토큰을 **구조(이름 · 제네릭 · 필드)** 로 파싱해 주는 라이브러리다. 절차 매크로는 **「토큰을 받아 토큰을 돌려준다」가 계약의 전부**라, 그 사이의 분석은 전부 매크로 작성자의 몫이다. ★★★ **std 가 이 최소판의 방식을 직접 말린다** — `impl Display for TokenStream`: 「Note: the exact form of the output is subject to change, e.g. there might be changes in the whitespace used between tokens. Therefore, **you should not do any kind of simple substring matching on the output string** (as produced by `to_string`) to implement a proc macro … Instead, you should work at the `TokenTree` level」. 이 편의 문자열판은 **외부 크레이트 없이 자리를 보이기 위한 것**이고, `Point` 판이 된 것은 **이 버전의 공백 배치에 기댄 우연**이다.
 
 **같은 크레이트에서 쓰면.**
 
@@ -849,7 +849,7 @@ hello from Color
 (exit 0)
 ```
 
-- ★★★ **같은 두 줄이 컴파일 중에, 같은 두 줄이 실행에** — `Cargo.toml` 의 `proc-macro = true` 가 `rustc` 판의 `--crate-type proc-macro` 와 같은 일을 한다. 마지막 명령(`cargo build -v`)이 **cargo 가 넘긴 플래그**를 세어 `--crate-type proc-macro` 1 · `--extern proc_macro` 1 을 보였다 — 앞의 E0432 가 cargo 판에서 안 나는 이유다.
+- ★★★ **같은 두 줄이 컴파일 중에, 같은 두 줄이 실행에** — `Cargo.toml` 의 `proc-macro = true` 가 `rustc` 판의 `--crate-type proc-macro` 와 같은 일을 한다. 마지막 명령(`cargo build -v`)이 **cargo 가 넘긴 플래그**를 세어 `--crate-type proc-macro` 1 · `--extern proc_macro` 1 을 보였다 — 앞의 E0432 가 cargo 버전에서 안 나는 이유다.
 - ★ `cargo run -q` 의 표준 오류에도 매크로의 `eprintln!` 줄이 나왔다 — cargo 가 **컴파일러의 표준 오류를 그대로 전해 준다.**
 
 ### (6) ★★ 선언 매크로 대 절차 매크로
@@ -919,9 +919,9 @@ hello from Color
 | `macro_rules!` 의 혼합 위생 | ★ **언어**(Reference — Hygiene) | (2) |
 | `macro_rules!` 는 텍스트 순서로 보인다 | ★ **언어**(Reference — 텍스트 스코프) | (3) |
 | 절차 매크로는 `proc-macro` 크레이트 루트에 · 같은 크레이트에서 못 씀 | ★ **언어**(Reference — Procedural Macros) | (5) |
-| `proc-macro = true` 가 `--crate-type proc-macro` · `--extern proc_macro` 가 된다 | ★ **cargo 의 동작**(이 판 `-v` 관찰) | (5) |
+| `proc-macro = true` 가 `--crate-type proc-macro` · `--extern proc_macro` 가 된다 | ★ **cargo 의 동작**(이 버전 `-v` 관찰) | (5) |
 | `TokenStream::to_string()` 의 공백 위치 | ★ **구현** — std 가 「subject to change」라며 문자열 매칭을 말린다 | (5) |
-| 절차 매크로의 `eprintln!` 이 컴파일러 표준 오류로 나온다 | ★ **구현**(매크로가 컴파일러 프로세스 안에서 돈다 — 이 판 관찰) | (5) |
+| 절차 매크로의 `eprintln!` 이 컴파일러 표준 오류로 나온다 | ★ **구현**(매크로가 컴파일러 프로세스 안에서 돈다 — 이 버전 관찰) | (5) |
 | `-Z` 옵션은 nightly 전용 | ★ **rustc 의 안정성 정책** | (4) |
 | C 매크로의 텍스트 치환 | ★ **C 언어**(전처리기) · 문장 식은 **GNU 확장** | (2) |
 

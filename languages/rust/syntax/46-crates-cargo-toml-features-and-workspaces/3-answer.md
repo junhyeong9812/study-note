@@ -540,14 +540,14 @@ src
 | 판 요구 | `r46_version` | 3 | `^0.2` 실패 · `^0.1.0` · `*` |
 | 공유 잠금·출력 | `r46_lock` | 2 | 루트에만 생김 |
 | ★ **못 잰 것** — 레지스트리의 「범위 안의 최신」 | 네트워크 금지 · 경로 의존성은 후보가 하나 | 0 | ★ [Go 41번](../../../go/syntax/41-modules-go-mod-version-selection-and-workspaces/) (8)이 디렉토리 레지스트리로 잰 것을 인용 |
-| **안 던진 것** — resolver 3 의 `rust-version` 판 선택 · dev-의존성 · 플랫폼 전용 의존성 · `--features` 명령행 · `[patch]` | — | 0 | ★ 「안 던졌다」로 표시했다 |
+| **실행하지 않은 것** — resolver 3 의 `rust-version` 판 선택 · dev-의존성 · 플랫폼 전용 의존성 · `--features` 명령행 · `[patch]` | — | 0 | ★ 「실행하지 않았다」로 표시했다 |
 
 **구현 의존 항목**(버전·환경이 바뀌면 **다시 찍어야 하는** 것).
 
 | 항목 | 왜 |
 |---|---|
 | feature 통합 · resolver 동작 · 경고 문구 | ★ **cargo 의 규칙**(이 머신 `cargo 1.92.0`) — 언어(rustc)가 아니다 |
-| `default-features` 무시 경고(「hard error 가 될 수 있다」) | ★ cargo 판에 매인다 |
+| `default-features` 무시 경고(「hard error 가 될 수 있다」) | ★ cargo 버전에 매인다 |
 | offline 안내 줄 | ★ 이 캡처의 환경(`CARGO_NET_OFFLINE`) |
 
 ★ **다시 찍는 법** — `capture.sh <새 디렉토리>` 를 그대로 돌리고 `normalize-shaky.py <원본> <새 디렉토리>` 로 견준다.

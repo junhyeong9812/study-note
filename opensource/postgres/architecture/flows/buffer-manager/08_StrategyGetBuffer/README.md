@@ -2,7 +2,7 @@
 
 상위: [버퍼 관리](../README.md)
 
-**희생자 후보를 고르는 교체 정책 그 자체다.** 순서는 셋이다. 접근 전략(ring)이 있으면 ring 의 다음 슬롯을, 없거나 못 쓰면 freelist 의 맨 앞을, 그것도 비었으면 clock-sweep 을 돈다. clock-sweep 은 시계바늘(`nextVictimBuffer`)을 하나씩 돌리며 pin 이 없는 버퍼의 `usage_count` 를 1씩 깎고, 0 인 버퍼를 만나면 고른다. 고른 버퍼는 헤더 spinlock 을 쥔 채로 돌려준다. 그래야 돌려받은 쪽이 pin 하기 전에 다른 backend 가 끼어들지 못한다.
+**희생자 후보를 고르는 교체 정책 그 자체다.** 순서는 셋이다. 접근 전략(ring)이 있으면 ring 의 다음 슬롯을, 없거나 못 쓰면 freelist 의 맨 앞을, 그것도 비었으면 clock-sweep 을 돈다. clock-sweep 은 시계바늘(`nextVictimBuffer`)을 하나씩 돌리며 pin 이 없는 버퍼의 `usage_count` 를 1씩 깎고, 0 인 버퍼를 만나면 고른다. 고른 버퍼는 헤더 spinlock 을 잡은 채로 돌려준다. 그래야 돌려받은 쪽이 pin 하기 전에 다른 backend 가 끼어들지 못한다.
 
 ## 위치
 

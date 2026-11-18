@@ -2,7 +2,7 @@
 
 ## 정답
 
-### 1. 여덟 × 여덟 — **`Map` 키와 한 칸도 안 갈리는 것은 `Set` 과 `includes`, 갈린 칸은 `9 / 56`** ★★★
+### 1. 여덟 × 여덟 — **`Map` 키와 한 칸도 안 달라지는 것은 `Set` 과 `includes`, 달라진 항목은 `9 / 56`** ★★★
 
 **출력**
 
@@ -34,12 +34,12 @@ cells whose answer differs from the Map-key column: 9 / 56
 
 - ★★★ **`Map` 키 · `Set` · `includes` 가 SameValueZero 한 가족**이다 — 두 열 다 `0 / 8`.
 - ★★★ **`NaN, NaN` 행** — `===` · `==` · `indexOf` 만 n. `===` 가족(IsStrictlyEqual)은 `NaN` 을 자기와도 다르다고 본다.
-  ★ **`indexOf` 와 `includes` 가 여기서 갈린다** — 같은 「찾기」인데 규칙이 다르다.
+  ★ **`indexOf` 와 `includes` 가 여기서 달라진다** — 같은 「찾기」인데 규칙이 다르다.
 - ★★★ **`0, -0` 행** — `Object.is` **하나만** n. SameValue 는 부호를 가르고, SameValueZero 는 이 한 행에서만 SameValue 와 다르다.
-- ★★ **`==` 가 `4 / 8` 로 가장 많이 갈린다** — `NaN` 에서는 다르다 하고, `'1', 1` · `true, 1` · `null, undefined` 에서는 **강제 변환으로 같다** 한다.
+- ★★ **`==` 가 `4 / 8` 로 가장 많이 달라진다** — `NaN` 에서는 다르다 하고, `'1', 1` · `true, 1` · `null, undefined` 에서는 **강제 변환으로 같다** 한다.
 - ★★ **객체 키가 `2 / 8`** — `'1', 1` 과 **모양이 같은 두 객체**에서 y. 비교가 아니라 **`ToPropertyKey` 로 글자가 된 뒤** 글자가 같아서다(`"1"`, `"[object Object]"`).
   ★ `NaN` 행과 `0, -0` 행에서 객체 키가 y 인 것도 같은 이유다(`"NaN"`, `"0"`) — **답은 `Map` 과 같지만 이유가 다르다.**
-- 비교 규칙 자체는 명세 보장이다. 예외도 흔들리는 칸도 없다.
+- 비교 규칙 자체는 명세 보장이다. 예외도 실행마다 달라지는 항목도 없다.
 
 ### 2. `-0` 은 **`+0` 으로 접혀 들어간다** — `CanonicalizeKeyedCollectionKey` 뒤에 SameValue ★★★
 
@@ -86,7 +86,7 @@ row("count per key after 4 sets", JSON.stringify([...mn].map(([k2, v]) => [Strin
 - ★★★ 최신 초안의 `Map.prototype.set` 은 **먼저 `CanonicalizeKeyedCollectionKey`**— 키가 `-0` 이면 `+0` 을 돌려준다 — **로 접고, 그다음 SameValue 로** 칸을 찾는다.
   `get`·`has` 도 먼저 접는다 — 그래서 `m.get(0)` 과 `m.get(-0)` 이 둘 다 찾힌다.
   ★ 관찰되는 **비교 결과**는 SameValueZero 와 같다. 다르게 드러나는 것은 **저장된 키**뿐이다 — 「SameValueZero 로 비교한다」로만 외우면 이 줄을 놓친다.
-- ★★ **왜 접나** — 한 칸에 `+0` 과 `-0` 두 표현이 섞여 있으면 **꺼낸 키가 먼저 넣은 쪽에 따라 달라진다.** 입구에서 하나로 정해 두면 그 흔들림이 없다.
+- ★★ **왜 접나** — 한 칸에 `+0` 과 `-0` 두 표현이 섞여 있으면 **꺼낸 키가 먼저 넣은 쪽에 따라 달라진다.** 입구에서 하나로 정해 두면 그 실행 간 차이가 없다.
 - ★ **`NaN` 을 네 가지로 만들어도 한 칸**이다(`size 1`, 한 키에 `4` 가 쌓였다) — SameValue 는 모든 `NaN` 을 같다고 본다.
 
 ### 3. `Map` 대 객체 — **객체는 키를 글자로 바꾸고, 물려받은 이름이 있고, `"__proto__"` 대입이 프로토타입을 바꾸고, JSON 에서 `Map` 은 `{}`** ★★★
@@ -218,16 +218,16 @@ unregistered before gc                        0/20      object 0/20    object 20
 
 **왜 그런가**
 
-- ★★★ **「key of a Map」 — 콜백 `0/20`, `deref()` 객체 `20/20`.** `Map` 은 키를 강하게 쥔다. 다른 곳에서 전부 잊혀도 산다.
+- ★★★ **「key of a Map」 — 콜백 `0/20`, `deref()` 객체 `20/20`.** `Map` 은 키를 강하게 잡는다. 다른 곳에서 전부 잊혀도 산다.
 - ★★★ **「key of a WeakMap」 — `20/20` 수거.** `WeakMap` 은 키를 살리지 않는다.
   ★★★ **값이 키를 되가리켜도 `20/20`** — 값은 키에 **매달려** 있을 뿐 키를 못 살린다(에피머론).
-- ★★ **「unregistered before gc」** — 콜백 `0/20` 인데 `deref()` 도 `0/20`. **수거는 됐고 콜백만 취소**됐다. 두 창을 같이 봐야 「안 수거」와 갈린다.
+- ★★ **「unregistered before gc」** — 콜백 `0/20` 인데 `deref()` 도 `0/20`. **수거는 됐고 콜백만 취소**됐다. 두 창을 같이 봐야 「안 수거」와 달라진다.
 - ★★★ **맨 오른쪽 열 `20/20` × 6** — 같은 동기 실행 안에서는 `WeakRef` 를 만들 때(그리고 `deref()` 할 때) 대상이 **`[[KeptAlive]]`** 에 들어가고,
-  `ClearKeptObjects` 는 "when a synchronous sequence of ECMAScript executions completes" 에 돈다. 그래서 탐침은 **`await tick()` 으로 잡을 넘긴 뒤** `gc()` 를 다시 부른다.
+  `ClearKeptObjects` 는 "when a synchronous sequence of ECMAScript executions completes" 에 돈다. 그래서 probe는 **`await tick()` 으로 잡을 넘긴 뒤** `gc()` 를 다시 부른다.
 - ★★★ **명세가 보장하는 칸** — 「붙잡힌 것은 안 죽는다」(`keep` · `Map` 키 행의 0/20 · 20/20) · 맨 오른쪽 열(KeptAlive).
-  **이 판의 관찰인 칸** — `20/20` 으로 **수거된** 행들. 명세 —
+  **이 버전의 관찰인 칸** — `20/20` 으로 **수거된** 행들. 명세 —
   "This specification does not make any guarantees that any object or symbol will be garbage collected."
-  이 판의 V8 이 `gc()` 한 번에 거뒀을 뿐이다.
+  이 버전의 V8 이 `gc()` 한 번에 거뒀을 뿐이다.
 
 ### 6. 집합 연산 — **결과는 새 `Set`, 순서는 this 먼저(또는 작은 쪽), 인자는 set-like, 크기에 따라 `has` 와 `keys` 를 갈아 쓴다** ★★
 
@@ -350,7 +350,7 @@ unregistered before gc                        0/20      object 0/20    object 20
 - ★ **`[5]`** — `WeakMap` 판은 원시값 키에 **콜백을 부르기 전에** 던진다(`cb log []`). `Set` 에는 없다.
 - ★★ **`[6]`** — 옛 관용구는 `has` · `set` · `get` 세 번, `getOrInsert` 는 서브클래스가 덮은 메서드를 **하나도 안 부른다**. 빠르다는 뜻이 아니다 — **안 쟀다.**
 
-### 8. 두 블록으로 가른 이유 — **「불렸나」는 판마다 세어 대조하고, 「언제」는 명세가 묶지 않아 흔들리는 칸으로 둔다** ★★★
+### 8. 두 블록으로 가른 이유 — **「불렸나」는 판마다 세어 대조하고, 「언제」는 명세가 묶지 않아 실행마다 달라지는 항목으로 둔다** ★★★
 
 **출력**
 
@@ -367,9 +367,9 @@ unregistered before gc                        0/20      object 0/20    object 20
 
 - ★★★ **명세의 목표 절 첫 문장** — "This specification does not make any guarantees that any object or symbol will be garbage collected. Objects or symbols which are not live may be released after long periods of time, or never at all."
   정리 잡도 호스트가 "at some future time, if possible" 에 돌린다.
-- ★★ **`ticks:` 줄 셋이 흔들리는 칸**이다. 이 판에서는 `[1]` 이 전부 `0`(첫 매크로태스크), `gc()` 가 **돌아오기 전에는 0/20** 이었다 — 콜백은 동기로 안 돈다.
+- ★★ **`ticks:` 줄 셋이 실행마다 달라지는 항목**이다. 이 버전에서는 `[1]` 이 전부 `0`(첫 매크로태스크), `gc()` 가 **돌아오기 전에는 0/20** 이었다 — 콜백은 동기로 안 돈다.
   ★ 5번 블록에 이 시점을 섞으면 **한 줄만 흔들려도 블록 전체가 「불일치」** 가 된다. 갈라 두면 재대조가 파일 단위로 판정된다(규칙 11).
-- ★★★ **`[2]` 가 전부 `-1` 이어도 「안 불린다」가 아니다** — **「20틱 안에는 안 왔다」** 다. 이 판이 그 짧은 시간에 GC 를 안 했을 뿐이다. 명세는 "or never at all" 까지 허용한다.
+- ★★★ **`[2]` 가 전부 `-1` 이어도 「안 불린다」가 아니다** — **「20틱 안에는 안 왔다」** 다. 이 버전이 그 짧은 시간에 GC 를 안 했을 뿐이다. 명세는 "or never at all" 까지 허용한다.
 
 ### 9. 파이썬과 JS — **파이썬은 「값이 같으면 타입을 넘어 한 칸」, JS `Map` 은 「타입이 다르면 다른 칸, `NaN` 은 일부러 한 칸」** ★★★
 
@@ -385,7 +385,7 @@ unregistered before gc                        0/20      object 0/20    object 20
   JS `Map` 은 **강제 변환을 안 하고**, SameValue 가 `NaN` 을 **같다고 정의**한다. 방향이 반대다.
 - ★ `set` 원소도 두 언어에서 각자 `dict` 키·`Map` 키와 같은 규칙이다 — 파이썬은 같은 목록 **13번**, JS 는 1번의 `Set` 열(`0 / 8`).
 
-### 10. `WeakMap` 에 창이 없는 이유 — **키를 쥔 사람만 물을 수 있어야 「언제 비워졌나」가 안 샌다** ★★★
+### 10. `WeakMap` 에 창이 없는 이유 — **키를 잡은 사람만 물을 수 있어야 「언제 비워졌나」가 안 샌다** ★★★
 
 - ★★★ 명세 — "an ECMAScript implementation must not provide any means to observe a key of a WeakMap that does not require the observer to present the observed key."
 - ★★ 그 앞 문장이 이유다 — 구현은 키가 쓸모없어진 때와 항목이 치워지는 때 사이에 **임의의 지연**을 둘 수 있고, "If this latency was observable to ECMAScript program, it would be a source of indeterminacy that could impact program execution."
@@ -401,7 +401,7 @@ unregistered before gc                        0/20      object 0/20    object 20
   이 주제는 **JS 명세가 약속한 관찰 가능한 의미**(무엇이 같은 키인가 · 어떤 순서로 나오나 · 무엇을 약하게 쥐나)부터다.
   명세도 자료구조는 묻지 않고 "on average, provide access times that are sublinear" 만 요구한다.
 
-### 12. 두 판이 갈린 블록 — **`js20b-23d-weak-keys.js` 하나. 심볼 키(ES2023 판 경계)와 `WeakRef` 문구** ★★
+### 12. 두 버전이 달라진 블록 — **`js20b-23d-weak-keys.js` 하나. 심볼 키(ES2023 판 경계)와 `WeakRef` 문구** ★★
 
 **출력** — 같은 소스의 node 18 판.
 
@@ -564,23 +564,23 @@ identical 18  ·  differs 6  ·  total 24
 - ★★★ **판 경계** — `Symbol('local')` · `Symbol.iterator` 를 `WeakMap` 키로, `Symbol('local')` 을 `WeakRef` 대상으로 쓰는 줄. v18 은 `TypeError`, v20 은 된다. **Symbols as WeakMap keys(ES2023)** 가 들어오기 전과 후다.
 - ★★ **문구** — `new WeakRef(1)` · `register(1, 'h')` 의 문구가 `target must be an object`(v18) 대 `invalid target`(v20). 종류는 둘 다 `TypeError` 다.
 - ★ 근거로 쓰는 것 — **되나/안 되나(판 경계)와 예외 종류.** 근거로 안 쓰는 것 — 문구.
-- ★ 대조기의 다른 `DIFFERS` 줄은 **다른 주제의 탐침**이다(같은 배치가 한 대조기를 공유한다).
+- ★ 대조기의 다른 `DIFFERS` 줄은 **다른 주제의 probe**이다(같은 배치가 한 대조기를 공유한다).
 
 ## 실행 검증
 
 | 소스 | 무엇을 고정하나 | 몇 번 · 어디서 |
 |---|---|---|
-| `js20b-23a-key-equality-grid.js` | ★★★ 값의 짝 8 × 비교 자리 8 격자 · 「갈린 칸 9 / 56」 | node20 1벌 + node18 대조 1벌 |
+| `js20b-23a-key-equality-grid.js` | ★★★ 값의 짝 8 × 비교 자리 8 격자 · 「달라진 항목 9 / 56」 | node20 1벌 + node18 대조 1벌 |
 | `js20b-23b-stored-key.js` | ★★★ `-0` 이 `+0` 으로 저장되는 것 · `NaN` 네 가지가 한 칸 | node20 1벌 + node18 대조 1벌 |
 | `js20b-23c-map-vs-object.js` | ★★★ 객체 키 뭉개짐 · 크기 · 물려받은 이름 · `"__proto__"` · JSON · `Set` 재삽입 | node20 1벌 + node18 대조 1벌 |
-| `js20b-23d-weak-keys.js` | ★★★ 약한 키 후보 11개 · 약한 자리 넷 · `WeakMap` 에 없는 것 | node20 1벌 + **node18 판도 싣는다**(갈린 블록) |
+| `js20b-23d-weak-keys.js` | ★★★ 약한 키 후보 11개 · 약한 자리 넷 · `WeakMap` 에 없는 것 | node20 1벌 + **node18 판도 싣는다**(달라진 블록) |
 | `js20b-23e-reclaim-gc.js` | ★★★ 수명 조건 6 × 20판 — 콜백 · `deref()` · KeptAlive | node20 `--expose-gc` 1벌(판 안에서 20판) + node18 대조 1벌 |
-| `js20b-23f-timing-gc.js` | ★★ 콜백 시점 — **흔들리는 칸** | node20 `--expose-gc` 1벌 + node18 대조 1벌 |
+| `js20b-23f-timing-gc.js` | ★★ 콜백 시점 — **실행마다 달라지는 항목** | node20 `--expose-gc` 1벌 + node18 대조 1벌 |
 | `js20b-23g-set-methods.web.js` | ★★ 집합 연산 결과 순서 · 인자 검사 · 인자 로그 | **Chrome 151 만** |
 | `js20b-23h-upsert.web.js` | ★★ Upsert 콜백 시점 · 덮어쓰기 · 문구 | **Chrome 151 만** |
-| `js20b-vdiff.sh` · `js20b-versions.sh` | 두 판이 갈린 탐침 수 · 이 문서의 출력이 **어느 판에서 나왔나** + 판별 기능 표 | 1벌씩 |
+| `js20b-vdiff.sh` · `js20b-versions.sh` | 두 버전이 달라진 probe 수 · 이 문서의 출력이 **어느 버전에서 나왔나** + 판별 기능 표 | 1벌씩 |
 
-브라우저 탐침(6번·7번)을 돌린 페이지 — 탐침 파일 이름을 주소의 `?` 뒤에 붙여 연다. `console.log` 를 가로채 줄을 모은 뒤 `<pre>` 에 쓰고, `--dump-dom` 이 그것을 내보낸다.
+브라우저 probe(6번·7번)을 돌린 페이지 — probe 파일 이름을 주소의 `?` 뒤에 붙여 연다. `console.log` 를 가로채 줄을 모은 뒤 `<pre>` 에 쓰고, `--dump-dom` 이 그것을 내보낸다.
 
 ```html
 <!-- js20b-page.html -->
@@ -612,15 +612,15 @@ document.getElementById("o").textContent = "==" + "=OUT===\n" + __lines.join("\n
 **격자의 비교 규칙 · `-0` 접기 · 삽입 순서 · `CanBeHeldWeakly` · `WeakMap` 에 창이 없는 것 · 강하게 붙잡힌 것이 안 죽는 것 · KeptAlive · `GetSetRecord` 검사 순서 · `intersection` 의 크기 가지 · Upsert 의 콜백 시점과 덮어쓰기는 구현 의존이 아니다.**
 어느 엔진에서도 같아야 한다.
 
-**안 돌려 본 것 / 못 잰 것 / 부적용인 창**
+**안 돌려 본 것 / 못 잰 것 / 해당 없는 창**
 
 - **안 돌려 본 것** — **브라우저의 GC**(`FinalizationRegistry` 는 node 에서만) · **파이썬 쪽 재실행**(12번 문서 인용) · 다른 엔진(SpiderMonkey·JavaScriptCore)의 문구.
-- ★ **못 잰 것** — **집합 연산·Upsert 의 node 판 동작.** 두 node 판에 메서드가 없다(판별 블록) — Chrome 151 로 창을 바꿨다.
+- ★ **못 잰 것** — **집합 연산·Upsert 의 node 버전 동작.** 두 node 버전에 메서드가 없다(판별 블록) — Chrome 151 로 창을 바꿨다.
 - ★★★ **안 쟀다** — **성능 전부.** 「`Map` 이 객체보다 빠르다」·「`WeakMap` 이 메모리를 아낀다」를 **한 줄도 쓰지 않았다.**
-- ★★ **부적용인 창** — **③ 브랜드 태그**(집합 연산 인자조차 프로퍼티 셋으로 판정된다) · **진단의 `(행,열)`**(`SyntaxError` 가 없다). **「잴 것이 없다」는 뜻**이다.
+- ★★ **해당 없는 창** — **③ 브랜드 태그**(집합 연산 인자조차 프로퍼티 셋으로 판정된다) · **진단의 `(행,열)`**(`SyntaxError` 가 없다). **「잴 것이 없다」는 뜻**이다.
 - ★★★ **창을 바꿔 물은 자리** — `WeakMap` 안의 수명. 들여다볼 창이 없어 **`FinalizationRegistry` 와 `WeakRef`** 로 물었다(5번 · 10번).
 
-**판이 올랐을 때 다시 돌려야 하는 것**
+**버전이 올랐을 때 다시 돌려야 하는 것**
 
 - ★★★ **node 22 이후의 판** — 집합 연산(ES2025)·Upsert(ES2026)가 들어온 판에서는 **6번·7번을 node 로도** 돌린다. 판별 블록의 `no` 가 `yes` 로 바뀌는지 먼저 본다.
 - ★★ **`gc()` 관찰 전부**(5번·8번) — GC 전략이 바뀌면 `20/20` 이 움직일 수 있다. 움직여도 명세 위반이 아니다.
@@ -632,8 +632,8 @@ document.getElementById("o").textContent = "==" + "=OUT===\n" + __lines.join("\n
 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮긴 출력이 하나도 없다).
 
 ★★ **예외는 `e.constructor.name` 과 `e.message` 로만 찍었다** — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
-★★★ **이 주제는 두 판이 갈린 블록을 하나 갖고 있다**(`js20b-23d-weak-keys.js`) — 12번 답에 v18 판을 싣는다.
-★★★ **8번 블록의 `ticks:` 줄은 흔들리는 칸으로 선언돼 있다** — 명세가 시점을 묶지 않는다. 다시 돌려 달라져도 「고칠 것」이 아니다.
+★★★ **이 주제는 두 버전이 달라진 블록을 하나 갖고 있다**(`js20b-23d-weak-keys.js`) — 12번 답에 v18 판을 싣는다.
+★★★ **8번 블록의 `ticks:` 줄은 실행마다 달라지는 항목으로 선언돼 있다** — 명세가 시점을 묶지 않는다. 다시 돌려 달라져도 「고칠 것」이 아니다.
 
 **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다(2번의 소스만 여기 싣는다).
 `js20b-23a-key-equality-grid.js`(1번) · `js20b-23b-stored-key.js`(2번) · `js20b-23c-map-vs-object.js`(3번) · `js20b-23d-weak-keys.js`(4번 · 12번) ·

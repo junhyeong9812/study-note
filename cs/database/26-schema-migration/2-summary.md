@@ -66,7 +66,7 @@ MySQL 8.4 InnoDB도 같은 모양이다. 락의 이름이 **메타데이터 락(
   SHOW PROCESSLIST → State: "Waiting for table metadata lock"
 ```
 
-  - *메타데이터 락(MDL)*: 테이블 정의를 보호하는 서버 계층 락. 트랜잭션이 테이블을 한 번 건드리면 **트랜잭션이 끝날 때까지** 쥔다.
+  - *메타데이터 락(MDL)*: 테이블 정의를 보호하는 서버 계층 락. 트랜잭션이 테이블을 한 번 건드리면 **트랜잭션이 끝날 때까지** 잡는다.
 - MySQL 문서(Online DDL Performance and Concurrency)는 온라인 DDL이 실행 준비 단계(필요한 경우)와 정의 커밋 단계에서 잠깐 배타 MDL로 올라간다고 설명한다. 그리고 "대기 중인 배타 MDL 요청이 이후 트랜잭션을 막는다"고 명시한다.
 - `ALGORITHM=INSTANT`라도 이 배타 MDL은 피할 수 없다. INSTANT가 줄이는 것은 **데이터 재작성 시간**이지 락 대기가 아니다.
 
@@ -99,7 +99,7 @@ ALTER TABLE t ADD COLUMN d int, ALGORITHM=INSTANT;
                  또는 상수 기본값)                                  ADD COLUMN ... DEFAULT clock_timestamp()
 ```
 
-- 표는 DDL 작업 자체의 시간이다. PostgreSQL에서 잡은 테이블 락은 보통 **트랜잭션이 끝날 때까지** 유지된다(문서 13.3 "normally held until the end of the transaction"). 그래서 실제 락 보유 시간 = 작업 시간 + 커밋까지 남은 시간이다. DDL을 트랜잭션 안에 넣고 다른 일을 하면 ms짜리 변경도 `ACCESS EXCLUSIVE`를 오래 쥔다.
+- 표는 DDL 작업 자체의 시간이다. PostgreSQL에서 잡은 테이블 락은 보통 **트랜잭션이 끝날 때까지** 유지된다(문서 13.3 "normally held until the end of the transaction"). 그래서 실제 락 보유 시간 = 작업 시간 + 커밋까지 남은 시간이다. DDL을 트랜잭션 안에 넣고 다른 일을 하면 ms짜리 변경도 `ACCESS EXCLUSIVE`를 오래 잡는다.
 
 PostgreSQL 17 (문서 ALTER TABLE Notes + 로컬 재현, `pg_relation_filenode` 변화로 재작성 확인):
 
@@ -126,7 +126,7 @@ MySQL 8.4 InnoDB (문서 Online DDL Operations + 로컬 재현):
 
 ### 3. 제약·인덱스는 "잠깐 잠그고, 검증은 따로"
 
-큰 테이블에 제약을 걸면 검증 스캔이 락을 오래 쥔다. PostgreSQL 17은 이를 둘로 쪼갠다.
+큰 테이블에 제약을 걸면 검증 스캔이 락을 오래 잡는다. PostgreSQL 17은 이를 둘로 쪼갠다.
 
 ```text
   1) ADD CONSTRAINT ... NOT VALID      짧은 락. 스캔 없음. 이후 INSERT/UPDATE부터 강제
@@ -308,7 +308,7 @@ public void rename(long userId, String fullName) {
 
 - DDL이 빠른 종류여도 **락 대기**는 생긴다. 배타 락 요청이 줄에 서면 그 뒤의 평범한 조회까지 막힌다.
 - 그래서 스키마 변경에는 `lock_timeout`(PG)·`lock_wait_timeout`(MySQL)으로 대기 상한을 걸고 재시도한다.
-- 락을 쥔 **뒤** 걸리는 시간은 변경 종류가 정한다: 메타데이터만 / 검증 스캔 / 전체 재작성. 재작성 여부는 버전마다 다르므로 스테이징에서 확인한다.
+- 락을 잡은 **뒤** 걸리는 시간은 변경 종류가 정한다: 메타데이터만 / 검증 스캔 / 전체 재작성. 재작성 여부는 버전마다 다르므로 스테이징에서 확인한다.
 - expand/contract의 규칙은 하나다. 어느 시점이든 살아 있는 모든 코드 버전이 현재 스키마에서 동작해야 한다.
 - 되돌릴 수 없는 단계(DROP·축소)는 맨 끝에 따로 한다. PostgreSQL DDL은 트랜잭션에 참여하지만, MySQL DDL은 앞 트랜잭션을 암묵 커밋한다.
 - 백필은 작은 청크로, 복제 지연을 보면서, 재시작 가능하게 한다.

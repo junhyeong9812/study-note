@@ -362,7 +362,7 @@ dan ann bob cho
 
 **언제 쓰나** — 5절의 더 센 판. **데이터를 건드리기만 해도 순서가 바뀐다.**
 
-PG 에서 **값을 바꾸지 않는 갱신**(`name = name`)을 한 번 하고 같은 질의를 다시 던졌다.
+PG 에서 **값을 바꾸지 않는 갱신**(`name = name`)을 한 번 하고 같은 질의를 다시 실행했다.
 
 ```text
 --- (A) 갱신 전: ORDER BY 없는 SELECT ---
@@ -598,7 +598,7 @@ ORDER BY CASE WHEN salary IS NULL THEN 0 ELSE 1 END, salary DESC
 
 **기준 소스** — [PostgreSQL 18 · SELECT · ORDER BY Clause](https://www.postgresql.org/docs/18/sql-select.html) · [MySQL 8.4 · ORDER BY Optimization](https://dev.mysql.com/doc/refman/8.4/en/order-by-optimization.html)\
 **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-본문에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+본문에 실린 출력은 **전부 이 두 서버에 실제로 실행해서 받은 것**이다. 지어낸 출력은 없다.\
 **반복 실행** — 동률 순서는 **각 엔진에서 같은 질의를 10회씩** 돌려 확인했다. 결과는 5절에 있다.\
 **버전** — `NULLS FIRST`/`NULLS LAST` 는 PG 에 있고 MySQL 8.4.10 에는 문법이 없다(`ERROR 1064`).\
 **선행** — [01 논리적 질의 처리 순서](../01-logical-query-processing-order/)(`ORDER BY` 가 7번 칸) · [04 NULL 의 3값 논리](../04-null-three-valued-logic/).

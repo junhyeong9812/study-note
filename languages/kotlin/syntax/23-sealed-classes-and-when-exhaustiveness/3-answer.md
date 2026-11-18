@@ -445,7 +445,7 @@ sealflowbad.kt:7:12: error: 'when' expression must be exhaustive. Add the 'Scrol
                                 Add the 'Scroll' branch or an 'else' branch.
 ```
 
-- ★★ **같은 `when`, 같은 가지인데 앞줄 하나에 따라 통과와 에러가 갈린다.** 완결성 판정이 **가지 목록만 보는 것이 아니라 그 지점까지의 데이터 흐름을 본다**는 뜻이다.
+- ★★ **같은 `when`, 같은 가지인데 앞줄 하나에 따라 통과와 에러가 달라진다.** 완결성 판정이 **가지 목록만 보는 것이 아니라 그 지점까지의 데이터 흐름을 본다**는 뜻이다.
 - `flag(b)` 는 **다른 규칙이 아니라 같은 갈래**다 — `Boolean` 의 값 공간이 `true`/`false` **둘뿐**이라는 것을 컴파일러가 알고, 둘을 덮었으니 `else` 없이 통과한다.
 - ★★ **판 확인** — Kotlin 목록([`../README.md`](../README.md))의 판 이력표가 「23 `when` 완결성 — 데이터 흐름 기반 검사 = Stable **2.3.0**(2.2.20 도입)」이라 적어 뒀고, **2.4.20 에서 경고 한 줄 없이 통과**하는 것을 직접 던져 확인했다.\
   ★ 다만 증명된 것은 「**2.4.20 에서는 된다**」뿐이다. 「2.2 이전에는 안 됐다」는 **이 환경에서 못 잰다** — 2.4.20 이 옛 `-language-version` 을 거부하기 때문이다(Kotlin 목록 「실행 환경」의 「못 잰 것」).
@@ -555,7 +555,7 @@ PermittedSubclasses:
 
 - `javap -p` 로 보면 두 판 모두 생성자가 **둘**이다 — `private Shape();` 과 `public Shape(DefaultConstructorMarker);`. 뒤엣것은 **합성 생성자**로, 하위 클래스가 상위 생성자를 부르려고 컴파일러가 만든 것이다.
 - ★★★ **「sealed 는 `PermittedSubclasses` 로 컴파일된다」는 `-jvm-target 17` 이상에서만 참**이다. `kotlinc` 의 기본값은 **1.8** 이므로 **플래그를 안 밝힌 이 주장은 기본 설정에서 거짓**이다.
-- ★ 클래스 플래그가 **두 판에서 같다**는 것도 봐 둘 만하다 — JVM 에는 `ACC_SEALED` 같은 비트가 **없고** 별도 속성(`PermittedSubclasses`)으로 표현한다. [19번 주제](../19-inheritance-open-final-override/)의 `ACC_FINAL` 과 대비되는 자리다.
+- ★ 클래스 플래그가 **두 버전에서 같다**는 것도 봐 둘 만하다 — JVM 에는 `ACC_SEALED` 같은 비트가 **없고** 별도 속성(`PermittedSubclasses`)으로 표현한다. [19번 주제](../19-inheritance-open-final-override/)의 `ACC_FINAL` 과 대비되는 자리다.
 
 ### 8. ★★ 에러가 **1건 대 2건** — 막는 층이 다르다
 
@@ -613,7 +613,7 @@ Intruder.java:2: error: constructor Shape in class Shape cannot be applied to gi
 - ★★ **늘어난 한 건이 정확히 sealed 규칙**이다. 1.8 판에서는 `javac` 가 「이 클래스는 sealed 다」라는 것을 **알 방법이 없다.**
 - 1.8 판에서도 막히기는 한다 — 하지만 근거가 **우연에 가깝다.** `private Shape()` 은 접근 불가이고, 합성 생성자 `Shape(DefaultConstructorMarker)` 는 **`ACC_SYNTHETIC` 이라 `javac` 가 아예 안 본다**(그래서 「`required: no arguments`」라고 말한다 — javac 눈에는 인자 없는 생성자 하나뿐이다).
 - ★★★ 정확히 적으면 — 「**같은 규칙을 두 층이 각각 다른 방식으로 막고, 어느 층이 도는지는 `-jvm-target` 이 정한다**」.
-- ★ [`../../../java/syntax/15-sealed-classes/`](../../../java/syntax/15-sealed-classes/)가 `PermittedSubclasses` 속성의 정본이다. 여기서는 **Kotlin 이 어느 판에서 그것을 내보내는지**까지만 본다.
+- ★ [`../../../java/syntax/15-sealed-classes/`](../../../java/syntax/15-sealed-classes/)가 `PermittedSubclasses` 속성의 정본이다. 여기서는 **Kotlin 이 어느 버전에서 그것을 내보내는지**까지만 본다.
 
 ### 9. `else` 는 컴파일러에게 「**이제 세지 마라**」고 말하는 것이다
 
@@ -659,7 +659,7 @@ Intruder.java:2: error: constructor Shape in class Shape cannot be applied to gi
 | 「명단이 열릴 수 있다」는 선언 | `#[non_exhaustive]` | **없다** |
 
 - ★★ 격자의 **왼쪽 절반이 완전히 겹친다** — 두 언어가 같은 실험에서 같은 수치를 냈다([`../../../rust/syntax/18-match-and-exhaustiveness/`](../../../rust/syntax/18-match-and-exhaustiveness/)).
-- ★★★ **오른쪽에서 갈린다.** Rust 는 `_` 판에서도 ``warning: variant `Drag` is never constructed`` 를 냈다 — 쓸모는 적지만(「안 쓰였다」이지 「안 처리했다」가 아니다) **무언가는 말했다.** Kotlin 은 **경고도 0건**이라 이 실험에서 **더 조용하다.**
+- ★★★ **오른쪽에서 달라진다.** Rust 는 `_` 판에서도 ``warning: variant `Drag` is never constructed`` 를 냈다 — 쓸모는 적지만(「안 쓰였다」이지 「안 처리했다」가 아니다) **무언가는 말했다.** Kotlin 은 **경고도 0건**이라 이 실험에서 **더 조용하다.**
 - Rust 의 `match` 는 언제나 식이라 「문이라 검사 안 되는 자리」가 **없다.** Kotlin 은 문도 검사하므로(1번) 결과적으로 **깨지는 자리 수가 같아졌다.**
 - Java 21 쪽은 명단이 뒤에 늘면 **런타임에 `MatchException`** 이다([`../../../java/syntax/23-switch-pattern-matching/`](../../../java/syntax/23-switch-pattern-matching/)). Kotlin 의 대응물은 **`NoWhenBranchMatchedException`** 이고, 그것을 실제로 던지게 만든 실측은 [6번 주제](../06-when-expression/)에 있다.
 
@@ -685,9 +685,9 @@ javac 21.0.5
 (exit 0)
 ```
 
-★ **흔들리는 칸과 안 흔들리는 칸**(제출 전 재대조에서 「고칠 것」과 「설계상 다른 것」을 가르는 선언이다)
+★ **실행마다 달라지는 항목과 달라지지 않는 항목**(제출 전 재대조에서 「고칠 것」과 「설계상 다른 것」을 가르는 선언이다)
 
-| 흔들린다 | 안 흔들린다 |
+| 실행마다 달라진다 | 달라지지 않는다 |
 |---|---|
 | **없다** — 해시코드·시간·주소를 **하나도 찍지 않았다** | 컴파일 에러의 **문구·`파일:줄:칸`·캐럿 줄·개수** |
 | | `javap` 출력 **전체**(`major version`·플래그·`PermittedSubclasses` 목록) |
@@ -717,7 +717,7 @@ javac 21.0.5
 2.4.20 이 옛 `-language-version` 을 거부하므로 **옛 판의 동작을 되살릴 방법이 없다.**
 확인한 것은 전부 「**2.4.20 에서 어떻게 되는가**」이고, 「언제부터인가」는 [공식 상태표](https://kotlinlang.org/docs/kotlin-language-features-and-proposals.html)와 Kotlin 목록의 판 이력표를 인용한 것이다. **둘을 섞어 읽으면 안 된다.**
 
-**★ 던져 봤더니 예상과 달랐던 것 — 두 건**
+**★ 실행해 봤더니 예상과 달랐던 것 — 두 건**
 
 1. ★★★ **`when` 문도 완결성을 요구한다.** 「식일 때만 강제된다」는 전제를 갖고 던졌는데 `stmtOverSealed`·`stmtOverBoolean` 이 **둘 다 에러**였다(1번). 통과한 것은 `Int` 주체의 문 하나뿐이다. **에러 문구가 문에서도 `'when' expression'` 이라고 말해서** 이 오해가 잘 안 풀린다 — 문구가 아니라 **어느 줄에서 났는지**를 봐야 한다.
 2. ★★ **1.8 판에서도 Java 쪽 상속이 막혔다.** 「`PermittedSubclasses` 가 없으니 Java 에서는 뚫릴 것」이라고 예상하고 `super(null)` 로 합성 생성자를 노렸는데, **`ACC_SYNTHETIC` 이라 `javac` 가 그 생성자를 아예 안 봤다**(8번). 막히기는 하되 **막는 근거가 sealed 규칙이 아니라 접근 제어**라는 것이 실제 모습이다.

@@ -404,7 +404,7 @@ a.equals(null)    -> false
 - `equals` 는 **"같은가?"** 를 묻는다. `null` 과는 같지 않으므로 답은 `false` 다. 답할 수 있는 질문이다.
 - `compareTo` 는 **"어느 쪽이 먼저인가?"** 를 묻는다. `null` 은 어떤 클래스의 인스턴스도 아니므로 **순서를 정할 근거가 없다.**\
   "모르겠다"를 돌려줄 값이 없으니 던질 수밖에 없다.
-- 위 NPE 는 **일부러 던진 것이 아니라 `o.name` 을 읽다가 난 것**이다. 결과적으로 계약에는 맞는다.\
+- 위 NPE 는 **일부러 실행한 것이 아니라 `o.name` 을 읽다가 난 것**이다. 결과적으로 계약에는 맞는다.\
   의도를 드러내려면 `Objects.requireNonNull(o)` 로 먼저 막는 편이 낫다([**60번 주제**](../60-null-handling/)).
 
 **`Comparator` 는**
@@ -480,7 +480,7 @@ nullsFirst(naturalOrder()) : [null, a, b]
 | 키 추출 함수가 `null` 을 돌려줌 | `... because the return value of "java.util.function.Function.apply(Object)" is null` | **원소는 멀쩡하고 키가 `null`** 이다 |
 | 원소 자체가 `null` | `... because "c1" is null` | **리스트 안에 `null` 원소**가 있다 |
 
-- ★ **메시지 한 줄로 어느 층이 문제인지 갈린다.** 이것이 helpful NPE 의 값어치다([`../05-arrays/`](../05-arrays/)).
+- ★ **메시지 한 줄로 어느 층이 문제인지 달라진다.** 이것이 helpful NPE 의 값어치다([`../05-arrays/`](../05-arrays/)).
 
 **`nullsFirst`/`nullsLast` 를 감싸는 층**
 
@@ -625,7 +625,7 @@ Comparator<P> ORDER = comparing(P::dept).thenComparing(P::name).thenComparingInt
 ```
 
 - **만나는 곳은 ④ 하나**다. 나머지는 서로 독립이다.
-- ④ 를 깨면 **`HashSet` 과 `TreeSet` 의 `size()` 가 갈린다**(5번). 이것이 두 주제가 이어지는 유일한 실무 증상이다.
+- ④ 를 깨면 **`HashSet` 과 `TreeSet` 의 `size()` 가 달라진다**(5번). 이것이 두 주제가 이어지는 유일한 실무 증상이다.
 - ④ 는 27번에서는 조항이 아니고, 28번에서만 **권고**로 등장한다.
 
 **원소가 사라지는 두 경우의 원인 차이**

@@ -726,7 +726,7 @@ IntStream.of(1, 2, 3).average();      // OptionalDouble  — Optional<Double> �
 - **`map` 에 넘긴 함수가 `null` 을 돌려주면 자동으로 빈 봉투가 된다.** 그래서 `null` 을 돌려주는 옛 API 와 이어 붙일 수 있다.
 - ★ **`Optional` 은 `Serializable` 이 아니다.** 필드에 두면 `NotSerializableException: java.util.Optional` 이고, `instanceof Serializable` 은 **컴파일 에러**다.
 - ★ **봉투 자체가 `null` 일 수 있다.** javadoc 이 금지했지만 언어는 막지 않는다 — `Optional` 을 돌려주는 메서드는 절대 `null` 을 돌려주지 않는다.
-- 메서드마다 **버전이 갈린다** — `ifPresentOrElse`·`or`·`stream` 은 9, `orElseThrow()` 는 10, `isEmpty` 는 11. 기억이 아니라 `@since` 와 `--release` 로 확인한다.
+- 메서드마다 **버전이 달라진다** — `ifPresentOrElse`·`or`·`stream` 은 9, `orElseThrow()` 는 10, `isEmpty` 는 11. 기억이 아니라 `@since` 와 `--release` 로 확인한다.
 
 ## 관련 자료
 
@@ -782,7 +782,7 @@ IntStream.of(1, 2, 3).average();      // OptionalDouble  — Optional<Double> �
 **실행 검증** — 이 문서의 모든 출력·예외는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
 실행 프로그램 셋(`Ex.java (38-a)`·`(38-b)`·`(38-c)`)을 **17.0.13 · 21.0.5 · 25.0.1** 세 곳에서 돌려 **출력이 한 글자도 다르지 않았다**.\
 다만 **"세 곳에서 같았다"는 관찰이지 보장이 아니다** — 보장은 javadoc 인용으로만 적었다.
-**버전** — `Optional` 자체는 **Java 8**(`@since 1.8`). 메서드마다 버전이 갈린다 —\
+**버전** — `Optional` 자체는 **Java 8**(`@since 1.8`). 메서드마다 버전이 달라진다 —\
 `ifPresentOrElse`·`or`·`stream` 은 **9**, `orElseThrow()`(인자 없는 것)는 **10**, `isEmpty` 는 **11**.\
 ★ 전부 `src.zip` 의 `@since` 를 직접 읽고, `javac --release` 를 8~11로 바꿔 가며 **컴파일로 재확인**했다(아래 표).
 **범위** — `null` 을 **어디서 어떻게 막을지**(생성자 검증·경계 방어·`Objects.requireNonNull`)는 이 문서가 다루지 않는다.\

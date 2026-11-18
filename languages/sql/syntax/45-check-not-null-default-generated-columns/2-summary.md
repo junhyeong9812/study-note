@@ -242,7 +242,7 @@ ERROR 3815 (HY000) at line 1: An expression of a check constraint 't45_cs_chk_1'
   disallowed function.
 ```
 
-★ **비결정 함수에서는 갈린다.**
+★ **비결정 함수에서는 달라진다.**
 
 ```text
 ### SQL: CREATE TABLE t45_cn (d date, CHECK (d <= CURRENT_DATE));
@@ -610,7 +610,7 @@ ERROR 3819 (HY000) at line 1: Check constraint 't45_tc_range' is violated.
   **옛 버전 컨테이너가 없어 무시되던 동작은 직접 재현하지 못했다.**
 - **`VIRTUAL` 생성 열은 「열처럼 보이는 식**」이다. 뷰로도 같은 것을 만들 수 있지만,\
   생성 열은 **그 표의 일부라서 인덱스·제약을 걸 수 있다**는 점이 다르다(46번).
-- **`DEFAULT` 와 생성 열은 「안 주면 채운다」와 「줄 수 없다」로 갈린다.**\
+- **`DEFAULT` 와 생성 열은 「안 주면 채운다」와 「줄 수 없다」로 나뉜다.**\
   둘을 한 열에 같이 쓸 수는 없다 — 생성 열은 값의 출처가 이미 정해져 있다.
 
 ## 실행 환경

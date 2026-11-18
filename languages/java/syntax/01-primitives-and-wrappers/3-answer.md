@@ -22,7 +22,7 @@ Integer==int : true
 - `c.equals(d)` -> **`true`**
 - `e == f` (`Integer` 와 `int`) -> **`true`**
 
-**두 번째 줄과 네 번째 줄의 결과가 갈리는 이유**
+**두 번째 줄과 네 번째 줄의 결과가 달라지는 이유**
 
 ```text
 c == d  : 둘 다 Integer                    e == f  : Integer 와 int

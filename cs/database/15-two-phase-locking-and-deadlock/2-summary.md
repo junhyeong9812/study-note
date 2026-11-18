@@ -26,7 +26,7 @@
 
 실무 예:
 - 이체 A→B와 B→A가 동시에 들어오면 MySQL은 `ERROR 1213 (40001): Deadlock found when trying to get lock; try restarting transaction`, PostgreSQL은 `ERROR: deadlock detected`(SQLSTATE `40P01`)를 낸다.
-- 한 트랜잭션이 오래 쥐고 있으면 MySQL은 기본 설정(`innodb_lock_wait_timeout=50`)에서 50초 뒤 `ERROR 1205 (HY000): Lock wait timeout exceeded; try restarting transaction`을 낸다.
+- 한 트랜잭션이 오래 잡고 있으면 MySQL은 기본 설정(`innodb_lock_wait_timeout=50`)에서 50초 뒤 `ERROR 1205 (HY000): Lock wait timeout exceeded; try restarting transaction`을 낸다.
 
 ## 동작·원리
 
@@ -51,7 +51,7 @@
   - **연쇄 중단(cascading abort)**: 축소 단계에서 푼 쓰기 락 뒤의 값을 남이 읽었다. 그런데 원래 트랜잭션이 중단되면, 읽은 쪽도 같이 되돌려야 한다.
   - **교착**: 성장 단계에서 서로의 락을 기다리면 멈춘다. 2PL은 이것을 막지 않는다.
 
-### 2. 엄격(strict) 2PL — 커밋까지 쥔다
+### 2. 엄격(strict) 2PL — 커밋까지 잡는다
 
 ```text
   기본 2PL     락 ▁▂▃▅▇▇▅▃▂▁ ... 커밋       (중간에 풀기 시작)
@@ -63,7 +63,7 @@
   - 연쇄 중단이 없다. 중단 시 원래 값으로 되돌리기만 하면 된다.
   - 대신 동시성이 줄어든다.
 - 실제 DB도 이 방식에 가깝다.
-  - PostgreSQL 17: "한 번 얻은 락은 보통 트랜잭션 끝까지 쥔다." 단 세이브포인트 뒤에 얻은 락은 그 세이브포인트로 롤백하면 바로 풀린다(13.3.1).
+  - PostgreSQL 17: "한 번 얻은 락은 보통 트랜잭션 끝까지 잡는다." 단 세이브포인트 뒤에 얻은 락은 그 세이브포인트로 롤백하면 바로 풀린다(13.3.1).
   - MySQL 8.4 InnoDB: 행 락은 트랜잭션 끝까지 간다. 예외로 READ COMMITTED에서는 WHERE에 맞지 않은 행의 레코드 락을 조건 평가 뒤 푼다(17.7.1 Gap Locks 절).
 - 교재마다 이름이 다르다. "쓰기(배타) 락만 끝까지"를 strict 2PL(S2PL), "읽기·쓰기 락 모두 끝까지"를 strong strict 2PL(SS2PL, rigorous)로 나누는 분류도 있다(Wikipedia "Two-phase locking" §Strict two-phase locking). CMU L17은 후자를 가리켜 strict라는 말을 섞어 쓴다. 이름보다 "무엇을 언제까지 쥐나"로 기억한다.
 
@@ -123,7 +123,7 @@
   - 테이블 락 등은 공유 메모리 해시 테이블에 둔다. 단 DML이 거는 약한 테이블 락(ACCESS SHARE·ROW SHARE·ROW EXCLUSIVE)은 보통 백엔드의 *fast path* 슬롯에 먼저 적고, 충돌할 강한 락이 오면 공유 테이블로 옮긴다(lmgr `README` Fast Path Locking). 해시는 `LOCKTAG` 값으로 16개 파티션에 나뉜다(`lwlock.h` `NUM_LOCK_PARTITIONS`, lmgr `README`).
   - 행 락은 **튜플 헤더에 기록**한다. 잠근 트랜잭션의 XID를 `xmax`에 적고 infomask 비트로 "삭제가 아니라 잠금"임을 표시한다. 여럿이 공유로 잠그면 MultiXact를 쓴다(`README.tuplock`).
   - 그래서 동시에 잠글 수 있는 행 수에 한도가 없다. 대신 `SELECT FOR UPDATE`가 디스크 쓰기를 일으킬 수 있다(13.3.2).
-  - 행을 기다리는 쪽은 **그 행을 쥔 트랜잭션의 ID 락**을 기다린다. 대기 순서를 지키려고 튜플 락을 잠깐 함께 쥔다(`README.tuplock`).
+  - 행을 기다리는 쪽은 **그 행을 잡은 트랜잭션의 ID 락**을 기다린다. 대기 순서를 지키려고 튜플 락을 잠깐 함께 잡는다(`README.tuplock`).
 - InnoDB
   - 행 락은 사실 **인덱스 레코드 락**이다. 인덱스가 없는 테이블도 숨은 클러스터드 인덱스에 건다(17.7.1 Record Locks).
   - 명시적 레코드 락은 페이지 단위 구조체 + 비트맵이다. (삽입·수정한 레코드에는 비트맵 없이 레코드의 트랜잭션 ID로 판별하는 *암묵적 X 락*이 있고, 누가 기다리면 명시적 락으로 바뀐다 — `lock0priv.h`.) 비트 하나가 페이지 안 레코드 하나다(`lock0priv.h` `lock_rec_t`의 `page_id`·`n_bits`). `SHOW ENGINE INNODB STATUS`의 `n bits 72`가 이 비트맵 크기다.
@@ -223,7 +223,7 @@ COMMIT;
 ```
 
 - PostgreSQL 문서: 여러 객체를 **같은 순서**로 잠그는 것이 최선의 방어다. 한 객체에는 처음부터 필요한 **가장 강한 모드**로 잠근다(13.3.4).
-  - 예: 같은 행을 `FOR SHARE`로 읽고 나중에 `UPDATE`하면, 두 트랜잭션이 공유 락을 쥔 채 서로의 업그레이드를 기다린다. 로컬 재현(예시, PostgreSQL 17.11)에서 두 세션이 같은 행을 `FOR SHARE` → `UPDATE` 하자 한쪽이 `deadlock detected`를 받았다. 처음부터 `FOR UPDATE`로 읽는다.
+  - 예: 같은 행을 `FOR SHARE`로 읽고 나중에 `UPDATE`하면, 두 트랜잭션이 공유 락을 잡은 채 서로의 업그레이드를 기다린다. 로컬 재현(예시, PostgreSQL 17.11)에서 두 세션이 같은 행을 `FOR SHARE` → `UPDATE` 하자 한쪽이 `deadlock detected`를 받았다. 처음부터 `FOR UPDATE`로 읽는다.
 - 트랜잭션을 짧게 한다. 락은 커밋까지 가므로 트랜잭션 길이 = 락 보유 시간이다.
 
 ### 2. 재시도를 준비한다 — 트랜잭션 전체를
@@ -319,14 +319,14 @@ SET GLOBAL innodb_print_all_deadlocks = ON;  -- 모든 교착을 에러 로그�
   - 로컬 재현(예시, MySQL 8.4.10): `id=5` 갱신 성공 → `id=1` 갱신이 1205 → 그대로 `COMMIT`하니 `id=5`의 변경만 남았다(1000 → 1001, `id=1`은 그대로).
 - **대처**
   - 1205를 받으면 **명시적으로 ROLLBACK** 한 뒤 트랜잭션 전체를 재시도한다. 드라이버·프레임워크가 롤백하는지 확인한다.
-  - 오래 쥔 쪽을 찾는다: `sys.innodb_lock_waits`, `information_schema.INNODB_TRX`의 `trx_started`.
+  - 오래 잡은 쪽을 찾는다: `sys.innodb_lock_waits`, `information_schema.INNODB_TRX`의 `trx_started`.
   - `innodb_rollback_on_timeout`은 동적 변수가 아니다(서버 시작 옵션). 켜려면 재시작이 필요하다.
 
 ### 3. `ALTER TABLE` 하나가 테이블 전체를 멈춘다 (PostgreSQL 락 큐)
 
 - **현상**: 배포 중 마이그레이션이 돌자 해당 테이블의 모든 조회가 멈춘다. 마이그레이션 자체는 "빠른 DDL"이었다.
 - **보이는 형태**: `pg_stat_activity`에 `wait_event_type=Lock`, `wait_event=relation`이 줄줄이 쌓인다. 커넥션 풀이 고갈된다.
-- **원인**: `ALTER TABLE … ADD COLUMN`은 ACCESS EXCLUSIVE를 요청한다(`ALTER TABLE`의 락 수준은 하위 명령마다 다르고, 따로 적지 않은 것은 ACCESS EXCLUSIVE다). 앞에 긴 트랜잭션이 ACCESS SHARE를 쥐고 있으면 ALTER가 기다린다. 뒤에 온 평범한 `SELECT`는 **대기 중인 ALTER와 충돌**하므로 그 뒤에 줄을 선다.
+- **원인**: `ALTER TABLE … ADD COLUMN`은 ACCESS EXCLUSIVE를 요청한다(`ALTER TABLE`의 락 수준은 하위 명령마다 다르고, 따로 적지 않은 것은 ACCESS EXCLUSIVE다). 앞에 긴 트랜잭션이 ACCESS SHARE를 잡고 있으면 ALTER가 기다린다. 뒤에 온 평범한 `SELECT`는 **대기 중인 ALTER와 충돌**하므로 그 뒤에 줄을 선다.
   - 로컬 재현(예시, PostgreSQL 17.11):
 
 ```text
@@ -351,9 +351,9 @@ SET GLOBAL innodb_print_all_deadlocks = ON;  -- 모든 교착을 에러 로그�
 ### 5. 탐지기 밖의 교착 — 앱 락과 DB 락이 섞였다
 
 - **현상**: JVM도 DB도 아무 말 없이 멈춘다.
-- **원인**: 스레드 1은 앱 락을 쥐고 DB 행 락을 기다린다. 스레드 2의 트랜잭션은 그 행 락을 쥐고 앱 락을 기다린다. DB 탐지기는 DB 안의 그래프만 본다.
+- **원인**: 스레드 1은 앱 락을 잡고 DB 행 락을 기다린다. 스레드 2의 트랜잭션은 그 행 락을 잡고 앱 락을 기다린다. DB 탐지기는 DB 안의 그래프만 본다.
   - InnoDB도 `LOCK TABLES`나 다른 스토리지 엔진의 락이 낀 교착은 `innodb_table_locks=1`이고 `autocommit=0`일 때가 아니면 탐지하지 못한다(17.7.5.2).
-- **대처**: 앱 락을 쥔 채 DB를 부르지 않는다. 모든 대기에 상한(`lock_timeout`, `innodb_lock_wait_timeout`, `tryLock(timeout)`)을 둔다. [os/19-deadlock](../../os/19-deadlock/2-summary.md) 시나리오 5.
+- **대처**: 앱 락을 잡은 채 DB를 부르지 않는다. 모든 대기에 상한(`lock_timeout`, `innodb_lock_wait_timeout`, `tryLock(timeout)`)을 둔다. [os/19-deadlock](../../os/19-deadlock/2-summary.md) 시나리오 5.
 
 ## 핵심 문장
 

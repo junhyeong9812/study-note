@@ -20,7 +20,7 @@
 - 막으려는 것: **과거의 답이 스스로 바뀌는 것**.
   - 09: 정책 값을 덮어쓰면 과거 주문의 재계산이 달라진다 → 시행일 붙은 판을 쌓고, 그날 유효한 판 = 시행일 ≤ 그날 중 가장 늦은 판.
   - 10: 소급 정정이 들어오면 과거 영수증이 바뀐다 → 유효 시각 + 기록 시각(바이템포럴), `asOf` 조회.
-  - 19: 종료 후 취소가 들어오면 발표 순위와 지금 순위가 갈린다 → 기준 시점(스냅샷)을 규칙으로 명시.
+  - 19: 종료 후 취소가 들어오면 발표 순위와 지금 순위가 달라진다 → 기준 시점(스냅샷)을 규칙으로 명시.
 - 이어지는 leaf: 09·10 → [23-versioned-rules-and-effective-dating](../23-versioned-rules-and-effective-dating/2-summary.md), 19 → [22-decision-log-and-provenance](../22-decision-log-and-provenance/2-summary.md)(결과에 기준 시점을 남김)와 23.
 
 ### 4. 17의 UNKNOWN

@@ -1,6 +1,6 @@
 # kotlin/syntax/33 — 타입 검사·캐스트: `is`/`as`/`as?` — 정리 (힌트)
 
-★ **본체는 첫째 창이다** — 「**`javap -c` 가 `is`·`as`·`as?` 자리에 박은 명령**」(`instanceof`·`checkcast`·`Intrinsics.checkNotNull`). 세 연산자의 **실패 방식이 다른 이유**가 명령 몇 줄에 다 있다.
+★ **핵심은 첫째 창이다** — 「**`javap -c` 가 `is`·`as`·`as?` 자리에 박은 명령**」(`instanceof`·`checkcast`·`Intrinsics.checkNotNull`). 세 연산자의 **실패 방식이 다른 이유**가 명령 몇 줄에 다 있다.
 
 ## 이 주제가 쓰는 세 층
 
@@ -8,7 +8,7 @@
 |---|---|---|
 | **언어 보장** | 명세·공식 문서가 약속한 것 | ★★★ `is` 는 검사 · `as` 는 실패하면 **예외** · `as?` 는 실패하면 **`null`** · **소거된 타입 인자는 검사 못 한다** · 스마트 캐스트의 전제(안정 값) |
 | **구현(JVM 백엔드)** | kotlinc 가 JVM 으로 내리는 방식 | `is` → **`instanceof`** · `as` → **`checkcast`** · ★★ `null as String` 이 **`NullPointerException`** 인 것((1)) · 별칭 검사가 `instanceof String` 인 것 |
-| **이 판의 관찰** | kotlinc 2.4.20 에서 이번에 본 것 | 진단 문구 · 「`cast is redundant`」 · ★ `is` 로 물었을 때의 스마트 캐스트 **통과·차단 목록**((5)) |
+| **이 버전의 관찰** | kotlinc 2.4.20 에서 이번에 본 것 | 진단 문구 · 「`cast is redundant`」 · ★ `is` 로 물었을 때의 스마트 캐스트 **통과·차단 목록**((5)) |
 
 ## 이 판
 
@@ -18,14 +18,14 @@ info: kotlinc-jvm 2.4.20 (JRE 21.0.5+11-LTS)
 (exit 0)
 ```
 
-## 흔들리는 칸 / 안 흔들리는 칸
+## 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| **흔들린다** | (이 주제에는 없다) | 해시코드·주소·시간을 **하나도 안 찍었다** — 예외는 `toString()` 과 **클래스 이름**만 찍었다 |
-| 안 흔들린다 | 출력 — 예외 **메시지 전문** 포함(`… are in module java.base of loader 'bootstrap')`) | JDK 판이 같으면 같다. ★ 메시지 **문구**는 JDK 판에 매인다 |
-| 안 흔들린다 | `javap` 출력 · 진단의 **문구·`파일:줄:칸`·캐럿** · 「물은 함수 N · error 줄 M」 | 결정적이다 |
-| 안 흔들린다 | `csc` 진단 `CS0077` · `dotnet` 출력 | 결정적이다 |
+| **실행마다 달라진다** | (이 주제에는 없다) | 해시코드·주소·시간을 **하나도 안 찍었다** — 예외는 `toString()` 과 **클래스 이름**만 찍었다 |
+| 달라지지 않는다 | 출력 — 예외 **메시지 전문** 포함(`… are in module java.base of loader 'bootstrap')`) | JDK 판이 같으면 같다. ★ 메시지 **문구**는 JDK 판에 매인다 |
+| 달라지지 않는다 | `javap` 출력 · 진단의 **문구·`파일:줄:칸`·캐럿** · 「물은 함수 N · error 줄 M」 | 결정적이다 |
+| 달라지지 않는다 | `csc` 진단 `CS0077` · `dotnet` 출력 | 결정적이다 |
 
 ★ 근거 — 캡처 스크립트를 처음부터 두 번 돌려 **블록 전체를 바이트 단위로 대조**했다(수치는 3-answer 의 「실행 검증」).
 
@@ -64,16 +64,16 @@ info: kotlinc-jvm 2.4.20 (JRE 21.0.5+11-LTS)
 
 ## 동작 방식
 
-### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「부적용인 창」
+### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「해당 없는 창」
 
 | 창 | 무엇을 보여 주나 | 어디서 왔나 |
 |---|---|---|
-| ★★★ **`javap -c`** | `instanceof`·`checkcast`·`checkNotNull` — 실패 방식의 **정체**((1)(6)(7)) | ★ **본체 창** |
+| ★★★ **`javap -c`** | `instanceof`·`checkcast`·`checkNotNull` — 실패 방식의 **정체**((1)(6)(7)) | ★ **핵심 창** |
 | ★★ **실행 출력 — 예외 전문** | 어느 예외가 **어떤 메시지로** 나오나((1)(3)(4)(6)) | 이 갈래의 기본 창 |
 | ★★ **컴파일 진단 + 세기** | 소거 검사·스마트 캐스트 차단 — 「**물은 함수 N · error 줄 M**」을 스크립트가 센다((2)(5)) | 이 갈래의 기본 창 · 규칙 18-A |
 | ★ **모듈 나눠 컴파일** | 다른 모듈의 프로퍼티((5)) | [04번 주제](../04-smart-casts/)의 창 |
 | ★ **C# 로 같은 모양** | `as` 가 **Kotlin `as?` 와 같은** 언어((8)) | ★ 이 주제의 고유 창 |
-| **부적용 — 실행 시간** | 「`as?` 가 `as` 보다 느리다」는 주장은 **범위 밖**이다 — 명령 **개수**만 센다((1)) | — |
+| **해당 없음 — 실행 시간** | 「`as?` 가 `as` 보다 느리다」는 주장은 **범위 밖**이다 — 명령 **개수**만 센다((1)) | — |
 
 ★★ **「물은 곳 N · 답한 곳 M」을 스크립트가 찍는다** — 스마트 캐스트 절((5))은 **통과한 함수가 결론의 절반**이다. 에러 목록만 보면 **안 물어본 것과 물었는데 통과한 것**이 구분되지 않으므로 `grep -c` 로 **물은 함수 수**와 **에러 줄 수**를 같이 찍었다.
 
@@ -560,7 +560,7 @@ Z [3.0, 6.0, -1.0] null 2.0
 
 ## 어디서 틀리나
 
-1. ★★★ **`null as String` 이 `ClassCastException` 이라고 믿는다.** 이 판에서는 **`NullPointerException`**((1)) — `catch (e: ClassCastException)` 이 **못 잡는다.**
+1. ★★★ **`null as String` 이 `ClassCastException` 이라고 믿는다.** 이 버전에서는 **`NullPointerException`**((1)) — `catch (e: ClassCastException)` 이 **못 잡는다.**
 2. ★★★ **`as` 로 수를 바꾼다.** `1 as Long` 은 **`ClassCastException`**((4)).
 3. ★★ **`is List<String>` 을 쓴다.** 「`cannot check for instance of erased type`」((2)).
 4. ★★ **비검사 캐스트 경고를 무시한다.** 캐스트한 줄은 통과하고 **원소를 쓰는 줄**에서 터진다((3)).
@@ -581,8 +581,8 @@ Z [3.0, 6.0, -1.0] null 2.0
 | ★★ `null as String` 이 **`NullPointerException`**(`Intrinsics.checkNotNull`) | ★ **JVM 백엔드의 구현** — `checkcast` 가 `null` 을 통과시키므로 따로 심은 것 | (1)(6) |
 | 예외 **메시지 전문**(`… loader 'bootstrap'`) | **JDK 구현** | (1)(3)(4) |
 | 별칭 검사가 `instanceof String` 인 것 | **JVM 백엔드의 구현**(별칭이 JVM 에 없다) | (7) |
-| `is` 스마트 캐스트의 **통과·차단 목록**과 문구 | **이 판(K2 2.4.20)의 관찰** | (5) |
-| 「`cast is redundant`」 · 「`this cast can never succeed`」 | **이 판의 산출물** | (4)(6) |
+| `is` 스마트 캐스트의 **통과·차단 목록**과 문구 | **이 버전(K2 2.4.20)의 관찰** | (5) |
+| 「`cast is redundant`」 · 「`this cast can never succeed`」 | **이 버전의 산출물** | (4)(6) |
 
 ## 언제 쓰고 언제 안 쓰나
 
@@ -599,7 +599,7 @@ Z [3.0, 6.0, -1.0] null 2.0
 ## 핵심 문장
 
 1. `is` 는 `instanceof`, `as` 는 `checkcast`, `as?` 는 `instanceof` 뒤 **`null`** 이다 — 실패 방식의 차이가 명령에 있다.
-2. `null as String` 은 이 판에서 **`NullPointerException`** 이다 — `checkcast` 가 `null` 을 통과시키므로 kotlinc 가 **`checkNotNull` 을 따로 심었다.**
+2. `null as String` 은 이 버전에서 **`NullPointerException`** 이다 — `checkcast` 가 `null` 을 통과시키므로 kotlinc 가 **`checkNotNull` 을 따로 심었다.**
 3. 소거된 타입 인자는 **물을 수 없다** — 억지로 캐스트하면 **경고 한 줄**이고 **쓰는 자리**에서 터진다.
 4. **캐스트는 변환이 아니다** — `1 as Long` 은 `ClassCastException` 이고 변환은 `toLong()` 이다.
 5. `is` 뒤 스마트 캐스트는 04번과 **같은 안정 값 판정**을 쓴다 — `as` 뒤는 되고, `||` 오른쪽은 안 된다.
@@ -611,7 +611,7 @@ Z [3.0, 6.0, -1.0] null 2.0
 - [12번 주제](../12-reified-type-parameters/) — 소거를 **뚫는** `reified`. (2)의 `is T` 를 푸는 곳.
 - [05번 주제](../05-platform-types/) — 플랫폼 타입. (6)의 `C` 줄 NPE 의 정본.
 - [29번 주제](../29-type-aliases-and-nested-type-aliases/) — 별칭은 새 타입이 아니다. (7).
-- [26번 주제](../26-value-class-and-boxing/) — 검사로 가를 수 있는 **새 타입**.
+- [26번 주제](../26-value-class-and-boxing/) — 검사로 구분할 수 있는 **새 타입**.
 - [01번 주제](../01-val-var-and-basic-types/) — 암묵 수치 변환 없음. (4)의 뿌리.
 - [`../../../java/syntax/22-instanceof-type-patterns/`](../../../java/syntax/22-instanceof-type-patterns/) — Java `instanceof` 패턴 변수. 스마트 캐스트의 Java 쪽 짝.
 
@@ -648,4 +648,4 @@ Z [3.0, 6.0, -1.0] null 2.0
 **경계** — ★★ **스마트 캐스트가 깨지는 자리 아홉**(`null` 검사 기준)은 [04번 주제](../04-smart-casts/) (2)가 정본이다 — 여기는 **`is` 로 물었을 때 같은 자리가 어떻게 답하나**와 `as` 뒤·`||` 같은 **새 자리**만 더한다((5)).\
 소거를 **뚫는** 방법(`reified`)은 [12번 주제](../12-reified-type-parameters/)가, 플랫폼 타입 일반은 [05번 주제](../05-platform-types/)가, 별칭이 새 타입이 아니라는 것은 [29번 주제](../29-type-aliases-and-nested-type-aliases/)가 정본이다.
 **대비** — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **22번**([`22-instanceof-type-patterns/`](../../../java/syntax/22-instanceof-type-patterns/)) — `instanceof` 패턴 변수가 Kotlin 스마트 캐스트의 **Java 쪽 짝**이다.\
-C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **21번**(패턴 매칭)은 아직 폴더가 없다 — ★ C# 의 `is`/`as` 는 **이 문서가 직접 던졌다**((8)).
+C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **21번**(패턴 매칭)은 아직 폴더가 없다 — ★ C# 의 `is`/`as` 는 **이 문서가 직접 실행했다**((8)).

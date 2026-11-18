@@ -1,4 +1,4 @@
-# js/syntax/43 — CJS 와 ESM 상호운용: 「누가 누구를 부를 수 있고, 파일은 무엇으로 읽히고, 값은 복사되나 — 그리고 node 판은 어디서 갈리나」 — 질문
+# js/syntax/43 — CJS 와 ESM 상호운용: 「누가 누구를 부를 수 있고, 파일은 무엇으로 읽히고, 값은 복사되나 — 그리고 node 버전은 어디서 갈리나」 — 질문
 
 ## 이 파일을 푸는 법
 
@@ -100,7 +100,7 @@ console.log("blocked cells: " + blocked + " / " + total);
 ```
 
 - ★★★ 18칸 각각 — `CommonJS` / `ES module` / `blocked` 중 무엇인가(node 20)?
-- ★★ node 18 에서 다른 칸은? 막힌 칸의 수는 두 판에서 각각 몇인가?
+- ★★ node 18 에서 다른 칸은? 막힌 항목의 수는 두 버전에서 각각 몇인가?
 
 ### 3. CommonJS 의 카운터를 두 쪽에서 (예측) ★★★
 
@@ -236,9 +236,9 @@ console.log("after two bump() through import: import side count = " + count + " 
 
 ## 실행 환경
 
-**환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · x86-64 Linux. 배너의 `node20` 은 v20.19.6 이다. **브라우저는 부적용**(CommonJS 가 없다).
+**환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · x86-64 Linux. 배너의 `node20` 은 v20.19.6 이다. **브라우저는 해당 없음**(CommonJS 가 없다).
 
-★★★ **이 주제의 본체는 격자 둘이다** — 누가 누구를 부르나 16행 · `"type"` × 확장자 × 내용 18칸, 각각 두 node 판. **1번 · 2번 문항이 이 주제의 중심이다.**
+★★★ **이 주제의 핵심은 격자 둘이다** — 누가 누구를 부르나 16행 · `"type"` × 확장자 × 내용 18칸, 각각 두 node 버전. **1번 · 2번 문항이 이 주제의 중심이다.**
 
 **선행** — [42](../42-esm-modules/2-summary.md) · [36](../36-event-loop-and-microtasks/2-summary.md) · [39](../39-async-await/2-summary.md) · [35](../35-strict-mode/2-summary.md).
 

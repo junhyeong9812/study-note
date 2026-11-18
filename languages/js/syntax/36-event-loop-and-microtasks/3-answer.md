@@ -40,7 +40,7 @@ node18 against node20 -- CJS: same · ESM: same
 
 - ★★★ **ES 모듈** — `N1` 이 **4위에서 9위**로 간다(마이크로태스크 다섯 뒤, 타이머 앞). node 문서: 「**ESM 은 이미 마이크로태스크 큐의 일부로 처리되므로 `queueMicrotask()` 콜백이 먼저 돈다.**」
 - ★★★ **Chrome 151** — `N1` 이 없다(`-`). 나머지 열 라벨은 **CJS·ESM 과 같은 상대 순서**다.
-- ★★ **`labels not at the same rank in all three hosts: 8 / 11`** — 갈린 여덟 칸은 **전부 `N1` 이 끼어든 자리 때문**이다. `N1` 을 빼면 **세 순서가 같다**(`yes`). 두 node 판도 두 모드 모두 `same`.
+- ★★ **`labels not at the same rank in all three hosts: 8 / 11`** — 달라진 여덟 칸은 **전부 `N1` 이 끼어든 자리 때문**이다. `N1` 을 빼면 **세 순서가 같다**(`yes`). 두 node 버전도 두 모드 모두 `same`.
 
 ### 3. 메인 모듈은 **두 가지**(`immediate timeout` · `timeout immediate`), I/O 콜백 안은 **한 가지**(`immediate timeout`) ★★
 
@@ -59,7 +59,7 @@ node18 against node20 -- CJS: same · ESM: same
 
 - ★★★ **메인 모듈** — libuv 가 첫 timers 단계에 닿았을 때 **1ms 가 이미 지났느냐**에 달려서 **판마다** 바뀐다(node 문서의 「non-deterministic」).
 - ★★ **I/O 콜백 안** — 그 콜백은 poll 단계에서 돈다. **다음 단계가 check** 이므로 `setImmediate` 가 **늘 먼저**다.
-- ★ **몇 번씩인지는 적을 수 없다** — 비율은 판마다 흔들린다. **가짓수만** 근거다(규칙 11).
+- ★ **몇 번씩인지는 적을 수 없다** — 비율은 판마다 달라진다. **가짓수만** 근거다(규칙 11).
 
 ### 4. `[1]`·`[2]` 는 **`0` · `100000`**, `[3]` 은 **`1` · `1`** — Chrome 도 **한 글자도 같다** ★★★
 
@@ -158,9 +158,9 @@ C2 setTimeout 0, scheduled second
 | `js36b-36c-starvation.js` | ★★★ 기아 — 타이머 0 회 · 매크로태스크면 1 회 | node20 1벌 + node18 대조 + Chrome 151 1벌 |
 | `js36b-36d-nexttick-starvation.js` | ★★ `nextTick` 기아 | node20 1벌 + node18 대조 |
 | `js36b-36-h-onequeue.py` · `js36b-36-h-twoqueues.js` + `js36b-36e-python-contrast.sh` | ★★ 줄 하나 대 둘 | Python 3.12 · node20 1벌씩 |
-| `js36b-vdiff.sh` · `js36b-versions.sh` | 두 node 판 · Chrome 이 갈린 탐침 수 · 판별 기능 표 | 1벌씩 |
+| `js36b-vdiff.sh` · `js36b-versions.sh` | 두 node 버전 · Chrome 이 달라진 probe 수 · 판별 기능 표 | 1벌씩 |
 
-두 node 판 · Chrome 대조기(이 묶음 전체의 node 탐침). `DIFFERS` 가 한 줄도 없다.
+두 node 버전 · Chrome 대조기(이 묶음 전체의 node probe). `DIFFERS` 가 한 줄도 없다.
 
 ```sh
 # js36b-vdiff.sh
@@ -207,7 +207,7 @@ js36b-39g-generator-runner.js        node18/node20 identical  node20/Chrome iden
 node18 vs node20: identical 13 · differs 0   ·   node20 vs Chrome 151: identical 12 · differs 0 · node only 1
 ```
 
-**구현 의존 항목 — 판이 오르면 다시 돌릴 것**
+**구현 의존 항목 — 버전이 오르면 다시 돌릴 것**
 
 - ★★ **`nextTick` 의 자리**(CJS 4위 · ESM 9위) — node 의 것이다. node 가 모듈 적재 방식을 바꾸면 다시 돌린다.
 - ★★ **가짓수 `2`·`1`** — libuv 의 단계 순서와 기계 사정에 매인다.
@@ -217,7 +217,7 @@ node18 vs node20: identical 13 · differs 0   ·   node20 vs Chrome 151: identic
 
 이 파일의 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Chrome 151**(헤드리스) · Python 3.12 · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
 블록은 **전부 캡처 파일에서 조립**했다.
-★★ **이 주제에서 두 node 판이 갈린 탐침은 없다**(대조기의 `identical`).
+★★ **이 주제에서 두 node 버전이 달라진 probe는 없다**(대조기의 `identical`).
 
 **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
 `js36b-36-h-order.js` + `js36b-36a-order-grid.sh`(1번 · 2번) · `js36b-36-h-main.js` · `js36b-36-h-io.js` + `js36b-36b-timeout-vs-immediate.sh`(3번) ·

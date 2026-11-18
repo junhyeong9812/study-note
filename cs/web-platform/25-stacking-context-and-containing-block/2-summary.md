@@ -200,7 +200,7 @@ portal = z-index를 크게 줘서           ① z-index만으로는 못 이김 (
 ```
 
 - 흔한 오해: "`overflow: hidden`이면 자식은 다 잘린다." 기준 상자가 그 요소 바깥(뷰포트 등)인 fixed 자손은 DOM상 자식이어도 안 잘린다. 그래서 `overflow: hidden`만 있는 카드에서는 fixed 모달이 멀쩡히 화면을 덮는다.
-- CSS Overflow 3은 상자의 넘침(overflow)에 "all descendants whose containing block chain includes the box"를 포함한다고 정의한다. 클리핑 대상도 이 체인으로 갈린다.
+- CSS Overflow 3은 상자의 넘침(overflow)에 "all descendants whose containing block chain includes the box"를 포함한다고 정의한다. 클리핑 대상도 이 체인으로 나뉜다.
 
 ### 실험 C: 조상 transform 하나로 fixed 오버레이가 카드에 갇힌다
 

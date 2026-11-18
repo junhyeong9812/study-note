@@ -145,7 +145,7 @@ probe.get(IsoFields.WEEK_BASED_YEAR);
 ```
 
 - 세 `Locale` 의 `YYYY` 는 각각 무엇인가?
-- 갈리는 이유는 `WeekFields` 의 어느 두 값 때문인가?
+- 달라지는 이유는 `WeekFields` 의 어느 두 값 때문인가?
 - 세 `Locale` 의 `firstDayOfWeek` 와 `minimalDaysInFirstWeek` 는 각각 무엇인가?
 - `IsoFields.WEEK_BASED_YEAR` 는 무엇을 돌려주며, 세 `Locale` 중 어느 것과 같은가?
 - ISO 8601 주 기반 연도를 확실히 얻으려면 무엇을 써야 하는가?
@@ -168,7 +168,7 @@ z.format(DateTimeFormatter.ofPattern("VV", Locale.ENGLISH));
 - `M`/`m`·`D`/`d`·`H`/`h` 의 뜻은 각각 무엇인가?
 - `hh:mm` 만 쓰면 무엇이 사라지는가?
 - `z`·`Z`·`X`·`V` 는 각각 무엇을 찍는가?
-- `u` 와 `y` 는 언제 갈리는가?
+- `u` 와 `y` 는 언제 달라지는가?
 
 ### 11. `ResolverStyle` 과 포맷 실패 (예측)
 
@@ -192,8 +192,8 @@ Instant.parse("2026-03-08T07:30:00Z").format(DateTimeFormatter.ISO_LOCAL_DATE);
 ### 12. 세 JDK 에서 무엇이 달랐나 (경계)
 
 - 17·21·25 에서 `tzdb` 판은 각각 무엇인가?
-- `DateTimeParseException` 의 메시지가 세 판에서 어떻게 갈렸는가?
-- 갈린 부분은 메시지의 **어느 조각**인가?
+- `DateTimeParseException` 의 메시지가 세 버전에서 어떻게 갈렸는가?
+- 달라진 부분은 메시지의 **어느 조각**인가?
 - 그래서 예외 메시지를 테스트로 고정하면 무슨 일이 생기는가?
 - 예외 **타입**은 계약인가?
 
@@ -208,7 +208,7 @@ Instant.parse("2026-03-08T07:30:00Z").format(DateTimeFormatter.ISO_LOCAL_DATE);
 ## 실행 환경
 
 **선행** — [`../51-java-time-types/`](../51-java-time-types/) 의 질문을 먼저 푼다. 갭·중복을 모르면 1~4번이 안 풀린다.
-예측형 문항의 출력은 **Temurin JDK 21.0.5** 기준이다. 세 판에서 갈린 것은 12번이 따로 묻는다.
+예측형 문항의 출력은 **Temurin JDK 21.0.5** 기준이다. 세 버전에서 달라진 것은 12번이 따로 묻는다.
 이 머신의 기본 시간대는 `Asia/Seoul`, 기본 `Locale` 은 `ko_KR` 이다.
 
 ## 복습 기록

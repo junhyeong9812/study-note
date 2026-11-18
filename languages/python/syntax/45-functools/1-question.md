@@ -376,7 +376,7 @@ except TypeError as ex:
 ### 9. ★ 3.11 과 3.12 사이 (경계)
 
 * `cached_property` 가 3.12 에서 잃은 것은 무엇이고, 그 결과 멀티스레드에서 무엇이 가능해졌나?
-* 한 `cached_property` 객체를 두 이름에 붙이면 두 판이 **어떤 예외 타입**으로 알리나 — `except RuntimeError` 로 잡던 코드는 3.12 에서 어떻게 되나?
+* 한 `cached_property` 객체를 두 이름에 붙이면 두 버전이 **어떤 예외 타입**으로 알리나 — `except RuntimeError` 로 잡던 코드는 3.12 에서 어떻게 되나?
 
 ### 10. 층 가르기 (경계)
 

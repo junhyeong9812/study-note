@@ -2,7 +2,7 @@
 
 ## 질문
 1. 같은 클래스 안에서 `this.getCodes(id)`로 자기 `@Cacheable` 메서드를 부르면 캐시가 안 걸린다. 프록시 기반 AOP의 구조로 이유를 설명하고, `AopContext.currentProxy()`로 우회할 때 필요한 설정과 단위 테스트에서 생기는 문제를 말하라.
-2. 예측: ID를 애플리케이션이 직접 할당하는 엔티티(자연키·수동 복합키)를 `repository.save(entity)`로 등록한다. 같은 키로 두 요청이 동시에 등록하면 무슨 일이 일어날 수 있는가 — `save`가 내부에서 persist와 merge 중 무엇을 고르는지, 그 판단 기준(`@Version`·ID·`Persistable`)은 무엇이며, 두 요청의 조회·커밋 순서에 따라 결과가 어떻게 갈리는가.
+2. 예측: ID를 애플리케이션이 직접 할당하는 엔티티(자연키·수동 복합키)를 `repository.save(entity)`로 등록한다. 같은 키로 두 요청이 동시에 등록하면 무슨 일이 일어날 수 있는가 — `save`가 내부에서 persist와 merge 중 무엇을 고르는지, 그 판단 기준(`@Version`·ID·`Persistable`)은 무엇이며, 두 요청의 조회·커밋 순서에 따라 결과가 어떻게 달라지는가.
 3. 기존 코드가 잘 돌던 애플리케이션에 **같은 타입의 빈을 하나 더** 등록했다(두 번째 DataSource, 두 번째 암호화 서비스). 그 순간 바뀔 수 있는 두 가지는 무엇인가 — 무자격 주입(후보 선택 규칙)과 `@ConditionalOnMissingBean` 자동설정(조건이 붙은 범위) 관점에서. 기존 주입 지점을 건드리지 않고 고치는 방법은?
 4. 라이브러리가 `@EnableX` → `@Import(XConfig.class)`로 설정을 끌어오는데, `XConfig`의 `@ConditionalOnBean(DataSource.class)`가 "빈 없음"으로 평가돼 기능 전체가 빠졌다(DataSource는 실제로 등록됐다). 왜 그런가, 그리고 정식 해결은 무엇인가(자동구성 편입과 순서 지정을 구분하라).
 5. 경계: 필터를 `@Component`(또는 `@Bean`)로 만들고 시큐리티 체인에도 `addFilterBefore`로 넣으면 어디에 몇 번 등록되며, 실제 필터 로직은 몇 번 실행되는가(`OncePerRequestFilter`라면?) — 무엇이 위험한가? 여러 `SecurityFilterChain`이 있을 때 어느 체인의 `securityMatcher`에도 안 맞는 경로는 어떻게 되며, 왜 catch-all `denyAll` 체인을 두는가.

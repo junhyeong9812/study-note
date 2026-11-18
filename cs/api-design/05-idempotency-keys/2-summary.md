@@ -221,7 +221,7 @@ JDK 21.0.12, 서버 처리 300ms, 클라이언트 요청 타임아웃 150ms, 최
 ## 쓰이는 자료구조·알고리즘
 
 - **키-결과 저장소(TTL 있는 맵)** — DB에서는 `(account, idem_key)` 기본 키의 B+Tree 인덱스가 맵이다. 유일 인덱스 삽입이 "있나 확인 + 기록"을 한 번에 한다. [data-structure/15-b-tree](../../data-structure/15-b-tree/2-summary.md), Redis라면 `SET key val NX EX ttl`([data-structure/05-hashmap](../../data-structure/05-hashmap/2-summary.md)).
-- **해시 지문** — 정규화한 본문의 SHA-256. 필드 순서·공백 차이로 지문이 갈리지 않게 정렬 후 해시한다. [algorithm/27-string-hashing](../../algorithm/27-string-hashing/2-summary.md).
+- **해시 지문** — 정규화한 본문의 SHA-256. 필드 순서·공백 차이로 지문이 달라지지 않게 정렬 후 해시한다. [algorithm/27-string-hashing](../../algorithm/27-string-hashing/2-summary.md).
 - **상태 기계** — 없음 → in_progress → completed(응답 저장). in_progress 중 재요청 = 409.
 - **재시도 + 지수 백오프** — 409·타임아웃·503에 같은 키로 다시. 대기 시간은 [reliability/06-retry-backoff-jitter](../../reliability/06-retry-backoff-jitter/2-summary.md).
 - **무작위 식별자** — UUIDv4(122비트 무작위). 키가 추측 가능하면 남의 저장 응답을 꺼낼 위험(초안 §5 "Data leaks")이 생긴다.

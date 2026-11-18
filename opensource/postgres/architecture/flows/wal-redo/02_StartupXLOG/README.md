@@ -2,7 +2,7 @@
 
 상위: [WAL redo (복구)](../README.md)
 
-**서버 기동의 WAL 쪽 순서 전체를 쥐고 있는 함수다.** 크래시였는지 보고, `InitWalRecovery` 로 시작 체크포인트를 정하고, 그 체크포인트 값으로 XID, OID 같은 카운터를 되살리고, 복구가 필요하면 `PerformWalRecovery` 로 재생한다. 재생이 끝나면 WAL 이 끝난 자리(`EndOfLog`)를 새 삽입 위치로 잡고, end-of-recovery 체크포인트를 요청한 뒤 `pg_control` 을 `DB_IN_PRODUCTION` 으로 바꿔 쓰기를 연다(머리 주석 L5464: postmaster 기동마다 한 번).
+**서버 기동의 WAL 쪽 순서 전체를 잡고 있는 함수다.** 크래시였는지 보고, `InitWalRecovery` 로 시작 체크포인트를 정하고, 그 체크포인트 값으로 XID, OID 같은 카운터를 되살리고, 복구가 필요하면 `PerformWalRecovery` 로 재생한다. 재생이 끝나면 WAL 이 끝난 자리(`EndOfLog`)를 새 삽입 위치로 잡고, end-of-recovery 체크포인트를 요청한 뒤 `pg_control` 을 `DB_IN_PRODUCTION` 으로 바꿔 쓰기를 연다(머리 주석 L5464: postmaster 기동마다 한 번).
 
 ## 위치
 

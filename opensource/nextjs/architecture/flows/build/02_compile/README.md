@@ -2,7 +2,7 @@
 
 상위: [`next build` 가 산출물을 만들기까지](../README.md)
 
-`#region Compile`(L1765-1939)은 175줄인데 **두 번들러로 갈리는 자리**가 여기다. Turbopack 쪽은 호출 하나로 끝나고, webpack 쪽은 컴파일러 셋을 **정해진 순서로** 돌린다. 어느 쪽이든 결과는 `.next/` 아래의 파일과 매니페스트이고, 다음 단계는 그 파일을 읽는다. Turbopack 내부(Rust)는 이 흐름의 범위 밖이다.
+`#region Compile`(L1765-1939)은 175줄인데 **두 번들러로 나뉘는 자리**가 여기다. Turbopack 쪽은 호출 하나로 끝나고, webpack 쪽은 컴파일러 셋을 **정해진 순서로** 돌린다. 어느 쪽이든 결과는 `.next/` 아래의 파일과 매니페스트이고, 다음 단계는 그 파일을 읽는다. Turbopack 내부(Rust)는 이 흐름의 범위 밖이다.
 
 만나는 흐름 — [`'use cache'`](../../use-cache/README.md)의 캐시 래퍼 치환과 [메타데이터](../../metadata/README.md)의 export 검사가 이 단계의 SWC 변환에서 일어난다. [메타데이터]는 그 검사 문구(`react_server_components.rs` L361-364)까지 확인했다 — 여기서는 그 변환이 **어느 단계에서 도는가**만 잇는다.
 

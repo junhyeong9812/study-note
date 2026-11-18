@@ -214,7 +214,7 @@ describe -> 그 밖 Double
 (1) 의 `name()` 에는 `default` 가 없다. **`Shape` 가 `sealed` 이고 셋을 전부 적었기 때문**이다.\
 `sealed` 쪽 규칙(허용 목록·`non-sealed` 에서 완결성이 끊기는 것)은 [`../15-sealed-classes/`](../15-sealed-classes/)가 정본이다.
 
-selector 타입별로 이렇게 갈린다.
+selector 타입별로 이렇게 달라진다.
 
 | selector | `default` 없이 완결할 수 있나 | 방법 |
 |---|---|---|
@@ -250,7 +250,7 @@ static String describe(Object o) {
 
 - ★ **`default` 와 무조건 패턴(`case Object o`)은 같이 쓸 수 없다.** 둘 다 "나머지 전부"이기 때문이다.
 - ★ **패턴 `switch` 는 문(statement)에도 완결성을 요구한다.** 옛 selector 의 `switch` 문과 다른 점이다\
-  ([**21번 주제**](../21-switch-statement-and-expression/)와 갈리는 지점 — 「어디서 틀리나」 2번).
+  ([**21번 주제**](../21-switch-statement-and-expression/)와 달라지는 지점 — 「어디서 틀리나」 2번).
 
 **비용** — `default` 를 안 쓰면 **하위 타입이 늘 때마다 모든 `switch` 를 고쳐야 한다.**\
 그 대신 빠뜨림이 불가능해진다. 하위 타입이 자주 느는 설계면 이 거래가 손해다.
@@ -946,7 +946,7 @@ Rect[w=2.0, h=3.0]   name=직사각형   ifElse=빠뜨린 것이 여기로 온�
 | 부트스트랩 `Method arguments` 의 타입 목록 | **구현 세부** | 같은 이유. **낡는다는 사실**은 보장이다 |
 | 에러 메시지의 **문구 자체** | **구현 세부** | javac 의 것이다 |
 
-### 두 `switch` 가 갈리는 자리를 한 그림으로
+### 두 `switch` 가 달라지는 자리를 한 그림으로
 
 ```text
   옛 switch                                 패턴 switch

@@ -66,7 +66,7 @@
 
 - 확인
   - 그 화면의 쿼리가 샤드 키를 조건에 갖는지. 없으면 샤드 수만큼 하위 쿼리로 퍼진다.
-  - 라우터·코디네이터의 하위 쿼리 수, 샤드별 지연 분포. scatter-gather의 지연은 **가장 느린 샤드**가 정한다. 샤드가 늘면 그중 하나가 느릴 확률이 커진다(꼬리 지연).
+  - 라우터·코디네이터의 하위 쿼리 수, 샤드별 지연 분포. scatter-gather의 지연은 **가장 느린 샤드**가 정한다. 샤드가 늘면 그중 하나가 느릴 확률이 커진다(테일 레이턴시).
   - 샤드별 커넥션 수(쿼리 하나가 샤드 수만큼 커넥션을 쓴다).
 - 고침: 조회 테이블로 샤드를 먼저 찾기, co-location·참조 테이블 복제로 조인 지역화, 전역 집계·검색은 분석 DB·검색 엔진으로, 깊은 페이지네이션은 커서로.
 
@@ -90,4 +90,4 @@
 - PostgreSQL: `ERROR: no partition of relation "ev" found for row` / `DETAIL: Partition key of the failing row contains (created) = (…)`.
 - MySQL: `ERROR 1526 (HY000): Table has no partition for value 2027` 형태(값 자리에 분할 식의 결과).
 - 원인: 다음 달 파티션을 미리 만들지 않았다. 해결: 몇 달 앞서 만드는 스케줄 작업 + "남은 미래 파티션 수" 경보.
-- `DEFAULT` 파티션의 대가: 실패는 막지만 행이 거기 쌓인다. 나중에 그 달의 파티션을 붙일 때 PostgreSQL은 `DEFAULT` 파티션을 스캔해 옮겨야 할 행이 없는지 검사하고, 그동안 `DEFAULT`에 `ACCESS EXCLUSIVE` 락을 쥔다. 행이 있으면 붙이기가 실패한다. `DEFAULT`는 "안전망 + 경보"로만 쓴다.
+- `DEFAULT` 파티션의 대가: 실패는 막지만 행이 거기 쌓인다. 나중에 그 달의 파티션을 붙일 때 PostgreSQL은 `DEFAULT` 파티션을 스캔해 옮겨야 할 행이 없는지 검사하고, 그동안 `DEFAULT`에 `ACCESS EXCLUSIVE` 락을 잡는다. 행이 있으면 붙이기가 실패한다. `DEFAULT`는 "안전망 + 경보"로만 쓴다.

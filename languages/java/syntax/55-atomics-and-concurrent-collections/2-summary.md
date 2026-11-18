@@ -182,7 +182,7 @@ ai.incrementAndGet()                       ai.set(ai.get() + 1)
 - **스레드가 2개만 돼도 뒤집힌다**(172 대 26 ms).
 - **24스레드에서 `LongAdder` 가 `AtomicLong` 의 55배, `synchronized` 의 291배** 빠르다.
 - **`synchronized` 는 경합이 세지면 자릿수가 바뀐다** — 43 → 14,548 ms.
-- ★ **흔들림이 크다.** `AtomicLong` 8스레드가 **377\~997 ms**(2.6배)였다. **자릿수만 읽는다.**
+- ★ **실행 간 차이가 크다.** `AtomicLong` 8스레드가 **377\~997 ms**(2.6배)였다. **자릿수만 읽는다.**
 - javadoc 이 이 갈림을 그대로 적는다.
 
   > This class is usually preferable to `AtomicLong` when multiple threads update a common sum that is used
@@ -421,7 +421,7 @@ ConcurrentHashMap 반복자                    CopyOnWriteArrayList 반복자
 
 비용 — **쓰기 O(n)** 이다. **원소가 수백 개 이하이고 쓰기가 드물 때**만 쓴다.
 
-### (9) 경합이 있을 때 비로소 갈린다 — 읽기 쪽 실측
+### (9) 경합이 있을 때 비로소 달라진다 — 읽기 쪽 실측
 
 **언제 쓰나** — (8) 의 단일 스레드 읽기 실험이 **차이를 못 낸 이유**를 보고 싶을 때.
 
@@ -659,12 +659,12 @@ synchronized (map) { if (!map.containsKey(k)) map.put(k, v); }   // 의미 없�
 | `size()` 가 정지 상태에서 정확한 것 | **보장 아님.** javadoc 은 "estimation purposes" 라고 적는다 | 21에서 10회 |
 | `mappingCount()` 가 추정치인 것 | **javadoc 이 명시** — "The value returned is an estimate" | `@since 1.8` |
 | `LongAdder` 가 경합에서 빠른 것 | **javadoc 이 방향만 보장** — "significantly higher throughput ... under high contention". **배수는 보장 아님** | 21에서만 측정 |
-| CAS 재시도 횟수(증가 1회당 1.77회) | **전적으로 구현·머신 의존** | ★ **갈린다** — 16스레드에서 17 **4.30회** / 21 **1.77회** / 25 **1.31회** |
+| CAS 재시도 횟수(증가 1회당 1.77회) | **전적으로 구현·머신 의존** | ★ **달라진다** — 16스레드에서 17 **4.30회** / 21 **1.77회** / 25 **1.31회** |
 | `updateAndGet` 람다가 2.47회 불리는 것 | javadoc 이 "The function should be side-effect-free, since it may be re-applied when attempted updates fail due to contention among threads" 라고 경고한다. **횟수는 보장 아님** | 21에서만 측정 |
 | `CopyOnWriteArrayList` 의 반복자가 스냅샷인 것 | **javadoc 이 보장** — "The iterator will not reflect additions ... since the iterator was created" | `@since 1.5` |
 | 순회 중 넣은 키가 100/100회 보인 것 | **보장 아님.** javadoc 은 "at or since the creation of the iterator" 만 약속한다 | 21에서 100회 |
 
-**세 버전에서 갈린 것과 같았던 것** (실제로 돌려 확인했다)
+**세 버전에서 달라진 것과 같았던 것** (실제로 돌려 확인했다)
 
 ```text
                           17.0.13      21.0.5       25.0.1
@@ -763,7 +763,7 @@ Recursive update 출력      동일         동일         동일    <- 한 글�
 ① **정확성 실험**(정답 횟수) — 스레드를 직접 띄워 **각 10회 반복**하고 「정답 횟수 / 10」과 「관측 합의 최소\~최대」로 적는다.\
 ② **성능 실험**(ms) — **JMH 가 아니다.** 워밍업 3회 뒤 **측정 7회의 중앙값**이고, 최소·최대를 함께 적었다.\
 머신: **CPU 24코어**(`availableProcessors` = 24), Linux x86-64.\
-흔들림: 성능 실험의 최소\~최대가 **`AtomicLong` 8스레드에서 377\~997 ms** 로 2.6배까지 벌어졌다. **자릿수만 읽는다.**\
+실행 간 차이: 성능 실험의 최소\~최대가 **`AtomicLong` 8스레드에서 377\~997 ms** 로 2.6배까지 벌어졌다. **자릿수만 읽는다.**\
 ★ **「안 터졌다」는 「안전하다」가 아니다.** 본문 「어디서 틀리나」의 실패는 전부 **터지지 않고 조용히 값이 줄어드는** 형태다.
 **버전** — `java.util.concurrent.atomic` 의 `AtomicInteger`·`AtomicLong`·`AtomicReference` 는 **`@since 1.5`**,\
 **`LongAdder` 와 `ConcurrentHashMap.mappingCount` 는 `@since 1.8`** 이다(`src.zip` 직접 확인).\

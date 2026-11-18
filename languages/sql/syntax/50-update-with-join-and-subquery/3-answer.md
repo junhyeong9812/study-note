@@ -627,7 +627,7 @@ UPDATE t50_emp SET dept_id = @t := dept_id, dept_id = salary, salary = @t WHERE 
 | `WHERE EXISTS` 처방 (4번) | PG 18.6 | 3회 | **`UPDATE 3` 으로 돌아왔다** |
 | 영향 행 수 비교 (5번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | **PG 4 / MySQL 3 — 표 상태는 같다** |
 | 짝이 둘일 때 조인형 (6번) | PG 18.6 · MySQL 8.4.10 | 각 2회 | **둘 다 `AAA` 를 골랐다** |
-| ★ 같은 문 반복 (6번) | PG 18.6 | **3회** | **세 판 다 `AAA` — 그러나 문서는 「예측 불가」라고 적는다** |
+| ★ 같은 문 반복 (6번) | PG 18.6 | **3회** | **세 버전 다 `AAA` — 그러나 문서는 「예측 불가」라고 적는다** |
 | 짝이 둘일 때 서브쿼리형 (6번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | **둘 다 에러 — 이쪽이 안전하다** |
 | ★★ `SET a=b, b=a` (7번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | **`(300,10)` 대 `(300,300)`** |
 | `WHERE` 없는 `UPDATE` (8번) | PG 18.6 · MySQL 8.4.10 | 각 2회 | **4행 전부. `t50_emp` 에서만 던졌다** |
@@ -661,7 +661,7 @@ UPDATE t50_emp SET dept_id = @t := dept_id, dept_id = salary, salary = @t WHERE 
 ## 실행 환경
 
 근거는 **실행 결과**다 — 본문의 출력·에러·경고는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+2026-09-21 에 실제로 실행해 받은 것이다. 지어낸 출력은 없다.\
 ★ **환경** — MySQL 의 `sql_safe_updates` 기본값은 **`0`**(꺼짐)이고, `sql_mode` 에 `STRICT_TRANS_TABLES` 가 켜져 있다.\
 이 편이 만든 표(`t50_emp`·`t50_dept`·`t50_map`·`t50_u`)는 **전부 지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
 ★ **`WHERE` 없는 `UPDATE` 실험은 전부 `t50_emp` 에서만 했다.**\

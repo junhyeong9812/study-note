@@ -68,7 +68,7 @@
 ### 7. 같은 해시 키 32,768개
 
 - 실험 A(OpenJDK 21.0.12, `--cpus=2`, 집필 두 번): `String` 키 68 ms·51 ms, 같은 `hashCode`의 비`Comparable` 키 32,101 ms·31,737 ms. 같은 개수의 보통 키는 13 ms·11 ms. 사실 점검 재실행 두 번은 `String` 46·64 ms, 비`Comparable` 32,688·35,324 ms, 보통 키 12·17 ms였다(시간은 실행마다 다르다).
-- 갈리는 이유: JDK 8+ `HashMap`은 한 버킷이 8개를 넘고 표가 64칸 이상이면 버킷을 레드-블랙 트리로 바꾼다(JEP 180). 트리는 같은 해시의 키를 `compareTo`로 가른다. `String`은 `Comparable`이고 서로 다른 문자열의 `compareTo`가 0이 아니라 O(log n)으로 찾는다. 비`Comparable` 키도 트리는 만들어지지만(클래스 이름·`identityHashCode`로 동률 깨기), 찾을 때 방향을 정할 수 없어 `TreeNode.find`가 양쪽 서브트리를 다 뒤진다. 삽입 하나가 O(n), 전체가 O(n²)이다(측정 비율이 4배를 넘는 것은 상수 영향으로 보인다 — [44-ds-incidents](../44-ds-incidents/2-summary.md) 실험 A 해석).
+- 달라지는 이유: JDK 8+ `HashMap`은 한 버킷이 8개를 넘고 표가 64칸 이상이면 버킷을 레드-블랙 트리로 바꾼다(JEP 180). 트리는 같은 해시의 키를 `compareTo`로 가른다. `String`은 `Comparable`이고 서로 다른 문자열의 `compareTo`가 0이 아니라 O(log n)으로 찾는다. 비`Comparable` 키도 트리는 만들어지지만(클래스 이름·`identityHashCode`로 동률 깨기), 찾을 때 방향을 정할 수 없어 `TreeNode.find`가 양쪽 서브트리를 다 뒤진다. 삽입 하나가 O(n), 전체가 O(n²)이다(측정 비율이 4배를 넘는 것은 상수 영향으로 보인다 — [44-ds-incidents](../44-ds-incidents/2-summary.md) 실험 A 해석).
 - 교훈: 자체 키 클래스는 `hashCode`가 `equals`에 쓰는 필드를 모두 섞게 하고(`Objects.hash`, `record`), 가능하면 충돌하는 서로 다른 키를 구별하는 `Comparable`을 구현한다. 키가 외부에서 오면 개수 상한을 둔다.
 
 ### 8. 공통 패턴과 기록

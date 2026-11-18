@@ -25,7 +25,7 @@
 
 ### 3. 진행 보장
 
-- blocking: 락을 쥔 스레드가 멈추면(선점·페이지 폴트) 다른 스레드도 못 나간다.
+- blocking: 락을 잡은 스레드가 멈추면(선점·페이지 폴트) 다른 스레드도 못 나간다.
 - lock-free(오늘날 용법): 누군가 멈춰도 시스템 전체로는 어떤 연산이 유한 단계 안에 끝난다. 개별 스레드는 계속 질 수 있다.
 - wait-free: 스레드마다 각자 상한이 정해진(bounded) 단계 안에 끝난다. Michael–Scott 각주: "both non-blocking and starvation free", "within a bounded number of time steps".
 - Michael–Scott 1996은 오늘날의 lock-free를 **non-blocking**이라 부르고, **lock-free**는 "락 메커니즘을 쓰지 않는다"는 뜻으로 쓴다. 그래서 "lock-free but not non-blocking"인 알고리즘(락은 없지만 느린 프로세스가 다른 프로세스를 무한정 막는)이 있다고 적는다.
@@ -55,7 +55,7 @@
 ```
 
 - 겪는 조건: 노드를 직접 **풀링해 재사용**할 때(또는 정수 값 자체를 CAS할 때). 실험 1번(`Aba.java`): CAS `true`, 최종 스택 `B`.
-- 겪지 않는 조건: 노드를 매번 새로 만들 때. T1이 A의 참조를 쥐고 있으므로 GC가 A를 수거하지 않고, 새 노드는 다른 참조다. 실험 2번: CAS `false`, 최종 `A'->C`.
+- 겪지 않는 조건: 노드를 매번 새로 만들 때. T1이 A의 참조를 잡고 있으므로 GC가 A를 수거하지 않고, 새 노드는 다른 참조다. 실험 2번: CAS `false`, 최종 `A'->C`.
 - 근거: `ConcurrentLinkedQueue` 소스 주석 — "in garbage collected systems, there is no possibility of ABA problems due to recycled nodes, so there is no need to use 'counted pointers'".
 - C에서는 `free` 직후 `malloc`이 같은 주소를 돌려줄 수 있다(`reuse.c`: `same=1`, CAS 성공).
 

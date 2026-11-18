@@ -467,7 +467,7 @@ NPE 메시지 문구(`Parameter specified as non-null is null: …`), `!!` 의 �
 Kotlin 안에서만 돌리면 `checkNotNullParameter` 가 **한 번도 안 걸린다** — 타입 검사가 앞에서 막기 때문이다.
 **검사가 실제로 일하는 것을 보려면 Java 쪽에서 불러야 한다.**
 
-**★ 던져 봤더니 예상과 달랐던 것** — `-Xno-param-assertions` 로 컴파일한 뒤 Java 가 `null` 을 넘기면
+**★ 실행해 봤더니 예상과 달랐던 것** — `-Xno-param-assertions` 로 컴파일한 뒤 Java 가 `null` 을 넘기면
 "더 깊은 곳에서 터질 것" 이라고 예상했다. **안 터졌다.**
 
 ```text

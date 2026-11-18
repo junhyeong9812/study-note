@@ -43,7 +43,7 @@ lAnnotated = "square";
 console.log(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13);
 ```
 
-- 탐침 **열세 개**가 각각 무엇이라고 답하는가?
+- probe **열세 개**가 각각 무엇이라고 답하는가?
 - `const cStr` 과 `let lStr` 은 왜 다른가? `var vStr` 은 어느 쪽인가?
 - `const obj = { a: 1 }` 의 `obj.a` 는 `1` 인가 `number` 인가?
 
@@ -209,7 +209,7 @@ export type Handler = `on${Capitalize<"up" | "down">}`;
 export const picked: "a" | "b" = "a";
 ```
 
-- `const cStr` 과 `let lStr` 은 `.d.ts` 에서 어떻게 갈리는가?
+- `const cStr` 과 `let lStr` 은 `.d.ts` 에서 어떻게 달라지는가?
 - `Handler` 는 **펼쳐져서** 나오는가, 적은 그대로 나오는가?
 
 ### 7. 왜 `let` 은 넓어지나 (왜)
@@ -234,7 +234,7 @@ export const picked: "a" | "b" = "a";
 
 ### 12. 세 층 가르기 (연결)
 
-- 이 주제에서 **언어 보장** · **설정에 달린 것** · **이 판(7.0.2)의 관찰**에 해당하는 항목을 하나씩 댈 수 있는가?
+- 이 주제에서 **언어 보장** · **설정에 달린 것** · **이 버전(7.0.2)의 관찰**에 해당하는 항목을 하나씩 댈 수 있는가?
 
 ## 실행 환경
 

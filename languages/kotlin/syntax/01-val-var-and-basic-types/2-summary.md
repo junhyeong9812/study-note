@@ -235,7 +235,7 @@ bad2.kt:9:20: error: initializer type mismatch: expected 'Double', actual 'Float
                    ^
 ```
 
-★ **여기서 셋이 갈린다.**
+★ **여기서 셋이 달라진다.**
 
 ```text
   정수 리터럴                         실수 리터럴
@@ -346,7 +346,7 @@ public final class TwoKt {
 
 비용 — 박싱 한 번마다 `valueOf` 호출 1회. 캐시 밖이면 힙에 객체 하나.
 
-### (7) `===` 가 `Int?` 에서 갈리는 것 — 원인은 Java 쪽 캐시다
+### (7) `===` 가 `Int?` 에서 달라지는 것 — 원인은 Java 쪽 캐시다
 
 **언제 쓰나** — `Int?` 두 개를 `===` 로 비교하고 싶어질 때. (결론: **하지 마라.**)
 

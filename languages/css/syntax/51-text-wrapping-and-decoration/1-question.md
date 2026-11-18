@@ -41,7 +41,7 @@ span { display: inline-block; width: min-content; font: 16px/24px sans-serif; }
 - `anywhere` 쪽 상자의 폭은 무엇으로 정해지는가?
 - flex 아이템에 `anywhere` 를 걸면 어떤 일이 생기는가?
 
-### 3. 한국어에서 셋은 어떻게 갈리는가 (예측)
+### 3. 한국어에서 셋은 어떻게 달라지는가 (예측)
 
 ```css
 .k { width: 110px; font: 16px/24px sans-serif; }
@@ -58,7 +58,7 @@ span { display: inline-block; width: min-content; font: 16px/24px sans-serif; }
 - `keep-all` 이 줄을 더 쓰는가 덜 쓰는가?
 - 상자를 190px 로 넓히면 셋의 관계가 어떻게 바뀌는가?
 
-### 4. `hyphens` 세 값은 어떻게 갈리는가 (예측)
+### 4. `hyphens` 세 값은 어떻게 달라지는가 (예측)
 
 ```html
 <div style="width:100px; hyphens:none">extra&shy;ordi&shy;narily compli&shy;cated</div>

@@ -269,7 +269,7 @@
 
 그림 해설 (한 단계씩):
 
-- ★ **`contain: layout` 혼자서는 이 실험에서 아무 차이도 안 냈다.** 세 판의 폭(0.182\~0.205)이 대조군(0.190\~0.202)과 겹친다 — **잡음 안이다.**\
+- ★ **`contain: layout` 혼자서는 이 실험에서 아무 차이도 안 냈다.** 세 버전의 폭(0.182\~0.205)이 대조군(0.190\~0.202)과 겹친다 — **잡음 안이다.**\
   이유는 **크기 변화가 밖으로 새기 때문**이다. 상자가 높아지면 뒤가 밀리고, 그건 `layout` 만으로는 못 막는다.
 - **`size` 가 붙어야 벽이 선다.** `contain: strict` 에서 0.19초 → 0.024초로 **약 8배** 줄었다.
 - ★★ **그런데 `transform` 은 0.000초다.** 「가두는 것」보다 「애초에 레이아웃을 안 돌리는 것」이 훨씬 세다.\
@@ -443,7 +443,7 @@
 | 「**`transform` 은 합성만 한다**」 | ★ **문서·명세의 주장.** 내가 잰 것은 「주 스레드 카운터가 0」까지다 |
 | 레이어 수·레이어 메모리 | ★★ **못 쟀다**((8)) |
 
-★ **흔들리는 칸 / 안 흔들리는 칸**
+★ **실행마다 달라지는 항목 / 달라지지 않는 항목**
 
 ```text
   안 흔들린다   0 이냐 120 이냐 (세 판 전부 같았다) · 정지 대조군이 전 항목 0 인 것
@@ -534,6 +534,6 @@ el.addEventListener('transitionend', () => { el.style.willChange = 'auto'; });
 **기준 소스** — [CSS Containment Level 2](https://drafts.csswg.org/css-contain-2/) (`contain`·`content-visibility`) · [CSS Will Change Level 1](https://drafts.csswg.org/css-will-change-1/) (`will-change` 의 정의와 **남용 경고**). 열어서 확인한 것만 적었다.\
 **파이프라인 단계의 이름과 순서는 명세가 아니라 구현의 것**이다 — 이 문서는 **측정한 것**과 **문서가 주장하는 것**을 갈라 적는다.
 **실행 검증** — 이 문서의 `demo` 블록 **2개 전부**와 본문 실험 **5벌**을 **Google Chrome 151.0.7922.173** headless 에 CDP 로 붙여 돌렸다.\
-★★ **측정 도구를 먼저 밝힌다**((2)) — **CDP `Performance.getMetrics`** 의 `RecalcStyleCount`·`LayoutCount`·`LayoutDuration` 과 **CDP `Tracing` 도메인**(`devtools.timeline`)의 이벤트 수(`UpdateLayoutTree`·`Layout`·`PrePaint`·`Paint`·`Commit`·`RasterTask`)를 썼다. 속성별 표는 **2초 × 3판**을 돌려 흔들림을 같이 적었다.\
+★★ **측정 도구를 먼저 밝힌다**((2)) — **CDP `Performance.getMetrics`** 의 `RecalcStyleCount`·`LayoutCount`·`LayoutDuration` 과 **CDP `Tracing` 도메인**(`devtools.timeline`)의 이벤트 수(`UpdateLayoutTree`·`Layout`·`PrePaint`·`Paint`·`Commit`·`RasterTask`)를 썼다. 속성별 표는 **2초 × 3판**을 돌려 실행 간 차이를 같이 적었다.\
 ★ **못 잰 것이 있다** — **합성 레이어의 수와 메모리는 이 환경에서 못 쟀다**((8)). 지어내지 않고 못 쟀다고 적는다.
 **버전** — CSS 에 언어 버전은 없다. `will-change` 는 Baseline **widely**(newly 2020-01-15 → widely 2022-07-15), `contain` 은 **widely**(newly 2022-03-14 → widely 2024-09-14), `content-visibility` 는 **newly**(2025-09-15, 아직 widely 아님) — `api.webstatus.dev` 조회 결과.

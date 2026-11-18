@@ -122,7 +122,7 @@ $ python3 html13b-link.py rel | sed -n '1,39p'
 - ★ **`nofollow` 는 0 칸** — 서버 `Referer`·`document.referrer`·`window.opener` 가 `rel 없음` 과 **한 글자도 같다.**
 - **링크마다 서버 요청은 정확히 한 줄**이다.
 
-### 4. 이름 target 은 열쇠를 준다 — 갈린 칸 = 12 / 27
+### 4. 이름 target 은 열쇠를 준다 — 달라진 항목 = 12 / 27
 
 **출력**
 
@@ -160,9 +160,9 @@ target=창이름4 · referrerpolicy=no-referrer    (없음)                     
 
 - ★★ **`창이름1`(rel 없음) = 창 객체** — 이름 target 은 `_blank` 가 아니라 **기본 `noopener` 가 안 걸린다.**
 - **`창이름2`(noopener) = `null`** — `noopener` 가 **일을 하는 자리가 여기**다.
-- **`창이름3`(noreferrer) = `null`** — `noreferrer` 가 **`noopener` 를 함의**한다. `창이름1` 과 **3 / 3** 갈렸다.
-- ★★ **`창이름4`(referrerpolicy=no-referrer) = 창 객체** — `Referer` 만 지우고 **열쇠는 준다.** `창이름3` 과 **1 / 3**(opener 칸) 갈렸다.
-- ★★★ **갈린 칸 = 12 / 27** — 비교 아홉 쌍 × 세 칸. **0 인 쌍이 둘**(`_blank` 의 `noopener`·`nofollow`)이다 — 앞은 「**이미 기본**」, 뒤는 「**처리 모델이 없음**」으로 **0 의 이유가 다르다.**
+- **`창이름3`(noreferrer) = `null`** — `noreferrer` 가 **`noopener` 를 함의**한다. `창이름1` 과 **3 / 3** 달라졌다.
+- ★★ **`창이름4`(referrerpolicy=no-referrer) = 창 객체** — `Referer` 만 지우고 **열쇠는 준다.** `창이름3` 과 **1 / 3**(opener 칸) 달라졌다.
+- ★★★ **달라진 항목 = 12 / 27** — 비교 아홉 쌍 × 세 칸. **0 인 쌍이 둘**(`_blank` 의 `noopener`·`nofollow`)이다 — 앞은 「**이미 기본**」, 뒤는 「**처리 모델이 없음**」으로 **0 의 이유가 다르다.**
 
 ### 5. 같은 출처는 내려받고, 다른 출처는 이동한다 — `javascript:` 는 요청 0줄
 
@@ -195,10 +195,10 @@ $ python3 html13b-link.py download
 
 ### 6. opener 가 있으면 새 창이 원래 탭을 바꿀 수 있다
 
-- ★ **`window.opener` 를 쥔 새 창은 `opener.location` 으로 원래 탭을 다른 페이지로 보낼 수 있다**(tabnabbing 이라 불리는 공격의 뼈대). ★ **이 문서는 그 공격을 던지지 않았다** — 쟀던 것은 **참조가 있나 없나**까지다.
+- ★ **`window.opener` 를 잡은 새 창은 `opener.location` 으로 원래 탭을 다른 페이지로 보낼 수 있다**(tabnabbing 이라 불리는 공격의 뼈대). ★ **이 문서는 그 공격을 던지지 않았다** — 쟀던 것은 **참조가 있나 없나**까지다.
 - 명세 「요소의 noopener 구하기」 — ① **`noopener` 나 `noreferrer` 면 참** ② **`opener` 가 없고 target 이 `_blank` 면 참** ③ blob URL 의 출처 조건 ④ 아니면 거짓. **`_blank` 는 ② 줄**이다.
 - **`rel="opener"` 는 ② 를 끄는 스위치**다 — 기본을 뒤집었으니 **정말 opener 가 필요한 곳**을 위한 길이 따로 있어야 했다(A3 의 `_blank · opener` = 창 객체).
-- ★ **「예전에는 `_blank` 가 opener 를 줬다」는 경위는 이 판에서 확인할 수 없다**(옛 판이 없다) — 명세의 현재 알고리즘과 이 판의 동작만이 근거다.
+- ★ **「예전에는 `_blank` 가 opener 를 줬다」는 경위는 이 버전에서 확인할 수 없다**(옛 판이 없다) — 명세의 현재 알고리즘과 이 버전의 동작만이 근거다.
 
 ### 7. 브라우저 쪽은 「잴 것이 없다」, 검색 엔진 쪽은 「못 잰 것」
 
@@ -221,7 +221,7 @@ $ python3 html13b-link.py download
 ### 10. 이동은 구현, 출처만은 명세의 기본 정책, 다른 엔진은 미실행
 
 - ★★ **구현(Chrome)** 이다. 명세는 「교차 출처에서는 `download` 를 **`Content-Disposition: attachment` 와 함께 써야** 사용자가 **수상한 동작이라는 경고를 받지 않는다**」까지만 적는다 — **「경고」의 그림**이지 「무시하고 이동」이 아니다.
-- **출처만 간 것 — 명세(Referrer Policy)의 기본 정책 `strict-origin-when-cross-origin`.** 링크에 `referrerpolicy` 가 없으면 이것이 쓰인다. 결과는 **이 판의 관찰**이다.
+- **출처만 간 것 — 명세(Referrer Policy)의 기본 정책 `strict-origin-when-cross-origin`.** 링크에 `referrerpolicy` 가 없으면 이것이 쓰인다. 결과는 **이 버전의 관찰**이다.
 - ★★ **못 적는다.** 알고리즘은 명세에 있지만 **다른 엔진이 구현했는지는 미실행**이다. 적을 수 있는 것은 「**명세가 그렇게 정했고, Chrome 151 이 그대로 동작했다**」 둘이다.
 
 ### 11. 정본 경계
@@ -460,19 +460,19 @@ if __name__ == "__main__":
     main()
 ```
 
-**흔들림 확인** — 이 배치의 캡처를 **세 번** 돌렸다. `rel` 블록 둘(열세 조합 × 서버 로그·새 창)도 **세 판 모두 한 글자도 같았다.** favicon 요청은 모든 페이지의 `<link rel="icon" href="data:,">` 로 **생기지 않았다** — 서버가 **거르지 않았는데** 로그에 없다.
+**재현성 확인** — 이 배치의 캡처를 **세 번** 돌렸다. `rel` 블록 둘(열세 조합 × 서버 로그·새 창)도 **세 판 모두 한 글자도 같았다.** favicon 요청은 모든 페이지의 `<link rel="icon" href="data:,">` 로 **생기지 않았다** — 서버가 **거르지 않았는데** 로그에 없다.
 
 | 무엇을 | 몇 번 | 결과가 쓰인 곳 |
 |---|---|---|
 | **`href` 열다섯 형태 × `a.href`·`:link`·포커스·역할** | 3 | 동작 방식 (1) · A1 |
 | **`relList.supports()` 여섯 토큰** | 3 | 동작 방식 (2) · A2 |
-| **`rel` 열세 조합 × 서버 `Referer`·`document.referrer`·`window.opener`** + 갈린 칸 집계 | 3 | 동작 방식 (3) · A3 · A4 |
+| **`rel` 열세 조합 × 서버 `Referer`·`document.referrer`·`window.opener`** + 달라진 항목 집계 | 3 | 동작 방식 (3) · A3 · A4 |
 | **`download` 셋 + `javascript:`** | 3 | 동작 방식 (4) · A5 |
 | **`download` 페이지의 접근성 트리** | 3 | 동작 방식 (5) |
 
 **구현에 달린 항목**
 
-| 항목 | 이 판의 값 | 왜 다시 찍나 |
+| 항목 | 이 버전의 값 | 왜 다시 찍나 |
 |---|---|---|
 | 교차 출처 `download` | **무시하고 이동** | 명세는 「경고」까지만 — 구현의 선택이다 |
 | `_blank` 기본 `noopener` | 동작한다 | 명세 알고리즘이지만 **다른 엔진은 미실행** |
@@ -484,12 +484,12 @@ if __name__ == "__main__":
 
 **못 잰 것** — ① **검색 엔진의 `nofollow` 처리** — 이 머신에 없다. ② **스크린리더가 「새 창」·「내려받기」를 알리는지** — 보조 기술이 없다. ③ **다른 엔진의 동작 전부.**
 
-**부적용인 창** — **창 ①(`--dump-dom`) · 창 ③(`innerText` 대 `textContent`) · 창 ④(`compatMode`) · 창 ⑥(`renderBlockingStatus`).** 링크는 파서가 고칠 것도, 렌더된 글자가 트리와 갈릴 것도, 문서 모드도, 렌더 차단도 없다 — **잴 것이 없다.**
+**해당 없는 창** — **창 ①(`--dump-dom`) · 창 ③(`innerText` 대 `textContent`) · 창 ④(`compatMode`) · 창 ⑥(`renderBlockingStatus`).** 링크는 파서가 고칠 것도, 렌더된 글자가 트리와 갈릴 것도, 문서 모드도, 렌더 차단도 없다 — **잴 것이 없다.**
 
 ## 용어 풀이
 
 - **`Referer` 헤더 / `document.referrer`** — 서버가 받는 「어디서 왔나」 / 새 문서가 읽는 「어디서 왔나」.
-- **`window.opener`** — 새 창이 자기를 연 창을 쥔 참조.
+- **`window.opener`** — 새 창이 자기를 연 창을 잡은 참조.
 - **요소의 noopener 구하기(get an element's noopener)** — 링크를 따라갈 때 **새 창에 opener 를 줄지** 정하는 명세 알고리즘. `_blank` 면 기본이 참이다.
 - **지원 토큰(supported tokens)** — `relList.supports()` 가 참인 토큰. 처리 모델이 있는 것만.
 - **`strict-origin-when-cross-origin`** — Referrer Policy 의 기본 정책. 다른 출처에는 출처만 보낸다.
@@ -501,4 +501,4 @@ if __name__ == "__main__":
 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스는 맨 아래 `## 실행 검증` 절에 있다.\
 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 「Links」 절·[Referrer Policy](https://w3c.github.io/webappsec-referrer-policy/)·[HTML-AAM](https://w3c.github.io/html-aam/) 으로 접지했다.\
 ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-★★★ **이 주제의 본체는 창 ⑤(서버 요청 로그)와 새 창 쪽 프로브다.** `rel` 이 바꾸는 것은 화면에 하나도 없다(A3·A4).
+★★★ **이 주제의 핵심은 창 ⑤(서버 요청 로그)와 새 창 쪽 프로브다.** `rel` 이 바꾸는 것은 화면에 하나도 없다(A3·A4).

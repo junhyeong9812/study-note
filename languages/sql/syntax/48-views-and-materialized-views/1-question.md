@@ -110,7 +110,7 @@ UPDATE v48_high_chk SET salary = 10 WHERE id = 2;
 DROP TABLE t48_emp;
 ```
 
-- PostgreSQL 18.6 과 MySQL 8.4.10 의 반응은 어떻게 갈리는가?
+- PostgreSQL 18.6 과 MySQL 8.4.10 의 반응은 어떻게 달라지는가?
 
 ### 12. MySQL 에서 뷰가 쓰는 열을 지운 뒤 (예측)
 

@@ -31,7 +31,7 @@ ways that lost updates in at least one round: 1 / 6
 - ★★ 한 스레드 한정과 액터는 자물쇠 없이 **만지는 쪽을 하나로** 만든다(10번).
 - ★ `false` 는 「20판에서 한 번도 안 잃었다」이다 — 안 잃는다는 **증명**은 자물쇠·원자 연산의 계약이 한다. 보호 없음이 한 판도 안 잃는 머신이 있어도 안전하지 않다.
 
-### 2. ★★★ **막힌 탐침 4 / 8** — `synchronized` 안의 `delay`·`yield`·직접 만든 `suspend` 호출 · `ReentrantLock.withLock` 안의 `delay` · 진단은 「`the '<이름>' suspension point is inside a critical section.`」
+### 2. ★★★ **막힌 probe 4 / 8** — `synchronized` 안의 `delay`·`yield`·직접 만든 `suspend` 호출 · `ReentrantLock.withLock` 안의 `delay` · 진단은 「`the '<이름>' suspension point is inside a critical section.`」
 
 **출력**
 
@@ -93,7 +93,7 @@ suspend fun c4() { jlock.withJLock { delay(1) } }                          // Re
 
 **왜 그런가**
 
-- ★★★ `synchronized { }` 와 `kotlin.concurrent.withLock { }` 의 람다 몸통은 **그 자물쇠 구간 안에서** 돈다 — 거기 중단점이 있으면 **자물쇠를 쥔 채 코루틴이 멈추고, 다른 스레드에서 이어질 수 있다.** 컴파일러가 그것을 막는다.
+- ★★★ `synchronized { }` 와 `kotlin.concurrent.withLock { }` 의 람다 몸통은 **그 자물쇠 구간 안에서** 돈다 — 거기 중단점이 있으면 **자물쇠를 잡은 채 코루틴이 멈추고, 다른 스레드에서 이어질 수 있다.** 컴파일러가 그것을 막는다.
 - ★★ **직접 만든 `suspend fun step()` 도 막힌다** — 이름이 무엇이든 중단점이면 막힌다(진단의 `'step'`).
 - ★★ 통과한 넷 — `lock()+delay+unlock()`(자물쇠는 같은데 **함수 이름이 다르다** — 8번) · `Mutex.withLock+delay`(중단으로 기다리는 자물쇠) · `synchronized+launch`(새 코루틴의 중단점은 자물쇠 밖) · `synchronized+Thread.sleep`(중단점이 아니다 — 스레드를 막을 뿐, 3번).
 
@@ -201,7 +201,7 @@ received after draining = 70
 - ★★★ `Channel(2)` 는 두 칸이 차면 멈춘다. `BUFFERED` 의 기본 용량은 **64** — 다섯은 다 들어가고, 70 을 보내면 64 에서 멈췄다가 받는 쪽이 비우자 70 이 다 건너갔다.
 - ★★ `CONFLATED`·`DROP_OLDEST` 는 **멈추지 않는 대신 버린다** — 넷째 칸이 줄었다.
 
-### 7. ★★★ 자물쇠를 쥔 채 **코루틴이 스레드를 바꾸는 것** — 4번의 구간 3(다른 스레드에서 못 푼다)과 구간 1(같은 스레드의 코루틴 둘을 못 가른다)
+### 7. ★★★ 자물쇠를 잡은 채 **코루틴이 스레드를 바꾸는 것** — 4번의 구간 3(다른 스레드에서 못 푼다)과 구간 1(같은 스레드의 코루틴 둘을 못 가른다)
 
 **왜 그런가**
 
@@ -229,7 +229,7 @@ public final class org.jetbrains.kotlin.fir.analysis.jvm.checkers.expression.Fir
 
 - ★★★ 검사기 클래스의 상수 풀에 `kotlin` + `synchronized`, `kotlin.concurrent` + `withLock` 네 문자열이 있다 — **함수 이름의 짝**으로 자물쇠 구간을 알아본다. `lock()`·`unlock()` 을 따로 부르면 **구간이 어디서 시작하고 끝나는지** 컴파일러가 모른다.
 - ★★ `synchronized` 안의 `Thread.sleep` 은 **중단점이 아니라** 대상이 아니다 — 하지만 3번처럼 스레드를 막는다.
-- ★ 이 이름 목록은 **이 판 컴파일러의 구현**이다 — 명세로 읽지 마라.
+- ★ 이 이름 목록은 **이 버전 컴파일러의 구현**이다 — 명세로 읽지 마라.
 
 ### 9. ★★ `send` 는 **`ClosedSendChannelException: Channel was closed`** · `trySend` 는 **던지지 않고 `Closed(…)`** · `receive` 두 번은 **`1`·`2`** · 다시 `receive` 는 **`ClosedReceiveChannelException: Channel was closed`** · `receiveCatching` 은 **`Closed(null)`**
 
@@ -355,9 +355,9 @@ Implementation-Version: 1.11.0
 (exit 0)
 ```
 
-★ **흔들리는 칸과 안 흔들리는 칸**
+★ **실행마다 달라지는 항목과 달라지지 않는 항목**
 
-| 흔들린다 | 안 흔들린다 |
+| 실행마다 달라진다 | 달라지지 않는다 |
 |---|---|
 | ★★ 보호 없음 칸의 **최종 값 · 잃은 판 수** — 칸으로 안 만들었다(불리언만) | 보호 다섯 칸의 `false` · `1 / 6` |
 | ★ **머신에 매인다** — 보호 없음이 `true` 인 것(24코어 · 세 판 되풀이에서 해시 1가지) | 진단 격자 · 진단 전문 · 검사기 `javap` · C# 진단 |
@@ -365,7 +365,7 @@ Implementation-Version: 1.11.0
 
 > 근거 — 캡처 스크립트를 처음부터 다시 돌려 **블록 전체를 대조**했다.
 >
-> 실측 — `capture.sh blocks` 와 `capture.sh blocks-re` 를 처음부터 따로 돌려 `normalize-shaky.py` 로 대조했다 — **블록 109개 · 동일 109 · 흔들린 칸 0 · ★고칠 것 0**(54\~58 다섯 주제를 한 캡처로 받았다 — 이 주제 몫은 출력 16 · 소스 10 · 환경 5). 추가한 정규화 규칙은 없다.
+> 실측 — `capture.sh blocks` 와 `capture.sh blocks-re` 를 처음부터 따로 돌려 `normalize-shaky.py` 로 대조했다 — **블록 109개 · 동일 109 · 달라진 항목 0 · ★고칠 것 0**(54\~58 다섯 주제를 한 캡처로 받았다 — 이 주제 몫은 출력 16 · 소스 10 · 환경 5). 추가한 정규화 규칙은 없다.
 
 ```text
 ===== for i in 1 2 3; do java -cp o56g:kotlinx-coroutines-core-jvm-1.11.0.jar:kotlin-stdlib.jar Grid56Kt | md5sum; done | sort | uniq -c =====
@@ -382,7 +382,7 @@ Implementation-Version: 1.11.0
 | 프로그램 | 무엇을 확인했나 | 돌린 방법 |
 |---|---|---|
 | `grid56.kt` | ★★★ 공유 상태 격자 — 방법 6 × 20판 | `kotlinc` → `java`(칸 수 검사·잃은 칸 수는 프로그램이 센다) + 세 판 되풀이 해시 |
-| `crit56.kt` · `gridc56.py` | ★★★ 중단점 진단 8탐침 | 스크립트가 컴파일 · 진단을 줄마다 읽는다 + 에러 전문 |
+| `crit56.kt` · `gridc56.py` | ★★★ 중단점 진단 8probe | 스크립트가 컴파일 · 진단을 줄마다 읽는다 + 에러 전문 |
 | `kotlin-compiler.jar` | ★★ 검사기가 알아보는 이름 | `unzip` → `javap -c -p`(전부 받은 뒤 `grep`) |
 | `block56.kt` | ★★ 기다리는 동안의 스레드 상태 | `kotlinc` → `java` + 세 판 되풀이 해시 |
 | `own56.kt` | ★★★ 스레드가 주인인 자물쇠 × 코루틴 둘 · 스레드 갈아타기 | `kotlinc` → `java`(단일 스레드 풀 둘) |
@@ -395,7 +395,7 @@ Implementation-Version: 1.11.0
 **구현 의존 항목** — 검사기가 이름 두 개를 본다는 것 · 예외 메시지 문구 · 기다리는 풀 스레드의 상태 이름 — 이 컴파일러·라이브러리·JDK 판의 산출물이다.\
 반면 **`synchronized`·`withLock` 안 중단점의 컴파일 에러**는 **언어(컴파일러 진단)**, **`Mutex` 재진입 불가·`Channel` 용량 동작**은 **라이브러리 계약(KDoc)**, **`synchronized`·`ReentrantLock` 의 스레드 소유와 재진입**은 **JVM·JDK 의 계약**이다.
 
-**★ 던져 봤더니 예상과 달랐던 것 — 세 건**
+**★ 실행해 봤더니 예상과 달랐던 것 — 세 건**
 
 1. ★★★ **`kotlin.concurrent.withLock` 안의 `delay` 도 막혔다** — `synchronized` 만 막힐 것으로 예상했다. 그런데 **같은 자물쇠를 `lock()`/`unlock()` 으로 풀어 쓰면 통과했다** — 검사기가 자물쇠가 아니라 **함수 이름**을 본다(8번).
 2. ★★★ **`ReentrantLock` 이 같은 스레드의 코루틴 둘을 동시에 들였다**(`holdCount = 2`) — 「스레드를 갈아타면 못 푼다」만 예상했는데, **스레드를 안 갈아타도** 깨지는 자리가 있었다(4번 구간 1).

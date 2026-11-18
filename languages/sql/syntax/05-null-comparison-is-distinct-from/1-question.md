@@ -73,7 +73,7 @@ SELECT id, name FROM dept WHERE id IN (SELECT dept_id FROM emp);
 
 - 6번과 달리 이쪽은 왜 제대로 도는가?
 
-### 8. 탐침 쪽이 `NULL` 일 때 (예측)
+### 8. probe 쪽이 `NULL` 일 때 (예측)
 
 ```sql
 -- (A)

@@ -134,7 +134,7 @@ fay [ann bob eve fay] -> 1600       fay [ann bob eve fay] -> 1600
 `cho` 의 `with_order` 가 `NULL` 인 것은 `SUM(NULL)` 이 `NULL` 이기 때문이다 —\
 `cho` 가 자기 칸에서 첫 행이고 더할 값이 `NULL` 하나뿐이다([21번](../21-aggregate-functions-count-forms/) 3번).
 
-출력 **행 순서**가 두 엔진에서 다른 것은 `ORDER BY dept_id` 의 `NULL` 규칙이다. **값은 한 자리도 안 갈렸다.**
+출력 **행 순서**가 두 엔진에서 다른 것은 `ORDER BY dept_id` 의 `NULL` 규칙이다. **값은 한 자리도 달라지지 않았다.**
 
 > **프레임(frame)** — 창 안에서 실제로 계산에 쓰이는 범위.\
 > 예: `ORDER BY id` 를 걸면 `bob` 의 프레임이 `[ann, bob]` 이라 합이 800이다.
@@ -206,8 +206,8 @@ ORDER BY salary DESC  ->  줄을 정한다.  화면에 뿌릴 순서
 그래서 running 열이 위에서 아래로 증가하지 않는다 — 증가할 이유가 없다
 ```
 
-★ **`running` 값 자체는 두 엔진에서 한 자리도 안 갈렸다.** `ann`=300 · `bob`=800 · `hui`=2800 그대로다.\
-갈린 것은 `cho` 행이 맨 위냐 맨 아래냐인데, 그건 **출력 `ORDER BY` 의 `NULL` 규칙**이다([08번](../08-order-by-null-position-stability/)).
+★ **`running` 값 자체는 두 엔진에서 한 자리도 달라지지 않았다.** `ann`=300 · `bob`=800 · `hui`=2800 그대로다.\
+달라진 것은 `cho` 행이 맨 위냐 맨 아래냐인데, 그건 **출력 `ORDER BY` 의 `NULL` 규칙**이다([08번](../08-order-by-null-position-stability/)).
 
 실무 요구가 정확히 이 모양으로 온다 — 「**입사순**으로 누적하되 **급여순**으로 보여 달라」. 두 순서를 따로 적으면 된다.
 
@@ -327,9 +327,9 @@ cho 의 프레임 = [gus,hui,cho]        cho 의 프레임 = [cho]
 `NULL` 위치 규칙 하나가 **프레임의 구성원을 바꾸고**, 프레임이 바뀌니 합이 바뀐다.
 
 `SUM` 이 `NULL` 을 건너뛰는 규칙([21번](../21-aggregate-functions-count-forms/))은 두 엔진이 같다 — PG 의 800 은 `400+400` 이고 `NULL` 은 안 더해졌다.\
-갈린 것은 **누가 프레임 안에 있느냐**뿐이다.
+달라진 것은 **누가 프레임 안에 있느냐**뿐이다.
 
-★ **이 자리가 이 주제에서 두 엔진의 값이 갈린 유일한 자리다.** 나머지 출력은 값이 전부 같았다.
+★ **이 자리가 이 주제에서 두 엔진의 값이 달라진 유일한 자리다.** 나머지 출력은 값이 전부 같았다.
 
 ---
 
@@ -509,6 +509,6 @@ FROM emp8;
 ## 실행 환경
 
 근거는 **실행 결과**다 — 본문의 출력·에러는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+2026-09-21 에 실제로 실행해 받은 것이다. 지어낸 출력은 없다.\
 모든 질의는 [1-question.md](1-question.md) 머리의 `WITH emp8 AS (...)` CTE 를 앞에 붙여 돌렸다.\
 문서 근거는 [PG 18 Window Function Calls](https://www.postgresql.org/docs/18/sql-expressions.html) · [MySQL 8.4 Window Function Frame Specification](https://dev.mysql.com/doc/refman/8.4/en/window-functions-frames.html).

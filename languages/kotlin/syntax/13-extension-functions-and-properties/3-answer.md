@@ -313,10 +313,10 @@ public class Printer {
 - ★★ **`invokevirtual` 한 명령어에 두 성질이 같이 들어 있다.**
   `aload_0`(디스패치 수신자)은 실행할 때 클래스를 다시 찾으므로 **가상**인데,
   **디스크립터 `(LAnimal;)` 이 이미 박혀 있어** 확장 수신자는 **정적**이다.
-  `R`/`S` 가 갈리는 것과 둘 다 `Animal` 인 것이 **한 명령어에서 동시에** 일어난다.
+  `R`/`S` 가 달라지는 것과 둘 다 `Animal` 인 것이 **한 명령어에서 동시에** 일어난다.
 - ★ 그래서 **「확장은 오버라이드할 수 없다」는 최상위 확장에만 맞다**(10번).
 
-### 6. ★ `none` · `hi` · `''` · `null` — 갈리는 것은 **검사를 심었느냐**뿐이다
+### 6. ★ `none` · `hi` · `''` · `null` — 달라지는 것은 **검사를 심었느냐**뿐이다
 
 **출력** (`java -cp onul:kotlin-stdlib.jar NulKt`)
 
@@ -363,7 +363,7 @@ public final class NulKt {
 
 - ★★ **두 디스크립터는 한 글자도 다르지 않다**(`(Ljava/lang/String;)Ljava/lang/String;`).
   **null 가능성은 디스크립터에 안 남는다.**
-- ★ **갈리는 것은 `Intrinsics.checkNotNullParameter` 를 심었느냐 한 줄**이다.
+- ★ **달라지는 것은 `Intrinsics.checkNotNullParameter` 를 심었느냐 한 줄**이다.
   `shout` 의 3번 자리에 그것이 있고 `orNone` 에는 **없다** —
   수신자가 그냥 파라미터이므로 **파라미터의 null 규칙이 그대로 적용된 것**이다(1번).
 - **멤버였다면 애초에 불가능하다** — null 에 `invokevirtual` 을 하면 `NullPointerException` 이다.
@@ -606,7 +606,7 @@ OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sha
 「`private` 을 못 본다」·「nullable 수신자가 된다」·「임포트가 필요하다」·「최상위 확장에 `open`/`override` 가 안 붙는다」**
 는 **언어 규칙**이라 타깃과 무관하다.
 
-**★ 던져 봤더니 예상과 달랐던 것 — 세 건**
+**★ 실행해 봤더니 예상과 달랐던 것 — 세 건**
 
 1. ★★ **「확장은 오버라이드가 안 된다」가 반쪽이었다.** **클래스 멤버로 선언한 확장은 `open`/`override` 가 붙고
    실제로 가상 디스패치된다**(`R Printer/Animal` 대 `S LoudPrinter/Animal`).

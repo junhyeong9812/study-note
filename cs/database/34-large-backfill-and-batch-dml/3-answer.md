@@ -6,7 +6,7 @@
 
 | 측면 | 생기는 일 |
 |---|---|
-| 락 | 바꾼 행 전부를 커밋까지 쥔다. 같은 행을 쓰려는 요청이 대기하다 타임아웃(MySQL 1205) |
+| 락 | 바꾼 행 전부를 커밋까지 잡는다. 같은 행을 쓰려는 요청이 대기하다 타임아웃(MySQL 1205) |
 | 옛 버전 | InnoDB는 undo, PostgreSQL은 dead tuple이 한꺼번에 생긴다. 테이블·undo가 커진다 |
 | 복제 | 레플리카가 거대한 변경을 한 번에 적용해야 한다. 지연이 급등한다(MySQL은 커밋 때 binlog에 몰아 써서 보낸다. PostgreSQL은 WAL을 생기는 대로 보내지만 커밋 재생 전엔 조회에 안 보인다) |
 | 실패 | 중간에 죽으면 전부 롤백된다. 롤백도 바꾼 만큼 걸린다 |
@@ -42,7 +42,7 @@ UPDATE t SET … WHERE id > :last AND id <= hi;
 ### 5. 체크포인트와 청크를 한 트랜잭션에
 
 - 같이 커밋되거나 같이 롤백된다. 그래서 "청크를 바꿨다"와 "기록했다"가 항상 일치한다.
-- 따로 커밋할 때의 어긋남
+- 따로 커밋할 때의 불일치
   - 청크 커밋 후 체크포인트 전에 죽음 → 재시작 시 그 청크를 다시 처리한다. 비멱등이면 이중 변환이다.
   - 체크포인트 먼저 커밋 후 청크 전에 죽음 → 그 청크를 건너뛴다. 조용한 누락이다.
 
@@ -62,7 +62,7 @@ UPDATE t SET … WHERE id > :last AND id <= hi;
 
 ### 8. 1205 폭주
 
-- 백필 트랜잭션이 많은 행의 락을 오래 쥐고 있다. 주문 API의 행 UPDATE가 그 락을 `innodb_lock_wait_timeout`(8.4 기본 50초) 동안 기다리다 실패한다(로컬 재현: 미커밋 20만 행 UPDATE에 막힌 한 행 UPDATE가 1205).
+- 백필 트랜잭션이 많은 행의 락을 오래 잡고 있다. 주문 API의 행 UPDATE가 그 락을 `innodb_lock_wait_timeout`(8.4 기본 50초) 동안 기다리다 실패한다(로컬 재현: 미커밋 20만 행 UPDATE에 막힌 한 행 UPDATE가 1205).
 - 긴급: 백필 세션을 멈춘다(KILL). 롤백 시간을 감안한다.
 - 근본: 청크를 작게 하고(청크당 < 1초 목표) 청크마다 커밋한다. 락 대기·지연을 보고 멈추게 한다.
 - PostgreSQL 백필 세션에는 `SET lock_timeout = '2s'` 같은 짧은 값을 건다. 기본 0은 끔이다(19.11). 운영 요청과 부딪히면 백필 청크가 먼저 포기하고 나중에 다시 시도한다.
@@ -78,7 +78,7 @@ UPDATE t SET … WHERE id > :last AND id <= hi;
 
 ### 10. History list length 증가
 
-- 의심: 어딘가 **오래 열린 트랜잭션**(리포트·백업·잊힌 세션)이 옛 스냅샷을 쥐고 있다. 그 스냅샷이 필요로 하는 undo는 purge할 수 없다(MySQL 8.4 17.3).
+- 의심: 어딘가 **오래 열린 트랜잭션**(리포트·백업·잊힌 세션)이 옛 스냅샷을 잡고 있다. 그 스냅샷이 필요로 하는 undo는 purge할 수 없다(MySQL 8.4 17.3).
 - 찾기
   - `SELECT trx_id, trx_started, trx_mysql_thread_id, trx_query FROM information_schema.innodb_trx ORDER BY trx_started;`
   - `SHOW ENGINE INNODB STATUS`의 TRANSACTIONS 절

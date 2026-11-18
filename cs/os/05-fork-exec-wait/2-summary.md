@@ -94,7 +94,7 @@ else if (WIFSIGNALED(st)) printf("signal %d\n", WTERMSIG(st));
   - *열린 파일 설명*: `open()` 한 번마다 커널이 만드는 객체다. 오프셋·상태 플래그를 담고, 여러 fd가 가리킬 수 있다(21번).
 - 대기 중인 시그널, 메모리 락, 타이머(`alarm`·`setitimer`·`timer_create`), 프로세스에 딸린 레코드 락(전통적인 `fcntl` 락)은 물려받지 않는다(fork(2)).
   - 반대로 OFD 락·`flock` 락은 물려받는다. timerfd도 fd라서 같은 타이머를 공유한다(timerfd_create(2)).
-- **자식에는 스레드가 하나만 있다.** 다른 스레드가 쥐고 있던 락은 fork가 따로 챙기지 않는 한 자식에서 영원히 안 풀린다. 그래서 멀티스레드 프로그램의 자식은 exec 전까지 async-signal-safe 함수만 써야 한다(fork(2)).
+- **자식에는 스레드가 하나만 있다.** 다른 스레드가 잡고 있던 락은 fork가 따로 챙기지 않는 한 자식에서 영원히 안 풀린다. 그래서 멀티스레드 프로그램의 자식은 exec 전까지 async-signal-safe 함수만 써야 한다(fork(2)).
   - glibc `fork()`는 malloc·stdio 내부 락은 fork 전에 잡고 자식에서 되돌린다(posix/fork.c). 앱·다른 라이브러리의 락은 그렇지 않다(`pthread_atfork`로 직접 챙겨야 한다).
 - glibc의 `fork()`는 `fork` 시스템 콜이 아니라 `clone`을 부른다. 로컬 strace: `clone(child_stack=NULL, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, ...)`.
 
@@ -262,7 +262,7 @@ pstree -p <pid>
 - **원인**
   - fork는 fd 표를 복사하고, exec는 CLOEXEC 없는 fd를 유지한다.
   - 열린 파일 설명은 **모든** fd가 닫혀야 풀린다. 부모가 닫아도 자식의 fd가 소켓을 살려 둔다.
-  - 파이프는 쓰기 쪽 fd가 **모두** 닫혀야 읽는 쪽이 EOF를 본다(pipe(7)). 자식이 쓰기 쪽 사본을 쥐고 있으면 EOF가 영원히 안 온다.
+  - 파이프는 쓰기 쪽 fd가 **모두** 닫혀야 읽는 쪽이 EOF를 본다(pipe(7)). 자식이 쓰기 쪽 사본을 잡고 있으면 EOF가 영원히 안 온다.
 - **대처**
   - fd를 `O_CLOEXEC`·`SOCK_CLOEXEC`로 연다. 자식에서 필요 없는 fd를 닫는다(`close_range`).
   - 파이프는 부모·자식 각각 쓰지 않는 쪽 끝을 즉시 닫는다.
@@ -284,7 +284,7 @@ pstree -p <pid>
 
 - **현상**: 스레드가 많은 프로그램이 fork한 자식이 exec 전에 멈춰 버린다. 가끔만 난다.
 - **보이는 형태**: 자식이 `S`/futex 대기에서 영원히 멈춤, 부모의 `waitpid`도 안 끝남.
-- **원인**: 자식에는 fork를 부른 스레드 하나만 있다. 다른 스레드가 fork 순간 쥐고 있던 락(예: 앱의 mutex, 로거·다른 라이브러리의 락)은 자식에서 풀어 줄 스레드가 없다. 자식이 그 락이 필요한 함수를 부르면 멈춘다. glibc는 malloc·stdio 내부 락은 fork 때 챙기지만(posix/fork.c), POSIX는 여전히 async-signal-safe 함수만 허용한다.
+- **원인**: 자식에는 fork를 부른 스레드 하나만 있다. 다른 스레드가 fork 순간 잡고 있던 락(예: 앱의 mutex, 로거·다른 라이브러리의 락)은 자식에서 풀어 줄 스레드가 없다. 자식이 그 락이 필요한 함수를 부르면 멈춘다. glibc는 malloc·stdio 내부 락은 fork 때 챙기지만(posix/fork.c), POSIX는 여전히 async-signal-safe 함수만 허용한다.
 - **대처**: fork 후 exec 전에는 async-signal-safe 함수만 쓴다(fork(2)). 더 안전하게는 `posix_spawn`을 쓴다.
 
 ### 5. 종료 코드를 잘못 읽음

@@ -1,9 +1,9 @@
-# js/syntax/50 — `Intl` 국제화 포맷: 「같은 포맷 호출이 판마다 같은 글자를 내나 — 갈린다면 어느 층에서인가」 — 질문
+# js/syntax/50 — `Intl` 국제화 포맷: 「같은 포맷 호출이 판마다 같은 글자를 내나 — 달라진다면 어느 층에서인가」 — 질문
 
 ## 이 파일을 푸는 법
 
 - ★★ **예측형 문항(1\~6)은 소스만 보고 출력을 적어 본 뒤** 답을 연다.
-- ★★★ **2번은 칸마다 글자를 다 맞히려 하지 마라** — 먼저 「**세 판이 같을까 다를까**」만 칸마다 적고, 다르다고 본 칸에 **무엇이** 다를지 적어라.
+- ★★★ **2번은 칸마다 글자를 다 맞히려 하지 마라** — 먼저 「**세 버전이 같을까 다를까**」만 칸마다 적고, 다르다고 본 칸에 **무엇이** 다를지 적어라.
 - ★ 각 문항 끝에서 스스로 물어라 — 「**이 글자가 다음 판에서 바뀌면 누구의 잘못인가**」.
 
 ## 질문
@@ -53,7 +53,7 @@ echo "--- node20"; "${E[@]}" "$N20" js48b-50a-locale-data.js || exit 1
 echo "--- Chrome 151"; "${E[@]}" ./js48b-browser.sh js48b-50a-locale-data.js || exit 1
 ```
 
-- ★★ `[2]` 의 두 줄은 여덟 태그 중 무엇을 돌려주나? 세 판이 같은가?
+- ★★ `[2]` 의 두 줄은 여덟 태그 중 무엇을 돌려주나? 세 버전이 같은가?
 - ★★★ `[3]` 에서 `zz-ZZ` · `de-ZZ` · `x-nope` 는 각각 무엇이 되나?
 - ★ `[4]` 두 줄을 보고 small-icu 인지 full-icu 인지 말할 수 있나?
 
@@ -151,7 +151,7 @@ paste <(printf '%s\n' "$a") <(printf '%s\n' "$b") <(printf '%s\n' "$c") | awk -F
   END { if (!bad) print "cells where the runtimes differ: " d+0 " / " n }'
 ```
 
-- ★★★ 마지막 줄 `cells where the runtimes differ: N / 42` 의 N 은? 갈리는 칸은 어느 행인가?
+- ★★★ 마지막 줄 `cells where the runtimes differ: N / 42` 의 N 은? 달라지는 항목은 어느 행인가?
 - ★★ `NumberFormat` 여섯 행 · `compact` 네 행의 글자는?
 - ★★ `sort()` · `Collator de` · `Collator sv` 세 행의 순서는?
 
@@ -215,7 +215,7 @@ for (const [label, x, d] of rows) {
 console.log("rows where by hand and en-US differ: " + differ + " / " + rows.length);
 ```
 
-- ★★ 여덟 행에서 `by hand` 열과 `en-US` 열이 갈리는 행은? 마지막 줄의 수는?
+- ★★ 여덟 행에서 `by hand` 열과 `en-US` 열이 달라지는 행은? 마지막 줄의 수는?
 - ★ `en-IN` 열의 `12345678.9` 는?
 
 ### 5. 인자 없는 호출과 환경 (예측) ★★
@@ -298,7 +298,7 @@ run('RelativeTimeFormat("en").format(1, "fortnight")', () => new Intl.RelativeTi
 
 - ★★★ 2번 격자의 한 칸(예 — `currency de-DE EUR`)에서 **ECMA-402 가 정하는 것**과 **데이터 판이 정하는 것**을 갈라라. 이 문서가 ECMA-402 에 대해 「보장」이라고 쓰지 않는 이유는?
 
-### 8. 같은 ICU 인데 두 메서드가 갈렸다 (왜) ★★
+### 8. 같은 ICU 인데 두 메서드가 달라졌다 (왜) ★★
 
 - ★★ node 에서 같은 포맷터의 `format()` 은 U+0020, `formatRange()` 는 U+202F 를 냈다. 이 차이를 **데이터가 아니라 그 위층**의 것으로 읽는 근거는 무엇인가? 그 읽기의 한계는?
 
@@ -318,7 +318,7 @@ run('RelativeTimeFormat("en").format(1, "fortnight")', () => new Intl.RelativeTi
 
 **환경** — node v18.19.1(시스템 ICU 74.2) · v20.19.6(ICU 77.1) · Google Chrome 151 · x86-64 Linux. 블록마다 `TZ`·`LANG`·`LC_ALL` 을 배너 또는 `.sh` 에 적었다.
 
-★★★ **이 주제의 본체는 포맷 격자다** — 42칸 × 판 셋의 출력 문자열과 「판이 갈린 칸 N / M」. **2번 · 3번 · 7번 문항이 이 주제의 중심이다.**
+★★★ **이 주제의 핵심은 포맷 격자다** — 42칸 × 판 셋의 출력 문자열과 「판이 달라진 항목 N / M」. **2번 · 3번 · 7번 문항이 이 주제의 중심이다.**
 
 **선행** — [49](../49-date-and-temporal/2-summary.md) · [03](../03-numbers-and-bigint/2-summary.md) · [04](../04-strings-and-utf16/2-summary.md).
 

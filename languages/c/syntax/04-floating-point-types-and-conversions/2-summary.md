@@ -234,8 +234,8 @@ ex.c:6:1: runtime error: -1 is outside the range of representable values of type
 
 그림 해설 (한 단계씩):
 
-- **`(int)1e10` 이 `-O0` 에서 `-2147483648`, `-O2` 에서 `2147483647`** 이다. 다섯 값 중 둘이 갈렸다.
-- `(unsigned)-1.0` 도 `4294967295` ↔ `0` 으로 갈린다.
+- **`(int)1e10` 이 `-O0` 에서 `-2147483648`, `-O2` 에서 `2147483647`** 이다. 다섯 값 중 둘이 달라졌다.
+- `(unsigned)-1.0` 도 `4294967295` ↔ `0` 으로 나뉜다.
 - **둘 다 에러 없이 exit 0** 이다. 「안 터졌다」는 「안전하다」가 아니다.
 - ★ **`-fsanitize=undefined` 기본 집합에 `float-cast-overflow` 가 없다.** 따로 켜야 잡힌다.\
   이 주제에서 도구를 믿을 때 가장 조심할 자리다.
@@ -437,7 +437,7 @@ f == 0.3f ? 1
 
 - `float` 을 `double` 로 올리면 **0.3 이 아니라 `0.30000001192092896`** 이다.\
   `float` 의 반올림 오차가 그대로 드러난다.
-- 접미사 `f` 하나로 참·거짓이 갈린다.
+- 접미사 `f` 하나로 참·거짓이 달라진다.
 
 ### 규칙 불릿
 
@@ -553,7 +553,7 @@ ex.c:6:1: runtime error: -1 is outside the range of representable values of type
         둘 다 exit 0. 에러 없음.
 ```
 
-### 부동소수 나누기 0 — 층이 갈리는 자리
+### 부동소수 나누기 0 — 층이 달라지는 자리
 
 ```text
 --- -fsanitize=float-divide-by-zero ---

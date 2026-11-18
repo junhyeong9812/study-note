@@ -257,7 +257,7 @@ MySQL 이 `0` 을 낸 것은 **단락 평가의 증거가 아니다** — MySQL 
 대가 — **「`CASE` 로 감쌌으니 안전하다」는 집계 앞에서 깨진다.** 안전하게 나누려면 `CASE` 가 아니라 `NULLIF` 로 **분모 자체를 `NULL` 로 만든다**(다음 절).
 
 > ⚠️ 같은 식을 **상수 조건**(`WHEN 1 = 0`)으로 쓰면 PG 에서도 에러가 안 났다 — 계획 단계에서 그 항이 통째로 사라졌기 때문으로 보인다.\
-> 즉 **조건이 상수냐 아니냐에 따라 결과가 갈린다.** 이런 자리는 「되더라」를 근거로 삼지 말고 구조를 바꾸는 편이 낫다.
+> 즉 **조건이 상수냐 아니냐에 따라 결과가 달라진다.** 이런 자리는 「되더라」를 근거로 삼지 말고 구조를 바꾸는 편이 낫다.
 
 ---
 
@@ -409,7 +409,7 @@ COALESCE(NULL, 'default')  ->  'default'
 
 ---
 
-### 7. `GREATEST`/`LEAST` — `NULL` 을 만나면 두 엔진이 갈린다
+### 7. `GREATEST`/`LEAST` — `NULL` 을 만나면 두 엔진이 달라진다
 
 **언제 쓰나** — 여러 열 중 최댓값·최솟값을 **행 안에서** 고를 때(집계가 아니다 — 집계는 행을 접는다).
 
@@ -423,7 +423,7 @@ COALESCE(NULL, 'default')  ->  'default'
                                  +---+---+
 ```
 
-`NULL` 이 없으면 똑같다. **하나라도 섞이면 갈린다.**
+`NULL` 이 없으면 똑같다. **하나라도 섞이면 달라진다.**
 
 ```text
 ### SQL: SELECT GREATEST(1, 2, NULL) AS g, LEAST(1, 2, NULL) AS l;
@@ -551,7 +551,7 @@ LEAST(a, b, ...)      -- 최솟값. 〃
 `cho`(salary `NULL`)의 조건은 `UNKNOWN` 인데 결과는 `ann`·`dan`(조건 `FALSE`)과 **구별되지 않는다.**\
 「급여가 400 이하인 사람」과 「급여를 모르는 사람」을 나누려면 `WHEN` 을 하나 더 둬야 한다.
 
-결과 타입 통일도 두 엔진이 갈린다.
+결과 타입 통일도 두 엔진이 달라진다.
 
 ```text
 ### SQL: SELECT CASE WHEN TRUE THEN 1 ELSE 'x' END AS r;
@@ -586,7 +586,7 @@ LINE 1: SELECT CASE WHEN TRUE THEN 1 ELSE 'x' END AS r;
 - **`COALESCE` 를 계산 중간에 쓴다.**\
   「몰랐다」는 사실이 그 자리에서 사라진다. 평균·비율이 조용히 틀어진다. **출력 직전**에 쓴다.
 - **`GREATEST`/`LEAST` 의 `NULL` 처리가 같을 거라 본다.**\
-  PG 는 건너뛰고(`2`), MySQL 은 `NULL` 이다. **에러 없이 답만 갈린다.**
+  PG 는 건너뛰고(`2`), MySQL 은 `NULL` 이다. **에러 없이 답만 달라진다.**
 - **`IFNULL`·`IF` 를 쓴다.**\
   MySQL 전용이다. `COALESCE`·`CASE` 로 쓰면 양쪽에서 돈다.
 - **`COALESCE` 인자에 타입을 섞는다.**\
@@ -674,6 +674,6 @@ LINE 1: SELECT CASE WHEN TRUE THEN 1 ELSE 'x' END AS r;
 
 **기준 소스** — [PostgreSQL 18 · Conditional Expressions](https://www.postgresql.org/docs/18/functions-conditional.html) · [MySQL 8.4 · Flow Control Functions](https://dev.mysql.com/doc/refman/8.4/en/flow-control-functions.html)\
 **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-본문에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-**버전** — 네 조건 식 자체는 두 엔진 모두 오래전부터 있다. 이 주제에서 버전에 갈리는 것은 없다.\
+본문에 실린 출력은 **전부 이 두 서버에 실제로 실행해서 받은 것**이다. 지어낸 출력은 없다.\
+**버전** — 네 조건 식 자체는 두 엔진 모두 오래전부터 있다. 이 주제에서 버전에 달라지는 것은 없다.\
 **선행** — [04 NULL 의 3값 논리](../04-null-three-valued-logic/). `CASE` 의 조건이 `UNKNOWN` 이면 어떻게 되는지가 이 주제의 절반이다.

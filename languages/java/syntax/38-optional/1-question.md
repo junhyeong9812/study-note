@@ -96,7 +96,7 @@ m.get("없는키");
 - 이 맵에서 구분해야 하는 상태는 몇 가지인가?
 - 그중 몇 가지가 `Optional` 로 표현되고 몇 가지가 `null` 로 표현되는가?
 
-### 8. `map` 과 `flatMap` 은 어디서 갈리는가 (예측)
+### 8. `map` 과 `flatMap` 은 어디서 달라지는가 (예측)
 
 ```java
 Optional<String> src = Optional.of("씨앗");
@@ -122,7 +122,7 @@ ids.stream().map(Ex::find).flatMap(Optional::stream).toList();
 - 뒤의 것이 더 나은 이유는 무엇인가?
 - 최종 연산 중 `Optional` 을 돌려주는 것들은 무엇이고, 기본형 스트림에서는 무엇이 나오는가?
 
-### 10. 메서드마다 버전이 어떻게 갈리는가 (경계)
+### 10. 메서드마다 버전이 어떻게 달라지는가 (경계)
 
 - `ifPresentOrElse`·`or`·`stream`·`orElseThrow()`·`isEmpty` 는 각각 몇 버전부터인가?
 - 그것을 기억이 아니라 도구로 확인하는 방법 둘은 무엇인가?

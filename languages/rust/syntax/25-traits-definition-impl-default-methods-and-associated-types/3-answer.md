@@ -247,7 +247,7 @@ For more information about this error, try `rustc --explain E0119`.
 
 **왜 그런가**
 
-- ★★★ **갈리는 한 문장** — `` Extract<u32> `` 와 `` Extract<String> `` 은 **서로 다른 트레이트**이고,
+- ★★★ **달라지는 한 문장** — `` Extract<u32> `` 와 `` Extract<String> `` 은 **서로 다른 트레이트**이고,
   연관 타입 판의 두 `impl` 은 **같은 트레이트의 두 구현**이다.
 - 그래서 앞은 통과하고 뒤는 **E0119** `` conflicting implementations of trait `Extract` for type `Ticket` `` 다.
   진단이 `` first implementation here `` 로 **먼저 쓴 쪽을 짚어 준다.**
@@ -618,7 +618,7 @@ sum      Won(123)
 |---|---|
 | `&dyn Greet` 가 **16바이트**인 것 | ★ 타깃·판에 달린 **구현 세부**다 |
 | 진단이 「**dyn compatible**」이라고 쓰는 것 | ★ rustc **1.83** 에서 「object safe」에서 바뀌었다. 더 바뀔 수 있다 |
-| E0283 이냐 E0282 냐 | 후보가 여럿이라 E0283 이었다 — 추론 경로가 갈린다 |
+| E0283 이냐 E0282 냐 | 후보가 여럿이라 E0283 이었다 — 추론 경로가 달라진다 |
 | `help:` 문구와 제안 코드 | 진단 품질 개선으로 자주 바뀌는 자리다 |
 | E0038 이 대는 **이유의 순서** | 진단 생성 순서에 달렸다 |
 

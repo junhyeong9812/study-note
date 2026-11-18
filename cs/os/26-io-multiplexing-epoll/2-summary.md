@@ -294,7 +294,7 @@ cat /proc/sys/fs/epoll/max_user_watches
 
 - **현상**: 이미 닫은 연결 번호로 이벤트가 오고, 그 번호를 재사용한 새 연결을 엉뚱하게 처리한다.
 - **보이는 형태**: 간헐적 요청 뒤섞임, 처리 중 `EBADF`.
-- **원인**: 관심 목록은 open file description이 살아 있는 한 항목을 유지한다. `fork()`한 자식이나 라이브러리의 `dup()`이 복사본을 쥐고 있으면 `close()`로는 빠지지 않는다(epoll(7) Q&A).
+- **원인**: 관심 목록은 open file description이 살아 있는 한 항목을 유지한다. `fork()`한 자식이나 라이브러리의 `dup()`이 복사본을 잡고 있으면 `close()`로는 빠지지 않는다(epoll(7) Q&A).
 - **대처**: `close` 전에 `EPOLL_CTL_DEL`. fd를 만들 때 `O_CLOEXEC`/`SOCK_CLOEXEC`, epfd는 `EPOLL_CLOEXEC`로 exec 누수를 막는다.
 
 ### 5. 여러 워커가 같은 리슨 소켓을 기다림 → thundering herd

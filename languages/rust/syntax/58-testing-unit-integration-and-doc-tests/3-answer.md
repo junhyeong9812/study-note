@@ -119,7 +119,7 @@ places that reach the private fn: 1 / 4
 
 **왜 그런가**
 
-- ★★★ **필터는 자기 자리 하나만** 돌린다 — 12칸 중 같은 것은 셋, **갈린 칸 9**.
+- ★★★ **필터는 자기 자리 하나만** 돌린다 — 12칸 중 같은 것은 셋, **달라진 항목 9**.
 - ★★★ **`ex(built)` 는 필터 없는 `cargo test` 에만** — `examples/` 를 **빌드만** 하고 돌리지 않는다.
 - ★★★ **비공개에 닿는 것은 단위 테스트 하나(`1 / 4`)** — 통합·문서·예제는 **크레이트 밖**이라 `secret()` 이 E0603(private function).
 
@@ -546,8 +546,8 @@ error: test failed, to rerun pass `--test par`
 
 **왜 그런가**
 
-- ★★★ **기본 병렬** — 두 테스트가 동시에 돌아 `a` 가 `b` 의 깃발을 봤다. **`--test-threads=1`** — 이름순으로 `a` 가 **혼자 먼저** 돌아 깃발을 못 봤다(`finished in 2.01s` 근처 — 시간은 흔들리는 칸).
-- ★★ **같은 코드가 실행 방식만으로 통과/실패가 갈렸다** — 테스트끼리 **전역 상태(`static B_STARTED`)** 를 공유했기 때문이다.
+- ★★★ **기본 병렬** — 두 테스트가 동시에 돌아 `a` 가 `b` 의 깃발을 봤다. **`--test-threads=1`** — 이름순으로 `a` 가 **혼자 먼저** 돌아 깃발을 못 봤다(`finished in 2.01s` 근처 — 시간은 실행마다 달라지는 항목).
+- ★★ **같은 코드가 실행 방식만으로 통과/실패가 달라졌다** — 테스트끼리 **전역 상태(`static B_STARTED`)** 를 공유했기 때문이다.
 
 ### 7. ★★ 셋 다 내 크레이트 밖의 별도 크레이트 — rustdoc 은 `extern crate <mycrate>;` 를 끼워 넣는다
 
@@ -646,7 +646,7 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 - ★★ Book 11.2 — 「When you run multiple tests, **by default they run in parallel using threads**」. Go 49 의 `go doc` — `Parallel` 은 「this test is to be run in parallel with (**and only with**) other parallel tests」.
 - ★★ `t.Parallel()` 없는 Go 테스트는 병렬 무리에 끼지 않으므로 6번의 **`--test-threads=1` 쪽**(차례대로)에 가까울 것이다 — ★ **추측이다. 이 문서는 Go 를 돌리지 않았다.**
 
-### 12. ★ 병렬 판의 `ok` 두 줄 순서가 흔들린다(30판 중 1판) — 근거는 순서가 아니라 통과/실패
+### 12. ★ 병렬 판의 `ok` 두 줄 순서가 실행마다 달라진다(30판 중 1판) — 근거는 순서가 아니라 통과/실패
 
 - ★★ `test b_sets_flag ... ok` 가 먼저인 판이 29, `a_waits_for_b` 가 먼저인 판이 1 이었다 — **완료 순서는 약속이 없다.** 그래서 줄을 **정렬해** 실어 블록을 결정적으로 만들었다(규칙 11).
 - ★★★ **결론의 근거는 「서로 기다리는 테스트가 끝나나」** — 병렬이면 통과, 차례면 실패. **순서 대신 결과로 물었다**(제5의 상태).
@@ -656,13 +656,13 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 | 무엇을 | 어떻게 | 몇 번 | 결과 |
 |---|---|---|---|
 | 이 문서·서머리의 **모든 블록** | `capture.sh` — 블록마다 명령을 배너에 | 배치 내내 + **제출 전 전수 재실행** | `normalize-shaky.py` 기본 규칙 넷(시간 · 스레드 id) · **고칠 것 0** |
-| ★★★ **배치 격자** | `r58_grid.sh` — `cargo test` × 4 명령 · 비공개 탐침 4 | 8 | **`9 / 12`** · **`1 / 4`** |
+| ★★★ **배치 격자** | `r58_grid.sh` — `cargo test` × 4 명령 · 비공개 probe 4 | 8 | **`9 / 12`** · **`1 / 4`** |
 | ★★★ **문서 테스트 실패** | `r58_docfail` | 1 | `FAILED` · `101` |
 | 예제 표시 | `r58_docattrs` | 1(6예제) | ok 4 · FAILED 1 · ignored 1 |
 | `should_panic`·`ignore` | `r58_attrs` × (기본 · `--ignored`) | 2 | 3·1·1 · `1 passed` |
 | 바이너리 크레이트 | `r58_bin` · `r58_split` | 2 | **E0433** · 통과(실행 파일 4) |
 | ★★ **병렬** | `r58_par` × (기본 · `--test-threads=1`) + 예행 30판 | 2 + 30 | 통과 · **실패** · 순서 29 대 1 |
-| **안 던진 것** — 앞 단계 실패 시 문서 단계 · `tests/common` · `--no-fail-fast` · Go 판 · 실행 시간 | — | 0 | ★ 「안 던졌다」로 표시했다 |
+| **실행하지 않은 것** — 앞 단계 실패 시 문서 단계 · `tests/common` · `--no-fail-fast` · Go 판 · 실행 시간 | — | 0 | ★ 「실행하지 않았다」로 표시했다 |
 
 **구현 의존 항목**(버전·환경이 바뀌면 **다시 찍어야 하는** 것).
 

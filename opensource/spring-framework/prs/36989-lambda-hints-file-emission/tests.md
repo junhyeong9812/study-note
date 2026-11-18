@@ -60,7 +60,7 @@ void lambdaConfig() throws Exception {
 - **fix 후**: `hints.reflection().lambdaHints().findAny().isPresent()` 한 줄이 조건에 더해져 파일이 생성되고, `RuntimeHintsWriter`는 원래부터 lambda 힌트를 직렬화할 줄 알았으므로 내용도 기대와 일치한다.\
   이 "직렬화기는 이미 할 줄 알았는데 게이트가 막고 있었다"는 구조가 결함의 성격을 그대로 보여준다.
 
-이 테스트가 겨누는 자리를 흐름으로 펼치면 한 칸에서만 결과가 갈린다.
+이 테스트가 겨누는 자리를 흐름으로 펼치면 한 칸에서만 결과가 달라진다.
 
 ```text
   lambdaConfig 가 만드는 입력
@@ -126,7 +126,7 @@ static Path tempDir;
 어느 쪽이든 red라는 결론은 같지만, 예외 종류까지 하나로 단정하려면 실행 순서를 근거로 확보해야 한다.\
 PR 본문이 말하는 `NoSuchFileException`은 단독 실행 기준의 관측이다.
 
-실행 맥락에 따라 갈리는 두 갈래를 그리면 이렇다.
+실행 맥락에 따라 달라지는 두 갈래를 그리면 이렇다.
 
 ```text
   assertEquals(expectedString)   호출

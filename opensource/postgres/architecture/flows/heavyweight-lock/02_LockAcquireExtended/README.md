@@ -492,7 +492,7 @@ fast-path 와 강한 잠금 준비다. 약한 잠금은 내 PGPROC 슬롯에 적
  L1268 LOCKACQUIRE_OK
 ```
 
-세 갈래가 어떤 잠금에서 갈리는지를 모드로 세우면 아래와 같다. 갈래는 모드와 LOCKTAG 종류만으로 정해지고, 상대가 무엇을 쥐었는지는 공유 해시 구간에 들어가서야 본다.
+세 갈래가 어떤 잠금에서 달라지는지를 모드로 세우면 아래와 같다. 갈래는 모드와 LOCKTAG 종류만으로 정해지고, 상대가 무엇을 쥐었는지는 공유 해시 구간에 들어가서야 본다.
 
 ```text
  요청 (LOCKTAG_RELATION, 이 DB 의 테이블이라고 할 때)
@@ -543,4 +543,4 @@ fast-path 와 강한 잠금 준비다. 약한 잠금은 내 PGPROC 슬롯에 적
 
 ## 다루지 않는 것
 
-hot standby 로 잠금을 넘기는 `LogAccessExclusiveLockPrepare`·`LogAccessExclusiveLock`(`storage/ipc/standby.c`), `logLockFailure` 로그의 내용(`GetLockHoldersAndWaiters`), 교착 메시지를 만드는 `DeadLockReport`(deadlock.c L1075), relation extension lock 을 쥔 채 다른 잠금을 못 잡게 하는 단언(L953)은 판정 분기에서 이름만 짚었다.
+hot standby 로 잠금을 넘기는 `LogAccessExclusiveLockPrepare`·`LogAccessExclusiveLock`(`storage/ipc/standby.c`), `logLockFailure` 로그의 내용(`GetLockHoldersAndWaiters`), 교착 메시지를 만드는 `DeadLockReport`(deadlock.c L1075), relation extension lock 을 잡은 채 다른 잠금을 못 잡게 하는 단언(L953)은 판정 분기에서 이름만 짚었다.

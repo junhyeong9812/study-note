@@ -471,7 +471,7 @@ sleep(0.01): yielded [] ; RuntimeError | no running event loop
 
 **왜 그런가**
 
-* ★★ **`sleep(0)` 은 「한 번 양보」라는 팻말 하나**(이 판 소스로는 `@types.coroutine` 이 붙은 맨 `yield`) — 누가 받든 끝까지 간다.
+* ★★ **`sleep(0)` 은 「한 번 양보」라는 팻말 하나**(이 버전 소스로는 `@types.coroutine` 이 붙은 맨 `yield`) — 누가 받든 끝까지 간다.
 * ★★★ **`sleep(0.01)` 은 「0.01 뒤에 다시 불러 줄 쪽」이 필요해 도는 루프를 찾는다** — 없으니 `RuntimeError`. 그 「다시 불러 주는 쪽」이 루프다.
 * ★ 「루프가 코루틴을 멈춘다」가 틀린 까닭 — **코루틴이 스스로** `await` 에서 멈춘다. 4번의 손 드라이버는 루프 없이 멈추고 이었다.
 
@@ -551,7 +551,7 @@ after close, state              : CORO_CLOSED
 **왜 그런가**
 
 * ★★ 문서 — *"Coroutines also have the methods listed below, which are analogous to those of generators … However, unlike generators, coroutines do not directly support iteration."* 손잡이는 같고 **이터레이터가 아니다.**
-* ★ 「특수한 제너레이터」는 **구현의 계보**로 읽는다 — 이 판의 타입은 별개다.
+* ★ 「특수한 제너레이터」는 **구현의 계보**로 읽는다 — 이 버전의 타입은 별개다.
 
 ### 9. `await 42`·`await f` 는 실행 중 `TypeError` · `def` 안·모듈 맨 위의 `await` 는 컴파일 때 `SyntaxError` · `async def` + `yield` 는 비동기 제너레이터, `yield from`·값 있는 `return` 은 `SyntaxError`
 
@@ -786,7 +786,7 @@ rows that differ between the two versions: 0 / 8
 **왜 그런가**
 
 * ★★★ 문서 — *"This function cannot be called when another asyncio event loop is running in the same thread."* **`inner()` 는 인자라서 먼저 만들어졌고** 거절당해 안 돈 채 버려졌다 — 1번과 같은 경고.
-* ★★ **`0 / 8` 은 두 판의 관찰**이다 — 예외 **문구**와 경고 **문구**는 CPython 의 것이라 판이 오르면 바뀔 수 있다. 근거로 쓸 것은 **타입**과 「몸통이 돌았나」다.
+* ★★ **`0 / 8` 은 두 버전의 관찰**이다 — 예외 **문구**와 경고 **문구**는 CPython 의 것이라 버전이 오르면 바뀔 수 있다. 근거로 쓸 것은 **타입**과 「몸통이 돌았나」다.
 * ★ `nested_run` 행은 `gc.collect()` 를 넣어야 경고가 그 행 안에 잡혔다 — 트레이스백이 프레임을 붙들어 코루틴이 늦게 사라진다(2번의 순환과 같은 꼴).
 
 ### 11. 언어 레퍼런스 · 언어 레퍼런스 · `asyncio` 문서 · CPython 구현 · CPython 구현(참조 계수) — `asyncio-dev` 는 `asyncio` 가 낸다고 적지만 경고는 인터프리터가 낸다
@@ -794,7 +794,7 @@ rows that differ between the two versions: 0 / 8
 * ★★ **「부르면 코루틴 객체」**(용어집) · **「두 번 `await` 하면 `RuntimeError`」**(데이터 모델, 3.5.2) — 언어 레퍼런스.
 * ★★ **「`asyncio.run` 은 끝에 루프를 닫는다」** — `asyncio` 문서.
 * ★★★ **「never awaited 경고」와 「그 시점」** — CPython. 언어는 *"automatically closed … when they are about to be destroyed"* 까지만 말하고, **언제 사라지나**(참조 계수 · 순환 수집)는 구현이다.
-* ★★ `asyncio-dev` 의 *"asyncio will emit a `RuntimeWarning`"* 은 `asyncio` 를 쓰는 사람에게 한 말이다 — 1번 파일은 **`asyncio` 를 안 가져왔는데** 경고가 났다. 이 판에서 그 경고는 `warnings` 모듈의 `_warn_unawaited_coroutine` 을 거쳐 나온다(`-W error` 판의 버려진 덩어리에 그 이름이 찍혔다 — 경로가 박혀 싣지 않았다).
+* ★★ `asyncio-dev` 의 *"asyncio will emit a `RuntimeWarning`"* 은 `asyncio` 를 쓰는 사람에게 한 말이다 — 1번 파일은 **`asyncio` 를 안 가져왔는데** 경고가 났다. 이 버전에서 그 경고는 `warnings` 모듈의 `_warn_unawaited_coroutine` 을 거쳐 나온다(`-W error` 판의 버려진 덩어리에 그 이름이 찍혔다 — 경로가 박혀 싣지 않았다).
 
 ### 12. 제너레이터는 조용히 `StopIteration` · 코루틴은 `RuntimeError` · 첫 `send` 문구는 `generator`/`coroutine` 한 낱말만 다르다 / JS 의 `f()` 는 이미 일을 한다 — 파이썬으로 옮기면 그 일이 통째로 사라진다, 겹치기는 52번
 
@@ -818,7 +818,7 @@ rows that differ between the two versions: 0 / 8
 | 차례 | `python3 - <e51_sequence.py` | 3 | 두 줄 |
 | 판 격자 | `cd e51_ver && bash e51_ver.sh`(`python3.11` · `python3`) | 3 | **0 / 8** |
 
-**구현 의존 항목** — 판이 오르면 다시 돌려야 하는 것.
+**구현 의존 항목** — 버전이 오르면 다시 돌려야 하는 것.
 
 | 항목 | 왜 |
 |---|---|
@@ -827,8 +827,8 @@ rows that differ between the two versions: 0 / 8
 | `sleep(0)` 이 내미는 팻말 | `asyncio` 의 내부(`__sleep0`) |
 | node 의 `exit 1` | node 의 기본값(`--unhandled-rejections`) |
 
-★ **안 흔들리는 칸** — 로그 줄의 **순서와 개수** · 예외 **타입** · 상태 이름 · 경고가 기록된 **줄 번호** · 판 격자 **「0 / 8」** · `(exit N)`.
-★★ **이 주제가 한 번도 안 잰 것** — **시간**(부적용) · **3.13·3.14**(판 없음 — 못 잰 것) · 디버그 모드와 `tracemalloc` 트레이스백(절대 경로 — 안 실음).
+★ **달라지지 않는 항목** — 로그 줄의 **순서와 개수** · 예외 **타입** · 상태 이름 · 경고가 기록된 **줄 번호** · 판 격자 **「0 / 8」** · `(exit N)`.
+★★ **이 주제가 한 번도 안 잰 것** — **시간**(해당 없음) · **3.13·3.14**(판 없음 — 못 잰 것) · 디버그 모드와 `tracemalloc` 트레이스백(절대 경로 — 안 실음).
 
 ## 실행 환경
 

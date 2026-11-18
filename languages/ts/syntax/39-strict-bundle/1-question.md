@@ -28,9 +28,9 @@ for s in true false; do
 done
 ```
 
-- 세 판은 `"strict": true` 를 각각 어떤 키들로 돌려주는가? `"strict": false` 는?
+- 세 버전은 `"strict": true` 를 각각 어떤 키들로 돌려주는가? `"strict": false` 는?
 
-### 2. 탐침 아홉과 「키 없음」 (예측)
+### 2. probe 아홉과 「키 없음」 (예측)
 
 ```ts
 // pr39a.ts
@@ -87,12 +87,12 @@ export {};
 var package = 1;
 ```
 
-- 탐침마다 **하위 플래그 하나**에만 걸리게 썼다. 각각 어느 플래그이고, `"strict": true` 에서 어느 코드를 내는가?
-- 칸마다 `{ "compilerOptions": { "target": "es2022", "noEmit": true }, "files": [탐침] }` — **`strict` 키가 없는** 설정으로 던지면 7.0.2 · 5.9.3 · 4.9.5 는 각각 몇 탐침에서 진단을 내는가?
+- probe마다 **하위 플래그 하나**에만 걸리게 썼다. 각각 어느 플래그이고, `"strict": true` 에서 어느 코드를 내는가?
+- 칸마다 `{ "compilerOptions": { "target": "es2022", "noEmit": true }, "files": [탐침] }` — **`strict` 키가 없는** 설정으로 던지면 7.0.2 · 5.9.3 · 4.9.5 는 각각 몇 probe에서 진단을 내는가?
 
 ### 3. `"strict": false` 와 「`true` + 하위 하나만 `false`」 (예측)
 
-- 2번의 탐침 아홉을 `"strict": false` 로, 그리고 `"strict": true` + **그 탐침의 하위 플래그 하나만 `false`** 로 7.0.2 에 던지면 칸마다 무엇이 나는가? 4.9.5 에서 달라지는 칸은?
+- 2번의 probe 아홉을 `"strict": false` 로, 그리고 `"strict": true` + **그 probe의 하위 플래그 하나만 `false`** 로 7.0.2 에 던지면 칸마다 무엇이 나는가? 4.9.5 에서 달라지는 항목은?
 
 ### 4. 설정 없이 두 판 (예측)
 
@@ -149,7 +149,7 @@ export { sum, format, describe, current, pending, Account };
 
 ### 7. 도움말의 기본값 문구 (왜)
 
-- 「`strict` 가 무엇을 켜나」는 `tsc --help --all` 의 기본값 문구로도 물을 수 있다. 그 문구를 결론의 근거로 쓰지 않고 2번 같은 탐침으로 다시 확인하는 까닭은 무엇인가? 4.9.5 의 `useUnknownInCatchVariables` 로 답하라.
+- 「`strict` 가 무엇을 켜나」는 `tsc --help --all` 의 기본값 문구로도 물을 수 있다. 그 문구를 결론의 근거로 쓰지 않고 2번 같은 probe로 다시 확인하는 까닭은 무엇인가? 4.9.5 의 `useUnknownInCatchVariables` 로 답하라.
 
 ### 8. 레퍼런스의 Enables 목록 (경계)
 
@@ -168,11 +168,11 @@ export { sum, format, describe, current, pending, Account };
 ## 실행 환경
 
 ★★ **39 는 02 에서 온다** — [**02번 주제**](../02-type-checking-vs-emit/)가 7.0 의 기본값 변화를 머리말에 적었다.
-여기서는 `strict` 한 줄이 **무엇을 켜고, 판마다 그 기본값이 어떻게 다른지**를 탐침으로 가른다.
+여기서는 `strict` 한 줄이 **무엇을 켜고, 판마다 그 기본값이 어떻게 다른지**를 probe로 가른다.
 실행 환경: `tsc` **7.0.2** · `node` **v18.19.1**. 판 비교에는 이 머신의 다른 프로젝트에 깔린 **`tsc` 5.9.3 · 4.9.5** 를 **읽기만** 해서 썼다(환경변수 `TSC_OLD`·`TSC_49`).
 
 ★ 소스 펜스 첫 줄 `// 파일명`·`# 파일명` 은 대조용 배너다 — **진단의 행 번호는 그 줄을 뺀 기준**이다.
-★★ 설정 실험은 **칸마다 디렉토리와 `tsconfig.json` 을 따로** 만들어 `-p` 로 던졌다.
+★★ 설정 실험은 **칸마다 디렉토리와 `tsconfig.json` 을 따로** 만들어 `-p` 로 실행했다.
 
 ## 복습 기록
 

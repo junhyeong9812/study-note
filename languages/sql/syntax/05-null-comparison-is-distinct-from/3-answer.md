@@ -311,7 +311,7 @@ NOT IN 이 찾는 것    = 짝이 없는 행      -> 전부 UNKNOWN      -> 전�
 
 ---
 
-### 8. 탐침 쪽이 `NULL` 일 때 — `IN` + `NOT IN` 이 4가 되는가
+### 8. probe 쪽이 `NULL` 일 때 — `IN` + `NOT IN` 이 4가 되는가
 
 **출력**
 
@@ -339,7 +339,7 @@ NOT IN 이 찾는 것    = 짝이 없는 행      -> 전부 UNKNOWN      -> 전�
 
 **3 + 0 = 3 ≠ 4 다.** `dan` 이 어느 쪽에도 없다.
 
-**왜 그런가** — 이번엔 목록이 깨끗하다(`10, 20, 30` 에 `NULL` 없음). **왼쪽 탐침 값**이 `NULL` 이다.
+**왜 그런가** — 이번엔 목록이 깨끗하다(`10, 20, 30` 에 `NULL` 없음). **왼쪽 probe 값**이 `NULL` 이다.
 
 ```text
 dan.dept_id = NULL
@@ -354,7 +354,7 @@ dan.dept_id = NULL
     = UNKNOWN                              -> (B)에서도 탈락
 ```
 
-> **탐침 값(probe value)** — `IN`/`NOT IN` 에서 목록과 견주는 왼쪽 값.\
+> **probe 값(probe value)** — `IN`/`NOT IN` 에서 목록과 견주는 왼쪽 값.\
 > 예: `dept_id NOT IN (10,20,30)` 의 `dept_id`. 이쪽이 `NULL` 이면 그 행은 양쪽 결과에서 다 빠진다.
 
 **정리하면 위험한 자리가 둘이다.**
@@ -362,7 +362,7 @@ dan.dept_id = NULL
 | `NULL` 이 어디 있나 | `IN` | `NOT IN` |
 |---|---|---|
 | 목록(서브질의 결과)에 | 영향 없음 | **전멸** |
-| 탐침 값(왼쪽 열)에 | 그 행만 빠짐 | 그 행만 빠짐 |
+| probe 값(왼쪽 열)에 | 그 행만 빠짐 | 그 행만 빠짐 |
 
 **양쪽 다 `NOT NULL` 일 때만** `NOT IN` 이 `IN` 의 여집합이 된다.
 
@@ -564,7 +564,7 @@ NULL = NULL  ->  UNKNOWN          NULL 과 NULL  ->  구별할 수 없다  ->  �
 | 이식 형태와 그 한계 (5번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | `SELECT` 에서 `NULL` 이 남는 것 확인 |
 | ★ `NOT IN` + `NULL` (6번) | PG 18.6 · MySQL 8.4.10 | 각 3회 | 행별 진릿값 표 + 0행 |
 | `IN` 대조 (7번) | PG 18.6 · MySQL 8.4.10 | 각 2회 | |
-| 탐침 쪽 `NULL` (8번) | PG 18.6 · MySQL 8.4.10 | 각 2회 | **3 + 0 ≠ 4** |
+| probe 쪽 `NULL` (8번) | PG 18.6 · MySQL 8.4.10 | 각 2회 | **3 + 0 ≠ 4** |
 | 처방 셋 (9번) | PG 18.6 · MySQL 8.4.10 | 각 2회 | `NOT EXISTS` · `IS NOT NULL` 필터 |
 | `ISNULL` 방언 (10번) | PG 18.6 · MySQL 8.4.10 | 각 2회 | **양쪽 에러 메시지가 근거** |
 | 인덱스 사용 (11번) | PG 18.6 · MySQL 8.4.10 | 각 3~4회 | **구현 의존** — 10만 행 임시 표, 롤백·삭제 확인 |
@@ -576,10 +576,10 @@ NULL = NULL  ->  UNKNOWN          NULL 과 NULL  ->  구별할 수 없다  ->  �
 **언어 보장 항목** — 1~10·12번. `NULL` 비교가 `UNKNOWN` 인 것, `IS NULL` 이 확실한 답을 내는 것,\
 `NOT IN` 목록에 `NULL` 이 있으면 `TRUE` 가 안 나오는 것, `EXISTS` 에 `UNKNOWN` 이 없는 것은 **두 엔진에서 같았다.**
 
-**버전** — 이 주제에서 버전에 갈리는 것은 없다. 다음 버전에서는 **11번(계획)만** 다시 돌리면 된다.
+**버전** — 이 주제에서 버전에 달라지는 것은 없다. 다음 버전에서는 **11번(계획)만** 다시 돌리면 된다.
 
 ## 실행 환경
 
 근거는 **실행 결과**다 — 본문의 출력은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-2026-09-21 에 실제로 던져 받은 것이다. 문서를 보고 적은 출력은 없다.\
+2026-09-21 에 실제로 실행해 받은 것이다. 문서를 보고 적은 출력은 없다.\
 문서 근거는 [PG 18 Comparison Operators](https://www.postgresql.org/docs/18/functions-comparison.html) · [MySQL 8.4 Comparison Operators](https://dev.mysql.com/doc/refman/8.4/en/comparison-operators.html).

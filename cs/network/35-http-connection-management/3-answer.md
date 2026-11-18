@@ -74,9 +74,9 @@
 ### 7. HTTP keep-alive vs TCP keepalive
 
 - HTTP keep-alive(지속 연결): 응답 뒤에도 연결을 닫지 않고 다음 요청에 재사용하는 것이다. 목적은 **재사용**이다.
-- TCP keepalive: 데이터가 없는 연결에 커널이 주기적으로 탐침 패킷을 보내 상대가 살아 있는지 확인하는 기능이다. 목적은 **생존 확인**이다. 21번에서 다룬다.
+- TCP keepalive: 데이터가 없는 연결에 커널이 주기적으로 probe 패킷을 보내 상대가 살아 있는지 확인하는 기능이다. 목적은 **생존 확인**이다. 21번에서 다룬다.
 - 둘은 독립이다. HTTP 지속 연결이어도 TCP keepalive가 꺼져 있을 수 있다.
-- 혼동 예: Node `http.Agent`의 `keepAliveMsecs`는 TCP keepalive 탐침의 초기 지연이다. `keepAlive: true`는 HTTP 재사용을 켠다(Node 문서).
+- 혼동 예: Node `http.Agent`의 `keepAliveMsecs`는 TCP keepalive probe의 초기 지연이다. `keepAlive: true`는 HTTP 재사용을 켠다(Node 문서).
 
 ### 8. LIFO vs FIFO
 

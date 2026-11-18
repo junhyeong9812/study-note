@@ -202,7 +202,7 @@ permit을 **획득하는 조건**과 **반납하는 조건**이 서로 달랐다
 
 모든 실행은 결국 deprecated 오버로드 `execute(Runnable, long)`으로 모인다.\
 `execute(Runnable)`과 `submit(...)`도 내부적으로 이 메서드를 `TIMEOUT_INDEFINITE`로 호출한다.\
-이 메서드가 세 갈래로 갈린다.
+이 메서드가 세 갈래로 나뉜다.
 
 > **deprecated 오버로드** — 더 이상 권장되지 않지만 호환을 위해 남아 있는 메서드 변형.\
 > 예: `execute(Runnable, long)`은 deprecated지만 `execute(Runnable)`이 내부적으로 그것을 부르기 때문에 실행 경로로는 여전히 살아 있다.
@@ -392,7 +392,7 @@ execute(task, TIMEOUT_IMMEDIATE) 를 3번
 immediate 태스크를 던질 때마다 카운트는 더 내려가고, 설정한 `concurrencyLimit`과 실제 동시성의 괴리는 계속 벌어진다.\
 아무 로그도, 아무 예외도 남지 않는다.
 
-> **무음 실패(silent failure)** — 잘못된 동작이 예외·로그 없이 정상처럼 흘러가는 실패.\
+> **조용한 실패(silent failure)** — 잘못된 동작이 예외·로그 없이 정상처럼 흘러가는 실패.\
 > 예: 한도 2가 실제로는 3, 4를 통과시키는데도 아무 신호가 없으니 운영 중에는 "그냥 좀 바쁘다"로만 보인다.
 
 이 경로에 도달하려면 deprecated 오버로드 `execute(Runnable, long)`을 직접 써야 한다는 점은 짚어 둘 만하다.\
@@ -407,7 +407,7 @@ immediate 태스크를 던질 때마다 카운트는 더 내려가고, 설정한
 따라서 `finally`는 실행되지 않고, `afterAccess()`도 호출되지 않는다.\
 획득한 permit이 그대로 사라진다.
 
-한도 1인 executor에서 이 일이 한 번만 일어나도 결말이 이렇게 갈린다.
+한도 1인 executor에서 이 일이 한 번만 일어나도 결말이 이렇게 달라진다.
 
 ```text
 setConcurrencyLimit(1), 태스크 1건 제출 후 close()
@@ -434,7 +434,7 @@ setConcurrencyLimit(1), 태스크 1건 제출 후 close()
 종료 시점 경합이라는, 애플리케이션 셧다운마다 실제로 벌어지는 상황이다.
 
 > **경합 조건(race condition)** — 두 사건의 도착 순서에 따라 결과가 달라지는 상황.\
-> 예: 여기서는 "태스크가 새 스레드에 도달하는 시점"과 "`close()`가 취소 플래그를 세우는 시점" 중 무엇이 먼저냐로 permit이 새는지 아닌지가 갈린다.
+> 예: 여기서는 "태스크가 새 스레드에 도달하는 시점"과 "`close()`가 취소 플래그를 세우는 시점" 중 무엇이 먼저냐로 permit이 새는지 아닌지가 달라진다.
 
 두 시나리오를 한 문장으로 묶으면 이렇다.\
 **permit 획득은 `execute`에서 조건부로 일어나는데, 반납은 `run()`에서 무조건 일어나면서 동시에 예외로 건너뛸 수도 있었다.**

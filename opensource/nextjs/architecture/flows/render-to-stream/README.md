@@ -89,7 +89,7 @@ async function renderToStream(
 ```
 
 1. [준비와 에러 핸들러](01_setup/README.md) — 스크립트·폴리필과 에러를 담는 그릇.
-2. [RSC 페이로드](02_rsc/README.md) — 세 갈래로 갈리는 첫 번째 렌더.
+2. [RSC 페이로드](02_rsc/README.md) — 세 갈래로 나뉘는 첫 번째 렌더.
 3. [HTML](03_html/README.md) — 두 번째 렌더와 PPR 재개.
 4. [에러 화면 다시 렌더하기](04_error-recovery/README.md) — catch 280줄.
 

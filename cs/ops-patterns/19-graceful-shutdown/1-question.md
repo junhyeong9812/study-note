@@ -8,7 +8,7 @@
 
 ### A. 문제 (AbruptServer · GracefulServer 의 TODO)
 
-1. TODO 1 — AbruptServer.stop (기준선: 기다리면 안 된다)
+1. TODO 1 — AbruptServer.stop (베이스라인: 기다리면 안 된다)
 
 ```java
 // TODO 1: 즉시 멈춘다. **기다리지 않는다.**

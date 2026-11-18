@@ -44,7 +44,7 @@ int f(void) { return 42; }
 - ★★★ `s34a.c` 를 **gcc-12 · gcc 13 · clang 18** × **`-std=c17` · `-std=c2x`**(`-Wall -Wextra -pedantic -c`)로 컴파일하면 칸마다 `cc exit` 는?
 - ★★ `-std=c17` 에서 **gcc 는 경고를 몇 개** 내는가? clang 은?
 - ★★ gcc 13 의 `-std=c2x` 진단은 `f` 의 타입을 **무엇이라고** 적는가?
-- ★★ `s34v.c` 는 판에 따라 갈리는가?
+- ★★ `s34v.c` 는 판에 따라 달라지는가?
 - ★ gcc-12 의 `-std=c2x` 를 **`-pedantic-errors`** 로 올리면?
 
 ### 2. 옛(K&R) 정의 (예측) ★★★
@@ -193,7 +193,7 @@ double via_p(float v)  { return take_p(v); }
 **환경** — gcc 13.3.0 · **gcc-12 12.4.0** · clang 18.1.3 · x86-64 Linux · 기본 `-Wall -Wextra -pedantic`. C23 은 **`-std=c2x`** 로 부른다.
 
 ③ **선언 없이 부르기**가 판마다 무엇이 되나.
-★★★ **본체 창은 판 격자의 `cc exit`** — 1·2·4번은 **칸마다 `exit` 를** 적어야 답이다.
+★★★ **핵심 창은 판 격자의 `cc exit`** — 1·2·4번은 **칸마다 `exit` 를** 적어야 답이다.
 ★★ **「경고냐 에러냐」를 가르는 것은 컴파일러 · 판 · 강도(`-pedantic` / `-pedantic-errors`) 셋**이다.
 선행 — [01번 형제](../01-declaration-syntax-and-reading/).
 

@@ -246,7 +246,7 @@ final class RoutingDiscount implements DiscountPolicy {     // 퍼사드(branch 
 - 현상: 섀도를 켜자 p99 지연이 오르고 새 서비스가 과부하가 된다.
 - 보이는 형태: 요청 경로의 지연 = 구 + 신. 새 서비스 오류율은 사용자에게 안 보이지만 비교 지표의 "후보 예외"가 급증한다.
 - 원인: 동기 섀도에 표본 제한이 없다. 후보 타임아웃을 막지 않는다(Scientist README의 경고와 같은 지점).
-- 대처: 섀도는 비동기·표본 비율(예시: 1%)로 시작한다. 후보 호출에 별도 타임아웃과 격벽을 둔다([reliability/28-bulkhead](../../reliability/28-bulkhead/2-summary.md)).
+- 대처: 섀도는 비동기·표본 비율(예시: 1%)로 시작한다. 후보 호출에 별도 타임아웃과 벌크헤드를 둔다([reliability/28-bulkhead](../../reliability/28-bulkhead/2-summary.md)).
 
 ## 핵심 문장
 

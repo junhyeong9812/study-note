@@ -78,7 +78,7 @@
 ```
 
 - 확인(`done == 0`)과 잠들기 사이에 틈이 있으면 신호가 그 틈으로 빠진다.
-- 그래서 **확인과 wait를 같은 락 안에서** 하고, 상태 변경과 signal도 그 락을 쥐고 한다. wait가 락을 원자적으로 풀며 잠들기 때문에 틈이 사라진다.
+- 그래서 **확인과 wait를 같은 락 안에서** 하고, 상태 변경과 signal도 그 락을 잡고 한다. wait가 락을 원자적으로 풀며 잠들기 때문에 틈이 사라진다.
 - 16번 futex의 "값 비교 + 잠들기"가 원자적인 이유와 같은 문제다.
 
 로컬 재현(예시, 리눅스 7.0): 상태 변수 없이 signal을 먼저 보내고 `pthread_cond_timedwait`로 2초 기다렸더니 `ETIMEDOUT`이었다. 시간 제한이 없었다면 영원히 잤다.
@@ -222,7 +222,7 @@ while (!ready && rc != ETIMEDOUT)
 pthread_mutex_unlock(&m);
 ```
 
-- `pthread_cond_timedwait`의 시계는 조건 변수 속성에서 오고, 설정하지 않으면 `CLOCK_REALTIME`이다(POSIX). 벽시계 조정에 흔들리지 않으려면 `pthread_condattr_setclock(CLOCK_MONOTONIC)`으로 만들거나 `pthread_cond_clockwait`를 쓴다(POSIX.1-2024).
+- `pthread_cond_timedwait`의 시계는 조건 변수 속성에서 오고, 설정하지 않으면 `CLOCK_REALTIME`이다(POSIX). 벽시계 조정에 달라지지 않으려면 `pthread_condattr_setclock(CLOCK_MONOTONIC)`으로 만들거나 `pthread_cond_clockwait`를 쓴다(POSIX.1-2024).
 
 ### 4. 진단 명령
 

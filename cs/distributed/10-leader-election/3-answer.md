@@ -53,7 +53,7 @@ t= 6433ms A 깨어남: 믿음=나는 리더, A lease TTL=-1 (−1 = 만료), 실
   - 보유자 시계가 느리게 간다(속도 차이, drift).
   - 보유자가 GC·VM 정지로 멈춰 자기 시계를 보지 못한다.
 - 벽시계로 재면 NTP 조정·수동 변경으로 시각이 뛸 수 있으니 단조 시계로 잰다. 그래도 위 두 경우는 남는다.
-- client-go `leaderelection` 주석: fencing을 보장하지 않는다. 임의의 시계 어긋남(skew)에는 견디지만 임의의 skew rate에는 견디지 못하고, 견딜 수 있는 속도 비율은 `LeaseDuration`/`RenewDeadline` 비로 설정한다.
+- client-go `leaderelection` 주석: fencing을 보장하지 않는다. 임의의 클럭 스큐(skew)에는 견디지만 임의의 skew rate에는 견디지 못하고, 견딜 수 있는 속도 비율은 `LeaseDuration`/`RenewDeadline` 비로 설정한다.
 
 ### 7. 리더 교체가 잦아졌을 때
 

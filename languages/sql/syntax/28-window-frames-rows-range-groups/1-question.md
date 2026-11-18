@@ -77,7 +77,7 @@ FROM emp8 WHERE salary IS NOT NULL;
 
 ### 8. `EXCLUDE` 세 형태 (경계)
 
-- `EXCLUDE CURRENT ROW`·`EXCLUDE GROUP`·`EXCLUDE TIES` 는 각각 무엇을 빼고, `ann` 에서 값이 어떻게 갈리는가?
+- `EXCLUDE CURRENT ROW`·`EXCLUDE GROUP`·`EXCLUDE TIES` 는 각각 무엇을 빼고, `ann` 에서 값이 어떻게 달라지는가?
 
 ### 9. ★ 오프셋 `RANGE` 의 제약 (예측)
 

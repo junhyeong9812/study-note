@@ -85,7 +85,7 @@ RootWebArea    이름='암묵 역할이 DOM 에 보이나'
 - ★★★ **접근성 트리에서는 셋이 전부 `navigation` 으로 같다.** 암묵 역할과 명시 역할이 **거기서는 구분되지 않는다.**
 - ★ **그래서 이 주제는 새 창이 필요했다.** 창 ②로는 한 글자도 안 보인다.
 
-### 2. 여덟이 각각 랜드마크가 되고, 중첩되면 셋이 갈린다
+### 2. 여덟이 각각 랜드마크가 되고, 중첩되면 셋이 달라진다
 
 **출력**
 
@@ -151,7 +151,7 @@ RootWebArea    이름='일곱 구획 요소와 search'
 
 - ★★★ **`<article>` 안의 `<header>`/`<footer>` 는 `sectionheader`/`sectionfooter`** 다 — **랜드마크가 아니다.** `<section>` 안의 것도 같다.
 - ★★★ **`<article>` 안의 `<aside>` 는 트리에 아예 안 나온다.** `<main>` 안의 `<aside>` 는 **`complementary` 로 살아남았다.**
-- **갈리는 이유** — `<article>` 은 **구획 콘텐츠**이고 `<main>` 은 **아니기** 때문이다. 이름 없는 `<aside>` 는 **구획 콘텐츠 안에서만** 역할을 잃는다. 그 분류는 [05번 주제](../05-content-categories-and-models/2-summary.md)가 정본이다.
+- **달라지는 이유** — `<article>` 은 **구획 콘텐츠**이고 `<main>` 은 **아니기** 때문이다. 이름 없는 `<aside>` 는 **구획 콘텐츠 안에서만** 역할을 잃는다. 그 분류는 [05번 주제](../05-content-categories-and-models/2-summary.md)가 정본이다.
 - **트리에 안 나오는 것** — `<article>` 안의 `<aside>` **1개**. (그리고 `<main>` 안의 `<section>` 은 이름이 없어 `region` 이 안 됐고, 그 안의 `sectionheader`/`sectionfooter` 만 남았다.)
 - **`<nav>` 는 어디 있든 `navigation`** 이다.
 
@@ -247,7 +247,7 @@ window.__끝 = function () {
 
 - ★★★ **`HTMLUnknownElement` 는 `<zzznope>` 하나뿐**이다.
 - **`<search>` 와 `<my-thing>` 의 `constructor.name` 이 둘 다 `HTMLElement` 로 같다.** 대시가 있는 이름은 **나중에 정의될 수 있는 커스텀 요소 후보**라 파서가 미리 대우해 주기 때문이다([10번 주제](../10-template-slot-shadow-dom/2-summary.md)의 (6)).
-- ★★★ **그래서 `constructor.name` 으로는 못 증명한다.** 갈라 주는 것은 **`display` 다** — `<search>` 는 `block`, `<my-thing>`·`<zzznope>` 는 `inline`. **UA 스타일시트에 규칙이 있다는 것**이 「이 판이 이 요소를 안다」는 증거다.
+- ★★★ **그래서 `constructor.name` 으로는 못 증명한다.** 갈라 주는 것은 **`display` 다** — `<search>` 는 `block`, `<my-thing>`·`<zzznope>` 는 `inline`. **UA 스타일시트에 규칙이 있다는 것**이 「이 버전이 이 요소를 안다」는 증거다.
 - **`<marquee>` 는 `HTMLMarqueeElement`** 다 — 폐기됐지만 **고유 인터페이스가 남아 있다.** `display` 도 `inline-block` 으로 특별하다.
 
 ### 5. 아무도 안 막는다 — 그리고 접근성 트리에 둘 다 들어간다
@@ -378,7 +378,7 @@ document.body.appendChild(q);
 - ★★★ **구획 요소가 화면에 주는 것은 없다.** 점선 테두리를 내가 그려 주기 전에는 **구분이 아예 안 된다.**
 - **그래서 이 주제는 화면으로 배울 수 없다.** 차이는 A2 의 접근성 트리에만 있다.
 
-**「바꿔 볼 것」도 따로 던졌다.**
+**「바꿔 볼 것」도 따로 실행했다.**
 
 ```text
 ===== 소스: html09b-demo11b.html (demo 블록 + 래퍼 + 측정 프로브) =====
@@ -568,7 +568,7 @@ window.addEventListener("load", function () {
 
 **구현에 달린 항목**
 
-| 항목 | 이 판의 값 | 왜 다시 찍나 |
+| 항목 | 이 버전의 값 | 왜 다시 찍나 |
 |---|---|---|
 | **`sectionheader`/`sectionfooter` 라는 역할 이름** | 그대로 나옴 | **최근 ARIA 의 표면**이다. 판마다 다를 수 있다 |
 | 이름 없는 `<section>`·`<aside>` 를 **트리에서 빼는 것** | 통째로 빠짐 | 「역할이 없다」를 **구현이 그렇게 표현**한 것이다 |
@@ -576,11 +576,11 @@ window.addEventListener("load", function () {
 | **`<search>` 가 동작하는 것** | 동작함 | 판이 낮으면 안 될 수 있다 |
 | CDP 노드의 **평탄 목록 순서** | 트리로 재배열해 씀 | 받은 순서는 보장이 없다 — **그래서 재배열했다** |
 
-**안 돌려 본 것** — ① **Firefox·Safari 의 접근성 트리**(엔진이 없다). ② **`role` 로 암묵 역할을 덮어쓰는 경우** — 목록의 42번 주제의 표면이라 안 던졌다. ③ **`aria-labelledby` 가 여럿을 가리킬 때의 이름 이어 붙이기** — 43번의 표면이다. ④ **`<form role="search">` 와 `<search>` 를 함께 썼을 때** — 중복 역할이 어떻게 되는지 안 던졌다. ⑤ **`<address>`·`<figure>` 등 구획이 아닌 구조 요소** — [목록의 **19번**](../19-figure-address-hr/)이다. ⑥ **건너뛰기 링크**(목록의 49번).
+**안 돌려 본 것** — ① **Firefox·Safari 의 접근성 트리**(엔진이 없다). ② **`role` 로 암묵 역할을 덮어쓰는 경우** — 목록의 42번 주제의 표면이라 실행하지 않았다. ③ **`aria-labelledby` 가 여럿을 가리킬 때의 이름 이어 붙이기** — 43번의 표면이다. ④ **`<form role="search">` 와 `<search>` 를 함께 썼을 때** — 중복 역할이 어떻게 되는지 실행하지 않았다. ⑤ **`<address>`·`<figure>` 등 구획이 아닌 구조 요소** — [목록의 **19번**](../19-figure-address-hr/)이다. ⑥ **건너뛰기 링크**(목록의 49번).
 
 **못 잰 것**(「안 돌려 본 것」과 다르다) — **스크린리더가 실제로 뭐라고 읽는지 전부.** 이 판에 **읽어 줄 프로그램이 없다.** 접근성 트리는 **스크린리더의 입력**이고, 같은 트리를 받고도 보조 기술마다 다르게 읽을 수 있다 — 그래서 이 문서에는 **「이렇게 읽힌다」가 한 줄도 없다.** 쪼개서 잰 조각은 **① 역할이 무엇인가 ② 접근 가능한 이름이 무엇인가 ③ 어떤 노드가 트리에서 빠지나** 셋까지다. ★ 같은 이유로 **랜드마크 건너뛰기 동작**도 못 잰 것이다.
 
-**부적용인 창** — **창 ③(`innerText` 대 `textContent`)과 창 ④(`compatMode`)와 창 ⑤(요청 로그)와 창 ⑥(`renderBlockingStatus`).** 구획 요소는 렌더된 글자도, 문서 모드도, 요청도, 렌더 차단도 바꾸지 않아 **잴 것이 없다**(「재 봤더니 같았다」가 아니다). ★ **창 ①도 거의 부적용이다** — 덤프에 역할이 한 글자도 안 나온다. 이 주제는 **창 ⑦ 하나가 본체**다.
+**해당 없는 창** — **창 ③(`innerText` 대 `textContent`)과 창 ④(`compatMode`)와 창 ⑤(요청 로그)와 창 ⑥(`renderBlockingStatus`).** 구획 요소는 렌더된 글자도, 문서 모드도, 요청도, 렌더 차단도 바꾸지 않아 **잴 것이 없다**(「재 봤더니 같았다」가 아니다). ★ **창 ①도 거의 해당 없음이다** — 덤프에 역할이 한 글자도 안 나온다. 이 주제는 **창 ⑦ 하나가 본체**다.
 
 ## 용어 풀이
 
@@ -600,5 +600,5 @@ window.addEventListener("load", function () {
 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 읽은 것이다. 하네스는 맨 아래 `## 실행 검증` 절에 있다.\
 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 와 [ARIA in HTML](https://www.w3.org/TR/html-aria/) 로 접지했다.\
 ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-★★★ **이 주제는 접근성 트리를 직접 덤프한다.** CDP(`Accessibility.getFullAXTree`)로 Chrome 이 보조 기술에 넘기는 트리를 그대로 받았다 — **세 판을 돌려 md5 가 같았다.**
+★★★ **이 주제는 접근성 트리를 직접 덤프한다.** CDP(`Accessibility.getFullAXTree`)로 Chrome 이 보조 기술에 넘기는 트리를 그대로 받았다 — **세 버전을 돌려 md5 가 같았다.**
 ★★ **그래도 스크린리더가 뭐라고 읽는지는 못 본다.** 접근성 트리는 **입력**이지 출력이 아니다(A8).

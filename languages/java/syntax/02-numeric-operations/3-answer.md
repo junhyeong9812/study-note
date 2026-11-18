@@ -200,7 +200,7 @@ int 의 범위는 대칭이 아니다
 
 - **0 쪽으로 자른다**(truncation toward zero).
 - JLS §15.17.2 원문: "Integer division rounds toward 0."
-- 양수에서는 "버림"과 같아서 차이가 안 보인다. **갈리는 것은 음수뿐이다.**
+- 양수에서는 "버림"과 같아서 차이가 안 보인다. **달라지는 것은 음수뿐이다.**
 
 **`%` 의 부호**
 
@@ -298,7 +298,7 @@ int i=5; i /= 2;      -> 2
 - 손계산: `100 + 300 = 400`. `400 & 0xFF = 0x90 = 144`. `byte` 는 부호 있는 8비트이므로 `144 - 256 = -112`.\
   실행 결과와 일치한다.
 
-**갈리는 이유 — 언어 명세의 어느 규칙**
+**달라지는 이유 — 언어 명세의 어느 규칙**
 
 - JLS §15.26.2 **복합 대입 연산자** 규칙이다.
 - `E1 op= E2` 는 `E1 = (T)(E1 op E2)` 와 같다 — `T` 는 `E1` 의 타입이고, **캐스트가 규칙에 포함돼 있다.**
@@ -353,7 +353,7 @@ Exception in thread "main" java.lang.ArithmeticException: long overflow
 
 **`int` 판과 `long` 판의 메시지 차이**
 
-- `integer overflow` 대 `long overflow` — **오버로드가 갈린 것이 메시지로 드러난다.**
+- `integer overflow` 대 `long overflow` — **오버로드가 달라진 것이 메시지로 드러난다.**
 - 값이 `int` 인 줄 알았는데 메시지가 `long overflow` 면, 어딘가에서 이미 승격이 일어난 것이다.
 - 반대로 `toIntExact(long)` 은 입력이 `long` 인데 메시지가 `integer overflow` 다 — **넣으려는 그릇이 `int`** 이기 때문이다.
 
@@ -430,7 +430,7 @@ public static int addExact(int x, int y) {
 - JLS §4.2.2 원문: "The integer operators do not indicate overflow or underflow in any way."
 - 값까지 정해져 있다 — 정수는 2의 보수이고 연산은 모듈러 연산이다.\
   그래서 `Integer.MAX_VALUE + 1` 은 **어느 JVM에서도** `-2147483648` 이다.
-- 이것이 C와 갈리는 지점이다. C의 부호 있는 정수 오버플로는 *정의되지 않은 동작*이라 컴파일러가 마음대로 해도 된다.
+- 이것이 C와 달라지는 지점이다. C의 부호 있는 정수 오버플로는 *정의되지 않은 동작*이라 컴파일러가 마음대로 해도 된다.
 
 **`Math.sin` 의 마지막 자리**
 
@@ -605,7 +605,7 @@ big1+big2 (int)      = -294967296  11101110011010110010100000000000
 - `NaN` 의 비교 동작(`x == x` 가 `false`, `Double.isNaN`) — `0.0/0.0 = NaN` 까지만 돌렸다.
 - `Math.ceilDiv` 계열을 **18·19·20 JDK에서** — 이 머신에 없다. `@since 18` 은 소스에서 읽었고 17/21/25만 돌렸다.
 - `Math.addExact` 의 실제 비용(JIT가 하드웨어 플래그로 낮추는지) — 측정하지 않았다.
-- `StrictMath` 와 `Math` 의 결과가 이 머신에서 실제로 갈리는지 — **안 돌려 봤다.**
+- `StrictMath` 와 `Math` 의 결과가 이 머신에서 실제로 나뉘는지 — **안 돌려 봤다.**
 
 ## 실행 환경
 

@@ -80,7 +80,7 @@ class FixedPolicyTest : PolicyContractTest() {
 ```
 무엇이 깨졌나: 상속된 테스트가 가려져 실패 대신 조용히 사라졌다.
 
-### 변형 C — mock 대상이 조회 경로와 어긋남
+### 변형 C — mock 대상이 조회 경로와 불일치
 ① 문제 코드
 ```python
 # 코드: 헬퍼 도입 후 호출은 app.deploy.git._run 안에서

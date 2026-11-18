@@ -76,7 +76,7 @@ SELECT id FROM emp UNION SELECT name FROM dept;
 
 ### 7. 중복 제거의 값 (왜)
 
-- `UNION` 과 `UNION ALL` 의 실행 계획은 어느 낱말로 갈리는가? 두 엔진에서 각각.
+- `UNION` 과 `UNION ALL` 의 실행 계획은 어느 낱말로 나뉘는가? 두 엔진에서 각각.
 
 ### 8. `ORDER BY` 의 자리 (경계)
 

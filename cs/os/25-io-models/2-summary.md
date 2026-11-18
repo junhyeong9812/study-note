@@ -207,7 +207,7 @@ if (n == 0)  { /* 지금은 없음 -> Selector에 OP_READ 등록하고 기다린
 if (n == -1) { ch.close(); /* 상대가 닫았다 */ }
 ```
 
-Node — 동기 API와 비동기 API가 이름으로 갈린다.
+Node — 동기 API와 비동기 API가 이름으로 나뉜다.
 
 ```js
 const fs = require('node:fs');

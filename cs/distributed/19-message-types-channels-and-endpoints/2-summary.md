@@ -277,7 +277,7 @@ aging    high done=863  low done=137  low still waiting=63  avg low wait=248 tic
 
 - **FIFO 큐** — P2P 채널, 경쟁 소비자, 부하 평준화 버퍼. [data-structure/04-queue-deque](../../data-structure/04-queue-deque/2-summary.md)
 - **우선순위 큐 = 힙** — 단일 큐 Priority Queue는 꺼낼 때 가장 높은 우선순위를 O(log n)에 얻는다. 에이징을 넣으면 우선순위가 시간에 따라 바뀌어 재정렬 비용이 든다. [data-structure/07-heap](../../data-structure/07-heap/2-summary.md)
-- **키 해시 → 파티션** — Kafka 기본 분할기 `murmur2(키) % 파티션 수`. 나머지 연산이라 **파티션 수를 바꾸면 같은 키가 다른 파티션으로 갈 수 있다.** 그 순간 키 단위 순서 보장이 경계에서 끊긴다. 해시는 [data-structure/05-hashmap](../../data-structure/05-hashmap/2-summary.md), 노드 증감에 덜 흔들리는 분배는 [data-structure/31-consistent-hashing](../../data-structure/31-consistent-hashing/2-summary.md).
+- **키 해시 → 파티션** — Kafka 기본 분할기 `murmur2(키) % 파티션 수`. 나머지 연산이라 **파티션 수를 바꾸면 같은 키가 다른 파티션으로 갈 수 있다.** 그 순간 키 단위 순서 보장이 경계에서 끊긴다. 해시는 [data-structure/05-hashmap](../../data-structure/05-hashmap/2-summary.md), 노드 증감에 덜 실행마다 달라지는 분배는 [data-structure/31-consistent-hashing](../../data-structure/31-consistent-hashing/2-summary.md).
 - **대기표(해시맵) + 타임아웃** — request-reply의 요청자는 `correlationId → 콜백`을 해시맵에 두고, 시한이 지난 항목을 지운다. 지우지 않으면 응답이 오지 않은 요청이 메모리에 쌓인다.
 - **에이징** — 기다린 시간에 비례해 우선순위를 올려 기아를 막는 스케줄링 기법.
 
@@ -355,7 +355,7 @@ kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic orders --fro
 
 - **현상**: 새 기능(쿠폰·알림)을 붙일 때마다 주문 서비스 배포가 따라온다. 주문 서비스 장애가 무관한 기능까지 멈춘다.
 - **보이는 형태**: 주문 서비스 코드에 `paymentClient.send(PayOrder)`, `pointClient.send(AddPoint)`, `mailClient.send(...)`가 줄줄이 있다. 받는 쪽 목록이 발행자 설정에 있다.
-- **원인**: "일어난 일"을 알려야 할 자리에서 "할 일"을 하나씩 지시했다. 받는 쪽 목록을 발행자가 쥐고 있다.
+- **원인**: "일어난 일"을 알려야 할 자리에서 "할 일"을 하나씩 지시했다. 받는 쪽 목록을 발행자가 잡고 있다.
 - **대처**: 사실은 이벤트(`OrderPlaced`) 하나로 Pub-Sub 채널에 낸다. 받는 쪽이 구독한다. 결과가 꼭 필요한 한 단계(결제 승인)만 명령으로 남긴다.
 
 ### 2. Correlation ID 없는 요청-응답 → 응답 오매칭

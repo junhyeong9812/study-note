@@ -414,7 +414,7 @@ LINE 1: SELECT e.id, e.name, d.name AS dept, COUNT(*) AS c FROM emp ...
 MySQL 문서가 종속의 근거를 **기본키**와 **`UNIQUE NOT NULL` 열**로 적는다.\
 PG 문서는 **`GROUP BY` 에 그 표의 기본키가 포함된 경우**만 예외로 든다.
 
-★ **갈리는 방향이 한쪽이다 — MySQL 에서 돌던 질의가 PG 에서 깨진다.**\
+★ **달라지는 방향이 한쪽이다 — MySQL 에서 돌던 질의가 PG 에서 깨진다.**\
 (B)의 `c` 가 **전부 1**인 것에 주목하라 — MySQL 이 옳게 판단하고 있다. 값이 틀린 게 아니라 **PG 가 못 알아보는 것**이다.\
 그래도 **이식하려면 PG 쪽에 맞춰야 한다.** `GROUP BY e.id, e.name, d.name` 으로 다 적으면 양쪽에서 돈다.
 
@@ -527,7 +527,7 @@ ERROR 1056 (42000) at line 1: Can't group on 'c'
 | 서수(`GROUP BY 1`) | ✓ | ✓ |
 | 집계 함수 | ✗ `aggregate functions are not allowed in GROUP BY` | ✗ `ERROR 1056 Can't group on 'c'` |
 
-★ **`GROUP BY` 의 별칭은 양쪽에서 된다.** 갈리는 것은 `HAVING` 이다([03번](../03-where-vs-having/)이 정본 — PG 는 `column "cnt" does not exist`).\
+★ **`GROUP BY` 의 별칭은 양쪽에서 된다.** 달라지는 것은 `HAVING` 이다([03번](../03-where-vs-having/)이 정본 — PG 는 `column "cnt" does not exist`).\
 `WHERE` 는 **양쪽 다 안 된다** — 별칭은 5번 칸에서 태어나는데 `WHERE` 는 2번 칸이다([01번](../01-logical-query-processing-order/)).
 
 집계가 거부되는 이유는 **처리 순서**다 — 집계는 `GROUP BY` 가 그룹을 만든 **뒤**에 계산되므로 `GROUP BY` 의 입력이 될 수 없다.\
@@ -603,7 +603,7 @@ MySQL 이 별칭 `'c'` 로 부르는 것은 MySQL 이 `GROUP BY` 에서 **출력
 | ★ 입력 순서를 뒤집기 (6번) | MySQL 8.4.10 | 각 1회 | **`ann` ↔ `bob` 으로 바뀌었다** |
 | `ORDER BY`·인덱스로 흔들기 (7번) | MySQL 8.4.10 | 4회 | 네 가지 모두 `ann` — 문서대로 안 바뀐다 |
 | 기본키 종속 (8번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | 양쪽 허용 |
-| ★ 종속성 경계 (9번) | PG 18.6 · MySQL 8.4.10 | 각 2회 | `UNIQUE NOT NULL` · 조인 건너편 — **양쪽 다 갈렸다** |
+| ★ 종속성 경계 (9번) | PG 18.6 · MySQL 8.4.10 | 각 2회 | `UNIQUE NOT NULL` · 조인 건너편 — **양쪽 다 달라졌다** |
 | `ANY_VALUE()` (10번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | **PG 18.6 에도 있다** |
 | `GROUP BY` 에 쓸 수 있는 것 (11번) | PG 18.6 · MySQL 8.4.10 | 각 4회 | 표현식·별칭·서수·집계 |
 | `NULL` 그룹 대 `COUNT(DISTINCT)` (12번) | PG 18.6 · MySQL 8.4.10 | 각 2회 | 3 대 2 |
@@ -620,5 +620,5 @@ MySQL 이 별칭 `'c'` 로 부르는 것은 MySQL 이 `GROUP BY` 에서 **출력
 ## 실행 환경
 
 근거는 **실행 결과**다 — 본문의 출력·에러는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+2026-09-21 에 실제로 실행해 받은 것이다. 지어낸 출력은 없다.\
 문서 근거는 [PG 18 Table Expressions](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [MySQL 8.4 Handling of GROUP BY](https://dev.mysql.com/doc/refman/8.4/en/group-by-handling.html) · [PG 16 릴리스 노트](https://www.postgresql.org/docs/release/16.0/).

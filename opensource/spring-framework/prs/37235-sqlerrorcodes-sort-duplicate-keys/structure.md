@@ -355,7 +355,7 @@ private static final Set<Integer> DUPLICATE_KEY_ERROR_CODES = Set.of(
 
 이 무대를 이해하는 데 필요한 배경은 이미 문서화돼 있으므로 링크로 연결한다.
 
-- [Java varargs 실체](../../concepts/java-varargs-mechanics/java-varargs-mechanics.md) - `String...`이 바이트코드에서 무엇인지, 값 나열 호출과 배열 전달 호출이 왜 갈리는지.\
+- [Java varargs 실체](../../concepts/java-varargs-mechanics/java-varargs-mechanics.md) - `String...`이 바이트코드에서 무엇인지, 값 나열 호출과 배열 전달 호출이 왜 달라지는지.\
   이 setter가 받는 배열의 **주인이 누구인가**와, `sortStringArray`의 제자리 정렬이 호출자에게 보이는 조건이 여기서 나온다.\
   이 PR의 이해 게이트에서 파생된 문서다.
 

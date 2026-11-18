@@ -246,7 +246,7 @@ fn main() {
 
 ### 6. ★★ 최적화를 켜면 (경계)
 
-- 5번을 `-C opt-level=3` 으로 다시 빌드하면 숫자가 바뀌나? 「await 너머로 살아 있어야 할 값은 future 안에 있다」와 「빌린 적이 있는 지역 변수는 스코프 끝까지 담는다」 — 각각 언어가 보장하나, rustc 가 이 판에서 그렇게 한 것인가?
+- 5번을 `-C opt-level=3` 으로 다시 빌드하면 숫자가 바뀌나? 「await 너머로 살아 있어야 할 값은 future 안에 있다」와 「빌린 적이 있는 지역 변수는 스코프 끝까지 담는다」 — 각각 언어가 보장하나, rustc 가 이 버전에서 그렇게 한 것인가?
 
 ### 7. ★★ `Waker` 를 만지는 쪽 (왜)
 
@@ -258,7 +258,7 @@ fn main() {
 
 ### 9. ★★ 네 언어의 「부른 순간」 (연결)
 
-- [Python 51번](../../../python/syntax/51-asyncio-coroutine-basics/) · [JS 39번](../../../js/syntax/39-async-await/) · [Kotlin 52번](../../../kotlin/syntax/52-coroutine-basics-suspend-scope-launch-async/)은 「부르기만 하면 몸통이 도나」를 각각 무엇으로 쟀나? Rust 는 어느 언어와 같은 편이고, **같은 편 안에서 갈리는 칸**은 무엇인가?
+- [Python 51번](../../../python/syntax/51-asyncio-coroutine-basics/) · [JS 39번](../../../js/syntax/39-async-await/) · [Kotlin 52번](../../../kotlin/syntax/52-coroutine-basics-suspend-scope-launch-async/)은 「부르기만 하면 몸통이 도나」를 각각 무엇으로 쟀나? Rust 는 어느 언어와 같은 편이고, **같은 편 안에서 달라지는 항목**은 무엇인가?
 
 ### 10. ★★ 이터레이터의 게으름과 (연결)
 

@@ -48,9 +48,9 @@ p:nth-child(3n+1)  { }
 - T1 에서 `p:nth-child(odd)` 는 어느 셋을 잡는가?
 - 왜 눈으로 보이는 "홀수 번째 문단"과 어긋나는가?
 - 「홀수 번째 문단」을 원했다면 무엇을 썼어야 하는가?
-- 이 어긋남을 만든 노드는 트리의 어느 것인가?
+- 이 불일치를 만든 노드는 트리의 어느 것인가?
 
-### 3. `:nth-child` 와 `:nth-of-type` 이 갈리는 자리 (예측)
+### 3. `:nth-child` 와 `:nth-of-type` 이 달라지는 자리 (예측)
 
 ```css
 p:nth-child(1)    { }
@@ -105,7 +105,7 @@ p:first-of-type   { }
 - `li:nth-child(2n+1 of :not([hidden]))` 은 어느 것을 잡는가?
 - 이 사고를 스크린샷만으로 원인까지 진단할 수 있는가?
 
-### 7. `of S` 와 `:nth-of-type` 이 갈리는 자리 (예측)
+### 7. `of S` 와 `:nth-of-type` 이 달라지는 자리 (예측)
 
 ```css
 :nth-child(2 of .i)   { }

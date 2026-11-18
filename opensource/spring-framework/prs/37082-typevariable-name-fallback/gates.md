@@ -159,7 +159,7 @@ private static Method method(Class<?> target, String methodName, Class<?>... par
 
 **질문** (08:29, 원문)
 
-> 앞서 이 가드의 (A)`instanceof Class` / (B)`isAssignableFrom` 판별을 상세히 이해하셨으니, lazy 이해 게이트로 **이 diff가 무엇을 바꾸고 왜 세 케이스(narrow 허용 / C3#1·#2 거부)가 의도대로 갈리는지** 한 번 정리해주시면, 판정 워커 확인 후 전체 스위트 검증(diff 2 acceptance)으로 넘어가겠습니다.
+> 앞서 이 가드의 (A)`instanceof Class` / (B)`isAssignableFrom` 판별을 상세히 이해하셨으니, lazy 이해 게이트로 **이 diff가 무엇을 바꾸고 왜 세 케이스(narrow 허용 / C3#1·#2 거부)가 의도대로 나뉘는지** 한 번 정리해주시면, 판정 워커 확인 후 전체 스위트 검증(diff 2 acceptance)으로 넘어가겠습니다.
 
 **시도 1 — 답변** (08:31, 08:35, 08:41)
 
@@ -235,7 +235,7 @@ void resolveTypeVariableByNameWhenNarrowingParameterizedSupertype() {
 }
 ```
 
-- 갈리는 이유: 버그 테스트 1과 2는 형제 관계 또는 클래스 대 메서드라 상속 관계가 아니므로 가드가 `isAssignableFrom=false`로 거부해야 정상이고, 이 테스트는 `Box implements Container`로 진짜 하위타입이라 `Container.isAssignableFrom(Box)=true`로 허용해야 정상이다.
+- 달라지는 이유: 버그 테스트 1과 2는 형제 관계 또는 클래스 대 메서드라 상속 관계가 아니므로 가드가 `isAssignableFrom=false`로 거부해야 정상이고, 이 테스트는 `Box implements Container`로 진짜 하위타입이라 `Container.isAssignableFrom(Box)=true`로 허용해야 정상이다.
 - 즉 가드의 두 방향을 버그 테스트(거부)와 이 테스트(허용)가 나눠서 잠근다.
 - 실증: 가드가 있으면 String, 폴백을 제거하면 null. 이 테스트가 가드의 true-branch를 정확히 탄다. 목적은 나중에 가드를 과하게 조여 정당한 좁힘까지 막으면 이 테스트가 깨져 잡아주는 것.
 

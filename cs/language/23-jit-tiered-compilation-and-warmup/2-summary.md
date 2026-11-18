@@ -56,7 +56,7 @@ JVM은 시작하자마자 최고 속도로 돌지 않는다. 같은 메서드가
 - 사소한 메서드는 첫 C1 컴파일 뒤 level 1로 끝낸다(C2를 해도 같은 코드라서).
 - *C1*: 빨리 컴파일하는 클라이언트 컴파일러. *C2*: 오래 걸리지만 공격적으로 최적화하는 서버 컴파일러.
 
-### 2. 언제 올라가나 — 카운터와 문턱
+### 2. 언제 올라가나 — 카운터와 임계값
 
 ```text
   i = 호출 횟수, b = 루프 백엣지(뒤로 점프) 횟수, s = 컴파일 큐 길이에 따른 배율
@@ -67,7 +67,7 @@ JVM은 시작하자마자 최고 속도로 돌지 않는다. 같은 메서드가
   s     =  queue_size_X / (TierXLoadFeedback · compiler_count_X) + 1
 ```
 
-- 식은 `compilationPolicy.hpp` 주석 그대로다. 큐가 길수록 `s`가 커져 문턱이 올라간다.
+- 식은 `compilationPolicy.hpp` 주석 그대로다. 큐가 길수록 `s`가 커져 임계값이 올라간다.
 - `-XX:+PrintFlagsFinal`로 본 JDK 21.0.12 기본값(이 컨테이너, `--cpus=2`)
 
 ```text
@@ -196,7 +196,7 @@ static double total(Shape[] xs) { double t = 0; for (Shape x : xs) t += x.area()
 
 ## 쓰이는 자료구조·알고리즘
 
-- **호출·백엣지 카운터** — 메서드와 루프마다 정수 카운터. 문턱과 큐 길이 배율로 컴파일 시점을 정한다(위 식).
+- **호출·백엣지 카운터** — 메서드와 루프마다 정수 카운터. 임계값과 큐 길이 배율로 컴파일 시점을 정한다(위 식).
 - **타입 프로파일(MDO)** — 호출 지점마다 (타입, 횟수) 몇 칸(JDK 21 `TypeProfileWidth` 기본 2). C2는 이것을 보고 1종이면 단형(가드 + 인라인), 2종이면 양형, 그 이상이면 가상 호출로 컴파일한다.
 - **인라인 캐시(CompiledIC)** — 컴파일된 코드의 호출 지점에 붙는 별개 장치. JDK 21 HotSpot에서는 단형 상태에서 다른 타입을 만나면 바로 메가모픽(vtable 스텁)으로 바뀐다(`sharedRuntime.cpp`의 `set_to_megamorphic`). 디스패치 기계는 [language/17](../17-dispatch-and-polymorphism-mechanics/2-summary.md), 하드웨어 분기 예측과의 비유는 [architecture/18](../../architecture/18-pipelining-and-branch-prediction/2-summary.md).
 - **호출 그래프** — 인라이닝은 호출 그래프를 따라 내려가며 크기·빈도 예산 안에서 본문을 펼친다.
@@ -262,7 +262,7 @@ java -Xlog:deoptimization=debug -jar app.jar # 역최적화 이유(class_check, 
 
 ## 핵심 문장
 
-- HotSpot은 인터프리터로 시작해 호출·루프 카운터가 문턱을 넘은 코드만 C1(프로파일 수집) → C2(프로파일 기반 최적화)로 올린다.
+- HotSpot은 인터프리터로 시작해 호출·루프 카운터가 임계값을 넘은 코드만 C1(프로파일 수집) → C2(프로파일 기반 최적화)로 올린다.
 - 워밍업이 필요한 이유는 컴파일 비용과, 실행해 봐야 아는 프로파일 정보 두 가지다.
 - C2는 프로파일을 가정으로 삼아 가드 + 인라인을 한다. 가정이 깨지면 역최적화로 되돌아가고 재컴파일한다.
 - `made not entrant`는 정상 교체와 역최적화 모두에 찍힌다. 이유는 역최적화 로그로 가른다.
@@ -280,7 +280,7 @@ java -Xlog:deoptimization=debug -jar app.jar # 역최적화 이유(class_check, 
   - [reliability/42-cold-start-and-scale-from-zero](../../reliability/42-cold-start-and-scale-from-zero/2-summary.md) — 콜드 스타트, 워밍업 후 Ready, AppCDS·AOT 캐시 측정
   - [architecture/18-pipelining-and-branch-prediction](../../architecture/18-pipelining-and-branch-prediction/2-summary.md) · [architecture/09-isa-and-machine-code](../../architecture/09-isa-and-machine-code/2-summary.md)
 - 근거
-  - OpenJDK jdk21u 소스 `src/hotspot/share/compiler/compilationPolicy.hpp` — level 0~4 정의, 0→3·3→4·OSR 문턱 식, 큐 길이 배율 `s`, level 3이 level 2보다 약 30% 느림 <https://github.com/openjdk/jdk21u/blob/master/src/hotspot/share/compiler/compilationPolicy.hpp>
+  - OpenJDK jdk21u 소스 `src/hotspot/share/compiler/compilationPolicy.hpp` — level 0~4 정의, 0→3·3→4·OSR 임계값 식, 큐 길이 배율 `s`, level 3이 level 2보다 약 30% 느림 <https://github.com/openjdk/jdk21u/blob/master/src/hotspot/share/compiler/compilationPolicy.hpp>
   - OpenJDK jdk21u 소스 `src/hotspot/share/runtime/globals.hpp` — `PerMethodTrapLimit`(100, "Limit on traps (of one kind) in a method")·`PerMethodRecompilationCutoff`(400, "After recompiling N times, stay in the interpreter") <https://github.com/openjdk/jdk21u/blob/master/src/hotspot/share/runtime/globals.hpp>
   - OpenJDK jdk21u 소스 `src/hotspot/share/compiler/compileBroker.cpp` `handle_full_code_cache()`(멈춤 vs 영구 비활성) <https://github.com/openjdk/jdk21u/blob/master/src/hotspot/share/compiler/compileBroker.cpp>
   - OpenJDK jdk21u 소스 `src/hotspot/share/code/codeCache.cpp` `report_codemem_full()` — 경고 문구 두 종류, `maybe_restart_compiler()` <https://github.com/openjdk/jdk21u/blob/master/src/hotspot/share/code/codeCache.cpp>

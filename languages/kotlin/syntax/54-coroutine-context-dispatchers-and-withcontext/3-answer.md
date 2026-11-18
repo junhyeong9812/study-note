@@ -27,7 +27,7 @@ rows where blocking calls queued: 6 / 8
 
 **왜 그런가**
 
-- ★★★ `Thread.sleep` 은 **스레드를 쥔 채** 잔다 — 그 스레드에서는 다른 코루틴이 못 돈다. 그래서 동시에 도는 수 = **디스패처의 스레드 수**다. `Default` 는 코어 수, `IO` 는 `max(64, cores)`(2-summary (5) KDoc).
+- ★★★ `Thread.sleep` 은 **스레드를 잡은 채** 잔다 — 그 스레드에서는 다른 코루틴이 못 돈다. 그래서 동시에 도는 수 = **디스패처의 스레드 수**다. `Default` 는 코어 수, `IO` 는 `max(64, cores)`(2-summary (5) KDoc).
 - ★★★ `withContext(Dispatchers.IO)` 는 **블로킹 구간만** IO 풀로 보낸다 — 걸어 둔 곳이 `Default` 여도 겹친다.
 - ★★ `runBlocking`·`Unconfined` 는 **main 하나**에서 차례로, `newSingleThreadContext`·`limitedParallelism(1)` 은 **main 이 아닌 스레드 하나**에서 차례로 잤다. `Unconfined` 는 `launch` 자리에서 바로 돌아 `launch` 호출 자체가 막혔다.
 - ★★ 컴파일 줄이 `(exit 0)` 뿐인 것이 답의 일부다 — **`kotlinc` 는 블로킹 호출을 모른다.**
@@ -115,7 +115,7 @@ C4 after withContext(IO): main
 
 - ★★★ `Unconfined` 는 **첫 중단점까지 부른 자리(main)** 에서 돌고, 그 뒤로는 **깨운 쪽 스레드**에서 계속한다 — `delay` 를 깨우는 `DefaultExecutor`, `withContext(IO)` 를 끝낸 IO 워커. KDoc 「`resume in whatever thread that is used by the corresponding suspending function`」.
 - ★★ 기본 `launch` 는 `runBlocking` 의 이벤트 루프(main)에 묶여 있어 `withContext` 결과가 **main 으로 다시 디스패치**된다(`C4`).
-- ★ 순서 로그 셋은 세 판 되풀이 해시가 안 갈렸다(2-summary (4) 끝의 블록).
+- ★ 순서 로그 셋은 세 판 되풀이 해시가 달라지지 않았다(2-summary (4) 끝의 블록).
 
 ### 5. ★★ **안 된다** — 「`Operator '+' on two CoroutineDispatcher objects is meaningless`」 · 라이브러리가 `plus(CoroutineDispatcher)` 를 **`@Deprecated(level = ERROR)`** 로 막았고, **그것을 에러로 만드는 것은 컴파일러**다
 
@@ -180,7 +180,7 @@ CoroutineName(form54)
 
 ### 7. ★★★ `Default` 의 스레드 수가 **코어 수**라서 — KDoc 「`equal to the number of CPU cores, but is at least two`」 · `delay` 였다면 **중단점**이라 스레드를 놓아 줄을 서지 않는다([52번 주제](../52-coroutine-basics-suspend-scope-launch-async/))
 
-- ★★★ `Thread.sleep` 은 스레드를 쥐고 자므로 `cores + 1` 번째 코루틴은 **스레드가 빌 때까지** 못 시작한다 — `most at once = cores`.
+- ★★★ `Thread.sleep` 은 스레드를 잡고 자므로 `cores + 1` 번째 코루틴은 **스레드가 빌 때까지** 못 시작한다 — `most at once = cores`.
 - ★★ `delay` 는 `suspend` 함수라 코루틴만 멈추고 스레드를 풀에 돌려준다 — 한 스레드에서도 끼어든다는 것은 [52번 주제](../52-coroutine-basics-suspend-scope-launch-async/)가 `delay(10)` 대 `Thread.sleep(10)` 로 쟀다. ★ 이 문서는 `Default` 에서 `delay` N 개를 **따로 돌리지 않았다.**
 
 ### 8. ★★★ 맞는 곳 — **부른 쪽이 멈추고 결과를 받는 한 흐름**이다 · 어긋나는 곳 — 안쪽 `Job` 은 **다른 객체이고 바깥의 자식**이다 · KDoc 은 「**`a new *lexically scoped child coroutine*`**」
@@ -232,22 +232,22 @@ availableProcessors = 24
 (exit 0)
 ```
 
-★ **흔들리는 칸과 안 흔들리는 칸**
+★ **실행마다 달라지는 항목과 달라지지 않는 항목**
 
-| 흔들린다 | 안 흔들린다 |
+| 실행마다 달라진다 | 달라지지 않는다 |
 |---|---|
-| ★ **코어 수**(`availableProcessors = 24`) — 머신에 매인다. 격자는 이 수를 칸에 안 쓴다 | ★★ 격자 8행 · 줄을 선 칸 수(탐침 여덟 판 · 캡처 두 벌 동일) |
-| 걸린 시간 · 스레드 이름의 숫자 — **칸으로 안 만들었다**(겹침 수 · `#`) | 순서 로그 셋 — 세 판 되풀이 해시가 안 갈렸다 |
+| ★ **코어 수**(`availableProcessors = 24`) — 머신에 매인다. 격자는 이 수를 칸에 안 쓴다 | ★★ 격자 8행 · 줄을 선 칸 수(probe 여덟 판 · 캡처 두 벌 동일) |
+| 걸린 시간 · 스레드 이름의 숫자 — **칸으로 안 만들었다**(겹침 수 · `#`) | 순서 로그 셋 — 세 판 되풀이 해시가 달라지지 않았다 |
 | ★ **라이브러리 판** — 1.11.0 이 아니면 다시 돌려라 | 소스 발췌(줄 번호째) · 진단 문구 · 모든 **종료 코드** |
 | ★ `limitedParallelism(1)` 의 `one thread` — **관찰**(KDoc 이 보장하지 않는다) | |
 
 > 근거 — 캡처 스크립트를 처음부터 다시 돌려 **블록 전체를 대조**했다.
 >
-> 실측 — `capture.sh blocks` 와 `capture.sh blocks-re` 를 처음부터 따로 돌려 `normalize-shaky.py` 로 대조했다 — **블록 109개 · 동일 109 · 흔들린 칸 0 · ★고칠 것 0**(54\~58 다섯 주제를 한 캡처로 받았다 — 이 주제 몫은 출력 12 · 소스 7 · 환경 5). 추가한 정규화 규칙은 없다.
+> 실측 — `capture.sh blocks` 와 `capture.sh blocks-re` 를 처음부터 따로 돌려 `normalize-shaky.py` 로 대조했다 — **블록 109개 · 동일 109 · 달라진 항목 0 · ★고칠 것 0**(54\~58 다섯 주제를 한 캡처로 받았다 — 이 주제 몫은 출력 12 · 소스 7 · 환경 5). 추가한 정규화 규칙은 없다.
 
 | 프로그램 | 무엇을 확인했나 | 돌린 방법 |
 |---|---|---|
-| `cores54.kt` | 코어 수(흔들리는 칸) | `kotlinc` → `java` |
+| `cores54.kt` | 코어 수(실행마다 달라지는 항목) | `kotlinc` → `java` |
 | `grid54.kt` | ★★★ 디스패처 8행 × 블로킹 N — 이름 집합 · 겹침 수 · 줄 섬 | `kotlinc` → `java`(표준 출력만 · 칸 수 검사와 줄 선 행 수는 프로그램이 센다) |
 | `within54.kt` | ★★★ `withContext` 의 자식 `Job` · 결과 · 경로 셋 · 예외 · 취소 | `kotlinc` → `java` + 세 판 되풀이 해시 |
 | `compose54.kt` | ★★ 문맥 합성 · 상속 | `kotlinc` → `java` + 세 판 되풀이 해시 |
@@ -256,10 +256,10 @@ availableProcessors = 24
 | `form54.kt` | 형태 한 벌 | `kotlinc` → `java` |
 | 코루틴 소스 jar | 디스패처 KDoc · `limitedParallelism` · 폐기 선언 · `withContext` KDoc 과 경로 셋 | `unzip` → `sed -n` |
 
-**구현 의존 항목** — `DispatchedCoroutine`·`UndispatchedCoroutine`·`ScopeCoroutine`·`BlockingEventLoop` · 스레드 이름(`kotlinx.coroutines.DefaultExecutor`·`DefaultDispatcher-worker-#`) · `limitedParallelism(1)` 이 한 스레드에 머문 것 — 이 판(1.11.0)의 산출물이다.\
+**구현 의존 항목** — `DispatchedCoroutine`·`UndispatchedCoroutine`·`ScopeCoroutine`·`BlockingEventLoop` · 스레드 이름(`kotlinx.coroutines.DefaultExecutor`·`DefaultDispatcher-worker-#`) · `limitedParallelism(1)` 이 한 스레드에 머문 것 — 이 버전(1.11.0)의 산출물이다.\
 반면 **`Default`·`IO` 의 상한 · `Unconfined` 의 재개 규칙 · `withContext` 가 lexically scoped 자식이고 예외를 부른 자리로 던진다**는 **라이브러리 계약(KDoc)**, `CoroutineContext` 의 키·`+` 는 **stdlib(언어)** 다.
 
-**★ 던져 봤더니 예상과 달랐던 것 — 세 건**
+**★ 실행해 봤더니 예상과 달랐던 것 — 세 건**
 
 1. ★★★ **`withContext` 는 「새 코루틴이 아니다」가 아니었다** — 안쪽 `Job` 은 바깥의 **자식인 다른 객체**였고, KDoc 도 「`new *lexically scoped child coroutine*`」라 적는다. 디스패처가 같아도 `UndispatchedCoroutine` 이 생긴다.
 2. ★★ **디스패처 둘을 `+` 하면 경고가 아니라 에러였다** — 라이브러리의 `@Deprecated(level = ERROR)` 오버로드 때문이다.

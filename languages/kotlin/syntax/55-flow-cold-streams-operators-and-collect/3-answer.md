@@ -30,11 +30,11 @@
 
 **왜 그런가**
 
-- ★★★ `flow { }` 와 `.map { }` 는 **만드는 법을 쥔 객체**만 돌려준다 — 몸통은 `collect` 가 불려야 돈다. 그래서 `[1]`·`[2]`·`[3]` 이 붙어서 찍혔다.
+- ★★★ `flow { }` 와 `.map { }` 는 **만드는 법을 잡은 객체**만 돌려준다 — 몸통은 `collect` 가 불려야 돈다. 그래서 `[1]`·`[2]`·`[3]` 이 붙어서 찍혔다.
 - ★★★ 두 번째 `collect` 는 **몸통을 처음부터 다시** 돈다(`body starts` 두 번) — 결과를 기억해 두지 않는다.
 - ★★ `emit(1)` 은 **하류(`map` → 모으는 람다)를 그 자리에서 부르고**, 그것이 끝나야 돌아온다 — 그래서 `got 10` 뒤에 `body after emit`.
 
-### 2. ★★★ 호출 수 — **`Flow` 와 `Sequence` 는 `0 / 4` 로 같고, `List` 와는 `3 / 4` 에서 갈렸다** · 순서 — `List` 만 `by-stage`, 나머지는 전부 `by-element`(갈린 칸 `4 / 4` · `0 / 4`)
+### 2. ★★★ 호출 수 — **`Flow` 와 `Sequence` 는 `0 / 4` 로 같고, `List` 와는 `3 / 4` 에서 달라졌다** · 순서 — `List` 만 `by-stage`, 나머지는 전부 `by-element`(달라진 항목 `4 / 4` · `0 / 4`)
 
 **출력**
 
@@ -64,8 +64,8 @@ chains where Flow and Sequence differ in order: 0 / 4
 
 **왜 그런가**
 
-- ★★★ `Flow` 도 **원소 하나를 사슬 끝까지** 보낸 뒤 다음 원소를 낸다 — `emit` 이 하류를 그 자리에서 부르기 때문이다(1번). 그래서 `take(2)`·`first()` 에서 **앞쪽이 줄고**(`m=3 f=3` · `m=2 p=2 f=2`), 수가 `Sequence` 와 한 칸도 안 갈린다.
-- ★★ `onEach>map>toList` 는 끝이 전부를 모으므로 **세 모양 모두 `p=6 m=6`** — 호출 수로는 안 갈린 유일한 사슬이다. 그래도 **순서는 갈린다**(`List` 는 `p` 여섯 뒤 `m` 여섯).
+- ★★★ `Flow` 도 **원소 하나를 사슬 끝까지** 보낸 뒤 다음 원소를 낸다 — `emit` 이 하류를 그 자리에서 부르기 때문이다(1번). 그래서 `take(2)`·`first()` 에서 **앞쪽이 줄고**(`m=3 f=3` · `m=2 p=2 f=2`), 수가 `Sequence` 와 한 칸도 안 달라진다.
+- ★★ `onEach>map>toList` 는 끝이 전부를 모으므로 **세 모양 모두 `p=6 m=6`** — 호출 수로는 안 달라진 유일한 사슬이다. 그래도 **순서는 달라진다**(`List` 는 `p` 여섯 뒤 `m` 여섯).
 - ★ `List` 는 단계마다 리스트를 다 만든 뒤 다음 단계로 가므로 늘 `by-stage` 다([47번 주제](../47-sequences-lazy-evaluation/) (2)).
 
 ### 3. ★★ `[a]` 는 `emit 1`·`emit 2` 뒤 **`AbortFlowException` 이 잡히고** `upstream finally` · `[b]` 는 `emit 1` 하나 뒤 같은 모양 · `[c]` 는 다섯 번 `emit` 뒤 `loop finished`·`upstream finally`(잡힌 것 없음)
@@ -236,7 +236,7 @@ cold: body runs after one collect = 1
 **왜 그런가**
 
 - ★★ 콜드(`flow { }`)는 모으는 쪽이 없으면 몸통 **0회**, 한 번 모은 뒤에야 **1회**다.
-- ★★ `MutableStateFlow` 는 모으는 쪽이 0(`subscribers = 0`)이어도 **값 `2` 를 쥐고 있고**, 나중에 온 수집자는 그 값부터 본다 — **값이 흐름 바깥에 산다**(핫).
+- ★★ `MutableStateFlow` 는 모으는 쪽이 0(`subscribers = 0`)이어도 **값 `2` 를 잡고 있고**, 나중에 온 수집자는 그 값부터 본다 — **값이 흐름 바깥에 산다**(핫).
 - ★ `MutableSharedFlow()`(재생 0)의 `tryEmit` 은 `true` 를 돌려주지만 `replayCache` 가 `[]` — 받을 쪽이 없어 **값이 그대로 사라졌다.**
 
 ### 7. KDoc 「`Intermediate operations do not execute any code in the flow … This is known as a _cold flow_ property.`」 · 두 번째 `collect` 는 「`can be collected repeatedly and triggers execution of the same code every time it is collected`」
@@ -340,7 +340,7 @@ fun main() = runBlocking {
 **왜 그런가**
 
 - ★★★ 첫 번째 `catch` 는 `take` 의 「그만」(`AbortFlowException`)을 잡았다. 상류가 이어서 `emit(2)` 하자 라이브러리가 **「`Emissions from 'catch' blocks are prohibited`」** 라며 `IllegalStateException` 을 던졌는데, 그것도 **같은 `catch`** 가 잡았다. 루프가 끝나 몸통이 정상 종료했고 결과는 `[1]`.
-- ★★ **규칙 위반이 났는데 바깥에 아무 흔적이 없다** — 무음 실패다. 상류가 연결을 들고 있었다면 「그만」 뒤에도 계속 일했을 것이다. 에러 문구가 권하는 길은 `Flow.catch` 연산자다. `CancellationException` 을 잡아 삼키는 일반론은 [53번 주제](../53-structured-concurrency-job-cancellation-exceptions/).
+- ★★ **규칙 위반이 났는데 바깥에 아무 흔적이 없다** — 조용한 실패다. 상류가 연결을 들고 있었다면 「그만」 뒤에도 계속 일했을 것이다. 에러 문구가 권하는 길은 `Flow.catch` 연산자다. `CancellationException` 을 잡아 삼키는 일반론은 [53번 주제](../53-structured-concurrency-job-cancellation-exceptions/).
 
 ### 10. 4번은 **컴파일 시점에 컴파일러**(`@RestrictsSuspension` · `exit 1`)가 · 5번은 **실행 시점에 라이브러리**(`SafeCollector` 의 검사 · 컴파일은 `exit 0`)가 정했다
 
@@ -446,12 +446,12 @@ Implementation-Version: 1.11.0
 (exit 0)
 ```
 
-★ **흔들리는 칸과 안 흔들리는 칸**
+★ **실행마다 달라지는 항목과 달라지지 않는 항목**
 
-| 흔들린다 | 안 흔들린다 |
+| 실행마다 달라진다 | 달라지지 않는다 |
 |---|---|
-| ★ 에러 문구 안의 **객체 해시** — `ctx55.kt` 가 `@<hash>` 로 가려 찍는다(정규화 규칙은 더하지 않았다) | 격자 12행 · 호출 수 · 순서 칸 · 갈린 칸 수 |
-| ★ 스레드 이름 끝의 번호 — `-worker` 앞만 찍는다 | 콜드 · `take` · 삼키기 · 핫 스트림 로그 — 순서가 걸린 셋은 다섯 판 되풀이에서 해시가 안 갈렸다 |
+| ★ 에러 문구 안의 **객체 해시** — `ctx55.kt` 가 `@<hash>` 로 가려 찍는다(정규화 규칙은 더하지 않았다) | 격자 12행 · 호출 수 · 순서 칸 · 달라진 항목 수 |
+| ★ 스레드 이름 끝의 번호 — `-worker` 앞만 찍는다 | 콜드 · `take` · 삼키기 · 핫 스트림 로그 — 순서가 걸린 셋은 다섯 판 되풀이에서 해시가 달라지지 않았다 |
 | ★ **라이브러리 판** — 1.11.0 이 아니면 다시 돌려라 | 소스 발췌(줄 번호째) · 진단 문구 · 모든 **종료 코드** |
 
 ```text
@@ -462,16 +462,16 @@ Implementation-Version: 1.11.0
 (exit 0)
 ```
 
-- ★ 순서 로그 셋(`grid55` · `take55` · `ctx55`)을 다섯 판씩 돌려 **출력 전체의 해시**를 센 것이다 — 서로 다른 해시가 **셋**, 각각 **`5`** 번. `ctx55` 는 디스패처 스레드를 타는데도 갈리지 않았다(스레드 번호를 안 찍기 때문이다).
+- ★ 순서 로그 셋(`grid55` · `take55` · `ctx55`)을 다섯 판씩 돌려 **출력 전체의 해시**를 센 것이다 — 서로 다른 해시가 **셋**, 각각 **`5`** 번. `ctx55` 는 디스패처 스레드를 타는데도 달라지지 않았다(스레드 번호를 안 찍기 때문이다).
 
 > 근거 — 캡처 스크립트를 처음부터 다시 돌려 **블록 전체를 대조**했다.
 >
-> 실측 — `capture.sh blocks` 와 `capture.sh blocks-re` 를 처음부터 따로 돌려 `normalize-shaky.py` 로 대조했다 — **블록 109개 · 동일 109 · 흔들린 칸 0 · ★고칠 것 0**(54\~58 다섯 주제를 한 캡처로 받았다 — 이 주제 몫은 출력 14 · 소스 9 · 환경 5). 추가한 정규화 규칙은 없다.
+> 실측 — `capture.sh blocks` 와 `capture.sh blocks-re` 를 처음부터 따로 돌려 `normalize-shaky.py` 로 대조했다 — **블록 109개 · 동일 109 · 달라진 항목 0 · ★고칠 것 0**(54\~58 다섯 주제를 한 캡처로 받았다 — 이 주제 몫은 출력 14 · 소스 9 · 환경 5). 추가한 정규화 규칙은 없다.
 
 | 프로그램 | 무엇을 확인했나 | 돌린 방법 |
 |---|---|---|
 | `cold55.kt` | ★★ 콜드 — 만들기만 하면 0줄 · 두 번 모으면 두 번 · `emit` 과 하류의 순서 | `kotlinc` → `java` |
-| `grid55.kt` | ★★★ 호출 수 격자 — 사슬 4 × 모양 3 | `kotlinc` → `java` (칸 수 검사·갈린 칸 수는 프로그램이 센다) + 다섯 판 되풀이 |
+| `grid55.kt` | ★★★ 호출 수 격자 — 사슬 4 × 모양 3 | `kotlinc` → `java` (칸 수 검사·달라진 항목 수는 프로그램이 센다) + 다섯 판 되풀이 |
 | `take55.kt` | ★★ `take`·`first`·`toList` 에서 상류가 받는 것 | `kotlinc` → `java` + 다섯 판 되풀이 |
 | `swallow55.kt` | ★★ 상류가 삼키면 | `kotlinc` → `java` |
 | `fdelay55.kt` · `sdelay55.kt` | ★★ 두 몸통 안의 `delay` | `kotlinc` → `java` · `kotlinc`(에러) |
@@ -483,7 +483,7 @@ Implementation-Version: 1.11.0
 **구현 의존 항목** — `AbortFlowException` 이라는 클래스 이름과 메시지 · `emitAbort` 가 값을 내준 **뒤** 던지는 것 · `SafeCollector` 의 두 에러 문구 · `DispatchedCoroutine`·`BlockingEventLoop` 같은 문맥 원소 이름 — 이 라이브러리 판의 산출물이다.\
 반면 **콜드 · 문맥 보존 · `take` 가 원래 흐름을 취소한다**는 **라이브러리 계약(KDoc)** 이고, `sequence { }` 안 `delay` 금지는 **언어(컴파일러)** 다.
 
-**★ 던져 봤더니 예상과 달랐던 것 — 세 건**
+**★ 실행해 봤더니 예상과 달랐던 것 — 세 건**
 
 1. ★★★ **`sequence { }` 안 `delay` 의 진단은 52번 주제의 호출 규칙 진단이 아니었다** — `@RestrictsSuspension` 에서 오는 **세 번째 문구**(「`restricted suspending functions …`」)였다.
 2. ★★ **상류가 `catch (e: Throwable)` 로 삼키면 예외 투명성 위반마저 바깥에 안 나왔다** — 라이브러리가 `IllegalStateException` 을 던지는 것까지는 예상대로였지만, 그것이 **같은 `catch` 로 다시 들어가** 흔적 없이 `[1]` 로 끝났다.

@@ -35,7 +35,7 @@
 
 - 근거: PostgreSQL 17 9.27 표 9.83. 끝났는지는 스냅샷이, 커밋인지 중단인지는 `pg_xact`가 알려 준다.
 
-### 4. RR 동시 갱신 — 두 엔진이 갈린다
+### 4. RR 동시 갱신 — 두 엔진이 달라진다
 
 - PostgreSQL 17: `ERROR: could not serialize access due to concurrent update`(40001). 트랜잭션 전체를 재시도해야 한다(13.2.2).
 - MySQL 8.4: `UPDATE`는 스냅샷이 아니라 **최신 커밋 버전**(250)을 잠그고 고친다 → 251. 이어서 `SELECT`하면 자기가 고친 행이라 251이 보인다(17.7.2.3).
@@ -102,9 +102,9 @@ jdbc.update("UPDATE acc SET bal = ? WHERE id = 2", bal + 1);                    
 
 ### 10. 앱 코드에 주는 교훈
 
-- 트랜잭션이 스냅샷이나 XID를 쥐고 있는 동안 옛 버전이 붙잡힌다.
-  - MySQL 기본 REPEATABLE READ·PostgreSQL REPEATABLE READ: 첫 읽기 스냅샷을 커밋까지 쥔다. 읽기 전용이어도 같다.
-  - PostgreSQL 기본 READ COMMITTED: 문장이 끝나면 스냅샷을 놓는다. 다만 쓰기를 한 트랜잭션은 자기 XID가 cutoff를 붙잡고, 긴 문장 하나도 그동안 스냅샷을 쥔다.
+- 트랜잭션이 스냅샷이나 XID를 잡고 있는 동안 옛 버전이 붙잡힌다.
+  - MySQL 기본 REPEATABLE READ·PostgreSQL REPEATABLE READ: 첫 읽기 스냅샷을 커밋까지 잡는다. 읽기 전용이어도 같다.
+  - PostgreSQL 기본 READ COMMITTED: 문장이 끝나면 스냅샷을 놓는다. 다만 쓰기를 한 트랜잭션은 자기 XID가 cutoff를 붙잡고, 긴 문장 하나도 그동안 스냅샷을 잡는다.
 - 그러므로
   - 트랜잭션 안에서 원격 호출·사용자 대기·긴 배치 루프를 하지 않는다([18번](../18-app-level-concurrency-patterns/2-summary.md), [24번](../24-transaction-boundaries-in-app-code/2-summary.md)).
   - 대량 처리는 짧은 트랜잭션 여러 개로 쪼갠다([34번](../34-large-backfill-and-batch-dml/2-summary.md)).

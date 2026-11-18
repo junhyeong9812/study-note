@@ -274,6 +274,6 @@ grep -rnE 'throw new \w+\([a-z]+\.getMessage\(\)\)' --include=*.java src/
   - Spring Framework 문서 "Error Responses"(`ProblemDetail`, RFC 9457) <https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-ann-rest-exceptions.html>
 - 실험 목록 (코드: scratchpad `sd/15/e15/ErrDesign.java`, JDK 21.0.12 eclipse-temurin `--cpus=2`, `java ErrDesign.java`)
   - 1 catch-log-rethrow 3계층 vs 경계 한 번 — SEVERE 4/62줄 vs 1/16줄
-  - 2 삼킨 예외 — 20건 중 5건 무음 유실
+  - 2 삼킨 예외 — 20건 중 5건 조용한 유실
   - 3 에러를 정의로 없애기 — `substring`·`Files.delete`·`deleteIfExists`·`Map.remove`
   - 4 fail-fast — 생성 시점 vs 사용 시점 실패 위치(2026-10-02 재실행: 두 경우 모두 트레이스 `[0]~[2]`를 출력하도록 고친 사본 scratchpad `sd/adj-02/ErrDesign.java`)

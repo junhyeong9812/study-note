@@ -87,7 +87,7 @@ ex.14a.ts(45,5): error TS2322: Type 'string' is not assignable to type 'void'.
 | 41 | `return 1;` | **TS2322** — 「Type 'number' is not assignable to type 'void'.」 |
 | 45 | `return "ok";` | **TS2322** — 「Type 'string' is not assignable to type 'void'.」 |
 
-- ★★★ 15행이 술어와 갈리는 첫 자리다. `assertString(v)` 뒤에 **`touch()` 를 불러도** `v` 가 `string` 그대로다.\
+- ★★★ 15행이 술어와 달라지는 첫 자리다. `assertString(v)` 뒤에 **`touch()` 를 불러도** `v` 가 `string` 그대로다.\
   [**15번 주제**](../15-control-flow-analysis-limits/)가 재는 「함수 호출 뒤에는 안 풀린다」가 단언에도 그대로 적용된다.
 - ★★ 36행이 그 범위의 **끝**을 보여 준다. 단언을 **분기 안에서** 부르면 분기 밖으로는 못 나간다 —\
   **단언도 제어 흐름을 벗어나지 못한다.**
@@ -389,7 +389,7 @@ ex.14d.ts(45,11): error TS2322: Type 'unknown' is not assignable to type 'null'.
   「아직 로드 안 됨」 같은 상태를 메서드 하나로 잘라 낼 때 쓴다.
 - ★ 45행 — 단언도 **재대입은 못 이긴다.** `v = 1;` 뒤의 `v` 가 선언 타입인 `unknown` 으로 돌아간다.\
   [**15번 주제**](../15-control-flow-analysis-limits/)의 1절이 같은 것을 유니온에서 잰다.
-- ★★ 이 파일이 **네 파일 중 유일하게** `--strict false` 에서 갈린다.
+- ★★ 이 파일이 **네 파일 중 유일하게** `--strict false` 에서 달라진다.
 
 ```text
 ===== tsc --pretty false --noEmit --strict false ex.14d.ts (tsc exit=1) =====
@@ -404,7 +404,7 @@ ex.14d.ts(45,11): error TS2322: Type 'unknown' is not assignable to type 'null'.
 ```
 
 - ★★★ **17행의 글자만 바뀐다.** `string | null` 에서 **`string`** 이 된다 —\
-  `strictNullChecks` 가 꺼져 `null` 이 흡수되면 **「좁히기 전」이 탐침에 안 보인다.**
+  `strictNullChecks` 가 꺼져 `null` 이 흡수되면 **「좁히기 전」이 probe에 안 보인다.**
 - ★ 나머지 일곱 줄은 글자 하나까지 같다. **단언의 규칙 자체는 플래그와 무관**하다.
 
 ### 5. ★★ 진단 **4건** — 전부 `TS1xxx` 다. 타입 오류가 아니라 **문법 오류**다
@@ -547,7 +547,7 @@ tsc --pretty false --module commonjs node-assert.d.ts ex.14f.ts            -> ex
 | 무엇 | 결과 |
 |---|---|
 | 선언 없이 `import assert = require("node:assert")` | ★ **TS2591** — 「Cannot find name 'node:assert'. …」 |
-| 그때의 5·7행 탐침 | 둘 다 `string \| number \| null` — **좁히기가 안 일어난다** |
+| 그때의 5·7행 probe | 둘 다 `string \| number \| null` — **좁히기가 안 일어난다** |
 | 선언과 함께 던진 5행 / 7행 | `string \| number \| null` / **`string \| number`** |
 | `assert(1)` | 통과 |
 | `assert(0)` | 던졌다 → 「The expression evaluated to a falsy value:」 + `assert(0)` |
@@ -558,7 +558,7 @@ tsc --pretty false --module commonjs node-assert.d.ts ex.14f.ts            -> ex
   1번 28행과 같은 이유로 **`0` 과 `""` 는 타입에서 못 떨어져 나간다.** 여기서 사라진 것은 **`null` 뿐**이다.
 - ★★★ 실행 출력이 이 주제의 다른 절과 **정반대**다 — `node:assert` 는 **런타임 검사를 진짜로 한다.**\
   `asserts` 표기는 「이 함수는 실패하면 던진다」는 **사실을 타입 쪽에 알려 줄 뿐**이다.
-- ★★ 종료 코드가 갈리는 것은 이 주제의 규칙이 아니라 **갈래 전체의 규칙**이다 —\
+- ★★ 종료 코드가 달라지는 것은 이 주제의 규칙이 아니라 **갈래 전체의 규칙**이다 —\
   **에러가 있는데 산출물을 냈으면 `2`**([**02번 주제**](../02-type-checking-vs-emit/)).
 - ★ 방출된 `.js` 에는 `require("node:assert")` 만 남는다. **선언 파일은 방출물에 아무 흔적도 안 남긴다.**
 
@@ -616,11 +616,11 @@ tsc --pretty false --module commonjs node-assert.d.ts ex.14f.ts            -> ex
 | 틀리면 | `AssertionError` 가 즉시 난다 | ★★ **아무 일도 안 난다** — 나중에 터진다 |
 | 타입을 좁히나 | 서명에 `asserts value` 가 있어야 좁힌다 | 그 서명이 바로 이 표기다 |
 
-- ★★★ 6번의 실행 출력이 그 분업을 그대로 보여 준다 — `assert(0)` 이 **정말로 던졌다.**\
-  2번의 `assertNothing` 은 **안 던졌다.** 둘 다 타입 쪽 서명은 `asserts` 로 같다.
+- ★★★ 6번의 실행 출력이 그 분업을 그대로 보여 준다 — `assert(0)` 이 **정말로 실행했다.**\
+  2번의 `assertNothing` 은 **실행하지 않았다.** 둘 다 타입 쪽 서명은 `asserts` 로 같다.
 - ★★ 그래서 좋은 단언 함수는 **`node:assert` 같은 것을 몸통에서 쓰는 것**이다 —\
   검사는 표준 라이브러리에 맡기고, `asserts` 표기로 그 사실을 타입 쪽에 실어 보낸다.
-- ★ 이 판에서는 `@types/node` 가 없어 **선언 한 장을 직접 써야** 했다(`TS2591`). 7.0 의 `types` 기본값이 `[]` 인 것도 겹친다.
+- ★ 이 버전에서는 `@types/node` 가 없어 **선언 한 장을 직접 써야** 했다(`TS2591`). 7.0 의 `types` 기본값이 `[]` 인 것도 겹친다.
 
 ### 11. ★★ **그대로 받는다** — 단언은 「좁힘을 만드는 법」일 뿐 「좁힘을 지키는 법」이 아니다
 
@@ -644,8 +644,8 @@ tsc --pretty false --module commonjs node-assert.d.ts ex.14f.ts            -> ex
 | 층 | 이 주제의 항목 |
 |---|---|
 | **언어 보장** | `asserts x is T` 는 **호출 뒤부터** 좁힌다 · 반환 타입은 **`void`**(`TS2322`) · ★★★ **몸통은 검사되지 않는다** · 호출 대상 경로의 **모든 이름**에 표기가 필요하다(`TS2775`) · 단언 대상은 **매개변수 이름이나 `this`** 뿐이다(`TS1228`) · `asserts this is T` 는 `this` 를 좁힌다 |
-| **설정에 달린 것** | ★ **두 칸**. ① 4번 탐침의 **한 칸**(17행) — `strictNullChecks`(`strict` 에 딸려 7.0 기본 `true`). **양쪽 판을 다 실었다** ② `node:assert` 의 타입 유무 — `types`(7.0 기본 `[]`)와 `@types/node` |
-| **이 판(7.0.2)의 관찰** | 진단 문구 전문 — 코드(`TS2775`·`TS1228`·`TS2591`)가 더 오래 간다 · ★ `TS2591` 이 모듈 지정자에 「Cannot find **name**」이라고 말하는 것 · `node:assert` 의 실패 메시지 전문(`node` v18) · 파스 에러 한 줄이 **네 줄의 진단**으로 퍼지는 모양 |
+| **설정에 달린 것** | ★ **두 칸**. ① 4번 probe의 **한 칸**(17행) — `strictNullChecks`(`strict` 에 딸려 7.0 기본 `true`). **양쪽 판을 다 실었다** ② `node:assert` 의 타입 유무 — `types`(7.0 기본 `[]`)와 `@types/node` |
+| **이 버전(7.0.2)의 관찰** | 진단 문구 전문 — 코드(`TS2775`·`TS1228`·`TS2591`)가 더 오래 간다 · ★ `TS2591` 이 모듈 지정자에 「Cannot find **name**」이라고 말하는 것 · `node:assert` 의 실패 메시지 전문(`node` v18) · 파스 에러 한 줄이 **네 줄의 진단**으로 퍼지는 모양 |
 
 - ★★★ 「**진단 0건」이 답인 블록이 하나**다(2번). 그래서 이 문서는 **소스 전문·방출 전문·실행 출력**을 나란히 실었다 —\
   셋이 있어야 침묵이 근거가 된다.
@@ -668,7 +668,7 @@ tsc --pretty false --module commonjs node-assert.d.ts ex.14f.ts            -> ex
 | 종료 코드 대조 | 같은 입력을 `--noEmit` 과 방출로 | ★★★ **exit 1 / exit 2** |
 | `strict` 대조 | 네 파일을 `--strict false` 로 재실행 | ★ **`ex.14d.ts` 하나만** 갈림 |
 
-**구현 의존 항목 — 판이 오르면 다시 돌릴 것**
+**구현 의존 항목 — 버전이 오르면 다시 돌릴 것**
 
 - ★★ `TS2591` 의 문구가 모듈 지정자에 「**Cannot find name**」이라고 말하는 것 — 7.0.2 의 보고 방식이다.
 - ★★ `node:assert` 의 실패 메시지 전문(소스 인용 포함) — `node` v18 의 것이다.
@@ -679,9 +679,9 @@ tsc --pretty false --module commonjs node-assert.d.ts ex.14f.ts            -> ex
 **안 돌려 본 것**
 
 - **`@types/node` 를 실제로 설치한 판** — `node_modules` 를 만들지 않았다. 6번의 선언은 **직접 쓴 한 장**이다.
-- **`assert.ok`·`assert.strictEqual` 같은 멤버** — **안 던졌다.**
-- **`asserts` 와 오버로드의 조합** — [**16번 주제**](../16-function-types-and-overloads/). **안 던졌다.**
-- **단언 함수를 제네릭 제약과 섞는 깊은 예** — [목록의 **20번 주제**](../20-generic-constraints-and-defaults/). **안 던졌다.**
+- **`assert.ok`·`assert.strictEqual` 같은 멤버** — **실행하지 않았다.**
+- **`asserts` 와 오버로드의 조합** — [**16번 주제**](../16-function-types-and-overloads/). **실행하지 않았다.**
+- **단언 함수를 제네릭 제약과 섞는 깊은 예** — [목록의 **20번 주제**](../20-generic-constraints-and-defaults/). **실행하지 않았다.**
 - **단언이 많을 때의 검사 시간** — **재지 않았고 수치를 적지 않았다.**
 
 ## 실행 환경

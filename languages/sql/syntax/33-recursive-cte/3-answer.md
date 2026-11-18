@@ -553,14 +553,14 @@ MySQL 은 `cte_max_recursion_depth = 5`(4번) / 기본 1000(8번), PG 는 `state
 11번도 한쪽만 근거다 — MySQL 의 `ERROR 1064` 는 **문법 부재의 근거**일 뿐, `SEARCH`/`CYCLE` 의 동작은 **PG 출력만이 근거**다.
 
 **언어 보장 항목** — 1·2·3·9·12번. 세 조각 구조, `RECURSIVE` 필수, `UNION` 의 고리 끊기, 재귀 항 금지 셋, 종료 조건은 두 엔진에서 같았다(문구만 다르다).\
-**방언이 갈리는 항목** — 5·8·10·11번. 깊이 제한 설정의 유무, `LIMIT` 의 위치, 열 폭 확정 규칙, `SEARCH`/`CYCLE` 이다.
+**방언이 달라지는 항목** — 5·8·10·11번. 깊이 제한 설정의 유무, `LIMIT` 의 위치, 열 폭 확정 규칙, `SEARCH`/`CYCLE` 이다.
 
 **순서 보장** — 없다. 재귀 CTE 의 출력 순서도 보장되지 않는다. 위 출력에 `ORDER BY` 를 붙인 것은 그 때문이고, **깊이 순서가 필요하면 `lvl` 로 정렬**한다.
 
 ## 실행 환경
 
 근거는 **실행 결과**다 — 본문의 출력·에러는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+2026-09-21 에 실제로 실행해 받은 것이다. 지어낸 출력은 없다.\
 ★ **무한 재귀는 전부 안전장치를 걸고 돌렸다** — MySQL `cte_max_recursion_depth = 5`, PG `statement_timeout = '300ms'`.\
 표는 기존 `emp` 만 썼다 — **새로 만든 표가 없다.** 계층은 CTE 안에서 만들었다.\
 문서 근거는 [PG 18 WITH Queries](https://www.postgresql.org/docs/18/queries-with.html) · [MySQL 8.4 WITH](https://dev.mysql.com/doc/refman/8.4/en/with.html).

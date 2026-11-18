@@ -71,7 +71,7 @@ Optional<List<Integer>> first = Stream.of(1,2,3,4,5,6,7,8)
 
 - `first` 와 `seen` 은 각각 무엇인가?
 - 같은 일을 `collect(Collectors.groupingBy(i -> (i-1)/3))` 로 하면 `seen` 은 무엇이 되는가?
-- 두 결과가 갈리는 이유를 한 문장으로 말하면?
+- 두 결과가 달라지는 이유를 한 문장으로 말하면?
 - `gather` 앞에 최종 연산이 하나도 없으면 `seen` 은 무엇인가?
 - 무한 스트림에 `gather` 를 거는 것이 가능한 조건은 무엇인가?
 
@@ -104,7 +104,7 @@ static <T> Gatherer<T, ?, T> dedupeAdjacent() {
 
 - `gather(dedupeAdjacent())` 의 결과는 무엇인가?
 - 같은 입력에 `distinct()` 를 쓰면 무엇이 나오는가?
-- 두 결과가 갈리는 이유는 무엇인가?
+- 두 결과가 달라지는 이유는 무엇인가?
 - `return true;` 를 `return downstream.push(element);` 로 바꾸면 무엇이 달라지는가?
 - 이 변환을 `map` 이나 `filter` 로 쓸 수 없는 이유는 무엇인가?
 

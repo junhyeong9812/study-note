@@ -487,7 +487,7 @@ MySQL 도 같다.
 
 ★ **두 엔진 모두 `IN` 과 `EXISTS` 의 계획이 완전히 같다.** 문법 차이가 계획 차이로 남지 않았다.
 
-**`JOIN + DISTINCT` 는 갈린다.**
+**`JOIN + DISTINCT` 는 달라진다.**
 
 ```text
 ### SQL: EXPLAIN SELECT DISTINCT d.id, d.name FROM dept d JOIN emp e ON e.dept_id = d.id;
@@ -567,7 +567,7 @@ MySQL 도 같다.
 
 **즉 `NOT IN` 은 「느려서」 피하는 게 아니라 「틀려서」 피하는 것이고, 그 틀림이 계획에까지 드러난다.**
 
-**세 번째 형태의 계획은 두 엔진이 갈렸다.**
+**세 번째 형태의 계획은 두 엔진이 달라졌다.**
 
 ```text
 ### SQL: EXPLAIN SELECT d.id, d.name FROM dept d LEFT JOIN emp e ON e.dept_id = d.id WHERE e.id IS NULL;
@@ -595,7 +595,7 @@ MySQL 도 같다.
 | `NOT IN` | `Seq Scan` + `SubPlan` (안티 조인 아님) | `<in_optimizer>` 서브쿼리 (안티 조인 아님) |
 | `LEFT JOIN … IS NULL` | `Hash Right Join` + `Filter` | **`Hash antijoin`** + `Filter` |
 
-★ **마지막 줄이 이 실측에서 유일하게 갈린 자리다** — **MySQL 은 `LEFT JOIN … IS NULL` 을 안티 조인으로 바꿨고, PG 는 외부 조인 + 필터로 남겼다.**\
+★ **마지막 줄이 이 실측에서 유일하게 달라진 자리다** — **MySQL 은 `LEFT JOIN … IS NULL` 을 안티 조인으로 바꿨고, PG 는 외부 조인 + 필터로 남겼다.**\
 이것은 **옵티마이저의 선택**이지 보장이 아니다. 통계와 버전에 따라 달라질 수 있다.
 
 > **재현 주** — 위 계획의 추정 행 수(PG 의 `rows=1130`·`rows=1270`)는 **통계가 없을 때의 기본값**이다.\
@@ -712,10 +712,10 @@ FROM 왼쪽 LEFT JOIN 오른쪽 ON …  WHERE 오른쪽.NOT_NULL열 IS NULL
 | 세미 조인이 행을 안 늘린다 | **결과의 정의** | 언어 |
 | **`IN` 과 `EXISTS` 의 계획이 같다** | **옵티마이저의 선택** | **아무도** — 이 데이터·이 버전에서 같았을 뿐이다 |
 | `NOT EXISTS` 가 `Anti Join` 연산자로 뜬다 | 옵티마이저의 선택 + 그 엔진의 표기 | 아무도 |
-| `LEFT JOIN … IS NULL` 이 안티 조인이 되는가 | **옵티마이저의 선택** | **두 엔진이 갈렸다** — MySQL 은 바꿨고 PG 는 안 바꿨다 |
+| `LEFT JOIN … IS NULL` 이 안티 조인이 되는가 | **옵티마이저의 선택** | **두 엔진이 달라졌다** — MySQL 은 바꿨고 PG 는 안 바꿨다 |
 
 - ★ **결과는 언어가 보장하고, 계획은 아무도 보장하지 않는다.** 위 계획 비교는 **관찰**이지 규칙이 아니다.\
-  「`IN` 과 `EXISTS` 는 같다」를 **보장으로 외우면 안 된다** — 이 판에서 같았다는 관찰이다.\
+  「`IN` 과 `EXISTS` 는 같다」를 **보장으로 외우면 안 된다** — 이 버전에서 같았다는 관찰이다.\
   ★ **같은 서버·같은 버전에서 두 번 찍었더니 MySQL 의 `NOT IN` 계획이 달랐다**(7번 절). 버전도 데이터도 안 바꿨는데 바뀌었다.
 - 계획의 추정 행 수는 **통계 없는 기본값**이라 재현되지 않을 수 있다. 볼 것은 모양과 연산자 이름이다.
 - **결과의 순서는 보장되지 않는다.** 위 출력에 `ORDER BY` 를 붙인 것은 그 때문이다.
@@ -789,7 +789,7 @@ FROM 왼쪽 LEFT JOIN 오른쪽 ON …  WHERE 오른쪽.NOT_NULL열 IS NULL
 
 **기준 소스** — [PostgreSQL 18 · Subquery Expressions](https://www.postgresql.org/docs/18/functions-subquery.html) · [MySQL 8.4 · Subqueries with EXISTS or NOT EXISTS](https://dev.mysql.com/doc/refman/8.4/en/exists-and-not-exists-subqueries.html)\
 **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-본문에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 실행 계획도 실제로 받은 것이고, 지어낸 출력은 없다.\
+본문에 실린 출력은 **전부 이 두 서버에 실제로 실행해서 받은 것**이다. 실행 계획도 실제로 받은 것이고, 지어낸 출력은 없다.\
 표는 기존 `emp`·`dept` 두 개만 썼다. **새로 만든 표가 없다.**\
 **버전** — `EXISTS`·`IN`·`NOT IN`·`NOT EXISTS` 모두 두 엔진에 오래전부터 있고, 두 매뉴얼에 도입 버전이 없어 **버전은 적지 않는다.**\
 **선행** — [05번](../05-null-comparison-is-distinct-from/)(`NULL` 비교) · [11 서브쿼리](../11-subquery-scalar-correlated-any-all/) · [13 INNER JOIN](../13-inner-join/).\

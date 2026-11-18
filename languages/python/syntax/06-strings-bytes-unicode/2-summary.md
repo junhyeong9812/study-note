@@ -293,7 +293,7 @@ for s in ("½", "Ⅳ", "ﬁ", "²"):
 
 ★ 먼저 문서가 물러선 자리를 읽는다 —\
 *"Return the size of an object in bytes... this does not have to hold true for third-party extensions as it is **implementation specific**."*\
-**이 절의 모든 숫자는 「언어 보장」이 아니라 「이 판의 관찰」이다.**
+**이 절의 모든 숫자는 「언어 보장」이 아니라 「이 버전의 관찰」이다.**
 
 ```python
 import sys
@@ -403,7 +403,7 @@ cp949       3바이트 b'\xb0\xa1A'
 
 그림 해설.
 
-- **같은 두 글자가 3\~8 바이트로 갈린다.** 「한글은 3바이트」는 utf-8 에서만 맞다.
+- **같은 두 글자가 3\~8 바이트로 나뉜다.** 「한글은 3바이트」는 utf-8 에서만 맞다.
 - `utf-16` 이 `utf-16-le` 보다 2바이트 긴 것은 앞에 **BOM**(`b'\xff\xfe'`)이 붙기 때문이다.
 - `euc-kr` 은 한글을 2바이트로 담지만 **담을 수 있는 글자가 훨씬 적다.**
 
@@ -630,7 +630,7 @@ bytearray(b'ab') == b'ab' -> True
 b'ab' in bytearray(b'xaby') -> True
 ```
 
-`bytes` 와 `bytearray` 는 **같은 열이면 같다고 본다.** 갈리는 것은 `str` 과의 사이뿐이다.
+`bytes` 와 `bytearray` 는 **같은 열이면 같다고 본다.** 달라지는 것은 `str` 과의 사이뿐이다.
 
 **비용** — 타입이 갈려 있어서 「인코딩 모르는 문자열」이 돌아다닐 수 없다(파이썬 2 의 가장 큰 사고 원인을 없앤 설계다).\
 대신 **경계마다 `encode`/`decode` 를 명시해야 한다.** 그리고 `==` 하나가 그 방어벽에 난 구멍이다.
@@ -819,13 +819,13 @@ print(len("가".encode("utf-8")), len("가".encode("euc-kr")), len("가".encode(
 
 ## 구현 세부사항 대 언어 보장
 
-세 층으로 가른다. ★ **이 주제는 「언어 보장」과 「관찰」이 뚜렷이 갈린다** — 의미는 명세가 정하고, 크기와 객체 동일성은 구현이 정한다.
+세 층으로 가른다. ★ **이 주제는 「언어 보장」과 「관찰」이 뚜렷이 달라진다** — 의미는 명세가 정하고, 크기와 객체 동일성은 구현이 정한다.
 
 | 층 | 무엇인가 | 어떻게 확인했나 |
 |---|---|---|
 | **언어 보장** | 언어·라이브러리 레퍼런스가 정한 것 | 공식 문서 문장을 열어서 인용 |
 | **CPython 구현** | 이 구현이 그렇게 하는 것 | 실행 + `sys.getsizeof`·`is` 로 확인 |
-| **이 판의 관찰** | 3.12.3 에서 그랬을 뿐 | 「관찰」로 명기 |
+| **이 버전의 관찰** | 3.12.3 에서 그랬을 뿐 | 「관찰」로 명기 |
 
 ### 언어 보장
 
@@ -855,7 +855,7 @@ print(len("가".encode("utf-8")), len("가".encode("euc-kr")), len("가".encode(
 | 그 싱글턴에는 utf-8 표현이 캐시돼 있어 **1글자가 2글자보다 크다** | 61 대 59 |
 | `BytesWarning` 은 `-b`/`-bb` 로만 켜진다 | 같은 파일을 세 방식으로 돌려 비교 |
 
-### 이 판(3.12.3)의 관찰 — 버전이 오르면 다시 찍어야 한다
+### 이 버전(3.12.3)의 관찰 — 버전이 오르면 다시 찍어야 한다
 
 | 관찰 | 어디가 흔들리나 |
 |---|---|
@@ -918,7 +918,7 @@ print(len("가".encode("utf-8")), len("가".encode("euc-kr")), len("가".encode(
 - 목록: [python/syntax 주제 목록](../README.md) — 이 주제는 **06번**
 - 선행: [01-object-and-name-binding](../01-object-and-name-binding/2-summary.md) — 이름 바인딩·불변 객체 모델의 정본. `bytearray` 의 `id` 가 그대로인 것이 그 규칙이다.
 - 선행: [02-is-vs-eq-interning](../02-is-vs-eq-interning/2-summary.md) — 문자열이 **언제 같은 객체가 되나**의 정본(두 기계). 여기 4번 절의 「한 글자 싱글턴」은 거기에 없는 **세 번째 기계**다.
-- 이어지는 곳: [07-string-methods](../07-string-methods/2-summary.md) — 이 코드 포인트 열 위에서 도는 메서드들. `isdecimal`/`isdigit`/`isnumeric` 이 갈리는 이유가 여기 있다.
+- 이어지는 곳: [07-string-methods](../07-string-methods/2-summary.md) — 이 코드 포인트 열 위에서 도는 메서드들. `isdecimal`/`isdigit`/`isnumeric` 이 달라지는 이유가 여기 있다.
 - 이어지는 곳: [08-fstrings-and-format-spec](../08-fstrings-and-format-spec/2-summary.md) — 그 문자열을 만들어 내는 문법.
 - 이어지는 곳: [09-sequence-ops-and-slicing](../09-sequence-ops-and-slicing/2-summary.md) — `str`·`bytes`·`bytearray` 가 **시퀀스로서** 공유하는 연산.
 - 이어지는 곳: [03-mutability-and-copying](../03-mutability-and-copying/2-summary.md) — `bytearray` 가 해시 안 되는 이유의 정본.
@@ -977,6 +977,6 @@ print(len("가".encode("utf-8")), len("가".encode("euc-kr")), len("가".encode(
 - [PEP 393 — Flexible String Representation](https://peps.python.org/pep-0393/) — 내부 표현이 세 갈래인 이유
 
 **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
-**버전** — `str`/`bytes` 의 분리는 Python 3 전체 공통. `sys.getsizeof` 의 **구체적 바이트 수**는 이 판의 관찰이다.
+**버전** — `str`/`bytes` 의 분리는 Python 3 전체 공통. `sys.getsizeof` 의 **구체적 바이트 수**는 이 버전의 관찰이다.
 유니코드 데이터베이스는 이 설치본에서 `unicodedata.unidata_version` 이 `15.0.0` 이다.
 **선행** — [01-object-and-name-binding](../01-object-and-name-binding/2-summary.md)(이름 바인딩 정본) · [02-is-vs-eq-interning](../02-is-vs-eq-interning/2-summary.md)(인터닝 정본 — 문자열이 언제 같은 객체가 되나).

@@ -216,5 +216,5 @@ DB 커넥션 확대 → 병목이 DB CPU로
 
 ## 출처
 
-출처: `jun-bank/docs/study/notes/axes/scalability.md` (본체) + `08-engineering-axes-deep.md` §2 (「수직/수평」·「확장 사다리」 흡수) · 이관일 2026-09-16.\
+출처: `jun-bank/docs/study/notes/axes/scalability.md` (핵심) + `08-engineering-axes-deep.md` §2 (「수직/수평」·「확장 사다리」 흡수) · 이관일 2026-09-16.\
 본문 표·절은 **원고**를 고쳐 쓴 것이다. 「한눈에」의 비유·그림과 맨 끝 `[Claude 추가]`는 **Claude 보강**이다.

@@ -209,8 +209,8 @@ int main() {
 }
 ```
 
-- g++ 판과 clang 판의 **`run exit`** 는 각각 무엇인가 — `(4)` 는 찍히나?
-- ★★ clang 판이 끝까지 간다면 `~Derived` 는 몇 번 돌고 `~Base` 의 `id` 는 무엇이 찍히나?
+- g++ 판과 clang 버전의 **`run exit`** 는 각각 무엇인가 — `(4)` 는 찍히나?
+- ★★ clang 버전이 끝까지 간다면 `~Derived` 는 몇 번 돌고 `~Base` 의 `id` 는 무엇이 찍히나?
 - ★★ ASan 을 붙이면 두 컴파일러가 각각 무엇이라고 하나?
 
 ### 8. ★ `delete p` 가 부르는 `operator delete` 는 누구의 것인가 (예측)
@@ -260,11 +260,11 @@ int main() {
 - ★★ 다른 순수 가상 함수(`f() = 0`)는 정의 없이도 되는데 소멸자만 왜 안 되나?
 - ★ `virtual ~Base() = 0 {}` 처럼 한 줄에 쓰면?
 
-### 10. ★★ 다형적 삭제의 탐침 일곱 — 경고를 누가 보나 (경계)
+### 10. ★★ 다형적 삭제의 probe 일곱 — 경고를 누가 보나 (경계)
 
-- ★★ 탐침 일곱(다형 기반 `delete` · `final` · `protected` · 배열 `delete[]` · raw 를 거친 `shared_ptr` · `unique_ptr<Poly>` · 가상 소멸자가 지운 이동) 중 **g++ 와 clang 이 각각 몇 개에** 답하나?
-- ★★★ 두 컴파일러가 **갈린 탐침**은 어느 것이고, 왜 g++ 에서는 「감싸면 경고가 사라지나」?
-- ★ `-Wnon-virtual-dtor` 를 켜면 **답한 탐침 수**가 늘어나나?
+- ★★ probe 일곱(다형 기반 `delete` · `final` · `protected` · 배열 `delete[]` · raw 를 거친 `shared_ptr` · `unique_ptr<Poly>` · 가상 소멸자가 지운 이동) 중 **g++ 와 clang 이 각각 몇 개에** 답하나?
+- ★★★ 두 컴파일러가 **달라진 probe**은 어느 것이고, 왜 g++ 에서는 「감싸면 경고가 사라지나」?
+- ★ `-Wnon-virtual-dtor` 를 켜면 **답한 probe 수**가 늘어나나?
 
 ### 11. ★★★ 언제 가상으로 둘까 (왜)
 
@@ -285,9 +285,9 @@ int main() {
 「스마트 포인터니까 안전하다」로 뭉개지 말고 **삭제자가 기억한 타입**을 따라가야 한다.
 **환경** — g++ 13.3.0 · clang 18.1.3 · x86-64 Linux.
 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex`.
-★★★ **이 주제의 본체는 「호출 로그」다**(1번) — `shared_ptr` 대 `unique_ptr` 에 같은 객체를 맡긴다.
+★★★ **이 주제의 핵심은 「호출 로그」다**(1번) — `shared_ptr` 대 `unique_ptr` 에 같은 객체를 맡긴다.
 ★★ **짝은 `<type_traits>` 격자다**(4번) — [18번](../18-rule-of-zero-three-five-default-delete/)의 형식 그대로.
-★ **「부적용인 창」이 있다** — `-O2` 어셈블리 세기. 이 주제에는 **잴 비용이 없다.**
+★ **「해당 없는 창」이 있다** — `-O2` 어셈블리 세기. 이 주제에는 **잴 비용이 없다.**
 ★★★ **[19번](../19-inheritance-virtual-functions-override-final/)이 잰 것은 다시 묻지 않는다** — `~DerNV` 0회 · 128바이트 · `new-delete-type-mismatch`(16 대 8) · 「경고의 스위치는 기반이 다형적인가」.
 여기서 묻는 것은 **「무엇이 미정의인가」의 층**과 **「언제 가상으로 둘까」의 판단**이다.
 

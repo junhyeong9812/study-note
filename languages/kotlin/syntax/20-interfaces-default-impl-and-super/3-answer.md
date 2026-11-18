@@ -501,7 +501,7 @@ public final class Korean implements Greeter {
 | `no-compatibility` | `public default` | **안 생긴다** | **`greet()` 자체가 없다** |
 | `disable` | `public abstract` | **생긴다** | `greet()` 있음 → `invokestatic Greeter$DefaultImpls.greet(LGreeter;)` |
 
-- ★★ **소스는 한 글자도 안 바뀌었다.** 플래그 하나로 클래스 파일의 모양이 통째로 갈린다.
+- ★★ **소스는 한 글자도 안 바뀌었다.** 플래그 하나로 클래스 파일의 모양이 통째로 나뉜다.
 - `invokespecial … InterfaceMethod Greeter.greet` 는 **`super` 호출**이다 — JVM 의 default 메서드를 직접 부른다.
 - `invokestatic … Greeter$DefaultImpls.greet(LGreeter;)` 는 **자기 자신을 첫 인자로 넘기는 정적 호출**이다. 몸통이 인터페이스 밖에 있으므로 그렇게 할 수밖에 없다.
 - `no-compatibility` 에서 `Korean` 에 `greet()` 가 아예 없는 것은 **JVM 의 인터페이스 메서드 해소에 그냥 맡긴다**는 뜻이다 — 가장 깔끔하지만 **옛 바이너리와의 호환을 버린다.**
@@ -656,7 +656,7 @@ forbid20.kt:12:27: error: multiple supertypes available. Specify the intended su
   - 「`interface 'interface Walker : Any' does not have constructors.`」 — **인터페이스는 인스턴스를 못 만든다.** (문구에 `: Any` 가 붙은 것도 볼 만하다 — [19번 주제](../19-inheritance-open-final-override/)의 「모든 것이 `Any` 를 상속한다」가 여기서도 보인다.)
   - 「`multiple supertypes available. Specify the intended supertype in angle brackets, e.g. 'super<Foo>'.`」 — 상위가 둘 이상이면 **`super` 에 꺾쇠가 강제**된다. 1번에서 꺾쇠가 없어도 됐던 것은 상위가 하나였기 때문이다.
 
-### 12. 네 갈래 — **디스패치 · 상태 · 계층 · 소유권**으로 갈린다
+### 12. 네 갈래 — **디스패치 · 상태 · 계층 · 소유권**으로 나뉜다
 
 **왜 그런가**
 
@@ -692,9 +692,9 @@ javac 21.0.5
 (exit 0)
 ```
 
-★ **흔들리는 칸과 안 흔들리는 칸**(제출 전 재대조에서 「고칠 것」과 「설계상 다른 것」을 가르는 선언이다)
+★ **실행마다 달라지는 항목과 달라지지 않는 항목**(제출 전 재대조에서 「고칠 것」과 「설계상 다른 것」을 가르는 선언이다)
 
-| 흔들린다 | 안 흔들린다 |
+| 실행마다 달라진다 | 달라지지 않는다 |
 |---|---|
 | **없다** — 이 주제에는 해시코드·시간·스레드 순서를 싣지 않았다 | 컴파일 에러의 **문구·`파일:줄:칸`·캐럿 줄** |
 | | `javap` 출력 **전체**(상수 풀 번호 `#39`·오프셋·선언 순서) |
@@ -713,7 +713,7 @@ javac 21.0.5
 | `diamond.kt` · `diamondfix.kt` | 인터페이스끼리 충돌 → `super<T>` 해소 | `kotlinc` 2회 → `java` |
 | `clsiface.kt` · `clsifacefix.kt` | ★★ 클래스 + 인터페이스 충돌 — **class wins 가 없다** | `kotlinc` 2회 → `java` |
 | `ClassWins.java` | ★★ **Java 에서는 같은 모양이 조용히 컴파일되는 것** | `javac` → `java` |
-| `JavaGreeter.java` | ★★ 같은 Java 파일이 **플래그에 따라 갈리는 것** | `javac` 2회(1벌 실패) → `java` |
+| `JavaGreeter.java` | ★★ 같은 Java 파일이 **플래그에 따라 달라지는 것** | `javac` 2회(1벌 실패) → `java` |
 | `form20.kt` | `private fun`·`companion object`·계산 프로퍼티가 도는 것(`Z`) | `kotlinc` → `java` |
 | `forbid20.kt` | 인스턴스화 금지 · `super` 꺾쇠 강제 | `kotlinc` (컴파일 실패가 결과) |
 
@@ -724,7 +724,7 @@ javac 21.0.5
 「`super<T>` 로 고른다」·「클래스가 인터페이스를 이기지 않는다」·「인터페이스 멤버는 기본이 `open`」**
 는 **언어의 계약**이다.
 
-**★ 던져 봤더니 예상과 달랐던 것 — 세 건**
+**★ 실행해 봤더니 예상과 달랐던 것 — 세 건**
 
 1. ★★★ **「Kotlin 인터페이스 메서드는 `abstract` 이고 구현은 `DefaultImpls` 에 있다」가 이제 틀렸다.**
    2.4.20 의 기본값에서는 **인터페이스에 진짜 `default` 메서드가 들어간다**(6번). 이 문서를 쓰기 전의 전제가

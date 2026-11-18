@@ -237,10 +237,10 @@ rows where the two editions differ: 13 / 16
 
 **왜 그런가**
 
-- ★★★ **「갈린 행 13 / 16」** — 같았던 셋은 `array_into_iter` · `closure_capture`(둘 다 **2018 → 2021** 에서 바뀐 것이라 2021·2024 사이에서는 같다) · `missing_frag`(**두 판 모두 에러** — 아래).
-- ★★★ **2021 에서 막히고 2024 에서 통과 — `tail_temp`(E0597 → `3`) · `let_chain`(「only allowed in Rust 2024」 → `big 3`)** 둘뿐이다. 갈린 13행을 모양별로 나누면 —
+- ★★★ **「달라진 행 13 / 16」** — 같았던 셋은 `array_into_iter` · `closure_capture`(둘 다 **2018 → 2021** 에서 바뀐 것이라 2021·2024 사이에서는 같다) · `missing_frag`(**두 판 모두 에러** — 아래).
+- ★★★ **2021 에서 막히고 2024 에서 통과 — `tail_temp`(E0597 → `3`) · `let_chain`(「only allowed in Rust 2024」 → `big 3`)** 둘뿐이다. 달라진 13행을 모양별로 나누면 —
 
-| 갈린 모양 | 행 | 수 |
+| 달라진 모양 | 행 | 수 |
 |---|---|---|
 | 2021 통과 → **2024 에러** | `gen_ident` · `extern_block` · `no_mangle` · `set_var` · `static_mut` · `rpit_capture` | 6 |
 | **2021 에러** → 2024 통과 | `tail_temp` · `let_chain` | 2 |
@@ -249,7 +249,7 @@ rows where the two editions differ: 13 / 16
 | **같음** | `array_into_iter` · `closure_capture` · `missing_frag` | 3 |
 
 - ★★★ **「통과하는데 출력이 다른」 4행이 가장 위험하다** — 컴파일러가 아무 말도 안 하고 **뜻이 바뀐다.** `boxed_slice` 는 2021 에서 경고 1개(`boxed_slice_into_iter`)로 미리 알려 주지만, **`never_typename` · `macro_expr` · `iflet_drop` 은 2021 에서 경고 0개**였다.
-- ★ `missing_frag` — 조각 지정자 없는 `$x` 는 2024 에디션 가이드 항목이지만 **이 판(1.92)에서는 2021 도 에러**였다. 에디션 가이드의 「2024 에서 바뀜」이 **지금 컴파일러에서도 두 판이 갈린다**는 뜻은 아니다.
+- ★ `missing_frag` — 조각 지정자 없는 `$x` 는 2024 에디션 가이드 항목이지만 **이 버전(1.92)에서는 2021 도 에러**였다. 에디션 가이드의 「2024 에서 바뀜」이 **지금 컴파일러에서도 두 버전이 달라진다**는 뜻은 아니다.
 
 ### 2. ★★★ `else` · `drop g` · `3 1 4 5 1 5 free=false` — 경고는 **하나**(`boxed_slice_into_iter`)
 
@@ -890,9 +890,9 @@ For more information about this error, try `rustc --explain E0277`.
 (exit 1)
 ```
 
-- ★★★ **2021 은 컴파일이 되던 모양인데 이 판(1.92)에서는 막힌다** — 그 에러는 **린트** `dependency_on_unit_never_type_fallback` 이 **기본 거부(deny)** 로 켜져 있어서다(`note:` 가 그렇게 말하고, 「앞으로 **모든 에디션**에서 hard error 가 된다」고 덧붙인다). `help:` 는 `let _x: () = …` 로 타입을 적으라 한다.
+- ★★★ **2021 은 컴파일이 되던 모양인데 이 버전(1.92)에서는 막힌다** — 그 에러는 **린트** `dependency_on_unit_never_type_fallback` 이 **기본 거부(deny)** 로 켜져 있어서다(`note:` 가 그렇게 말하고, 「앞으로 **모든 에디션**에서 hard error 가 된다」고 덧붙인다). `help:` 는 `let _x: () = …` 로 타입을 적으라 한다.
 - ★★ **2024 는 폴백이 `!` 라 `make::<!>()` 를 부르게 되어 `!: Default` 가 없다(E0277).** 1번의 `never_typename` 행(`()` → `!`)이 같은 규칙을 **통과하는 모양**으로 보인 것이다.
-- ★ 그래서 「2021 은 되고 2024 만 막힌다」가 **이 판에서는 틀렸다** — 컴파일러가 옛 에디션에도 **미리 막는 린트**를 켜 둔 자리가 있다.
+- ★ 그래서 「2021 은 되고 2024 만 막힌다」가 **이 버전에서는 틀렸다** — 컴파일러가 옛 에디션에도 **미리 막는 린트**를 켜 둔 자리가 있다.
 
 ### 7. ★★★ 에디션은 **옛 코드를 깨는 변화**만 가른다 — 크레이트 단위라 섞여 링크된다
 
@@ -903,7 +903,7 @@ For more information about this error, try `rustc --explain E0277`.
 ### 8. ★★ `first_even` 의 `if let`(`RefCell` 가드) — 린트가 침묵해 **동작이 바뀐 채** 넘어갔다 · 문서의 마지막 단계는 「테스트를 돌려라」
 
 - ★★★ 4번 diff 에 **`first_even` 이 없다** — `if let Some(x) = c.borrow().iter().find(…) { … } else { … }` 의 가드는 2021 에서 `else` 까지 살고(`free=false`) 2024 에서는 `else` 전에 반납된다(`free=true`). **같은 규칙(`if let` 임시값)의 `guarded()` 는 `match` 로 고쳐 옛 동작을 지켰는데, 이쪽은 `if_let_rescope` 린트가 짚지 않아** 그대로 남았다.
-- ★★ 에디션 가이드의 조건 — 「`if_let_rescope` 린트는 **수명 문제가 생기거나**, scrutinee 에서 **사용자 정의의 사소하지 않은 `Drop` 을 가진 임시값**이 생길 때 고침을 제안한다」. `Guard` 는 `impl Drop` 을 가진 사용자 타입이고, `first_even` 의 임시값은 std 의 `Ref` 다. **이 판에서 이 모양이 침묵했다**는 것까지가 관찰이고, 어느 조건에서 갈렸는지는 **확인하지 않았다.**
+- ★★ 에디션 가이드의 조건 — 「`if_let_rescope` 린트는 **수명 문제가 생기거나**, scrutinee 에서 **사용자 정의의 사소하지 않은 `Drop` 을 가진 임시값**이 생길 때 고침을 제안한다」. `Guard` 는 `impl Drop` 을 가진 사용자 타입이고, `first_even` 의 임시값은 std 의 `Ref` 다. **이 버전에서 이 모양이 침묵했다**는 것까지가 관찰이고, 어느 조건에서 갈렸는지는 **확인하지 않았다.**
 - ★★★ cargo 문서(`cargo fix`)의 절차 — ① `cargo fix --edition` → ② `Cargo.toml` 의 `edition` 을 **직접** 올린다 → ③ **테스트를 돌려 전부 여전히 동작하는지 확인한다.** 이 패키지에 `free=` 를 확인하는 테스트가 있었다면 ③에서 잡혔다.
 
 ### 9. ★★ `iflet_drop` · `rpit_capture` · `boxed_slice`(+ `array_into_iter`) · `let_chain` · `static_mut` · `tail_temp`
@@ -930,21 +930,21 @@ For more information about this error, try `rustc --explain E0277`.
 | 무엇을 | 어떻게 | 몇 번 | 결과 |
 |---|---|---|---|
 | 이 문서·서머리의 **모든 블록** | `capture.sh` — 블록마다 명령을 배너에 | 배치 내내 + **제출 전 전수 재실행** | `normalize-shaky.py` 기본 규칙 넷(시간 칸이 걸린다) · **고칠 것 0** |
-| ★★★ **에디션 격자** | `r47_grid.sh` — 소스 열여섯을 두 판으로 컴파일·실행(탭 구분 · 칸 수 검사 · 경고 수는 요약 줄 제외) | 16 × 2 | **`13 / 16`** |
+| ★★★ **에디션 격자** | `r47_grid.sh` — 소스 열여섯을 두 버전으로 컴파일·실행(탭 구분 · 칸 수 검사 · 경고 수는 요약 줄 제외) | 16 × 2 | **`13 / 16`** |
 | ★★★ **`cargo fix --edition` 절차** | `r47_fix_before` · `r47_nofix` · `r47_fix`(fix → diff → `edition` 확인 → 올림 → 실행) | 3 | 경고 1 · 에러 5 · **11 fixes · `edition` 그대로 · `free=false` → `free=true`** |
 | 에디션 섞어 링크 | `r47_interop` · `r47_interop_plain` | 2 | `7` · reserved keyword |
 | `!` 폴백 | `r47_never`(2021 · 2024) | 2 | 거부 린트 · E0277 |
 | 판 연혁 | 2-summary 맨 위 부분 `tools` 블록 — 로컬 `releases.md` | 1 | 2021 = 1.56.0 · 2024 = 1.85.0 |
-| **안 던진 것** — 2015·2018 판 · `cargo fix --edition-idioms` · `--all-features` 로 feature 뒤의 코드까지 고치기 · rustfmt 의 스타일 에디션 · `gen` 블록 · 예약 구문 `#"…"#` · 꼬리식 임시값의 `Drop` 순서 | — | 0 | ★ 「안 던졌다」로 표시했다 |
+| **실행하지 않은 것** — 2015·2018 판 · `cargo fix --edition-idioms` · `--all-features` 로 feature 뒤의 코드까지 고치기 · rustfmt 의 스타일 에디션 · `gen` 블록 · 예약 구문 `#"…"#` · 꼬리식 임시값의 `Drop` 순서 | — | 0 | ★ 「실행하지 않았다」로 표시했다 |
 
 **구현 의존 항목**(버전·환경이 바뀌면 **다시 찍어야 하는** 것).
 
 | 항목 | 왜 |
 |---|---|
-| `missing_frag` 가 2021 에서도 에러 · `!` 폴백 린트가 2021 에서 거부 | ★ **컴파일러 판**(1.92)이 옛 에디션에도 켠 것 — 판이 오르면 더 늘 수 있다 |
+| `missing_frag` 가 2021 에서도 에러 · `!` 폴백 린트가 2021 에서 거부 | ★ **컴파일러 판**(1.92)이 옛 에디션에도 켠 것 — 버전이 오르면 더 늘 수 있다 |
 | 어떤 린트가 기본 경고인가(`boxed_slice_into_iter` 만 켜져 있었다) | ★ rustc 린트 설정 |
 | `cargo fix` 가 고친 자리 · `if_let_rescope` 가 침묵한 모양 | ★ **린트 구현** — 에디션 가이드는 조건을 서술할 뿐이다 |
-| 진단 문구 | ★ rustc·cargo 판에 매인다 |
+| 진단 문구 | ★ rustc·cargo 버전에 매인다 |
 
 ★ **다시 찍는 법** — `capture.sh <새 디렉토리>` 를 그대로 돌리고 `normalize-shaky.py <원본> <새 디렉토리>` 로 견준다.
 

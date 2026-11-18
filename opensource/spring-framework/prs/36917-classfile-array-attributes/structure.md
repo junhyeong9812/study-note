@@ -247,7 +247,7 @@ adaptForAttribute(Method attribute, Object value)                           :499
 즉 결함은 **파싱 시점에 심어지고 소비 시점에 터진다.**\
 그리고 빈 배열은 :523에서 구제되므로, 빈 배열만으로 시험하면 아무 문제가 없어 보인다.
 
-> **무음 실패(silent failure)** — 잘못된 값이 만들어졌는데 그 자리에서는 아무 신호도 나지 않고, 한참 뒤 다른 곳에서 터지는 실패.\
+> **조용한 실패(silent failure)** — 잘못된 값이 만들어졌는데 그 자리에서는 아무 신호도 나지 않고, 한참 뒤 다른 곳에서 터지는 실패.\
 > 예: `Byte[]`가 만들어지는 `parseArrayValue`는 조용히 끝나고, 값을 꺼내는 `adaptForAttribute`에 가서야 예외가 된다.
 
 ### 2.3 현재 HEAD는 어떻게 다른가
@@ -284,7 +284,7 @@ parseArrayValue(className, classLoader, arrayValue) {
 
 ### 3.1 수정 전 `parseArrayValue` 분기도 (base 기준)
 
-base 코드의 분기는 두 층으로 갈린다.\
+base 코드의 분기는 두 층으로 나뉜다.\
 바깥에서 빈 배열을 조기 반환으로 걸러 내고, 안쪽 switch가 첫 원소의 타입에 따라 네 갈래로 나뉜다.
 
 > **조기 반환(early return)** — 본류 흐름에 합류하지 않고 함수 앞머리에서 바로 값을 돌려주고 끝내는 분기.\

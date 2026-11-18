@@ -60,7 +60,7 @@ emp (사원)                          dept (부서)
 ```
 
 **이 주제에서 일을 내는 것은 `cho` 다.** [01번](../01-logical-query-processing-order/)에서 `cho` 는 `WHERE salary IS NOT NULL` 에 걸려 탈락했다.\
-여기서는 그 탈락이 **`WHERE` 에서 일어나느냐 `HAVING` 에서 일어나느냐**로 답이 갈린다.
+여기서는 그 탈락이 **`WHERE` 에서 일어나느냐 `HAVING` 에서 일어나느냐**로 답이 달라진다.
 
 <details>
 <summary>표를 만드는 문 (PostgreSQL)</summary>
@@ -120,7 +120,7 @@ ERROR 1111 (HY000) at line 1: Invalid use of group function
 
 ---
 
-### 2. 결과가 갈리는 자리 — 같은 말처럼 들리는 두 문
+### 2. 결과가 달라지는 자리 — 같은 말처럼 들리는 두 문
 
 **언제 쓰나** — 「급여 400 이상」 같은 조건을 집계 질의에 붙일 때. **여기가 이 주제의 중심이다.**
 
@@ -160,7 +160,7 @@ dept_id=10 의 cnt = 1                           dept_id=10 의 cnt = 2
                                  +---------+-----+
 ```
 
-두 그림의 결론 — **`dept_id=10` 의 `cnt` 가 1과 2로 갈린다.**\
+두 그림의 결론 — **`dept_id=10` 의 `cnt` 가 1과 2로 나뉜다.**\
 (A)는 `ann`(300)을 세지 않았고, (B)는 `ann` 을 **포함해서** 셌다. (B)에서 `ann` 은 조건을 만족하지 않지만 **팀이 살아남았으므로 같이 살아남는다.**
 
 **두 문은 다른 질문에 답하고 있다.**
@@ -318,7 +318,7 @@ ERROR 1054 (42S22) at line 1: Unknown column 'salary' in 'having clause'
 그림 해설 — PG 는 **"그 열은 GROUP BY 에 있거나 집계 안에 있어야 한다"**, MySQL 은 **"그런 열이 없다"** 고 한다.\
 MySQL 쪽 말이 더 정확한 묘사다 — MySQL 의 `HAVING` 은 이름을 **출력 열 목록에서 먼저 찾기** 때문에, 거기 없는 `salary` 는 말 그대로 *모르는 이름*이다.
 
-**열 별칭** — 바로 그 탐색 순서 때문에 방언이 갈린다.
+**열 별칭** — 바로 그 탐색 순서 때문에 방언이 달라진다.
 
 ```text
 ### SQL: SELECT dept_id, COUNT(*) AS cnt FROM emp GROUP BY dept_id HAVING cnt >= 2;
@@ -450,7 +450,7 @@ ORDER BY <정렬 키>
 ## 어디서 틀리나
 
 - **`WHERE` 와 `HAVING` 이 "같은데 성능만 다른 것"이라고 믿는다.**\
-  `WHERE salary >= 400` 과 `HAVING MAX(salary) >= 400` 은 **다른 질문**이다. 위에서 `cnt` 가 1과 2로 갈렸다.\
+  `WHERE salary >= 400` 과 `HAVING MAX(salary) >= 400` 은 **다른 질문**이다. 위에서 `cnt` 가 1과 2로 나뉘었다.\
   바꿔 써도 되는 것은 **조건이 그룹 키에 걸릴 때뿐**이다.
 - **행 단위로 판정 가능한 조건을 `HAVING` 에 둔다.**\
   PG 에서는 옵티마이저가 내려 줘서 티가 안 난다. **MySQL 에서는 안 내려 준다** — 위 계획에서 그룹 3개를 다 만든 뒤 걸렀다.\
@@ -498,7 +498,7 @@ ORDER BY <정렬 키>
 
 - `WHERE` 는 **행**을 버리고 `HAVING` 은 **그룹**을 버린다. 사이에 `GROUP BY` 가 끼어 있다.
 - 조건이 **그룹 키**에 걸리면 두 절의 결과가 같고, **집계**에 걸리면 애초에 `WHERE` 에 쓸 수 없다.\
-  **결과가 갈리는 것은 「같은 뜻으로 보이는 다른 조건」을 양쪽에 쓸 때다** — `WHERE salary >= 400` 대 `HAVING MAX(salary) >= 400`.
+  **결과가 달라지는 것은 「같은 뜻으로 보이는 다른 조건」을 양쪽에 쓸 때다** — `WHERE salary >= 400` 대 `HAVING MAX(salary) >= 400`.
 - 비용은 **엔진이 정한다** — PG 18.6 은 그룹 키 조건을 스캔 필터로 내렸고, MySQL 8.4.10 은 안 내렸다.
 - `HAVING` 도 **`TRUE` 만 통과**시킨다. `MAX` 가 `NULL` 인 그룹은 조용히 사라진다.
 - `HAVING` 에서 **열 별칭은 MySQL 만** 된다. 식을 그대로 적으면 양쪽 다 돈다.
@@ -544,5 +544,5 @@ ORDER BY <정렬 키>
 **기준 소스** — [PostgreSQL 18 · SELECT](https://www.postgresql.org/docs/18/sql-select.html) · [MySQL 8.4 · SELECT Statement](https://dev.mysql.com/doc/refman/8.4/en/select.html)\
 **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
 본문에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 에러 메시지도 실행 계획도 실제로 받은 것이고, 지어낸 출력은 없다.\
-**버전** — `WHERE`·`HAVING` 두 절 자체는 두 엔진 모두 오래전부터 있다. 버전에 갈리는 것은 없다.\
+**버전** — `WHERE`·`HAVING` 두 절 자체는 두 엔진 모두 오래전부터 있다. 버전에 달라지는 것은 없다.\
 **선행** — [01 논리적 질의 처리 순서](../01-logical-query-processing-order/). **이 주제는 01 의 그림 하나로 전부 설명된다** — `WHERE` 는 2번 칸, `HAVING` 은 4번 칸이다.

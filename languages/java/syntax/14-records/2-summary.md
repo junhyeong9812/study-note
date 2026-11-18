@@ -885,7 +885,7 @@ HashMap 조회      = a
   그래서 `lo = Math.max(lo, 0)` 이 된다. 반면 같은 이름의 **필드**는 `final` 이라 `this.lo = ...` 가 막힌다.\
   "record 는 전부 final" 이라는 한 줄 요약이 이 자리에서 오해를 만든다.
 - **`ObjectMethods.bootstrap` 은 `equals`·`hashCode`·`toString` 세 이름을 한 부트스트랩이 처리한다.**\
-  `BootstrapMethods:` 항목이 `0:` 하나뿐이고 세 `invokedynamic` 이 전부 `#0` 을 가리킨다 — 무엇을 만들지는 호출 지점의 이름(`equals`/`hashCode`/`toString`)으로 갈린다.
+  `BootstrapMethods:` 항목이 `0:` 하나뿐이고 세 `invokedynamic` 이 전부 `#0` 을 가리킨다 — 무엇을 만들지는 호출 지점의 이름(`equals`/`hashCode`/`toString`)으로 나뉜다.
 - **`record` 컴포넌트에 애너테이션을 달면 어디로 가나**는 애너테이션의 `@Target` 이 정한다.\
   필드·파라미터·접근자·`Record` 속성 중 **적용 가능한 자리 전부**로 퍼진다(JLS §8.10.3).\
   **실행 결과** (`Ex.java (14-ann)`, JDK 21.0.5 — `@Wide` 는 `@Target` 이 넷, `@OnlyField` 는 `FIELD` 하나):

@@ -158,8 +158,8 @@ J captures loop var, 3 rounds   : false
 - ★★ **개수를 정하는 것은 「같은 글자인가」가 아니라 「같은 `invokedynamic` 자리인가」다.**
 - **캡처가 없으면 그 자리의 싱글턴**(`A`·`I` 가 `true`) — `CallSite` 가 같은 인스턴스를 계속 돌려준다.
   **캡처가 있으면 호출마다 새 객체**(`B`·`J` 가 `false`) — 캡처값이 indy 의 인자로 들어가니 같은 것을 줄 수가 없다.
-- **`H` 와 `I` 가 갈리는 근거는 1번의 `InvokeDynamic #2` 와 `#3`** 이다.
-  `makeTwice` 는 글자가 똑같은 람다 둘인데 **indy 번호가 둘로 갈렸고 몸통 메서드도 `$lambda$0`·`$lambda$1` 둘**이다 —
+- **`H` 와 `I` 가 달라지는 근거는 1번의 `InvokeDynamic #2` 와 `#3`** 이다.
+  `makeTwice` 는 글자가 똑같은 람다 둘인데 **indy 번호가 둘로 달라졌고 몸통 메서드도 `$lambda$0`·`$lambda$1` 둘**이다 —
   컴파일러가 **같은 글자라고 합치지 않는다.**
 - ★★ **다섯 값 중 「언어가 약속한 것」은 0개다.** 전부 **이 컴파일러와 이 JVM 의 동작**이다.
   `C`·`D` 의 16진수가 **판마다 달랐다**는 것이 그 성격을 보여 준다 — **관찰은 관찰로 적는다.**
@@ -242,7 +242,7 @@ final class Refs2Kt$viaFunRef$1 extends kotlin.jvm.internal.FunctionReferenceImp
 **왜 그런가**
 
 - ★ **`::` 참조 셋이 클래스 파일 셋을 만들었다.** 람다는 하나도 안 만들었는데 참조는 만든다.
-- **호출 명령이 갈린다** — 람다는 `invokedynamic`, 참조는 **`getstatic … INSTANCE`** 다.
+- **호출 명령이 달라진다** — 람다는 `invokedynamic`, 참조는 **`getstatic … INSTANCE`** 다.
   참조는 **캡처가 없으면 클래스 하나당 객체 하나**(싱글턴)다.
 - **`FunctionReferenceImpl` 을 상속**하고 생성자에 `class Refs2Kt`·`"square"`·`"square(I)I"` 를 넘긴다 —
   **자기가 무엇을 가리키는지 기억해야** 하기 때문이고, 그래서 `.name` 같은 리플렉션이 된다
@@ -532,7 +532,7 @@ OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sha
 |---|---|---|
 | `ftypes.kt` | `Function0`\~`Function22` 와 **23부터 `FunctionN`** · 수신자·nullable 의 디스크립터 | `kotlinc` → `javap -s -p` |
 | `icode.kt` | 람다가 `invokedynamic` 이 되고 **클래스 파일이 안 느는 것** · 몸통 이름 · 박싱 자리 | `kotlinc` → `find` · `javap -c -p` · `javap -v -p` |
-| `ex.kt` | `A`\~`G` — 캡처 유무로 갈리는 객체 동일성 · 런타임 클래스 이름 | `kotlinc`(경고 1건) → `java` **3판** |
+| `ex.kt` | `A`\~`G` — 캡처 유무로 나뉘는 객체 동일성 · 런타임 클래스 이름 | `kotlinc`(경고 1건) → `java` **3판** |
 | `ex2.kt` | `H`·`I`·`J` — 같은 글자 두 자리 · 루프 3바퀴 · 루프 변수 캡처 | `kotlinc` → `java` |
 | `refs2.kt` | `::` 참조가 **클래스 파일을 만드는 것** · `FunctionReferenceImpl` · `INSTANCE` | `kotlinc` → `find` · `javap -c -p` 2벌 |
 | `refs.kt` | `map(::square)` 에 `Function1` 이 **0회**인 것 · `.name` · 바운드 참조 클래스 | `kotlinc` → `javap` + `awk`/`grep` · `java` |
@@ -551,7 +551,7 @@ OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sha
 「비인라인 람다의 맨 `return` 금지」·「익명 함수의 `return` 은 자기만 끝낸다」·「람다가 바깥 `var` 를 고칠 수 있다」**
 는 **언어 규칙**이라 타깃과 무관하다.
 
-**★ 던져 봤더니 예상과 달랐던 것 — 세 건**
+**★ 실행해 봤더니 예상과 달랐던 것 — 세 건**
 
 1. **「람다마다 `.class` 가 생긴다」가 틀렸다.** 람다 넷짜리 파일에서 클래스 파일은 **하나**였다.
    익명 클래스가 생기는 쪽은 **`::` 참조**이고, 그쪽은 셋을 만들었다 — **예상이 정확히 뒤집혔다.**
@@ -561,12 +561,12 @@ OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sha
 3. **같은 글자 람다가 같은 객체가 아니었다**(`H` 가 `false`). 합쳐지는 단위는 **글자가 아니라 `invokedynamic` 자리**였고,
    `makeTwice` 의 `$lambda$0`·`$lambda$1` 이 그 증거였다.
 
-**안 걸린 것도 출력이다** — `ex.kt` 에서 `A`\~`G` 는 **세 판이 한 글자도 같았는데** `C`·`D` 의 16진수만 판마다 달랐다.
-**「세 판이 같았다」가 「보장된다」를 뜻하지 않는다** — 그래서 런타임 클래스 이름은 **관찰**로만 적었다.
+**안 걸린 것도 출력이다** — `ex.kt` 에서 `A`\~`G` 는 **세 버전이 한 글자도 같았는데** `C`·`D` 의 16진수만 판마다 달랐다.
+**「세 버전이 같았다」가 「보장된다」를 뜻하지 않는다** — 그래서 런타임 클래스 이름은 **관찰**로만 적었다.
 
 ## 실행 환경
 
 모든 출력·에러·경고·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
 역어셈블은 **기본 `-jvm-target`(1.8 · `major version: 52`)** 이 정본이다 —\
 **람다가 `invokedynamic` 이 되는 것은 그 타깃에서의 선택이지 언어의 약속이 아니다.**\
-★ 런타임 클래스 이름(`ExKt$$Lambda/0x…`)은 **판마다 다르다** — 세 판을 돌려 대조했다(2번).
+★ 런타임 클래스 이름(`ExKt$$Lambda/0x…`)은 **판마다 다르다** — 세 버전을 돌려 대조했다(2번).

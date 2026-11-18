@@ -67,7 +67,7 @@
 
 대상 프로그램(`Hot.java`):
 - `cpu-worker`: `heavy()`가 `light()`보다 같은 루프를 **3배** 돈다(30만 회 vs 10만 회).
-- `lock-holder`: 락을 쥔 채 50ms씩 바쁘게 돈다(CPU 사용).
+- `lock-holder`: 락을 잡은 채 50ms씩 바쁘게 돈다(CPU 사용).
 - `waiter`: 30ms 자고, 그 락을 잡으려 기다린다.
 
 ```java
@@ -120,7 +120,7 @@ java -agentpath:/ap/lib/libasyncProfiler.so=start,event=wall,interval=10ms,threa
 ### 5. 실험: 세이프포인트 편향을 일부러 키우면
 
 JDK 21 C2는 기본으로 긴 루프 안에도 세이프포인트 검사를 넣는다(`UseCountedLoopSafepoints=true`, `LoopStripMiningIter=1000` — 같은 JVM의 `-XX:+PrintFlagsFinal`로 확인). 이 상태에서는 순진한 샘플러도 비율을 비슷하게 맞혔다(`mix <- heavy` 338~411 : `mix <- light` 102~154, 집필 3회 + 재실행 2회).\
-검사를 빼면(`-XX:-UseCountedLoopSafepoints -XX:LoopStripMiningIter=0`) 같은 실행에서 두 샘플러가 이렇게 갈린다.
+검사를 빼면(`-XX:-UseCountedLoopSafepoints -XX:LoopStripMiningIter=0`) 같은 실행에서 두 샘플러가 이렇게 달라진다.
 
 (실험, 같은 환경, 한 JVM 안에서 두 샘플러 동시 실행)
 
@@ -141,7 +141,7 @@ Hot.light;Hot.mix 13
 ```
 
 - 첫 줄은 순진한 샘플러, 나머지는 async-profiler 결과다.
-- 같은 문자열의 줄이 둘씩인 것은 프레임의 **실행 형태**(인터프리터·컴파일 단계)가 달라 따로 집계됐기 때문이다. 기본 collapsed 출력은 그 표시를 지운다. `ann` 옵션을 켜고 다시 돌리면 이렇게 갈린다(같은 환경, 기본 플래그, 3초): `…Hot.heavy_[1];Hot.mix_[j] 162`, `…Hot.heavy_[0];Hot.mix_[j] 45`. async-profiler 4.5 `ProfilerOptions.md`의 `ann` 설명: `_[j]` JIT 컴파일, `_[i]` 인라인, `_[0]` 인터프리터, `_[1]` C1 컴파일. 즉 `heavy`가 C1 단계와 인터프리터 단계에서 따로 찍힌 것이다.
+- 같은 문자열의 줄이 둘씩인 것은 프레임의 **실행 형태**(인터프리터·컴파일 단계)가 달라 따로 집계됐기 때문이다. 기본 collapsed 출력은 그 표시를 지운다. `ann` 옵션을 켜고 다시 돌리면 이렇게 달라진다(같은 환경, 기본 플래그, 3초): `…Hot.heavy_[1];Hot.mix_[j] 162`, `…Hot.heavy_[0];Hot.mix_[j] 45`. async-profiler 4.5 `ProfilerOptions.md`의 `ann` 설명: `_[j]` JIT 컴파일, `_[i]` 인라인, `_[0]` 인터프리터, `_[1]` C1 컴파일. 즉 `heavy`가 C1 단계와 인터프리터 단계에서 따로 찍힌 것이다.
 
 - 관찰 1 — 순진한 샘플러는 맨 위 프레임을 `mix`가 아니라 `heavy`/`light`로 보고했다. 루프 안에 세이프포인트가 없으니, 스택은 `mix`가 끝나고 돌아온 지점에서야 찍힌다.
 - 관찰 2 — 비율도 틀어졌다. 순진한 샘플러 355:72 ≈ 4.9:1, async-profiler 351:131 ≈ 2.7:1(실제 일의 비 3:1). 다른 실행의 순진한 샘플러 값은 359:71, 362:46(집필), 430:85, 407:48, 441:52(재실행)로 흔들렸다 — 4.9~8.5:1. async-profiler 쪽은 재실행에서도 2.9~3.1:1이었다.

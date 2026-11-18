@@ -69,7 +69,7 @@ emp 의 기본키로 id=2 를 찾고, salary >= 400 을 Filter 로 남긴다
 
 **바깥 조건이 안쪽으로 내려갔다** — `id = 2` 가 `Index Cond` 가 됐다. 뷰가 인덱스를 막지 않았다는 뜻이다.
 
-MySQL 은 이 동작을 `ALGORITHM` 으로 고를 수 있고, **고르는 것에 따라 계획이 갈린다.**
+MySQL 은 이 동작을 `ALGORITHM` 으로 고를 수 있고, **고르는 것에 따라 계획이 달라진다.**
 
 ```text
 ### SQL: EXPLAIN SELECT * FROM v48_m WHERE id = 2;     -- ALGORITHM=MERGE
@@ -182,7 +182,7 @@ ERROR 1064 (42000) at line 1: You have an error in your SQL syntax; check the ma
 ```
 
 `near '…'` 가 파서가 멈춘 지점이다. `CREATE` 다음에 `MATERIALIZED` 가 올 수 있는 낱말이 아니었다는 뜻이고,\
-`REFRESH` 는 **문장 첫 낱말부터** 모른다. **「미지원」을 단정하기 전에 던져서 받은 답이 이것이다.**
+`REFRESH` 는 **문장 첫 낱말부터** 모른다. **「미지원」을 단정하기 전에 실행해서 받은 답이 이것이다.**
 
 ---
 
@@ -602,7 +602,7 @@ HINT:  Create a unique index with no WHERE clause on one or more columns of the 
 | 카탈로그 조회 (8번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | `information_schema.views` |
 | ★ CHECK OPTION 없는 INSERT (9번) | PG 18.6 | 1회 | **에러가 안 난다는 것이 근거** |
 | ★ WITH CHECK OPTION (10번) | PG 18.6 · MySQL 8.4.10 | 각 2회 | INSERT · UPDATE 두 방향 |
-| ★ 기반 표 DROP (11번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | **양쪽이 갈린 자리** · `CASCADE` 포함 |
+| ★ 기반 표 DROP (11번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | **양쪽이 달라진 자리** · `CASCADE` 포함 |
 | ★ 열 DROP 뒤 조회 (12번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | `CHECK TABLE` 로 `Corrupt` 확인 |
 | `SELECT *` 뷰 (13번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | 양쪽 같았다 |
 | `REFRESH CONCURRENTLY` (14번) | PG 18.6 | 1회 | **`HINT` 가 조건을 준다** |
@@ -625,7 +625,7 @@ MySQL 에 구체화 뷰가 생기면 **5·6·11·12번**을 다시 돌린다.
 ## 실행 환경
 
 근거는 **실행 결과**다 — 본문의 출력·에러는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-2026-09-21 에 실제로 던져 받은 것이다. 문서를 보고 적은 출력은 없다.\
+2026-09-21 에 실제로 실행해 받은 것이다. 문서를 보고 적은 출력은 없다.\
 **이 편이 만든 객체** — `t48_emp`·`t48_high_snap`·`v48_high`·`v48_high_chk`·`v48_agg`·`v48_star`·`mv48_high`.\
 PG 는 `BEGIN … ROLLBACK` 으로 감쌌고 MySQL 은 `DROP VIEW`/`DROP TABLE` 로 지웠다. **`emp`·`dept` 는 안 건드렸다.**\
 문서 근거는 [PG 18 CREATE VIEW](https://www.postgresql.org/docs/18/sql-createview.html) · [PG 18 CREATE MATERIALIZED VIEW](https://www.postgresql.org/docs/18/sql-creatematerializedview.html) · [MySQL 8.4 View Updatability](https://dev.mysql.com/doc/refman/8.4/en/view-updatability.html).

@@ -285,7 +285,7 @@
 - ★ **측정 환경이 결과를 바꾼다.** 이 문서의 실험은 전부 래퍼 안에서 했다.
   - `body` 의 기본 `margin: 8px` 이 **첫 자식의 마진과 상쇄**되어 좌표가 어긋난다.\
     *(실측: `margin-top: 40px` 인 첫 자식의 `rect.top` 이 **40**. `body` 의 8 과 자식의 40 이 상쇄돼 큰 쪽 40 이 남은 것이다. **8 + 40 = 48 이 아니다.**)*
-  - **`<!doctype html>` 이 없으면 쿼크 모드가 된다.** *(실측: `document.compatMode` 가 `BackCompat` 이고, 같은 내용의 `body` 높이가 **445** 대 **110** 으로 갈렸다 — 쿼크 모드에서 `body` 가 뷰포트를 채운다.)*
+  - **`<!doctype html>` 이 없으면 쿼크 모드가 된다.** *(실측: `document.compatMode` 가 `BackCompat` 이고, 같은 내용의 `body` 높이가 **445** 대 **110** 으로 나뉘었다 — 쿼크 모드에서 `body` 가 뷰포트를 채운다.)*
   - ★ **다만 쿼크 모드가 `box-sizing` 을 바꾸지는 않았다** — 전설의 「쿼크 모드 = IE 박스 모델」이 Chrome 151 에서는 **재현되지 않았다**(양쪽 다 `rect.width` 350).
 - **간격을 「눈으로」 판정하지 마라.** -5px 겹침과 0px 맞닿음은 화면에서 같아 보인다.
 
@@ -346,7 +346,7 @@ flex 항목에는 상쇄가 **없다** — 그래서 20+20 이 **40 으로 커�
 
 - [`../README.md`](../README.md) — CSS 문법·API 주제 목록(이 주제는 18번)
 - [17번 주제](../17-block-formatting-context/2-summary.md)(서식 문맥) — ★ **BFC 의 생성 조건 전체와 나머지 두 효과**(float 감쌈·float 침범)는 거기가 정본이다. 여기는 **BFC 가 마진 상쇄를 막는다**는 쓰임까지다
-- [16번 주제](../16-display-inner-outer/2-summary.md)(`display` 의 내부/외부 값) — `flow` 와 `flow-root` 가 갈리는 자리. **왜 `flow` 에서 새는가**의 뿌리
+- [16번 주제](../16-display-inner-outer/2-summary.md)(`display` 의 내부/외부 값) — `flow` 와 `flow-root` 가 달라지는 자리. **왜 `flow` 에서 새는가**의 뿌리
 - [15번 주제](../15-box-model-and-box-sizing/2-summary.md)(박스 모델) — **마진이 `box-sizing` 밖**이고 **배경이 칠해지지 않는** 칸이라는 것
 - [24번 주제](../24-flexbox-axes/2-summary.md)(Flexbox) — flex 의 배치 규칙은 거기가 정본. 여기는 **항목에 상쇄가 없다**는 결론만
 - [목록의 **20번 주제**](../20-float-and-clear/)(부동과 해제) — float 된 상자가 **상쇄에 참여하지 않는** 이유

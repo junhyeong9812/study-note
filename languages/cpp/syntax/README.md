@@ -26,7 +26,7 @@ C 목록의 축이 “메모리를 직접 다루는 규칙”이었다면, C++ �
 | 01 | [함수 오버로딩과 오버로드 해석](01-function-overloading-and-overload-resolution/) | 문법 | 같은 이름의 후보 중 어느 것이 뽑히는지 순서(정확 일치 → 승격 → 변환)로 설명하고, 모호 호출을 예측할 수 있다 | `C-34` | — | A |
 | 02 | [`enum class` 와 범위 있는 열거형](02-enum-class-and-scoped-enumerations/) | 문법 | 범위 있는 열거형이 막는 것(암묵 정수 변환·이름 충돌)을 말하고, C 의 `enum` 을 언제 남길지 판단할 수 있다 | `C-07` | — | B |
 | 03 | [캐스트 4종](03-four-cast-operators/) | 문법 | `static_cast`·`const_cast`·`reinterpret_cast`·`dynamic_cast` 를 상황에 맞게 고르고, C 스타일 캐스트가 무엇으로 풀리는지 설명할 수 있다 | `C-05` | — | A |
-| 04 | [`{}` 균일 초기화·좁히기·`initializer_list`](04-brace-initialization-narrowing-and-initializer-list/) | 문법 | `()` 와 `{}` 초기화 결과가 갈리는 자리(`vector<int> v(3,0)` vs `{3,0}`)를 설명하고, 좁히기 변환이 왜 거부되는지 안다 | — | — | A |
+| 04 | [`{}` 균일 초기화·좁히기·`initializer_list`](04-brace-initialization-narrowing-and-initializer-list/) | 문법 | `()` 와 `{}` 초기화 결과가 달라지는 자리(`vector<int> v(3,0)` vs `{3,0}`)를 설명하고, 좁히기 변환이 왜 거부되는지 안다 | — | — | A |
 | 05 | [`auto`·`decltype` 과 타입 추론](05-auto-and-decltype-type-deduction/) | 문법 | `auto` 가 참조·const 를 떨어뜨리는 규칙과 `auto&`/`auto&&`/`decltype(auto)` 의 차이를 예측할 수 있다 | 07 | — | A |
 | 06 | [네임스페이스와 ADL](06-namespaces-and-adl/) | 문법 | 이름이 어느 네임스페이스에서 찾아지는지(인자 의존 탐색 포함) 설명하고, `using namespace` 를 헤더에 두면 안 되는 이유를 말할 수 있다 | — | — | B |
 | 07 | [참조와 포인터의 차이](07-references-vs-pointers/) | 문법 | 참조가 재결합되지 않는다는 성질에서 설계상 차이를 끌어내고, 어느 쪽을 쓸지(널 가능성·소유권) 판단할 수 있다 | `C-14` | — | A |
@@ -51,7 +51,7 @@ C 목록의 축이 “메모리를 직접 다루는 규칙”이었다면, C++ �
 | 26 | `unique_ptr` 와 소유권 이동 | 표준 라이브러리 | 복사 불가·이동 가능이라는 타입 수준 소유권을 설명하고, `make_unique`·커스텀 삭제자·팩토리 반환을 쓸 수 있다 | 17 | [`../../c-cpp-csharp.md`](../../c-cpp-csharp.md) — 논증은 거기, 여기는 **API 사용** | A |
 | 27 | `shared_ptr` 와 참조 계수 | 표준 라이브러리 | 제어 블록의 존재와 비용을 설명하고, `make_shared` 와 `shared_ptr(new T)` 의 차이·`shared_ptr` 을 기본값으로 쓰면 안 되는 이유를 말할 수 있다 | 26 | — | A |
 | 28 | `weak_ptr` 와 순환 참조 | 표준 라이브러리 | 부모↔자식 순환이 해제되지 않는 그림을 그리고, `weak_ptr`+`lock()` 으로 끊을 수 있다 | 27 | — | A |
-| 29 | `new`/`delete` 와 raw 포인터가 남는 자리 | 문법 | `new`/`delete` 를 직접 쓰지 않는 근거를 대고, 비소유 관찰자·C API 경계에서 raw 포인터가 정당한 자리를 가를 수 있다 | 26, `C-37` | — | A |
+| 29 | `new`/`delete` 와 raw 포인터가 남는 자리 | 문법 | `new`/`delete` 를 직접 쓰지 않는 근거를 대고, 비소유 관찰자·C API 경계에서 raw 포인터가 정당한 자리를 구분할 수 있다 | 26, `C-37` | — | A |
 | 30 | 댕글링 참조와 수명 연장 규칙 | 문법 | 지역 객체 참조 반환·임시 객체에 const 참조 바인딩·범위 for 의 임시 수명 문제를 예측하고 피할 수 있다 | 07, 14 | [`../../c-cpp-csharp.md`](../../c-cpp-csharp.md) — “누가 아직 보고 있는가” 논증은 거기, 여기는 **코드 패턴** | A |
 | 31 | 함수 템플릿과 인자 추론 | 문법 | 템플릿 인자가 어떻게 추론되는지(배열·참조·const 처리 포함) 예측하고, 명시 지정이 필요한 자리를 안다 | 05 | — | A |
 | 32 | 클래스 템플릿과 CTAD(C++17) | 문법 | 클래스 템플릿을 정의하고, 생성자에서 인자를 추론하는 CTAD 와 추론 가이드를 쓸 수 있다 | 31 | — | B |

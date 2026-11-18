@@ -195,7 +195,7 @@ PG 기본(en_US.utf8) 에서 '_x' 가 BANANA 와 Zebra 사이에 있다
 MySQL 기본에서는 '_' 에 자기 무게가 있어 맨 앞이다
 ```
 
-**바이트 순서에서는 두 엔진이 한 줄도 안 갈렸다.**
+**바이트 순서에서는 두 엔진이 한 줄도 달라지지 않았다.**
 
 ```text
 ASCII 코드값
@@ -222,7 +222,7 @@ MySQL bin      BANANA Banana   Zebra   _x      apple  apricot
 
 ---
 
-### 3. ★ 같은 DDL, 다른 결과 — **`UNIQUE` 의 의미가 갈린다**
+### 3. ★ 같은 DDL, 다른 결과 — **`UNIQUE` 의 의미가 달라진다**
 
 **출력**
 
@@ -776,7 +776,7 @@ MySQL 이 `ref` 를 포기하고도 `range` 를 쓴 것은 이 표·이 통계�
 ## 실행 환경
 
 근거는 **실행 결과**다 — 본문의 출력·에러·계획은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+2026-09-21 에 실제로 실행해 받은 것이다. 지어낸 출력은 없다.\
 ★ **환경 조건** — PG `datcollate` = `en_US.utf8`(`datlocprovider` = `c`, libc) · MySQL `collation_server`·`collation_connection` = `utf8mb4_0900_ai_ci`.\
 **다른 설정의 서버에서는 같은 질의가 다른 답을 낸다.** 0번에 확인 방법과 실제 출력을 실었다.\
 실험 표 `t39` 와 임시 collation(`nd_ci`·`nd_ai`)은 **작업 후 전부 지웠다.** `emp`·`dept` 는 읽기만 했다.\

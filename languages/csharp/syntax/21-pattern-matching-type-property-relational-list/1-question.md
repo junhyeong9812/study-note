@@ -170,7 +170,7 @@ class Program {
 
 - 다섯 줄 중 **0 이 아닌** 줄은 어느 것인가?
 - ★★★ `[2]` 와 `[3]` 은 같은 패턴인데 무엇이 갈랐나?
-- ★ 네 판(`csc` 기본/`-optimize` × 티어링 기본/`TieredCompilation=0`)에서 갈린 줄은 몇 개인가?
+- ★ 네 판(`csc` 기본/`-optimize` × 티어링 기본/`TieredCompilation=0`)에서 달라진 줄은 몇 개인가?
 
 ### 6. ★★ 이름 하나를 패턴 자리에 적으면 (예측)
 
@@ -233,7 +233,7 @@ class Program {
 
 **환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
 Roslyn `csc` 를 직접 부른다 · `-langversion:latest` · `-preferreduilang:en-US`. 대비는 **javac 21.0.5** 다.
-★★★ **본체 창은 ① IL 덤프다.** getter·연산자 호출은 **실행 로그**로, 할당은 **2×2 판 격자**로 물었다.
+★★★ **핵심 창은 ① IL 덤프다.** getter·연산자 호출은 **실행 로그**로, 할당은 **2×2 판 격자**로 물었다.
 선행 — [16번](../16-inheritance-virtual-override-abstract-sealed-new/)(상속·타입 계층) · 함께 보면 좋은 것 — [14번](../14-indexers/)(패턴 기반 인덱싱)·[19번](../19-equality-equals-gethashcode-operator/)(`==` 가 고르는 것).
 
 ## 복습 기록

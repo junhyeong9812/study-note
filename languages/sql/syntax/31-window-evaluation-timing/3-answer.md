@@ -181,7 +181,7 @@ SELECT * FROM (SELECT name, salary, COUNT(*) OVER () AS c FROM emp8) t WHERE sal
 --                                        창은 8행을 봤고, 거르기는 그 뒤다 -> c 는 8 이다
 ```
 
-**두 엔진의 값이 한 자리도 안 갈렸다** — 평가 시점은 양쪽이 같다.
+**두 엔진의 값이 한 자리도 달라지지 않았다** — 평가 시점은 양쪽이 같다.
 
 ---
 
@@ -370,7 +370,7 @@ LIMIT 은 앞 칸의 일을 줄여 주지 않는다
 ```
 
 ★ **`COUNT(*) OVER ()` 가 여기서 8이 아니라 3이 되는 것**도 같은 이유다([26번](../26-window-functions-vs-aggregates/) 4번).\
-**두 엔진의 값이 한 자리도 안 갈렸다.**
+**두 엔진의 값이 한 자리도 달라지지 않았다.**
 
 ---
 
@@ -546,7 +546,7 @@ MySQL : 파서가 'QUALIFY clause' 라고 이름을 부른다
 | 무엇을 | 어디서 | 몇 번 | 비고 |
 |---|---|---|---|
 | `WHERE`·`HAVING`·`GROUP BY` (1번) | PG 18.6 · MySQL 8.4.10 | 각 3회 | **전부 에러 — PG 는 절 이름, MySQL 은 `3593` 하나** |
-| `ORDER BY` 에서 허용 (3번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | 통과. 행 순서만 갈렸다 |
+| `ORDER BY` 에서 허용 (3번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | 통과. 행 순서만 달라졌다 |
 | ★ `WHERE` 가 창을 줄인다 (4번) | PG 18.6 · MySQL 8.4.10 | 각 2회 | **`c` 가 5 대 8** |
 | 서브쿼리·CTE 우회 (5번) | PG 18.6 · MySQL 8.4.10 | 각 2회 | **두 형태가 같은 답** |
 | ★ 감싼 뒤의 결과 (6번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | **PG `cho`·`bob` / MySQL `bob`·`fay`** |
@@ -573,6 +573,6 @@ MySQL : 파서가 'QUALIFY clause' 라고 이름을 부른다
 ## 실행 환경
 
 근거는 **실행 결과**다 — 본문의 출력·에러는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+2026-09-21 에 실제로 실행해 받은 것이다. 지어낸 출력은 없다.\
 모든 질의는 [1-question.md](1-question.md) 머리의 `WITH emp8 AS (...)` CTE 를 앞에 붙여 돌렸다.\
 문서 근거는 [PG 18 Window Functions](https://www.postgresql.org/docs/18/tutorial-window.html) · [MySQL 8.4 Window Function Concepts and Syntax](https://dev.mysql.com/doc/refman/8.4/en/window-functions-usage.html).

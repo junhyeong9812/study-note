@@ -197,7 +197,7 @@ for (ResolvableType ifc : contextType.getInterfaces()) {
 그래서 이름 폴백까지 흘러가고, `TopSearch`의 첫 파라미터 이름이 `"I"`이므로 매칭에 성공해 `String`을 돌려준다.\
 루프는 `TopCreate`에 닿지도 못하고 끝난다.
 
-같은 입력이 수정 전후로 어떻게 갈리는지 나란히 놓으면 이렇다.
+같은 입력이 수정 전후로 어떻게 달라지는지 나란히 놓으면 이렇다.
 
 ```text
 수정 전 (이름 폴백에 조건 없음)              수정 후 (subtype narrowing 만 허용)
@@ -217,7 +217,7 @@ for (ResolvableType ifc : contextType.getInterfaces()) {
 
 수정은 오답을 옳은 답으로 바꾸는 것이 아니라, 오답 대신 "모름"을 내놓아 상위 루프가 다음 후보까지 가도록 길을 비켜 주는 것이다.
 
-여기서 왜 gh-36890 수정 이후에도 이게 남았는지가 갈린다.\
+여기서 왜 gh-36890 수정 이후에도 이게 남았는지가 달라진다.\
 그 수정이 추가한 회귀 테스트 `resolveTypeAgainstSameNamedVariables()`는 `Search`/`Create`/`Controller`를 `GenericTypeResolverTests` 안의 **중첩 타입**으로 선언했다.\
 중첩 타입의 `ParameterizedType`은 owner가 바깥 클래스이므로 `null`이 아니다.\
 그래서 owner 분기에서 즉시 반환되고 이름 폴백은 실행되지 않는다.\
@@ -324,7 +324,7 @@ shadowing 사례가 여기서 차단된다.
 > **isAssignableFrom** — `A.isAssignableFrom(B)`는 "B 타입의 값을 A 타입 자리에 넣을 수 있나", 즉 A가 B의 상위 타입인가를 묻는다.\
 > 예: `List.isAssignableFrom(ArrayList)`는 참이고, `TopSearch.isAssignableFrom(TopCreate)`는 거짓이다.
 
-세 케이스를 같은 게이트에 통과시켜 보면 통과/차단이 이렇게 갈린다.
+세 케이스를 같은 게이트에 통과시켜 보면 통과/차단이 이렇게 달라진다.
 
 ```text
                        선언 주체가 Class ?   resolved 가 상위 ?   폴백

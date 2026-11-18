@@ -4,7 +4,7 @@
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
 
-### 1. ★★★ **막힌 칸 8 / 16** — 통과는 **전부 안전한 방향**
+### 1. ★★★ **막힌 항목 8 / 16** — 통과는 **전부 안전한 방향**
 
 **출력**
 
@@ -254,7 +254,7 @@ class Program {
 
 - ★★★ **[A] `IEnumerable`·`IReadOnlyList` `Covariant` · `IList`·`List` `None` · `IComparer`·`Action` `Contravariant` · `Func<T,TResult>` 는 `T` 반변 · `TResult` 공변.**
 - ★★★ **[B1] `True` · [B2] `False` · [B3] `False` · [B4] `True` · [B5] `False`** — 런타임 타입 검사가 **변성과 값 타입 불변을 그대로** 따른다(CLI 규칙).
-- ★★★ **[C] `True` · ``List`1``** — 변환이 새 객체를 안 만든다. **할당 창이 부적용인 근거**다.
+- ★★★ **[C] `True` · ``List`1``** — 변환이 새 객체를 안 만든다. **할당 창이 해당 없는 근거**다.
 
 ### 6. ★★ **`hello` · `Put(world)` · `<x>`** — C# 3 판은 **`CS8024` 네 곳**
 
@@ -327,7 +327,7 @@ cs26b-decl.cs(4,24): error CS8024: Feature 'type variance' is not available in C
 
 | 무엇 | 몇 번·어디서 | 결과 |
 |---|---|---|
-| `cs26b-grid.cs` 16칸 | csc 2회(격자·표본) | ★★★ **막힌 칸 8 / 16** |
+| `cs26b-grid.cs` 16칸 | csc 2회(격자·표본) | ★★★ **막힌 항목 8 / 16** |
 | `cs26b-array.cs` | csc 1회 · 실행 1회 | `ArrayTypeMismatchException` · `InvalidCastException` ×3 |
 | `Ex26.java` · `G26.java` | javac 2회 · java 1회 | ★★★ `ArrayStoreException` · `incompatible types`(와일드카드 행은 통과) |
 | `cs26b-il.cs` | csc 1회(`-optimize`) · 실행 1회 | 변환 명령 없음 · `stelem.ref` · `castclass` |
@@ -335,7 +335,7 @@ cs26b-decl.cs(4,24): error CS8024: Feature 'type variance' is not available in C
 | `cs26b-decl.cs` | csc 2회(latest · `3`) · 실행 1회 | `hello · Put(world) · <x>` · `CS8024` ×4 |
 | `cs26b-form.cs` | csc 1회 · 실행 1회 | `kim lee` · `[x]` · `made` |
 
-**구현 의존 항목** — 다음은 **이 판(.NET SDK 10.0.401 · 런타임 10.0.12 · javac 21.0.5)에서만** 그렇다.
+**구현 의존 항목** — 다음은 **이 버전(.NET SDK 10.0.401 · 런타임 10.0.12 · javac 21.0.5)에서만** 그렇다.
 
 - ★ **진단 문구 · 예외 메시지** — 코드와 타입만 근거로 썼다.
 

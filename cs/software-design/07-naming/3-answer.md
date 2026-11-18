@@ -22,7 +22,7 @@
 ```
 
 - 7건: `isPaid`(int인데 boolean 이름), `q`·`s`(짧음), `customerShippingAddressLine`(긺), `getActive`(boolean인데 get), `getTotal`(void getter), `setStatus`(반환하는 setter).
-- ⚠ 칸 세 사례는 **0개** 잡혔다. `processData`·`flag`·`isNotDisabled`·`OrderManager`는 모두 보고되지 않았다. 도구는 형식과 타입의 어긋남을 보고, 뜻은 보지 않는다.
+- ⚠ 칸 세 사례는 **0개** 잡혔다. `processData`·`flag`·`isNotDisabled`·`OrderManager`는 모두 보고되지 않았다. 도구는 형식과 타입의 불일치를 보고, 뜻은 보지 않는다.
 
 ### 4. 세 이름의 결과
 

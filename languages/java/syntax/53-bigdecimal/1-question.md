@@ -70,7 +70,7 @@ new BigDecimal("10").divide(new BigDecimal("4"));
 ```
 
 - 다섯 줄 각각 — 값을 돌려주는가, 예외를 던지는가? 예외라면 **메시지**는 무엇인가?
-- 같은 `ArithmeticException` 인데 메시지가 갈리는 이유는 무엇인가?
+- 같은 `ArithmeticException` 인데 메시지가 달라지는 이유는 무엇인가?
 - 정수 `0 / 0` 의 메시지와 `BigDecimal.ZERO.divide(ZERO)` 의 메시지는 어떻게 다른가?
 - `divide` 를 안전하게 쓰는 형태는 무엇인가?
 

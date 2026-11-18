@@ -230,7 +230,7 @@ ps -eLo pid,tid,psr,ni,cls,pcpu,comm --sort=-pcpu | head
 - **대처**
   - 일반 서버 작업에 실시간 정책을 쓰지 않는다.
   - 중요한 백그라운드 작업은 nice 대신 cgroup `cpu.weight`로 최소 몫을 준다.
-  - 락을 쥔 낮은 우선순위 task가 굶어 높은 task까지 막히는 경우는 우선순위 역전이다(20번).
+  - 락을 잡은 낮은 우선순위 task가 굶어 높은 task까지 막히는 경우는 우선순위 역전이다(20번).
 
 ### 2. CPU quota throttling → 평균 CPU는 낮은데 p99 급등
 
@@ -279,7 +279,7 @@ ps -eLo pid,tid,psr,ni,cls,pcpu,comm --sort=-pcpu | head
   - [35-virtualization-hypervisor](../35-virtualization-hypervisor/2-summary.md) — steal time.
   - [20-concurrency-bugs](../20-concurrency-bugs/2-summary.md)(우선순위 역전·기아).
   - [ops-patterns/03-bulkhead](../../ops-patterns/03-bulkhead/2-summary.md) — 스레드 풀 격리와 병렬도 상한.
-  - [reliability/README](../../reliability/README.md) — 꼬리 지연·골든 시그널.
+  - [reliability/README](../../reliability/README.md) — 테일 레이턴시·골든 시그널.
 - Kernel 문서·소스
   - Documentation/scheduler/sched-design-CFS.rst — vruntime, 시간순 rbtree, 가장 왼쪽 선택 <https://docs.kernel.org/scheduler/sched-design-CFS.html>
   - Documentation/scheduler/sched-eevdf.rst — 6.6부터 EEVDF, lag·eligible·virtual deadline, `sched_setattr` 슬라이스 <https://docs.kernel.org/scheduler/sched-eevdf.html>

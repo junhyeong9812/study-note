@@ -345,7 +345,7 @@ google-chrome --headless --disable-gpu --no-sandbox --window-size="$W,$H" --dump
 | demo 1개 — CDP 6시점 | 1 | 2-summary 의 demo |
 | demo 의 「바꿔 볼 것」 — `@property` 블록 제거 (CDP) | 1 | demo |
 | demo 의 「바꿔 볼 것」 — `syntax: "*"` 로 교체 (CDP) | 1 | demo |
-| **제출 직전 demo 재추출·재실행 대조** | 1 | 어긋남 0건 |
+| **제출 직전 demo 재추출·재실행 대조** | 1 | 불일치 0건 |
 
 **구현에 달린 항목**
 

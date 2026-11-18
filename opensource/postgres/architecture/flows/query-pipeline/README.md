@@ -2,7 +2,7 @@
 
 상위: [PostgreSQL 아키텍처 지도](../../README.md)
 
-`'Q'` 메시지로 온 SQL 문자열 하나가 **파스 트리, 질의 트리, 계획, 포털로 차례로 모양을 바꿔 실행되기까지**의 흐름이다. 단계마다 자료구조가 하나씩 정해져 있다. 문법만 본 `RawStmt`, 카탈로그로 이름을 풀어 의미를 붙인 `Query`, 규칙으로 고쳐 쓴 `Query` 목록, 실행 방법을 고른 `PlannedStmt`, 그리고 그 계획을 들고 실행 상태를 쥐는 `Portal` 이다. 이 흐름은 한 backend 안에서 일어나고 프로세스 경계가 없다. 대신 **트랜잭션 경계**가 있다. 문자열 전체를 `start_xact_command` 와 `finish_xact_command` 가 감싸고, 문장이 여럿이면 암묵적 트랜잭션 블록으로 묶는다. 흐름은 [10] `PortalRun` 이 `ExecutorRun` 을 부르는 데서 [executor](../executor/README.md)로 넘어가고, `finish_xact_command` 의 `CommitTransactionCommand` 에서 [커밋](../commit/README.md)으로 이어진다.
+`'Q'` 메시지로 온 SQL 문자열 하나가 **파스 트리, 질의 트리, 계획, 포털로 차례로 모양을 바꿔 실행되기까지**의 흐름이다. 단계마다 자료구조가 하나씩 정해져 있다. 문법만 본 `RawStmt`, 카탈로그로 이름을 풀어 의미를 붙인 `Query`, 규칙으로 고쳐 쓴 `Query` 목록, 실행 방법을 고른 `PlannedStmt`, 그리고 그 계획을 들고 실행 상태를 잡는 `Portal` 이다. 이 흐름은 한 backend 안에서 일어나고 프로세스 경계가 없다. 대신 **트랜잭션 경계**가 있다. 문자열 전체를 `start_xact_command` 와 `finish_xact_command` 가 감싸고, 문장이 여럿이면 암묵적 트랜잭션 블록으로 묶는다. 흐름은 [10] `PortalRun` 이 `ExecutorRun` 을 부르는 데서 [executor](../executor/README.md)로 넘어가고, `finish_xact_command` 의 `CommitTransactionCommand` 에서 [커밋](../commit/README.md)으로 이어진다.
 
 기준 태그: `REL_18_6` [`724edf9bde`](https://github.com/postgres/postgres/tree/724edf9bde9d356724ad384a2e196edc3c9f80f7). 모든 줄 번호는 이 태그 기준이고, 경로는 따로 적지 않으면 `src/backend/` 아래다.
 

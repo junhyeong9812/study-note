@@ -245,7 +245,7 @@ javadoc이 이것을 그대로 경고한다(JDK 21 소스 원문).
 
 그림 해설 (한 단계씩):
 
-- **메시지가 네 가지로 갈린다** — 무엇이 문제인지 메시지가 말해 준다.\
+- **메시지가 네 가지로 나뉜다** — 무엇이 문제인지 메시지가 말해 준다.\
   `Non-terminating decimal expansion` = 무한소수 · `Division by zero` = 0으로 나눔 ·
   `Division undefined` = `0/0` · `Rounding necessary` = 반올림이 필요한데 안 정했음.
 - **`0/0` 만 메시지가 다르다** — 정수 `0/0` 이 `/ by zero` 인 것과 대비된다([02번](../02-numeric-operations/)).
@@ -550,7 +550,7 @@ return this.inflated().equals(xDec.inflated());
 - `equals` 는 **값과 스케일**을, `compareTo` 는 **값만** 본다. javadoc이 "inconsistent with equals"라고 직접 적어 두었다.
 - `new BigDecimal(0.1)` 은 `0.1000000000000000055511151231257827021181583404541015625` 다 — 생성자가 틀린 게 아니라 `double` 0.1이 그 값이다.
 - `divide` 는 **정확한 결과가 없으면 던진다**(`Non-terminating decimal expansion`) — 조용히 자르지 않는 것이 이 클래스의 설계다.
-- `Math.round` 는 `HALF_UP` 이 아니다 — `Math.round(-0.5)` 가 `0` 이라 **음수에서 규칙이 갈린다.**
+- `Math.round` 는 `HALF_UP` 이 아니다 — `Math.round(-0.5)` 가 `0` 이라 **음수에서 규칙이 달라진다.**
 
 ## 관련 자료
 
@@ -579,7 +579,7 @@ return this.inflated().equals(xDec.inflated());
 - **`UNNECESSARY`** — "반올림이 필요 없다고 내가 단언한다"는 모드. 틀리면 `ArithmeticException` 을 던진다.
 - **무한소수(non-terminating decimal expansion)** — 10진 소수로 유한하게 못 적는 값. `1/3` 이 그렇다.
 - **natural ordering inconsistent with equals** — `compareTo` 가 0인데 `equals` 가 거짓인 상태. `BigDecimal` 이 대표 사례다.
-- **`toPlainString()`** — 지수 표기 없이 그대로 쓰는 문자열. 스케일이 음수일 때 `toString()` 과 갈린다.
+- **`toPlainString()`** — 지수 표기 없이 그대로 쓰는 문자열. 스케일이 음수일 때 `toString()` 과 달라진다.
 - **`signum()`** — 부호를 `-1`·`0`·`1` 로 돌려준다. 스케일과 무관하게 0을 판정할 수 있다.
 
 ## 더 들어가면
@@ -620,6 +620,6 @@ Long.MAX_VALUE       = 9223372036854775807
 프로그램 5개를 **17.0.13 · 21.0.5 · 25.0.1** 에서 모두 돌려 **출력이 한 글자도 다르지 않음**을 확인했다.\
 예외 메시지 여섯 가지는 **실제로 던져 보고** 그대로 옮겼다.
 **버전** — `BigDecimal` 은 Java 1.1, `RoundingMode` enum 과 `divide(BigDecimal, RoundingMode)` 는 **5**부터.
-이 문서에서 버전에 갈리는 동작은 **찾지 못했다**(세 JDK 출력 동일).
+이 문서에서 버전에 달라지는 동작은 **찾지 못했다**(세 JDK 출력 동일).
 
 선행: [02 수치 연산](../02-numeric-operations/).

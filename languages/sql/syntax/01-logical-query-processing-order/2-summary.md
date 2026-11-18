@@ -26,7 +26,7 @@ LIMIT    ...   (마지막으로 적음)    7. ORDER BY  줄을 세운다
 ```
 
 이 컨베이어가 **똑같은 구조로** SQL 엔진이다.\
-"왜 안 되지"의 태반이 이 그림 하나로 설명된다 — `WHERE` 에서 별칭이 안 되는 것, `WHERE` 와 `HAVING` 이 갈리는 것, 윈도우 함수를 `WHERE` 로 못 거르는 것이 전부 **"아직 안 만들어졌다"** 한 마디다.
+"왜 안 되지"의 태반이 이 그림 하나로 설명된다 — `WHERE` 에서 별칭이 안 되는 것, `WHERE` 와 `HAVING` 이 달라지는 것, 윈도우 함수를 `WHERE` 로 못 거르는 것이 전부 **"아직 안 만들어졌다"** 한 마디다.
 
 > **논리적 처리 순서(logical query processing order)** — 엔진이 결과를 *정의*하는 순서. 실제 실행 계획은 옵티마이저가 순서를 바꿔도 되지만, **결과는 이 순서대로 계산한 것과 같아야** 한다.\
 > 예: `WHERE` 를 조인보다 먼저 밀어 넣는 최적화를 해도, 결과 집합은 "조인 다음에 걸렀을 때"와 같아야 한다.
@@ -292,7 +292,7 @@ dept_id=NULL cnt=1   ------->    dept_id=NULL cnt=1
                                  +---------+-----+
 ```
 
-두 그림의 결론 — **`dept_id=10` 의 `cnt` 가 1과 2로 갈린다.**\
+두 그림의 결론 — **`dept_id=10` 의 `cnt` 가 1과 2로 나뉜다.**\
 (A)는 `ann`(300)을 **먼저 버리고** 셌고, (B)는 `ann` 을 포함해 센 뒤 그룹을 **통째로 살릴지** 정했다.\
 대가 — `HAVING` 은 그룹을 다 만든 뒤에 버린다. 행 단위로 판정 가능한 조건을 `HAVING` 에 두면 만들 필요 없던 그룹까지 만든다.
 
@@ -557,7 +557,7 @@ LIMIT    <개수> [OFFSET <건너뛸 수>]
 - **`HAVING` 별칭이 MySQL 에서만 된다는 걸 모른다.**\
   MySQL 로 개발하고 PG 로 배포하면 여기서 깨진다. 위 출력이 그 증거다.
 - **거를 수 있는 조건을 `HAVING` 에 둔다.**\
-  결과가 같아 보여도 다르다 — `WHERE salary >= 400` 과 `HAVING MAX(salary) >= 400` 은 위에서 봤듯 `cnt` 가 1과 2로 갈린다.
+  결과가 같아 보여도 다르다 — `WHERE salary >= 400` 과 `HAVING MAX(salary) >= 400` 은 위에서 봤듯 `cnt` 가 1과 2로 나뉜다.
 - **`LIMIT` 을 붙이면 빨라질 거라 믿는다.**\
   여덟 번째 칸이다. 앞 일곱 칸의 일은 그대로다.
 - **`ORDER BY` 없이 `LIMIT` 을 쓴다.**\
@@ -602,15 +602,15 @@ ERROR 3593 (HY000): You cannot use the window function 'row_number' in this cont
 **엔진이 자기 문서로 약속한 자리 — 그래서 다른 엔진엔 해당 없다.**
 
 - `HAVING` 별칭 — MySQL 매뉴얼이 **확장이라고 스스로 밝힌다**: *"The SQL standard requires that `HAVING` must reference only columns in the `GROUP BY` clause or columns used in aggregate functions. However, MySQL supports an extension to this behavior, and permits `HAVING` to refer to columns in the `SELECT` list"*.\
-  PG 는 위 문장으로 **못 쓴다**고 적었다. **양쪽이 다 문서로 정한 차이라 안 흔들린다** — 이식하면 반드시 깨진다.
+  PG 는 위 문장으로 **못 쓴다**고 적었다. **양쪽이 다 문서로 정한 차이라 달라지지 않는다** — 이식하면 반드시 깨진다.
 - `ORDER BY` 의 `NULL` — PG *"the default behavior is `NULLS LAST` when `ASC` is specified or implied, and `NULLS FIRST` when `DESC` is specified"* / MySQL *"When doing an `ORDER BY`, `NULL` values are presented first if you do `ORDER BY ... ASC` and last if you do `ORDER BY ... DESC`."*\
-  **같은 자리를 양쪽이 문서로 약속했는데 답이 반대**다 — 「관찰이라 갈렸다」가 아니다.
+  **같은 자리를 양쪽이 문서로 약속했는데 답이 반대**다 — 「관찰이라 달라졌다」가 아니다.
 
 ★ **`LIMIT` — 이 주제에서 가장 잘 섞이는 자리다.** 셋으로 갈라야 한다.
 
 - **언어가 보장하는 것** — *결과의 정의*에서 `LIMIT` 이 **마지막 칸**이라는 것. 앞 칸들의 **의미**는 `LIMIT` 이 있든 없든 안 변한다.
 - **엔진 문서가 말하는 것** — **계획이 `LIMIT` 을 본다**는 것. PG *"The query planner takes `LIMIT` into account when generating a query plan"* · MySQL *"MySQL stops sorting as soon as it has found the first `row_count` rows of the sorted result, rather than sorting the entire result."*
-- **관찰일 뿐인 것** — **이 질의가 실제로 일을 덜 했는지.** 그건 계획을 찍어야 알고, 계획은 통계·데이터·판마다 흔들린다.\
+- **관찰일 뿐인 것** — **이 질의가 실제로 일을 덜 했는지.** 그건 계획을 찍어야 알고, 계획은 통계·데이터·판마다 달라진다.\
   이 편에는 `EXPLAIN` 이 한 장도 없으므로 **이 주제 안에 그 근거가 없다** — [목록의 **58번**](../58-explain-plan-tree/)·[**60번 주제**](../60-explain-analyze-estimates-vs-actuals/)의 소재다.
 
 ★ **`only_full_group_by` 는 언어도 방언도 아니라 설정이다.** 두 엔진에 직접 물었다.
@@ -644,7 +644,7 @@ PG 쪽은 그런 손잡이 자체가 없다 — **「그런 설정이 없다」�
 
 - SQL 은 **적는 순서와 일하는 순서가 다르다** — `FROM → WHERE → GROUP BY → HAVING → SELECT → DISTINCT → ORDER BY → LIMIT`.
 - 별칭은 **5번 칸(`SELECT`)에서 태어난다.** 그래서 2번 칸에서는 없고 7번 칸에서는 있다.
-- `WHERE` 는 **행**을 버리고 `HAVING` 은 **그룹**을 버린다. 같은 말을 해도 답이 갈린다.
+- `WHERE` 는 **행**을 버리고 `HAVING` 은 **그룹**을 버린다. 같은 말을 해도 답이 달라진다.
 - `LIMIT` 은 **마지막 칸**이다. 앞의 일을 줄여 주지 않는다.
 - 이 순서는 **결과의 정의**이지 실행 계획이 아니다.
 
@@ -682,6 +682,6 @@ PG 쪽은 그런 손잡이 자체가 없다 — **「그런 설정이 없다」�
 
 **기준 소스** — [PostgreSQL 18 · SELECT](https://www.postgresql.org/docs/18/sql-select.html) · [MySQL 8.4 · SELECT Statement](https://dev.mysql.com/doc/refman/8.4/en/select.html)\
 **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-본문에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-**버전** — 여덟 절 자체는 두 엔진 모두 오래전부터 있다. 이 주제에서 버전에 갈리는 것은 없다.\
+본문에 실린 출력은 **전부 이 두 서버에 실제로 실행해서 받은 것**이다. 지어낸 출력은 없다.\
+**버전** — 여덟 절 자체는 두 엔진 모두 오래전부터 있다. 이 주제에서 버전에 달라지는 것은 없다.\
 방언 차이가 나는 자리는 「PG / MySQL」 두 칸을 나란히 두고, **양쪽 실제 출력을 같이 싣는다.**

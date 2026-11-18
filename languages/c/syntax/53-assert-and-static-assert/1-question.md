@@ -151,7 +151,7 @@ int main(void) {
 ```
 
 - ★★ `-std=c17` 과 `-std=c2x` 에서 각각 컴파일되는가? 두 컴파일러의 진단은?
-- ★ 표준(C23)은 `assert` 를 어떤 모양의 매크로로 정의하라고 하는가? 이 판의 결과와 맞는가?
+- ★ 표준(C23)은 `assert` 를 어떤 모양의 매크로로 정의하라고 하는가? 이 버전의 결과와 맞는가?
 
 ### 7. `#define NDEBUG` 를 `#include` 뒤에 (경계) ★★
 
@@ -186,7 +186,7 @@ int main(void) {
 
 **환경** — gcc 13.3.0 · clang 18.1.3 · glibc 2.39 · x86-64 Linux · 기본 `-std=c17 -Wall -Wextra -pedantic` · 캡처 셸 `LC_ALL=C`.
 
-★★★ **본체 창은 `NDEBUG` 격자** — 1번은 **칸마다 `x` 의 값**을 적어야 답이다.
+★★★ **핵심 창은 `NDEBUG` 격자** — 1번은 **칸마다 `x` 의 값**을 적어야 답이다.
 ★★ **전처리기 자체는 묻지 않는다** — [41번 형제](../41-preprocessor-directives-and-conditional-compilation/)가 정본이다.
 선행 — [41번 형제](../41-preprocessor-directives-and-conditional-compilation/).
 

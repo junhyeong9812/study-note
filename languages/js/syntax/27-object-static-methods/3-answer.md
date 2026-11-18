@@ -47,7 +47,7 @@
 - ★★ **`[4]`** — `Error 「from getter」`. 대상에는 **`{"first":1}`** 이 남았다 — 되돌리지 않는다. `third` 의 getter 는 안 불렸다.
 - ★ **`[5]`** — `null`·`undefined` 는 건너뛴다(`{}`) · `'ab'` 는 `{"0":"a","1":"b"}` · `5`·`true` 는 `{}` · 배열은 인덱스 키 · **대상 `null` 은 `TypeError 「Cannot convert undefined or null to object」`**.
 
-### 2. 격자 — **`assign` 과 스프레드는 한 칸도 안 갈리고, 갈린 칸은 `3 / 18`, 앞의 셋은 전부 얕다** ★★★
+### 2. 격자 — **`assign` 과 스프레드는 한 칸도 안 갈리고, 달라진 항목은 `3 / 18`, 앞의 셋은 전부 얕다** ★★★
 
 **출력**
 
@@ -81,7 +81,7 @@ cells whose answer differs from the Object.assign column: 3 / 18
 - ★★ **셋째 행(심볼)** — `assign`·스프레드는 `y`, **`entries` 왕복은 `n`**(`EnumerableOwnProperties` 가 심볼을 건너뛴다), `structuredClone` 도 `n`.
 - ★★ **getter · 비열거 · 프로토타입 세 행은 네 열 다 `n`** — 넷 다 **값을 읽어 평범한 객체에 담는다.** `[2]` 에서 getter 가 넷 다 **한 번** 읽힌 것이 그 증거다.
 - ★ **`3 / 18`** — `assign` 열을 기준으로 나머지 세 열 × 여섯 행. `entries` 가 1칸, `clone` 이 2칸.
-- 예외도 흔들리는 칸도 없다. `structuredClone` 은 호스트 API 라 그 열만 **node 의 구현**을 본 것이다.
+- 예외도 실행마다 달라지는 항목도 없다. `structuredClone` 은 호스트 API 라 그 열만 **node 의 구현**을 본 것이다.
 
 ### 3. 읽기 전용 대상 — **`assign` 은 비엄격에서도 던지고, 앞서 쓴 키는 남긴다** ★★★
 
@@ -260,7 +260,7 @@ cells whose answer differs from the Object.assign column: 3 / 18
 
 - ★★★ [11번](../11-spread-and-rest/2-summary.md) `[4]` 는 `setter calls after spread 0` · `setter calls after Object.assign 1` 을 찍었다. 이 문서 1번의 `[1]`(assign)에는 `set target.q <- Aq` 가 있고 `[3]`(스프레드)에는 없다.
 - ★★ `[3]` 의 `get target.q` 는 **스프레드가 앞자리 `...makeTarget()` 을 원본으로 읽은 것**이다 — setter 가 아니라 **getter** 이고, 대상 쪽이 아니라 **원본 쪽** 호출이다.
-- ★ **대상에 setter 가 없어도 갈리는 자리가 남는다** — ① `assign` 은 **첫 인자를 고친다**(새 객체가 아니다) ② 대상 쪽에 **읽기 전용 프로퍼티**가 있으면 `assign` 만 던진다(3번) ③ 대상의 **체인에 setter** 가 있으면(`"__proto__"` 가 대표 — 5번 `[4]`) `assign` 만 그것을 부른다.
+- ★ **대상에 setter 가 없어도 달라지는 자리가 남는다** — ① `assign` 은 **첫 인자를 고친다**(새 객체가 아니다) ② 대상 쪽에 **읽기 전용 프로퍼티**가 있으면 `assign` 만 던진다(3번) ③ 대상의 **체인에 setter** 가 있으면(`"__proto__"` 가 대표 — 5번 `[4]`) `assign` 만 그것을 부른다.
 
 ### 9. 결과는 **`OrdinaryObjectCreate(null)`** 로 만든다 — 묶음 키가 `Object.prototype` 의 이름과 부딪치지 않게 ★★
 
@@ -273,7 +273,7 @@ cells whose answer differs from the Object.assign column: 3 / 18
   「물려받은 이름이 사전을 오염시킨다」는 [23번](../23-map-set-and-weak-collections/2-summary.md) 동작 (3)의 `[3]` 이 `constructor` 로 쟀다(`"function Object() { [native code] }1"`).
 - ★ **같은 문구 두 줄** — `String(g)` 와 `` `${g}` `` 의 `Cannot convert object to primitive value`. [15번](../15-prototype-chain/2-summary.md)이 `String(bare)` · `` `${bare}` `` 로 한 글자도 같은 문구를 찍었다.
 
-### 10. 두 언어 다 **「자리는 먼저 들어간 쪽, 값은 나중 쪽」** — 갈리는 것은 정수 키 ★★
+### 10. 두 언어 다 **「자리는 먼저 들어간 쪽, 값은 나중 쪽」** — 달라지는 것은 정수 키 ★★
 
 **소스**
 
@@ -309,7 +309,7 @@ Object.assign({}, words, numbers)  keys ["1","2","b"]
 - ★ 파이썬 `a | [("k", 9)]` 는 `TypeError: unsupported operand type(s) for |: 'dict' and 'list'` 였다. JS `Object.assign({}, [7, 8])` 은 **`{"0":7,"1":8}`**(1번 `[5]`) — 원본을 객체로 보고 own 키를 읽을 뿐이다.
 - ★ 파이썬 쪽은 이 배치에서 다시 돌리지 않았다 — 12번 문서의 출력 인용이다.
 
-### 11. `structuredClone` 은 `inner` 와 심볼 두 행에서 갈리지만 getter·비열거·프로토타입은 잃는다 · 동결은 복사로 안 따라온다 — 깊은 복사는 **48번 주제** ★★
+### 11. `structuredClone` 은 `inner` 와 심볼 두 행에서 달라지지만 getter·비열거·프로토타입은 잃는다 · 동결은 복사로 안 따라온다 — 깊은 복사는 **48번 주제** ★★
 
 - ★★ 2번 격자에서 `clone` 열은 **`inner` 공유가 `n`**(안쪽까지 새로 만든다)과 **심볼이 `n`**(심볼 키를 안 옮긴다) 두 칸이 `assign` 과 다르다.
   그래도 **getter(값으로 굳는다) · 비열거 키 · `Point.prototype`** 은 넷 다 잃는다 — `structuredClone` 도 예외가 아니다.
@@ -321,15 +321,15 @@ Object.assign({}, words, numbers)  keys ["1","2","b"]
 | 소스 | 무엇을 고정하나 | 몇 번 · 어디서 |
 |---|---|---|
 | `js24b-27a-assign-log.js` | ★★★ `assign` 의 getter·setter 로그 · 두 원본 · 스프레드 대비 · 도중 예외 · 원시값 원본 | node20 1벌 + node18 대조 1벌 |
-| `js24b-27b-copy-grid.js` | ★★★ 복사 도구 4 × 성질 6 격자 · 「갈린 칸 3 / 18」 · getter 읽은 횟수 · 얕음 | node20 1벌 + node18 대조 1벌 |
+| `js24b-27b-copy-grid.js` | ★★★ 복사 도구 4 × 성질 6 격자 · 「달라진 항목 3 / 18」 · getter 읽은 횟수 · 얕음 | node20 1벌 + node18 대조 1벌 |
 | `js24b-27c-readonly-target.js` | ★★★ 비엄격·엄격 × `assign`·대입 · 부분 쓰기 · 얼린 원본 | node20 1벌 + node18 대조 1벌 |
 | `js24b-27d-keys-values-entries.js` | ★★★ 순서 · `Proxy` 트랩 로그 · 도중 삭제·추가 · 원시값 | node20 1벌 + node18 대조 1벌 |
 | `js24b-27e-fromentries.js` | ★★ 입력 검사 · `Map` 왕복 · `"__proto__"` 정의 대 대입 | node20 1벌 + node18 대조 1벌 |
 | `js24b-27f-groupby.web.js` | ★★★ null 프로토타입 · 콜백 인자 · 키 강제 변환과 순서 · `Map.groupBy` · 입력 | **Chrome 151 만** |
 | `js24b-27g-merge-order.js` | ★★ 병합의 자리와 값 · 정수 키 — 파이썬 대비 | node20 1벌 + node18 대조 1벌 |
-| `js24b-vdiff.sh` · `js24b-versions.sh` | 두 판이 갈린 탐침 수 · 이 문서의 출력이 **어느 판에서 나왔나** + 판별 기능 표 | 1벌씩 |
+| `js24b-vdiff.sh` · `js24b-versions.sh` | 두 버전이 달라진 probe 수 · 이 문서의 출력이 **어느 버전에서 나왔나** + 판별 기능 표 | 1벌씩 |
 
-두 node 판 대조기(이 배치 전체의 node 탐침). 이 주제의 줄(`js24b-27…`)은 전부 `identical` 이다. `DIFFERS` 줄은 **다른 주제의 탐침**이다(같은 배치가 한 대조기를 공유한다).
+두 node 버전 대조기(이 배치 전체의 node probe). 이 주제의 줄(`js24b-27…`)은 전부 `identical` 이다. `DIFFERS` 줄은 **다른 주제의 probe**이다(같은 배치가 한 대조기를 공유한다).
 
 ```sh
 # js24b-vdiff.sh
@@ -504,7 +504,7 @@ js24b-27g-merge-order.js                     identical
 identical 26  ·  differs 4  ·  total 30
 ```
 
-브라우저 탐침(6번)을 돌린 페이지 — 탐침 파일 이름을 주소의 `?` 뒤에 붙여 연다. `console.log` 를 가로채 줄을 모으고, 줄이 늘 때마다 `<pre>` 를 다시 쓴다. `--dump-dom` 이 그것을 내보낸다.
+브라우저 probe(6번)을 돌린 페이지 — probe 파일 이름을 주소의 `?` 뒤에 붙여 연다. `console.log` 를 가로채 줄을 모으고, 줄이 늘 때마다 `<pre>` 를 다시 쓴다. `--dump-dom` 이 그것을 내보낸다.
 
 ```html
 <!-- js24b-page.html -->
@@ -537,14 +537,14 @@ document.write('<script src="' + location.search.slice(1) + '"><\/script>');
 **`assign` 의 호출 순서와 `Set(…, true)` · 되돌리지 않는 것 · `EnumerableOwnProperties` 의 순서·심볼 제외·재조회 · `fromEntries` 의 정의 · `groupBy` 의 null 프로토타입·키 강제 변환·콜백 인자 · `Map.groupBy` 의 `-0` 접기는 구현 의존이 아니다.**
 어느 엔진에서도 같아야 한다.
 
-**안 돌려 본 것 / 못 잰 것 / 부적용인 창**
+**안 돌려 본 것 / 못 잰 것 / 해당 없는 창**
 
 - **안 돌려 본 것** — getter 를 디스크립터째 옮기는 `defineProperties` 경로 · 파이썬 쪽 재실행(12번 문서 인용) · 다른 엔진의 문구.
-- ★ **못 잰 것** — **`groupBy` 의 node 판 동작.** 두 node 판에 메서드가 없다(판별 블록) — Chrome 151 로 창을 바꿨다.
+- ★ **못 잰 것** — **`groupBy` 의 node 버전 동작.** 두 node 버전에 메서드가 없다(판별 블록) — Chrome 151 로 창을 바꿨다.
 - ★★★ **안 쟀다** — **성능 전부.** 센 것은 호출 횟수뿐이다.
-- ★★ **부적용인 창** — **진단의 `(행,열)`**(`SyntaxError` 가 없다). **「잴 것이 없다」는 뜻**이다.
+- ★★ **해당 없는 창** — **진단의 `(행,열)`**(`SyntaxError` 가 없다). **「잴 것이 없다」는 뜻**이다.
 
-**판이 올랐을 때 다시 돌려야 하는 것**
+**버전이 올랐을 때 다시 돌려야 하는 것**
 
 - ★★★ **node 22 이후의 판** — `Object.groupBy`·`Map.groupBy`(ES2024)가 들어온 판에서는 **6번을 node 로도** 돌린다. 판별 블록의 `no` 가 `yes` 로 바뀌는지 먼저 본다.
 - ★★ **예외 문구 전부**.
@@ -555,7 +555,7 @@ document.write('<script src="' + location.search.slice(1) + '"><\/script>');
 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮긴 출력이 하나도 없다).
 
 ★★ **예외는 `e.constructor.name` 과 `e.message` 로만** `이름 「메시지」` 꼴로 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
-★★ **이 주제의 node 탐침은 두 판에서 전부 같았다** — 판이 갈린 블록이 없다.
+★★ **이 주제의 node probe는 두 버전에서 전부 같았다** — 판이 달라진 블록이 없다.
 
 **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다(10번의 소스만 여기 싣는다).
 `js24b-27a-assign-log.js`(1번 · 8번) · `js24b-27b-copy-grid.js`(2번 · 11번) · `js24b-27c-readonly-target.js`(3번 · 7번 · 11번) · `js24b-27d-keys-values-entries.js`(4번) ·

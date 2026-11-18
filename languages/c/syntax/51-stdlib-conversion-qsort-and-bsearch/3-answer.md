@@ -80,7 +80,7 @@ strtol 이 성공이 아니라고 알린 입력 6 / 10 — atoi 는 그 6 개를
 - ★★★ **`"99999999999999999999"` 의 `atoi` 는 UB** — 표준 문장 「If the value of the result cannot be represented, the behavior is undefined.」 그래서 **값을 싣지 않았다.** 같은 입력의 `strtol` 은 `LONG_MAX` + `ERANGE` 로 **정해져 있다.**
 - ★★ **`strtol` 의 세 신호** — 소비 0(숫자 없음: `"abc"` · `""`) · 남음 > 0(찌꺼기: `"42abc"` · `"42 "` · `"-0x1A"`) · `ERANGE`. `"  42"` 는 앞 공백을 먹어 **성공**, `"08"` 은 base 10 이라 **8 로 성공**이다.
 
-### 2. 진법 접두와 `-std` — **갈린 칸 4 / 20 — 전부 `0b`/`0B` × base 0·2 · `"0b101"` base 16 은 `45313` · `"08"` base 0 은 소비 1** ★★
+### 2. 진법 접두와 `-std` — **달라진 항목 4 / 20 — 전부 `0b`/`0B` × base 0·2 · `"0b101"` base 16 은 `45313` · `"08"` base 0 은 소비 1** ★★
 
 **출력**
 
@@ -155,8 +155,8 @@ SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior s51c.c:8:12
 
 **왜 그런가**
 
-- ★★★ **`by_wide` 는 `long long` 차이를 `int` 로 좁힌다** — `INT_MAX - (-1) = 2147483648` 이 `int` 에 안 들어가 이 판에서 `-2147483648` 이 된다. 「`INT_MAX` 가 `-1` 보다 작다」가 되어 순서가 **순환**한다 — 표준의 「전체 순서여야 한다(shall)」 위반이라 **UB** 다.
-- ★★ **`by_diff` 는 `double` 차이를 `int` 로 버린다** — 이 네 값은 차이가 전부 1 보다 작아 **모든 쌍이 0(「같다」)** 이다. 순서가 모순되지는 않아서 결과는 **미명시**(같은 원소의 순서)이고, 이 판은 **원래 순서 그대로** 두었다.
+- ★★★ **`by_wide` 는 `long long` 차이를 `int` 로 좁힌다** — `INT_MAX - (-1) = 2147483648` 이 `int` 에 안 들어가 이 버전에서 `-2147483648` 이 된다. 「`INT_MAX` 가 `-1` 보다 작다」가 되어 순서가 **순환**한다 — 표준의 「전체 순서여야 한다(shall)」 위반이라 **UB** 다.
+- ★★ **`by_diff` 는 `double` 차이를 `int` 로 버린다** — 이 네 값은 차이가 전부 1 보다 작아 **모든 쌍이 0(「같다」)** 이다. 순서가 모순되지는 않아서 결과는 **미명시**(같은 원소의 순서)이고, 이 버전은 **원래 순서 그대로** 두었다.
 - ★★★ **UBSan 기본 묶음은 둘 다 0 줄** — 좁히기는 **구현 정의 변환**, 범위 안의 `double` → `int` 는 **적법**이라 「UB 검사기」가 볼 것이 없다. `implicit-conversion` 을 켜야 `s51c.c:8:12` 한 줄이 나오고, 그 리포트의 `SUMMARY` 가 `undefined-behavior` 라고 적는 것은 **이름표일 뿐**이다.
 - ★ **경고 0** — 세 벌 다.
 
@@ -223,8 +223,8 @@ ulimit -v 20000  | n=1000000  key order breaks=0  seq inversions among equal key
 
 **왜 그런가**
 
-- ★★★ **같은 바이너리 · 같은 입력에서 결과가 갈렸다** — 메모리가 넉넉하면 이 glibc 는 같은 키의 순서를 지켰고, 임시 버퍼를 못 잡는 한도에서는 **다른 경로**로 정렬해 뒤집었다. 정렬 자체(`key order breaks`)는 둘 다 맞다.
-- ★★ **표준은 「같다고 비교되는 원소의 순서는 미명시」** 라고 적는다 — 안정성은 **약속이 아니라 이 판 · 이 메모리 상황의 관찰**이다.
+- ★★★ **같은 바이너리 · 같은 입력에서 결과가 달라졌다** — 메모리가 넉넉하면 이 glibc 는 같은 키의 순서를 지켰고, 임시 버퍼를 못 잡는 한도에서는 **다른 경로**로 정렬해 뒤집었다. 정렬 자체(`key order breaks`)는 둘 다 맞다.
+- ★★ **표준은 「같다고 비교되는 원소의 순서는 미명시」** 라고 적는다 — 안정성은 **약속이 아니라 이 버전 · 이 메모리 상황의 관찰**이다.
 - ★ 한도 다섯 값 — 너무 낮으면 배열부터 못 잡고, 넉넉하면 0 이다.
 
 ### 6. 정렬 안 된 배열에 `bsearch` — **`as-is` 는 1·4 만 `hit` · `sorted` 는 다섯 다 `hit`** ★★
@@ -254,7 +254,7 @@ sorted    1:hit  2:hit  3:hit  4:hit  5:hit
 **왜 그런가**
 
 - ★★ **`errno` 는 성공 때 지워지지 않는다** — 앞선 다른 호출이 남긴 `ERANGE` 가 있으면 성공한 변환을 실패로 읽는다. 그래서 **부르기 직전에 0.**
-- ★★ **`strtol` 의 `ERANGE` 는 `long` 의 범위**다 — 이 판의 `long` 은 64 비트라 `"3000000000"` 은 `ERANGE` 없이 성공한다(아래 블록 — 값 · 소비 10 · `errno` 0 · 남음 0). `int` 에 넣으려면 **`INT_MIN <= v && v <= INT_MAX`** 를 한 번 더 본다.
+- ★★ **`strtol` 의 `ERANGE` 는 `long` 의 범위**다 — 이 버전의 `long` 은 64 비트라 `"3000000000"` 은 `ERANGE` 없이 성공한다(아래 블록 — 값 · 소비 10 · `errno` 0 · 남음 0). `int` 에 넣으려면 **`INT_MIN <= v && v <= INT_MAX`** 를 한 번 더 본다.
 
 ```text
 ===== gcc -std=c17 -Wall -Wextra -pedantic -O0 s51a.c -o x && ./x 3000000000 10 | tr '\037' ' ' (exit=0) =====
@@ -266,7 +266,7 @@ sorted    1:hit  2:hit  3:hit  4:hit  5:hit
 **왜 그런가**
 
 - ★★ `bsearch` 절 — 「The array **shall** consist of: all the elements that compare less than, all the elements that compare equal to, and all the elements that compare greater than the key object, **in that order**.」
-- ★★ 규범 절 — 「If a "shall" or "shall not" requirement that appears outside of a constraint … is violated, **the behavior is undefined**.」 그래서 6번의 `NULL` 은 「못 찾음」이라는 **정해진 답이 아니라** 이 판에서 나온 모습이다.
+- ★★ 규범 절 — 「If a "shall" or "shall not" requirement that appears outside of a constraint … is violated, **the behavior is undefined**.」 그래서 6번의 `NULL` 은 「못 찾음」이라는 **정해진 답이 아니라** 이 버전에서 나온 모습이다.
 
 ### 10. 35번 형제와 이어서 — **`a - b` 의 UBSan 전문 · 서명 캐스트(`int` → `long`)의 두 컴파일러 대비는 그쪽이 쟀다** ★★
 
@@ -303,13 +303,13 @@ sorted    1:hit  2:hit  3:hit  4:hit  5:hit
 | `s51e.c` | ★★ 안정성 격자 · 한도 다섯 값 | 실행 11 |
 | `s51f.c` | ★★ 정렬 안 된 `bsearch` | 1 |
 
-**재대조** — 제출 전 캡처를 처음부터 다시 돌려 `normalize-shaky.py`(기본 규칙만)로 대조했다. 이 편은 흔들린 칸이 없어야 하고, 그랬다.
+**재대조** — 제출 전 캡처를 처음부터 다시 돌려 `normalize-shaky.py`(기본 규칙만)로 대조했다. 이 편은 달라진 항목이 없어야 하고, 그랬다.
 
 **구현 의존 항목** — 다음은 **이 환경에서만** 그렇다.
 
 - ★★★ **2번의 링크 심볼** — glibc 2.38 이후의 헤더.
 - ★★★ **5번 전부** — glibc `qsort` 의 구현과 한도 값.
-- ★★ **3번의 `-2147483648` · 6번의 `hit`/`NULL` 패턴** — 이 판의 변환 · 이 glibc 의 걸음.
+- ★★ **3번의 `-2147483648` · 6번의 `hit`/`NULL` 패턴** — 이 버전의 변환 · 이 glibc 의 걸음.
 - ★★ **4번의 경고** — gcc 13 · clang 18 의 경고 설계.
 
 **`strtol` 의 값·`endptr`·`ERANGE` · C23 의 `0b` · `atoi` 넘침이 UB 인 것 · 비교자가 전체 순서를 이뤄야 한다는 것 · `bsearch` 의 정렬 전제는 구현 의존이 아니다.**\
@@ -318,7 +318,7 @@ sorted    1:hit  2:hit  3:hit  4:hit  5:hit
 **안 돌려 본 것 / 못 잰 것**
 
 - **안 돌려 본 것** — `strtoul("-1")` · C 로케일 밖의 주어 형식 · 차이가 1 이상 섞인 `by_diff` 데이터.
-- ★ **부적용** — 시간 측정.
+- ★ **해당 없음** — 시간 측정.
 
 **버전이 올랐을 때 다시 돌려야 하는 것**
 
@@ -330,5 +330,5 @@ sorted    1:hit  2:hit  3:hit  4:hit  5:hit
 
 이 파일의 모든 출력·진단은 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** · **clang 18.1.3** · **glibc 2.39** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
 소스는 `s51a.c` · `s51c.c`\~`s51f.c` 이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮긴 출력이 없다).\
-★★★ **본체 창은 변환 격자** — 입력 10 × 두 함수.
-★★ **흔들리는 칸** — 없다. `ulimit` 칸은 **한도 값에 매인다**(선언).
+★★★ **핵심 창은 변환 격자** — 입력 10 × 두 함수.
+★★ **실행마다 달라지는 항목** — 없다. `ulimit` 칸은 **한도 값에 매인다**(선언).

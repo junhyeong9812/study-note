@@ -109,7 +109,7 @@ THD *MYSQL_BIN_LOG::fetch_and_process_flush_stage_queue(
 }
 ```
 
-InnoDB 의 `flush_logs` 콜백이다(`innobase_hton->flush_logs = innobase_flush_logs`, ha_innodb.cc L5403). `innodb_flush_log_at_trx_commit` 이 여기서 갈린다.
+InnoDB 의 `flush_logs` 콜백이다(`innobase_hton->flush_logs = innobase_flush_logs`, ha_innodb.cc L5403). `innodb_flush_log_at_trx_commit` 이 여기서 달라진다.
 
 `storage` / `innobase` / `handler` / `ha_innodb.cc` L5848-L5885 ([GitHub](https://github.com/mysql/mysql-server/blob/008e09c2834b98143a8c067d4d225c90953050cf/storage/innobase/handler/ha_innodb.cc#L5848-L5885))
 

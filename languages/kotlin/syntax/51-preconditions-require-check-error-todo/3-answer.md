@@ -4,7 +4,7 @@
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
 
-### 1. ★★★ **`require` 계열 → `IllegalArgumentException` · `check` 계열·`error` → `IllegalStateException` · `TODO` → `kotlin.NotImplementedError`** · 갈린 행 **2 / 11**(`assert` 둘 — `java` 에서는 아무것도 안 던진다)
+### 1. ★★★ **`require` 계열 → `IllegalArgumentException` · `check` 계열·`error` → `IllegalStateException` · `TODO` → `kotlin.NotImplementedError`** · 달라진 행 **2 / 11**(`assert` 둘 — `java` 에서는 아무것도 안 던진다)
 
 **출력**
 
@@ -59,7 +59,7 @@ cells that evaluated the condition: 5 / 8
 - ★★★ 기본 모드에서 `assert` 는 **보통의 `inline fun`** 이라 인자 `condition()` 이 **부르기 전에** 계산된다 — 선언이 `assert(value: Boolean, …)` 이고 `_Assertions.ENABLED` 는 **몸통 안에서** 본다(2-summary (5)).
 - ★★ `-Xassertions=jvm` 은 Java 의 `assert` 문처럼 **조건 계산 자체를 건너뛰는** 꼴로 컴파일한다 — 그 바이트코드는 **보지 않았다**(행동만 봤다).
 
-### 3. ★★★ **막힌 탐침 3 / 9** — `contract-without-opt-in`(3건 · `this declaration needs opt-in …`) · `assert` · `own-no-contract`(둘 다 `only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'String?'.`) · 나머지 여섯은 `ok`
+### 3. ★★★ **막힌 probe 3 / 9** — `contract-without-opt-in`(3건 · `this declaration needs opt-in …`) · `assert` · `own-no-contract`(둘 다 `only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'String?'.`) · 나머지 여섯은 `ok`
 
 **출력**
 
@@ -252,7 +252,7 @@ fee("gold") -> IllegalStateException: unknown kind: gold
 
 - ★★ 메시지는 stdlib 상수가 **같다**(1번 격자 3행 · 6행). 가르고 싶으면 **메시지 람다**를 주거나(`requireNotNull(x) { "…" }`) 클래스를 본다.
 
-### 8. 컴파일러는 **함수 서명만 보고 몸통을 안 본다** — 계약이 「돌아왔으면 참」을 **서명 쪽에** 적어 준다 · 이 판에서도 **`@OptIn(ExperimentalContracts::class)`** 가 필요하다
+### 8. 컴파일러는 **함수 서명만 보고 몸통을 안 본다** — 계약이 「돌아왔으면 참」을 **서명 쪽에** 적어 준다 · 이 버전에서도 **`@OptIn(ExperimentalContracts::class)`** 가 필요하다
 
 **왜 그런가**
 
@@ -295,36 +295,36 @@ Python 3.12.3
 (exit 0)
 ```
 
-★ **흔들리는 칸과 안 흔들리는 칸**
+★ **실행마다 달라지는 항목과 달라지지 않는 항목**
 
-| 흔들린다 | 안 흔들린다 |
+| 실행마다 달라진다 | 달라지지 않는다 |
 |---|---|
-| **없다** — 해시코드·주소·시간·스택 트레이스를 찍지 않았다 | 던지기 격자 11행 × 2벌 · 클래스별 개수 · 갈린 행 수 |
-| | `-Xassertions` 격자 4 × 2 · 계약 격자 9탐침 · 진단 문구 |
+| **없다** — 해시코드·주소·시간·스택 트레이스를 찍지 않았다 | 던지기 격자 11행 × 2벌 · 클래스별 개수 · 달라진 행 수 |
+| | `-Xassertions` 격자 4 × 2 · 계약 격자 9probe · 진단 문구 |
 | | `javap` 발췌 · 소스 발췌 · 모든 **종료 코드** |
 
 > 근거 — 캡처 스크립트를 처음부터 다시 돌려 **블록 전체를 대조**했다.
 >
 > 실측 — `capture.sh blocks` 와 `capture.sh blocks-recheck` 를 처음부터 따로 돌려 `normalize-shaky.py` 로 대조했다 —\
-> **블록 74개 · 동일 74 · 흔들린 칸 0 · ★고칠 것 0**(50\~53 네 주제를 한 캡처로 받았다). 추가한 정규화 규칙은 **없다**.
+> **블록 74개 · 동일 74 · 달라진 항목 0 · ★고칠 것 0**(50\~53 네 주제를 한 캡처로 받았다). 추가한 정규화 규칙은 **없다**.
 
 | 프로그램 | 무엇을 확인했나 | 돌린 방법 |
 |---|---|---|
 | `throw51.kt` · `grid51.py` | ★★★ 계약 함수 11가지 → 클래스 · 메시지 × `java`/`java -ea` | 한 번 컴파일 → 스크립트가 두 벌로 돌려 합친다 |
 | `assert51.kt` · `grid51a.py` | ★★ `-Xassertions` 4모드 × `-ea` → 던졌나 · 조건을 평가했나 | 스크립트가 모드마다 컴파일 → 두 벌로 실행 |
-| `contract51.kt` · `grid51c.py` | ★★★ 스마트 캐스트 9탐침 | 스크립트가 컴파일 · 진단을 줄마다 읽는다 + 같은 파일의 에러 전문 |
+| `contract51.kt` · `grid51c.py` | ★★★ 스마트 캐스트 9probe | 스크립트가 컴파일 · 진단을 줄마다 읽는다 + 같은 파일의 에러 전문 |
 | `lazy51.kt` | ★★ 메시지 생성 횟수 · `inline` 펼침 | `kotlinc` → `java` → `javap -c`(전부 받은 뒤 `grep`) |
 | stdlib 소스 jar | KDoc · 기본 메시지 · 계약 · `assert` 선언 · opt-in 표지 | `unzip` → `sed -n` |
 | `form51.kt` | 형태 한 벌 | `kotlinc` → `java` |
 
-**구현 의존 항목** — 기본 메시지 문자열 · 람다가 펼쳐지는 바이트코드 · `-Xassertions` 모드의 이름 — 이 판의 산출물이다.\
+**구현 의존 항목** — 기본 메시지 문자열 · 람다가 펼쳐지는 바이트코드 · `-Xassertions` 모드의 이름 — 이 버전의 산출물이다.\
 반면 **`require`→`IllegalArgumentException` · `check`→`IllegalStateException`**(KDoc) · **`TODO` 가 `Error`**(선언) · **계약이 스마트 캐스트를 준다**(언어 — 실험적) 는 **계약**이다.
 
-**★ 던져 봤더니 예상과 달랐던 것 — 세 건**
+**★ 실행해 봤더니 예상과 달랐던 것 — 세 건**
 
 1. ★★★ **기본 모드의 `assert` 는 `-ea` 없이도 조건을 평가했다** — 「꺼져 있으면 아무 일도 없다」가 아니었다. `-Xassertions=jvm` 이라야 그렇다.
 2. ★★ **`assert` 에는 계약이 없다** — `require` 와 같은 모양인데 스마트 캐스트가 안 됐다.
-3. ★★ **`requireNotNull` 과 `checkNotNull` 의 기본 메시지가 한 글자도 같다** — 클래스로만 갈린다.
+3. ★★ **`requireNotNull` 과 `checkNotNull` 의 기본 메시지가 한 글자도 같다** — 클래스로만 달라진다.
 
 ## 실행 환경
 

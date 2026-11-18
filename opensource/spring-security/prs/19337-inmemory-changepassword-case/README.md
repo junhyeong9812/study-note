@@ -162,7 +162,7 @@ MutableUserDetails user = this.users.get(username.toLowerCase(Locale.ROOT));
 ```
 (InMemoryUserDetailsManager.java:153)
 
-같은 입력(`"User"`로 등록한 사용자가 본인 비밀번호 변경)에 결과가 이렇게 갈린다.
+같은 입력(`"User"`로 등록한 사용자가 본인 비밀번호 변경)에 결과가 이렇게 달라진다.
 
 ```text
 수정 전                                  수정 후

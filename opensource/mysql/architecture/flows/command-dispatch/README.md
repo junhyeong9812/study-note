@@ -2,7 +2,7 @@
 
 상위: [MySQL 아키텍처 지도](../../README.md)
 
-연결 스레드가 **클라이언트 패킷 하나를 읽어서, SQL 이면 파싱하고, 테이블을 열고 잠그고, 실행한 뒤, 문장 트랜잭션을 끝내고 결과 상태를 보낼 때까지**의 흐름이다. 전부 [연결과 스레드](../connection-thread/README.md)가 만든 연결 스레드 하나 안에서 일어나고 스레드 경계는 없다. 대신 **서버 계층과 InnoDB 사이의 경계가 두 번** 나온다. 한 번은 [07] `lock_tables` 가 테이블마다 `handler::ha_external_lock` 을 부르는 자리로, 여기서 InnoDB 트랜잭션이 서버의 2PC 코디네이터에 등록된다([08]). 다른 한 번은 [09] `execute_inner` 가 실행기를 돌려 행 단위 handler 호출(`ha_write_row`, `ha_index_read_map` 등)을 내보내는 자리로, 여기서 흐름이 [행 쓰기](../row-insert/README.md)와 [일관 읽기(MVCC)](../mvcc-read/README.md)로 갈린다. 흐름은 [05] `mysql_execute_command` 의 `finish:` 에서 `trans_commit_stmt` 로 [커밋과 binlog 2PC](../commit-2pc/README.md)에 들어갔다가 돌아와 끝난다.
+연결 스레드가 **클라이언트 패킷 하나를 읽어서, SQL 이면 파싱하고, 테이블을 열고 잠그고, 실행한 뒤, 문장 트랜잭션을 끝내고 결과 상태를 보낼 때까지**의 흐름이다. 전부 [연결과 스레드](../connection-thread/README.md)가 만든 연결 스레드 하나 안에서 일어나고 스레드 경계는 없다. 대신 **서버 계층과 InnoDB 사이의 경계가 두 번** 나온다. 한 번은 [07] `lock_tables` 가 테이블마다 `handler::ha_external_lock` 을 부르는 자리로, 여기서 InnoDB 트랜잭션이 서버의 2PC 코디네이터에 등록된다([08]). 다른 한 번은 [09] `execute_inner` 가 실행기를 돌려 행 단위 handler 호출(`ha_write_row`, `ha_index_read_map` 등)을 내보내는 자리로, 여기서 흐름이 [행 쓰기](../row-insert/README.md)와 [일관 읽기(MVCC)](../mvcc-read/README.md)로 나뉜다. 흐름은 [05] `mysql_execute_command` 의 `finish:` 에서 `trans_commit_stmt` 로 [커밋과 binlog 2PC](../commit-2pc/README.md)에 들어갔다가 돌아와 끝난다.
 
 기준 태그: mysql-9.7.2 [`008e09c283`](https://github.com/mysql/mysql-server/tree/008e09c2834b98143a8c067d4d225c90953050cf). 모든 줄 번호는 이 태그 기준이다.
 
@@ -93,7 +93,7 @@
  [커밋과 binlog 2PC]  [05] finish: 의 trans_commit_stmt, SQLCOM_COMMIT 의 trans_commit
 ```
 
-앞 흐름은 [연결과 스레드](../connection-thread/README.md), 뒤로는 [행 쓰기](../row-insert/README.md), [일관 읽기(MVCC)](../mvcc-read/README.md), [레코드 잠금](../record-lock/README.md), [커밋과 binlog 2PC](../commit-2pc/README.md)로 갈린다.
+앞 흐름은 [연결과 스레드](../connection-thread/README.md), 뒤로는 [행 쓰기](../row-insert/README.md), [일관 읽기(MVCC)](../mvcc-read/README.md), [레코드 잠금](../record-lock/README.md), [커밋과 binlog 2PC](../commit-2pc/README.md)로 나뉜다.
 
 ## db-engine 에서는
 

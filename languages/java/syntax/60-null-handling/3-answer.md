@@ -247,7 +247,7 @@ ElseGet(null, make)   = 만들어진 기본값 / make() 호출 = 1
 - ★ **자바 전체에 같은 모양이 반복된다.** 하나를 이해하면 나머지가 따라온다.
 - 판정 기준도 같다 — **리터럴·상수면 즉시형, 계산·조회·객체 생성이면 지연형.**
 
-### 6. ★ NPE 메시지는 무엇에 갈리는가
+### 6. ★ NPE 메시지는 무엇에 달라지는가
 
 **출력** (`Ex.java (60-c)`, JDK 21.0.5 — 17·25 동일)
 
@@ -395,7 +395,7 @@ TreeSet 에 null                 -> java.lang.NullPointerException: null
 **`HashMap` 에서 둘을 구분하는 법**
 
 - `get` 으로는 **구분 안 된다.** "키가 없다"도 `null`, "값이 `null` 이다"도 `null` 이다.
-- **`containsKey(k)`** 를 봐야 한다 — 실측에서 `true` / `false` 로 갈렸다.
+- **`containsKey(k)`** 를 봐야 한다 — 실측에서 `true` / `false` 로 나뉘었다.
 - 아니면 **`getOrDefault(k, 기본값)`** 로 둘을 한 답으로 합친다([**41번 주제**](../41-map-api-merge-compute/)).
 
 **`TreeSet` 이 거부하는 이유**
@@ -405,7 +405,7 @@ TreeSet 에 null                 -> java.lang.NullPointerException: null
 - 정렬에 `null` 을 넣어야 하면 **`Comparator.nullsFirst`/`nullsLast`** 로 감싼 비교자를 준다.
 - 정본은 [`../28-comparable-comparator/`](../28-comparable-comparator/).
 
-### 9. 스트림 수집기의 `null` 정책은 어떻게 갈리는가
+### 9. 스트림 수집기의 `null` 정책은 어떻게 달라지는가
 
 **출력** (`Ex.java (60-b)`·`Ex.java (60-d)`, JDK 21.0.5 — 17·25 동일)
 
@@ -468,7 +468,7 @@ java.lang.NullPointerException: element cannot be mapped to a null key
 - ★ **`toMap` 과 달리 메시지가 있다.** 원인을 직접 말한다 — 키 쪽이 문제라는 것까지 알려 준다.
 - `toMap` 의 다른 함정(키 충돌)은 [`../47-collectors-basics/`](../47-collectors-basics/) 가 정본이다.
 
-**`toList()` 계열이 갈리는 기준**
+**`toList()` 계열이 달라지는 기준**
 
 > **불변 컬렉션을 만드는 쪽이 `null` 을 거부한다.**
 

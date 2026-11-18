@@ -2,7 +2,7 @@
 
 상위: [AbstractUserDetailsAuthenticationProvider.authenticate](../README.md)
 
-비밀번호를 실제로 대조하는 곳이다. 폼 로그인 전체에서 "맞다/틀리다"가 갈리는 한 줄이 여기 있다.
+비밀번호를 실제로 대조하는 곳이다. 폼 로그인 전체에서 "맞다/틀리다"가 달라지는 한 줄이 여기 있다.
 
 ## 위치
 

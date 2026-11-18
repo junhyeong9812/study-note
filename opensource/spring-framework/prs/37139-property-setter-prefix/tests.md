@@ -163,7 +163,7 @@ void rejectWriteMethodEmbeddingSetInName() {
 - **fix 후**: `startsWith("set")`가 거짓이라 즉시 `IllegalArgumentException`.
 - **주석의 역할**: `// "set" embedded mid-name: formerly accepted and resolved to "x"`가
   fix 전 실제 결과값을 테스트 옆에 남긴다.\
-  이 테스트가 잡아내는 것이 "잘못된 예외"가 아니라 "무음 통과"임을 코드만 읽고도 알 수
+  이 테스트가 잡아내는 것이 "잘못된 예외"가 아니라 "조용한 통과"임을 코드만 읽고도 알 수
   있게 하는 장치다.
 
 > **fixture(픽스처)** — 테스트가 돌아가는 데 필요한 미리 만들어 둔 입력 데이터·대상 객체.\
@@ -216,7 +216,7 @@ name = ""                        빈 이름 카드가 조용히 완성된다
 getField() 의 hasLength("") 가드   ->  조회 자체를 하지 않고 null
 ```
 
-그림 해설: `substring`이 딱 한 칸 더 컸다면 예외가 났겠지만, 경계에 정확히 걸려 빈 문자열이 나오면서 실패가 무음이 된다.
+그림 해설: `substring`이 딱 한 칸 더 컸다면 예외가 났겠지만, 경계에 정확히 걸려 빈 문자열이 나오면서 실패가 드러나지 않게 된다.
 
 ## fixture
 

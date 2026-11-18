@@ -129,7 +129,7 @@ public int worstWaitLeftBehind(List<Order> orders, List<String> unassignedIds)
 - 네 지표는 각각 무엇을 보는가?
 - 합계·평균이 감추는 것은 무엇인가?
 - `worstWaitLeftBehind`가 배차된 건이 아니라 **미배차**를 보는 이유는 무엇인가?
-- 기사 하나에 주문 셋일 때 번호 순과 대기 순은 남는 사람이 어떻게 갈리는가?
+- 기사 하나에 주문 셋일 때 번호 순과 대기 순은 남는 사람이 어떻게 달라지는가?
 - 그때 미배차자의 최장 대기는 각각 몇 초인가?
 
 6. 거리 제한 (maxDistance)

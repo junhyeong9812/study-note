@@ -195,7 +195,7 @@ Node factor() {
    - Jackson은 2.15부터 `StreamReadConstraints`가 있다(클래스 `@since 2.15`). jackson-core 2.15·2.17 소스 모두 기본 최대 깊이는 `DEFAULT_MAX_DEPTH = 1000`이다. 넘으면 `StreamConstraintsException`이다. 메시지는 버전마다 다르다(2.17: `Document nesting depth (…) exceeds the maximum allowed (1000, …)`, 2.15 브랜치: `Depth (…) exceeds the maximum allowed nesting depth (1000)`).
    - 직접 쓴 재귀 하강이면 `depth` 카운터를 둔다(실험의 `maxDepth`).
 2. **`StackOverflowError`는 `Exception`이 아니다.** `catch (Exception e)`로는 안 잡힌다. 깊이 상한으로 막는 게 맞고, 잡아서 계속 쓰는 것은 권하지 않는다(상태가 어중간할 수 있다).
-3. **한 메시지는 한 파서로 한 번만 해석한다.** 검사(앞단)와 사용(뒷단)이 다른 라이브러리를 쓰면 중복 키·중복 헤더·인코딩 해석이 갈린다.
+3. **한 메시지는 한 파서로 한 번만 해석한다.** 검사(앞단)와 사용(뒷단)이 다른 라이브러리를 쓰면 중복 키·중복 헤더·인코딩 해석이 달라진다.
    - 애매한 입력은 **거부**한다. 중복 쿼리 파라미터·중복 JSON 키·`Content-Length`와 `Transfer-Encoding` 동시 존재.
    - 프록시와 서버의 HTTP 파서 설정(엄격 모드)을 맞추고, 가능하면 끝단까지 HTTP/2를 쓴다(방어 세부는 security/23).
 4. **손으로 쓴 파서는 문법부터 적는다.** 층(우선순위)과 반복문(왼쪽 결합)을 문법에서 정하고 함수로 옮긴다. `8-3-2`, `2-3+4`, `((1))`, 빈 입력, 짝 안 맞는 괄호를 테스트에 넣는다.

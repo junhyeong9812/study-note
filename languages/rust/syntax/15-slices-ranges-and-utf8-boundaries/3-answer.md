@@ -141,7 +141,7 @@ sl.get(2..1) = None
 
 **왜 그런가**
 
-| 던진 것 | `[]` 였다면 | `get` 은 | 무엇이 잘못이었나 |
+| 실행한 것 | `[]` 였다면 | `get` 은 | 무엇이 잘못이었나 |
 |---|---|---|---|
 | `s.get(0..1)` | 패닉(경계 아님) | `None` | **문자 경계 위반** |
 | `s.get(0..3)` | `"한"` | `Some("한")` | 정상 — **경계가 맞았다** |
@@ -516,7 +516,7 @@ v[..=2]   = [0, 1, 2]
 - ★ `type_name_of_val` 이 찍는 **경로 문자열**(`core::ops::range::Range<i32>`)은 **rustc 구현**이다 —\
   타입 이름은 언어 보장이지만 **경로 표기는 판마다 바뀔 수 있다.**
 
-### 8. 뚱뚱한 포인터 — 길이가 어디 있느냐로 갈린다
+### 8. 뚱뚱한 포인터 — 길이가 어디 있느냐로 나뉜다
 
 **출력**
 
@@ -905,7 +905,7 @@ For more information about this error, try `rustc --explain E0502`.
 
 | 실험 (`ex.rs`) | 무엇을 확인했나 | 결과 |
 |---|---|---|
-| 7종 문자열의 `len`·`chars`·`bytes` | ★ **세 칸이 전부 갈린다** | 1 |
+| 7종 문자열의 `len`·`chars`·`bytes` | ★ **세 칸이 전부 달라진다** | 1 |
 | 기준 문자열 `char_indices` + `is_char_boundary` 전수 | 바이트 격자의 근거(경계 `0·3·6·7·8·9·10`) | 2-summary (3) |
 | 가족 이모지 바이트 격자 | **18바이트 · 5 `char` · 사람 1글자** | 2-summary (3) |
 | `chars().take(1)` · `chars().rev()` | 국기가 뒤집히고 악센트가 떨어진다 | 2-summary (3) |
@@ -938,7 +938,7 @@ For more information about this error, try `rustc --explain E0502`.
 |---|---|
 | ★ 패닉 첫 줄의 **괄호 안 숫자** | **런타임**(OS 스레드 id) — 같은 바이너리 3회에 전부 달랐다 |
 | **`the len is` 대 `the length is`** | **rustc·std 구현** — 런타임 경로와 컴파일 경로가 다른 코드다 |
-| `unconditional_panic` 이 **기본 `deny`** | **rustc 판** — 린트는 판마다 추가·승격된다 |
+| `unconditional_panic` 이 **기본 `deny`** | **rustc 버전** — 린트는 판마다 추가·승격된다 |
 | `invalid_from_utf8` 이 **기본 `warn`** | 〃 |
 | **상수 배열 인덱스만 잡히는 것** | **rustc 구현**(상수 전파). 문자열 경계는 안 잡혔다 |
 | `str::floor_char_boundary` 가 **안정판인 것** | **rustc·std 판** — 이 툴체인(1.92.0)에서 컴파일됨 |

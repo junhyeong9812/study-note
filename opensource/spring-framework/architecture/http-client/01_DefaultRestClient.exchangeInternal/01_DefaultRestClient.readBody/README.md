@@ -107,4 +107,4 @@ private void applyStatusHandlers(HttpRequest request, ClientHttpResponse respons
       --> JSON 이면 Jackson 컨버터가 읽어 객체로
 ```
 
-`retrieve()`와 `exchange()`의 차이가 여기서 갈린다. `retrieve()`는 상태 처리기를 적용해 오류를 예외로 바꾸고, `exchange()`는 응답을 그대로 넘겨 호출자가 판단하게 한다.
+`retrieve()`와 `exchange()`의 차이가 여기서 달라진다. `retrieve()`는 상태 처리기를 적용해 오류를 예외로 바꾸고, `exchange()`는 응답을 그대로 넘겨 호출자가 판단하게 한다.

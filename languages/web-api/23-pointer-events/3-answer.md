@@ -1,9 +1,9 @@
 # web-api/23 — 포인터 이벤트: `pointerdown` 계열·마우스/터치/펜 통합·`setPointerCapture` — 정답
 
-| 안 흔들리는 칸 | 흔들리는 칸 · 못 잰 칸 |
+| 달라지지 않는 항목 | 실행마다 달라지는 항목 · 못 잰 항목 |
 |---|---|
-| 순서 로그 세 판 · 캡처 9칸 · 막기 일곱 줄 · `touch-action` 10칸 | **안 실었다** — 스크롤 중 `touchmove` 개수(4 와 5 로 갈렸다) |
-| 캡처를 세 판 돌려 **한 글자도 같았다** | **못 잰 것** — 펜의 압력·기울기 · 멀티터치 · Chrome 판 번호 |
+| 순서 로그 세 판 · 캡처 9칸 · 막기 일곱 줄 · `touch-action` 10칸 | **안 실었다** — 스크롤 중 `touchmove` 개수(4 와 5 로 나뉘었다) |
+| 캡처를 세 번 돌려 **한 글자도 같았다** | **못 잰 것** — 펜의 압력·기울기 · 멀티터치 · Chrome 판 번호 |
 
 ```text
 $ google-chrome --version
@@ -66,7 +66,7 @@ $ python3 wa20b-cdp.py page wa20b-23-order.html | sed -n '19,35p'
 **왜 그런가**
 
 - **포인터가 먼저, 호환 마우스가 바로 뒤** — over/enter 네 줄, move 두 줄, down 두 줄, up 두 줄, 그다음 `click`, 나갈 때 out/leave 네 줄.
-- ★ **`click` 의 생성자는 `PointerEvent`** — Pointer Events 가 「`click`·`auxclick`·`contextmenu` 는 `PointerEvent` 다」로 정한다. ★ **`isPrimary` 는 `false`** 로 찍혔다 — 이 판의 관찰이고, 근거 문장은 찾지 못했다.
+- ★ **`click` 의 생성자는 `PointerEvent`** — Pointer Events 가 「`click`·`auxclick`·`contextmenu` 는 `PointerEvent` 다」로 정한다. ★ **`isPrimary` 는 `false`** 로 찍혔다 — 이 버전의 관찰이고, 근거 문장은 찾지 못했다.
 - **펜은 `pointerType` 만 `pen`** 이고 나머지는 한 글자도 같다(CDP 의 펜은 마우스 이벤트에 종류만 바꾼 것이다).
 
 ### 2. 부르지 않은 캡처가 오고, `mouse*` 는 `touchend` 뒤에 몰려 온다
@@ -223,7 +223,7 @@ pointercancel 이 난 칸 = 6 / 10
 ### 10. 다른 주제와 잇기
 
 - **19번 주제와 문항 6** — 같은 사실(「`touch-action` 이 브라우저가 가져갈 방향을 정한다」)의 두 면이다. 19편은 **화면 쪽**(`none` 이면 리스너 없이도 안 움직인다), 이 편은 **포인터 쪽**(허락된 방향으로 끌면 `pointercancel` 로 스트림을 잃는다).
-- **18번 주제의 짝** — `pointerover`/`pointerout` 은 **버블하고** `pointerenter`/`pointerleave` 는 **버블하지 않는다**(Pointer Events 의 이벤트 표 — `pointerenter` 는 Bubbles No). 이 편은 버블 여부를 **던지지 않았다** — 명세 표로만 답한다. 순서 로그에서 over 가 enter 보다 먼저인 것까지가 이 판의 관찰이다.
+- **18번 주제의 짝** — `pointerover`/`pointerout` 은 **버블하고** `pointerenter`/`pointerleave` 는 **버블하지 않는다**(Pointer Events 의 이벤트 표 — `pointerenter` 는 Bubbles No). 이 편은 버블 여부를 **던지지 않았다** — 명세 표로만 답한다. 순서 로그에서 over 가 enter 보다 먼저인 것까지가 이 버전의 관찰이다.
 - **도구가 못 보는 것** — ① **진짜 펜의 압력·기울기**(CDP 의 펜은 종류만 바꾼 마우스다) ② **멀티터치**. 그 밖에 입력 지연·프레임.
 
 ## 실행 검증

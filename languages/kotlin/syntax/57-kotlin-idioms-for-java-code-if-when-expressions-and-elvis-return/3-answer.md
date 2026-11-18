@@ -266,7 +266,7 @@ cells that differ: 1 / 5
 - ★★★ `chain` 의 `?: "no city"` 는 **사슬 안 어느 `?.let` 이 null 을 내든** 받는다 — `areaCode("busan")` 이 `null` 이라 맨 안쪽 `let` 이 `null` 을 냈고, 그것이 「도시가 없다」로 읽혔다.
 - ★★ `early` 는 **실패 이유마다 `?: return` 을 따로** 두었다 — 도시가 없을 때와 번호가 없을 때가 다른 문자열이 된다. 같은 함정의 한 겹짜리 판은 [14번 주제](../14-scope-functions/) (4).
 
-### 7. ★★★ **컴파일 오류** — 「`'fun String.toUpperCase(): String' is deprecated. Use uppercase() instead.`」 · 선언의 `errorSince = "2.1"` · 그래서 고르게 되는 `uppercase()` 는 **`Locale.ROOT`** 라 2번에서 갈렸다
+### 7. ★★★ **컴파일 오류** — 「`'fun String.toUpperCase(): String' is deprecated. Use uppercase() instead.`」 · 선언의 `errorSince = "2.1"` · 그래서 고르게 되는 `uppercase()` 는 **`Locale.ROOT`** 라 2번에서 달라졌다
 
 ```kotlin
 // upper57.kt
@@ -428,7 +428,7 @@ public actual inline fun String.uppercase(): String = (this as java.lang.String)
 - ★★ 같은 모듈을 다시 컴파일하면 3번처럼 **그 전에 오류**가 나므로, 이 명령이 도는 것은 **봉인 계층이 다른 모듈에서 바뀌고 이쪽은 재컴파일되지 않은** 경우다([06번 주제](../06-when-expression/) (7)).
 - ★ Kotlin 쪽 앞머리의 `checkNotNullParameter` 는 인자 `p` 가 non-null 이라 붙은 검사다([03번 주제](../03-null-safe-types/) (4)).
 
-### 10. ★★ **증명하지 않는다** — 1번은 **그 17개 입력과 로케일 `ko`** 에서의 0 칸이다 · 2번은 **환경을 바꾸자 1 칸이 갈린 반례**다
+### 10. ★★ **증명하지 않는다** — 1번은 **그 17개 입력과 로케일 `ko`** 에서의 0 칸이다 · 2번은 **환경을 바꾸자 1 칸이 달라진 반례**다
 
 **왜 그런가**
 
@@ -436,7 +436,7 @@ public actual inline fun String.uppercase(): String = (this as java.lang.String)
 - ★★ 2번의 갈림은 **입력을 늘려서는 절대 안 나온다** — 소스도 입력도 같고 JVM 플래그만 달랐다. 옮긴 코드를 대조할 때 **환경(로케일·시간대)을 한 번 바꿔 보는 것**이 입력을 늘리는 것과 다른 축이다.
 - ★ 거꾸로 5번의 「같은 명령 줄」은 **입력과 무관하게** 같다는 강한 근거지만, 같은 쌍은 **2 / 6** 뿐이었다.
 
-### 11. ★★ **관찰이다**(출력이 갈렸다) · 「읽기 어렵다」는 **설계 권고층** — 이 문서는 **규약 문서의 출처를 확인하지 못했다**
+### 11. ★★ **관찰이다**(출력이 달라졌다) · 「읽기 어렵다」는 **설계 권고층** — 이 문서는 **규약 문서의 출처를 확인하지 못했다**
 
 **왜 그런가**
 
@@ -450,24 +450,24 @@ public actual inline fun String.uppercase(): String = (this as java.lang.String)
 
 - ★★★ 완결성 검사를 켜는 것은 언어 이름이 아니라 **「닫힌 하위 타입 목록 + 그 목록을 세는 분기 문법」** 두 가지다. Java 21 은 `sealed` 와 패턴 `switch` 로 둘 다 갖췄다([Java 23번](../../../java/syntax/23-switch-pattern-matching/) · [Java 15번](../../../java/syntax/15-sealed-classes/)).
 - ★★ 그러니 「Java 코드를 Kotlin 답게」의 이득은 **Java 8 식 사슬을 옮길 때** 가장 크다 — 같은 옮김을 Java 21 안에서 해도 같은 보호를 얻는다.
-- ★ 이 판에서 잰 차이는 **진단 문구** 하나다 — Kotlin 은 빠진 타입 이름(`is Refund`)을 대고 `javac` 는 안 댄다(3번). 그 밖의 차이(`permits`·`non-sealed`·런타임 안전망)는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §3 이 원고째 정리했다 — 이 문서는 **다시 재지 않았다.**
+- ★ 이 버전에서 잰 차이는 **진단 문구** 하나다 — Kotlin 은 빠진 타입 이름(`is Refund`)을 대고 `javac` 는 안 댄다(3번). 그 밖의 차이(`permits`·`non-sealed`·런타임 안전망)는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §3 이 원고째 정리했다 — 이 문서는 **다시 재지 않았다.**
 
 ## 실행 검증
 
-★ **흔들리는 칸과 안 흔들리는 칸**
+★ **실행마다 달라지는 항목과 달라지지 않는 항목**
 
-| 흔들린다 | 안 흔들린다 |
+| 실행마다 달라진다 | 달라지지 않는다 |
 |---|---|
-| **없다** — 실행 시간을 찍지 않았다 | 두 판 격자 · 로케일 판 격자 · 과한 칸 격자 · 갈린 칸 수 |
+| **없다** — 실행 시간을 찍지 않았다 | 두 판 격자 · 로케일 판 격자 · 과한 칸 격자 · 달라진 항목 수 |
 | ★ 환경에 매인다 — 첫 격자는 **기본 로케일 `ko`/`KR`** 에서 찍었다 | 진단 문구와 `줄:칸` · `javap` 의 명령과 상수 풀 번호 · 명령 비교 수 · 모든 **종료 코드** |
 
 > 근거 — 캡처 스크립트를 처음부터 다시 돌려 **블록 전체를 대조**했다.
 
-실측 — `capture.sh blocks` 와 `capture.sh blocks-re` 를 처음부터 따로 돌려 `normalize-shaky.py` 로 대조했다 — **블록 109개 · 동일 109 · 흔들린 칸 0 · ★고칠 것 0**(54\~58 다섯 주제를 한 캡처로 받았다 — 이 주제 몫은 출력 10 · 소스 13 · 환경 5). 추가한 정규화 규칙은 없다.
+실측 — `capture.sh blocks` 와 `capture.sh blocks-re` 를 처음부터 따로 돌려 `normalize-shaky.py` 로 대조했다 — **블록 109개 · 동일 109 · 달라진 항목 0 · ★고칠 것 0**(54\~58 다섯 주제를 한 캡처로 받았다 — 이 주제 몫은 출력 10 · 소스 13 · 환경 5). 추가한 정규화 규칙은 없다.
 
 | 프로그램 | 무엇을 확인했나 | 돌린 방법 |
 |---|---|---|
-| `Legacy57.java` · `idiom57.kt` · `pair57.py` | ★★★ 두 판 격자 — 사례 5 × 입력 17 | `javac`·`kotlinc` → `java` 두 번(표준 출력을 파일로) → `diff` → `pair57.py`(행마다 칸 수 검사 · 갈린 칸 수를 센다) |
+| `Legacy57.java` · `idiom57.kt` · `pair57.py` | ★★★ 두 판 격자 — 사례 5 × 입력 17 | `javac`·`kotlinc` → `java` 두 번(표준 출력을 파일로) → `diff` → `pair57.py`(행마다 칸 수 검사 · 달라진 항목 수를 센다) |
 | 같은 둘 + `keep57.kt` | ★★ 로케일 판 격자 | `java -Duser.language=tr -Duser.country=TR` |
 | `pay57v2.kt` · `PaySwitch57.java` | ★★ 하위 타입 추가 — 컴파일 오류 | `kotlinc` · `javac` (종료 코드째) |
 | `PayChain57.java` · `pay57e.kt` | ★★ 하위 타입 추가 — 조용히 통과 | `javac`·`kotlinc` → `java` |
@@ -478,9 +478,9 @@ public actual inline fun String.uppercase(): String = (this as java.lang.String)
 **구현 의존 항목** — 명령 줄의 모양(지역 변수 슬롯 · `NoWhenBranchMatchedException` · 인라인된 `filter`)은 **kotlinc 2.4.20 · javac 21 의 산출물**이다. `toUpperCase()` 가 오류인 것은 **stdlib 2.4.20 의 폐기 표지**다.\
 반면 **봉인 주체 `when` 의 완결성 오류** · **`if` 가 식이라는 것** · **`uppercase()` 가 불변 로케일이라는 KDoc 계약**은 판이 올라도 유지되는 쪽이다.
 
-**★ 던져 봤더니 예상과 달랐던 것 — 세 건**
+**★ 실행해 봤더니 예상과 달랐던 것 — 세 건**
 
-1. ★★★ **두 판을 갈라놓은 것은 입력이 아니라 로케일이었다** — 1번에서 0 칸이던 격자가 JVM 플래그 하나로 1 칸이 됐다. 그리고 **뜻을 바꾼 쪽은 Kotlin 판**이었다(`toUpperCase` 를 글자 그대로 옮기면 컴파일 오류라 `uppercase` 로 바꿀 수밖에 없다).
+1. ★★★ **두 버전을 갈라놓은 것은 입력이 아니라 로케일이었다** — 1번에서 0 칸이던 격자가 JVM 플래그 하나로 1 칸이 됐다. 그리고 **뜻을 바꾼 쪽은 Kotlin 판**이었다(`toUpperCase` 를 글자 그대로 옮기면 컴파일 오류라 `uppercase` 로 바꿀 수밖에 없다).
 2. ★★ **`when` + `else` 가 Java `else throw` 보다 더 조용했다** — 「Kotlin 이 더 안전하다」가 `else` 한 줄로 뒤집힌다.
 3. ★ **Java 21 패턴 `switch` 도 같은 자리에서 막았다** — 「컴파일러가 새 하위 타입을 잡아 준다」는 Kotlin 고유가 아니었다.
 

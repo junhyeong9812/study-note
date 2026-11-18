@@ -62,7 +62,7 @@ RFC 1191 호스트 규칙(§3)
 - **즉시 우회**
   - VPN 게이트웨이에서 MSS 클램핑(`iptables ... -j TCPMSS --clamp-mss-to-pmtu`)을 건다.
   - 또는 터널 인터페이스 MTU를 낮춘다.
-  - 서버에 `tcp_mtu_probing=1`을 둬 블랙홀 감지 시 탐침으로 줄이게 한다.
+  - 서버에 `tcp_mtu_probing=1`을 둬 블랙홀 감지 시 probe로 줄이게 한다.
 
 ### 7. TLS가 멈추는 단계
 
@@ -79,7 +79,7 @@ RFC 1191 호스트 규칙(§3)
 ### 9. PLPMTUD/DPLPMTUD와 `tcp_mtu_probing`
 
 - 전통 PMTUD(RFC 1191)는 라우터의 **ICMP "너무 크다"에 기댄다.** ICMP가 막히면 멈춘다.
-- PLPMTUD(RFC 4821, TCP 등)와 DPLPMTUD(RFC 8899, UDP·QUIC 등)는 **전송 계층이 직접 크기를 바꿔 탐침을 보내고**, 성공(ACK)과 손실로 경로 MTU를 찾는다. ICMP가 없어도 동작한다.
+- PLPMTUD(RFC 4821, TCP 등)와 DPLPMTUD(RFC 8899, UDP·QUIC 등)는 **전송 계층이 직접 크기를 바꿔 probe를 보내고**, 성공(ACK)과 손실로 경로 MTU를 찾는다. ICMP가 없어도 동작한다.
 - 리눅스 `tcp_mtu_probing`(tcp(7))
   - `0`: 끔(기본값)
   - `1`: 평소에는 끄고, ICMP 블랙홀을 감지하면 켠다

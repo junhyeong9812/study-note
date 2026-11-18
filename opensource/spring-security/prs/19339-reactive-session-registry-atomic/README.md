@@ -185,7 +185,7 @@ public Mono<ReactiveSessionInformation> removeSessionInformation(String sessionI
 다만 "이 사용자가 몇 개의 세션을 갖고 있는가"를 묻는 쪽 - 동시 세션 한도 계산, "다른 세션을 만료시킨다" 같은 정책 - 이 잘못된 답을 받는다.\
 예외도 로그도 남지 않는다.
 
-> **무음 실패(silent failure)** — 에러를 내지 않고 정상처럼 끝나는데 결과만 틀린 실패.\
+> **조용한 실패(silent failure)** — 에러를 내지 않고 정상처럼 끝나는데 결과만 틀린 실패.\
 > 예: 여기서는 예외도 로그도 없이 세션 개수만 하나 모자라게 세어지므로, 운영 지표로도 드러나지 않는다.
 
 ### 왜 이 결함이 실재하는 동시성인가

@@ -340,7 +340,7 @@ google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars \
 | 단계별 시각 + 전환 중 진짜 요소 읽기 | 1 | 동작 방식 (5) · A7 · A8 |
 | demo 본판 + 「바꿔 볼 것」 ① 4s ② 이름 제거 | 3 | demo |
 | Baseline 조회(같은 문서 · 문서 간) | 1 | 「실행 환경」 · A9 |
-| **제출 직전 demo 재추출·재실행 대조** | 1 | 어긋남 0건 |
+| **제출 직전 demo 재추출·재실행 대조** | 1 | 불일치 0건 |
 
 **구현에 달린 항목**
 

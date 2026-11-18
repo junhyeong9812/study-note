@@ -187,7 +187,7 @@ out.setOnReadyHandler(() -> {
 
 관찰
 - blind 서버는 소비자가 270개쯤 받는 동안 2만 개(약 200MB)를 버퍼에 쌓았다. RSS가 약 210MB 늘었다. 메시지가 더 크거나 클라이언트가 많으면 이것이 OOM이다.
-- ready 서버는 소비량보다 66~92개(약 0.7~0.9MB) 앞서서만 보냈다. 이 차이는 흐름 제어 창(시작값 1MiB)과 버퍼 문턱으로 정해진 것으로 보인다(해석 — 정확한 분해는 확인하지 않았다). grpc-java 1.72.0 Netty 전송은 BDP 기반 창 자동 조정(`autoFlowControl`)이 기본으로 켜져 있어 창이 1MiB에서 커질 수도 있다(grpc-java v1.72.0 `NettyChannelBuilder`·`NettyServerBuilder` 소스).
+- ready 서버는 소비량보다 66~92개(약 0.7~0.9MB) 앞서서만 보냈다. 이 차이는 흐름 제어 창(시작값 1MiB)과 버퍼 임계값으로 정해진 것으로 보인다(해석 — 정확한 분해는 확인하지 않았다). grpc-java 1.72.0 Netty 전송은 BDP 기반 창 자동 조정(`autoFlowControl`)이 기본으로 켜져 있어 창이 1MiB에서 커질 수도 있다(grpc-java v1.72.0 `NettyChannelBuilder`·`NettyServerBuilder` 소스).
 - 클라이언트가 취소한 뒤 `Stream closed before write could take place` 경고가 났다 — 쓰려던 메시지를 보낼 스트림이 사라졌다. 집필 실행에서는 blind 쪽에서만 봤지만, 사실 점검 재실행에서는 ready 쪽에서도 1회씩 났다. 경고가 났다는 것만으로 blind를 가려낼 수는 없고, 버퍼 누적은 RSS·`isReady=false`인데 보낸 수로 본다.
 
 ### 5. 오래 사는 스트림과 로드 밸런싱
@@ -208,7 +208,7 @@ out.setOnReadyHandler(() -> {
 ## 쓰이는 자료구조·알고리즘
 
 - **크레딧(창) 카운터** — HTTP/2 흐름 제어. 보낼 때 창을 줄이고, `WINDOW_UPDATE`를 받으면 늘린다. 0이면 DATA를 보내지 않는다.
-- **유계 버퍼 + 준비 신호** — `isReady()`/`onReady`는 "버퍼가 문턱 아래인가"를 묻는 것이다. 생산자를 소비 속도에 묶는다([reliability/12-backpressure-and-load-shedding](../../reliability/12-backpressure-and-load-shedding/2-summary.md)).
+- **유계 버퍼 + 준비 신호** — `isReady()`/`onReady`는 "버퍼가 임계값 아래인가"를 묻는 것이다. 생산자를 소비 속도에 묶는다([reliability/12-backpressure-and-load-shedding](../../reliability/12-backpressure-and-load-shedding/2-summary.md)).
 - **요청 크레딧(pull)** — 클라이언트 `request(n)`. Reactive Streams의 `request(n)`과 같은 끌어오기 모델이다.
 - **재개 커서** — 마지막으로 처리한 seq(또는 서버가 준 불투명 토큰)를 저장해 다시 연결할 때 그 다음부터 받는다. 페이지네이션의 커서와 같은 생각이다([06-pagination](../06-pagination/2-summary.md)).
 - **취소 트리** — 호출 취소가 서버 `Context`·하류 호출로 퍼진다([reliability/09-cancellation-propagation](../../reliability/09-cancellation-propagation/2-summary.md)).

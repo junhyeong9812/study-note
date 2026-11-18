@@ -219,7 +219,7 @@ exit=0
 1. **규칙을 문장으로 먼저**: "웹은 리포지토리를 직접 쓰지 않는다", "도메인은 프레임워크·웹을 모른다", "컴포넌트 사이 순환 없음".
 2. **가시성으로 막을 수 있으면 그게 먼저**다(40). 테스트는 컴파일보다 늦게 실패한다. Brown도 가능하면 컴파일러를 쓰라고 권한다.
 3. **나머지를 규칙 테스트로**: Java는 ArchUnit(가이드 1.5.1 기준 JUnit 4, JUnit 5·6 통합 제공), JS/TS는 dependency-cruiser, Python은 import-linter(계약 종류: Forbidden, Layers, Independence, Protected, Acyclic siblings — import-linter 문서 `docs/contract_types/`).
-4. **오래된 코드는 동결부터**: `FreezingArchRule`로 기준선을 커밋하고 CI에서는 저장소 생성을 막는다. 새 위반 0을 유지하며 기존 위반을 줄인다.
+4. **오래된 코드는 동결부터**: `FreezingArchRule`로 베이스라인을 커밋하고 CI에서는 저장소 생성을 막는다. 새 위반 0을 유지하며 기존 위반을 줄인다.
 5. **순환은 기법을 골라 끊는다**: 값 소유자 바로잡기 → DIP → 공통부 추출 → 합치기 → 이벤트 순으로 비용이 커진다(해석).
 6. **사각을 안다**: 바이트코드 도구는 상수 인라인·리플렉션·문자열 기반 호출을 못 본다(4절 실험은 상수 인라인 사례).
 
@@ -284,8 +284,8 @@ jdeps -verbose:package -filter:none build/classes/java/main | grep -v java.base 
 
 - 현상: 새 위반을 넣었는데 CI가 통과한다.
 - 보이는 형태: CI 로그에 저장소 생성 흔적. 저장소 파일이 VCS에 없다.
-- 원인: CI에서 `freeze.store.default.allowStoreCreation=true`. 매 빌드가 "첫 실행"이 되어 현재 위반을 전부 기준선으로 삼는다.
-- 대처: 저장소를 VCS에 커밋하고 CI에서는 생성을 막는다(가이드 8.6.2가 권하는 설정). 기준선 갱신(`freeze.refreeze=true`)은 의도한 결정일 때만.
+- 원인: CI에서 `freeze.store.default.allowStoreCreation=true`. 매 빌드가 "첫 실행"이 되어 현재 위반을 전부 베이스라인으로 삼는다.
+- 대처: 저장소를 VCS에 커밋하고 CI에서는 생성을 막는다(가이드 8.6.2가 권하는 설정). 베이스라인 갱신(`freeze.refreeze=true`)은 의도한 결정일 때만.
 
 ### 5. 규칙이 너무 거칠거나 틀려서 무시된다
 
@@ -297,7 +297,7 @@ jdeps -verbose:package -filter:none build/classes/java/main | grep -v java.base 
 
 - 가시성으로 막을 수 없는 규칙(의존 방향·순환·명명)은 실행되는 테스트로 강제한다. 위키 규칙은 리뷰어가 바쁠 때 사라진다.
 - 실험에서 도메인 → 웹 간선 하나가 슬라이스 순환 3개를 만들었고, 값의 소유자를 도메인으로 옮기자 순환 규칙이 통과했다.
-- `FreezingArchRule`은 기존 위반을 기준선으로 저장해 새 위반만 실패시키고, 고친 위반은 저장소에서 줄인다(실험: 새 2건만 FAIL, 고친 뒤 저장소 3줄 → 0줄).
+- `FreezingArchRule`은 기존 위반을 베이스라인으로 저장해 새 위반만 실패시키고, 고친 위반은 저장소에서 줄인다(실험: 새 2건만 FAIL, 고친 뒤 저장소 3줄 → 0줄).
 - 순환이 있어도 프로그램은 돌아간다(dependency-cruiser 실험의 정상 출력). 그래서 순환은 검사 없이는 조용히 쌓인다.
 - 바이트코드 기반 검사는 컴파일 타임 상수 참조를 보지 못한다. 실험에서 도메인 → 웹 `static final int` 참조가 두 규칙을 모두 통과했다.
 

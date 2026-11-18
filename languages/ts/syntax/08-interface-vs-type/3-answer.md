@@ -117,13 +117,13 @@ ex.08b.ts(22,7): error TS2322: Type '"literal"' is not assignable to type 'null'
 | `const asNumber: number = c.p` | `never` 를 `number` 에 | ★★ **통과** |
 | `const putBack: Crossed = { p: "x" }` | 값을 넣으려 한다 | **TS2322** — 「… not assignable to type 'never'.」 |
 | `interface Narrowed extends Base { p: "literal" }` | **좁히는** 확장 | ★ **통과** |
-| `const okProbe: null = ok.p` | 탐침 | **TS2322** — 타입이 **`"literal"`** |
+| `const okProbe: null = ok.p` | probe | **TS2322** — 타입이 **`"literal"`** |
 
 - ★★★ **실수는 10행에서 했는데 진단은 15행에서 난다.** 문구도 「`string` 을 `never` 에 못 넣는다」라 원인을 안 가리킨다.
 - ★★ `c.p` 의 타입이 `never` 인 것이 13·14행의 **통과**로 증명된다 — `never` 는 어디로든 들어간다([**04번 주제**](../04-any-unknown-never-void/)).\
-  ★ 즉 **탐침이 안 통하는 자리**다. `const probe: null = c.p` 도 통과해 버리므로 **역방향 대입**으로 물어야 한다.
+  ★ 즉 **probe가 안 통하는 자리**다. `const probe: null = c.p` 도 통과해 버리므로 **역방향 대입**으로 물어야 한다.
 - ★★ `extends` 는 **선언 자리에서** 말한다. 들여쓴 줄이 이유를 두 단계로 적는다 — 「Types of property 'p' are incompatible.」 → 「Type 'number' is not assignable to type 'string'.」
-- ★ **좁히는 확장은 둘 다 된다** — `p: "literal"` 은 `p: string` 과 충돌이 아니다. 22행 탐침이 결과가 `"literal"` 임을 확인한다.
+- ★ **좁히는 확장은 둘 다 된다** — `p: "literal"` 은 `p: string` 과 충돌이 아니다. 22행 probe가 결과가 `"literal"` 임을 확인한다.
 
 ### 3. ★★★ 진단 **2건** — **둘 다 `interface` 쪽**이다
 
@@ -173,7 +173,7 @@ ex.08c.ts(17,6): error TS2345: Argument of type 'AsInterface' is not assignable 
 | `i as unknown as Record<string, unknown>` | **통과** — 단언으로 뚫었다 |
 
 - 들여쓴 줄이 규칙을 그대로 말한다 — 「Index signature for type 'string' is missing in type 'AsInterface'.」
-- ★★★ `interface AsInterface { a: string }` 과 `type AsAlias = { a: string }` 은 **글자 하나 안 다르다.** 그래도 갈린다.
+- ★★★ `interface AsInterface { a: string }` 과 `type AsAlias = { a: string }` 은 **글자 하나 안 다르다.** 그래도 달라진다.
 - ★★ 이유는 1번의 성질이다 — **`interface` 는 병합될 수 있어서** 지금 키가 `a` 뿐이어도\
   다른 파일이 키를 더할 수 있다. 그러면 「이 타입의 모든 값이 `unknown` 이다」를 **컴파일러가 약속할 수 없다.**
 - ★ `type` 은 닫혀 있어 키 목록이 확정이므로 약속할 수 있다 — **암묵 인덱스 시그니처**가 생긴다.
@@ -229,7 +229,7 @@ ex.08d.ts(20,7): error TS2322: Type '"yes"' is not assignable to type 'null'.
 - ★★ `TS2312` 의 문구가 경계를 그대로 말한다 — 「An interface can only extend an object type or intersection of object types with **statically known members**.」
 - ★★ 그래서 「`type` 만 되는 것」은 **유니온 · 원시 · 조건부 · 매핑 · 템플릿 리터럴**이다.\
   **튜플과 함수는 아니다** — 자주 오해되는 자리다.
-- ★ 탐침이 조건부 타입이 실제로 계산됐음을 확인해 준다 — 선언만 통과한 게 아니라 값이 `"yes"` 로 잡혔다.
+- ★ probe가 조건부 타입이 실제로 계산됐음을 확인해 준다 — 선언만 통과한 게 아니라 값이 `"yes"` 로 잡혔다.
 
 ### 5. ★★ 코드가 **다르다** — `TS2739` 는 **한 줄**, `TS2322` 는 **`TBase` 를 짚는 들여쓴 줄**
 
@@ -283,7 +283,7 @@ ex.08e.ts(20,7): error TS2322: Type '{}' is not assignable to type 'TExt'.
 | `TS2739`(확장) | 한눈에 다 보인다 | **어느 조각에서 왔는지**를 잃는다 |
 | `TS2322`(교차) | 조각 이름이 드러난다 | 교차가 깊으면 들여쓴 줄이 **계단처럼 쌓인다** |
 
-- ★ 나열 순서(`d, a, b, c`)는 **선언 순서**다 — 자기 멤버 먼저, 상속한 것이 뒤다. 이 판의 관찰이다.
+- ★ 나열 순서(`d, a, b, c`)는 **선언 순서**다 — 자기 멤버 먼저, 상속한 것이 뒤다. 이 버전의 관찰이다.
 
 ### 6. ★★ `.d.ts` 는 **두 덩어리 그대로** · `.js` 에는 **둘 다 없다**
 
@@ -352,7 +352,7 @@ console.log(exports.asInterface.area(), exports.asAlias.area());
 - ★★ `.d.ts` 가 병합된 `interface` 를 **안 합치고 그대로** 싣는 이유 — **병합 가능성 자체가 계약의 일부**다.\
   합쳐서 내보내면 소비자가 「이건 원래 한 덩어리였다」로 읽게 되고, 자기 쪽에서 또 덧붙일 때의 규칙이 흐려진다.
 - ★★★ `.js` 에는 둘 다 안 남는다 — 그래서 **번들 크기·런타임 비용은 고르는 기준이 아니다.**
-- ★ 이 판에서는 `--module commonjs` 로 방출해 `node` 로 돌렸다. 기본값(`esnext`)으로 뽑은 ESM 은 `.js` 확장자로는 `node` 가 못 읽는다.
+- ★ 이 버전에서는 `--module commonjs` 로 방출해 `node` 로 돌렸다. 기본값(`esnext`)으로 뽑은 ESM 은 `.js` 확장자로는 `node` 가 못 읽는다.
 
 ### 7. ★★★ **`interface` 는 나중에 키가 늘 수 있기 때문이다**
 
@@ -437,7 +437,7 @@ ex.08b.ts(22,7): error TS2322: Type '"literal"' is not assignable to type 'null'
 | 층 | 이 주제의 항목 |
 |---|---|
 | **언어 보장** | `interface` 는 **병합**되고 `type` 은 중복 선언이 안 된다 · 병합은 **같은 이름 같은 타입** · `extends` 는 호환되지 않는 재선언을 막는다 · 교차는 프로퍼티를 교차해 `never` 를 만든다 · `interface` 에는 **암묵 인덱스 시그니처가 없다** · 둘 다 방출에 안 남는다 |
-| **이 판(7.0.2)의 관찰** | 진단의 **모양**(`TS2739` 한 줄 대 `TS2322` + 중첩 줄) · `TS2739` 가 나열하는 **프로퍼티 순서**(`d, a, b, c`) · `.d.ts` 가 병합된 `interface` 를 **덩어리 그대로** 싣는 것 · 진단 문구 전문 |
+| **이 버전(7.0.2)의 관찰** | 진단의 **모양**(`TS2739` 한 줄 대 `TS2322` + 중첩 줄) · `TS2739` 가 나열하는 **프로퍼티 순서**(`d, a, b, c`) · `.d.ts` 가 병합된 `interface` 를 **덩어리 그대로** 싣는 것 · 진단 문구 전문 |
 | **설정에 달린 것** | ★ **없다.** 다섯 파일을 `--strict false` 로 다시 던져 **출력과 종료 코드가 전부 같은 것**을 확인했다 |
 | **안 잰 것** | ★ **검사 속도.** 재는 방법 자체가 전제를 요구한다 — 타입 수백 개짜리 코드베이스 · 같은 의미의 두 벌 · 잡음보다 큰 차이. 이 주제의 여섯 파일로는 성립하지 않아 **손으로 유도하지 않고 빈칸으로 남겼다**. [목록의 **45번 주제**](../45-type-level-performance/)에서 잰다 |
 
@@ -451,16 +451,16 @@ ex.08b.ts(22,7): error TS2322: Type '"literal"' is not assignable to type 'null'
 | 병합·중복 | `--noEmit ex.08a.ts` | exit 1 · `TS2300` 2건 + `TS2717` 1건 · `interface` 3회 선언·오버로드 통과 |
 | 확장 대 교차 | `--noEmit ex.08b.ts` | exit 1 · `TS2430`·`TS2322`·`TS2322` **3건** · **교차 선언 자체는 조용** · 좁히는 확장 통과 |
 | 암묵 인덱스 시그니처 | `--noEmit ex.08c.ts` | exit 1 · `TS2322`·`TS2345` **2건** · **둘 다 `interface` 쪽** |
-| `extends` 의 경계 | `--noEmit ex.08d.ts` | exit 1 · `TS2312` 2건 + 탐침 1건 · **튜플·호출 시그니처 통과** |
+| `extends` 의 경계 | `--noEmit ex.08d.ts` | exit 1 · `TS2312` 2건 + probe 1건 · **튜플·호출 시그니처 통과** |
 | 진단의 모양 | `--noEmit ex.08e.ts` | exit 1 · `TS2739` 1건(한 줄) · `TS2322` 1건(+ `TBase` 줄) |
 | 선언 방출 | `--declaration --emitDeclarationOnly ex.08f.ts` | exit 0 · `interface Shape` 가 **두 덩어리** |
 | 방출·실행 | `--module commonjs ex.08f.ts` + `node ex.08f.js` | tsc exit 0 · node exit 0 · `.js` 에 타입 없음 · `1 1` |
 | `strict` 끔 | 다섯 파일 전부 `--strict false` 로 재실행 | **전부 같다** — 문서에는 `ex.08b.ts` 블록을 실었다 |
 
-**구현 의존 항목 — 판이 오르면 다시 돌릴 것**
+**구현 의존 항목 — 버전이 오르면 다시 돌릴 것**
 
 - 진단의 **모양**(`TS2739` 한 줄 대 `TS2322` + 중첩 줄) — 보고기의 구현이다. 「조각 이름이 드러나는가」만 성질로 읽는다.
-- `TS2739` 가 나열하는 **프로퍼티 순서** — 이 판에서 `d, a, b, c` 였다.
+- `TS2739` 가 나열하는 **프로퍼티 순서** — 이 버전에서 `d, a, b, c` 였다.
 - `.d.ts` 가 병합된 `interface` 를 덩어리 그대로 싣는 것 — 선언 방출기의 구현이다.
 - 진단 문구 전문 — 코드(`TS2300`·`TS2717`·`TS2430`·`TS2312`·`TS2739`)가 더 오래 간다.
 

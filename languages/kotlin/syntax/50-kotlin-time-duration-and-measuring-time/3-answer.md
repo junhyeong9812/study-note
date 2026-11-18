@@ -4,7 +4,7 @@
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
 
-### 1. ★★★ **막힌 칸 6 / 25** — `Duration` 자리의 맨 숫자 넷과 `Long` 자리의 `Duration` 둘 · `pauseMs(5)` 는 **통과**(`pauses 5 ms`) · `Thread.sleep(5)`·`delay(5)` 는 **밀리초** · `Long.MAX_VALUE.nanoseconds * 2` 는 **포화하지 않는다**
+### 1. ★★★ **막힌 항목 6 / 25** — `Duration` 자리의 맨 숫자 넷과 `Long` 자리의 `Duration` 둘 · `pauseMs(5)` 는 **통과**(`pauses 5 ms`) · `Thread.sleep(5)`·`delay(5)` 는 **밀리초** · `Long.MAX_VALUE.nanoseconds * 2` 는 **포화하지 않는다**
 
 **출력**
 
@@ -222,11 +222,11 @@ public final class kotlin.time.Duration implements java.lang.Comparable<kotlin.t
 
 **왜 그런가**
 
-- ★★ 100ms 를 재운 뒤라 `>= 100ms` 는 전부 참이다 — **절대값은 안 찍었다**(흔들리는 칸).
+- ★★ 100ms 를 재운 뒤라 `>= 100ms` 는 전부 참이다 — **절대값은 안 찍었다**(실행마다 달라지는 항목).
 - ★★ `mark + 1.hours` 는 **한 시간 뒤의 마감**이라 아직 안 지났다(`hasPassedNow()` 가 `false`).
-- ★★★ `6` — 이 판의 단조 시계가 **`System.nanoTime()`** 이다. 벽시계와 무관하다.
+- ★★★ `6` — 이 버전의 단조 시계가 **`System.nanoTime()`** 이다. 벽시계와 무관하다.
 
-### 5. ★★★ **막힌 칸 3 / 10** — opt-in 없는 파일만 **2.0·2.1·2.2** 에서 「`this declaration needs opt-in`」(21건) · opt-in 을 단 파일은 **다섯 판 모두 `ok`**
+### 5. ★★★ **막힌 항목 3 / 10** — opt-in 없는 파일만 **2.0·2.1·2.2** 에서 「`this declaration needs opt-in`」(21건) · opt-in 을 단 파일은 **다섯 판 모두 `ok`**
 
 **출력**
 
@@ -334,7 +334,7 @@ commonMain/kotlin/time/TimeSources.kt
 - ★★★ JDK 에는 `Thread.sleep(long)` 과 `Thread.sleep(java.time.Duration)` 이 있다 — **`kotlin.time.Duration` 을 받는 판은 없다.** 진단이 그 차이를 **두 타입 이름째**(`'kotlin.time.Duration'` · `'java.time.Duration!'`) 말한다.
 - ★★ `5.milliseconds.toJavaDuration()` 을 넘기면 통과한다(1번 격자 3행 — `5ms..1s`).
 
-### 8. **확인할 수 없다** — `@WasExperimental` 때문에 2.0 과 2.1 이 **같은 진단**을 낸다 · 이 판의 소스에는 `@SinceKotlin("2.3")` 만 있다
+### 8. **확인할 수 없다** — `@WasExperimental` 때문에 2.0 과 2.1 이 **같은 진단**을 낸다 · 이 버전의 소스에는 `@SinceKotlin("2.3")` 만 있다
 
 **왜 그런가**
 
@@ -390,18 +390,18 @@ Implementation-Version: 1.11.0
 (exit 0)
 ```
 
-★ **흔들리는 칸과 안 흔들리는 칸**
+★ **실행마다 달라지는 항목과 달라지지 않는 항목**
 
-| 흔들린다 | 안 흔들린다 |
+| 실행마다 달라진다 | 달라지지 않는다 |
 |---|---|
 | ★★★ **걸린 시간의 절댓값** — 칸으로 안 만들었다(참/거짓 · 구간 이름만) | 단위 격자 25행 · 막은 칸 수 · 진단 문구 · `Duration` 산술·`toString()` |
-| ★ 구간 이름 `5ms..1s` — 부하가 아주 큰 머신이면 움직일 수 있다(이번 두 판은 같았다) | `javap` 출력 — 해시 글자까지(판이 바뀌면 달라질 수 있어 **모양**만 근거로 쓴다) |
+| ★ 구간 이름 `5ms..1s` — 부하가 아주 큰 머신이면 움직일 수 있다(이번 두 버전은 같았다) | `javap` 출력 — 해시 글자까지(판이 바뀌면 달라질 수 있어 **모양**만 근거로 쓴다) |
 | | `Instant` 판 격자 · 고정 시각 출력 · 소스 발췌 · 모든 **종료 코드** |
 
 > 근거 — 캡처 스크립트를 처음부터 다시 돌려 **블록 전체를 대조**했다.
 >
 > 실측 — `capture.sh blocks` 와 `capture.sh blocks-recheck` 를 처음부터 따로 돌려 `normalize-shaky.py` 로 대조했다 —\
-> **블록 74개 · 동일 74 · 흔들린 칸 0 · ★고칠 것 0**(50\~53 네 주제를 한 캡처로 받았다). 추가한 정규화 규칙은 **없다**.
+> **블록 74개 · 동일 74 · 달라진 항목 0 · ★고칠 것 0**(50\~53 네 주제를 한 캡처로 받았다). 추가한 정규화 규칙은 **없다**.
 
 | 프로그램 | 무엇을 확인했나 | 돌린 방법 |
 |---|---|---|
@@ -414,10 +414,10 @@ Implementation-Version: 1.11.0
 | stdlib 소스 jar · JDK `src.zip` | 범위 계약 · 선언 · 단조 시계 · `@SinceKotlin`/`@WasExperimental` · `@ExperimentalTime` 잔여 · `Thread.sleep(Duration)` 의 `@since` | `unzip` → `sed -n`/`grep` |
 | `form50.kt` | 형태 한 벌 | `kotlinc` → `java` |
 
-**구현 의존 항목** — 이름 뭉개기 해시 · 단조 시계가 `System.nanoTime()` 인 것 · 진단 문구 — 이 판의 산출물이다.\
+**구현 의존 항목** — 이름 뭉개기 해시 · 단조 시계가 `System.nanoTime()` 인 것 · 진단 문구 — 이 버전의 산출물이다.\
 반면 **맨 숫자가 `Duration` 자리에 못 들어가는 것**(타입 규칙) · **범위와 포화**(KDoc) · **`Instant` 가 2.3 에서 Stable**(선언) 은 **계약**이다.
 
-**★ 던져 봤더니 예상과 달랐던 것 — 세 건**
+**★ 실행해 봤더니 예상과 달랐던 것 — 세 건**
 
 1. ★★★ **`Long.MAX_VALUE.nanoseconds * 2` 가 포화하지 않았다** — 밀리초 정밀도로 옮겨 타 584년(`inWholeDays / 365`)이 나왔다. `Long.MAX_VALUE.nanoseconds` 자체도 이미 밀리초 정밀도였다. 포화를 보려면 밀리초 범위까지 넘겨야 했다.
 2. ★★ **`Thread.sleep` 에 `Duration` 판이 있었다** — 다만 `java.time.Duration` 이다. 진단이 두 후보를 다 보여 줬다.

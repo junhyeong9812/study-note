@@ -275,7 +275,7 @@ func main() { fmt.Println(back) }
 
 ★ **이 주제의 예측은 「값」과 「타입」 둘 다다.** 값만 맞히면 절반이다.
 ★ **그리고 「컴파일 타임인가 런타임인가」를 매번 같이 답하라.** 이 주제와 04번을 가르는 축이 그것이다.
-소스는 전부 `go build -trimpath -o prog . && ./prog` 로 던졌다. 모듈 이름은 `ex` 다.
+소스는 전부 `go build -trimpath -o prog . && ./prog` 로 실행했다. 모듈 이름은 `ex` 다.
 
 ## 복습 기록
 

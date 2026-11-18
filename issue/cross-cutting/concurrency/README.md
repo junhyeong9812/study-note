@@ -25,7 +25,7 @@
 - [critical-section-design](critical-section-design/) — 하나의 불변식은 하나의 임계구역에서 원자적으로 갱신하고(check-then-act 금지), 락 안에서는 느린 I/O·join을 하지 않으며, 중복 작업은 single-flight로 합친다.
 - [event-loop-head-of-line-blocking](event-loop-head-of-line-blocking/) — 단일 수신 루프에서 처리·송신을 직접 await하면 가장 느린 작업·구독자가 루프 전체를 막아(HOL) 무관한 메시지까지 지연·타임아웃된다.
 - [out-of-order-completion](out-of-order-completion/) — 비동기 응답·이벤트의 완료 순서는 발행 순서와 무관하다 — 세대 토큰·CAS·단조 전이로 늦게 도착한 옛 결과가 최신 상태를 덮지 못하게 한다.
-- [single-slot-handoff-loss](single-slot-handoff-loss/) — 용량 1 슬롯·전역 요청 버스에 요청을 두면 동시·버스트 생산자가 서로를 덮어 무음 유실된다 — 큐·id 맵·ACK 후 소비·소비자 단일화로 정확히 1회 전달한다.
+- [single-slot-handoff-loss](single-slot-handoff-loss/) — 용량 1 슬롯·전역 요청 버스에 요청을 두면 동시·버스트 생산자가 서로를 덮어 조용한 유실된다 — 큐·id 맵·ACK 후 소비·소비자 단일화로 정확히 1회 전달한다.
 - [single-writer-ownership](single-writer-ownership/) — 여러 writer가 락 없이 같은 저장 단위를 read-modify-write하면 lost update가 난다 — 저장소를 writer별로 분리하거나 원자 갱신(조건부 UPDATE·upsert·CAS)으로 단일 소유를 강제한다.
 - [snapshot-stream-cursor](snapshot-stream-cursor/) — 스냅샷과 라이브 스트림을 이을 때는 먼저 구독하고 원자적 커서(epoch:seq) 이후만 적용해야 무손실·무중복이며, 커서는 짝이 되는 로컬 상태와 함께만 의미가 있다.
 - [thread-affine-object-confinement](thread-affine-object-confinement/) — 특정 스레드·이벤트 루프에 묶인 객체는 그 소유자 안에 가두고 외부에는 채널·threadsafe 진입점만 노출한다(actor 패턴).

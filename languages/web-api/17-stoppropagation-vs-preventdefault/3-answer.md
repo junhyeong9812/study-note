@@ -1,10 +1,10 @@
 # web-api/17 — `stopPropagation` 대 `preventDefault`: 전파를 멈추는 것과 기본 동작을 막는 것 — 정답
 
-**★ 이 편에는 흔들리는 칸이 없었다.**
+**★ 이 편에는 실행마다 달라지는 항목이 없었다.**
 
-| 안 흔들리는 칸 | 흔들리는 칸 · 못 잰 칸 |
+| 달라지지 않는 항목 | 실행마다 달라지는 항목 · 못 잰 항목 |
 |---|---|
-| 2×2 격자 24칸 · 합성 세 가지의 견줌 · `checked` 두 번 읽기 | **부적용** — 시간 |
+| 2×2 격자 24칸 · 합성 세 가지의 견줌 · `checked` 두 번 읽기 | **해당 없음** — 시간 |
 | 리스너 셋의 호출 · `defaultPrevented` · 반환값 · 키보드 활성화 | **못 잰 것** — 다른 문서로 떠나는 이동 · 실제 폼 전송 |
 | 캡처를 여러 판 돌려 **한 글자도 같았다** | Chrome 판 번호 |
 
@@ -54,7 +54,7 @@ $ python3 wa16b-cdp.py page wa16b-17-grid.html | sed -n '16,19p'
 
 - **대상 셋이 한 줄도 안 다르다** — 없음(예·예) · `stopPropagation`(아니오·예) · `preventDefault`(예·아니오) · 둘 다(아니오·아니오).
 - **`new MouseEvent('click')` 0 / 24 · `el.click()` 0 / 24** — 합성인데도 링크가 이동하고 체크가 바뀌고 제출 이벤트가 났다.
-- **`new Event('click')` 6 / 24** — 갈린 여섯 칸이 전부 **「기본」 칸**이다. `new Event` 는 **기본 동작을 아예 안 낸다**(A7).
+- **`new Event('click')` 6 / 24** — 달라진 여섯 칸이 전부 **「기본」 칸**이다. `new Event` 는 **기본 동작을 아예 안 낸다**(A7).
 
 ### 2. 리스너 안에서는 네 줄 모두 `true` — 막으면 끝난 뒤에 되돌아간다
 
@@ -118,7 +118,7 @@ $ python3 wa16b-cdp.py page wa16b-17-imm.html | sed -n '8,9p'
 - **② 조상의 capture 리스너가 멈추면 — `checked = true` · `change` 1번 · 체크박스 자신의 click 리스너 0번.** 전파를 끊어도 **기본 동작은 온다.**
 - ★ **기본 동작이 도는 시점은 「디스패치가 다 끝난 뒤」** 다. 그래서 **경로 위 누구든** 막을 수 있고, **전파를 끊는 것은 기본 동작과 무관**하다.
 
-### 5. `cancelable: false` 면 아무 일도 없고, `return false` 는 표면에 따라 갈린다
+### 5. `cancelable: false` 면 아무 일도 없고, `return false` 는 표면에 따라 달라진다
 
 **출력**
 
@@ -224,7 +224,7 @@ python3 wa16b-cdp.py page wa16b-17-more.html
 
 | 항목 | 값 | 왜 다시 찍나 |
 |---|---|---|
-| 키보드로 만든 click 의 `detail` | 0 | 이 판의 관찰 |
+| 키보드로 만든 click 의 `detail` | 0 | 이 버전의 관찰 |
 | `onclick` 의 `return false` 가 취소가 되는 것 | `defaultPrevented = true` | 이벤트 핸들러 절을 열어 확인하지 않았다 |
 
 **안 돌려 본 것** — ① Firefox·Safari(엔진이 없다). ② **다른 문서로 떠나는 링크 이동** — 로그가 사라져 셀 수 없다. ③ **실제 네트워크 전송.** ④ `mousedown` 의 `preventDefault` · `label` 의 두 번째 click · `requestSubmit()` — 이 편의 대상 밖이다. ⑤ **리스너 안에서 `location.hash` 읽기** — 던지지 않았다.

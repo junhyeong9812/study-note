@@ -119,7 +119,7 @@ border-color (상속 안 됨) -> initial 과 같다 -> currentColor
 - `revert` = **출처**(작성자 시트 전체) 단위.
 - `revert-layer` = **레이어** 하나 단위. 레이어 밖에서 쓰면 `revert` 와 같아진다.
 
-### 4. `revert` 와 `initial` 이 갈리는 자리
+### 4. `revert` 와 `initial` 이 달라지는 자리
 
 **출력** (Chrome 151 headless)
 

@@ -79,7 +79,7 @@ class Derived extends Base {
 - 그 결과가 `NullPointerException` 이 아닌 이유는 무엇인가?
 - 이 설계를 안전하게 만들려면 무엇을 바꾸는가?
 
-### 5. `final` 필드 둘의 결과가 갈린다 (예측)
+### 5. `final` 필드 둘의 결과가 달라진다 (예측)
 
 ```java
 class D2 extends B2 {
@@ -92,7 +92,7 @@ class D2 extends B2 {
 ```
 
 - 출력되는 두 값은 각각 무엇인가?
-- 둘 다 `final int` 인데 결과가 갈리는 이유는 무엇인가?
+- 둘 다 `final int` 인데 결과가 달라지는 이유는 무엇인가?
 - `javap` 로 `show()` 를 열면 `getfield` 명령이 몇 개 보이는가?
 - `= 10` 을 `= compute()` 로 바꾸는 리팩토링은 무엇을 바꾸는가?
 
@@ -110,7 +110,7 @@ class Holder {
 ```
 
 - (a)(b)(c) 중 어디에서 `>> Holder <clinit> 실행됨` 이 출력되는가?
-- `CONST` 와 `BOXED` 가 갈리는 이유는 무엇인가?
+- `CONST` 와 `BOXED` 가 달라지는 이유는 무엇인가?
 - 배열을 만드는 것이 왜 클래스 초기화를 일으키지 않는가?
 - JLS 가 정한 "클래스 초기화를 일으키는 네 가지"는 무엇인가?
 

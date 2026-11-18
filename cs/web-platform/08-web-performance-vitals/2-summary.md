@@ -273,7 +273,7 @@ new PerformanceObserver(l => l.getEntries().forEach(e => e.interactionId && cons
 ```
 
 - DevTools Performance 패널: 스로틀링(CPU 4×, 네트워크 "Slow 4G" 등)을 켜고 기록한다. 레이아웃 이동·LCP 마커·긴 태스크가 한 시간축에 나온다.
-- Lighthouse 점수 가중치(Lighthouse 10): FCP 10% · Speed Index 10% · LCP 25% · TBT 30% · CLS 25%. 점수는 실행마다 흔들린다 — 한 번의 값이 아니라 분포로 본다(20번).
+- Lighthouse 점수 가중치(Lighthouse 10): FCP 10% · Speed Index 10% · LCP 25% · TBT 30% · CLS 25%. 점수는 실행마다 달라진다 — 한 번의 값이 아니라 분포로 본다(20번).
 - 자동화: Playwright + CDP로 위 실험처럼 조건을 고정해 반복 측정한다.
 
 ## 장애 시나리오와 대처
@@ -296,7 +296,7 @@ new PerformanceObserver(l => l.getEntries().forEach(e => e.interactionId && cons
 
 - 현상: 필터 버튼을 누르면 화면이 0.3초 이상 그대로다.
 - 보이는 형태: Event Timing `click` 항목 `duration` 312ms, `processingEnd − processingStart` ≈ 300ms. `web-vitals` INP rating `needs-improvement`.
-- 원인: 클릭 핸들러가 무거운 동기 작업을 한다(processing). 또는 다른 긴 태스크가 메인 스레드를 쥐고 있었다(input delay). 또는 핸들러 뒤 큰 DOM 변경으로 렌더가 길다(presentation delay).
+- 원인: 클릭 핸들러가 무거운 동기 작업을 한다(processing). 또는 다른 긴 태스크가 메인 스레드를 잡고 있었다(input delay). 또는 핸들러 뒤 큰 DOM 변경으로 렌더가 길다(presentation delay).
 - 대처: 세 조각 중 큰 쪽을 attribution으로 확인하고, 작업 쪼개기·양보·워커([16번](../16-long-tasks-and-web-workers/2-summary.md)), 재렌더 범위 줄이기([18번](../18-ui-rerender-and-memoization/2-summary.md))로 간다.
 
 ### 4. 평균·잘못된 합산으로 꼬리를 숨김

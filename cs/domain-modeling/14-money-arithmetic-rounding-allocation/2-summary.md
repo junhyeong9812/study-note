@@ -11,7 +11,7 @@
     3334, 3333, 3333                                      합 10,000
 ```
 
-- 같은 종류의 어긋남이 여러 자리에서 생긴다.
+- 같은 종류의 불일치가 여러 자리에서 생긴다.
   - 줄마다 세금을 반올림한 합 ≠ 합계에 한 번 매긴 세금
   - 할인 → 세금 순서 ≠ 세금 → 할인 순서
   - 통화마다 소수 자릿수가 다르다(JPY 0, KWD 3)
@@ -73,7 +73,7 @@
 
 - *HALF_UP*: 절반이면 0에서 먼 쪽. 학교에서 배우는 반올림. 음수 -2.5 → -3.
 - *HALF_EVEN*: 절반이면 짝수 쪽. javadoc이 "banker's rounding"이라 부른다. 2.5 → 2, 3.5 → 4.
-- *DOWN*은 0 쪽으로 자르고, *FLOOR*는 음의 무한대 쪽으로 자른다. 음수에서 갈린다(-2.5 → -2 vs -3).
+- *DOWN*은 0 쪽으로 자르고, *FLOOR*는 음의 무한대 쪽으로 자른다. 음수에서 달라진다(-2.5 → -2 vs -3).
 - `setScale(n)`·`divide(x)`처럼 모드를 받는 연산에서 모드를 빼면, 반올림이 필요할 때 `ArithmeticException`이다. 조용히 반올림하지 않는다.
 - 단, 조용히 줄이는 경로도 있다(JDK 21.0.12·PostgreSQL 17.11 재현).
   - `new MathContext(1)`은 기본 모드가 HALF_UP이다(javadoc): `new BigDecimal("2.5").round(new MathContext(1))` → `3`. `MathContext.DECIMAL64`·`DECIMAL128`은 HALF_EVEN이다.
@@ -115,7 +115,7 @@
   정액 할인 100원(가격 1,000): 할인→세금 990 / 세금→할인 1000
 ```
 
-- 정률 할인과 정률 세금은 정확히 계산하면 순서가 상관없다(곱셈은 교환 가능). 그런데 **단계마다 반올림**하면 1~100,000원 중 33%에서 1원이 갈렸다.
+- 정률 할인과 정률 세금은 정확히 계산하면 순서가 상관없다(곱셈은 교환 가능). 그런데 **단계마다 반올림**하면 1~100,000원 중 33%에서 1원이 달라졌다.
 - 정액 할인은 반올림이 없어도 순서가 결과를 바꾼다(990 vs 1000). 할인이 세금 기준액을 줄이느냐의 문제라 법·약관이 정한다.
 
 ### 6. 배분 — 곱셈이 아니라 allocator
@@ -256,7 +256,7 @@ HAVING sum(l.discount) <> o.discount_total;
 - 대처: `Currency.getDefaultFractionDigits()`(또는 결제사 표)로 통화별 자릿수를 쓴다. 0·3자리 통화를 테스트 데이터에 넣는다.
 
 ### 4. `BigDecimal("1.0").equals("1.00")`이 false → 중복 판정 실패 (⚠)
-- 현상: 같은 금액의 중복 청구 검사가 통과돼 이중 청구가 나간다. 또는 캐시 키가 둘로 갈린다.
+- 현상: 같은 금액의 중복 청구 검사가 통과돼 이중 청구가 나간다. 또는 캐시 키가 둘로 나뉜다.
 - 보이는 형태: 실험 F — `equals false / compareTo 0`, `HashSet size 2 / TreeSet size 1`.
 - 원인: `equals`는 값과 스케일을 모두 비교한다(javadoc). 입력 경로마다 스케일이 달랐다(DB `numeric(19,4)` → 1.0000, JSON → 1.0).
 - 대처: 금액은 `Money` 값 객체로 감싼다. `BigDecimal`로 든다면 생성자에서 통화 자릿수로 `setScale`한다([12](../12-time-money-and-units/2-summary.md) 적용 §2). 그러면 `equals`·`hashCode`가 일관된다. 최소 단위 `long`(적용 §1의 `Money`)이면 스케일 문제가 없다. 맨 `BigDecimal` 비교는 `compareTo`.
@@ -270,7 +270,7 @@ HAVING sum(l.discount) <> o.discount_total;
 ## 핵심 문장
 
 - 곱셈(비례 요금)과 배분(총액 나누기)은 다른 연산이다. 배분은 "합 == 원금"을 보장하는 allocator로 한다.
-- 모드 인자를 받는 `BigDecimal` 연산(`setScale`·`divide`)은 모드가 빠지면 반올림 대신 던진다. 다만 `MathContext(precision)`(HALF_UP)·`longValue()`(자르기)·DB `numeric(p,s)` 저장은 조용히 줄인다. HALF_UP·HALF_EVEN·DOWN·FLOOR는 절반과 음수에서 갈린다.
+- 모드 인자를 받는 `BigDecimal` 연산(`setScale`·`divide`)은 모드가 빠지면 반올림 대신 던진다. 다만 `MathContext(precision)`(HALF_UP)·`longValue()`(자르기)·DB `numeric(p,s)` 저장은 조용히 줄인다. HALF_UP·HALF_EVEN·DOWN·FLOOR는 절반과 음수에서 달라진다.
 - 반올림 위치(줄마다 vs 합계에 한 번)와 할인·세금 순서는 결과를 바꾼다. 법·약관이 정하고, 코드는 그 결정을 한 정책 객체에 둔다.
 - 통화 소수 자릿수는 ISO 4217 데이터다(KRW·JPY 0, USD 2, KWD·BHD 3, CLF 4). "센트" 고정 가정은 틀린다.
 - `BigDecimal.equals`는 스케일까지 비교한다. 금액 값 객체가 스케일을 통화 자릿수로 고정하면 동등성이 일관된다.

@@ -237,7 +237,7 @@ E 0
 
 - ★★★ `Nothing` 은 JVM 에 없으므로 **`Void`** 로 내린다(`die(…)Ljava/lang/Void;`). 호출 뒤의 `new KotlinNothingValueException … athrow` 는 **「돌아오면 안 되는 것이 돌아온」 경우**의 검문이다.
 - ★★ `n4` 의 `return 4` 는 클래스 파일에 **없다** — `fail()` 의 반환 타입이 `Nothing` 이라 그 뒤를 버렸다. `n1` 은 `TODO()` 가 `inline` 이라 **`new NotImplementedError` 가 직접** 박혔다.
-- ★ 진단이 없는 이유는 5번 — 도달 불가 경고는 이 판에서 **기본으로 안 나온다.**
+- ★ 진단이 없는 이유는 5번 — 도달 불가 경고는 이 버전에서 **기본으로 안 나온다.**
 - ★ `E 0` — `Nothing` 이 모든 타입의 하위 타입이고 `List` 가 공변이라 `List<Nothing>` 을 `List<String>` 에 넣을 수 있다.
 
 ### 4. ★★ 물은 함수 8 · 에러 7 — `p1`·`p2` 는 **`String`**, `p5` 는 **`Int`**, `p3` 는 `Nothing?`, `p7` 은 `List<Nothing?>`, `p4`·`p6` 은 `Comparable<*> & Serializable` · ★ **`p8` 은 에러 없음**
@@ -332,7 +332,7 @@ unr.kt:11:5: warning: unreachable code.
 
 **왜 그런가**
 
-- ★★★ 이 판(K2 2.4.20)은 도달 불가 경고를 **`-Wextra` 로 분류**했다. 기본 빌드에서는 `TODO()` 뒤의 코드가 **조용히 버려진다.**
+- ★★★ 이 버전(K2 2.4.20)은 도달 불가 경고를 **`-Wextra` 로 분류**했다. 기본 빌드에서는 `TODO()` 뒤의 코드가 **조용히 버려진다.**
 - ★★ 세 자리의 문구가 **같다** — `return`·`throw`·`TODO()` 는 컴파일러에게 같은 부류(`Nothing`)의 식이다.
 
 ### 6. ★★★ `6 / 9` — `finally` 가 `return`·`throw` 로 끝난 여섯 행이 `false` · `-Wextra` 진단 0줄 · `tryval.kt` 는 `finally(42)` → `A 42` → `finally(x)` → `B -1` → `C 1` · 「`expression is unused.`」 경고 둘
@@ -525,7 +525,7 @@ fun plus(other: Double): Double
 
 **왜 그런가**
 
-- ★★ 타입이 **안 맞는** 것이 아니라 **너무 잘 맞는** 것이다. 바닥 타입은 `Byte`·`Short`·`Int`·`Long`·`Float`·`Double` 어디에나 대입되므로 후보를 가를 수 없다.
+- ★★ 타입이 **안 맞는** 것이 아니라 **너무 잘 맞는** 것이다. 바닥 타입은 `Byte`·`Short`·`Int`·`Long`·`Float`·`Double` 어디에나 대입되므로 후보를 구분할 수 없다.
 - ★ 기대 타입이 하나인 자리(`fun f(): Int = TODO()`)에서는 모호성이 없다.
 
 ### 9. `@Throws` 는 **`Exceptions:` 속성 한 줄**을 만든다 — Kotlin 호출자에게는 **아무 차이 없음**, Java 호출자에게는 **잡을 수 있게 되는 동시에 잡아야 하게** 된다
@@ -625,9 +625,9 @@ kotlin-test.jar
 (exit 0)
 ```
 
-★ **흔들리는 칸과 안 흔들리는 칸**
+★ **실행마다 달라지는 항목과 달라지지 않는 항목**
 
-| 흔들린다 | 안 흔들린다 |
+| 실행마다 달라진다 | 달라지지 않는다 |
 |---|---|
 | **없다** — 해시코드·주소·시간을 찍지 않았다 | 실행 출력 · 예외 메시지 · `javap` 출력 |
 | | `javac`·`kotlinc` 진단의 **문구·`파일:줄:칸`·캐럿** · 「물은 N · 줄 M」 |
@@ -636,7 +636,7 @@ kotlin-test.jar
 > 근거 — 캡처 스크립트를 처음부터 다시 돌려 **블록 전체를 바이트 단위로 대조**했다.
 >
 > 실측 — `capture.sh blocks` 와 `capture.sh blocks-recheck` 를 처음부터 따로 돌려 `normalize-shaky.py` 로 대조했다 —\
-> **블록 103개 · 동일 103 · 흔들린 칸 0 · ★고칠 것 0**(34\~37 네 주제를 한 캡처로 받았다). `diff -rq` 도 차이 0 이다.\
+> **블록 103개 · 동일 103 · 달라진 항목 0 · ★고칠 것 0**(34\~37 네 주제를 한 캡처로 받았다). `diff -rq` 도 차이 0 이다.\
 > ★ **정규화 규칙은 하나도 안 썼다** — 기본 넷(주소·PID·스레드 id·시간)에 걸리는 칸이 애초에 없었다.
 
 | 프로그램 | 무엇을 확인했나 | 돌린 방법 |
@@ -655,7 +655,7 @@ kotlin-test.jar
 **구현 의존 항목** — `Nothing` 의 `Void` 내림 · `KotlinNothingValueException` 검문 · `Exceptions:` 속성 · `TODO()` 의 인라인 펼침 · ★ **도달 불가 경고의 등급(`-Wextra`)** · 진단 문구 — 이 컴파일러·판의 산출물이다.\
 반면 **「예외는 전부 비검사」「`throw` 는 `Nothing` 식」「`Nothing` 은 모든 타입의 하위 타입」「`finally` 는 값을 안 바꾼다」** 는 **언어의 계약**이다.
 
-**★ 던져 봤더니 예상과 달랐던 것 — 세 건**
+**★ 실행해 봤더니 예상과 달랐던 것 — 세 건**
 
 1. ★★★ **「`TODO()` 뒤의 코드는 도달 불가 경고」가 기본 빌드에서는 안 나왔다**(5번). `-Wextra` 를 줘야 세 자리가 전부 잡힌다 — 브리핑은 경고가 나온다고 전제했다.
 2. ★★ **`Nothing` 호출 뒤에 kotlinc 가 `KotlinNothingValueException` 을 심는다**(3·7번). Java 가 `Nothing` 멤버를 구현하면 **실제로 터진다.**

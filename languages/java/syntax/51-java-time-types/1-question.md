@@ -191,9 +191,9 @@ ZoneId.of("America/Asuncion").getRules().nextTransition(Instant.parse("2025-01-0
 ```
 
 - 17·21·25 에서 첫 줄은 각각 무엇을 돌려주는가?
-- 둘째 줄은 세 판에서 어떻게 갈리는가?
-- 셋째 줄은 세 판에서 어떻게 갈리는가 — 이쪽이 왜 더 위험한가?
-- 세 판의 사용 가능한 지역 개수는 각각 얼마인가?
+- 둘째 줄은 세 버전에서 어떻게 달라지는가?
+- 셋째 줄은 세 버전에서 어떻게 달라지는가 — 이쪽이 왜 더 위험한가?
+- 세 버전의 사용 가능한 지역 개수는 각각 얼마인가?
 - 그래서 "시간대 계산 결과"는 보장인가 아닌가?
 
 ### 14. 어느 타입을 고르는가 (연결)
@@ -207,7 +207,7 @@ ZoneId.of("America/Asuncion").getRules().nextTransition(Instant.parse("2025-01-0
 ## 실행 환경
 
 **선행** — 없다. 이어지는 주제는 [`../52-duration-period-formatter/`](../52-duration-period-formatter/)다.
-예측형 문항의 출력은 **Temurin JDK 21.0.5** 기준이다. 17·25 에서 갈린 것은 그 문항에 표시돼 있다.
+예측형 문항의 출력은 **Temurin JDK 21.0.5** 기준이다. 17·25 에서 달라진 것은 그 문항에 표시돼 있다.
 이 머신의 기본 시간대는 `Asia/Seoul`, 기본 `Locale` 은 `ko_KR` 이다.
 
 ## 복습 기록

@@ -415,7 +415,7 @@ same bytes
 (exit 0)
 ```
 
-- ★★★ 11칸의 내역 — `one raises` 에서 A·C(`launch` 행 2 · `async` 행 2) + `async` 행의 핸들러 1 · `outer cancelled` 에서 A·C·호출자(두 행 × 3). `one child cancelled` 는 한 칸도 안 갈렸다.
+- ★★★ 11칸의 내역 — `one raises` 에서 A·C(`launch` 행 2 · `async` 행 2) + `async` 행의 핸들러 1 · `outer cancelled` 에서 A·C·호출자(두 행 × 3). `one child cancelled` 는 한 칸도 달라지지 않았다.
 - ★★ 경고 문구는 1.11.0 의 선언(`Guidance.kt` 의 `@Deprecated(level = WARNING)`)에서 온다 — **동작이 바뀐 것이 아니라 경고가 새로 붙은 것**이다.
 
 ### 8. 형제는 **전부 `completed`**, 호출자는 **정상 반환** · **라이브러리(kotlinx-coroutines)의 약속**이다
@@ -423,7 +423,7 @@ same bytes
 **왜 그런가**
 
 - ★★ `coroutineScope` KDoc 이 형제를 취소하는 조건을 「`fails with an exception`」으로 적는다(2-summary (6)) — 취소는 그 「실패」에 들지 않는다.
-- ★★ 언어는 `suspend` 변환만 준다([52번](../52-coroutine-basics-suspend-scope-launch-async/)) — 누가 누구를 취소하나는 **전부 라이브러리의 규칙**이다(흔들리는 칸 표의 「판에 매인다」).
+- ★★ 언어는 `suspend` 변환만 준다([52번](../52-coroutine-basics-suspend-scope-launch-async/)) — 누가 누구를 취소하나는 **전부 라이브러리의 규칙**이다(실행마다 달라지는 항목 표의 「판에 매인다」).
 
 ### 9. **`coroutineScope` ≈ `TaskGroup`**(형제 취소 · 다 멈춘 뒤 올림) · **`supervisorScope` ≈ `gather` 는 형제 쪽만** — 기다리던 쪽은 `gather` 가 **예외를 곧바로** 받고, `supervisorScope` 는 **아무것도 안 받는다**
 
@@ -476,21 +476,21 @@ Implementation-Version: 1.11.0
 (exit 0)
 ```
 
-★ **흔들리는 칸과 안 흔들리는 칸**
+★ **실행마다 달라지는 항목과 달라지지 않는 항목**
 
-| 흔들린다 | 안 흔들린다 |
+| 실행마다 달라진다 | 달라지지 않는다 |
 |---|---|
-| **없다** — 시간은 칸으로 안 만들었다 · 단일 스레드 + `yield()` 걸음 | 전파 격자 18행 · 갈린 칸 수 · 걸음 수 — 다섯 판 되풀이에서 해시 하나 |
+| **없다** — 시간은 칸으로 안 만들었다 · 단일 스레드 + `yield()` 걸음 | 전파 격자 18행 · 달라진 항목 수 · 걸음 수 — 다섯 판 되풀이에서 해시 하나 |
 | ★ **판에 매인다** — 1.11.0 의 동작과 경고(1.10.2 는 경고가 없다) | 삼키기 쌍 · 협조적 취소 · `finally`·`withTimeout` 로그 · 소스 발췌 · 모든 **종료 코드** |
 
 > 근거 — 캡처 스크립트를 처음부터 다시 돌려 **블록 전체를 대조**했다.
 >
 > 실측 — `capture.sh blocks` 와 `capture.sh blocks-recheck` 를 처음부터 따로 돌려 `normalize-shaky.py` 로 대조했다 —\
-> **블록 74개 · 동일 74 · 흔들린 칸 0 · ★고칠 것 0**(50\~53 네 주제를 한 캡처로 받았다). 추가한 정규화 규칙은 **없다**.
+> **블록 74개 · 동일 74 · 달라진 항목 0 · ★고칠 것 0**(50\~53 네 주제를 한 캡처로 받았다). 추가한 정규화 규칙은 **없다**.
 
 | 프로그램 | 무엇을 확인했나 | 돌린 방법 |
 |---|---|---|
-| `grid53.kt` | ★★★ 구조 3 × 사건 3 × 빌더 2 · 갈린 칸 수 | `kotlinc`(경고 포함) → `java` + 다섯 판 되풀이 해시 |
+| `grid53.kt` | ★★★ 구조 3 × 사건 3 × 빌더 2 · 달라진 항목 수 | `kotlinc`(경고 포함) → `java` + 다섯 판 되풀이 해시 |
 | `grid53.kt`(1.10.2) | ★★ 라이브러리 판 대조 | 1.10.2 로 컴파일 → 두 출력을 `cmp` |
 | `swallow53.kt` | ★★★ `runCatching`·`catch (e: Exception)` 이 취소를 삼키는 쌍 · `ensureActive` 복구 | `kotlinc` → `java` |
 | `coop53.kt` | ★★ 협조적 취소 다섯 가지 | `kotlinc` → `java` |
@@ -501,7 +501,7 @@ Implementation-Version: 1.11.0
 **구현 의존 항목** — 걸음 수 · `JobCancellationException` 이라는 내부 이름 · 경고의 유무 — 라이브러리 판의 산출물이다.\
 반면 **전파 규칙**(형제 취소 · 감독 · `async` 는 `await` · 취소는 실패가 아님 · `cancellable`) 은 **라이브러리 문서의 계약**이다 — 언어의 보장은 아니다.
 
-**★ 던져 봤더니 예상과 달랐던 것 — 세 건**
+**★ 실행해 봤더니 예상과 달랐던 것 — 세 건**
 
 1. ★★★ **`launch(SupervisorJob())` 는 「효과가 없는」 정도가 아니었다** — 형제 감독은 없고 **바깥 취소까지 끊겼다**(`outer cancelled` 에서 A·B·C `completed`).
 2. ★★ **라이브러리 판을 바꾸니 동작은 같고 경고만 달랐다** — 1.11.0 이 그 꼴을 deprecated 로 선언했다.

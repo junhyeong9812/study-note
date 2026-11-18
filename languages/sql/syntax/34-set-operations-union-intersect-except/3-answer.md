@@ -508,7 +508,7 @@ ERROR 1064 (42000) at line 1: ... near 'UNION ALL SELECT name FROM dept LIMIT 1'
    -> WHERE 가 그 행을 버린다             -> 한 행으로 접히고, 교집합에 남는다
 ```
 
-**같은 `NULL` 인데 절이 다르면 반대로 취급된다.** 이 어긋남은 SQL 전체에 걸쳐 일관되게 나타난다.
+**같은 `NULL` 인데 절이 다르면 반대로 취급된다.** 이 불일치는 SQL 전체에 걸쳐 일관되게 나타난다.
 
 - `WHERE`·`ON`·`HAVING` 의 **비교**: `NULL` 은 어떤 것과도 같지 않다.
 - `DISTINCT`·`GROUP BY`·집합 연산의 **묶기**: `NULL` 끼리는 하나다.
@@ -632,13 +632,13 @@ PG 의 `UNION types integer and text cannot be matched` 는 **"PG 가 막는다"
 12번도 실행이 근거가 아니다 — 8.4.10 에서 도는 것만 봐서는 **8.0.31 이라는 경계를 알 수 없고**, 그 경계는 릴리스 노트만이 근거다.
 
 **언어 보장 항목** — 1\~5·8\~11·13번. 셋의 의미, `ALL` 의 개수 의미, 중복 판정 기준, `NULL` 취급, `ORDER BY` 의 자리, 결과 열 이름, 우선순위, `MINUS`/`CORRESPONDING` 부재는 **두 엔진에서 같았다**(에러 문구만 다르다).\
-**방언이 갈리는 항목** — 6번(타입 불일치)과 12번(도입 버전) **둘뿐이다.** 그중 6번은 **에러가 아니라 조용한 차이**라 더 위험하다.
+**방언이 달라지는 항목** — 6번(타입 불일치)과 12번(도입 버전) **둘뿐이다.** 그중 6번은 **에러가 아니라 조용한 차이**라 더 위험하다.
 
 **순서 보장** — 없다. 위 출력에 `ORDER BY` 를 붙이지 **않은** 것들은 **순서를 근거로 쓰지 않는 자리**이고, 순서가 논점인 8번에는 붙였다.
 
 ## 실행 환경
 
 근거는 **실행 결과**다 — 본문의 출력·에러·실행 계획은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+2026-09-21 에 실제로 실행해 받은 것이다. 지어낸 출력은 없다.\
 표는 기존 `emp`·`dept` 만 썼다 — **새로 만든 표가 없다.**\
 문서 근거는 [PG 18 Combining Queries](https://www.postgresql.org/docs/18/queries-union.html) · [MySQL 8.4 Set Operations](https://dev.mysql.com/doc/refman/8.4/en/set-operations.html) · [MySQL 8.0.31 릴리스 노트](https://dev.mysql.com/doc/relnotes/mysql/8.0/en/news-8-0-31.html).

@@ -10,7 +10,7 @@
 - ★★ [16번](../16-class-syntax/2-summary.md) 동작 (2) — `["leakedFromFunction"]  (1 / 2)`. 새는 것은 비엄격 쪽뿐.
 - ★ [13번](../13-object-literals-and-properties/2-summary.md) — **안 막힌다**(ES2015 부터). 뒤의 키가 이긴다.
 
-### 2. 설정에 달린 칸 **`11 / 14`** — 남은 전역은 **간접 `eval` 탐침의 두 모드**(엄격 쪽도 샜다) ★★★
+### 2. 설정에 달린 칸 **`11 / 14`** — 남은 전역은 **간접 `eval` probe의 두 모드**(엄격 쪽도 샜다) ★★★
 
 **출력**
 
@@ -68,7 +68,7 @@ settings-dependent cells 11 / 14
 - ★★★ **`eval` 넷** — 직접 `var`·`function` 은 엄격 `undefined` / 비엄격 `number`·`function`(바깥 함수로 샜다) · 직접 `let` 은 **두 모드 다 `undefined`** · 간접 `var` 는 **두 모드 다 `number`**.
 - ★★★ **일곱이 전부 `COMPILE SyntaxError`** — `with` · `010` · `08` · `'\101'` · `delete v` · `implements` · `let`. 본문이 한 줄도 안 돌았다.
 - ★★ **엄격은 실행에서 `TypeError`**(`Cannot assign to read only property 'undefined' …` · `Cannot create property 'len' on string 'ab'`), **비엄격은 말없이** `undefined` · `undefined`.
-- ★★★ **`["js35_3_sloppy","js35_3_strict"]`** — 간접 `eval` 은 호출자의 모드를 안 물려받고 전역 코드로 돈다. **`11 / 14`** — 안 갈린 셋은 `eval('let …')` · 간접 `eval` · `0o10`.
+- ★★★ **`["js35_3_sloppy","js35_3_strict"]`** — 간접 `eval` 은 호출자의 모드를 안 물려받고 전역 코드로 돈다. **`11 / 14`** — 안 달라진 셋은 `eval('let …')` · 간접 `eval` · `0o10`.
 
 ### 3. **앞의 다섯은 `strict`, 뒤의 넷은 `sloppy`** · 비단순 목록 네 형태는 **컴파일조차 안 된다** ★★★
 
@@ -140,7 +140,7 @@ settings-dependent cells 11 / 14
 ### 6. eval 코드는 **스스로 지시어를 갖거나 · 엄격 코드 안의 직접 eval** 일 때만 엄격 — 엄격이면 **`var` 가 eval 자기 환경에** 갇힌다 ★★★
 
 - ★★★ 두 조건 — 「eval 코드가 Use Strict Directive 로 시작하거나, **엄격 모드 코드 안에 있는 직접 eval** 이거나」.
-- ★★ **`varEnv` 를 `lexEnv`(eval 자기 환경)로** 바꾼다 — 그래서 `var` 가 바깥 함수로 안 샌다(2번 탐침 0·1).
+- ★★ **`varEnv` 를 `lexEnv`(eval 자기 환경)로** 바꾼다 — 그래서 `var` 가 바깥 함수로 안 샌다(2번 probe 0·1).
 - ★★ **전역** — 간접 `eval` 은 직접 eval 이 아니므로 둘째 조건에 안 걸리고, 소스에 지시어도 없어 **비엄격 전역 코드**로 돈다. `var` 는 전역 객체에 붙는다(`js35_3_strict`).
 
 ### 7. **지시어 머리말 안의 정확한 글자** · 금지 규칙은 **「지시어가 있나 × 목록이 단순한가」** ★★
@@ -165,13 +165,13 @@ settings-dependent cells 11 / 14
 
 | 소스 | 무엇을 고정하나 | 몇 번 · 어디서 |
 |---|---|---|
-| `js32b-35a-new-cells.js` | ★★★ 새 탐침 14 의 두 번 컴파일 격자 · 「`11 / 14`」 · 누수 목록 | node20 1벌 + node18 대조 1벌 |
+| `js32b-35a-new-cells.js` | ★★★ 새 probe 14 의 두 번 컴파일 격자 · 「`11 / 14`」 · 누수 목록 | node20 1벌 + node18 대조 1벌 |
 | `js32b-35b-directive.js` | ★★★ 지시어의 자리 아홉 · 비단순 목록 다섯 형태 | node20 1벌 + node18 대조 1벌 |
 | `js32b-35-h-mode.mjs` + `js32b-35c-module.sh` | ★★★ 같은 파일의 모듈 판 · CommonJS 판 | node20 1벌 |
 | (인용) 05 · 07 · 08 · 09 · 10 · 12 · 13 · 14 · 16 · 24 편의 블록 | 정본 표의 인용 17행 | 그 편의 「실행 검증」 |
-| `js32b-vdiff.sh` · `js32b-versions.sh` | 두 판이 갈린 탐침 수 · 판별 기능 표 | 1벌씩 |
+| `js32b-vdiff.sh` · `js32b-versions.sh` | 두 버전이 달라진 probe 수 · 판별 기능 표 | 1벌씩 |
 
-두 node 판 대조기(이 배치 전체의 node 탐침). `DIFFERS` 가 한 줄도 없다.
+두 node 버전 대조기(이 배치 전체의 node probe). `DIFFERS` 가 한 줄도 없다.
 
 ```sh
 # js32b-vdiff.sh
@@ -216,16 +216,16 @@ js32b-35b-directive.js                   identical
 identical 12  ·  differs 0  ·  total 12
 ```
 
-**구현 의존 항목 — 판이 오르면 다시 돌릴 것**
+**구현 의존 항목 — 버전이 오르면 다시 돌릴 것**
 
 - ★ 예외 **문구** — V8 의 것이다(`Octal literals are not allowed in strict mode.` 등).
-- ★ 모듈 판별 규칙(`.mjs`·`--input-type`)은 **node 의 것**이다 — 판이 오르면 4번을 다시 돌린다.
+- ★ 모듈 판별 규칙(`.mjs`·`--input-type`)은 **node 의 것**이다 — 버전이 오르면 4번을 다시 돌린다.
 
 ## 실행 환경
 
 이 파일의 새 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
 블록은 **전부 캡처 파일에서 조립**했다. ★★ **1번의 답은 앞 편의 블록**이 근거다 — 링크의 동작 번호를 연다.
-★★ **이 주제에서 두 node 판이 갈린 탐침은 없다**(대조기의 `identical`).
+★★ **이 주제에서 두 node 버전이 달라진 probe는 없다**(대조기의 `identical`).
 
 **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
 `js32b-35a-new-cells.js`(2번 · 5번 · 6번) · `js32b-35b-directive.js`(3번 · 7번) · `js32b-35-h-mode.mjs` + `js32b-35c-module.sh`(4번 · 8번).

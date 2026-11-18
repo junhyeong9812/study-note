@@ -470,7 +470,7 @@ zdt.plus(Period.ofMonths(1)).plus(Duration.ofHours(3));
 | `fr_FR` | **2026** | MONDAY | 4 | 52 |
 | `ko_KR` | **2027** | SUNDAY | 1 | 1 |
 
-**갈리는 이유**
+**달라지는 이유**
 
 ```text
   2026-12-27 은 일요일이다.
@@ -563,7 +563,7 @@ date.format(DateTimeFormatter.ISO_WEEK_DATE);   // 2026-W52-7
 
 - `z` 의 이름은 **`Locale` 에 따라 달라진다.** 기계가 읽을 형식에는 `X` 나 `V` 를 쓴다.
 
-**`u` 와 `y` 가 갈리는 때**
+**`u` 와 `y` 가 달라지는 때**
 
 **출력** (`Ex.java` — 52-d)
 
@@ -575,8 +575,8 @@ date.format(DateTimeFormatter.ISO_WEEK_DATE);   // 2026-W52-7
   yyyy 만 쓰고 G 없이 파싱 : 0001-06-15
 ```
 
-- **기원전**에서 갈린다. `y` 는 연호 기준이라 기원전 1년이 "2 BC", `u` 는 `-0001`.
-- 그리고 **`STRICT` 파싱**에서 갈린다(11번).
+- **기원전**에서 달라진다. `y` 는 연호 기준이라 기원전 1년이 "2 BC", `u` 는 `-0001`.
+- 그리고 **`STRICT` 파싱**에서 달라진다(11번).
 
 ### 11. `ResolverStyle` 과 포맷 실패
 
@@ -688,7 +688,7 @@ JDK 25.0.1
   ... Unable to obtain LocalDate from TemporalAccessor: {DayOfMonth=8, YearOfEra=2026, MonthOfYear=3},ISO of type java.time.format.Parsed
 ```
 
-**갈린 조각**
+**달라진 조각**
 
 ```text
   {YearOfEra=2026, MonthOfYear=3, DayOfMonth=8}   <- 17
@@ -786,6 +786,6 @@ assertThrows(DateTimeParseException.class, () -> LocalDate.parse(...));
 ## 실행 환경
 
 이 파일의 모든 출력은 실제로 돌려 얻은 것이다. 프로그램 일곱(52-a\~52-g)을 **Temurin 17.0.13 · 21.0.5 · 25.0.1** 에서 각각 돌렸다.\
-★ **세 판이 같았다고 적지 않는다.** 12번에서 실제로 갈렸다.\
+★ **세 버전이 같았다고 적지 않는다.** 12번에서 실제로 나뉘었다.\
 javadoc 인용은 JDK 21.0.5 의 `lib/src.zip` — `java.base/java/time/Duration.java`·`Period.java`·`temporal/TemporalUnit.java`·`format/DateTimeFormatter.java`·`format/DateTimeFormatterBuilder.java` 원문이다.\
 측정 조건: 기본 시간대 `Asia/Seoul`, 기본 `Locale` `ko_KR`.

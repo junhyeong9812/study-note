@@ -10,7 +10,7 @@
 | 2 CPU, 4GiB | G1 | 1GiB |
 | 1 CPU, 4GiB | Serial | 1GiB |
 
-- 최대 힙은 한도 × `MaxRAMPercentage`(25%). 수집기는 서버급 판정(2번)으로 갈린다.
+- 최대 힙은 한도 × `MaxRAMPercentage`(25%). 수집기는 서버급 판정(2번)으로 나뉜다.
 
 ### 2. 1792MB 경계
 
@@ -56,7 +56,7 @@
 ### 8. humongous (실험 3)
 
 - 400KB: GC 14~16회, 원인은 모두 `G1 Evacuation Pause`류(humongous 원인 0회).
-- 600KB: GC 35~38회, 그중 35~37회가 `G1 Humongous Allocation`(나머지는 소스 파일 실행의 컴파일 중 GC). 문턱 = 영역의 절반 512KB(G1 문서 "larger or equal the size of half a region").
+- 600KB: GC 35~38회, 그중 35~37회가 `G1 Humongous Allocation`(나머지는 소스 파일 실행의 컴파일 중 GC). 임계값 = 영역의 절반 512KB(G1 문서 "larger or equal the size of half a region").
 - 낭비: 600KB가 1MB 영역 하나를 차지 → 남은 424KB(약 40%)는 그 객체가 회수될 때까지 못 쓴다(G1 문서 "Any leftover space in the last region ... will be lost").
 
 ### 9. 작은 파드에서 나빠진 p99

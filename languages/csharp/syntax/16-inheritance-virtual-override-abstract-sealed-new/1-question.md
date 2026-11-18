@@ -78,7 +78,7 @@ class Program { static void Main() { } }
 - ★★ **필드**에도 경고가 나는가?
 - ★★★ `cc exit` 는 0 인가 1 인가 — 그것이 왜 무서운가?
 
-### 4. ★★★ 여섯 탐침 중 `call` 이 나오는 자리는 몇 개인가 (예측)
+### 4. ★★★ 여섯 probe 중 `call` 이 나오는 자리는 몇 개인가 (예측)
 
 ```csharp
 // cs16b-il.cs
@@ -260,13 +260,13 @@ public class Ex16 {
 **환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
 Roslyn `csc` 를 직접 부른다 · `-langversion:latest` · `-preferreduilang:en-US`.
 대비는 **javac 21.0.5** 와 **g++ 13.3.0 · `-std=c++20`** 이다.
-★★★ **본체 창은 ① IL 덤프다** — 4번의 「기본 비가상인데 왜 `callvirt` 인가」는
+★★★ **핵심 창은 ① IL 덤프다** — 4번의 「기본 비가상인데 왜 `callvirt` 인가」는
 **덤프 없이는 물을 수조차 없다.**
 ★★ **짝이 되는 것은 실행 출력 격자**다 — IL 만 보면 「`callvirt` 니까 다 가상」이라는 **틀린 결론**이 나온다.
-★ **「부적용인 창」이 있다** — **④ 할당 바이트.** `new` 로 숨기든 `override` 하든 **객체는 하나**이고
+★ **「해당 없는 창」이 있다** — **④ 할당 바이트.** `new` 로 숨기든 `override` 하든 **객체는 하나**이고
 `virtual` 을 붙인다고 객체가 커지지도 않는다(메서드 테이블은 **타입당 하나**).
 **「안 쟀다」가 아니라 「잴 것이 없다」다.**
-★★★ **이 파일에는 「가상 호출이 느리다」는 문장이 없다** — 이 판에서 **안 쟀다.**
+★★★ **이 파일에는 「가상 호출이 느리다」는 문장이 없다** — 이 버전에서 **안 쟀다.**
 선행 — [12번](../12-class-fields-constructors-this-base/)(★ **생성자 속 가상 호출**이 거기 정본이다)·[15번](../15-access-modifiers-and-assembly-boundary/)(`protected`).
 대비 — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **09번**([`09-inheritance-overriding/`](../../../java/syntax/09-inheritance-overriding/))·**11번**([`11-interfaces-default-methods/`](../../../java/syntax/11-interfaces-default-methods/)) ·
 C++ 갈래 목록([`cpp/syntax/README.md`](../../../cpp/syntax/README.md))의 **19번**.

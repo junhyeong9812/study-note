@@ -123,7 +123,7 @@ run(list::add);
 - 컴파일되는가? 안 된다면 에러 메시지는 무엇인가?
 - `list::add` 가 `Consumer` 도 되는 이유는 무엇인가?
 - `Consumer<String> c = s -> { return list.add(s); };` 는 컴파일되는가?
-- 식 본문과 블록 본문에서 void 호환 규칙이 어떻게 갈리는가?
+- 식 본문과 블록 본문에서 void 호환 규칙이 어떻게 달라지는가?
 - 이 사고를 막는 설계 규칙 한 줄은 무엇인가?
 
 ### 11. `UnaryOperator` 와 `Function` (경계)

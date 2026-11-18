@@ -392,7 +392,7 @@ SELECT constraint_name, delete_rule FROM information_schema.referential_constrai
 +-----------------+-------------+
 ```
 
-**그런데 실제로 부모를 지우면 갈린다.**
+**그런데 실제로 부모를 지우면 달라진다.**
 
 ```text
 ### SQL: DELETE FROM t44_p WHERE id=80;      (t44_sd 가 80 을 가리키는 중, pid 의 DEFAULT 는 20)
@@ -485,7 +485,7 @@ ERROR:  current transaction is aborted, commands ignored until end of transactio
 ROLLBACK
 ```
 
-그림 해설 — **`DEFERRABLE INITIALLY DEFERRED` 를 똑같이 붙였는데 결과가 갈렸다.**
+그림 해설 — **`DEFERRABLE INITIALLY DEFERRED` 를 똑같이 붙였는데 결과가 달라졌다.**
 
 ```text
 NO ACTION  : 검사를 COMMIT 까지 미룰 수 있다
@@ -543,7 +543,7 @@ UPDATE 1
 비용 — `ON UPDATE CASCADE` 가 필요하다는 것은 **PK 가 바뀌는 값이라는 뜻**이다.\
 대리키를 쓰면 이 절이 필요 없어진다.
 
-### 7. ★ `SET NULL` 인데 자식 열이 `NOT NULL` 이면 — **검사 시점이 갈린다**
+### 7. ★ `SET NULL` 인데 자식 열이 `NOT NULL` 이면 — **검사 시점이 달라진다**
 
 **언제 쓰나** — `SET NULL` 을 고를 때. **모순된 선언을 언제 잡느냐**가 다르다.
 
@@ -620,7 +620,7 @@ ALTER TABLE c DROP FOREIGN KEY c_pid_fk;                -- MySQL
 3. **`CASCADE` 의 범위를 과소평가한다.** 자식의 자식까지 타고 내려간다. 되돌릴 수 없다.
 4. **`DELETE 1` 을 보고 한 행만 지워졌다고 읽는다.** `CASCADE` 로 사라진 자식은 **출력에 안 나온다**(4번).
 5. **PG 에서 FK 열에 인덱스를 안 만든다.** MySQL 습관이 그대로 넘어오면 **부모 삭제가 느려진다**(3번).
-6. **`NO ACTION` 과 `RESTRICT` 가 항상 같다고 생각한다.** **PG 에서는 지연 검사에서 갈린다**(5번).
+6. **`NO ACTION` 과 `RESTRICT` 가 항상 같다고 생각한다.** **PG 에서는 지연 검사에서 달라진다**(5번).
 7. **`SET NULL` 을 `NOT NULL` 열에 건다.** MySQL 은 `ERROR 1830` 으로 즉시 막고,\
    **PG 는 만들어 놓고 삭제할 때 터진다**(7번).
 8. **`NULL` 인 FK 열이 위반이라고 생각한다.** 위반이 아니다 — 아무것도 안 가리키는 것이다(2번).
@@ -635,7 +635,7 @@ ALTER TABLE c DROP FOREIGN KEY c_pid_fk;                -- MySQL
 |---|---|---|
 | 참조 무결성 | 자식이 없는 부모를 못 가리킨다 | **열 뒤 `REFERENCES` 를 받아들이는지**(★ MySQL 이 무시한다) |
 | `ON DELETE` 네 동작 | 각각의 의미 | 에러 코드·문구 |
-| `NO ACTION` 대 `RESTRICT` | 표준상 「지연 가능/불가」로 갈린다 | **지연 검사를 지원하는지**(MySQL 은 안 한다) |
+| `NO ACTION` 대 `RESTRICT` | 표준상 「지연 가능/불가」로 나뉜다 | **지연 검사를 지원하는지**(MySQL 은 안 한다) |
 | FK 와 인덱스 | — | **MySQL 자동 생성 · PG 수동** |
 | `SET NULL` + `NOT NULL` | 모순된 조합 | **선언 시점(MySQL) 대 실행 시점(PG)** |
 
@@ -660,7 +660,7 @@ ALTER TABLE c DROP FOREIGN KEY c_pid_fk;                -- MySQL
 - **외래키는 삽입 쪽(`1452`)과 삭제 쪽(`1451`) 둘 다 막는다.**
 - **`ON DELETE` 의 기본값은 `NO ACTION`** — 막는 쪽이지 지우는 쪽이 아니다.
 - **네 동작: 막는다(`NO ACTION`·`RESTRICT`) / 같이 지운다(`CASCADE`) / 참조만 끊는다(`SET NULL`).**
-- **MySQL 에서 `NO ACTION` 과 `RESTRICT` 는 같다** — 둘이 갈리는 자리(지연 검사)가 MySQL 에 없기 때문이다.
+- **MySQL 에서 `NO ACTION` 과 `RESTRICT` 는 같다** — 둘이 달라지는 자리(지연 검사)가 MySQL 에 없기 때문이다.
 - **MySQL 은 FK 열에 인덱스를 자동으로 만들고 PG 는 안 만든다.**
 - **`SET NULL` + `NOT NULL` 은 MySQL 이 선언 시점에, PG 가 실행 시점에 잡는다.**
 - ★ **`SET DEFAULT` 는 MySQL 이 적어만 두고 안 지킨다** — 카탈로그를 믿지 말고 실제로 부모를 지워 본다.

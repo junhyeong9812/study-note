@@ -1,14 +1,14 @@
 # kotlin/syntax/43 — 필터·검색 — `filter`/`find`/`first`/`any`/`all`/`none` — 정리 (힌트)
 
-★★★ **본체는 첫째 창이다** — 「**빈 입력 격자 — 연산 × (빈 · 하나 · 맞는 것 없음 · 둘 이상 맞음) → 값 / 던진 예외**」. 어느 연산이 던지는지는 **타입에 안 나온다** — `first()` 도 `firstOrNull()` 도 컴파일은 똑같이 된다. **빈 것을 넣어 봐야** 보인다.
+★★★ **핵심은 첫째 창이다** — 「**빈 입력 격자 — 연산 × (빈 · 하나 · 맞는 것 없음 · 둘 이상 맞음) → 값 / 던진 예외**」. 어느 연산이 던지는지는 **타입에 안 나온다** — `first()` 도 `firstOrNull()` 도 컴파일은 똑같이 된다. **빈 것을 넣어 봐야** 보인다.
 
 ## 이 주제가 쓰는 세 층
 
 | 층 | 뜻 | 근거로 쓰는 것 |
 |---|---|---|
 | **언어 보장 / API 계약** | 서명·KDoc 이 약속한 것 | ★★★ **반환 타입의 `?`** 가 「없으면 `null`」을 약속한다(`firstOrNull`·`find`·`singleOrNull`·`maxOrNull`) · ★★★ `all` 의 KDoc — 빈 컬렉션이면 **`true`**(공허한 참) · `@throws NoSuchElementException` |
-| **구현(stdlib)** | 이 판의 stdlib 가 실제로 하는 것 | ★★ **예외 메시지 문구**(`List is empty.` · `Collection is empty.` · `Empty list doesn't contain element at index 0.`) — 받는 쪽 **타입과 런타임 클래스에 따라 갈린다**((2)) · `single()` 이 둘 이상에서 **`IllegalArgumentException`** |
-| **이 판의 관찰** | kotlinc 2.4.20 · stdlib 2.4.20 에서 본 것 | ★ `max()` 호출이 **`maxOrThrow`** 로 컴파일된다 · JVM stdlib 에 옛 `max` 가 **아직 있다**((4)) |
+| **구현(stdlib)** | 이 버전의 stdlib 가 실제로 하는 것 | ★★ **예외 메시지 문구**(`List is empty.` · `Collection is empty.` · `Empty list doesn't contain element at index 0.`) — 받는 쪽 **타입과 런타임 클래스에 따라 달라진다**((2)) · `single()` 이 둘 이상에서 **`IllegalArgumentException`** |
+| **이 버전의 관찰** | kotlinc 2.4.20 · stdlib 2.4.20 에서 본 것 | ★ `max()` 호출이 **`maxOrThrow`** 로 컴파일된다 · JVM stdlib 에 옛 `max` 가 **아직 있다**((4)) |
 
 ## 이 판
 
@@ -18,20 +18,20 @@ info: kotlinc-jvm 2.4.20 (JRE 21.0.5+11-LTS)
 (exit 0)
 ```
 
-## 흔들리는 칸 / 안 흔들리는 칸
+## 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| **흔들린다** | (이 주제에는 없다) | ★ `random()` 은 **`Random(42)` 로 씨앗을 고정**했다 — 매 호출마다 새 `Random(42)` 라 칸마다 같은 순서를 받는다 |
-| 안 흔들린다 | 격자 17행 × 4열 · 던진 칸 수 · 예외 **클래스 이름** | 결정적이다 |
-| 안 흔들린다 | 예외 **메시지** | 이 판에서는 결정적 — ★ 그러나 **판이 오르면 바뀔 수 있는 칸**이다(규칙 27 — 근거는 클래스) |
-| 안 흔들린다 | stdlib 소스 발췌 · `javap` 출력 · 진단 · 종료 코드 | jar·컴파일러가 같으면 같다 |
+| **실행마다 달라진다** | (이 주제에는 없다) | ★ `random()` 은 **`Random(42)` 로 씨앗을 고정**했다 — 매 호출마다 새 `Random(42)` 라 칸마다 같은 순서를 받는다 |
+| 달라지지 않는다 | 격자 17행 × 4열 · 던진 칸 수 · 예외 **클래스 이름** | 결정적이다 |
+| 달라지지 않는다 | 예외 **메시지** | 이 버전에서는 결정적 — ★ 그러나 **버전이 오르면 바뀔 수 있는 칸**이다(규칙 27 — 근거는 클래스) |
+| 달라지지 않는다 | stdlib 소스 발췌 · `javap` 출력 · 진단 · 종료 코드 | jar·컴파일러가 같으면 같다 |
 
 ★ 근거 — 캡처 스크립트를 처음부터 두 번 돌려 **블록 전체를 대조**했다(수치는 3-answer 의 「실행 검증」).
 
 ## 한눈에 — 쉽게 말하면
 
-**빈 상자에 손을 넣었을 때 연산은 세 부류로 갈린다 — 「없다」고 소리치는 쪽(예외), 「없음」 쪽지를 주는 쪽(`null`), 원래 답이 정해진 쪽(`true`·`false`·`[]`).** `first()` 는 소리치고, `firstOrNull()` 은 쪽지를 주고, `filter` 는 빈 상자를 그대로 돌려준다.
+**빈 상자에 손을 넣었을 때 연산은 세 부류로 나뉜다 — 「없다」고 소리치는 쪽(예외), 「없음」 쪽지를 주는 쪽(`null`), 원래 답이 정해진 쪽(`true`·`false`·`[]`).** `first()` 는 소리치고, `firstOrNull()` 은 쪽지를 주고, `filter` 는 빈 상자를 그대로 돌려준다.
 ★ 그리고 「**전부 조건을 만족하나**(`all`)」는 빈 상자에서 **`true`** 다 — 어기는 것이 **하나도 없으니까**. 반 학생이 0명이면 「전원 출석」은 참이다. 이것을 **공허한 참**(vacuous truth)이라 한다.
 
 | 비유 | 실체 | 이 문서에서 |
@@ -66,17 +66,17 @@ info: kotlinc-jvm 2.4.20 (JRE 21.0.5+11-LTS)
 
 ## 동작 방식
 
-### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「부적용인 창」
+### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「해당 없는 창」
 
 | 창 | 무엇을 보여 주나 | 어디서 왔나 |
 |---|---|---|
-| ★★★ **빈 입력 격자(실행 + `try`)** | 17연산 × 4입력 → 값 / 예외 클래스·메시지((1)) | ★ **본체 창** |
-| ★★ **같은 연산 · 다른 받는 쪽** | 예외 클래스는 같고 메시지가 갈린다((2)) | — |
+| ★★★ **빈 입력 격자(실행 + `try`)** | 17연산 × 4입력 → 값 / 예외 클래스·메시지((1)) | ★ **핵심 창** |
+| ★★ **같은 연산 · 다른 받는 쪽** | 예외 클래스는 같고 메시지가 달라진다((2)) | — |
 | ★★ **stdlib 소스 jar 발췌** | `all` 의 공허한 참이 **KDoc 계약**인가 · `single` 의 두 예외((3)) | [41번 주제](../41-collection-creation-and-copying/) (2)와 같은 창 |
 | ★ **`javap` — stdlib 와 호출 자리** | `max()` 가 **무엇으로** 컴파일되나 · 옛 `max` 가 남았나((4)) | [40번 주제](../40-read-only-collections-and-runtime-types/) (1)의 `javap` 창 |
 | ★ **제5의 상태 — 창을 바꿔 물었다** | 「1.4\~1.6 판에서 `max()` 는 무엇이었나」를 **옛 판 컴파일**로 못 물었다(`-api-version 1.6` 거부) — **stdlib 소스의 애너테이션 + `javap`** 로 물었다((4)) | 바꾼 창은 **「그 판에서 경고였나 에러였나」를 직접 보여 주지 못한다** — 애너테이션이 **그렇게 적혀 있다**는 것까지다 |
 | **인용 — 다시 안 잰다** | `emptyList()` 가 싱글턴 `EmptyList` | [41번 주제](../41-collection-creation-and-copying/) (4) |
-| **부적용 — 실행 시간** | 「`find` 가 `filter().first()` 보다 싸다」는 **재지 않았다** | — |
+| **해당 없음 — 실행 시간** | 「`find` 가 `filter().first()` 보다 싸다」는 **재지 않았다** | — |
 
 ### (1) ★★★ 빈 입력 격자 — 무엇이 던지고 무엇이 `null` 을 주나
 
@@ -248,7 +248,7 @@ fun main() {
 (exit 0)
 ```
 
-- ★★★ **`first()` 의 예외 클래스는 넷 다 `java.util.NoSuchElementException`, 메시지는 셋으로 갈린다** — `List is empty.`(정적 타입이 `List`) · `Collection is empty.`(`Set`) · `Sequence is empty.`(`Sequence`). **어느 `first` 확장이 골라졌느냐**가 메시지를 정한다.
+- ★★★ **`first()` 의 예외 클래스는 넷 다 `java.util.NoSuchElementException`, 메시지는 셋으로 나뉜다** — `List is empty.`(정적 타입이 `List`) · `Collection is empty.`(`Set`) · `Sequence is empty.`(`Sequence`). **어느 `first` 확장이 골라졌느냐**가 메시지를 정한다.
 - ★★★ **`elementAt(0)` 의 메시지는 런타임 클래스가 정한다** — 같은 `List<Int>` 타입인데 `listOf()` 는 `Empty list doesn't contain element at index 0.`(stdlib 의 `EmptyList`), `mutableListOf()` 는 **`Index 0 out of bounds for length 0`**(JDK 의 `ArrayList`)다. 앞은 Kotlin stdlib 문장, 뒤는 **JDK 문장**이다.
 - ★★ `[0]`(`get`)도 같다(`8`·`9`) — `elementAt` 은 `List` 에서 **`get` 으로 내려간다**는 것이 메시지로 보인다.
 - ★ 그래서 **메시지 문자열을 `catch` 의 근거로 쓰면 안 된다** — 받는 쪽이 `listOf` 에서 `mutableListOf` 로 바뀌기만 해도 문장이 바뀐다. **예외 클래스**(와 애초에 `…OrNull` 을 쓰는 것)가 근거다.
@@ -357,7 +357,7 @@ error: API version 1.6 is no longer supported; use version 2.0 or greater instea
 
 - ★★★ **같은 `xs.max()` 가 1.3 까지는 `null` 을 돌려주고, 1.7 부터는 던진다** — 옛 선언은 반환 타입이 **`T?`**, 새 선언은 **`T`** 다. 그 사이 세 판(1.4 경고 → 1.5 에러 → 1.6 숨김)은 **이름을 비워 두는 기간**이었다 — 소스 애너테이션이 그렇게 적는다.
 - ★★ **새 `max()` 는 JVM 에서 `maxOrThrow` 라는 이름이다** — `mx43.kt` 의 `listOf(3, 1, 2).max()` 가 `CollectionsKt.maxOrThrow` 를 부르도록 컴파일됐다(`javap -c`). **옛 `max` 는 JVM stdlib 에 아직 있다**(`java.lang.Comparable max(java.lang.Iterable)` — 왜 남겼는지는 확인하지 않았다. 옛 판으로 컴파일된 바이너리를 위한 것으로 **보인다**). 이름이 같아 보여도 **바이트코드에서는 다른 메서드**다.
-- ★★ **옛 판에서 직접 컴파일해 보는 것은 못 했다** — `-api-version 1.6` 을 주자 kotlinc 2.4.20 이 「`API version 1.6 is no longer supported; use version 2.0 or greater instead.`」로 거부했다. 그래서 위 표의 1.4\~1.6 칸은 **실행 관찰이 아니라 애너테이션을 읽은 것**이다(제5의 상태 — (0)).
+- ★★ **옛 버전에서 직접 컴파일해 보는 것은 못 했다** — `-api-version 1.6` 을 주자 kotlinc 2.4.20 이 「`API version 1.6 is no longer supported; use version 2.0 or greater instead.`」로 거부했다. 그래서 위 표의 1.4\~1.6 칸은 **실행 관찰이 아니라 애너테이션을 읽은 것**이다(제5의 상태 — (0)).
 
 ## 문법 — 형태와 규칙
 
@@ -417,11 +417,11 @@ fun main() {
 | `all{}` 이 빈 입력에서 `true` | ★★★ **API 계약(KDoc)** | (3) |
 | `first()`·`max()` 가 빈 입력에서 `NoSuchElementException` | ★★ **API 계약(KDoc `@throws`)** — 이 문서는 `max()` 의 `@throws` 를 발췌하지 않았고 `first()` 쪽 KDoc 도 싣지 않았다 | (1) · 2-summary 에 실은 것은 **실행 결과** |
 | `single()` 이 둘 이상에서 `IllegalArgumentException` | ★ **stdlib 구현** — KDoc 은 「throws an exception」까지 | (3) |
-| 예외 **메시지 문구** 전부 | ★★ **stdlib·JDK 구현** — 받는 쪽 타입·클래스에 따라 갈린다 | (2) |
+| 예외 **메시지 문구** 전부 | ★★ **stdlib·JDK 구현** — 받는 쪽 타입·클래스에 따라 달라진다 | (2) |
 | `max()` 가 JVM 에서 `maxOrThrow` · 옛 `max` 가 남아 있다 | ★ **JVM stdlib 구현** — 남긴 이유는 **확인 안 함** | (4) |
 | 1.4\~1.6 의 경고·에러·숨김 | **stdlib 소스의 애너테이션** — 그 판에서 **컴파일해 보지 못했다** | (4) |
 
-★★ **가장 조심할 자리** — **예외 클래스는 격자에서 안 흔들렸지만 메시지는 받는 쪽 하나로 바뀌었다**((2)). 「이 판에서 결정적」과 「언제나 같은 문장」은 다르다.
+★★ **가장 조심할 자리** — **예외 클래스는 격자에서 안 흔들렸지만 메시지는 받는 쪽 하나로 바뀌었다**((2)). 「이 버전에서 결정적」과 「언제나 같은 문장」은 다르다.
 
 ## 언제 쓰고 언제 안 쓰나
 
@@ -465,7 +465,7 @@ fun main() {
 
 > **`@JvmName`** — Kotlin 선언을 JVM 에서 **다른 이름**으로 내보내는 애너테이션. 새 `max()` 가 `maxOrThrow` 가 된 것.
 
-> **`-api-version`** — 「이 판의 stdlib API 까지만 쓰겠다」고 컴파일러에게 알리는 옵션. kotlinc 2.4.20 은 **2.0 미만을 거부**했다.
+> **`-api-version`** — 「이 버전의 stdlib API 까지만 쓰겠다」고 컴파일러에게 알리는 옵션. kotlinc 2.4.20 은 **2.0 미만을 거부**했다.
 
 ## 더 들어가면
 
@@ -475,9 +475,9 @@ fun main() {
 
 ## 실행 환경
 
-**기준 소스** — [Filtering collections](https://kotlinlang.org/docs/collection-filtering.html)(`filter` · 검사 술어 `any`·`none`·`all`) · [Retrieve single elements](https://kotlinlang.org/docs/collection-elements.html)(`first`·`last`·`elementAt`·`find`·`random`·`…OrNull`) — 이 문서는 그 페이지들의 **목록**을 따르되, 문장은 인용하지 않고 **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 구현을 근거로 삼는다((3)(4)).
+**기준 소스** — [Filtering collections](https://kotlinlang.org/docs/collection-filtering.html)(`filter` · 검사 술어 `any`·`none`·`all`) · [Retrieve single elements](https://kotlinlang.org/docs/collection-elements.html)(`first`·`last`·`elementAt`·`find`·`random`·`…OrNull`) — 이 문서는 그 페이지들의 **목록**을 따르되, 문장은 인용하지 않고 **이 버전의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 구현을 근거로 삼는다((3)(4)).
 **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java`·`javap` 에서 실제로 얻었다.\
 `kotlinc` 5회(컴파일 실패 1벌 — `-api-version 1.6` 거부) · `java` 3회 + 격자 스크립트 안에서 1회 · `javap` 2회 · stdlib 소스 jar 에서 3곳.\
 ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「던진 칸 N / M」은 스크립트가 스스로 센 것**이다.
-**버전** — `first`·`single`·`find`·`any`·`all`·`none`·`filter`·`elementAt` 은 **1.0** — 이 판의 소스에서 선언 위에 `@SinceKotlin` 이 **없다**(확인만 했고 발췌하지 않았다). ★★ **`max()` 는 판에 따라 뜻이 바뀌었다** — stdlib 소스에 옛 `max(): T?` 가 **`warningSince = "1.4", errorSince = "1.5", hiddenSince = "1.6"`**, 새 `max(): T` 가 **`@SinceKotlin("1.7")`** 로 남아 있다((4)). 그 판들에서 **직접 컴파일해 보는 것은 못 했다**(아래).
+**버전** — `first`·`single`·`find`·`any`·`all`·`none`·`filter`·`elementAt` 은 **1.0** — 이 버전의 소스에서 선언 위에 `@SinceKotlin` 이 **없다**(확인만 했고 발췌하지 않았다). ★★ **`max()` 는 판에 따라 뜻이 바뀌었다** — stdlib 소스에 옛 `max(): T?` 가 **`warningSince = "1.4", errorSince = "1.5", hiddenSince = "1.6"`**, 새 `max(): T` 가 **`@SinceKotlin("1.7")`** 로 남아 있다((4)). 그 판들에서 **직접 컴파일해 보는 것은 못 했다**(아래).
 **경계** — `emptyList()` 가 **싱글턴 `EmptyList`** 라는 것은 [41번 주제](../41-collection-creation-and-copying/) (4)가 정본이다 — 여기서는 그 객체가 **던지는 메시지**만 본다. `?:` 와 `firstOrNull` 을 잇는 null 안전 연산자는 [03번 주제](../03-null-safe-types/)다. 예외 계층·`Nothing` 은 [34번 주제](../34-exceptions-nothing-and-try-expression/)다.

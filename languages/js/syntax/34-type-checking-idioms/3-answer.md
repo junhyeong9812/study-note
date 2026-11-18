@@ -187,7 +187,7 @@ cells that differ from the truth: 32 / 100
 ### 9. realm 의 동일성은 **확인하지 않았다** — 관찰은 **판정 다섯에 대한 두 창의 결과가 같았다**는 것 · 오류 열은 **호스트 함수** ★★
 
 - ★★ **확인하지 않았다.** 관찰한 것은 **사슬의 객체가 다르고(`instanceof` `n*`) 슬롯은 넘는다(`y`)** 는 것이 `vm` 과 iframe 에서 같았다는 것이다.
-- ★★ **`util.types.isNativeError`** — node 의 호스트 API 다. `Error.isError`(ES2026)가 두 node 판에 없어 **창을 바꿔 물었다.**
+- ★★ **`util.types.isNativeError`** — node 의 호스트 API 다. `Error.isError`(ES2026)가 두 node 버전에 없어 **창을 바꿔 물었다.**
 - ★ `Proxy` — [목록의 **45번 주제**](../45-proxy/). 워커·`structuredClone` 으로 건너온 값 — [목록의 **48번 주제**](../48-deep-copy-methods-compared/)(복제).
 
 ## 실행 검증
@@ -198,9 +198,9 @@ cells that differ from the truth: 32 / 100
 | `js32b-34-h-realm-core.js` + `js32b-34b-realm-grid.web.js` | ★★★ 같은 격자를 iframe realm 과 `Error.isError` 로 | **Chrome 151 만** |
 | `js32b-34c-array-edges.js` | ★★ `Array.prototype` · `arguments` · 형식화 배열 | node20 1벌 + node18 대조 1벌 |
 | (인용) 01 · 15 · 16 · 17 · 22 편의 블록 | 1번의 조각들 | 그 편의 「실행 검증」 |
-| `js32b-vdiff.sh` · `js32b-versions.sh` | 두 판이 갈린 탐침 수 · 판별 기능 표 | 1벌씩 |
+| `js32b-vdiff.sh` · `js32b-versions.sh` | 두 버전이 달라진 probe 수 · 판별 기능 표 | 1벌씩 |
 
-두 node 판 대조기(이 배치 전체의 node 탐침). `DIFFERS` 가 한 줄도 없다.
+두 node 버전 대조기(이 배치 전체의 node probe). `DIFFERS` 가 한 줄도 없다.
 
 ```sh
 # js32b-vdiff.sh
@@ -245,16 +245,16 @@ js32b-35b-directive.js                   identical
 identical 12  ·  differs 0  ·  total 12
 ```
 
-**구현 의존 항목 — 판이 오르면 다시 돌릴 것**
+**구현 의존 항목 — 버전이 오르면 다시 돌릴 것**
 
-- ★★ **`Error.isError`** — node 가 ES2026 을 받으면 node 판의 오류 슬롯 열을 `Error.isError` 로 바꿔 다시 돌린다(지금은 호스트 함수).
+- ★★ **`Error.isError`** — node 가 ES2026 을 받으면 node 버전의 오류 슬롯 열을 `Error.isError` 로 바꿔 다시 돌린다(지금은 호스트 함수).
 - ★ **다른 realm 을 만드는 호스트 API** — `vm`·iframe 의 동작이 바뀌면 격자를 다시 돌린다.
 
 ## 실행 환경
 
 이 파일의 새 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Google Chrome 151.0.7922.173**(4번의 `.web.js`) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
 블록은 **전부 캡처 파일에서 조립**했다. ★★ **1번의 답은 앞 편의 블록**이 근거다 — 링크의 동작 번호를 연다.
-★★ **이 주제에서 두 node 판이 갈린 탐침은 없다**(대조기의 `identical`).
+★★ **이 주제에서 두 node 버전이 달라진 probe는 없다**(대조기의 `identical`).
 
 **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
 `js32b-34-h-realm-core.js` + `js32b-34a-realm-grid.js`(2번 · 3번 · 6번 · 7번) · `js32b-34-h-realm-core.js` + `js32b-34b-realm-grid.web.js`(4번 · 9번) · `js32b-34c-array-edges.js`(5번).

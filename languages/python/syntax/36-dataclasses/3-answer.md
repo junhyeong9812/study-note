@@ -763,7 +763,7 @@ print("   ★ 검증은 __post_init__ 에 내가 쓰는 것뿐이다")
   `fields()` 에는 **없고**(`['name', 'token']`),
   `__dataclass_fields__` 에는 **있다**(`['name', 'db_key', 'salt', 'token']`).
   ★ 갈라 주는 것은 `_field_type` 이고 `_FIELD_INITVAR` 대 `_FIELD` 다 —
-  **`_` 로 시작하는 내부 이름**이라 흔들리는 칸이지만, **세 창이 갈린다는 사실 자체는 안 흔들린다.**
+  **`_` 로 시작하는 내부 이름**이라 실행마다 달라지는 항목이지만, **세 창이 달라진다는 사실 자체는 달라지지 않는다.**
 * ★ **③ — 인스턴스에는 안 남는다.** `vars(u)` 에 `name`·`token` 만 있다.
   「**초기화에만 쓰고 버리는 값**」이라는 것이 정확한 뜻이다.
 * ★★ **④가 조용한 자리다.** `InitVar` 가 있는데 `__post_init__` 이 없으면 **예외가 안 난다.**
@@ -1106,12 +1106,12 @@ print("   hasattr(f, '__dict__') :", hasattr(f, "__dict__"))
 | `<factory>` 라는 서명 표기 | **CPython 구현** | 실행 |
 | `_FIELD`·`_FIELD_INITVAR` 라는 이름 | **CPython 구현** | `_` 로 시작한다 |
 | `co_names` 로 생성된 함수를 들여다볼 수 있는 것 | **CPython 구현** | 소스를 만들어 컴파일하기 때문 |
-| 예외 **문구** 전부 | **이 판의 관찰** | 실행 |
+| 예외 **문구** 전부 | **이 버전의 관찰** | 실행 |
 
 * ★★★ **`MISSING` 의 기본 `repr` 을 안 찍은 이유** — 그 객체는 `__repr__` 을 따로 안 가져서
   **`<dataclasses._MISSING_TYPE object at 0x…>` 처럼 주소가 박힌다.**
-  ★ 주소는 **「실행 환경」의 「흔들리는 칸」 표에 있는 칸**이고, 실으면 재대조에서 매번 불일치가 난다.
-  ★ 그래서 **이름으로 바꿔 찍었다**(`show()` 함수). **정규화 규칙을 늘리는 대신 안 흔들리게 만든 것**이다.
+  ★ 주소는 **「실행 환경」의 「실행마다 달라지는 항목」 표에 있는 칸**이고, 실으면 재대조에서 매번 불일치가 난다.
+  ★ 그래서 **이름으로 바꿔 찍었다**(`show()` 함수). **정규화 규칙을 늘리는 대신 달라지지 않게 만든 것**이다.
 * ★ 같은 규칙으로 **`getsizeof` 의 바이트 수**도 근거로 안 썼다 —
   [33번](../33-property-descriptor-slots/2-summary.md)과 같이 **「어느 쪽이 작나」만** 쓴다.
 
@@ -1124,7 +1124,7 @@ print("   hasattr(f, '__dict__') :", hasattr(f, "__dict__"))
 | 주제 | 이 주제에 무엇을 대 주나 |
 |---|---|
 | [20번](../20-mutable-default-args/2-summary.md) | **가변 기본값의 구조**와 `None` 센티널·`default_factory` 가 **같은 해법**이라는 것 |
-| [30번](../30-repr-eq-hash-contracts/2-summary.md) | **`__hash__` 가 옵션 넷에 따라 갈리는 표** — 여기서는 결론만 인용했다 |
+| [30번](../30-repr-eq-hash-contracts/2-summary.md) | **`__hash__` 가 옵션 넷에 따라 달라지는 표** — 여기서는 결론만 인용했다 |
 | [31번](../31-comparison-protocol-and-sortability/2-summary.md) | `total_ordering` 이 **셋만 채운다**는 것 — `order=True` 의 **넷**과 대비된다 |
 | [33번](../33-property-descriptor-slots/2-summary.md) | `__slots__` 가 만드는 **`member_descriptor`** 와 **크기는 재고 속도는 안 잰다**는 규칙 |
 | [34번](../34-inheritance-mro-super/2-summary.md) | 필드가 **MRO 를 거꾸로 훑어** 모인다는 것 — 「부모 먼저」의 근거 |
@@ -1154,7 +1154,7 @@ print("   hasattr(f, '__dict__') :", hasattr(f, "__dict__"))
 | `slots=True` 가 새 클래스인 것 | `python3 - <e36_slots.py` | 2 | `is` 가 **거짓** · 원본에는 `__slots__` 없음 |
 | 판 + `kw_only`/`slots` 유무 | `python3 - <e36_version.py` | 2 | 3.12.3 · 둘 다 받는다 |
 
-**구현 의존 항목** — 판이 오르면 다시 돌려야 하는 것.
+**구현 의존 항목** — 버전이 오르면 다시 돌려야 하는 것.
 
 | 항목 | 왜 |
 |---|---|
@@ -1167,7 +1167,7 @@ print("   hasattr(f, '__dict__') :", hasattr(f, "__dict__"))
 | 예외 **문구** 여섯 전부 | 종류는 계약, 문구는 아니다 |
 | ★ `MISSING` 의 기본 `repr` 에 **주소가 박히는 것** | 그래서 **이름으로 바꿔 찍었다** |
 
-★ **안 흔들리는 칸** — `__dataclass_fields__` 와 `fields()` 의 **순서**(`dict` 라 보장된다) ·
+★ **달라지지 않는 항목** — `__dataclass_fields__` 와 `fields()` 의 **순서**(`dict` 라 보장된다) ·
 어느 던더가 **클래스 칸에 생겼나 안 생겼나** · `inspect.signature` 가 만든 **서명 문자열** ·
 `is` 의 참·거짓 · 예외 **종류** · `(exit N)` · 크기의 **대소 관계**.
 ★★ **이 주제가 한 번도 안 잰 것** — **속도.** [33번](../33-property-descriptor-slots/2-summary.md)과 같은 규칙이다.

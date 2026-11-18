@@ -2,7 +2,7 @@
 
 상위: [MVCC 가시성과 스냅샷](../README.md)
 
-**문장 하나가 쓸 스냅샷을 고르는 함수다.** 격리 수준이 갈리는 곳이 여기 한 군데뿐이다. READ COMMITTED 는 부를 때마다 [02] `GetSnapshotData` 로 새로 찍고, REPEATABLE READ 와 SERIALIZABLE 은 트랜잭션의 첫 호출에서 찍은 것을 복사해 두고 끝까지 같은 것을 돌려준다.
+**문장 하나가 쓸 스냅샷을 고르는 함수다.** 격리 수준이 달라지는 곳이 여기 한 군데뿐이다. READ COMMITTED 는 부를 때마다 [02] `GetSnapshotData` 로 새로 찍고, REPEATABLE READ 와 SERIALIZABLE 은 트랜잭션의 첫 호출에서 찍은 것을 복사해 두고 끝까지 같은 것을 돌려준다.
 
 ## 위치
 
@@ -189,7 +189,7 @@ SnapshotSetCommandId(CommandId curcid)
  L342                        [02] GetSnapshotData 로 다시 찍는다
 ```
 
-같은 트랜잭션에서 문장 세 개를 실행하면 격리 수준에 따라 이렇게 갈린다. 다른 트랜잭션 T9 가 두 번째 문장 직전에 커밋했다고 두었다.
+같은 트랜잭션에서 문장 세 개를 실행하면 격리 수준에 따라 이렇게 달라진다. 다른 트랜잭션 T9 가 두 번째 문장 직전에 커밋했다고 두었다.
 
 ```text
  BEGIN; 문장1; (T9 COMMIT) 문장2; 문장3; COMMIT;

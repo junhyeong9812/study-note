@@ -425,7 +425,7 @@ int main() {
   **`noexcept(false)` 로 직접 꺼야** 0이 된다(`Loud`). `std::string`·`std::vector<int>` 도 **1**이다.
 - ★ **그래서 규칙은 하나다** — 소멸자에서 던지지 않는다. 실패를 알려야 하면 **명시 `close()`** 를 따로 둔다.
 
-### 6. ★★ 파괴는 **만든 역순** — 그런데 **만드는 순서가 두 컴파일러에서 갈렸다**
+### 6. ★★ 파괴는 **만든 역순** — 그런데 **만드는 순서가 두 컴파일러에서 달라졌다**
 
 **출력 — g++**
 
@@ -514,7 +514,7 @@ dtor08.cpp:25:23: warning: object backing the pointer will be destroyed at the e
 ```
 
 - ★★★ **함수 인자를 만드는 순서는 미명시다.** 두 컴파일러가 실제로 갈렸으므로 **여기에 결론을 세우면 안 된다.**
-- ★★★ **갈리지 않는 것은 「만든 역순으로 파괴된다」는 성질**이다 — 두 판 모두 그랬고, 이것이 **근거로 쓸 칸**이다.
+- ★★★ **달라지지 않는 것은 「만든 역순으로 파괴된다」는 성질**이다 — 두 판 모두 그랬고, 이것이 **근거로 쓸 칸**이다.
 - ★★ **세 임시가 전부 세미콜론에서 죽었다**(`식이 끝났다` 가 파괴 뒤). **전체 식의 끝**이 기준이다.
 - ★ **`(3)` 을 경고하는 쪽은 clang 뿐**이다 —\
   `object backing the pointer will be destroyed at the end of the full-expression [-Wdangling-gsl]`.\
@@ -603,7 +603,7 @@ int main() {
 - ★ **그래서 「프로그램이 끝나면 소멸자가 다 돈다」는 `return`/`std::exit` 경로에서만 참**이다.\
   `_Exit`·`abort`·`terminate` 는 전부 건너뛴다(5번의 `terminate` 가 그 실측이다).
 
-### 8. ★★ 탐침 아홉 중 **일곱이 답하고 둘이 침묵**했다
+### 8. ★★ probe 아홉 중 **일곱이 답하고 둘이 침묵**했다
 
 **출력**
 
@@ -746,7 +746,7 @@ dtor11.cpp:10:5: error: cannot delete expression with pointer-to-'void' type 'vo
 - ★ **소멸자가 없는 언어**는 **라벨과 `goto`** 로 같은 일을 한다 —\
   C 갈래 목록([`c/syntax/README.md`](../../../c/syntax/README.md))의 **13번**([`13-goto-cleanup-idiom/`](../../../c/syntax/13-goto-cleanup-idiom/)).\
   ★★ 그쪽의 결론은 「**분기가 아니라 중복을 줄인다**」였고, C++ 판의 대조는 [15번](../15-raii-resources-as-types/) (7)에 있다.
-- ★★ **러스트의 `Drop` 과 갈리는 한 가지** — 러스트는 **이동한 값이 원본 자리에서 `drop` 되지 않는다**는 것을\
+- ★★ **러스트의 `Drop` 과 달라지는 한 가지** — 러스트는 **이동한 값이 원본 자리에서 `drop` 되지 않는다**는 것을\
   컴파일러가 강제한다. C++ 는 **이동해도 원본이 여전히 파괴되고**, 그래서 「**빈 껍데기도 안전하게 파괴되는 소멸자**」를\
   사람이 직접 써야 한다([15번](../15-raii-resources-as-types/) (4)).\
   Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **9번**([`09-copy-clone-and-drop/`](../../../rust/syntax/09-copy-clone-and-drop/))이 정본이다.
@@ -766,19 +766,19 @@ dtor11.cpp:10:5: error: cannot delete expression with pointer-to-'void' type 'vo
 | `dtor05.cpp` 가상 아닌 소멸자 | g++ 1회 + ASan 1회 | ★★★ `~DerNV` **0회** · `run exit=0` · 경고 **g++ 0 · clang 0** · ASan **`new-delete-type-mismatch`** |
 | `dtor06.cpp` 경고 갈림 | g++ · clang 각 1회 | ★★ 가상 함수 **있는** 쪽만 경고 1건 · 없는 쪽 **0건** |
 | `dtor07.cpp` `delete` 대 `delete[]` | g++ 1회 + ASan 1회 | ★★ 소멸자 **1회만** · `run exit=134` · 경고 g++ 1 · clang 1 · ASan **`bad-free`** |
-| `dtor08.cpp` 임시 수명 | g++ · clang 각 1회 | ★★★ **만드는 순서가 갈렸다** · 파괴는 **양쪽 다 만든 역순** · `-Wdangling-gsl` **clang 만 1건** |
+| `dtor08.cpp` 임시 수명 | g++ · clang 각 1회 | ★★★ **만드는 순서가 달라졌다** · 파괴는 **양쪽 다 만든 역순** · `-Wdangling-gsl` **clang 만 1건** |
 | `dtor09.cpp` `static` | g++ 1회 | ★★ `main` **뒤** 파괴 · 구성 역순 · 함수 지역 `static` 생성 **1줄** |
 | `dtor10.cpp` `std::_Exit` | g++ 1회 | ★★★ `[파괴]` **0줄** · `run exit=0` |
 | `dtor11.cpp` ill-formed `delete` | g++ 3회 · clang 1회 | ★★★ `void*` `delete` — g++ **`-pedantic-errors` 로도 `cc exit=0`** · clang **`cc exit=1`** |
 | `dtor12.cpp` 형태 | g++ 1회 | `area = 9` · `~Square` → `~Handle` |
 | `dtor13.cpp` 금지 사례 | g++ 1회 | **에러 6건** |
-| 경고 개수 탐침 | g++ 5회 · clang 4회 | ★★★ **답한 것 7 · 침묵한 것 2** |
+| 경고 개수 probe | g++ 5회 · clang 4회 | ★★★ **답한 것 7 · 침묵한 것 2** |
 
 **구현 의존 항목** — 다음은 **이 환경(x86-64 Linux · g++ 13.3.0 · clang 18.1.3 · libstdc++ · ASan)에서만** 그렇다.
 
 - ★★ **경고 개수와 경고 이름 전부**(`-Wdelete-non-virtual-dtor` 대 `-Wdelete-non-abstract-non-virtual-dtor`).
 - ★★ **`std::vector` 가 원소를 앞에서부터 파괴하는 것** — 표준은 순서를 정하지 않는다.
-- ★★ **함수 인자로 쓰인 임시를 만드는 순서** — 미명시이고 **두 컴파일러가 실제로 갈렸다.**
+- ★★ **함수 인자로 쓰인 임시를 만드는 순서** — 미명시이고 **두 컴파일러가 실제로 나뉘었다.**
 - ★★ **`-pedantic-errors` 가 `void*` `delete` 를 에러로 올리는지** — clang 만 그렇다.
 - ★ **ASan 리포트의 PID·주소·`SUMMARY` 의 소스 경로** · **진단 문구 전부** · `run exit=134` 가 SIGABRT 라는 것.
 
@@ -796,7 +796,7 @@ dtor11.cpp:10:5: error: cannot delete expression with pointer-to-'void' type 'vo
 
 - ★★★ **3번** — 가상 아닌 소멸자로 다형적 삭제. 근거로 쓰는 것은 「**`~DerNV` 로그가 없다**」와\
   「**ASan 이 `new-delete-type-mismatch` 라고 불렀다**」뿐이다. **어떤 바이트가 어떻게 남는지는 싣지 않았다.**
-- ★★ **4번** — `new[]`/`delete` 짝 어긋남. `munmap_chunk(): invalid pointer` 는 **이 할당기의 메시지**다.
+- ★★ **4번** — `new[]`/`delete` 짝 불일치. `munmap_chunk(): invalid pointer` 는 **이 할당기의 메시지**다.
 - ★ **6번 `(3)`** — `c_str()` 댕글링. **`p` 가 가리키는 값은 읽지 않았다.**
 
 **안 돌려 본 것 / 못 잰 것**
@@ -810,7 +810,7 @@ dtor11.cpp:10:5: error: cannot delete expression with pointer-to-'void' type 'vo
 - **못 잰 것** — ★★★ **「가상 소멸자가 얼마나 비싼가」.**\
   이 문서가 센 것은 **소멸자가 몇 번 돌았나까지**다. vtable 포인터가 더해지는 것은 `sizeof` 로 볼 수 있지만\
   **가상 호출 한 번의 값**은 **벤치마크 하네스가 따로 필요하다.**
-- ★ 「**부적용인 창**」 — **진단의 `(행,열)`.** 파괴 순서는 **소스의 열이 아니라 실행 시점**이 정하므로\
+- ★ 「**해당 없는 창**」 — **진단의 `(행,열)`.** 파괴 순서는 **소스의 열이 아니라 실행 시점**이 정하므로\
   열로 가를 것이 없다. **「안 쟀다」가 아니라 「잴 것이 없다」다.**
 
 **버전이 올랐을 때 다시 돌려야 하는 것**
@@ -828,8 +828,8 @@ dtor11.cpp:10:5: error: cannot delete expression with pointer-to-'void' type 'vo
 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 다.\
 **진단의 줄 번호는 그 파일 기준**이므로 **출력을 싣는 블록마다 그 출력을 낸 소스를 같은 자리에** 뒀다.\
 ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 손으로 옮긴 줄은 없다.
-**읽는 법** — **ASan 의 PID·주소**와 **진단 문구**는 흔들리는 칸이다.\
+**읽는 법** — **ASan 의 PID·주소**와 **진단 문구**는 실행마다 달라지는 항목이다.\
 근거로 쓰는 것은 **로그 순서 · 소멸자가 돈 횟수 · ASan 오류의 이름 · `cc exit`/`run exit` · 경고 개수**다.\
-★★ **한 칸이 더 흔들린다** — **임시 객체를 만드는 순서**가 g++ 와 clang 에서 갈렸다(6번).\
-갈리지 않은 것은 **「만든 역순으로 파괴된다」는 성질**이고, 근거는 그쪽만 쓴다.
+★★ **한 칸이 더 실행마다 달라진다** — **임시 객체를 만드는 순서**가 g++ 와 clang 에서 달라졌다(6번).\
+달라지지 않은 것은 **「만든 역순으로 파괴된다」는 성질**이고, 근거는 그쪽만 쓴다.
 ★★★ **이 문서는 시간을 재지 않았다.** 「몇 배 빠르다」는 문장이 **한 줄도 없다**.

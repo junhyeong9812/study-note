@@ -79,7 +79,7 @@ const c = new Child();
 console.log("  own keys", JSON.stringify(Object.keys(c)), "x", c.x);
 ```
 
-- `target` 을 주지 않고 7.0.2 와 5.9.3 으로 방출해 `node` 로 돌리면 각각 무엇이 찍히는가? 두 판의 진단은 같은가?
+- `target` 을 주지 않고 7.0.2 와 5.9.3 으로 방출해 `node` 로 돌리면 각각 무엇이 찍히는가? 두 버전의 진단은 같은가?
 
 ### 4. `incremental` 다섯 단계 (예측)
 
@@ -121,7 +121,7 @@ for decl in false true; do
 done
 ```
 
-- 단계마다 다시 방출하는 `.js` 는 무엇인가? `declaration` 을 켠 판과 끈 판이 갈리는 단계는 어디인가?
+- 단계마다 다시 방출하는 `.js` 는 무엇인가? `declaration` 을 켠 판과 끈 판이 달라지는 단계는 어디인가?
 
 ### 5. `es3` 와 `es5` (경계)
 

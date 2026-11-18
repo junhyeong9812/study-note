@@ -94,7 +94,7 @@ spring-context/src/main/java/org/springframework/context/aot/
 
 ## 2.5 핵심 이름표 사전
 
-이 흐름에는 이름이 `s` 하나로만 갈리는 쌍(`reservedMethodNames` / `reservedMethodName`)이 있고, "이름"이 문자열·값 객체·맵 키 세 가지 층위로 돌아다닌다.\
+이 흐름에는 이름이 `s` 하나로만 달라지는 쌍(`reservedMethodNames` / `reservedMethodName`)이 있고, "이름"이 문자열·값 객체·맵 키 세 가지 층위로 돌아다닌다.\
 아래는 등장하는 식별자 전부에 대해 역할, 입출력, 호출 시점, 이 결함과의 관계를 적은 것이다.
 
 | 이름표 | 역할 | 입력 -> 출력 | 누가 언제 부르나 | 이 결함과의 관계 |
@@ -146,7 +146,7 @@ spring-context/src/main/java/org/springframework/context/aot/
 예외를 잡지 않으면 AOT 처리 자체가 중단된다.\
 어느 쪽이든 예약은 실패다.
 
-원소 개수별로 갈리는 지점을 한 장으로 줄이면 이렇다.
+원소 개수별로 나뉘는 지점을 한 장으로 줄이면 이렇다.
 
 ```text
 수정 전 reserveMethodNames(...)          수정 후 reserveMethodNames(...)
@@ -227,7 +227,7 @@ after (`refs/pr/36912`의 같은 줄):
 예외가 사라져도 요청한 이름의 카운터는 여전히 올라가지 않으므로 결함이 **조용한 실패로 바뀔 뿐**이다.\
 게다가 기존 테스트 `reserveMethodNamesWhenNameUsedThrowsException`이 고정한 계약을 깬다.
 
-> **조용한 실패(silent failure, 무음 실패)** — 실패했는데 예외도 로그도 남지 않아 성공처럼 보이는 상태. 증상은 한참 뒤 엉뚱한 곳에서 드러난다.\
+> **조용한 실패(silent failure, 조용한 실패)** — 실패했는데 예외도 로그도 남지 않아 성공처럼 보이는 상태. 증상은 한참 뒤 엉뚱한 곳에서 드러난다.\
 > 예: 검증문을 지우면 예약이 안 된 채로 호출이 정상 종료하고, 생성 소스가 컴파일될 때에야 이름 충돌로 터진다.
 
 셋째, `MethodName.of`에 단일 인자 오버로드를 추가하거나 시그니처를 바꿔 오용 자체를 막는 방향.\

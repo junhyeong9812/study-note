@@ -2,7 +2,7 @@
 
 상위: [버퍼 관리](../README.md)
 
-**더러운 공유 버퍼 하나를 데이터 파일에 쓰는 함수이고, WAL-before-data 규칙이 코드로 박힌 자리다.** 먼저 `StartBufferIO` 로 이 버퍼의 쓰기 권리를 잡고, 페이지 헤더의 LSN 을 읽어 그 LSN 까지 WAL 을 `XLogFlush` 로 디스크에 내린 다음에야 `smgrwrite` 로 페이지를 넘긴다. 쓰는 동안 다시 더러워졌으면 `BM_DIRTY` 를 지우지 않는다. 호출자는 pin 과 content lock(SHARE 이상)을 쥐고 있어야 한다.
+**더러운 공유 버퍼 하나를 데이터 파일에 쓰는 함수이고, WAL-before-data 규칙이 코드로 박힌 자리다.** 먼저 `StartBufferIO` 로 이 버퍼의 쓰기 권리를 잡고, 페이지 헤더의 LSN 을 읽어 그 LSN 까지 WAL 을 `XLogFlush` 로 디스크에 내린 다음에야 `smgrwrite` 로 페이지를 넘긴다. 쓰는 동안 다시 더러워졌으면 `BM_DIRTY` 를 지우지 않는다. 호출자는 pin 과 content lock(SHARE 이상)을 잡고 있어야 한다.
 
 ## 위치
 

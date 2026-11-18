@@ -439,7 +439,7 @@ static bool log_request_sync_flush(const log_t &log, lsn_t new_oldest) {
  checkpoint_age = current_lsn + margin - last_checkpoint_lsn  (L846)
 ```
 
-redo 가 차는 정도를 보는 문턱은 셋이고, 누가 무엇을 하는지가 다르다.
+redo 가 차는 정도를 보는 임계값은 셋이고, 누가 무엇을 하는지가 다르다.
 
 ```text
  checkpoint age 로 걸리는 세 문턱
@@ -483,4 +483,4 @@ redo 가 차는 정도를 보는 문턱은 셋이고, 누가 무엇을 하는지
 
 ## 다루지 않는 것
 
-`dict_persist_to_dd_table_buffer` 와 `dict_max_allowed_checkpoint_lsn`, 용량 문턱들의 계산(`Log_files_capacity`), `log_request_checkpoint` 와 `log_make_latest_checkpoint` 로 checkpoint 를 요청하는 호출처, 종료 판정의 세부(L956-L994)는 요약만 했다.
+`dict_persist_to_dd_table_buffer` 와 `dict_max_allowed_checkpoint_lsn`, 용량 임계값들의 계산(`Log_files_capacity`), `log_request_checkpoint` 와 `log_make_latest_checkpoint` 로 checkpoint 를 요청하는 호출처, 종료 판정의 세부(L956-L994)는 요약만 했다.

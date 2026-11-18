@@ -275,7 +275,7 @@ DECLINED               ▼                      REFUNDED
   - **Strategy**: **클라이언트가** 알고리즘을 고른다. 전략끼리 서로 모른다.
   - **State**: **객체 스스로** 상태를 바꾼다. 상태끼리 다음 상태를 안다.
 - **OCP의 대표적 실현 수단**. Spring에서는 `List<전략인터페이스>`를 주입받아 `supports(...)`로 고르는 형태가 흔하다.
-- **현장**: 수수료 정책, 정산 주기, 취소 유형별 처리처럼 **"경우마다 계산법이 갈리는" 곳**.
+- **현장**: 수수료 정책, 정산 주기, 취소 유형별 처리처럼 **"경우마다 계산법이 달라지는" 곳**.
 
 #### 22. Template Method (템플릿 메서드)
 
@@ -380,8 +380,8 @@ DECLINED               ▼                      REFUNDED
 
 - **23개 암기가 목적이 아니다 — "어떤 문제에 어떤 패턴", "언제 쓰지 말지"의 판단이 목적이다.**
 - **Spring이 상당수를 흡수했다(Singleton·Factory·Proxy·Observer·CoR·Template·Strategy). 직접 구현할 것과 알아만 둘 것을 가른다.**
-- **Strategy ↔ State는 구조가 같다 — 누가 바꾸는가(클라이언트냐 객체 자신이냐)로 갈린다.**
-- **Decorator ↔ Proxy도 구조가 같다 — 기능 추가냐 접근 제어냐라는 의도로 갈린다.**
+- **Strategy ↔ State는 구조가 같다 — 누가 바꾸는가(클라이언트냐 객체 자신이냐)로 나뉜다.**
+- **Decorator ↔ Proxy도 구조가 같다 — 기능 추가냐 접근 제어냐라는 의도로 나뉜다.**
 - **State가 `if/switch`보다 나은 이유는 전이 규칙이 한 곳에 모이고 컴파일러가 빠진 곳을 잡아준다는 것이다.**
 - **현장 최우선 4개는 State · Strategy · Adapter · Chain of Responsibility다.**
 

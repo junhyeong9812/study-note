@@ -216,7 +216,7 @@ FROM events e JOIN events c ON e.causation_id = c.id
 WHERE e.lamport <= c.lamport;
 ```
 
-- 벽시계 어긋남 자체는 `chronyc tracking` 같은 도구로 본다([04-physical-clocks-and-ntp](../04-physical-clocks-and-ntp/2-summary.md)).
+- 벽클럭 스큐 자체는 `chronyc tracking` 같은 도구로 본다([04-physical-clocks-and-ntp](../04-physical-clocks-and-ntp/2-summary.md)).
 
 ## 장애 시나리오와 대처
 
@@ -224,7 +224,7 @@ WHERE e.lamport <= c.lamport;
 
 - **현상**: 이벤트 재생·감사 로그에서 결과가 원인보다 앞에 나온다. 상태 재구성이 틀린다.
 - **보이는 형태**: `created_at` 정렬 결과에서 배송이 주문보다 먼저, 환불이 결제보다 먼저. 에러는 없다. 위 실험의 `벽시계 정렬: d e a b c g f`가 같은 모양이다.
-- **원인**: 노드마다 벽시계가 어긋나 있다. 메시지 지연보다 어긋남이 크면 받은 쪽 시각이 보낸 쪽보다 작아진다.
+- **원인**: 노드마다 벽시계가 어긋나 있다. 메시지 지연보다 불일치가 크면 받은 쪽 시각이 보낸 쪽보다 작아진다.
 - **대처**
   - 순서의 근거를 논리 시계(또는 HLC)로 바꾼다. `created_at`은 표시용으로만 둔다.
   - 한 파티션 안의 순서만 필요하면 단일 리더가 매기는 순번(로그 오프셋 등)을 쓴다([17-queues-logs-and-delivery-semantics](../17-queues-logs-and-delivery-semantics/2-summary.md)).

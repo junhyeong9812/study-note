@@ -1,4 +1,4 @@
-# sql/60-`EXPLAIN ANALYZE` — 추정과 실측의 어긋남 — 질문
+# sql/60-`EXPLAIN ANALYZE` — 추정과 실측의 불일치 — 질문
 
 ```text
 emp (사원 · 4행)                    dept (부서 · 3행)
@@ -38,7 +38,7 @@ INSERT INTO t60_skew SELECT 1000+g, 7 FROM generate_series(1,190000) g;
 EXPLAIN ANALYZE SELECT * FROM emp WHERE salary > 100;
 ```
 
-- `rows=` 와 `actual rows=` 는 각각 얼마이고, 그 어긋남이 문제가 되는가?
+- `rows=` 와 `actual rows=` 는 각각 얼마이고, 그 불일치가 문제가 되는가?
 
 ### 3. `Rows Removed by Filter: 1` 이 버린 행 (연결)
 
@@ -53,7 +53,7 @@ EXPLAIN ANALYZE SELECT count(*) FROM t60_skew WHERE grp = 7;
 
 - PostgreSQL 의 `rows=` 와 `actual rows=` 는 각각 얼마인가?
 
-### 5. ★ 어긋남이 고치는 것은 숫자뿐인가 (왜)
+### 5. ★ 불일치가 고치는 것은 숫자뿐인가 (왜)
 
 - 4번에서 추정이 18배 빗나갔을 때, 계획에서 **숫자 말고** 무엇이 잘못됐는가?
 

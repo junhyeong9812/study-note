@@ -71,7 +71,7 @@ Deleg       CS0315          CS0312          CS0311          CS0311          CS03
 - ★★★ **스크립트가 진단의 `(행,열)` 을 칸으로 되돌려 셌다** — 마지막 줄 `막힌 칸(에러) 47 / 80 · 경고만 난 칸 4 / 80 · 통과 칸 29 / 80`.
 - ★★★ **`int?` 행** — `Struct` `CS0453` · `Unmanaged` `CS8377` · `IComp` `CS0313` 인데 **`New` 는 `ok`** — `Nullable<int>` 는 공개 기본 생성자가 있는 구조체다. `struct` 제약만 「**널 불가**」를 따로 요구한다.
 - ★★ **`string?` 이 경고로 떨어지는 칸** — `Class`(`CS8634`) · `IComp`(`CS8631`) · `NotNull`(`CS8714`). **`ClassQ` 는 `ok`** — `class?` 는 널 허용 참조 타입을 받으라는 뜻이다.
-- ★★ **`CS0311` 은 참조 타입인데 암시적 참조 변환이 없는 것, `CS0315` 는 값 타입인데 박싱 변환이 없는 것** — 같은 「인터페이스를 안 구현한다」가 **인자의 종류로** 코드가 갈린다. `int?` 는 따로 `CS0312`(기반 클래스)·`CS0313`(인터페이스).
+- ★★ **`CS0311` 은 참조 타입인데 암시적 참조 변환이 없는 것, `CS0315` 는 값 타입인데 박싱 변환이 없는 것** — 같은 「인터페이스를 안 구현한다」가 **인자의 종류로** 코드가 달라진다. `int?` 는 따로 `CS0312`(기반 클래스)·`CS0313`(인터페이스).
 
 ### 2. ★★★ **전부 0 인 비트** — `default(Pz).X` 는 **0**, `new Pz()`·`Make<Pz>()` 는 **7**
 
@@ -123,7 +123,7 @@ class Program {
 **왜 그런가**
 
 - ★★★ **`0` · `null` · `null` · `False` · `0` · `0001-01-01T00:00:00.0000000` · `Sunday` · `X=0 Name=null` · `(0, )`** — 타입이 무엇이든 **0 으로 채운 칸**을 그 타입으로 읽은 값이다. `[8]` 의 **생성자는 불리지 않았다**(`Name=null`).
-- ★★★ **`[10]` `0` · `[11]` `7` · `[12]` `0 · 7`** — `default` 는 **생성자를 안 부르고**, `new Pz()` 와 `new T()`(→ `Activator`) 는 **매개변수 없는 생성자를 부른다.** 구조체에서 둘이 갈리는 자리다.
+- ★★★ **`[10]` `0` · `[11]` `7` · `[12]` `0 · 7`** — `default` 는 **생성자를 안 부르고**, `new Pz()` 와 `new T()`(→ `Activator`) 는 **매개변수 없는 생성자를 부른다.** 구조체에서 둘이 달라지는 자리다.
 
 ### 3. ★★ **`initobj T`** — `new T()` 는 제약과 무관하게 **`Activator::CreateInstance<T>`**
 
@@ -215,7 +215,7 @@ class Program {
 **왜 그런가**
 
 - ★★★ **`[2]` 는 `System.Reflection.TargetInvocationException`** 이고 `InnerException` 이 `InvalidOperationException: ctor failed` 다 — `new T()` 가 **`Activator` 를 거치기** 때문이다(3번).
-- ★ **`catch (InvalidOperationException)` 만으로는 못 잡는다.** 이 감싸기는 **이 판(BCL)의 관찰**이다 — 언어는 `new T()` 의 구현을 정하지 않는다.
+- ★ **`catch (InvalidOperationException)` 만으로는 못 잡는다.** 이 감싸기는 **이 버전(BCL)의 관찰**이다 — 언어는 `new T()` 의 구현을 정하지 않는다.
 
 ### 5. ★★★ 플래그가 있는 제약은 **런타임도 막는다** — `ok` 는 **`Unmanaged<HasRef>` 와 `NotNull<String>`**
 
@@ -330,7 +330,7 @@ class Program {
 
 ### 8. ★★ **`Enum`·`Delegate`·`unmanaged` 7.3 · `notnull` 8 · 제약 없는 `T?` 9** — `-langversion` 판 격자로
 
-- ★★★ **한 소스를 7.2 · 7.3 · 8 · 9 로 던져 막힌 칸 8 / 20**(요약 (7)) — 진단 문구에 **요구 판이 박혀 나온다**(`… Please use language version 7.3 or greater.` · `'9.0' or greater`).
+- ★★★ **한 소스를 7.2 · 7.3 · 8 · 9 로 던져 막힌 항목 8 / 20**(요약 (7)) — 진단 문구에 **요구 판이 박혀 나온다**(`… Please use language version 7.3 or greater.` · `'9.0' or greater`).
 - ★ 같은 「기능 없음」이 **7.2 는 `CS8320`, 7.3 은 `CS8370`** 으로 번호가 다르다.
 
 ### 9. ★★★ **플래그가 있는 것은 ECMA-335 · 특성뿐인 것은 Roslyn**
@@ -339,7 +339,7 @@ class Program {
 - ★★★ **`notnull`·`class?`** — 플래그가 없고 **`Nullable`/`NullableContext` 특성**뿐 → **컴파일러의 널 분석**. 그래서 위반이 **경고**다.
 - ★★★ **`unmanaged`** — `struct` **플래그는 CLI 가 지키고**, 「참조를 안 품는다」는 **`IsUnmanaged` 특성**이라 **컴파일러만** 지킨다(`Unmanaged<HasRef>` 가 뒷문으로 통과).
 
-### 10. ★ **더 할당하지 않았다** — 네 판에서 갈린 줄 **0 / 5** · 시간은 **안 쟀다**
+### 10. ★ **더 할당하지 않았다** — 네 버전에서 달라진 줄 **0 / 5** · 시간은 **안 쟀다**
 
 - ★★ **`new Node()` 24000 · `G.Make<Node>()` 24000 · `Make<Pv>` 0 · `Def` 둘 다 0** — 2×2 판 격자에서 같았다(요약 (9)).
 - ★ **「`new T()` 가 느리다」는 이 문서로 말할 수 없다** — 시간을 안 쟀다(규칙 4).
@@ -353,18 +353,18 @@ class Program {
 
 | 무엇 | 몇 번·어디서 | 결과 |
 |---|---|---|
-| `cs25b-grid.cs` 80칸 | csc 2회(격자·표본) | ★★★ **막힌 칸 47 / 80 · 경고만 4 · 통과 29** |
+| `cs25b-grid.cs` 80칸 | csc 2회(격자·표본) | ★★★ **막힌 항목 47 / 80 · 경고만 4 · 통과 29** |
 | `cs25b-default.cs` | csc 1회 · 실행 1회 | `default` 는 생성자 없이 0 · `Pz` 에서 `0` 대 `7` |
 | `cs25b-il.cs` | csc 2회(기본 · `-optimize`) · 실행 2회 | `initobj T` · `Activator::CreateInstance<T>` ×3 |
 | `cs25b-throw.cs` | csc 2회 · 실행 2회(기본 · `-optimize`+`TC=0`) | `TargetInvocationException`(안에 원래 예외) |
 | `cs25b-refl.cs` | csc 1회 · 실행 1회 | 플래그 표 · 뒷문 9줄 중 `ok` 2 |
 | `cs25b-sig.cs` · `cs25b-ovl.cs` | csc 1회 · csc 3회(7.2 · 7.3 · latest) · 실행 2회 | `CS0111` · 7.2 `CS0453` → 7.3 `F(object)` |
-| `cs25b-ver.cs` | csc 8회(판 넷 × 2) | ★★ **막힌 칸 8 / 20** |
+| `cs25b-ver.cs` | csc 8회(판 넷 × 2) | ★★ **막힌 항목 8 / 20** |
 | `cs25b-tq.cs` | csc 1회 · 실행 1회 | `0` · `0` · `null` · `null` · `null` |
-| `cs25b-alloc.cs` | **2×2 판 격자** | 24000 · 24000 · 0 · 0 · 0 · **갈린 줄 0 / 5** |
+| `cs25b-alloc.cs` | **2×2 판 격자** | 24000 · 24000 · 0 · 0 · 0 · **달라진 줄 0 / 5** |
 | `cs25b-form.cs` | csc 1회 · 실행 1회 | `9 · pear · 0 · DayOfWeek.Friday · 6` |
 
-**구현 의존 항목** — 다음은 **이 판(.NET SDK 10.0.401 · 런타임 10.0.12)에서만** 그렇다.
+**구현 의존 항목** — 다음은 **이 버전(.NET SDK 10.0.401 · 런타임 10.0.12)에서만** 그렇다.
 
 - ★★ **`new T()` 가 `Activator.CreateInstance<T>`** — Roslyn · **생성자 예외 감싸기** — BCL · **특성 모양**(`Nullable(2)`·`IsUnmanaged`) — Roslyn · 할당 바이트.
 

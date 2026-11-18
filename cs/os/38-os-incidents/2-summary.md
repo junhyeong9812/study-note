@@ -75,7 +75,7 @@ ext4가 그 부산물을 없애자, 그 우연에 기댄 애플리케이션의 �
 - 우선순위 상속 옵션은 Wind River가 성능 때문에 select의 기본값에서 **일부러 뺀** 것이었다(Reeves).
 
   - *우선순위 역전(priority inversion)*: 높은 우선순위 작업이 낮은 우선순위 작업이 쥔 락을 기다리는데, 중간 우선순위 작업이 낮은 쪽을 선점해 높은 쪽이 무한정 밀리는 현상이다(20번).
-  - *우선순위 상속(priority inheritance)*: 락을 쥔 작업이 그 락을 기다리는 가장 높은 우선순위를 잠시 물려받는 것이다. 리눅스 유저 공간에서는 `PTHREAD_PRIO_INHERIT`·PI futex다(20번).
+  - *우선순위 상속(priority inheritance)*: 락을 잡은 작업이 그 락을 기다리는 가장 높은 우선순위를 잠시 물려받는 것이다. 리눅스 유저 공간에서는 `PTHREAD_PRIO_INHERIT`·PI futex다(20번).
 
 #### 두 1차 기록의 차이
 

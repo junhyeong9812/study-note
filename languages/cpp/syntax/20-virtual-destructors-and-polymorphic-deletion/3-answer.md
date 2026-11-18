@@ -4,7 +4,7 @@
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
 
-### 1. ★★★ **`shared_ptr` 둘은 `~Derived` 를 부르고 나머지 셋은 `~Base` 만** — 갈린 것은 **그 순간 손에 든 포인터의 타입**이다
+### 1. ★★★ **`shared_ptr` 둘은 `~Derived` 를 부르고 나머지 셋은 `~Base` 만** — 달라진 것은 **그 순간 손에 든 포인터의 타입**이다
 
 **출력**
 
@@ -577,7 +577,7 @@ SUMMARY: AddressSanitizer: SEGV vdtor07.cpp:23 in main
 - ★★★ **g++ 는 죽고 clang 은 끝까지 간다** — 어셈블리가 이유를 보인다(요약 (6)).\
   g++ 는 배열 원소의 소멸자를 **가상으로**(`call *%rax`) 부르다 **둘째 원소의 「vptr」 자리에서 0** 을 읽고 죽는다.\
   clang 은 **`~Base` 를 이름으로**(`call _ZN4BaseD2Ev`) 부르므로 안 죽고, **16바이트씩 걸어 `extra`(=7)를 `id` 로** 읽는다.
-- ★★★ **ASan 도 갈렸다** — g++ 판 `SEGV`, **clang 판은 침묵**(`run exit=0`). 어긋난 읽기가 **할당 범위 안**이라 ASan 의 과녁 밖이다.
+- ★★★ **ASan 도 달라졌다** — g++ 판 `SEGV`, **clang 버전은 침묵**(`run exit=0`). 어긋난 읽기가 **할당 범위 안**이라 ASan 의 과녁 밖이다.
 - ★★ **어느 쪽도 「올바른 결과」가 아니다** — UB 다. **「clang 에서는 괜찮았다」가 가장 위험한 근거**다.
 
 ```text
@@ -744,7 +744,7 @@ clang++: error: linker command failed with exit code 1 (use -v to see invocation
   ★ 기준 소스 — 「순수 가상 함수의 정의는 줄 수 있고, **소멸자라면 반드시 줘야 한다**」(CWG 390).
 - ★ **한 줄에 쓰면 문법 에러**다 — g++ `pure-specifier on function-definition` 1건 · clang 은 4건으로 번진다(요약 (8)).
 
-### 10. ★★ **g++ 1 · clang 2** — 갈린 것은 **`unique_ptr<Poly>`**(탐침 6)
+### 10. ★★ **g++ 1 · clang 2** — 달라진 것은 **`unique_ptr<Poly>`**(probe 6)
 
 **출력**
 
@@ -812,12 +812,12 @@ vdtor10.cpp:26:27: note: in instantiation of member function 'std::unique_ptr<Po
 
 **왜 그런가**
 
-- ★★ **두 컴파일러 다 탐침 1(다형 기반 `delete`)에 답한다** — 19편 (8)의 조건 그대로다.
-- ★★★ **탐침 6에서 갈린다** — clang 은 **`unique_ptr.h:99` 의 `delete __ptr;`** 에 경고를 달고 **사슬을 거슬러 26번 줄**을 짚는다.\
+- ★★ **두 컴파일러 다 probe 1(다형 기반 `delete`)에 답한다** — 19편 (8)의 조건 그대로다.
+- ★★★ **probe 6에서 달라진다** — clang 은 **`unique_ptr.h:99` 의 `delete __ptr;`** 에 경고를 달고 **사슬을 거슬러 26번 줄**을 짚는다.\
   g++ 는 **0건**이다 — 그 경고가 **시스템 헤더 안에서** 나야 하는데 g++ 는 거기서 **보여 주지 않았다**(관찰 — 원인은 추론).\
   ★ **그래서 g++ 에서는 「`unique_ptr` 로 감쌌더니 경고가 사라졌다」가 실제로 일어난다.**
-- ★★ **`-Wnon-virtual-dtor` 는 답한 탐침 수를 안 늘린다** — 경고 줄은 4 로 늘지만 **전부 1번 탐침(`Poly`)의 선언 자리**다.
-- ★★★ **탐침 4(배열)·5(raw 를 거친 `shared_ptr`)·7(이동)은 어떤 플래그로도 0건**이다.
+- ★★ **`-Wnon-virtual-dtor` 는 답한 probe 수를 안 늘린다** — 경고 줄은 4 로 늘지만 **전부 1번 probe(`Poly`)의 선언 자리**다.
+- ★★★ **probe 4(배열)·5(raw 를 거친 `shared_ptr`)·7(이동)은 어떤 플래그로도 0건**이다.
 
 ### 11. ★★★ **「물려받나 · 기반 포인터로 지우나 · 파생을 막나」** 셋이다
 
@@ -834,7 +834,7 @@ vdtor10.cpp:26:27: note: in instantiation of member function 'std::unique_ptr<Po
 - ★★★ **어느 것도 안 고르면 `public` 비가상이 남는다** — 그 조합만이 **UB 를 조용히 허락**한다.
 - ★★ **어림규칙이 빠뜨리는 자리** — **가상 함수가 0개인 기반**이다. 19편 (8)이 보였듯 그런 기반도 다형적으로 지울 수 있고 **경고는 0건**이다.\
   ★ 그래서 기준은 「가상 함수가 있나」가 아니라 「**기반 포인터로 지울 일이 있나**」다.
-- ★ **`shared_ptr` 를 근거로 삼으면 안 되는 이유** — (1)의 `(3)` 처럼 **`Base*` 를 한 번만 거쳐도 UB** 이고, **경고도 0건**이다((10)의 탐침 5).\
+- ★ **`shared_ptr` 를 근거로 삼으면 안 되는 이유** — (1)의 `(3)` 처럼 **`Base*` 를 한 번만 거쳐도 UB** 이고, **경고도 0건**이다((10)의 probe 5).\
   ★ 게다가 그 기반을 **누가 `unique_ptr<Base>` 로 쓸지** 막을 수 없다.
 
 ### 12. ★★ **미명시** · 19편은 **vtable 덤프**, 이 편은 **어셈블리 + 해제 함수 로그** · **18번** · **15번**
@@ -859,7 +859,7 @@ vdtor10.cpp:26:27: note: in instantiation of member function 'std::unique_ptr<Po
 | `vdtor07.cpp` 배열 `delete[]` | g++ · clang 각 1회 + ASan 각 1회 | ★★★ g++ **139** · clang **0**(`id=7`) · ASan g++ `SEGV` · **clang 침묵** · 어셈블리 `call *%rax` 대 `call _ZN4BaseD2Ev` |
 | `vdtor08.cpp` 해제 함수 | g++ · clang 각 1회 + 어셈블리 | ★★★ **16 · 24 · 48** · `D0` = 소멸 + `Derived::operator delete` |
 | `vdtor09.cpp`·`vdtor12.cpp` 순수 가상 소멸자 | g++ · clang 각 2회 | ★★ **링크 에러** · `-DDEF` 로 돈다 · 한 줄 형태는 **문법 에러**(1건 대 4건) |
-| `vdtor10.cpp` 탐침 일곱 | g++ · clang 각 2회(기본 · `-Wnon-virtual-dtor`) | ★★★ 답한 탐침 **g++ 1 · clang 2** · 탐침 4·5·7 **0건** |
+| `vdtor10.cpp` probe 일곱 | g++ · clang 각 2회(기본 · `-Wnon-virtual-dtor`) | ★★★ 답한 probe **g++ 1 · clang 2** · probe 4·5·7 **0건** |
 | `vdtor11.cpp` 형태 | g++ 1회(`-Wnon-virtual-dtor`) | 경고 0건 · `has_virtual_destructor` **1 · 0 · 0** |
 
 **구현 의존 항목** — 다음은 **이 환경(x86-64 Linux · g++ 13.3.0 · clang 18.1.3 · libstdc++ 13 · Itanium C++ ABI · ASan)에서만** 그렇다.
@@ -867,7 +867,7 @@ vdtor10.cpp:26:27: note: in instantiation of member function 'std::unique_ptr<Po
 - ★★★ **ASan 스택의 `_Sp_counted_ptr<Base*>`·`default_delete<Base>` 이름과 헤더 줄 번호.**
 - ★★ **`sizeof(shared_ptr<Base>)` 16 · `unique_ptr<Base>` 8** · vptr 8바이트.
 - ★★ **`D0`/`D1`/`D2` 이름과 g++ 의 `.set` 별칭** · **`_ZdaPvm` 대 `_ZdaPv`.**
-- ★★ **탐침 6에서 g++ 가 헤더 안 경고를 안 보이는 것** · 진단 문구 전부.
+- ★★ **probe 6에서 g++ 가 헤더 안 경고를 안 보이는 것** · 진단 문구 전부.
 
 **언어가 보장하는 것**(구현이 바뀌어도 같다)
 
@@ -883,13 +883,13 @@ vdtor10.cpp:26:27: note: in instantiation of member function 'std::unique_ptr<Po
 
 **안 돌려 본 것 / 못 잰 것**
 
-- **안 돌려 본 것** — ★ **clang + ASan 으로 `vdtor02` 의 `s`·`r`**(`u` 만 던졌다) · ★ **`std::destroying_delete_t`** · ★ **가상 상속 판**(`D1`·`D2` 가 갈리는 자리) · ★ **`-std=c++98` 판.**
-- ★ **「부적용인 창」** — `-O2` 어셈블리 세기. 이 주제에는 잴 비용이 없다. **「안 쟀다」가 아니라 「여기서 잴 것이 아니다」다.**
+- **안 돌려 본 것** — ★ **clang + ASan 으로 `vdtor02` 의 `s`·`r`**(`u` 만 던졌다) · ★ **`std::destroying_delete_t`** · ★ **가상 상속 판**(`D1`·`D2` 가 달라지는 자리) · ★ **`-std=c++98` 판.**
+- ★ **「해당 없는 창」** — `-O2` 어셈블리 세기. 이 주제에는 잴 비용이 없다. **「안 쟀다」가 아니라 「여기서 잴 것이 아니다」다.**
 - ★ **「인용한 창」** — vtable 덤프. [19번](../19-inheritance-virtual-functions-override-final/) (11)이 찍었다.
 
 **버전이 올랐을 때 다시 돌려야 하는 것**
 
-- ★★★ **10번의 탐침 6** — g++ 가 헤더 안 경고를 보이기 시작하면 「감싸면 사라진다」가 바뀐다.
+- ★★★ **10번의 probe 6** — g++ 가 헤더 안 경고를 보이기 시작하면 「감싸면 사라진다」가 바뀐다.
 - ★★ **7번의 두 컴파일러 선택**(`call *%rax` 대 `call _ZN4BaseD2Ev`) — 미명시라 **판이 바뀌면 뒤집힐 수 있다.**
 - ★ **libstdc++ 판이 바뀌면 2번의 스택 이름·줄 번호.**
 
@@ -900,7 +900,7 @@ vdtor10.cpp:26:27: note: in instantiation of member function 'std::unique_ptr<Po
 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 다.\
 **진단의 줄 번호는 그 파일 기준**이므로 **출력을 싣는 블록마다 그 출력을 낸 소스를 같은 자리에** 뒀다.\
 ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 손으로 옮긴 줄은 없다.
-**읽는 법** — 흔들리는 칸은 **ASan 의 PID·주소** · **진단 문구** · **UB 인 실행의 결과 그 자체**다.\
+**읽는 법** — 실행마다 달라지는 항목은 **ASan 의 PID·주소** · **진단 문구** · **UB 인 실행의 결과 그 자체**다.\
 근거로 쓰는 것은 다음이다 — **어느 소멸자·해제 함수가 몇 번 불렸나** · **격자의 0/1** · **`sizeof`** ·\
 **`cc exit`/`run exit`** · **경고·에러 개수** · **어셈블리에서 무엇을 `call` 하나**.
 ★★★ **19편이 잰 것(`~DerNV` 0회 · 128바이트 · 경고 조건 · vtable 두 칸)은 다시 재지 않았다** — 인용만 한다.

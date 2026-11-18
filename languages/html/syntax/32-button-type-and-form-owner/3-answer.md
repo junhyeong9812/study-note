@@ -64,7 +64,7 @@ b9  type="submit" commandfor="창" command="show-modal"      "submit"  true
 - ★★★ **폼 안의 `commandfor` 둘** — `type` 이 없으면 **서버 0 · `창.open=false`**, `type=button` 이면 **`창.open=true`**. **폼 밖**의 `b8`(`type` 없음)은 **`창.open=true`**.
 - **표본** — `(없음)`·`submit`·`zzz`·`""` → `"submit"` · `true` · `reset` → `"reset"` · `false` · `button`·`BUTTON` → `"button"` · `false` · **`commandfor` 만 → `"button"` · `false`** · `submit` + `commandfor` → `"submit"` · `true`.
 
-### 2. 제출된 칸 10 / 14 · 명세 열과 갈린 칸 0 / 14 — 안 간 넷은 `f2A`·`f2C`·`f1F`·`f2F`
+### 2. 제출된 칸 10 / 14 · 명세 열과 달라진 항목 0 / 14 — 안 간 넷은 `f2A`·`f2C`·`f1F`·`f2F`
 
 **출력**
 
@@ -201,7 +201,7 @@ requestSubmit(남의 폼 단추)       —      —       없음       —      
 
 ### 10. `commandfor` 단추의 `.type` — 구현(관찰) · `disabled` 기본 단추 — 명세대로 · `form="없는id"` — 명세대로
 
-- **`.type` 의 `"button"`** — 명세상 Auto 상태다. IDL 이 무엇을 돌려줘야 하는지는 **받아 둔 사본에서 문장을 찾지 못했다** → **이 판의 관찰**로만.
+- **`.type` 의 `"button"`** — 명세상 Auto 상태다. IDL 이 무엇을 돌려줘야 하는지는 **받아 둔 사본에서 문장을 찾지 못했다** → **이 버전의 관찰**로만.
 - **`disabled` 기본 단추** — 「기본 단추가 … **비활성이 아니면** click」 → 명세대로(A2 — 명세 열 0 갈림).
 - **`form="없는id"`** — 폼 소유자가 **없다** → 활성화 동작의 「폼 소유자가 있으면」을 못 타고 `commandfor` 도 없다 → 명세대로.
 
@@ -219,7 +219,7 @@ requestSubmit(남의 폼 단추)       —      —       없음       —      
 ★ **Enter** — 칸에 포커스를 두고 `Input.dispatchKeyEvent` 로 `Enter`(가상 키코드 13 · `text="\r"`)를 눌렀다([21번](../21-form-submission-model/3-answer.md)과 같다).\
 ★ **`requestSubmit`·`submit()`** — 페이지 안에서 `try … catch` 로 불러 **예외 이름**을 기록했다.
 
-**흔들림 확인** — 캡처 세 판의 재대조는 [29번](../29-constraint-validation/3-answer.md)의 `## 실행 검증` 에 있다.
+**재현성 확인** — 캡처 세 번의 재대조는 [29번](../29-constraint-validation/3-answer.md)의 `## 실행 검증` 에 있다.
 
 | 무엇을 | 몇 번 | 결과가 쓰인 곳 |
 |---|---|---|
@@ -230,7 +230,7 @@ requestSubmit(남의 폼 단추)       —      —       없음       —      
 
 **구현에 달린 항목**
 
-| 항목 | 이 판의 값 | 왜 다시 찍나 |
+| 항목 | 이 버전의 값 | 왜 다시 찍나 |
 |---|---|---|
 | Auto 상태의 `.type` | `"submit"`·`"button"` 두 이름 | IDL 문장을 확인하지 못했다 |
 
@@ -238,7 +238,7 @@ requestSubmit(남의 폼 단추)       —      —       없음       —      
 
 **못 잰 것** — ① **모바일 가상 키보드의 「이동」 키.**
 
-**부적용인 창** — **창 ③ · ④ · ⑥ · ⑦**.
+**해당 없는 창** — **창 ③ · ④ · ⑥ · ⑦**.
 
 ## 용어 풀이
 
@@ -251,4 +251,4 @@ requestSubmit(남의 폼 단추)       —      —       없음       —      
 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스는 [29번 주제](../29-constraint-validation/3-answer.md)의 `## 실행 검증` 절에 있다.\
 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 `button` 요소·Implicit submission·폼 소유자·제출 알고리즘·`requestSubmit`/`submit` 절로 접지했다(앞 배치가 받아 둔 사본).\
 ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-★★★ **본체는 서버 요청 로그다** — Enter 격자는 14 칸을 미리 선언하고 「제출된 칸」·「명세 열과 갈린 칸」을 스크립트가 센다(A2).
+★★★ **본체는 서버 요청 로그다** — Enter 격자는 14 칸을 미리 선언하고 「제출된 칸」·「명세 열과 달라진 항목」을 스크립트가 센다(A2).

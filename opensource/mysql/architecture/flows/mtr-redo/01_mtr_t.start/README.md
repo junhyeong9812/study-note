@@ -134,7 +134,7 @@ enum mtr_log_t {
  L596  (debug) 스레드 지역 목록에 넣어 같은 mtr 을 commit 없이 다시 쓰는지 잡는다
 ```
 
-mtr 은 redo 묶음이면서 래치를 쥐는 단위이기도 하다. start 와 commit 사이에 잡은 래치는 m_memo 에 기록되고 대부분 commit 에서 한꺼번에 풀린다. 중간에 푸는 `memo_release`, `release_page` 도 있지만 수정한 페이지의 X 래치는 중간에 풀 수 없다(mtr0mtr.cc L723-L725, L742-L744 주석).
+mtr 은 redo 묶음이면서 래치를 잡는 단위이기도 하다. start 와 commit 사이에 잡은 래치는 m_memo 에 기록되고 대부분 commit 에서 한꺼번에 풀린다. 중간에 푸는 `memo_release`, `release_page` 도 있지만 수정한 페이지의 X 래치는 중간에 풀 수 없다(mtr0mtr.cc L723-L725, L742-L744 주석).
 
 ```text
  mtr_t 의 수명 (한 스레드 안, 위에서 아래로)

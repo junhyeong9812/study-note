@@ -1,9 +1,9 @@
 # web-api/29 — 자격 증명과 `credentials`: 쿠키가 실리는 조건·와일드카드 금지 — 정답
 
-| 안 흔들리는 칸 | 흔들리는 칸 · 못 잰 칸 |
+| 달라지지 않는 항목 | 실행마다 달라지는 항목 · 못 잰 항목 |
 |---|---|
 | 쿠키 통 · 격자 24칸 · 콘솔 · 서버 로그 · 프리플라이트 | ★ **판·설정에 매인 칸** — 사이트 밖 `include` 네 칸의 `none=1`(서드파티 쿠키 정책) |
-| 캡처를 세 판 돌려 **한 글자도 같았다** | **못 잰 것** — 진짜 등록 도메인 · https |
+| 캡처를 세 번 돌려 **한 글자도 같았다** | **못 잰 것** — 진짜 등록 도메인 · https |
 
 ```text
 $ google-chrome --version
@@ -103,7 +103,7 @@ network · error · Failed to load resource: net::ERR_FAILED
 ```
 
 - ① **허용 없음** → 「No 'Access-Control-Allow-Origin' header is present …」 ② **`include` + `*`** → 「… must not be the wildcard '*' when the request's credentials mode is 'include'.」 ③ **`include` + 출처(ACAC 없음)** → 「The value of the 'Access-Control-Allow-Credentials' header in the response is '' which must be 'true' …」.
-- ★ **근거는 칸(응답 헤더)이다** — 문구는 Chrome 의 글자다(가이드 규칙 27). 이 판에서는 문구가 칸과 맞았다.
+- ★ **근거는 칸(응답 헤더)이다** — 문구는 Chrome 의 글자다(가이드 규칙 27). 이 버전에서는 문구가 칸과 맞았다.
 
 ### 4. 사이트 밖 `include` 네 칸만 바뀐다
 
@@ -174,7 +174,7 @@ B OPTIONS /c29?id=p2&acao=origin  Cookie=(쿠키 없음)
 
 **환경** — Google Chrome 151.0.7922.173 · Linux · headless · Python 3 표준 라이브러리 `http.server`(서버 A·B — IPv4·IPv6). **엔진은 Chrome 하나다.**
 
-★ **하네스** — [28번 주제](../28-cors-simple-and-preflight/2-summary.md)의 (1). `cookie` 모드는 먼저 B 를 두 이름으로 **직접** 열어 쿠키를 받게 한 뒤 A 에서 페이지를 연다. `compare` 는 같은 쿠키 통으로 두 탭을 돌려 갈린 줄만 찍는다.\
+★ **하네스** — [28번 주제](../28-cors-simple-and-preflight/2-summary.md)의 (1). `cookie` 모드는 먼저 B 를 두 이름으로 **직접** 열어 쿠키를 받게 한 뒤 A 에서 페이지를 연다. `compare` 는 같은 쿠키 통으로 두 탭을 돌려 달라진 줄만 찍는다.\
 ★ **「실렸나」는 서버에게 묻는다**(`/note`) — 페이지는 나가는 `Cookie` 를 못 본다.
 
 ```sh
@@ -205,5 +205,5 @@ python3 wa28b-net.py cookie wa28b-29-preflight.html
 ## 실행 환경
 
 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다 — 서버 두 대(A·B)는 같은 기계의 로컬 서버이고 **바깥 인터넷으로는 요청하지 않았다.** 명령은 블록마다 배너로 실려 있다.\
-규칙은 [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 credentials mode · includeCredentials · CORS check · CORS protocol and credentials 절로 접지했다. **쿠키 속성(`SameSite`·`Secure`)과 서드파티 쿠키는 이 판의 관찰**이다.\
+규칙은 [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 credentials mode · includeCredentials · CORS check · CORS protocol and credentials 절로 접지했다. **쿠키 속성(`SameSite`·`Secure`)과 서드파티 쿠키는 이 버전의 관찰**이다.\
 **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**

@@ -609,8 +609,8 @@ dedu10.cpp:4:11: warning: use of ‘auto’ in parameter declaration only availa
 **왜 그런가**
 
 - **`auto` 의 추론 규칙은 「함수 템플릿 인자 추론」과 거의 같다** — 정본은 [목록의 **31번 주제**](../31-function-templates-and-argument-deduction/)다.\
-  ★ **갈리는 곳은 한 군데**, 중괄호 목록이다(`auto x = {1,2}` 는 되고 템플릿 추론은 실패한다).\
-  ★ 이 문서는 **템플릿 쪽을 안 던졌다.**
+  ★ **달라지는 곳은 한 군데**, 중괄호 목록이다(`auto x = {1,2}` 는 되고 템플릿 추론은 실패한다).\
+  ★ 이 문서는 **템플릿 쪽을 실행하지 않았다.**
 - **`auto&&` 가 전달 참조가 되는 규칙**의 정본은 [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/)(rvalue 참조·`move`·`forward`)이고,\
   그 밑의 **값 범주**는 [목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/)다.
 - **`auto x = {1}` 이 `initializer_list` 가 되는 것**의 정본은 형제\
@@ -659,13 +659,13 @@ dedu10.cpp:4:11: warning: use of ‘auto’ in parameter declaration only availa
 
 **UB 의 결과라 보장이 아닌 것**(관찰로만 읽는다)
 
-- ★ 6번의 **`run exit=139`** — SIGSEGV 로 죽은 것은 **이 판의 결과**다. UB 이므로 다른 일이 날 수도 있다.\
+- ★ 6번의 **`run exit=139`** — SIGSEGV 로 죽은 것은 **이 버전의 결과**다. UB 이므로 다른 일이 날 수도 있다.\
   근거로 쓰는 것은 「**경고가 났다**」와 「**UBSan 이 묶는 순간을 짚었다**」다.
 - ★ **댕글링 참조가 읽은 값** — 이 문서는 **싣지 않았다.**
 
 **안 돌려 본 것 / 못 잰 것**
 
-- **안 돌려 본 것** — **템플릿 인자 추론 쪽**(`auto` 와 갈리는 유일한 자리인 중괄호 목록을 포함해서 —\
+- **안 돌려 본 것** — **템플릿 인자 추론 쪽**(`auto` 와 달라지는 유일한 자리인 중괄호 목록을 포함해서 —\
   정본이 [목록의 **31번 주제**](../31-function-templates-and-argument-deduction/)라 거기서 던진다) · **후행 반환 타입**(`auto f() -> decltype(...)`) ·\
   **`decltype(auto)` 를 변수에** 쓰기 · **구조적 바인딩의 `auto`**(목록의 **48번 주제**) ·\
   **컨셉으로 제약한 `auto`**([목록의 **36번 주제**](../36-concepts-and-requires/)) ·\
@@ -690,4 +690,4 @@ dedu10.cpp:4:11: warning: use of ‘auto’ in parameter declaration only availa
 ★★★ 이 주제의 **주력 창은 의도적 타입 에러**(`TypeOf<T>`)다. 타입을 찍는 블록은
 긴 진단에서 **타입 줄만 남기는 필터**를 배너에 적어 두었다 — 실린 것은 **그 명령의 전체 출력**이다.
 **읽는 법** — 읽을 것은 **`TypeOf<...>` 의 꺾쇠 안**이다. 그 줄이 곧 답이다.\
-UB 가 걸린 것은 6번 하나뿐이고, **그 UB 가 만든 값은 싣지 않았다**(흔들리는 칸).
+UB 가 걸린 것은 6번 하나뿐이고, **그 UB 가 만든 값은 싣지 않았다**(실행마다 달라지는 항목).

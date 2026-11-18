@@ -188,15 +188,15 @@ hidden n = 1048576 err = <nil>
 |---|---|
 | `Flush` 필요 · `os.Exit` 와 `defer` · `Close` 두 번 · `io.Copy` 위임 · 64 KiB | **표준 라이브러리 문서의 계약** |
 | `defer` 가 패닉에서 돈다 | **명세** |
-| `os.File` 에 버퍼 없음 | **이 판의 구현**(`strace` 관찰) |
+| `os.File` 에 버퍼 없음 | **이 버전의 구현**(`strace` 관찰) |
 | `/dev/full` 의 `Close`·`Sync` · `copy_file_range` | **이 머신의 커널·장치·파일 시스템**(`ext2/ext3` 로 보고됨) |
 | C `exit`/`_exit` | **gcc 13 + 이 머신의 C 라이브러리** |
 
-★ **다시 찍는 법** — `capture.sh <디렉토리>` 를 그대로 돌리고 `normalize-shaky.py` 로 견준다(기본 규칙만). `strace` 가 있어야 한다(2-summary 「이 판」 절 `tools`).
+★ **다시 찍는 법** — `capture.sh <디렉토리>` 를 그대로 돌리고 `normalize-shaky.py` 로 견준다(기본 규칙만). `strace` 가 있어야 한다(2-summary 「이 버전」 절 `tools`).
 
 ## 실행 환경
 
 이 파일의 모든 출력은 **`go version go1.27.1 linux/amd64`** 에서 실제로 돌려
 **파일로 캡처한 것**이다(6번만 `gcc 13.3.0`). 소스 펜스도 같은 파일에서 떠 왔다 — 손으로 옮겨 적은 블록은 없다.\
-★ **근거로 읽을 칸** — 파일 크기와 `exit` · `6 / 16` · 에러 문구 · `write` 호출 수 · `Write` 크기 목록 · `token too long`.
+★ **근거로 읽을 항목** — 파일 크기와 `exit` · `6 / 16` · 에러 문구 · `write` 호출 수 · `Write` 크기 목록 · `token too long`.
 **머신에 달린 칸** — 9번의 시스템 호출 이름과 수(커널·파일 시스템).

@@ -44,7 +44,7 @@ A/B 결과 화면에 "B안 전환율 +0.10%p, p = 0.019, 유의함"이 떴다. �
 - *귀무가설(null hypothesis, H0)*: 회의적인 입장. 보통 "차이가 없다"(OpenIntro 5.3.1).
 - *대립가설(alternative hypothesis, HA)*: 확인하려는 주장. "차이가 있다"(양측) 또는 "B가 크다"(단측).
 - *p값(p-value)*: 귀무가설이 참이라면, 지금 데이터만큼 또는 그보다 대립가설 쪽으로 더 치우친 데이터가 나올 확률(OpenIntro 5.3.4).
-- *유의수준(significance level, α)*: 미리 정한 문턱. p < α면 H0를 기각하고, 아니면 "H0를 기각할 충분한 증거가 없다"고 보고한다(OpenIntro 5.3.4).
+- *유의수준(significance level, α)*: 미리 정한 임계값. p < α면 H0를 기각하고, 아니면 "H0를 기각할 충분한 증거가 없다"고 보고한다(OpenIntro 5.3.4).
   - 흔한 오해: "기각하지 못함 = H0가 참" — 증거 부족일 뿐이다. 검정력이 낮으면 진짜 차이가 있어도 자주 기각하지 못한다(Think Stats 2판 9.10).
 - 두 비율을 비교할 때 H0가 `p1 = p2`이면 두 군을 합친 *합동 비율(pooled proportion)*로 SE를 계산한다(OpenIntro 6.2.3).
 
@@ -103,7 +103,7 @@ ASA(미국통계학회)는 2016년 3월 7일 p값 성명의 여섯 원칙을 발
 
 1. p값은 데이터가 지정한 통계 모형과 얼마나 양립하지 않는지를 나타낼 수 있다.
 2. p값은 연구 가설이 참일 확률도, 데이터가 우연만으로 생겼을 확률도 측정하지 않는다.
-3. 과학적 결론과 사업·정책 결정을 p값이 특정 문턱을 넘었는지만으로 내려서는 안 된다.
+3. 과학적 결론과 사업·정책 결정을 p값이 특정 임계값을 넘었는지만으로 내려서는 안 된다.
 4. 올바른 추론에는 완전한 보고와 투명성이 필요하다.
 5. p값이나 통계적 유의성은 효과의 크기나 결과의 중요성을 측정하지 않는다.
 6. p값 하나만으로는 모형이나 가설에 대한 증거의 좋은 척도가 아니다.
@@ -216,7 +216,7 @@ print(two_prop_test(100_000, 1_000_000, 101_000, 1_000_000))   # 실험 C 첫 �
 ## 핵심 문장
 
 - p값은 "귀무가설이 참이라면 지금만큼 극단인 데이터가 나올 확률"이다. 가설이 참일 확률도, 효과의 크기도 아니다.
-- 귀무가 참이면 (연속 통계량에서) p값은 균등하다. 그래서 α=0.05 문턱은 1종 오류를 5%로 묶고, 20번 검정하면 평균 1번은 우연히 유의하다.
+- 귀무가 참이면 (연속 통계량에서) p값은 균등하다. 그래서 α=0.05 임계값은 1종 오류를 5%로 묶고, 20번 검정하면 평균 1번은 우연히 유의하다.
 - 기각하지 못한 것은 "효과 없음"이 아니라 "증거 부족"이다. 검정력이 낮으면 진짜 차이도 자주 놓친다.
 - 큰 표본에서는 사소한 차이도 유의해진다. 효과 크기와 신뢰구간을 함께 보고, 미리 정한 최소 의미 효과와 비교한다.
 - 가설·방향·α·분석 단위는 데이터를 보기 전에 정한다.
@@ -237,7 +237,7 @@ print(two_prop_test(100_000, 1_000_000, 101_000, 1_000_000))   # 실험 C 첫 �
   - OpenIntro Statistics 4판 5.3 Hypothesis testing for a proportion — 5.3.1 틀, 5.3.2 구간으로 검정, 5.3.3 결정 오류(법정 예), 5.3.4 p값 정의·"기각할 충분한 증거가 없다", 5.3.5 유의수준 선택, 5.3.6 통계적 vs 실질적 유의, 5.3.7 단측 검정 <https://www.openintro.org/book/os/>
   - OpenIntro 6.2.3 두 비율 차이의 검정 — 합동 비율로 조건 확인·SE 계산
   - ASA, "Statement on Statistical Significance and P-Values" 보도자료(2016-03-07) — 여섯 원칙 <https://www.amstat.org/docs/default-source/amstat-documents/p-valuestatement.pdf> · 성명 본문 Wasserstein & Lazar, The American Statistician 70, 2016, pp.129–133, DOI 10.1080/00031305.2016.1154108(서지 Crossref 확인)
-  - Downey, Think Stats 2판 9장 Hypothesis testing — 9.9 Errors(귀무 아래 거짓 양성률 = 문턱), 9.10 Power, 9.11 Replication <https://greenteapress.com/thinkstats2/html/thinkstats2010.html>
+  - Downey, Think Stats 2판 9장 Hypothesis testing — 9.9 Errors(귀무 아래 거짓 양성률 = 임계값), 9.10 Power, 9.11 Replication <https://greenteapress.com/thinkstats2/html/thinkstats2010.html>
   - Python 3.12 `random` 문서 — 재표집 순열 검정 예 <https://docs.python.org/3.12/library/random.html>
 - 실험 목록(모두 호스트 Python 3.12.3 표준 라이브러리)
   - A. A/A(10% vs 10%, 군당 5,000) 4000번의 p값 히스토그램과 p<0.05 비율(seed 21)

@@ -172,8 +172,8 @@ d = "x" 뒤          : GetType()=System.String
 | 쓴 것 | `GetType()` | `var` 가 추론한 타입 |
 |---|---|---|
 | `var a = 1;` | `System.Int32` | `int` — ★ **같다** |
-| `var b = (object)"x";` | ★★★ **`System.String`** | ★★★ **`object`** — **갈린다**((1)의 `g`) |
-| `var c = (Animal)new Dog();` | ★★★ **`Dog`** | ★★★ **`Animal`** — **갈린다** |
+| `var b = (object)"x";` | ★★★ **`System.String`** | ★★★ **`object`** — **달라진다**((1)의 `g`) |
+| `var c = (Animal)new Dog();` | ★★★ **`Dog`** | ★★★ **`Animal`** — **달라진다** |
 | `dynamic d = 1;` → `d = "x";` | `System.Int32` → `System.String` | ★ **타입이 없다** |
 
 - ★★★ **`var c = an;`(선언 타입이 `Animal`)의 `GetType()` 이 `Dog` 를 답한다.**\
@@ -183,7 +183,7 @@ d = "x" 뒤          : GetType()=System.String
   ★ 「**어느 멤버를 부를 수 있나**」는 정적 타입이, 「**어느 구현이 뽑히나**」는 런타임 타입이 정한다.
 - ★★ **`dynamic` 은 둘 다 아니다** — 같은 변수가 `Int32` 였다가 `String` 이 된다((7)).
 
-### (3) ★★ `var` 가 안 되는 자리 — 전수로 던졌다
+### (3) ★★ `var` 가 안 되는 자리 — 전수로 실행했다
 
 **언제 쓰나** — 「여기 `var` 쓰면 안 되나?」 할 때.
 
@@ -604,7 +604,7 @@ readonly record struct Point(int X, int Y);
 - ★★★ **`var x = new();` 는 안 된다**((6)) — 양쪽 다 타입이 없다.
 - ★★★ **`var` 는 정적 타입이다**((7)·(8)) — `dynamic` 과 다르고, IL 이 명시 타입과 **같다.**
 
-### 금지 사례 — 던져서 받은 열하나
+### 금지 사례 — 실행해서 받은 열하나
 
 | 쓴 것 | 진단 |
 |---|---|
@@ -756,10 +756,10 @@ readonly record struct Point(int X, int Y);
 
 ## 더 들어가면
 
-- **제네릭 메서드의 타입 인자 추론** — `Max(1, 2)` 가 `Max<int>` 로 푸는 것. ★ 안 던졌다(목록의 **24번 주제**).
-- **`var` 패턴**(`is var x`) — 패턴 매칭의 `var` 는 **여기 `var` 와 다른 문법**이다. ★ 안 던졌다(목록의 **21번 주제**).
-- **`ref var`·`scoped var`** — `ref` 지역과 함께 쓰는 형태. ★ 안 던졌다(목록의 **45번 주제**).
-- **컬렉션 식 `[1, 2]`**(C# 12) — `new()` 와 같은 「타겟이 필요한 식」 집안. ★ 안 던졌다([목록의 **11번 주제**](../11-collection-initializers-and-collection-expressions/)).
+- **제네릭 메서드의 타입 인자 추론** — `Max(1, 2)` 가 `Max<int>` 로 푸는 것. ★ 실행하지 않았다(목록의 **24번 주제**).
+- **`var` 패턴**(`is var x`) — 패턴 매칭의 `var` 는 **여기 `var` 와 다른 문법**이다. ★ 실행하지 않았다(목록의 **21번 주제**).
+- **`ref var`·`scoped var`** — `ref` 지역과 함께 쓰는 형태. ★ 실행하지 않았다(목록의 **45번 주제**).
+- **컬렉션 식 `[1, 2]`**(C# 12) — `new()` 와 같은 「타겟이 필요한 식」 집안. ★ 실행하지 않았다([목록의 **11번 주제**](../11-collection-initializers-and-collection-expressions/)).
 - **`dynamic` 의 실제 비용** — ★ **못 쟀다.** (8)이 잰 것은 **IL 줄 수**이고 **시간이 아니다.**\
   호출 사이트는 **첫 호출에만** 만들어지고 그 뒤는 캐시를 타므로, **시간을 재려면 반복 호출 하네스**가 필요하다.
 - **C# 9 이하에서 `var f = () => 1;`** — ★ **못 던졌다.** 이 머신에는 .NET 10 만 있다.
@@ -773,7 +773,7 @@ readonly record struct Point(int X, int Y);
 ★★★ **진단 언어를 영어로 고정했다.** 안 그러면 **로캘을 따라 한국어로 나와 재현이 안 된다** —\
 실측으로 받은 한국어 판이 ``error CS0029: 암시적으로 'string' 형식을 'int' 형식으로 변환할 수 없습니다.`` 였다.\
 고정하는 법은 둘을 같이 거는 것이다 — 환경변수 **`DOTNET_CLI_UI_LANGUAGE=en`** 과 `csc` 플래그 **`-preferreduilang:en-US`**.
-**던진 형태** — MSBuild(`dotnet build`·`dotnet run`)를 **안 썼다.** Roslyn 컴파일러를 **직접** 부른다 —\
+**실행한 형태** — MSBuild(`dotnet build`·`dotnet run`)를 **안 썼다.** Roslyn 컴파일러를 **직접** 부른다 —\
 그래야 `bin/`·`obj/` 가 안 생기고, 진단 경로가 **절대 경로가 아니라 파일명**으로 나오며, 한 판이 0.3초 안에 끝난다.\
 배너의 `csc` 는 아래 셸 함수이고, `ex.runtimeconfig.json` 은 아래 한 줄짜리 파일이다.
 
@@ -800,9 +800,9 @@ csc() { dotnet exec "$D/sdk/10.0.401/Roslyn/bincore/csc.dll" \
 **`dynamic`** 은 이 목록에서 **뺀 주제**다(README 의 「뺀 것과 이유」) — 여기서는 **`var` 와의 대비 한 줄**만 둔다.\
 **컬렉션 식 `[1, 2, ..other]`**(C# 12)은 [목록의 **11번 주제**](../11-collection-initializers-and-collection-expressions/)다.
 
-★★ **흔들리는 칸 / 안 흔들리는 칸**
+★★ **실행마다 달라지는 항목 / 달라지지 않는 항목**
 
-| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+| 실행마다 달라진다(근거로 쓰지 않는다) | 달라지지 않는다(근거로 쓴다) |
 |---|---|
 | ★ **`GC.GetAllocatedBytesForCurrentThread()` 의 절댓값**(프로세스 시작부터의 누적이다) | ★★★ **두 호출 사이의 증분**과 **그 증분이 0 이냐 아니냐** |
 | `Stopwatch` 로 잰 **ns 수치** · 그때의 CPU 상태 | **자릿수 차이**(10배·40배 같은 비율) |

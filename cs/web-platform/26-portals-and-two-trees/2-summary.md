@@ -476,7 +476,7 @@ function Modal({ onClose, children }) {
 - 프레임워크는 DOM과 별개로 논리 트리를 들고 있고, Portal은 DOM 부모만 바꾸고 논리 부모는 그대로 둔다.
 - 이벤트는 두 단계다: 브라우저는 DOM 경로로 등록된 리스너만 부르고, 그 리스너(dispatch)가 논리 트리를 따라 핸들러를 실행한다.
 - 네이티브 버블링은 리스너가 처리했다고 멈추지 않는다 — 멈추는 것은 `stopPropagation()`뿐이다.
-- Context·이벤트 핸들러·수명은 논리 트리를, 화면 위치·CSS·Tab 순서·네이티브 이벤트 경로는 DOM 트리를 따른다(실험: DOM 위치가 같은 진짜·가짜 portal의 Context가 `dark`·`light`로 갈렸다).
+- Context·이벤트 핸들러·수명은 논리 트리를, 화면 위치·CSS·Tab 순서·네이티브 이벤트 경로는 DOM 트리를 따른다(실험: DOM 위치가 같은 진짜·가짜 portal의 Context가 `dark`·`light`로 나뉘었다).
 - 엘리먼트에게 물으면 DOM만 안다 — 위치 질문은 DOM에, 관계 질문은 노드(논리 트리)에 묻는다.
 
 ## 관련 주제·근거

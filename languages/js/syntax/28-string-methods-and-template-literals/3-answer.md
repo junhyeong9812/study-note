@@ -1,4 +1,4 @@
-# js/syntax/28 — `String` 메서드와 템플릿 리터럴: 「치환 문자열은 작은 언어다 · 태그는 같은 종이를 받는다 · 자르기 셋은 음수에서 갈린다」 — 정답
+# js/syntax/28 — `String` 메서드와 템플릿 리터럴: 「치환 문자열은 작은 언어다 · 태그는 같은 종이를 받는다 · 자르기 셋은 음수에서 달라진다」 — 정답
 
 ## 정답
 
@@ -175,7 +175,7 @@ cells where the output differs from the plain text of the template: 20 / 44
 rows where slice and substring disagree: 5 / 10
 ```
 
-node 18 판(갈린 줄은 `[3]` 의 둘째 줄 하나):
+node 18 판(달라진 줄은 `[3]` 의 둘째 줄 하나):
 
 ```text
 ===== node18 js28b-28d-slice-substring.js (exit=0) =====
@@ -216,10 +216,10 @@ rows where slice and substring disagree: 5 / 10
 - ★★★ **`(-2)`** — `slice` `"ef"` · **`substring` `"abcdef"`**(음수 → 0) · `substr` `"ef"`(시작만 뒤에서 센다).
 - ★★★ **`(4, 2)`** — `slice` `""`(시작이 끝보다 뒤) · **`substring` `"cd"`**(뒤집는다) · `substr` `"ef"`(4부터 2글자).
 - ★★★ **`(2, -1)`** — `slice` `"cde"` · **`substring` `"ab"`**(`-1` → 0, 그다음 `(2, 0)` 을 `(0, 2)` 로 뒤집는다) · `substr` `""`(길이가 음수 → 0).
-- ★★ **`(-3, -1)`** 과 **`(-1, 2)`** 도 `slice` 와 `substring` 이 갈린 줄이다 — 다섯 줄 모두 **음수가 있거나 시작이 끝보다 크다.** 나머지 다섯 줄(양수이고 순서가 맞거나, `NaN`·`undefined`·넘치는 끝)은 `slice` 와 `substring` 이 같다(`substr` 은 `(2, 4)` 에서 따로 `"cdef"` 다 — 둘째 인자가 길이라서).
-- ★★★ **`[2]`** — `at` 과 `s[i]` 는 **`-1`·`-6`·`1.7` 에서 갈린다.** 대괄호는 `"-1"`·`"1.7"` 이라는 **이름의 프로퍼티**를 찾아 `undefined`, `at` 은 **정수로 깎고 음수를 뒤에서** 센다. `"1"` 은 둘 다 `"b"` 다(문자열 키 `"1"` 이 곧 인덱스).
+- ★★ **`(-3, -1)`** 과 **`(-1, 2)`** 도 `slice` 와 `substring` 이 달라진 줄이다 — 다섯 줄 모두 **음수가 있거나 시작이 끝보다 크다.** 나머지 다섯 줄(양수이고 순서가 맞거나, `NaN`·`undefined`·넘치는 끝)은 `slice` 와 `substring` 이 같다(`substr` 은 `(2, 4)` 에서 따로 `"cdef"` 다 — 둘째 인자가 길이라서).
+- ★★★ **`[2]`** — `at` 과 `s[i]` 는 **`-1`·`-6`·`1.7` 에서 달라진다.** 대괄호는 `"-1"`·`"1.7"` 이라는 **이름의 프로퍼티**를 찾아 `undefined`, `at` 은 **정수로 깎고 음수를 뒤에서** 센다. `"1"` 은 둘 다 `"b"` 다(문자열 키 `"1"` 이 곧 인덱스).
 - ★★★ **`[3]`** — `slice(0, 2)` 는 **`61 d83d`**(쌍의 앞 반쪽에서 끊겼다) · `at(1)` 은 **`d83d`** · `at(-2)` 는 **`de00`**. `at` 은 **코드 유닛 하나**를 돌려준다.
-- ★ **`isWellFormed` 칸은 두 판이 다르다** — node 20 `false`, node 18 `(no method)`. ES2024 메서드가 node 18 에 없다. 나머지 줄은 한 글자도 같다.
+- ★ **`isWellFormed` 칸은 두 버전이 다르다** — node 20 `false`, node 18 `(no method)`. ES2024 메서드가 node 18 에 없다. 나머지 줄은 한 글자도 같다.
 - ★ **`5 / 10`** — 스크립트가 센 `slice` ≠ `substring` 인 줄 수.
 
 ### 5. 캡처 그룹은 **결과에 끼어들고**, 참여 안 한 그룹은 **`undefined` 로** 끼어든다 · `split` 은 `lastIndex` 를 안 쓰고 안 바꾼다 ★★
@@ -371,13 +371,13 @@ rows where slice and substring disagree: 5 / 10
 | `js28b-28a-dollar-grid.js` | ★★★ `$` 표기 11 × 자리 4 격자 · 「20 / 44」 · 바깥 문자열 | node20 1벌 + node18 대조 1벌 |
 | `js28b-28b-replace-all.js` | ★★★ 첫 하나 대 전부 · `g` 없는 `replaceAll` 의 `TypeError` · 빈 패턴 · 겹침 · 콜백 인자 | node20 1벌 + node18 대조 1벌 |
 | `js28b-28c-tagged.js` | ★★★ `strings` 의 모양·동결·자리별 동일성 · `String.raw` · 잘못된 이스케이프 | node20 1벌 + node18 대조 1벌 |
-| `js28b-28d-slice-substring.js` | ★★★ 자르기 셋 × 인자 10 · 「5 / 10」 · `at` 대 대괄호 · BMP 밖 글자 | node20 1벌 + **node18 1벌(갈린 판)** |
+| `js28b-28d-slice-substring.js` | ★★★ 자르기 셋 × 인자 10 · 「5 / 10」 · `at` 대 대괄호 · BMP 밖 글자 | node20 1벌 + **node18 1벌(달라진 판)** |
 | `js28b-28e-split.js` | ★★ 캡처가 끼어드는 것 · `undefined` 자리 · `limit` · `lastIndex` 무시 | node20 1벌 + node18 대조 1벌 |
 | `js28b-28f-pad-trim-search.js` | ★★ `padStart` · `trim` 이 지우는 글자와 그 분류 · 빈 문자열 · `IsRegExp` | node20 1벌 + node18 대조 1벌 |
 | `js28b-28g-python.sh` | ★★ 파이썬 `str.replace`·`re.sub`·자르기 대비 | Python 3.12.3 1벌 |
-| `js28b-vdiff.sh` · `js28b-versions.sh` | 두 판이 갈린 탐침 수 · 이 문서의 출력이 **어느 판에서 나왔나** + 판별 기능 표 | 1벌씩 |
+| `js28b-vdiff.sh` · `js28b-versions.sh` | 두 버전이 달라진 probe 수 · 이 문서의 출력이 **어느 버전에서 나왔나** + 판별 기능 표 | 1벌씩 |
 
-두 node 판 대조기(이 배치 전체의 node 탐침). 이 주제의 줄(`js28b-28…`)은 `js28b-28d-slice-substring.js` 하나만 `DIFFERS` 다. 그 밖의 `DIFFERS` 줄은 **다른 주제의 탐침**이다(같은 배치가 한 대조기를 공유한다).
+두 node 버전 대조기(이 배치 전체의 node probe). 이 주제의 줄(`js28b-28…`)은 `js28b-28d-slice-substring.js` 하나만 `DIFFERS` 다. 그 밖의 `DIFFERS` 줄은 **다른 주제의 probe**이다(같은 배치가 한 대조기를 공유한다).
 
 ```sh
 # js28b-vdiff.sh
@@ -516,8 +516,8 @@ js28b-31x-node-rawjson.js                    identical
 identical 19  ·  differs 6  ·  total 25
 ```
 
-- ★ **다시 돌릴 것** — node 판이 오르면 `js28b-28d-slice-substring.js` 의 `isWellFormed` 줄 · 예외 **문구** 전부(V8 의 글자). 유니코드 판이 오르면 `js28b-28f` 의 `[2]`(분류 칸).
-- ★ **흔들린 칸** — 이 주제의 블록에는 없다(재대조 동일).
+- ★ **다시 돌릴 것** — node 버전이 오르면 `js28b-28d-slice-substring.js` 의 `isWellFormed` 줄 · 예외 **문구** 전부(V8 의 글자). 유니코드 버전이 오르면 `js28b-28f` 의 `[2]`(분류 칸).
+- ★ **달라진 항목** — 이 주제의 블록에는 없다(재대조 동일).
 
 ## 실행 환경
 
@@ -525,7 +525,7 @@ identical 19  ·  differs 6  ·  total 25
 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮긴 출력이 하나도 없다).
 
 ★★ **예외는 `e.constructor.name` 과 `e.message` 로만** `이름 「메시지」` 꼴로 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
-★★ **두 node 판이 갈린 블록은 4번 하나**이고, 갈린 줄은 `isWellFormed`(ES2024) 한 줄이다.
+★★ **두 node 버전이 달라진 블록은 4번 하나**이고, 달라진 줄은 `isWellFormed`(ES2024) 한 줄이다.
 
 **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
 `js28b-28a-dollar-grid.js`(1번 · 7번) · `js28b-28b-replace-all.js`(2번) · `js28b-28c-tagged.js`(3번 · 8번) · `js28b-28d-slice-substring.js`(4번 · 10번) ·

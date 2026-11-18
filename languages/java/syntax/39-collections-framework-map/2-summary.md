@@ -292,7 +292,7 @@ ConcurrentHashMap.put("a",null) : java.lang.NullPointerException
 
 그림 해설 (한 단계씩):
 
-- **거부하는 이유가 셋으로 갈린다.** 비교 불가 / `null` 을 신호로 씀 / 동시성.
+- **거부하는 이유가 셋으로 나뉜다.** 비교 불가 / `null` 을 신호로 씀 / 동시성.
 - 정렬 컬렉션은 `compareTo` 를 불러야 하는데 `null.compareTo` 가 안 된다 — **에러 메시지가 그대로 말해 준다.**
 - `Deque`·`Queue` 는 `poll()`·`peek()` 가 비었을 때 `null` 을 돌려주므로 **원소로도 `null` 이면 구분이 안 된다.**
 - `Hashtable` 은 키에서는 `hashCode()` 를, 값에서는 명시적 검사를 한다 — **메시지가 다르다.**
@@ -389,7 +389,7 @@ HashSet 에 P 넣기 : OK
 
 ### (7) 잘못 고르면 결과가 조용히 달라진다 — 스택 세 가지
 
-**언제 쓰나** — "스택이 필요하다"고 했을 때. 셋 중 아무거나 고르면 **순회 순서가 갈린다.**
+**언제 쓰나** — "스택이 필요하다"고 했을 때. 셋 중 아무거나 고르면 **순회 순서가 달라진다.**
 
 **실행 결과** (`Ex.java` — 39-e, 17·21·25 동일)
 
@@ -478,7 +478,7 @@ clear() 는?            asList   : java.lang.UnsupportedOperationException
 
 > Certain methods of this interface are considered "destructive" and are called "mutator" methods in that they modify the group of objects contained within the collection on which they operate. They can be specified to throw `UnsupportedOperationException` if this collection implementation does not support the operation.
 
-- **"효과가 없으면 던지지 않아도 된다"까지 허용한다** — 그래서 `addAll(빈 컬렉션)` 이 구현마다 갈린다.
+- **"효과가 없으면 던지지 않아도 된다"까지 허용한다** — 그래서 `addAll(빈 컬렉션)` 이 구현마다 달라진다.
 
 > Such methods should (but are not required to) throw an `UnsupportedOperationException` if the invocation would have no effect on the collection. ... However, it is recommended that such cases throw an exception unconditionally, as throwing only in certain cases can lead to programming errors.
 

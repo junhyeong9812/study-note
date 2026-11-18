@@ -73,7 +73,7 @@ public List<String> getItems() { return Collections.unmodifiableList(items); }  
 
 ### (1) 세 팩토리의 첫째 축 — `null` 을 받나
 
-**언제 쓰나** — DB·JSON 에서 온 값으로 리스트를 만들 때. `null` 이 한 칸만 섞여도 갈린다.
+**언제 쓰나** — DB·JSON 에서 온 값으로 리스트를 만들 때. `null` 이 한 칸만 섞여도 달라진다.
 
 **실행 결과** (`Ex.java` — 40-a, 17·21·25 동일)
 
@@ -185,7 +185,7 @@ List.copyOf(src)         : [a, b, c]      <- 그대로다 (복사본)
 
 > An unmodifiable collection is not necessarily immutable. If the contained elements are mutable, the entire collection is clearly mutable, even though it might be unmodifiable.
 
-비용 — getter 에서 무엇을 쓸지가 이 축으로 갈린다.
+비용 — getter 에서 무엇을 쓸지가 이 축으로 나뉜다.
 
 ```java
 // 창문 — 내가 items 를 고치면 호출자가 들고 있던 것도 바뀐다
@@ -687,7 +687,7 @@ assertEquals("[a, b, c, d, e]", Set.of("a","b","c","d","e").toString());   // �
 ## 핵심 문장
 
 - **"불변"과 "수정 불가 뷰"는 다른 것이다.** `List.of` 는 사진이고 `Collections.unmodifiableList` 는 창문이다 — 창문은 원본이 바뀌면 같이 바뀐다.
-- 세 팩토리는 **세 축**으로 갈린다 — `null` 허용(`of` 계열만 금지)·변경 가능성(`Arrays.asList` 는 `set` 만 허용)·원본 반영(`unmodifiableList`·`Arrays.asList`·`subList` 만 비친다).
+- 세 팩토리는 **세 축**으로 나뉜다 — `null` 허용(`of` 계열만 금지)·변경 가능성(`Arrays.asList` 는 `set` 만 허용)·원본 반영(`unmodifiableList`·`Arrays.asList`·`subList` 만 비친다).
 - **`subList` 는 뷰다.** 원본을 구조적으로 고치면 그 뷰의 의미가 **정의되지 않는다** — `ConcurrentModificationException` 은 계약이 아니라 호의다.
 - ★ **`Set.of`·`Map.of` 의 순회 순서는 JVM 을 다시 띄울 때마다 바뀐다.** 순서에 기대는 코드를 일찍 깨뜨리려고 일부러 그렇게 만들었다.
 - `Set`·`Map` 의 키를 넣은 뒤에 고치면 **원소는 남는데 못 찾게 된다** — `contains` 도 `remove` 도 실패하고 순회에만 보인다.
@@ -728,7 +728,7 @@ assertEquals("[a, b, c, d, e]", Set.of("a","b","c","d","e").toString());   // �
 
 ## 더 들어가면
 
-- **`List.of` 의 구체 타입이 원소 수로 갈린다.**\
+- **`List.of` 의 구체 타입이 원소 수로 나뉜다.**\
   1~2개면 `List12`(필드 두 개), 3개 이상이면 `ListN`(배열). 작은 리스트가 흔해서 전용 클래스를 둔 것이다.\
   `List.of()` 는 `ListN` 인데 **빈 배열을 공유**한다.
 - **`SALT32L` 은 `System.nanoTime()` 으로 만든다.**\

@@ -331,14 +331,14 @@ identical 22  ·  differs 1  ·  total 23
 
 **왜 그런가**
 
-- ★★★ **이 주제의 블록은 전부 `identical`** 이다. 갈린 한 블록은 19번 주제의 스프레드 문구다.
+- ★★★ **이 주제의 블록은 전부 `identical`** 이다. 달라진 한 블록은 19번 주제의 스프레드 문구다.
 - ★★★ **명세가 정하는 것 셋(대표)** — ① `extends` 가 두 사슬을 잇는 것 ② `super` 가 HomeObject 의 윗집에서 찾고 수신자로 `this` 를 넘기는 것 ③ 파생 생성자의 `super()` 규칙과 **예외의 종류**.
   **V8 의 문구 셋** — `Must call super constructor in derived class before accessing 'this' or returning from derived constructor` ·
   `Derived constructors may only return object or undefined` · `'super' keyword unexpected here`.
 - ★★ **`e.stack` 은 ECMA-262 에 없다** — 엔진/호스트 칸. own 키 중 **`stack` 만** 명세 밖이다.
 - ★★ **문구가 원인을 틀리게 말하는 두 곳** — `Super constructor null of N`(사슬은 `Function.prototype`) · `#label` 의 「class did not declare it」(선언했고 설치 전).
 - ★ **창을 바꿔 물은 자리** — 부모 생성자 안의 `#label`(값 창이 `TypeError` 로 닫혀 `#label in this` 로 물었다).
-  **부적용** — 진단의 `(행,열)`(묻는 것이 「컴파일되나」라 가를 열이 없다) · 파이썬 MRO 창(단일 상속).
+  **해당 없음** — 진단의 `(행,열)`(묻는 것이 「컴파일되나」라 가를 열이 없다) · 파이썬 MRO 창(단일 상속).
 
 ### 12. 경계 — 어디까지가 이 주제인가 ★★
 
@@ -347,7 +347,7 @@ identical 22  ·  differs 1  ·  total 23
 - ★★ 16번의 로그는 **「언제 도나」의 순서**만 찍었다. 이 주제의 로그는 **그 순서 한가운데서 자식 메서드가 불리면 무엇을 보나**를 찍는다 — 같은 순서가 **사고로 나타나는 자리**다.
 - ★ **이 주제가 끝까지 책임지는 것 셋** —
   ① **`extends` 가 잇는 두 사슬**(정적 멤버 · `extends null`)
-  ② **`super` 의 출발 칸이 HomeObject 의 윗집이라는 것**(`this` 와 갈리는 것)
+  ② **`super` 의 출발 칸이 HomeObject 의 윗집이라는 것**(`this` 와 달라지는 것)
   ③ **파생 클래스에서는 부모가 객체를 만든다는 것**과 그 결과(`super()` 규칙 · 생성자 속 가상 호출 · 내장 상속).
 
 ## 실행 검증
@@ -370,16 +370,16 @@ identical 22  ·  differs 1  ·  total 23
 
 **두 사슬 · `super()` 규칙과 예외의 종류 · HomeObject 와 수신자 · 필드가 `super()` 뒤 정의로 설치되는 것 · 내장 상속의 브랜드와 `Symbol.species` · `Error.prototype.name` 은 구현 의존이 아니다.**
 
-**안 돌려 본 것 / 못 잰 것 / 부적용인 창**
+**안 돌려 본 것 / 못 잰 것 / 해당 없는 창**
 
 - **안 돌려 본 것** — 브라우저 · 다른 엔진의 문구 · **`setPrototypeOf(B, X)` 뒤 `new B()` 의 `super()` 목적지** ·
   클래스를 만드는 함수 꼴의 믹스인 · `super()` 두 번째 호출에서 부모 생성자가 도는지 · `Promise`/`RegExp` 의 `Symbol.species` · C# 쪽 「부모 생성자 중 넣은 값」 칸.
 - ★ **못 잰 것** — **없다.**
 - ★★★ **안 쟀다** — **성능 전부.**
-- ★★ **부적용** — 진단의 `(행,열)` · 파이썬 MRO 창.
+- ★★ **해당 없음** — 진단의 `(행,열)` · 파이썬 MRO 창.
 - ★★ **창을 바꿔 물은 자리** — 부모 생성자 안의 `#label`(값 창 대신 `#label in this`).
 
-**판이 올랐을 때 다시 돌려야 하는 것**
+**버전이 올랐을 때 다시 돌려야 하는 것**
 
 - ★★★ **예외 문구 전부** — 특히 원인을 틀리게 말하는 두 문구는 고쳐질 가능성이 있다.
 - ★★ **`e.stack` 첫 줄과 own 키 목록** — 엔진이 언제든 바꿀 수 있다.
@@ -391,6 +391,6 @@ identical 22  ·  differs 1  ·  total 23
 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮긴 출력이 하나도 없다).
 
 ★★ **예외는 `e.constructor.name` 과 `e.message` 로만 찍었다** — 스택트레이스는 한 줄도 없다. 모든 블록은 표준 출력뿐이다.
-★★★ **이 주제의 블록은 두 판에서 전부 identical** 이다(11번의 대조기 출력).
+★★★ **이 주제의 블록은 두 버전에서 전부 identical** 이다(11번의 대조기 출력).
 
 **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.

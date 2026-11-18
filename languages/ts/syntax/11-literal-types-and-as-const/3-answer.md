@@ -64,7 +64,7 @@ ex.11a.ts(31,1): error TS2322: Type '"square"' is not assignable to type '"circl
 
 **왜 그런가**
 
-| 적은 것 | 탐침이 답한 것 | 넓어졌나 |
+| 적은 것 | probe가 답한 것 | 넓어졌나 |
 |---|---|---|
 | `const cStr = "circle"` | **`"circle"`** | 아니다 |
 | `let lStr = "circle"` | **`string`** | ★ **넓어졌다** |
@@ -326,7 +326,7 @@ ex.11d.ts(25,7): error TS2322: Type '`on${string}`' is not assignable to type '`
 - ★★★ **펼쳐지는 이유**는 리터럴 유니온을 넣었기 때문이다. `string` 을 넣으면 값이 무한하니 **패턴 그대로** 남는다.
 - ★★ **조합은 곱해진다.** 조각이 둘이면 2 × 2 = 4, 셋이면 8 — 조각이 늘면 멤버가 폭발한다([목록의 **45번 주제**](../45-type-level-performance/)).
 - ★ 25행이 한계를 보여 준다. `` `on${string}` `` 은 `` `--${string}` `` 의 부분집합이 아니므로 막힌다 — **패턴도 타입으로 대조된다.**
-- ★ 멤버 순서(`"onDown" | "onUp"`)는 [**09번 주제**](../09-union-types/)와 같은 **이 판의 관찰**이다. 대조 기준으로 쓰지 않는다.
+- ★ 멤버 순서(`"onDown" | "onUp"`)는 [**09번 주제**](../09-union-types/)와 같은 **이 버전의 관찰**이다. 대조 기준으로 쓰지 않는다.
 
 ### 5. ★★★ **0글자** — `Object.isFrozen` 이 `false` 이고 `push` 가 그냥 된다
 
@@ -440,11 +440,11 @@ export declare const picked: "a" | "b";
 |---|---|---|
 | `export const cStr = "circle"` | ★ **`= "circle"`** | **`:` 가 아니라 `=`** — 값 하나로 고정됐다 |
 | `export let lStr = "circle"` | **`: string`** | 넓어진 결과 |
-| `export const frozen = { … } as const` | **`readonly` 포함 전문** | 2번의 탐침과 같다 |
-| `export const plain = { … }` | `{ mode: string; retries: number; }` | 1번의 탐침과 같다 |
+| `export const frozen = { … } as const` | **`readonly` 포함 전문** | 2번의 probe와 같다 |
+| `export const plain = { … }` | `{ mode: string; retries: number; }` | 1번의 probe와 같다 |
 | `export const frozenArr = [1,2,3] as const` | **`readonly [1, 2, 3]`** | 튜플이 그대로 실린다 |
 | `export const plainArr = [1,2,3]` | `number[]` | — |
-| `` export type Handler = `on${…}` `` | ★★★ **적은 그대로** | 4번의 탐침은 `"onDown" \| "onUp"` 이었다 |
+| `` export type Handler = `on${…}` `` | ★★★ **적은 그대로** | 4번의 probe는 `"onDown" \| "onUp"` 이었다 |
 | `export const picked: "a" \| "b" = "a"` | 그대로 | 주석을 적었으니 보존된다 |
 
 - ★★★ **한 파일 안에서 두 규칙이 같이 돈다** — **값 선언은 추론 결과**를, **타입 별칭은 표기**를 적는다.\
@@ -483,7 +483,7 @@ export declare const picked: "a" | "b";
 |---|---|---|---|---|
 | **타입 주석** `: "circle"` | ★ **그 타입으로 고정** | 돈다 | 아니다 — 적은 타입이 전부다 | 1번(13·14행) |
 | **`as const`** | ★ **리터럴 + `readonly` + 튜플** | 돈다 | 그렇다 — 굳힌 채로 | 2번 전체 |
-| **`satisfies`** | 고정하지 않는다 — **검사만** | ★ **돈다**([**06번 주제**](../06-excess-property-checks/) 실측) | ★ **그렇다 — 넓히지도 좁히지도 않는다** | ★ **안 던졌다**([목록의 **29번 주제**](../29-satisfies/)) |
+| **`satisfies`** | 고정하지 않는다 — **검사만** | ★ **돈다**([**06번 주제**](../06-excess-property-checks/) 실측) | ★ **그렇다 — 넓히지도 좁히지도 않는다** | ★ **실행하지 않았다**([목록의 **29번 주제**](../29-satisfies/)) |
 
 - ★★ 고르는 기준은 「**이 값의 타입을 내가 정할 것인가, 확인만 받을 것인가**」다.
 - ★★ 타입 주석은 **넓은 타입으로 덮어쓴다** — `const conf: Record<string, string> = { … }` 로 적으면 키의 리터럴이 사라진다.\
@@ -516,13 +516,13 @@ export declare const picked: "a" | "b";
 | 언제 일어나나 | **추론할 때** — 주석이 없을 때 | **유니온을 만들 때** — 주석에 적어도 일어난다 |
 | 예 | `let x = "a"` → `string` | `"x" \| "y" \| string` → `string` |
 | 막는 법 | `const` · 타입 주석 · `as const` | ★ **막을 수 없다** — `string` 을 안 섞는 수밖에 |
-| 증거 | 1번의 탐침 열세 개 | 09 의 2번 15행 |
+| 증거 | 1번의 probe 열세 개 | 09 의 2번 15행 |
 
 - ★★★ 헷갈리는 이유는 **결과가 똑같이 `string`** 이기 때문이다. 그러나 **원인이 다르니 고치는 법도 다르다.**
 - ★★ `"asc" | "desc" | string` 은 `as const` 로도 못 고친다 — 이미 **타입 자리에 `string` 을 적었기** 때문이다.
 - ★ 반대로 `let sort = "asc"` 는 `as const` 나 주석으로 고쳐진다 — **추론 단계의 문제**이기 때문이다.
 - ★ 둘을 잇는 관용구가 `"asc" | "desc" | (string & {})` 다. [**10번 주제**](../10-intersection-types/)의 3절이 `A & string` 이 **줄지 않는다**는 것을 확인했고,\
-  그 성질이 이 관용구의 토대다. 다만 **이 배치에서 이 관용구 자체는 안 던졌다.**
+  그 성질이 이 관용구의 토대다. 다만 **이 배치에서 이 관용구 자체는 실행하지 않았다.**
 
 ### 12. ★★ 세 층
 
@@ -530,7 +530,7 @@ export declare const picked: "a" | "b";
 |---|---|
 | **언어 보장** | `const` 는 리터럴을 고정하고 `let`·`var`·프로퍼티·배열 요소·함수 반환은 **넓어진다** · `as const` 는 **세 가지**를 재귀로 한다 · `as const` 는 **리터럴 식에만** 붙는다(`TS1355`) · 템플릿 리터럴 타입은 **조합으로 펼쳐진다** · **방출에 안 남는다** |
 | **설정에 달린 것** | ★ **없다**. 네 파일을 `--strict false` 로 다시 던져 **종료 코드와 출력이 전부 같은 것**을 확인했다(아래 블록) |
-| **이 판(7.0.2)의 관찰** | ★★ 펼쳐진 템플릿 리터럴 유니온의 **멤버 순서**(`"onDown" \| "onUp"`) · `TS2820` 이 **오타 후보를 고르는 방식** · `.d.ts` 가 객체 타입을 여러 줄로 펼쳐 적는 서식 · 진단 문구 전문 |
+| **이 버전(7.0.2)의 관찰** | ★★ 펼쳐진 템플릿 리터럴 유니온의 **멤버 순서**(`"onDown" \| "onUp"`) · `TS2820` 이 **오타 후보를 고르는 방식** · `.d.ts` 가 객체 타입을 여러 줄로 펼쳐 적는 서식 · 진단 문구 전문 |
 
 ```text
 ===== 같은 파일을 기본값과 --strict false 로 각각 던져 글자 단위로 대조한다 =====
@@ -556,7 +556,7 @@ ex.11d.ts    exit 1 = exit 1 · 출력 한 글자도 같다
 | 선언 방출 | `--declaration --emitDeclarationOnly ex.11f.ts` | exit 0 · 값은 추론 결과 · **`Handler` 는 적은 그대로** |
 | `strict` 대조 | 네 파일을 `--strict false` 로 재실행 | ★ **전부 동일** — 종료 코드도 출력도 같다 |
 
-**구현 의존 항목 — 판이 오르면 다시 돌릴 것**
+**구현 의존 항목 — 버전이 오르면 다시 돌릴 것**
 
 - ★★ **펼쳐진 템플릿 리터럴 유니온의 멤버 순서** — 09 의 유니온 정렬과 같은 성질이다. **이 문서의 대조 기준으로 쓰지 않는다.**
 - `TS2820` 이 「Did you mean …?」로 **어느 후보를 고르는가** — 보고기의 구현이다.
@@ -566,7 +566,7 @@ ex.11d.ts    exit 1 = exit 1 · 출력 한 글자도 같다
 **안 돌려 본 것**
 
 - **`satisfies`** — 9번 표의 한 칸을 차지하지만 **이 배치에서 안 던졌다.** 형태도 적지 않았다. [목록의 **29번 주제**](../29-satisfies/)에서 던진다.
-- **`as const` 로 enum 을 대신하는 관용구**(`typeof Color[keyof typeof Color]`) — **안 던졌다.** [목록의 **23번**](../23-typeof-type-operator/)·**31번 주제**.
+- **`as const` 로 enum 을 대신하는 관용구**(`typeof Color[keyof typeof Color]`) — **실행하지 않았다.** [목록의 **23번**](../23-typeof-type-operator/)·**31번 주제**.
 - **`"asc" | "desc" | (string & {})` 관용구** — 11번에서 **형태만** 적었고 던지지 않았다.
 - **템플릿 리터럴 조합이 커질 때의 검사 시간** — **재지 않았고 수치를 적지 않았다.** [목록의 **45번 주제**](../45-type-level-performance/)에서 잰다.
 - **7.0 이 바꾼 템플릿 리터럴 타입의 유니코드 취급** — ASCII 만 던졌다. [목록의 **27번 주제**](../27-template-literal-types/)에서 던진다.

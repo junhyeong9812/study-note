@@ -130,7 +130,7 @@
 | `alternate` 가 무엇인가 | 트리 두 벌을 돌려쓰는 짝. 갱신된 적 없는 fiber 는 짝이 **없다** | [Fiber 자료구조](flows/fiber/README.md) |
 | `return` 이 왜 `parent` 가 아닌가 | 부모가 둘일 수 있어서. 주석이 "스택 프레임의 복귀 주소" 라 부른다 | [Fiber 자료구조](flows/fiber/README.md) |
 | 렌더를 넘어 사는 플래그 | `flags & StaticMask` 한 줄이 가른다 | [Fiber 자료구조](flows/fiber/README.md) |
-| `<div>` 와 `<Foo/>` 가 갈리는 곳 | `createFiberFromTypeAndProps` 의 `getTag:` switch | [Fiber 자료구조](flows/fiber/README.md) |
+| `<div>` 와 `<Foo/>` 가 달라지는 곳 | `createFiberFromTypeAndProps` 의 `getTag:` switch | [Fiber 자료구조](flows/fiber/README.md) |
 | 클래스인지 함수인지 판정 | `prototype.isReactComponent` 가 있는지만 본다 (세 줄) | [Fiber 자료구조](flows/fiber/README.md) |
 | "Element type is invalid" | `Throw` fiber 의 `pendingProps` 에 담겨 렌더 때 되던져진다 | [Fiber 자료구조](flows/fiber/README.md) |
 
@@ -157,9 +157,9 @@
 | 리소스가 준비 안 됨 | `completeWork` 가 `SuspenseyCommitException` 을 던진다 | [completeWork](flows/complete-work/README.md) |
 | `onRecoverableError` | 커밋 끝에서 불린다. `catch` 로 감싸지 않는다 | [커밋](flows/commit/README.md) |
 | `hydrateRoot` | 커서 하나가 서버 DOM 을 걸으며 fiber 마다 노드를 집는다 | [하이드레이션](flows/hydration/README.md) |
-| "Hydration failed because..." | 집기(begin)나 수화(complete) 어느 쪽에서든 날 수 있다. 문구가 text/HTML 로 갈린다 | [하이드레이션](flows/hydration/README.md) |
+| "Hydration failed because..." | 집기(begin)나 수화(complete) 어느 쪽에서든 날 수 있다. 문구가 text/HTML 로 나뉜다 | [하이드레이션](flows/hydration/README.md) |
 | 수화가 어긋났을 때 | 가장 가까운 Suspense 경계부터(없으면 루트 전체를) **클라이언트 렌더로 다시 그린다** | [하이드레이션](flows/hydration/README.md) |
-| 서버 HTML 이 더 많을 때 | 그것도 어긋남이다 — 다만 `<form>` `<button>` `<head>` 안 등은 봐 준다 | [하이드레이션](flows/hydration/README.md) |
+| 서버 HTML 이 더 많을 때 | 그것도 불일치이다 — 다만 `<form>` `<button>` `<head>` 안 등은 봐 준다 | [하이드레이션](flows/hydration/README.md) |
 | `suppressHydrationWarning` | 부모 fiber 의 props 를 타고 내려가 DEV 경고만 끈다 | [하이드레이션](flows/hydration/README.md) |
 | `useId` 가 서버와 맞는 이유 | 탈수 경계에 트리 문맥을 담아 두었다가 다시 들어갈 때 복원한다 | [하이드레이션](flows/hydration/README.md) |
 

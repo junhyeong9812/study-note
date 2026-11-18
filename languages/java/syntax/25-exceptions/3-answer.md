@@ -212,7 +212,7 @@ replaceException() 에서 밖으로 나온 것 = java.lang.RuntimeException: fin
 
 - 공통 규칙: **`finally` 가 정상적으로 끝나지 않으면**(`return`·`throw`·`break`·`continue`) **진행 중이던 결과가 버려진다**(JLS §14.20.2).
 
-**`mutateAfter` 와 `mutateObject` 가 갈리는 이유**
+**`mutateAfter` 와 `mutateObject` 가 달라지는 이유**
 
 ```text
 mutateAfter — 값을 복사했다                 mutateObject — 같은 객체를 본다
@@ -648,7 +648,7 @@ public class MyException extends RuntimeException {
 **운영 패턴과 이 주제의 경계**
 
 - **여기는 "언어가 실패를 어떻게 표현하고 전달하는가"** — checked 규칙, `catch` 순서, 전파, 원인 사슬, `finally` 의미.
-- **저쪽은 "그 실패를 만났을 때 시스템이 무엇을 하는가"** — 재시도·백오프·차단기·격벽·대체값.
+- **저쪽은 "그 실패를 만났을 때 시스템이 무엇을 하는가"** — 재시도·백오프·차단기·벌크헤드·대체값.
 - 예: "`IOException` 을 어떻게 잡나"는 여기, "재시도를 몇 번 어떤 간격으로 하나"는 [`../../../../cs/ops-patterns/failure-modes/`](../../../../cs/ops-patterns/failure-modes/) 와 [`../../../../cs/ops-patterns/01-retry-backoff/`](../../../../cs/ops-patterns/01-retry-backoff/).
 
 ---

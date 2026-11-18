@@ -168,7 +168,7 @@ ERROR 1146 (42S02) at line 1: Table 'study.t' doesn't exist
    3) 스키마의 실제 표
 ```
 
-★ **이것이 이 주제의 무음 실패다.** 에러도 경고도 없고, 열 이름도 타입도 맞고, **값만 틀린다.**\
+★ **이것이 이 주제의 조용한 실패다.** 에러도 경고도 없고, 열 이름도 타입도 맞고, **값만 틀린다.**\
 [11번](../11-subquery-scalar-correlated-any-all/)의 "한정자를 빼서 `0,0,0` 이 나온" 사고와 같은 종류다 — **이름 해석이 조용히 다른 것을 고른다.**
 
 처방은 **CTE 이름에 접두어**(`cte_`·`x_`)를 붙이는 것이다.
@@ -177,7 +177,7 @@ ERROR 1146 (42S02) at line 1: Table 'study.t' doesn't exist
 
 ### 6. 최적화 장벽이 서나
 
-**다르다. `Index Cond` 냐 `Filter` 냐로 갈린다.**
+**다르다. `Index Cond` 냐 `Filter` 냐로 나뉜다.**
 
 ```text
 ### SQL: EXPLAIN (COSTS OFF) WITH c AS (SELECT * FROM emp) SELECT * FROM c WHERE id = 1;
@@ -419,7 +419,7 @@ PG 의 `MATERIALIZED` 는 조건을 못 내려가게 하는데(6번의 `Filter` 
 | 두 번 참조 (2번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | 1번의 출력을 근거로 쓴다 |
 | CTE 간 가시성 (3번) | PG 18.6 · MySQL 8.4.10 | 각 2회 | **에러 메시지가 근거다** — PG 의 `DETAIL`/`HINT` |
 | 이름의 수명 (4번) | PG 18.6 · MySQL 8.4.10 | 각 3회 | 두 문장 + 중첩 `WITH` |
-| 이름 가리기 (5번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | **에러 없이 CTE 가 이긴다** — 무음 실패 |
+| 이름 가리기 (5번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | **에러 없이 CTE 가 이긴다** — 조용한 실패 |
 | `MATERIALIZED` 계획 (6번) | PG 18.6 | 3회 (기본·`MATERIALIZED`·`NOT`) | `Index Cond` 대 `Filter` |
 | 인라인 도입 버전 (7번) | — | — | **릴리스 노트 인용**(실행 아님) |
 | 참조 2회의 계획 (8번) | PG 18.6 · MySQL 8.4.10 | 각 2회 | 단순 CTE + 집계 CTE |
@@ -433,7 +433,7 @@ PG 의 `MATERIALIZED` 는 조건을 못 내려가게 하는데(6번의 `Filter` 
 MySQL 쪽 벽 유무의 근거는 **8번·9번의 `EXPLAIN FORMAT=TREE`** 다.
 
 **언어 보장 항목** — 1~5·11번. 결과의 동일성, 가시성 규칙, 이름 수명, 이름 가리기, 열 이름 재지정은 두 엔진에서 같았다.\
-**방언이 갈리는 항목** — 6·8·9번. `MATERIALIZED`/`NOT MATERIALIZED` 는 **PG 12+ 전용**이고, **참조 2회에서 PG 는 벽을 세우는데 MySQL 8.4.10 은 안 세웠다.**\
+**방언이 달라지는 항목** — 6·8·9번. `MATERIALIZED`/`NOT MATERIALIZED` 는 **PG 12+ 전용**이고, **참조 2회에서 PG 는 벽을 세우는데 MySQL 8.4.10 은 안 세웠다.**\
 3번은 **성패가 같고 메시지의 질만 다르다** — PG 만 `WITH` 항목임을 알려 준다.
 
 **순서 보장** — 없다. 위 출력에 `ORDER BY` 를 붙인 것은 그 때문이다.
@@ -441,6 +441,6 @@ MySQL 쪽 벽 유무의 근거는 **8번·9번의 `EXPLAIN FORMAT=TREE`** 다.
 ## 실행 환경
 
 근거는 **실행 결과**다 — 본문의 출력·에러·실행 계획은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+2026-09-21 에 실제로 실행해 받은 것이다. 지어낸 출력은 없다.\
 표는 기존 `emp`·`dept` 만 썼다 — **새로 만든 표가 없다.**\
 문서 근거는 [PG 18 WITH Queries](https://www.postgresql.org/docs/18/queries-with.html) · [PG 12 릴리스 노트](https://www.postgresql.org/docs/release/12.0/) · [MySQL 8.4 WITH](https://dev.mysql.com/doc/refman/8.4/en/with.html).

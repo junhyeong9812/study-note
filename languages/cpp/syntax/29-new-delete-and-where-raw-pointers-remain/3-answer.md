@@ -66,7 +66,7 @@ g++   + ASan (2) 10판 중 리포트가 나온 판 10
 
 - ★★★ **경고는 한 줄 안에서 보이는 짝만 본다** — `new[]` 로 받은 이름을 `delete` 하는 것(3). `-O2` 에서 흐름을 조금 더 따라가 **(6) 해제 뒤 읽기**를 본다(`-Wuse-after-free`).
 - ★★★ **분석기는 경로를 따라가지만 예외 경로는 못 따라갔다** — (4)가 두 분석기 모두 비었다. `-fanalyzer` 는 **던지는 `new` 를 널 가능으로** 보아 헛짚었다.
-- ★★★ **ASan 은 실행이 지나간 경로만 본다 — 그래서 (4)를 잡는다.** 그런데 **누수 판정은 보수적 스캔**이라 clang 판이 (2)를 **10판 모두** 놓쳤다(수는 흔들리는 칸).
+- ★★★ **ASan 은 실행이 지나간 경로만 본다 — 그래서 (4)를 잡는다.** 그런데 **누수 판정은 보수적 스캔**이라 clang 버전이 (2)를 **10판 모두** 놓쳤다(수는 실행마다 달라지는 항목).
 
 ### 2. ★★★ raw 판 **`delete` 1 · `_Unwind_Resume` 0**, `unique_ptr` 판 **`delete` 2 · `_Unwind_Resume` 1** — 두 컴파일러 같다 · 1번의 **(4) 예외 경로 누수**
 
@@ -249,7 +249,7 @@ SUMMARY: AddressSanitizer: 4 byte(s) leaked in 1 allocation(s).
 - ★★★ **세 창이 서로 다른 칸을 비운다** — 하나만 믿으면 그 칸이 샌다.
 - ★ ASan 빌드의 할당 실패는 **프로그램 동작 자체를 바꾼다**(3번) — 「`bad_alloc` 을 잡는 코드」가 **돌 기회가 없다.**
 
-### 9. ★★ cppreference 는 **음수면 `bad_array_new_length` 와 맞는 예외**라 적는데, 이 판은 **그 핸들러를 건너 `bad_alloc` 핸들러**가 잡았다 · **표준 원문을 열지 못해** 판정하지 않았다
+### 9. ★★ cppreference 는 **음수면 `bad_array_new_length` 와 맞는 예외**라 적는데, 이 버전은 **그 핸들러를 건너 `bad_alloc` 핸들러**가 잡았다 · **표준 원문을 열지 못해** 판정하지 않았다
 
 - ★★ 이 문서가 연 것은 **cppreference 한 쪽**이다. 그것과 다른 관찰은 「**문서와 다른 관찰**」로 적는다 — **구현이 틀렸다는 판정에는 원문 조항이 필요하다**(제3의 상태).
 - ★ 「두 컴파일러에서 같았다」도 보장이 아니다 — **둘 다 libstdc++ 13 의 같은 `operator new[]`** 를 쓴다.
@@ -265,7 +265,7 @@ SUMMARY: AddressSanitizer: 4 byte(s) leaked in 1 allocation(s).
 | 무엇을 | 몇 번 · 어느 판 | 결과 |
 |---|---|---|
 | `raw01.cpp` + `raw-grid.sh` | 사고 6 × 도구 7 = 42칸 | ★★★ **24 / 42** · 헛짚음 5 |
-| `raw01.cpp` (2) 반복 | 두 컴파일러 ASan × 10판 | ★★ clang **0** · g++ **10** (흔들리는 칸) |
+| `raw01.cpp` (2) 반복 | 두 컴파일러 ASan × 10판 | ★★ clang **0** · g++ **10** (실행마다 달라지는 항목) |
 | `raw01.cpp` (4) 전문 | g++ ASan 1판 | ★★ `catch` 뒤 `Direct leak of 4 byte(s)` |
 | `raw03.cpp` + `raw-asm.sh` | 두 컴파일러 × 두 판 `-O2 -S` | ★★★ **delete 1 · 2 · `_Unwind_Resume` 0 · 1** |
 | `raw02.cpp` | g++ 세 크기 · clang 두 크기 · ASan 두 컴파일러 | ★★★ **`bad_alloc` · `nullptr`** · ASan **`allocation-size-too-big`** |
@@ -298,5 +298,5 @@ SUMMARY: AddressSanitizer: 4 byte(s) leaked in 1 allocation(s).
 **Ubuntu clang version 18.1.3 (1ubuntu1)** · libstdc++ 13 · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
 소스는 질문 파일과 같다(출력 블록의 배너에 파일 이름이 있다).\
 ★ ASan 블록은 마커를 `stderr` 로 찍었고, 자른 블록은 **자르는 명령을 배너에** 적었다. 블록은 캡처 스크립트가 받은 것이다 — 손으로 옮긴 줄은 없다.
-**읽는 법** — 흔들리는 칸은 **ASan 의 PID·주소 · clang + ASan 이 (2) 누수를 보고한 판의 수**다.\
+**읽는 법** — 실행마다 달라지는 항목은 **ASan 의 PID·주소 · clang + ASan 이 (2) 누수를 보고한 판의 수**다.\
 근거로 쓰는 것은 다음이다 — **격자 칸의 도구 이름 · 「N / 42」 · 호출 수 · 예외 이름 · ASan 오류 종류 · `run exit`**.

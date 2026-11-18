@@ -19,7 +19,7 @@
 | [`least-privilege`](#least-privilege) | 최소 권한·최소 노출·비밀 관리 | 14 |
 | [`fail-closed`](#fail-closed) | 판정 불가·조회 실패를 거부로 처리 | 4 |
 | [`race-condition`](#race-condition) | 순서·동시성에 따라 결과가 달라짐 | 10 |
-| [`contract-drift`](#contract-drift) | 선언한 계약과 실제 동작의 어긋남 | 7 |
+| [`contract-drift`](#contract-drift) | 선언한 계약과 실제 동작의 불일치 | 7 |
 | [`test-reliability`](#test-reliability) | 초록불이 결함 유무를 말해 주는가 | 8 |
 | [`parser-differential`](#parser-differential) | 검사하는 쪽과 실행하는 쪽의 해석 차이 | 3 |
 | [`environment-drift`](#environment-drift) | 실행 환경·채널마다 값·동작이 달라짐 | 8 |
@@ -92,7 +92,7 @@ issue/  (183)
 - [critical-section-design](cross-cutting/concurrency/critical-section-design/) — 하나의 불변식은 하나의 임계구역에서 원자적으로 갱신하고(check-then-act 금지), 락 안에서는 느린 I/O·join을 하지 않으며, 중복 작업은 single-flight로 합친다.
 - [event-loop-head-of-line-blocking](cross-cutting/concurrency/event-loop-head-of-line-blocking/) — 단일 수신 루프에서 처리·송신을 직접 await하면 가장 느린 작업·구독자가 루프 전체를 막아(HOL) 무관한 메시지까지 지연·타임아웃된다.
 - [out-of-order-completion](cross-cutting/concurrency/out-of-order-completion/) — 비동기 응답·이벤트의 완료 순서는 발행 순서와 무관하다 — 세대 토큰·CAS·단조 전이로 늦게 도착한 옛 결과가 최신 상태를 덮지 못하게 한다.
-- [single-slot-handoff-loss](cross-cutting/concurrency/single-slot-handoff-loss/) — 용량 1 슬롯·전역 요청 버스에 요청을 두면 동시·버스트 생산자가 서로를 덮어 무음 유실된다 — 큐·id 맵·ACK 후 소비·소비자 단일화로 정확히 1회 전달한다.
+- [single-slot-handoff-loss](cross-cutting/concurrency/single-slot-handoff-loss/) — 용량 1 슬롯·전역 요청 버스에 요청을 두면 동시·버스트 생산자가 서로를 덮어 조용한 유실된다 — 큐·id 맵·ACK 후 소비·소비자 단일화로 정확히 1회 전달한다.
 - [single-writer-ownership](cross-cutting/concurrency/single-writer-ownership/) — 여러 writer가 락 없이 같은 저장 단위를 read-modify-write하면 lost update가 난다 — 저장소를 writer별로 분리하거나 원자 갱신(조건부 UPDATE·upsert·CAS)으로 단일 소유를 강제한다.
 - [snapshot-stream-cursor](cross-cutting/concurrency/snapshot-stream-cursor/) — 스냅샷과 라이브 스트림을 이을 때는 먼저 구독하고 원자적 커서(epoch:seq) 이후만 적용해야 무손실·무중복이며, 커서는 짝이 되는 로컬 상태와 함께만 의미가 있다.
 - [thread-affine-object-confinement](cross-cutting/concurrency/thread-affine-object-confinement/) — 특정 스레드·이벤트 루프에 묶인 객체는 그 소유자 안에 가두고 외부에는 채널·threadsafe 진입점만 노출한다(actor 패턴).
@@ -117,7 +117,7 @@ issue/  (183)
 - [key-normalization-consistency](cross-cutting/data/key-normalization-consistency/) — 검사·저장·조회·조인이 같은 값을 다룰 때 정규화 규칙(대소문자·trim·콜레이션·유니코드 정규형·표기)이 한 곳이라도 다르면 매칭이 조용히 실패하거나 검사가 우회된다.
 - [lookup-cost-and-indexing](cross-cutting/data/lookup-cost-and-indexing/) — 조회 비용은 자료구조·인덱스가 결정한다 — 인덱스 없는 조인·upsert·선행 와일드카드·역방향 선형 탐색·해시 군집화는 입력 크기에 따라 O(n²)로 붕괴한다.
 - [ordering-total-order](cross-cutting/data/ordering-total-order/) — 결과 순서는 ORDER BY·전순서 키가 없으면 보장되지 않는다(동점·Set 순회·사전식 비교·분할 컷) — 결정성이 필요하면 전순서를 명시한다.
-- [pagination-cursor-integrity](cross-cutting/data/pagination-cursor-integrity/) — 커서 페이징은 이어받기 쿼리가 첫 쿼리와 같은 집합을 가리키고 종료·전진이 스캔한 키 윈도우에서 나와야 한다 — 아니면 가지·꼬리가 무음 유실된다.
+- [pagination-cursor-integrity](cross-cutting/data/pagination-cursor-integrity/) — 커서 페이징은 이어받기 쿼리가 첫 쿼리와 같은 집합을 가리키고 종료·전진이 스캔한 키 윈도우에서 나와야 한다 — 아니면 가지·꼬리가 조용한 유실된다.
 - [time-semantics](cross-cutting/data/time-semantics/) — 벽시계는 단조 ID가 아니고 날짜는 타임존에 종속되며 구간 경계는 반열린이어야 한다 — 서로 다른 시계·타임존·해상도를 섞으면 조용히 틀린다.
 
 #### [cross-cutting/database/](cross-cutting/database/) — 스키마 이력·방언·트랜잭션
@@ -198,7 +198,7 @@ issue/  (183)
 - [change-detection-key-design](cross-cutting/reliability/change-detection-key-design/) — 변경 감지·캐시 키는 결과에 영향을 주는 입력 전부를 반영해야 하고(mtime·길이·합산값은 불완전), 잠금·정체성 키에는 가변값을 넣지 않는다 — 한쪽이면 갱신 누락, 반대면 무한 루프.
 - [cleanup-on-every-exit-path](cross-cutting/reliability/cleanup-on-every-exit-path/) — 종료 경로가 여럿이면 경로마다 정리를 흩어 두지 말고 스코프 소멸(RAII·try/finally·trap)에 묶어 모든 경로(에러·취소·spawn 실패·예외)에서 정확히 한 번 해제한다.
 - [closed-state-model](cross-cutting/reliability/closed-state-model/) — 상태 공간을 타입·전이 규칙으로 닫아라 — 불법 상태·누락된 조합·종단 재전이·검사 없는 set·비단조 guard는 오보고와 교착을 만든다.
-- [debounce-trailing-contract](cross-cutting/reliability/debounce-trailing-contract/) — 디바운스·보류 전송은 "마지막 변경 뒤 반드시 한 번 더"와 종결 이벤트와의 순서라는 새 계약을 만든다 — 지키지 못하면 마지막 변경이 무음 유실되거나 순서가 뒤집힌다.
+- [debounce-trailing-contract](cross-cutting/reliability/debounce-trailing-contract/) — 디바운스·보류 전송은 "마지막 변경 뒤 반드시 한 번 더"와 종결 이벤트와의 순서라는 새 계약을 만든다 — 지키지 못하면 마지막 변경이 조용한 유실되거나 순서가 뒤집힌다.
 - [derived-cache-staleness](cross-cutting/reliability/derived-cache-staleness/) — 파생 캐시·사본·비동기 로그는 원본보다 늦으며 실패 결과를 캐시하면 일시 장애가 영구화된다 — 완결성·최신성이 필요한 판정은 정본(이벤트 페이로드·원본)을 직접 읽는다.
 - [deserialization-trust-boundary](cross-cutting/reliability/deserialization-trust-boundary/) — 역직렬화 경계에서 타입 보장이 끊긴다 — 영속·외부 데이터는 로드 시 검증·정규화하고, 부분 손상은 격리하되 드롭은 관측하며, 모르는 값·깊이 공격·스키마 진화를 명시 처리한다.
 - [edge-detection-on-raw-signals](cross-cutting/reliability/edge-detection-on-raw-signals/) — 여러 신호를 스칼라로 접거나 매 tick 덮어쓰거나 주기 샘플링하면 사건(edge)이 사라진다 — 기저 신호별 edge 판정·래치·세대 ID·지속 조건으로 감지한다.
@@ -255,7 +255,7 @@ issue/  (183)
 
 ### [java/](java/) — Java 언어·JVM·Spring
 
-- [container-gc-ergonomics](java/container-gc-ergonomics/) — 수집기를 지정하지 않은 JVM은 실행 환경(컨테이너 한도)을 보고 수집기를 고른다 — 메모리 한도가 서버급 기준 아래면 Serial이 골라져 주기적 Full GC가 고정 도착률 부하의 꼬리 지연이 된다, 수집기를 명시하고 실제 적용값을 회차마다 대조한다.
+- [container-gc-ergonomics](java/container-gc-ergonomics/) — 수집기를 지정하지 않은 JVM은 실행 환경(컨테이너 한도)을 보고 수집기를 고른다 — 메모리 한도가 서버급 기준 아래면 Serial이 골라져 주기적 Full GC가 고정 도착률 부하의 테일 레이턴시가 된다, 수집기를 명시하고 실제 적용값을 회차마다 대조한다.
 - [language-semantics-traps](java/language-semantics-traps/) — Java 언어 규칙(Error≠Exception·정적 초기화 순서·제네릭 불변성·소거·오버로드 모호성·주석 렉싱·인자 평가 순서)이 직관과 달라 컴파일은 통과하고 런타임에서 틀린다.
 - [lazy-resolution-context-propagation](java/lazy-resolution-context-propagation/) — 이름처럼 나중에 해석되는 값은 해석 문맥(ClassLoader)과 한 쌍이다 — 파생 객체가 문맥을 떨어뜨리고 null을 기본 로더로 대체하면 예외 또는 이름만 같은 다른 Class(조용한 오답)가 나온다, 파생 팩토리가 문맥을 운반하는지 형제 팩토리와 대칭으로 점검하고 테스트는 정체성을 단언한다.
 - [serializable-capture-contract](java/serializable-capture-contract/) — Serializable을 선언한 객체·람다가 비직렬화 객체(리플렉션 타입·TypeVariable)를 캡처하면 직렬화 계약이 조용히 깨진다.
@@ -325,7 +325,7 @@ issue/  (183)
 
 ### [typescript/](typescript/) — TS/JS·브라우저·React·Next
 
-- [js-language-traps](typescript/js-language-traps/) — JS 언어 규칙(TDZ·객체 리터럴 즉시 평가·중복 키 무음 덮어쓰기·try 안 await 없는 return·구조화 에러의 String 변환)이 직관과 달라 조용히 오동작한다.
+- [js-language-traps](typescript/js-language-traps/) — JS 언어 규칙(TDZ·객체 리터럴 즉시 평가·중복 키 조용한 덮어쓰기·try 안 await 없는 return·구조화 에러의 String 변환)이 직관과 달라 조용히 오동작한다.
 
 #### [typescript/browser/](typescript/browser/) — 브라우저 입력
 
@@ -351,7 +351,7 @@ issue/  (183)
 - [separation-structure-vs-style](typescript/react/separation-structure-vs-style/) — 렌더러는 구조만, 표시는 CSS가 맡아야 한다(관심사 분리).
 - [stale-render-state](typescript/react/stale-render-state/) — 핸들러·클로저는 생성 시점 렌더의 state 스냅샷을 본다 — 같은 틱의 연속 이벤트·async 콜백은 가변 ref로 최신 값을 읽어야 한다.
 - [theming-token-reach](typescript/react/theming-token-reach/) — CSS 변수 테마는 우리 DOM 캐스케이드에만 닿는다 — canvas·JS 위젯·네이티브 컨트롤은 각자 API로 주입하고, 한 시각 단위의 색은 모두 같은 토큰에서 파생한다.
-- [tree-position-semantics](typescript/react/tree-position-semantics/) — React는 DOM이 아니라 컴포넌트 트리 위치로 인스턴스 동일성·Context 공급·합성 이벤트 전파를 결정한다(포털 포함) — DOM 기반 판정과의 어긋남을 명시 처리한다.
+- [tree-position-semantics](typescript/react/tree-position-semantics/) — React는 DOM이 아니라 컴포넌트 트리 위치로 인스턴스 동일성·Context 공급·합성 이벤트 전파를 결정한다(포털 포함) — DOM 기반 판정과의 불일치를 명시 처리한다.
 - [xss-escape-then-assemble](typescript/react/xss-escape-then-assemble/) — 신뢰 불가 텍스트를 HTML·스크립트 위치에 삽입하면 XSS가 된다 — 전체를 이스케이프(또는 데이터 채널·sanitizer)한 뒤 필요한 마커만 조립한다.
 
 ## 태그 역인덱스
@@ -476,7 +476,7 @@ issue/  (183)
 
 ### contract-drift
 
-선언한 계약과 실제 동작의 어긋남 — 7개
+선언한 계약과 실제 동작의 불일치 — 7개
 
 - [write-back-out-of-order-eviction](cross-cutting/database/write-back-out-of-order-eviction/) · `cross-cutting/database`
 - [api-contract-evolution](cross-cutting/network/api-contract-evolution/) · `cross-cutting/network`

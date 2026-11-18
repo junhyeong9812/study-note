@@ -29,14 +29,14 @@
 
 | 비유 | 실체 | 확인하는 법 |
 |---|---|---|
-| 요리사 한 명 | 이벤트 루프(한 스레드) | 블로킹 탐침(동작 4) |
+| 요리사 한 명 | 이벤트 루프(한 스레드) | 블로킹 probe(동작 4) |
 | 벽에 건 주문표 | `asyncio.create_task` 의 `Task` | `await` 없이도 돈다(동작 1) |
 | 다른 냄비로 간다 | `await` — 루프에 양보 | 로그가 끼어든다(동작 4) |
 | 냄비 앞에서 존다 | 블로킹 호출(`time.sleep`) | 끼어든 줄 `0 / 5` 판(동작 4) |
 | 「다 되면 알려 줘」 | `gather` | 취소 전파 격자(동작 2) |
 | 한 테이블의 코스 | `TaskGroup` | 취소 전파 격자(동작 2) · 봉투(동작 3) |
 | 「그 주문 접어」 쪽지 | `Task.cancel()` → 다음 `await` 에서 `CancelledError` | 삼키면(동작 6) |
-| 주문표를 아무도 안 들고 있다 | 태스크 참조를 안 쥔 `create_task` | GC 탐침(동작 7) |
+| 주문표를 아무도 안 들고 있다 | 태스크 참조를 안 쥔 `create_task` | GC probe(동작 7) |
 
 **똑같은 구조다** — 실무에서 이게 물리는 자리도 굳어 있다.\
 「**`gather` 로 요청 셋을 보냈는데 하나가 실패했다 — 에러는 받았는데 나머지 둘이 계속 돌아 DB 에 썼다**」·
@@ -50,26 +50,26 @@
 > **구조적 동시성(structured concurrency)** — 동시에 도는 작업들을 **한 블록에 묶어**, 그 블록을 나갈 때 **전부 끝났거나 전부 취소됐음**을 보장하는 방식. `TaskGroup` 이 그것이다.\
 > 예: `async with asyncio.TaskGroup() as tg:` 를 나오면 그 안에서 만든 태스크는 하나도 안 남는다.
 
-### ★★ 이 주제가 쓰는 창 / 부적용인 창
+### ★★ 이 주제가 쓰는 창 / 해당 없는 창
 
-**본체는 ① 취소 전파 격자다.** 세 구조(`gather` · `gather(return_exceptions=True)` · `TaskGroup`) × 세 사건(자식 하나가 예외 · 자식 하나가 취소됨 · 기다리는 쪽이 취소됨) 에서
-**형제 A·C 의 운명**과 **기다리던 코드가 본 것**을 한 표로 찍고, **`gather` 와 `TaskGroup` 이 갈린 칸을 스크립트가 센다.**
+**핵심은 ① 취소 전파 격자다.** 세 구조(`gather` · `gather(return_exceptions=True)` · `TaskGroup`) × 세 사건(자식 하나가 예외 · 자식 하나가 취소됨 · 기다리는 쪽이 취소됨) 에서
+**형제 A·C 의 운명**과 **기다리던 코드가 본 것**을 한 표로 찍고, **`gather` 와 `TaskGroup` 이 달라진 항목을 스크립트가 센다.**
 그리고 ② **로그 끼어들기 창**이 블로킹을 **시간 없이** 보인다.
 
 | 창 | 무엇을 말해 주나 | 못 보는 것 |
 |---|---|---|
 | ① ★★★ **취소 전파 격자**(`sleep(0)` 걸음) | 형제가 **취소됐나 · 끝까지 돌았나** · 기다리던 코드가 **무엇을 받았나** | 실제 I/O 가 도중에 끊기는 모양 |
-| ② ★★★ **로그 끼어들기 창**(「A 시작과 A 끝 사이에 B 의 줄이 있나」 참/거짓 · 5판) | 루프가 **멈췄나** | 얼마나 멈췄나(★ 부적용 — 시간을 안 찍는다) |
+| ② ★★★ **로그 끼어들기 창**(「A 시작과 A 끝 사이에 B 의 줄이 있나」 참/거짓 · 5판) | 루프가 **멈췄나** | 얼마나 멈췄나(★ 해당 없음 — 시간을 안 찍는다) |
 | ③ ★★ **예외 모양 창**(타입 · `.exceptions` · `cancelling()`) | `ExceptionGroup` 인가 · **취소 요청을 받은 것인가, 결과로 `CancelledError` 를 받은 것인가** | — |
 | ④ ★★ **약한 참조 창**(`weakref.ref(task)` + `gc.collect()` · 20판) | 참조 없는 태스크가 **정말 사라지나** | 「언제든」의 **자연 발생 시점**(강제로 `gc.collect()` 를 불렀다) |
 | ⑤ ★ **판 격자**(3.11 대 3.12) | 취소 규칙이 판 사이에 **움직였나** | 3.10 이하(`TaskGroup` 자체가 없다) · 3.13 이후 |
 | ⑥ ★ **교차 갈래 창**(인용만) | Go `context` 나무 · Go `select` · JS `Promise.all` 과 **같은 자리** | — |
-| ★ **부적용인 창** — 경과 시간 | — | ★★★ 이 주제의 질문은 「**멈췄나 · 끼어들었나**」이지 「**얼마나**」가 아니다 — **잴 것이 없다**(재지 않은 것이 아니라 질문 밖이다) |
+| ★ **해당 없는 창** — 경과 시간 | — | ★★★ 이 주제의 질문은 「**멈췄나 · 끼어들었나**」이지 「**얼마나**」가 아니다 — **잴 것이 없다**(재지 않은 것이 아니라 질문 밖이다) |
 | ★ **제5의 상태** — 「태스크가 GC 될 수 있다」 | 문서가 「**언제든**」이라 한 것을 **「참조를 끊고 `gc.collect()` 를 부르면 사라지나」** 로 바꿔 물었다 | ★ 바꾼 창은 **「어떤 코드에서 저절로 일어나나」는 못 본다** — `asyncio.sleep` 을 기다리는 태스크는 **20판 모두 안 사라졌다**(동작 7) |
 | ★ **못 잰 것** — 3.10 이하의 `gather` 대 `TaskGroup` | — | 이 머신에 3.10 이 없고, `TaskGroup` 은 3.11 부터다 |
 
-★★ **②가 이 주제의 네 번째 창이다.** 블로킹을 **시간**으로 재면 「느렸다」까지만 말하고, 머신이 바쁘면 숫자가 흔들린다.
-**「`slow start` 와 `slow end` 사이에 `tick` 줄이 하나라도 있나」** 로 물으면 답이 `0 / 5` 대 `5 / 5` 로 갈리고 **숫자가 안 흔들린다**(동작 4).
+★★ **②가 이 주제의 네 번째 창이다.** 블로킹을 **시간**으로 재면 「느렸다」까지만 말하고, 머신이 바쁘면 숫자가 실행마다 달라진다.
+**「`slow start` 와 `slow end` 사이에 `tick` 줄이 하나라도 있나」** 로 물으면 답이 `0 / 5` 대 `5 / 5` 로 갈리고 **숫자가 달라지지 않는다**(동작 4).
 
 ## 이 주제가 답하려는 질문
 
@@ -170,7 +170,7 @@ asyncio.run(main())
 * ★★ **`sequential` — `await` 두 줄은 동시가 아니다.** `a end` 가 나온 뒤에야 `b start`. `await` 는 **그 자리에서 한 코루틴을 끝까지 기다린다**([51번](../51-asyncio-coroutine-basics/2-summary.md)이 정본).
 * ★★★ **`two_tasks` — `main: both tasks created` 가 `a start` 보다 먼저다.** `create_task` 는 **돌리지 않고 예약만** 한다. `main` 이 `await ta` 로 양보하는 순간 **a 와 b 가 번갈아** 걷는다.
 * ★★★ **`task_never_awaited` — `await` 를 한 번도 안 한 태스크도 끝까지 돌았다**(`a start | a end`).
-  51번의 「부르기만 하면 한 줄도 안 돈다」는 **코루틴 객체**의 말이고, **태스크는 걸어 두기만 하면 돈다.** 이 차이가 동작 7 의 GC 경고로 이어진다 — 아무도 안 쥐고 있어도 도는 물건이라서.
+  51번의 「부르기만 하면 한 줄도 안 돈다」는 **코루틴 객체**의 말이고, **태스크는 걸어 두기만 하면 돈다.** 이 차이가 동작 7 의 GC 경고로 이어진다 — 아무도 안 잡고 있어도 도는 물건이라서.
 * ★ **`gather_order` — 결과 리스트는 인자 순서**(`['slow', 'fast']`)이고, **끝난 순서**(`fast end | slow end`)가 아니다. 문서 — *"The order of result values corresponds to the order of awaitables in aws."*
 
 **비용** — 태스크는 **예외도 혼자 들고 있다.** 아무도 `await` 하지 않은 태스크가 실패하면 그 예외는 **기다리는 사람 없이** 태스크 안에 남는다. 그래서 「걸어 두고 잊기」는 동작 7 의 참조 문제와 함께 **예외를 잃는** 자리이기도 하다 — 그 예외가 루프의 예외 처리기로만 가는 것은 「더 들어가면」의 블록이 보인다.
@@ -346,7 +346,7 @@ gather vs TaskGroup, cells that differ (A, C, seen x 3 scenarios): 4 / 9
                                                        → 4 / 9
 ```
 
-* ★★★ **마지막 줄 — `gather` 와 `TaskGroup` 이 갈린 칸 `4 / 9`.** 셋이 `one raises` 에 몰려 있고, 하나가 `one child cancelled` 에 있다. **`outer cancelled` 는 한 칸도 안 갈렸다.**
+* ★★★ **마지막 줄 — `gather` 와 `TaskGroup` 이 달라진 항목 `4 / 9`.** 셋이 `one raises` 에 몰려 있고, 하나가 `one child cancelled` 에 있다. **`outer cancelled` 는 한 칸도 달라지지 않았다.**
 * ★★★ **`one raises` — `gather` 는 형제를 안 취소한다.** 기다리던 코드는 `ValueError('b')` 를 **A 가 3걸음일 때** 받았고(A 는 아직 안 끝났다), A·C 는 그 뒤에 **혼자 끝까지 갔다**(`finished`).
   문서 그대로다 — *"Other awaitables in the aws sequence **won't be cancelled** and will continue to run."*
   **`TaskGroup` 은 A·C 를 2걸음에서 멈추고**, 다 멈춘 **뒤에야** `ExceptionGroup[ValueError('b')]` 를 올렸다. 예외 **하나**여도 봉투에 담긴다.
@@ -360,7 +360,7 @@ gather vs TaskGroup, cells that differ (A, C, seen x 3 scenarios): 4 / 9
 * ★ **`return_exceptions=True` 는 형제 운명을 안 바꾼다** — A·C 는 `gather` 기본과 같이 `finished` 이고, 예외가 **결과 리스트의 한 칸**(`['A', 'ValueError', 'C']`)이 될 뿐이다. 기다리는 쪽이 취소되면 **여전히 `CancelledError`** 다.
 * ★ **`TaskGroup` 의 `one raises` 칸에서 기다리던 태스크의 `cancelling()` 이 `1`** 이다 — 문서가 말한 *"the task directly containing the `async with` statement is also cancelled"* 의 흔적이다. 그 `CancelledError` 는 **블록 밖으로 안 나오고** `ExceptionGroup` 으로 바뀌어 나왔다.
 
-★★ **3.11 판도 한 글자도 같았다** — 같은 소스를 `python3.11` 로 던졌다.
+★★ **3.11 판도 한 글자도 같았다** — 같은 소스를 `python3.11` 로 실행했다.
 
 ```text
 ===== python3.11 - <e52_grid_py311.py =====
@@ -567,8 +567,8 @@ asyncio.run(main())
   문서 — *"While a Task is running in the event loop, no other Tasks can run in the same thread. When a Task executes an `await` expression, the running Task gets suspended, and the event loop executes the next Task."* `time.sleep` 에는 **`await` 가 없다.**
 * ★★★ **`await asyncio.sleep` · `await asyncio.to_thread(time.sleep)` — 끼어든 판 `5 / 5`.** 세 `tick` 이 전부 `slow start` 와 `slow end` **사이**에 있다.
   **`to_thread` 는 블로킹 호출을 그대로 두고 자리를 옮긴 것**이다 — 조는 것은 다른 스레드이고, 루프의 스레드는 `await` 에서 양보한다.
-* ★★ **`distinct log orders over 5 runs: 1`** — 세 경우 모두 다섯 판이 **한 가지 순서**였다. 「끼어드나」는 판마다 흔들리는 성질이 아니었다.
-* ★ **이 탐침은 「얼마나 늦었나」를 안 잰다** — 시간을 찍지 않았다. 말할 수 있는 것은 **「그동안 아무도 못 돌았다」** 뿐이고, 그것이 곧 서버에서 **다른 요청이 전부 멈춘** 모양이다.
+* ★★ **`distinct log orders over 5 runs: 1`** — 세 경우 모두 다섯 버전이 **한 가지 순서**였다. 「끼어드나」는 판마다 달라지는 성질이 아니었다.
+* ★ **이 probe는 「얼마나 늦었나」를 안 잰다** — 시간을 찍지 않았다. 말할 수 있는 것은 **「그동안 아무도 못 돌았다」** 뿐이고, 그것이 곧 서버에서 **다른 요청이 전부 멈춘** 모양이다.
 * ★ **`to_thread` 가 CPU 계산에도 듣나**는 이 문서의 몫이 아니다 — 문서는 *"Due to the GIL, `asyncio.to_thread()` can typically only be used to make IO-bound functions non-blocking."* 이라 적고, 그 GIL 이 무엇을 막는지는 [53번](../53-gil-and-choosing-concurrency/2-summary.md)이 잰다.
 
 **비용** — `to_thread` 는 **스레드 하나를 빌린다**(기본 실행기). 블로킹 호출이 **아주 많이** 동시에 걸리면 그 풀의 크기가 새 한계가 된다 — 그 한계는 이 문서의 창(끼어들었나) 밖이다. **처방의 순서는 「비동기 판 라이브러리를 쓴다 → 안 되면 `to_thread`」** 다.
@@ -668,7 +668,7 @@ CancelledError is subclass of Exception: False
 * ★★ **`asyncio.timeout` 블록 안쪽에서는 아직 `CancelledError`, 바깥에서야 `TimeoutError`** — 문서 *"the `TimeoutError` can only be caught *outside* of the context manager."* 블록 **안에** `except TimeoutError:` 를 두면 안 걸린다.
 * ★★ **`asyncio.TimeoutError is TimeoutError` 가 `True`** — 3.11 부터 **같은 클래스**다(문서 *"A deprecated alias of `TimeoutError`"*). 옛 코드의 `except asyncio.TimeoutError:` 도 그대로 걸린다.
 * ★ **`CancelledError` 는 `Exception` 의 하위가 아니다**(`False`) — 3.8 부터 `BaseException` 직속이다. 그래서 `except Exception:` 은 취소를 **안 삼킨다** — 그런데 `except BaseException:`·맨 `except:` 는 삼킨다(동작 6).
-* ★ **두 방식이 이 탐침에서 낸 줄은 같다** — 차이는 **모양**이다. `timeout` 은 **여러 `await` 를 한 블록에** 묶고 마감을 `reschedule` 로 옮길 수 있고, `wait_for` 는 **awaitable 하나**를 받는다. 3.11 What's New 는 새 코드에 `timeout` 을 권한다.
+* ★ **두 방식이 이 probe에서 낸 줄은 같다** — 차이는 **모양**이다. `timeout` 은 **여러 `await` 를 한 블록에** 묶고 마감을 `reschedule` 로 옮길 수 있고, `wait_for` 는 **awaitable 하나**를 받는다. 3.11 What's New 는 새 코드에 `timeout` 을 권한다.
 
 ### 6. ★★★ `CancelledError` 를 삼키면 — 타임아웃이 조용히 사라진다
 
@@ -872,12 +872,12 @@ count: 20
 (exit 0)
 ```
 
-* ★★ **참조를 안 쥔 채 「혼자만 아는 퓨처」를 기다리던 태스크는 `20 / 20` 판 사라졌다** — `gc.collect()` 한 번에. 루프의 예외 처리기에 `Task was destroyed but it is pending!` 가 **20번** 왔다. 태스크는 **끝나지 못하고** 없어졌다.
+* ★★ **참조를 안 잡은 채 「혼자만 아는 퓨처」를 기다리던 태스크는 `20 / 20` 판 사라졌다** — `gc.collect()` 한 번에. 루프의 예외 처리기에 `Task was destroyed but it is pending!` 가 **20번** 왔다. 태스크는 **끝나지 못하고** 없어졌다.
   문서 — *"The event loop only keeps weak references to tasks. A task that isn't referenced elsewhere may get garbage collected at any time, even before it's done."*
 * ★★ **참조를 쥐면(`held.append(task)`) `0 / 20`** — 문서의 처방(*"gather them in a collection"*)이 그대로 듣는다.
-* ★★★ **그런데 `asyncio.sleep` 을 기다리는 태스크는 참조를 안 쥐어도 `0 / 20`** — 루프의 **타이머**가 그 태스크의 깨우기 콜백을 쥐고 있기 때문이다(★ 이것은 **구현의 사정**이다). 그래서 흔한 예제로는 **재현이 안 되고**, 「내 코드는 괜찮던데」가 된다.
-  ★ **문서는 「언제든」이라 했다 — 이 탐침이 보인 것은 「이 두 경우에서 그랬다」 뿐이다.** 기다리는 대상이 무엇이냐에 따라 달라지므로 **규칙은 문서대로 「늘 쥔다」** 다.
-* ★ 이 탐침은 **`gc.collect()` 를 손으로 불렀다** — 순환 수집기가 **저절로** 도는 시점은 재지 않았다(창 표의 제5의 상태).
+* ★★★ **그런데 `asyncio.sleep` 을 기다리는 태스크는 참조를 안 쥐어도 `0 / 20`** — 루프의 **타이머**가 그 태스크의 깨우기 콜백을 잡고 있기 때문이다(★ 이것은 **구현의 사정**이다). 그래서 흔한 예제로는 **재현이 안 되고**, 「내 코드는 괜찮던데」가 된다.
+  ★ **문서는 「언제든」이라 했다 — 이 probe가 보인 것은 「이 두 경우에서 그랬다」 뿐이다.** 기다리는 대상이 무엇이냐에 따라 달라지므로 **규칙은 문서대로 「늘 잡는다」** 다.
+* ★ 이 probe는 **`gc.collect()` 를 손으로 불렀다** — 순환 수집기가 **저절로** 도는 시점은 재지 않았다(창 표의 제5의 상태).
 
 ### 8. ★ `asyncio.wait` — 「먼저 끝난 것」을 받고, 나머지는 네가 정한다
 
@@ -969,7 +969,7 @@ coroutine passed to wait(): TypeError Passing coroutines is forbidden, use tasks
 
 * `create_task` 는 **실행 중인 루프 안에서만** 부른다(`async def` 안).
 * `gather` 는 코루틴을 **저절로 태스크로 감싼다** — `wait` 는 3.11 부터 **안 감싸고 거절한다.**
-* `TaskGroup` 의 태스크는 **블록을 나갈 때 전부 끝나 있다** — 참조를 따로 안 쥐어도 블록이 쥔다.
+* `TaskGroup` 의 태스크는 **블록을 나갈 때 전부 끝나 있다** — 참조를 따로 안 쥐어도 블록이 잡는다.
 * `CancelledError` 는 `BaseException` 직속이다 — `except Exception:` 에 안 걸린다.
 
 ## 어디서 틀리나
@@ -981,7 +981,7 @@ coroutine passed to wait(): TypeError Passing coroutines is forbidden, use tasks
 
 ### (2) ★★★ 「`gather` 는 절대 자식을 취소하지 않는다」
 
-* 반대쪽으로 외워도 틀린다 — **기다리는 쪽이 취소되면** `gather` 도 A·B·C 를 **전부 취소한다**(`outer cancelled` 행). 이 사건에서는 `TaskGroup` 과 **한 칸도 안 갈렸다.**
+* 반대쪽으로 외워도 틀린다 — **기다리는 쪽이 취소되면** `gather` 도 A·B·C 를 **전부 취소한다**(`outer cancelled` 행). 이 사건에서는 `TaskGroup` 과 **한 칸도 달라지지 않았다.**
 
 ### (3) ★★★ 「`except CancelledError:` 에 왔으니 내가 취소된 것이다」
 
@@ -1005,7 +1005,7 @@ coroutine passed to wait(): TypeError Passing coroutines is forbidden, use tasks
 
 ### (8) ★★ `create_task` 의 반환값을 버린다 — 「내 코드는 잘 돌던데」
 
-* `asyncio.sleep` 을 기다리는 태스크는 참조가 없어도 **안 사라졌다**(`0 / 20`) — 그래서 예제에서는 문제가 안 보인다. **혼자만 아는 퓨처를 기다리면 `20 / 20` 사라졌다.** 규칙은 **늘 쥔다**(집합에 넣고 `add_done_callback(set.discard)` — 문서의 예).
+* `asyncio.sleep` 을 기다리는 태스크는 참조가 없어도 **안 사라졌다**(`0 / 20`) — 그래서 예제에서는 문제가 안 보인다. **혼자만 아는 퓨처를 기다리면 `20 / 20` 사라졌다.** 규칙은 **늘 잡는다**(집합에 넣고 `add_done_callback(set.discard)` — 문서의 예).
 
 ### (9) ★★ `wait(timeout=…)` 이 타임아웃에서 작업을 멈춰 줄 것이라 믿는다
 
@@ -1021,9 +1021,9 @@ coroutine passed to wait(): TypeError Passing coroutines is forbidden, use tasks
 |---|---|---|
 | **라이브러리 보장** | `asyncio` 문서가 정한 취소 규칙·예외 모양 | 문서 문장을 열어서 인용 |
 | **CPython 구현** | 한 걸음이 몇 번 돌았나 · 수거 경로 · 문구 | 실행 |
-| **이 판(3.12.3 · 3.11.15)·이 머신의 관찰** | 이 판·이 부하에서 그랬을 뿐 | 출력 |
+| **이 버전(3.12.3 · 3.11.15)·이 머신의 관찰** | 이 판·이 부하에서 그랬을 뿐 | 출력 |
 | ★ **못 잰 것** | 3.10 이하 · 순환 수집기가 저절로 도는 시점 | 판이 없다 · 손으로 `gc.collect()` 를 불렀다 |
-| ★ **부적용** | 경과 시간 | 이 주제의 질문 밖이다 |
+| ★ **해당 없음** | 경과 시간 | 이 주제의 질문 밖이다 |
 
 ### 라이브러리 보장
 
@@ -1036,7 +1036,7 @@ coroutine passed to wait(): TypeError Passing coroutines is forbidden, use tasks
 | `timeout` 은 현재 태스크를 취소하고 **블록 밖에서** `TimeoutError` 로 바꾼다 | `timeout` 과 그 note |
 | `wait_for` 는 타임아웃에 취소하고 `TimeoutError` · `wait` 는 **안 던지고 안 취소한다** | `wait_for`·`wait` |
 | `asyncio.TimeoutError` 는 `TimeoutError` 의 별칭(3.11) · `CancelledError` 는 `BaseException` 하위(3.8) | asyncio Exceptions |
-| 루프는 태스크를 **약한 참조**로만 쥔다 — 참조가 없으면 언제든 수거될 수 있다 | `create_task` 의 Important |
+| 루프는 태스크를 **약한 참조**로만 잡는다 — 참조가 없으면 언제든 수거될 수 있다 | `create_task` 의 Important |
 | `CancelledError` 를 삼키면 `TaskGroup`·`timeout` 이 **오동작할 수 있다** · 억누를 거면 `uncancel()` 까지 | Task Cancellation |
 | 태스크가 돌 때 같은 스레드의 다른 태스크는 못 돈다 · 블로킹 코드는 직접 부르지 마라 | Developing with asyncio |
 
@@ -1046,14 +1046,14 @@ coroutine passed to wait(): TypeError Passing coroutines is forbidden, use tasks
 |---|---|
 | 격자의 **걸음 수** 칸(`3`·`2`·`4`·`0`·`1`) — `gather`·`TaskGroup` 이 콜백을 **몇 차례에 나눠** 돌리나 | 실행 — ★ 문서는 순서를 말하지 않는다. **운명(`finished`/`cancelled`) 칸만 근거로** 썼다 |
 | `sleep(0)` 이 **준비된 태스크들을 등록 순서로 한 바퀴** 돌리는 것 | 실행(동작 1 의 `a start \| b start \| a end \| b end`) |
-| 참조 없는 태스크가 **무엇을 기다리느냐에 따라** 수거되거나 안 되는 것(타이머 핸들이 쥔다) | 실행(동작 7) — 문서는 「언제든」이라고만 한다 |
+| 참조 없는 태스크가 **무엇을 기다리느냐에 따라** 수거되거나 안 되는 것(타이머 핸들이 잡는다) | 실행(동작 7) — 문서는 「언제든」이라고만 한다 |
 | 문구 — `Task was destroyed but it is pending!` · `Passing coroutines is forbidden, use tasks explicitly.` | 실행 |
 | `TaskGroup` 의 `one raises` 칸에서 기다리던 태스크의 `cancelling()` 이 `1` 로 남은 것 | 실행 |
 
-### 이 판(3.12.3)의 관찰
+### 이 버전(3.12.3)의 관찰
 
 - **취소 전파 격자가 3.11.15 와 한 글자도 같았다** — 걸음 수 칸까지.
-- **타이머를 쓴 탐침 셋이 세 번 캡처(재대조 포함)에서 한 번도 안 움직였다** — 블로킹 `0 / 5` · 양보 `5 / 5` · `wait` 의 `done`/`pending`.
+- **타이머를 쓴 probe 셋이 세 번 캡처(재대조 포함)에서 한 번도 안 움직였다** — 블로킹 `0 / 5` · 양보 `5 / 5` · `wait` 의 `done`/`pending`.
 - **두 태스크가 같은 걸음에서 동시에 실패하면 둘 다 봉투에 들어갔다**(동작 3 의 `['ValueError', 'KeyError']`) — 먼저 실패한 쪽이 다른 쪽을 취소하기 **전에** 둘 다 던졌다.
 
 ### 그래서 이렇게 적으면 틀린다
@@ -1067,7 +1067,7 @@ coroutine passed to wait(): TypeError Passing coroutines is forbidden, use tasks
 * ✗ 「`timeout` 을 걸면 마감에 반드시 `TimeoutError` 가 난다」\
   ○ 안에서 `CancelledError` 를 삼키면 **안 난다**(동작 6).
 * ✗ 「참조 없는 태스크는 GC 된다 — 내가 해 봤는데 안 되던데?」 / 「안 되니 괜찮다」\
-  ○ 둘 다 한 경우만 본 것이다. **`sleep` 은 `0 / 20`, 혼자만 아는 퓨처는 `20 / 20`** — 규칙은 문서대로 **늘 쥔다.**
+  ○ 둘 다 한 경우만 본 것이다. **`sleep` 은 `0 / 20`, 혼자만 아는 퓨처는 `20 / 20`** — 규칙은 문서대로 **늘 잡는다.**
 * ✗ 「블로킹 호출은 루프를 느리게 한다」\
   ○ 이 문서가 잰 것은 「느리다」가 아니라 **「그동안 아무도 못 돈다」**(`0 / 5`)다. 시간은 재지 않았다.
 
@@ -1082,16 +1082,16 @@ coroutine passed to wait(): TypeError Passing coroutines is forbidden, use tasks
 | 한 블록 전체에 마감 | `asyncio.timeout`(3.11+) | 여러 `await` 를 묶는다 · 밖에서 `TimeoutError` |
 | awaitable 하나에 마감 | `wait_for` | 그 하나를 취소하고 `TimeoutError` |
 | 동기 라이브러리를 꼭 불러야 한다 | `await asyncio.to_thread(fn, …)` | 루프 스레드가 양보한다 — ★ CPU 계산은 [53번](../53-gil-and-choosing-concurrency/2-summary.md) |
-| 「걸어 두고 잊기」 | 집합에 넣고 `add_done_callback(set.discard)` | 루프는 약한 참조만 쥔다 |
+| 「걸어 두고 잊기」 | 집합에 넣고 `add_done_callback(set.discard)` | 루프는 약한 참조만 잡는다 |
 | 취소를 받고 정리 | `try/finally`, 또는 `except CancelledError:` 뒤 `raise` | 삼키면 `timeout`·`TaskGroup` 이 깨진다 |
 
 ## 핵심 문장
 
-1. **`gather` 는 형제를 안 취소하고, `TaskGroup` 은 취소한다 — 단 기다리는 쪽이 취소되면 둘 다 취소한다.** 격자에서 갈린 칸 **4 / 9**, 3.11 과 3.12 는 한 글자도 같았다.
+1. **`gather` 는 형제를 안 취소하고, `TaskGroup` 은 취소한다 — 단 기다리는 쪽이 취소되면 둘 다 취소한다.** 격자에서 달라진 항목 **4 / 9**, 3.11 과 3.12 는 한 글자도 같았다.
 2. **`TaskGroup` 의 예외는 하나여도 `ExceptionGroup`** — `except*` 로 받는다.
 3. **`await` 가 없는 느린 호출은 루프 전체를 세운다** — `time.sleep` 은 끼어든 판 **0 / 5**, `asyncio.sleep`·`to_thread` 는 **5 / 5**.
 4. **타임아웃은 취소다** — 안쪽은 `CancelledError`, 바깥은 `TimeoutError`. 안에서 삼키면 **`TimeoutError` 가 조용히 사라진다.**
-5. **`create_task` 의 반환값은 쥔다** — 혼자만 아는 퓨처를 기다리던 태스크는 `gc.collect()` 에 **20 / 20** 사라졌다(`sleep` 은 0 / 20 — 그래서 예제로는 안 보인다).
+5. **`create_task` 의 반환값은 잡는다** — 혼자만 아는 퓨처를 기다리던 태스크는 `gc.collect()` 에 **20 / 20** 사라졌다(`sleep` 은 0 / 20 — 그래서 예제로는 안 보인다).
 
 ## 관련 자료
 
@@ -1127,7 +1127,7 @@ coroutine passed to wait(): TypeError Passing coroutines is forbidden, use tasks
   예: `time.sleep`.
 * **`asyncio.to_thread`**: 동기 함수를 다른 스레드에서 돌리고 그 결과를 `await` 로 받게 하는 함수(3.9+).\
   예: `await asyncio.to_thread(time.sleep, 1)` 동안 다른 태스크가 돈다.
-* **약한 참조(weak reference)**: 객체를 **살려 두지 않는** 참조. 루프는 태스크를 이것으로만 쥔다.\
+* **약한 참조(weak reference)**: 객체를 **살려 두지 않는** 참조. 루프는 태스크를 이것으로만 잡는다.\
   예: `weakref.ref(task)()` 가 `None` 이면 이미 수거됐다.
 * **`cancelling()`**: 태스크가 받은 취소 요청의 수(3.11+).\
   예: `gather` 의 자식이 취소돼 `CancelledError` 를 받은 쪽은 `0`.
@@ -1231,15 +1231,15 @@ loop exception handler got: ['Task exception was never retrieved ; ValueError']
 **실행 검증** — 이 문서에 실린 출력은 전부 이 머신(Linux)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
 판은 `python3` **3.12.3** 이 본판이고, 판 경계를 위해 `python3.11` **3.11.15** 로 취소 전파 격자(동작 2 — **한 글자도 같았다**)와 「더 들어가면」의 블록 하나를 더 던졌다.\
 ★★★ **이 문서는 시간을 한 번도 출력하지 않는다.** `sleep` 의 길이는 소스에만 있고, 출력은 전부 **순서 · 참/거짓 · 「N / M 판」** 이다. 「몇 배 빠르다」는 한 줄도 없다.\
-★★ **격자·태스크 순서 탐침은 시간을 아예 안 쓴다** — 한 걸음을 `await asyncio.sleep(0)`(루프에 한 차례 양보)로 셌다. 그래서 순서가 타이머에 안 흔들린다.\
+★★ **격자·태스크 순서 probe는 시간을 아예 안 쓴다** — 한 걸음을 `await asyncio.sleep(0)`(루프에 한 차례 양보)로 셌다. 그래서 순서가 타이머에 달라지지 않는다.\
 **버전** — `asyncio.to_thread` **3.9** · `TaskGroup`·`asyncio.timeout`·`ExceptionGroup`·`except*`·`Task.cancelling()` **3.11** · `asyncio.TimeoutError` 가 내장 `TimeoutError` 의 별칭 **3.11** · `wait()` 에 코루틴을 직접 주면 거절 **3.11** · `CancelledError` 가 `BaseException` 하위 **3.8**.\
 ★ **구현 대 언어 보장 한 줄** — `gather`·`TaskGroup`·`timeout`·`wait` 의 취소 규칙과 예외 모양은 **라이브러리 보장**이고, 한 걸음(`sleep(0)`)이 몇 번 돌았나 · `Task was destroyed but it is pending!` 문구 · 「혼자 기다리는 퓨처」 태스크가 수거되는 것은 **CPython 구현**이다.\
-★ **흔들리는 칸 / 안 흔들리는 칸**
+★ **실행마다 달라지는 항목 / 달라지지 않는 항목**
 
-| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+| 실행마다 달라진다 | 달라지지 않는다(근거로 써도 되는 항목) |
 |---|---|
-| ★ 머신이 아주 바쁘면 **타이머를 쓰는 세 탐침**(동작 4·5·8)의 「끼어들었나」 칸이 움직일 수 있다 — 틈을 크게 벌려 두었고(소스의 `sleep` 길이) **세 번 캡처에서 한 번도 안 움직였다** | ★★★ 격자 마지막 줄 **「… 4 / 9」** · 칸마다 `finished`/`cancelled`/`raised` · 예외 **타입** |
-| 판이 오르면 예외 **문구**(`Passing coroutines is forbidden, use tasks explicitly.`) | `sleep(0)` 걸음으로 센 순서(동작 1·2·3) — 타이머가 없다 |
+| ★ 머신이 아주 바쁘면 **타이머를 쓰는 세 probe**(동작 4·5·8)의 「끼어들었나」 칸이 움직일 수 있다 — 틈을 크게 벌려 두었고(소스의 `sleep` 길이) **세 번 캡처에서 한 번도 안 움직였다** | ★★★ 격자 마지막 줄 **「… 4 / 9」** · 칸마다 `finished`/`cancelled`/`raised` · 예외 **타입** |
+| 버전이 오르면 예외 **문구**(`Passing coroutines is forbidden, use tasks explicitly.`) | `sleep(0)` 걸음으로 센 순서(동작 1·2·3) — 타이머가 없다 |
 | 걸음 수 칸(`A steps at that moment`)은 **구현이 콜백을 몇 차례에 나눠 돌리나**에 달렸다 — 3.11·3.12 는 같았다 | 「N / M 판」의 **N 과 M** · `(exit N)` |
 | — (주소·시간·`set` 순서를 한 곳도 안 찍었다 — `done`/`pending` 은 `sorted` 로 찍었다) | `is`·`issubclass` 의 참/거짓 |
 

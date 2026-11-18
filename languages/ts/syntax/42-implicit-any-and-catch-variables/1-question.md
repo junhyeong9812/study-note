@@ -70,10 +70,10 @@ const n = o[k];
 export {};
 ```
 
-- 칸마다 `{ "compilerOptions": { "strict": true, "noImplicitAny": 켬/끔, "target": "es2022", "noEmit": true } }` 로 던진다. 켬에서 진단이 나는 탐침은 어느 것이고 코드는 무엇인가? 끔에서는?
-- 7.0.2 와 5.9.3 의 답이 다른 탐침이 있는가?
+- 칸마다 `{ "compilerOptions": { "strict": true, "noImplicitAny": 켬/끔, "target": "es2022", "noEmit": true } }` 로 던진다. 켬에서 진단이 나는 probe는 어느 것이고 코드는 무엇인가? 끔에서는?
+- 7.0.2 와 5.9.3 의 답이 다른 probe가 있는가?
 
-### 2. 빈 배열 탐침의 설정 셋 (예측)
+### 2. 빈 배열 probe의 설정 셋 (예측)
 
 - 1번의 `ia42f.ts` 를 `--noImplicitAny false`(나머지 `strict` 는 켬) · `--noImplicitAny false --strictNullChecks false` · `--strict false` 로 7.0.2 에 던지면 각각 무엇이 나는가?
 
@@ -160,7 +160,7 @@ for (const [label, t] of throwers) {
 export {};
 ```
 
-- 이 파일은 두 판에서 타입 검사를 통과하는가?
+- 이 파일은 두 버전에서 타입 검사를 통과하는가?
 - 방출해 `node` 로 돌리면 다섯 행 × 네 열에 무엇이 찍히는가? 특히 `"m"` 행과 `null` 행의 `as Error` 칸, `vm realm Error` 행의 `instanceof` 칸은?
 
 ### 5. 오류 값이 들어오는 자리 여섯 (예측)
@@ -177,9 +177,9 @@ try { throw 1; } catch (e: Error) { }
 export {};
 ```
 
-- `--strict --useUnknownInCatchVariables` 를 켬/끔으로 세 판(7.0.2 · 5.9.3 · 4.9.5)에 던지면 어느 행에서 무엇이 나는가? 판에 따라 달라지는 칸이 있는가?
+- `--strict --useUnknownInCatchVariables` 를 켬/끔으로 세 판(7.0.2 · 5.9.3 · 4.9.5)에 던지면 어느 행에서 무엇이 나는가? 판에 따라 달라지는 항목이 있는가?
 
-### 6. `let v;` 두 탐침 (왜)
+### 6. `let v;` 두 probe (왜)
 
 - 1번의 `ia42d.ts` 와 `ia42e.ts` 는 둘 다 `let v;` 로 시작한다. 켬에서 한쪽만 진단이 나는 까닭은 무엇인가?
 
@@ -207,7 +207,7 @@ export {};
 실행 환경: `tsc` **7.0.2** · `node` **v18.19.1**. 판 비교에는 이 머신의 다른 프로젝트에 깔린 **`tsc` 5.9.3 · 4.9.5** 를 **읽기만** 해서 썼다(환경변수 `TSC_OLD`·`TSC_49`).
 
 ★ 소스 펜스 첫 줄 `// 파일명`·`# 파일명` 은 대조용 배너다 — **진단의 행 번호는 그 줄을 뺀 기준**이다.
-★★ 설정 실험은 **칸마다 디렉토리와 `tsconfig.json` 을 따로** 만들어 `-p` 로 던졌다.
+★★ 설정 실험은 **칸마다 디렉토리와 `tsconfig.json` 을 따로** 만들어 `-p` 로 실행했다.
 
 ## 복습 기록
 

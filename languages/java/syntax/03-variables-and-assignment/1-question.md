@@ -19,7 +19,7 @@ Point p2 = new Point(1);   reassign(p2);
 ```
 
 - `n`, `p1`, `p2` 는 각각 무엇인가?
-- `mutateField` 와 `reassign` 은 둘 다 `Point` 를 받았는데 왜 결과가 갈리는가?
+- `mutateField` 와 `reassign` 은 둘 다 `Point` 를 받았는데 왜 결과가 달라지는가?
 - 이 셋 중 **복사된 것**은 각각 무엇인가?
 
 ### 2. 한 메서드가 둘을 다 하면 (예측)

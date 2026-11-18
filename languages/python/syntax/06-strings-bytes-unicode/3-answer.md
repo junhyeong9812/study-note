@@ -305,7 +305,7 @@ b'\xea\xb0'  <--encode(surrogateescape)--  '\udcea\udcb0'    ★ 같은 바이�
 
 ★ 먼저 문서가 물러선 자리를 읽는다 —\
 *"Return the size of an object in bytes... this does not have to hold true for third-party extensions as it is **implementation specific**."*\
-**아래 숫자는 전부 「이 판의 관찰」이지 언어 보장이 아니다.**
+**아래 숫자는 전부 「이 버전의 관찰」이지 언어 보장이 아니다.**
 
 ```text
  10글자 -> 11글자 로 갈 때 늘어나는 바이트
@@ -481,7 +481,7 @@ ord('') -> TypeError ord() expected a character, but string of length 0 found
 ord(b'a') = 97
 ```
 
-**예외 종류가 갈리는 이유 — 무엇이 틀렸느냐가 다르다**
+**예외 종류가 달라지는 이유 — 무엇이 틀렸느냐가 다르다**
 
 ```text
  chr(0x110000)             ord("ab")
@@ -536,7 +536,7 @@ print(hex(ord("\ud800")), repr(chr(0xd800)))
 | `BytesWarning` 은 `-b`/`-bb` 로만 켜진다 | 같은 파일을 세 방식으로 돌려 비교 |
 | `str.encode` 의 기본이 utf-8 인 것 | `sys.getdefaultencoding()` 이 `'utf-8'` |
 
-**이 판(3.12.3)의 관찰** — 버전이 오르면 다시 찍어야 하는 것.
+**이 버전(3.12.3)의 관찰** — 버전이 오르면 다시 찍어야 하는 것.
 
 | 관찰 | 어디가 흔들리나 |
 |---|---|
@@ -583,7 +583,7 @@ print("④ utf-8 바이트 수:", len(s.encode("utf-8")))
 ④ utf-8 바이트 수: 6
 ```
 
-한글로 재면 ②와 ③이 갈린다.
+한글로 재면 ②와 ③이 달라진다.
 
 ```python
 import unicodedata

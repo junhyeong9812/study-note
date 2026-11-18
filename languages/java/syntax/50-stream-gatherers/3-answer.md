@@ -289,7 +289,7 @@ windowFixed(-1)  : java.lang.IllegalArgumentException: 'windowSize' must be grea
 
 - `seen` 은 `[1, 2, 3, 4, 5, 6, 7, 8]` — **여덟 개 전부**다.
 
-**갈리는 이유 한 문장**
+**달라지는 이유 한 문장**
 
 - `gather` 는 중간 연산이라 **단락이 위로 전파되고**, `collect` 는 최종 연산이라 **전부를 봐야 끝난다.**
 
@@ -654,7 +654,7 @@ src.stream().collect(Collectors.groupingBy(x -> idx[0]++ / 3));
 - `UnsupportedOperationException` 의 **메시지가 `null`** — javadoc 이 규정하지 않는다.
 - 창이 돌려주는 `List` 의 **구현 타입** — javadoc 이 "no guarantees" 라고 적는다.
 - `gather(a).gather(b)` 가 하나로 합쳐지는지 — javadoc 이 "not required" 라고 적는다. **합쳐지는지 안 합쳐지는지는 안 돌려 봄**(관측할 수 있는 출력 차이가 없다).
-- 50-d (5) 의 병렬 출력 — 실행마다 다르다. 세 판의 값을 각각 실었지만 **재현되지 않는 것이 정상**이다.
+- 50-d (5) 의 병렬 출력 — 실행마다 다르다. 세 버전의 값을 각각 실었지만 **재현되지 않는 것이 정상**이다.
 - 22·23 에서 `--enable-preview` 로 실제 실행한 결과 — **안 돌려 봄.** 이 머신에 22·23 JDK 가 없고, JDK 25 는 `--release 23 --enable-preview` 를 거부한다(2번의 에러 메시지).
 - 무한 스트림 + 단락 없는 `gather` — **안 돌려 봄.** 끝나지 않는 프로그램이다.
 

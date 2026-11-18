@@ -36,7 +36,7 @@
 
 17번 실험의 결론: 처리 전 커밋은 유실(at-most-once), 처리 후 커밋은 중복(at-least-once)이다([17번 §3](../17-queues-logs-and-delivery-semantics/2-summary.md)).
 
-자동 커밋(`enable.auto.commit=true`, kafka-clients 4.1.0 기본값)은 어느 쪽일까? **처리 방식에 따라 갈린다.**
+자동 커밋(`enable.auto.commit=true`, kafka-clients 4.1.0 기본값)은 어느 쪽일까? **처리 방식에 따라 달라진다.**
 
 ```text
   자동 커밋이 커밋하는 값 = "지금까지 poll()이 돌려준 위치"

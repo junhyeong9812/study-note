@@ -63,7 +63,7 @@ UPDATE t50_emp e SET dept_name = (SELECT d.name FROM t50_dept d WHERE d.id = e.d
 
 - 3번의 문을 2번과 같은 결과로 만들려면 무엇을 붙여야 하는가?
 
-### 5. 영향 행 수가 갈리는 자리 (경계)
+### 5. 영향 행 수가 달라지는 자리 (경계)
 
 ```sql
 -- dept_name 이 전부 NULL 인 상태에서

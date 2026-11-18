@@ -152,8 +152,8 @@ PostgreSQL 17 SQLSTATE는 `src/backend/utils/errcodes.txt`에서 이름을 확�
 | PostgreSQL 53300 | `DataAccessResourceFailureException` | `53` 분류 → 같음 | — |
 | HikariCP 풀 대기 초과 | — | `DataSourceTransactionManager`면 트랜잭션 시작 시 `CannotCreateTransactionException: Could not open JDBC Connection for transaction`(`JpaTransactionManager`면 `Could not open JPA EntityManager for transaction`) | 21·24 |
 
-- 두 경로 모두 1205·1213·40001·40P01은 부모 `PessimisticLockingFailureException` 아래에 있다. **그래서 예외 클래스로는 1205와 1213을 가를 수 없다.** 원인 예외의 `getErrorCode()`(1205 / 1213)를 로그에 남긴다.
-- MySQL은 `getSQLState()`로도 가를 수 없다. Connector/J에서 1205와 1213이 둘 다 `40001`이기 때문이다(위 소스). mysql 명령행 클라이언트는 서버 값을 그대로 보여 주므로 `ERROR 1205 (HY000)`이다. 같은 오류가 도구에 따라 다른 SQLSTATE로 보인다.
+- 두 경로 모두 1205·1213·40001·40P01은 부모 `PessimisticLockingFailureException` 아래에 있다. **그래서 예외 클래스로는 1205와 1213을 구분할 수 없다.** 원인 예외의 `getErrorCode()`(1205 / 1213)를 로그에 남긴다.
+- MySQL은 `getSQLState()`로도 구분할 수 없다. Connector/J에서 1205와 1213이 둘 다 `40001`이기 때문이다(위 소스). mysql 명령행 클라이언트는 서버 값을 그대로 보여 주므로 `ERROR 1205 (HY000)`이다. 같은 오류가 도구에 따라 다른 SQLSTATE로 보인다.
 - 이 표의 기본 경로 칸은 소스 읽기(spring-jdbc 6.2.x `JdbcAccessor`·`SQLExceptionSubclassTranslator`·`SQLStateSQLExceptionTranslator`, Connector/J release/9.x `NativeProtocol.checkErrorMessage`·`MysqlErrorNumbers`·`SQLError.createSQLException`)로 정리했다. JVM에서 실행해 확인하지 않았다.
 
 **풀·ORM·Spring 메시지**
@@ -331,7 +331,7 @@ SELECT @@max_connections, @@innodb_lock_wait_timeout, @@innodb_deadlock_detect,
   - 1205는 기본 설정에서 **마지막 문장만** 롤백한다. 트랜잭션은 열린 채다. 그대로 커밋하면 반쪽 반영이 된다(13·15번).
 - **대처**
   - 가르는 기준: 걸린 시간(즉시 vs 약 50초), 에러 번호(`getErrorCode()`), `innodb_deadlock_detect` 값.
-  - 1205면 **오래 쥔 쪽**을 찾는다: `sys.innodb_lock_waits`, `innodb_trx.trx_started`. 그 문장이 DDL이면 메타데이터 락 대기일 수 있으니 `performance_schema.metadata_locks`를 본다(로컬 재현: `lock_wait_timeout=2`에서 `ALTER TABLE`이 `ERROR 1205`). 트랜잭션 안 원격 호출(18·24번), 대형 백필(34번), in-doubt XA(55번)가 흔하다.
+  - 1205면 **오래 잡은 쪽**을 찾는다: `sys.innodb_lock_waits`, `innodb_trx.trx_started`. 그 문장이 DDL이면 메타데이터 락 대기일 수 있으니 `performance_schema.metadata_locks`를 본다(로컬 재현: `lock_wait_timeout=2`에서 `ALTER TABLE`이 `ERROR 1205`). 트랜잭션 안 원격 호출(18·24번), 대형 백필(34번), in-doubt XA(55번)가 흔하다.
   - 1205를 받으면 명시적으로 `ROLLBACK`한 뒤 트랜잭션 전체를 재시도한다.
   - 로그에 SQLSTATE만 남기면 안 된다. Connector/J에서 1205도 `40001`이다. 제품 번호를 같이 남긴다.
 
@@ -340,7 +340,7 @@ SELECT @@max_connections, @@innodb_lock_wait_timeout, @@innodb_deadlock_detect,
 - **현상**: API가 전부 타임아웃이다. 앱을 재시작하자 잠시 괜찮다가 몇 분 뒤 다시 막힌다. DB CPU는 내내 높다.
 - **보이는 형태**
   - 앱: `SocketTimeoutException: Read timed out`(pgJDBC 08006) 또는 풀 고갈 `Connection is not available`.
-  - DB: `pg_stat_activity`에 같은 쿼리가 `active`로 여러 개, `query_age`가 수 분. 또는 `idle in transaction` 세션이 앞에서 락을 쥐고 있다.
+  - DB: `pg_stat_activity`에 같은 쿼리가 `active`로 여러 개, `query_age`가 수 분. 또는 `idle in transaction` 세션이 앞에서 락을 잡고 있다.
 - **원인**
   - 앱이 소켓을 끊어도 서버는 바로 모른다. PostgreSQL 기본(`client_connection_check_interval = 0`)에서는 다음 소켓 읽기·쓰기 때까지 쿼리를 계속 돈다(22번 재현). 이 값을 켜면 실행 중에도 끊김을 검사해 더 일찍 멈출 수 있다.
   - 앱 재시작은 **앱 쪽 대기열만** 비운다. DB의 폭주 쿼리·락은 남는다. 새 인스턴스가 같은 쿼리를 재시도로 다시 올리면 더 쌓인다.
@@ -358,7 +358,7 @@ SELECT @@max_connections, @@innodb_lock_wait_timeout, @@innodb_deadlock_detect,
   - `57014` statement timeout은 한도가 **제 역할을 한** 것이다. 쿼리가 왜 느려졌는지가 질문이다(22번).
   - 흔한 뿌리: 배치 뒤 통계가 오래되어 플랜이 급변함(12번), 스필(41번), 재귀 CTE 순환(05번).
   - 같은 `57014`라도 메시지가 `due to user request`면 드라이버의 취소 요청이다. 누가 취소했는지가 다르다.
-  - 한도를 올리면 느린 쿼리가 커넥션을 더 오래 쥔다. 풀 고갈로 번진다(21번).
+  - 한도를 올리면 느린 쿼리가 커넥션을 더 오래 잡는다. 풀 고갈로 번진다(21번).
 - **대처**
   - 먼저 `EXPLAIN (ANALYZE, BUFFERS)`를 본다. `pg_stat_statements`는 누적값이므로 주기적으로 떠 둔 스냅숏의 구간별 차이(`total_exec_time`·`calls`)로 언제 느려졌는지 본다. `rows=`와 `actual rows=`가 크게 다르면 `ANALYZE`부터.
   - 정말 긴 작업이면 전역 한도가 아니라 배치 역할이나 `SET LOCAL`로 그 트랜잭션만 늘린다.
@@ -370,8 +370,8 @@ SELECT @@max_connections, @@innodb_lock_wait_timeout, @@innodb_deadlock_detect,
 - **원인**
   - 한도 초과의 뿌리는 **예산 계산**이다. 인스턴스 수 × 풀 크기 + 도구 커넥션. 배포 중에는 신구 인스턴스가 겹쳐 순간 2배가 된다(21번). 캐시 눈사태로 모든 읽기가 DB로 오면 풀도 한꺼번에 찬다(30번).
   - PostgreSQL `max_connections`는 공유 메모리 등 자원을 그만큼 잡고, 바꾸려면 재시작이 필요하다(21번).
-  - 동시 실행이 코어 수를 크게 넘으면 전환·경합 비용이 늘어 쿼리 하나하나가 느려진다. 그러면 쥔 시간이 늘어 풀이 더 필요해 보인다(21번 시나리오 3).
-- **대처**: 커넥션 예산을 다시 계산한다. 풀은 작게 유지하고 앱 쪽 줄에서 기다리게 한다. 앞단 풀러(PgBouncer)로 서버 커넥션 수를 줄인다. 풀 고갈이면 풀 크기가 아니라 **쥔 시간**을 줄인다.
+  - 동시 실행이 코어 수를 크게 넘으면 전환·경합 비용이 늘어 쿼리 하나하나가 느려진다. 그러면 잡은 시간이 늘어 풀이 더 필요해 보인다(21번 시나리오 3).
+- **대처**: 커넥션 예산을 다시 계산한다. 풀은 작게 유지하고 앱 쪽 줄에서 기다리게 한다. 앞단 풀러(PgBouncer)로 서버 커넥션 수를 줄인다. 풀 고갈이면 풀 크기가 아니라 **잡은 시간**을 줄인다.
 
 ### 5. 팔로워의 `40001`을 격리 수준 문제로 읽는다
 
@@ -387,7 +387,7 @@ SELECT @@max_connections, @@innodb_lock_wait_timeout, @@innodb_deadlock_detect,
 - 이 노트는 **증상 → 층 → 흔한 원인 → 첫 진단 → leaf** 순서의 역색인이다. 고치지 않고 어느 노트로 갈지 정한다.
 - `40001` 한 코드에 PostgreSQL의 RR 갱신 충돌·SSI 실패·팔로워 복구 충돌, MySQL의 교착(1213)이 겹친다. Connector/J에서는 1205도 `40001`이다. **메시지·제품·에러 번호**를 같이 읽는다.
 - 1205는 대기 시간 초과이고 1213은 탐지된 교착이다. 1205는 기본 설정에서 마지막 문장만 롤백하므로 명시적으로 `ROLLBACK`한다.
-- Spring 예외 클래스는 원문을 줄인다. 1205와 1213은 예외 클래스로 가를 수 없으니 원인 `SQLException`의 `getErrorCode()`를 남긴다.
+- Spring 예외 클래스는 원문을 줄인다. 1205와 1213은 예외 클래스로 구분할 수 없으니 원인 `SQLException`의 `getErrorCode()`를 남긴다.
 - 앱이 연결을 끊어도 DB 쿼리는 계속 돈다. 재시작 전에 `pg_stat_activity`를 보고, 서버 측 타임아웃을 소켓 타임아웃보다 짧게 둔다.
 - 가장 비싼 증상은 에러가 없다. 9시간 밀림·전날 매출(시간대), UNIQUE 위반(collation), 백필 누락(OFFSET), `@Transactional` 무시(자기 호출)는 leaf의 점검 쿼리로 찾는다.
 

@@ -71,9 +71,9 @@ document.adoptNode(프레임안의_p)
 ```
 
 - 네 줄의 결과를 `ownerDocument`·`childNodes.length`·**원본이 남는가**로 나누어 적어라.
-- 셋째 줄이 첫째 줄과 갈리는 이유는 무엇인가?
+- 셋째 줄이 첫째 줄과 달라지는 이유는 무엇인가?
 - `cloneNode` 로 만든 것을 그대로 `appendChild` 하면 `ownerDocument` 는 어떻게 되는가?
-- 그래서 `cloneNode` 와 `importNode` 중 무엇을 쓸지가 실제로 갈리는 경우는 언제인가?
+- 그래서 `cloneNode` 와 `importNode` 중 무엇을 쓸지가 실제로 나뉘는 경우는 언제인가?
 
 ### 6. 비용 (예측)
 
@@ -119,7 +119,7 @@ for (…) { host.appendChild(만든li()); sink += host.offsetHeight; }
 
 ## 실행 환경
 
-★ 비용을 묻는 문항에서는 **숫자를 외우지 마라.** 이 주제의 수치는 흔들린다 — **자릿수와 순위**만 답하면 된다.
+★ 비용을 묻는 문항에서는 **숫자를 외우지 마라.** 이 주제의 수치는 실행마다 달라진다 — **자릿수와 순위**만 답하면 된다.
 ★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰이다. 이식성은 주장 범위 밖이다.
 ★ 선행은 [03번 주제](../03-node-creation-insertion-removal/2-summary.md)다. 「삽입은 이동」을 알고 있다고 본다.
 

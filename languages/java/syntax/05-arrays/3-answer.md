@@ -266,7 +266,7 @@ Ex.java:5: error: generic array creation
 - 배열은 **런타임에 자기 원소 타입을 알아야** 하는데, 제네릭은 그 시점에 타입 인자가 없다.\
   타입 소거 자체는 [**19번 주제**](../19-type-erasure/)가 정본이다.
 
-### 5. `Arrays.equals` 와 `deepEquals` 가 갈리는 지점
+### 5. `Arrays.equals` 와 `deepEquals` 가 달라지는 지점
 
 **출력** (`Ex.java (05-d)`, JDK 21.0.5)
 
@@ -301,7 +301,7 @@ Arrays.equals(p, q)                      Arrays.deepEquals(p, q)
 - **`true`** 다.
 - 1차원 `int[]` 의 원소는 `int` 값이므로 **한 겹만 봐도 내용 비교가 된다.**
 - 그래서 **1차원에서는 `equals` 와 `deepEquals` 가 같은 답을 낸다.**\
-  차원이 늘어나는 순간 조용히 갈린다 — 이것이 이 함정이 안 잡히는 이유다.
+  차원이 늘어나는 순간 조용히 달라진다 — 이것이 이 함정이 안 잡히는 이유다.
 
 **`toString` 과 `deepToString`**
 
@@ -365,7 +365,7 @@ Arrays.asList(T... a) 에 무엇이 들어가나
   +----------------------------+         +----------------------------+
 ```
 
-- `Integer[]` 를 넘기면 3이다 — **박싱 여부 하나로 결과가 갈린다.**
+- `Integer[]` 를 넘기면 3이다 — **박싱 여부 하나로 결과가 달라진다.**
 - 뿌리는 **"기본형은 제네릭 타입 인자가 될 수 없다"** 는 규칙이다([`../01-primitives-and-wrappers/`](../01-primitives-and-wrappers/)).
 - 고치려면 `Arrays.stream(prim).boxed().toList()`.
 

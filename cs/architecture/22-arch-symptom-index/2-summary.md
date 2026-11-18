@@ -65,7 +65,7 @@
   ④ 비율     크기·스레드 수·입력 순서를 바꿨을 때 시간이 몇 배인가 (같은 기계, 코어 고정)
 ```
 
-- ②가 빠지면 1·6·7·9절의 원인을 고를 수 없다. 같은 코드가 x86에서는 맞고 ARM에서 틀리는 증상([14-4](../14-cache-coherence-and-memory-ordering/2-summary.md)), 코어 종류에 따라 갈리는 지연([20-4](../20-multicore-and-numa/2-summary.md))이 그 예다.
+- ②가 빠지면 1·6·7·9절의 원인을 고를 수 없다. 같은 코드가 x86에서는 맞고 ARM에서 틀리는 증상([14-4](../14-cache-coherence-and-memory-ordering/2-summary.md)), 코어 종류에 따라 달라지는 지연([20-4](../20-multicore-and-numa/2-summary.md))이 그 예다.
 - ③의 16진은 원인을 바로 보인다. `4294967295`는 `0xFFFFFFFF`(−1의 32비트 표현), `65536`은 `0x00010000`(리틀 엔디안 256 `00 01 00 00`을 빅 엔디안으로 읽은 값)이다([01-5](../01-number-systems-twos-complement/2-summary.md) · [06-2](../06-byte-order-and-alignment/2-summary.md)).
 
 ### 1. 프로세스가 신호로 죽는다 — `SIGSEGV`·`SIGBUS`·`SIGILL`·`exec format error`
@@ -193,7 +193,7 @@ exit=135
 
 ### 4. 글자가 깨진다 — 모지바케·`�`·길이 초과·대소문자
 
-먼저 **바이트를 본다**(`xxd`). 글자 수가 아니라 바이트로 보면 원인이 갈린다.
+먼저 **바이트를 본다**(`xxd`). 글자 수가 아니라 바이트로 보면 원인이 달라진다.
 
 ```text
   글자가 이상함

@@ -84,7 +84,7 @@ void removeRacingWithEvictionDoesNotExceedCapacity() throws Exception {
 이 테스트가 주장하는 것과 수정 전에 red가 되는 이유를 먼저 두 줄로 적어 둔다.
 
 - **주장**: 명시적 제거와 축출이 겹쳐 돌아간 뒤, 남은 쓰기 작업을 전부 드레인하면 캐시는 capacity로 돌아온다.
-- **fix 전 red인 이유**: 겹침이 한 번이라도 나면 `currentSize`가 map보다 작아지고, 그 어긋남은 [README 3절](README.md)의 수지 계산대로 순변화 0으로 동결된다.\
+- **fix 전 red인 이유**: 겹침이 한 번이라도 나면 `currentSize`가 map보다 작아지고, 그 불일치는 [README 3절](README.md)의 수지 계산대로 순변화 0으로 동결된다.\
   예산 50,000회를 다 써도 `size()`가 capacity 아래로 내려오지 않는다.\
   실측 red는 `size=38 > capacity=2`, 예산 소진.
 
@@ -200,7 +200,7 @@ while (cache.size() > cache.capacity() && budget-- > 0) {
 ```
 
 **이 루프의 형태가 곧 판별식이다.**\
-"수렴하는가"를 묻고 있고, 수정 전과 후의 차이가 정확히 수렴 여부이므로 red와 green이 갈린다.\
+"수렴하는가"를 묻고 있고, 수정 전과 후의 차이가 정확히 수렴 여부이므로 red와 green이 달라진다.\
 이 판별식에 도달하기까지 잘못된 quiesce로 헤맨 과정은 [structure.md](structure.md) 4절에 있다.
 
 > **판별식(predicate)** — 참인지 거짓인지로 결과를 가르는 조건식.\
@@ -381,4 +381,4 @@ spec §5가 검증 항목으로 명시해 두었는데 fix 후 결과가 기록�
 이후 `RedCheck3`가 quiesce를 새 키 방식으로 바꾸자 0/30이 나오면서 "다른 데"가 하네스 자신이었음이 드러났다.
 
 > **계측(instrumentation)** — 겉으로 안 보이는 내부 값을 일부러 꺼내 보는 일.\
-> 예: 리플렉션으로 private 필드를 읽어, 어긋남의 원인이 카운터인지 map인지 갈랐다.
+> 예: 리플렉션으로 private 필드를 읽어, 불일치의 원인이 카운터인지 map인지 갈랐다.

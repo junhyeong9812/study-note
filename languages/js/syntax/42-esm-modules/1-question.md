@@ -256,7 +256,7 @@ try { await import("./nothing-here42e.mjs"); } catch (e) { console.log("missing 
 
 **환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · Google Chrome 151(헤드리스 · 로컬 HTTP 서버) · x86-64 Linux. 배너의 `node20` 은 v20.19.6 이다.
 
-★★★ **이 주제의 본체는 순환 의존 격자다** — 내보내는 모양 × 가져오는 순서 × 읽는 때. **3번 문항이 이 주제의 중심이다.**
+★★★ **이 주제의 핵심은 순환 의존 격자다** — 내보내는 모양 × 가져오는 순서 × 읽는 때. **3번 문항이 이 주제의 중심이다.**
 
 **선행** — [35](../35-strict-mode/2-summary.md) · [05](../05-var-let-const-and-tdz/2-summary.md) · [36](../36-event-loop-and-microtasks/2-summary.md) · [Python 42](../../../python/syntax/42-modules-packages-and-import/2-summary.md).
 

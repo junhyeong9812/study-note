@@ -203,7 +203,7 @@ which define `__getitem__()` ... if and only if there is a non-negative integer 
   `iter+getitem` 인 줄에서 `__iter__` 가 불렸고 `__getitem__` 은 **한 번도 안 불렸다.**
   둘 다 있으면 **순회 쪽이 이긴다.**
 - ★ **`for` 의 우선순위는 `__iter__` → `__getitem__` 둘뿐**이다. `__contains__` 는 그 사슬에 **안 들어온다.**
-  그래서 `contains` 만 가진 줄이 갈린다 — `in` 은 `__contains__ => True` 인데
+  그래서 `contains` 만 가진 줄이 달라진다 — `in` 은 `__contains__ => True` 인데
   `for` 는 `TypeError: 'C' object is not iterable` 이다.
 - ★★ **대체는 한 방향으로만 흐른다.** 「있느냐」를 아는 능력으로 「전부 내놓기」를 할 수 없기 때문이다.
   **정보량이 많은 쪽으로만 떨어진다.**
@@ -212,7 +212,7 @@ which define `__getitem__()` ... if and only if there is a non-negative integer 
   `for` 는 `__getitem__(2)` 까지 가서 **`IndexError` 로 끝을 안다.**
   그 `IndexError` 가 `StopIteration` 으로 번역되는 것은 [16번](../16-iterator-protocol/2-summary.md) §4 가 정본이다.
 - ★ **막힐 때의 문구도 다르다** — `in` 은 `argument of type 'C' is not iterable`,
-  `for` 는 `'C' object is not iterable` 이다. **어느 문법에서 막혔는지가 문구로 갈린다.**
+  `for` 는 `'C' object is not iterable` 이다. **어느 문법에서 막혔는지가 문구로 나뉜다.**
 - 그래서 판정 한 줄 — **`in` 이 된다고 이터러블인 것이 아니고, 이터러블이면 `in` 은 반드시 된다.**
 
 ### 3. `__bool__` 이 이기면 `__len__` 은 로그에 한 줄도 안 찍힌다
@@ -744,14 +744,14 @@ ValueError: __len__() should return >= 0
 |---|---|
 | **언어 보장** | `in` 의 세 단계 대체 순서(Membership test operations 가 글자로 적는다) · `for` 의 `__iter__`→`__getitem__` · `__bool__` 이 없고 `__len__` 이 0 이면 거짓 · `__len__` 은 0 이상의 정수 · 대괄호 안이 한 인자로 뭉치는 것 · 특수 메서드를 **타입에서** 찾는 것 · `Sequence` 가 둘을 요구하고 다섯을 주는 것 · 추상 메서드를 안 채우면 인스턴스화가 막히는 것 |
 | **CPython 구현** | ★ `list(x)` 가 `__len__` 을 **한 번 더** 묻는 것(길이 힌트) · `reversed(x)` 가 두 번 묻는 것 · ★ 길이 상한이 `sys.maxsize` 라 `2 ** 63` 이 `OverflowError` 인 것(**문서가 구현 세부사항으로 명시**) · `__len__` 결과에 `__index__` 를 걸어 주는 것 · `in` 이 `__getitem__` 경로에서 찾자마자 멈추는 것 |
-| **이 판(3.12.3)의 관찰** | 예외 **문구** 전부(`argument of type 'C' is not iterable` 과 `'C' object is not iterable` 이 **다른 것** 포함) · `Can't instantiate abstract class …` 문구(3.12 에서 바뀐 꼴) · `ellipsis` 가 소문자인 것 · `__getitem__` 이 `in` 에서 2번 `for` 에서 3번 불린 **횟수** |
+| **이 버전(3.12.3)의 관찰** | 예외 **문구** 전부(`argument of type 'C' is not iterable` 과 `'C' object is not iterable` 이 **다른 것** 포함) · `Can't instantiate abstract class …` 문구(3.12 에서 바뀐 꼴) · `ellipsis` 가 소문자인 것 · `__getitem__` 이 `in` 에서 2번 `for` 에서 3번 불린 **횟수** |
 
 - ★ **세 물음의 답을 한 줄씩으로** —
   `in` 의 대체 순서는 **언어 보장**, `list(x)` 의 길이 힌트는 **CPython 구현**,
   `2 ** 63` 의 `OverflowError` 는 **CPython 구현**(문서가 그렇게 표시한다).
 - ★ 대체 **순서**는 명세지만 **횟수**는 결과의 부산물이다. 횟수를 근거로 쓸 때는 그 사실을 같이 적어야 한다.
 
-### 12. 16번은 순회 계약, 32번은 대체 격자 — 그리고 둘이 갈리는 객체가 있다
+### 12. 16번은 순회 계약, 32번은 대체 격자 — 그리고 둘이 달라지는 객체가 있다
 
 **왜 그런가**
 
@@ -760,7 +760,7 @@ ValueError: __len__() should return >= 0
   그리고 **`__getitem__` 낡은 프로토콜의 동작 자체.**
 - **여기가 정본인 것** — **네 프로토콜이 서로를 대신하는 격자**(`in` 과 `for` 의 우선순위가 다르다는 것),
   `__len__` 이 `__bool__` 을 대신하는 것, 대괄호 인자가 한 덩어리인 것, `collections.abc` 의 믹스인.
-- ★★★ **둘이 갈리는 객체는 `__getitem__` 만 가진 객체**다.
+- ★★★ **둘이 달라지는 객체는 `__getitem__` 만 가진 객체**다.
   `for` 는 도는데 `isinstance(o, Iterable)` 이 **거짓**이다.
   창 ①(정의된 메서드)·②(호출 로그)·③(예외 없음)이 전부 「된다」고 말하는데 **창 ④만 「아니다」라고 답한다.**
   **「돈다」와 「그 타입이다」는 다른 질문**이라는 것이 이 주제의 조용한 자리다.
@@ -784,7 +784,7 @@ ValueError: __len__() should return >= 0
 | 쓰기 쪽 프로토콜과 `+=` | `python3 - <e32_setitem.py` | 2 | `+=` 가 두 메서드를 부르는 것 확인 |
 | `collections.abc` 믹스인과 `isinstance` | `python3 - <e32_abc.py` | 2 | 다섯이 따라옴 · `Old()` 가 `Iterable` 에 거짓인데 `for` 는 돎 |
 
-**구현 의존 항목** — 판이 오르면 다시 돌려야 하는 것.
+**구현 의존 항목** — 버전이 오르면 다시 돌려야 하는 것.
 
 | 항목 | 왜 |
 |---|---|
@@ -796,13 +796,13 @@ ValueError: __len__() should return >= 0
 | `__getitem__` 호출 **횟수**(2번 대 3번) | 대체 **순서**만 명세다 |
 | `isinstance(Duck(), Container)` 가 거짓인 것 | `__subclasshook__` 이 어느 ABC 에 붙었는지는 라이브러리 구현이다 |
 
-★ **안 흔들리는 칸** — 대체 **순서** 자체, 어느 메서드가 **불렸나 안 불렸나**, `len()` 값,
+★ **달라지지 않는 항목** — 대체 **순서** 자체, 어느 메서드가 **불렸나 안 불렸나**, `len()` 값,
 `in` 의 참·거짓, `File "<stdin>", line N`, `(exit N)`.
-이 주제의 블록에는 주소도 시간도 절대경로도 없어 **같은 판에서 다시 돌리면 한 글자도 안 변한다**(재대조로 확인).
+이 주제의 블록에는 주소도 시간도 절대경로도 없어 **같은 버전에서 다시 돌리면 한 글자도 안 변한다**(재대조로 확인).
 
 ## 실행 환경
 
 이 파일의 모든 출력은 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
 던지는 형태는 `python3 - <파일` 로 고정했다.
-★ 이 파일의 블록에는 **주소도 시간도 절대경로도 안 찍힌다** — 같은 판에서 다시 돌리면 **한 글자도 안 변한다.**
+★ 이 파일의 블록에는 **주소도 시간도 절대경로도 안 찍힌다** — 같은 버전에서 다시 돌리면 **한 글자도 안 변한다.**
 단 **예외 문구**와 `list()` 가 길이를 미리 묻는지 여부는 구현·판에 달린 것이다(11번 답).

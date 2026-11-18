@@ -3,7 +3,7 @@
 ## 이 파일을 푸는 법
 
 - ★★ **예측형 여섯 문항(1\~6)은 소스만 보고 적어 본 뒤** 답을 연다.
-- ★★★ **1·2번은 `-O0` 과 `-O2` 를 따로** 적어라 — 같은 소스의 링크가 **최적화 수준에 따라** 갈리는 칸이 있다.
+- ★★★ **1·2번은 `-O0` 과 `-O2` 를 따로** 적어라 — 같은 소스의 링크가 **최적화 수준에 따라** 달라지는 항목이 있다.
 - ★★ **「컴파일이 통과했다」와 「링크가 통과했다」를 갈라** 적어라.
 - ★ 각 문항 끝에서 스스로 물어라 — 「**이 프로그램에서 `twice` 의 외부 정의는 몇 개인가**」.
 
@@ -54,15 +54,15 @@ int main(void) {
 `KW` 를 `inline` · `static inline` · `extern inline` 으로 바꾸고, 넷째 줄은 `KW=inline` 에 **`s39a.c` 만 `-DDECL`** 을 준다. `gcc`/`clang` × `-O0`/`-O2` 로 `s39a.c s39b.c` 를 링크한다(`-std=c17`).
 
 - ★★★ 네 줄 × 네 칸, 각 칸의 링크 결과는?
-- ★★★ `KW=inline` 줄에서 `-O0` 과 `-O2` 가 갈린다면 **왜 `-O2` 쪽**인가?
-- ★★ gcc 와 clang 이 갈리는 칸이 있는가?
+- ★★★ `KW=inline` 줄에서 `-O0` 과 `-O2` 가 달라진다면 **왜 `-O2` 쪽**인가?
+- ★★ gcc 와 clang 이 달라지는 항목이 있는가?
 
 ### 2. `-fgnu89-inline` 과 `-std=gnu89` (예측) ★★★
 
 같은 네 줄을 `-std=c17 -fgnu89-inline` 과 `-std=gnu89` 로 링크한다.
 
 - ★★★ `KW=inline` 줄과 `KW=extern inline` 줄은 각각 어떻게 되는가?
-- ★★ C99 판과 `-fgnu89-inline` 판을 칸끼리 견주면 **몇 칸이 갈리는가**? 안 갈리는 칸은 어느 줄인가?
+- ★★ C99 판과 `-fgnu89-inline` 판을 칸끼리 견주면 **몇 칸이 달라지는가**? 안 달라지는 항목은 어느 줄인가?
 - ★ `-std=gnu89` 덩어리는 `-fgnu89-inline` 덩어리와 다른가?
 
 ### 3. `nm` 이 붙이는 글자 (예측) ★★
@@ -167,7 +167,7 @@ int use(void) { return count_calls() + read_hidden(); }
 
 **환경** — gcc 13.3.0 · clang 18.1.3 · g++ 13.3.0 · clang++ 18.1.3 · x86-64 Linux.
 
-★★★ **본체 창은 링크 격자** — 1번은 **칸마다 「링크 성공 / `undefined reference` / `multiple definition`」** 을 적어야 답이다.
+★★★ **핵심 창은 링크 격자** — 1번은 **칸마다 「링크 성공 / `undefined reference` / `multiple definition`」** 을 적어야 답이다.
 ★★ **한 번역 단위 안의 세 형태**는 [29번 형제](../29-scope-and-linkage-static-extern/) (8)에서 이미 풀었다 — 여기는 **헤더를 두 파일이 include** 한다.
 선행 — [29번 형제](../29-scope-and-linkage-static-extern/) · [목록의 **44번 주제**](../44-headers-and-separate-compilation/).
 

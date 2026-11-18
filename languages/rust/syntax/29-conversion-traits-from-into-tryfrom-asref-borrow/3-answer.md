@@ -149,7 +149,7 @@ try_from Ok 212
 **왜 그런가.**
 
 - ★★★ **에러 2건 — E0308(17행) · E0277(18행).** 16행(직접 쓴 방향)은 **에러가 없다.**
-- ★★ **번호가 갈리는 이유** — 결함은 같다(「`From<Celsius> for Fahrenheit` 가 없다」).
+- ★★ **번호가 달라지는 이유** — 결함은 같다(「`From<Celsius> for Fahrenheit` 가 없다」).
   - `Fahrenheit::from(x)` 는 **`Fahrenheit` 가 가진 `From` 중에서** 고른다. 가진 것이 **반사 구현 `From<Fahrenheit>` 하나뿐**이라
     rustc 는 인자가 `Fahrenheit` 여야 한다고 추론했고, 그래서 **타입 불일치(E0308)** 로 나왔다.
   - `convert` 는 **경계 `U: From<T>`** 를 검사하므로 **트레이트 미충족(E0277)** 으로 정면에서 말한다.
@@ -523,7 +523,7 @@ For more information about this error, try `rustc --explain E0308`.
 
 | 무엇을 | 어떻게 | 몇 번 | 결과 |
 |---|---|---|---|
-| 이 문서·서머리의 **모든 블록** | `capture.sh` 가 `rustc --edition 2021 <파일>.rs` 로 컴파일하고 실행 | 배치 내내 + **제출 전 전수 재실행** | `normalize-shaky.py` — **흔들린 칸 0 · 고칠 것 0** |
+| 이 문서·서머리의 **모든 블록** | `capture.sh` 가 `rustc --edition 2021 <파일>.rs` 로 컴파일하고 실행 | 배치 내내 + **제출 전 전수 재실행** | `normalize-shaky.py` — **달라진 항목 0 · 고칠 것 0** |
 | ★★★ **`Into` 만 구현** | `r29_into_only` · `r29_qmark` | 2 | **E0308 + E0277** · `?` 는 **E0277 `using the From trait`** |
 | ★★ **`Into` 만으로 `try_from`** | `r29_into_try` | 1 | `try_from Ok 212` — `Error = Infallible` |
 | ★★ **포괄 구현 네 줄** | `r29_blanket.py` — 설치된 `rust-docs` 의 std 소스 페이지에서 추출 | 1 | 767 · 785 · 811 · 827 행 |
@@ -535,21 +535,21 @@ For more information about this error, try `rustc --explain E0308`.
 | 에디션 2015 | `r29_ed2015` — 같은 `TryFrom` 소스 | 1 | **E0405** — 프렐류드 note |
 | ★ **경계를 `Into` 로** | `r29_bound_into` — `Into` 만 쓴 타입 + `From` 을 쓴 타입 | 1 | 둘 다 통과 `212 32` |
 | ★ **반대 방향 포괄 구현** | `r29_reverse` — 내 크레이트에 `From<T> for U where T: Into<U>` | 1 | **E0391** `cycle detected` |
-| **안 던진 것** — 16비트 타깃의 `usize` | 서머리 (5)에서 **추론으로** 적었다 — `rustup target list --installed` 가 `x86_64-unknown-linux-gnu` 하나뿐이다(블록으로 실었다) | 0 | ★ 「추론」으로 표시했다 |
+| **실행하지 않은 것** — 16비트 타깃의 `usize` | 서머리 (5)에서 **추론으로** 적었다 — `rustup target list --installed` 가 `x86_64-unknown-linux-gnu` 하나뿐이다(블록으로 실었다) | 0 | ★ 「추론」으로 표시했다 |
 | ★ `impl Into<String>` 의 **벌 수** | `r31_into_o0`/`o3` — 31번의 창(`nm -C`, v0) | 2 | opt 0 **네 벌** · opt 3 **0 벌** |
 | C# 암묵 변환 대비 | `r29_implicit` — `r29_csc.sh`(.NET SDK 10.0.401 의 csc) | 1 | 대입·인자 자리에서 **글자 없이** 불린다 |
-| **안 센 것** — 변환의 할당 횟수 | 할당 계수기를 안 세웠다 | 0 | ★ 부적용 창으로 적었다 |
+| **안 센 것** — 변환의 할당 횟수 | 할당 계수기를 안 세웠다 | 0 | ★ 해당 없음 창으로 적었다 |
 | 외부 크레이트 | **쓰지 않음** | 0 | std 만 |
 
 **구현 의존 항목**(버전·환경이 바뀌면 **다시 찍어야 하는** 것).
 
 | 항목 | 왜 |
 |---|---|
-| `` the following other types implement trait `From<T>` `` 의 **목록** | ★ std 판이 오르면 구현이 **늘 수 있다**(`u32: From<Char>` 같은 불안정 타입도 섞여 나온다) |
+| `` the following other types implement trait `From<T>` `` 의 **목록** | ★ std 버전이 오르면 구현이 **늘 수 있다**(`u32: From<Char>` 같은 불안정 타입도 섞여 나온다) |
 | 결함이 **E0308 로 나오나 E0277 로 나오나** | ★ 추론이 반사 구현을 고른 결과다. 진단 순서·문구는 판마다 바뀔 수 있다 |
 | std 소스 페이지의 **줄 번호**와 `const`·`[const]` 표기 | ★ `rust-docs` 판마다 움직인다. `const_convert` 가 안정되면 표기가 바뀐다 |
-| 진단에 박히는 `/rustc/ded5c06cf…/library/…` 경로 | ★ **이 rustc 판의 커밋 해시** |
-| `Borrow` 계약을 어겼을 때 **`None`** 이 나오는 것 | ★ **이 판의 관찰** — 동작이 규정되지 않는다 |
+| 진단에 박히는 `/rustc/ded5c06cf…/library/…` 경로 | ★ **이 rustc 버전의 커밋 해시** |
+| `Borrow` 계약을 어겼을 때 **`None`** 이 나오는 것 | ★ **이 버전의 관찰** — 동작이 규정되지 않는다 |
 
 ★ **다시 찍는 법** — `capture.sh <새 디렉토리>` 를 그대로 돌리고 `normalize-shaky.py <원본> <새 디렉토리>` 로 견준다.
 **이 주제에는 흔들려야 할 칸이 없다** — 전부 한 글자도 같아야 한다.

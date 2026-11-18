@@ -202,7 +202,7 @@ cases per template at cap = 21,845 (ROWS_PER_CASE=3)
 
 #### 막았을 장치 (해석)
 
-- 분포 관측: 일별 점수 분포(평균·분위·구간별 비율)를 기준선과 비교한다. 수십만 명의 25점 이상 이동은 분포 지표로 보일 수 있다. 다만 공개 자료는 그 이동이 전체 분포에서 얼마나 컸는지 밝히지 않는다([10](../10-data-quality-and-data-observability/2-summary.md) 분포 축 · [10-3](../10-data-quality-and-data-observability/2-summary.md)).
+- 분포 관측: 일별 점수 분포(평균·분위·구간별 비율)를 베이스라인과 비교한다. 수십만 명의 25점 이상 이동은 분포 지표로 보일 수 있다. 다만 공개 자료는 그 이동이 전체 분포에서 얼마나 컸는지 밝히지 않는다([10](../10-data-quality-and-data-observability/2-summary.md) 분포 축 · [10-3](../10-data-quality-and-data-observability/2-summary.md)).
 - 그림자 비교: 운영에 올리는 계산 변경은 이전 계산과 같은 입력으로 함께 돌려 차이를 센다. 이전 중인 환경이면 새 환경과도 같은 방식으로 비교한다(아래 적용 §2 실험 (3)).
 - 출력 기록: 점수마다 계산 코드 버전·환경·시각을 남겨, 오류 기간에 나간 값을 바로 골라낸다([11](../11-data-lineage/2-summary.md) · [06](../06-event-data-modeling/2-summary.md)의 봉투 필드 — version·source).
 - leaf: [10-3](../10-data-quality-and-data-observability/2-summary.md) · [07-1](../07-batch-stream-architectures/2-summary.md) · [11-2](../11-data-lineage/2-summary.md) · [08-2](../08-idempotent-pipelines-and-backfill/2-summary.md)(과거 값을 다시 계산할 때 그때의 규칙과 고친 코드를 구분)
@@ -223,7 +223,7 @@ cases per template at cap = 21,845 (ROWS_PER_CASE=3)
 
 - **행 수 대조(control total)**: 보낸 쪽이 센 수와 받은 쪽이 센 수를 맞춘다. PHE형 누락의 1차 장치([10](../10-data-quality-and-data-observability/2-summary.md) 볼륨 축).
 - **출처별 그룹 집계**: `GROUP BY source`로 유효 비율·분포를 나눠 잰다. 큰 출처 하나의 문제가 전체 평균에 묻히지 않게 한다(Unity형).
-- **분포 비교**: 기준선 대비 평균·분위·구간별 비율, 이동 평균·EWMA([10](../10-data-quality-and-data-observability/2-summary.md)).
+- **분포 비교**: 베이스라인 대비 평균·분위·구간별 비율, 이동 평균·EWMA([10](../10-data-quality-and-data-observability/2-summary.md)).
 - **그림자 비교(차분)**: 같은 입력에 두 구현을 돌려 결과 차이를 센다(Equifax형, [07](../07-batch-stream-architectures/2-summary.md)의 두 경로 대조).
 - **계보 그래프 순회**: 오류 기간의 출력이 어느 하류(고객·모델·대시보드)로 갔는지 찾는다([11](../11-data-lineage/2-summary.md), [algorithm/11-bfs](../../algorithm/11-bfs/2-summary.md)).
 

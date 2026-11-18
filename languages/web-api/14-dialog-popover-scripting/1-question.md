@@ -33,7 +33,7 @@ document.elementFromPoint(4, 4)
 ```
 
 - 일곱 칸을 두 모드에 대해 적어라.
-- **갈리는 칸이 몇 개인가**?
+- **달라지는 항목이 몇 개인가**?
 - 「모달만 포커스를 가져간다」는 맞는 말인가?
 
 ### 3. 닫고 나서 무엇이 남나 (예측)
@@ -114,7 +114,7 @@ getComputedStyle(팝).zIndex
 ```
 
 - 각각을 `showModal()`(팝오버는 `showPopover()`)로 열었을 때 `document.activeElement` 를 적어라.
-- **`dialog` 와 `popover` 가 갈리는 칸**은 어디인가?
+- **`dialog` 와 `popover` 가 달라지는 항목**은 어디인가?
 - `tabindex="-1"` 은 「포커스 가능」에서 빠지는가?
 
 ### 8. 닫으면 포커스가 어디로 돌아오나 (경계)
@@ -126,7 +126,7 @@ getComputedStyle(팝).zIndex
 사라질.focus();  dialog.showModal();  사라질.remove();  dialog.close();  // ③
 ```
 
-- 세 판의 `document.activeElement` 를 적어라.
+- 세 버전의 `document.activeElement` 를 적어라.
 - ③ 이 실무에서 **어떤 화면의 모양**인가?
 
 ### 9. `popover` 의 표면을 던지면 (예측)
@@ -181,7 +181,7 @@ show() 로 연 비모달에
 
 ★ **마크업 갈래와의 경계** — HTML 갈래 목록([`html/syntax/README.md`](../../html/syntax/README.md))의 **47번** 과 **48번** 은 `dialog`·`popover` 를 **마크업으로** 다루고, 여기는 **그것을 스크립트로 열고 닫는 쪽**이다.
 ★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰이다. 이식성은 주장 범위 밖이다.
-★★ **가벼운 닫기와 `Esc` 문항은 진짜 입력으로 던진 것**이다 — `dispatchEvent` 로는 한 칸도 안 움직인다.
+★★ **가벼운 닫기와 `Esc` 문항은 진짜 입력으로 실행한 것**이다 — `dispatchEvent` 로는 한 칸도 안 움직인다.
 ★ 선행은 [03번 주제](../03-node-creation-insertion-removal/2-summary.md)(노드를 붙이고 떼는 것)와 [CSS 22번 주제](../../css/syntax/22-stacking-context-and-z-index/2-summary.md)(쌓임 맥락과 `z-index`)다.
 
 ## 복습 기록

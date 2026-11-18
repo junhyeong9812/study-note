@@ -86,7 +86,7 @@ bad.kt:5:21: error: null cannot be a value of a non-null type 'String'.
 - **세 에러 문구가 다르다.** 첫째는 타입 불일치, 둘째는 **호출 규칙**, 셋째는 리터럴 `null` 전용이다.
 - 둘째 메시지가 특히 값어치가 있다 — **"어떻게 고치는지" 가 메시지 안에 들어 있다**(`?.` 또는 `!!.`).
 - 반대 방향(`String` → `String?`)은 자유다. **non-null 은 nullable 의 부분집합**이기 때문이다.
-- [01번](../01-val-var-and-basic-types/)의 `Int`/`Int?` 와 같은 구조다. 거기는 **런타임 표현**이 갈렸고, 여기는 **컴파일 규칙**이 갈린다.
+- [01번](../01-val-var-and-basic-types/)의 `Int`/`Int?` 와 같은 구조다. 거기는 **런타임 표현**이 달라졌고, 여기는 **컴파일 규칙**이 달라진다.
 
 비용 — 0. 전부 컴파일 타임이다.
 
@@ -544,7 +544,7 @@ let 본문이 돈 횟수 = 1
 
 - [`../README.md`](../README.md) — Kotlin 문법·API 주제 목록(이 주제는 03번)
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) §2 — **「왜 null 을 타입에 넣었나」라는 설계 논증이 거기 정본**이다. 여기는 그 문법의 바이트코드까지
-- [01번 주제](../01-val-var-and-basic-types/) — `Int`/`Int?` 가 **런타임 표현**에서 갈리는 것. 이 문서의 `String`/`String?` 와 짝이다
+- [01번 주제](../01-val-var-and-basic-types/) — `Int`/`Int?` 가 **런타임 표현**에서 달라지는 것. 이 문서의 `String`/`String?` 와 짝이다
 - [04번 주제](../04-smart-casts/) — **null 검사 뒤에 `?.` 가 여전히 필요해지는 자리**의 정본
 - [05번 주제](../05-platform-types/) — **이 보장이 Java 경계에서 사라지는 자리**의 정본. 이 사슬의 정점이다
 - [`../../../java/syntax/60-null-handling/`](../../../java/syntax/60-null-handling/) — **Java 쪽 정본.** `Objects.requireNonNull` 의 메시지 설계, 방어 시점 셋, 컬렉션별 null 정책

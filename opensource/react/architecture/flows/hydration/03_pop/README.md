@@ -2,7 +2,7 @@
 
 상위: [하이드레이션](../README.md)
 
-fiber 하나를 다 수화하고 나올 때. **남은 DOM 노드가 있으면 그것도 어긋남**이고, 되감기용 포크가 따로 있다.
+fiber 하나를 다 수화하고 나올 때. **남은 DOM 노드가 있으면 그것도 불일치**이고, 되감기용 포크가 따로 있다.
 
 ## 위치
 
@@ -365,4 +365,4 @@ function resetHydrationState(): void {
 
 ## 다루지 않는 것
 
-`skipPastDehydratedSuspenseInstance`(L716) / `skipPastDehydratedActivityInstance`(L699)의 본문, `getNextHydratableSibling` / `getNextHydratableSiblingAfterSingleton` / `getFirstHydratableChildWithinSingleton`(호스트 설정)이 주석 노드와 공백을 어떻게 건너뛰는지, `shouldDeleteUnhydratedTailInstances` / `shouldSetTextContent` 가 태그별로 무엇을 돌려주는지, `warnIfUnhydratedTailNodes`(L837)가 DEV 트리에 꼬리를 쌓는 방식([04 DEV 어긋남 트리](../04_devDiff/README.md)에 있다), `popHydrationStateOnInterruptedWork`(L878)의 본문 전체와 `replaySuspendedUnitOfWork` / `unwindInterruptedWork`([렌더 루프](../../render-loop/README.md)에 있다), `supportsSingletons` 가 꺼진 빌드의 갈래(L799-816)는 같은 뼈대의 곁가지라 요약만 했다.
+`skipPastDehydratedSuspenseInstance`(L716) / `skipPastDehydratedActivityInstance`(L699)의 본문, `getNextHydratableSibling` / `getNextHydratableSiblingAfterSingleton` / `getFirstHydratableChildWithinSingleton`(호스트 설정)이 주석 노드와 공백을 어떻게 건너뛰는지, `shouldDeleteUnhydratedTailInstances` / `shouldSetTextContent` 가 태그별로 무엇을 돌려주는지, `warnIfUnhydratedTailNodes`(L837)가 DEV 트리에 꼬리를 쌓는 방식([04 DEV 불일치 트리](../04_devDiff/README.md)에 있다), `popHydrationStateOnInterruptedWork`(L878)의 본문 전체와 `replaySuspendedUnitOfWork` / `unwindInterruptedWork`([렌더 루프](../../render-loop/README.md)에 있다), `supportsSingletons` 가 꺼진 빌드의 갈래(L799-816)는 같은 뼈대의 곁가지라 요약만 했다.

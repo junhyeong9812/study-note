@@ -7,7 +7,7 @@
 | 조건 | 뜻 | 깨는 법 |
 |---|---|---|
 | 상호 배제 | 자원을 한 번에 하나만 쓴다 | 락 없는 자료구조(CAS 재시도) |
-| 점유 대기 | 쥔 채로 더 기다린다 | 필요한 락을 한꺼번에 잡는다(전역 락으로 감싸 획득) |
+| 점유 대기 | 잡은 채로 더 기다린다 | 필요한 락을 한꺼번에 잡는다(전역 락으로 감싸 획득) |
 | 비선점 | 쥔 것을 빼앗을 수 없다 | `trylock` 실패 시 쥔 락을 모두 내려놓고 재시도 |
 | 원형 대기 | 대기 사슬이 한 바퀴 돈다 | 락 획득 순서를 정한다(전순서·부분순서·주소 순서) |
 
@@ -79,7 +79,7 @@ void transfer(Account from, Account to, long amount) {
   - 각자 **기다리는** 모니터와 그것을 **쥔** 스레드.
   - 아래 "Java stack information"에서 각 스레드가 어느 줄에서 무엇을 `locked`했고 무엇을 `waiting to lock`인지. 두 코드 경로의 락 순서가 반대라는 증거다.
 - 긴급 조치: 재시작. JVM은 탐지만 하고 풀지 않는다. 재시작 전에 덤프를 남긴다.
-- 근본 조치: 두 경로의 락 순서를 통일한다. 락을 쥔 채 다른 객체의 `synchronized` 메서드·콜백을 부르지 않는다.
+- 근본 조치: 두 경로의 락 순서를 통일한다. 락을 잡은 채 다른 객체의 `synchronized` 메서드·콜백을 부르지 않는다.
 - JVM이 못 찾는 것
   - 소유자가 없는 동기화 도구(`Semaphore`, `CountDownLatch`, 조건 대기)가 낀 사이클. 로컬 재현(JDK 21)에서 세마포어 교차 대기는 `null`이었다.
   - 가상 스레드가 낀 사이클(Java SE `ThreadMXBean` 문서).
@@ -107,7 +107,7 @@ void transfer(Account from, Account to, long amount) {
 ### 9. lockdep·TSan의 "미리 보는" 탐지
 
 - 둘 다 **실제 대기 그래프가 아니라 획득 순서의 이력**을 본다.
-  - "L1을 쥔 채 L2를 잡았다"를 L1→L2 간선으로 기록한다.
+  - "L1을 잡은 채 L2를 잡았다"를 L1→L2 간선으로 기록한다.
   - 다른 곳에서 L2→L1이 한 번이라도 관측되면, 그 순간 둘이 겹치지 않았어도 사이클로 보고한다.
   - lockdep: "두 락이 역순으로 잡힐 수 없다", 위반 시 `WARNING: possible circular locking dependency detected`(docs.kernel.org lockdep-design, lockdep.c).
   - TSan: 로컬 재현(gcc 13.3)에서 두 스레드를 **차례로** 실행했는데도 `lock-order-inversion (potential deadlock)`, `Cycle in lock order graph: M0 => M1 => M0`.

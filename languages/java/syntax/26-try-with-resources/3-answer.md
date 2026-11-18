@@ -694,5 +694,5 @@ try (var ex = Executors.newFixedThreadPool(4)) {
 ## 실행 환경
 
 이 파일의 모든 출력·스택트레이스·컴파일 에러·바이트코드는 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
-실행 프로그램 넷은 **17.0.13 · 25.0.1** 에서도 돌렸다. `Ex.java (26-h)` 만 결과가 갈렸고(`ExecutorService`) 나머지는 같았다.\
+실행 프로그램 넷은 **17.0.13 · 25.0.1** 에서도 돌렸다. `Ex.java (26-h)` 만 결과가 달라졌고(`ExecutorService`) 나머지는 같았다.\
 바이트코드는 `javap -c -p` 출력을, javadoc 은 `lib/src.zip` 의 실파일을 그대로 옮겼다.

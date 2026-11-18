@@ -34,7 +34,7 @@ border-inline-start: 6px solid;  padding-inline-end: 8px;
 ⑤ writing-mode: vertical-rl + rtl      -> 상자 (250, 66)
 ```
 
-- 두 판에서 **x 가 같고 y 만 다르다**는 사실이 말해 주는 것은 무엇인가?
+- 두 버전에서 **x 가 같고 y 만 다르다**는 사실이 말해 주는 것은 무엇인가?
 - 아랍어 사이트와 일본어 세로쓰기는 각각 어느 속성을 쓰는가?
 - 둘을 동시에 쓸 수 있는가?
 - 실무에서 RTL 은 CSS 로 켜는가 마크업으로 켜는가, 왜 그런가?
@@ -95,7 +95,7 @@ border-inline-start: 6px solid;  padding-inline-end: 8px;
 ```
 
 - 네 경우 글자는 각각 왼쪽인가 오른쪽인가?
-- `.c` 와 `.d` 가 갈리는 이유는 무엇인가?
+- `.c` 와 `.d` 가 달라지는 이유는 무엇인가?
 - `getComputedStyle(c).textAlign` 은 무엇을 돌려주는가 — 그것으로 어느 쪽인지 알 수 있는가?
 - 2번의 `margin-inline-start` 와 무엇이 다른가?
 

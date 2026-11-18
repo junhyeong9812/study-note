@@ -220,7 +220,7 @@ canConvert == true            ← 과대보고
 ```
 
 이제 같은 카드로 **실행(convert)** 경로를 탄다.\
-앞부분은 동일하고, 컨버터를 실제로 호출하는 지점부터 갈린다.
+앞부분은 동일하고, 컨버터를 실제로 호출하는 지점부터 달라진다.
 
 ```text
 cs.convert(Optional.of(42), TypeDescriptor(Optional<Integer>), TypeDescriptor(LocalDate))
@@ -557,7 +557,7 @@ PR 본문이 "Impact is bounded"라고 적은 근거가 이 구조다.
 `TypeDescriptor`를 만드는 통로는 두 종류다.\
 하나는 필드·메서드 파라미터·`ResolvableType`처럼 **선언**에서 만드는 것(`TypeDescriptor.java:99`, `:111`, `:128`)이고, 다른 하나는 `TypeDescriptor.forObject(값)`처럼 **실제 객체의 런타임 클래스**에서 만드는 것이다.\
 전자는 제네릭이 살아 있고 후자는 지워져 있다.\
-`OptionalToObjectConverter.convert`가 내부 위임에서 `forObject(unwrappedSource)`를 쓰는 것(`OptionalToObjectConverter.java:64`)과 `matches()`가 선언 카드를 받는 것이 바로 이 두 세계의 만남이고, 두 세계가 서로 다른 답을 내는 것이 이 PR이 정렬하려는 어긋남이다.
+`OptionalToObjectConverter.convert`가 내부 위임에서 `forObject(unwrappedSource)`를 쓰는 것(`OptionalToObjectConverter.java:64`)과 `matches()`가 선언 카드를 받는 것이 바로 이 두 세계의 만남이고, 두 세계가 서로 다른 답을 내는 것이 이 PR이 정렬하려는 불일치이다.
 
 ## 출처
 

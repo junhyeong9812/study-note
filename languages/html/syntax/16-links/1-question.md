@@ -118,13 +118,13 @@ window.__끝 = () => {
 - `_blank · rel 없음` 의 새 창에서 `window.opener` 는?
 - `_blank · noreferrer` 의 서버 `Referer` 와 `document.referrer` 는?
 - `_blank · 다른 출처` 의 서버 `Referer` 는 무엇인가?
-- `_blank · nofollow` 는 `rel 없음` 과 몇 칸이 갈리는가?
+- `_blank · nofollow` 는 `rel 없음` 과 몇 칸이 달라지는가?
 
 ### 4. 이름 target 에서 (예측)
 
 - 3번 소스의 `창이름1`\~`창이름4` 넷이다. 각각의 `window.opener` 는?
-- `창이름3`(noreferrer)과 `창이름4`(referrerpolicy=no-referrer)는 몇 칸 갈리는가?
-- 마지막 줄 「**갈린 칸 = N / 27**」 의 N 은?
+- `창이름3`(noreferrer)과 `창이름4`(referrerpolicy=no-referrer)는 몇 칸 달라지는가?
+- 마지막 줄 「**달라진 항목 = N / 27**」 의 N 은?
 
 ### 5. `download` 와 `javascript:` (예측)
 
@@ -164,11 +164,11 @@ window.__끝 = () => {
 
 ### 8. `noreferrer` 대 `referrerpolicy="no-referrer"` (경계)
 
-- `_blank` 에서 둘은 몇 칸 갈리는가? 이름 target 에서는?
+- `_blank` 에서 둘은 몇 칸 달라지는가? 이름 target 에서는?
 - 명세가 `noreferrer` 에 대해 적은 「함의」는?
 - 서버 로그가 `document.referrer` 보다 강한 근거인 이유는?
 
-### 9. 링크와 버튼이 갈리는 기준 (경계)
+### 9. 링크와 버튼이 달라지는 기준 (경계)
 
 - `href` 없는 `<a>` 는 무엇을 잃는가(창 ② · 창 ⑦)?
 - `href="#"`·`href="javascript:…"` 로 버튼을 흉내 내면 무엇이 남고 무엇이 틀리는가?
@@ -190,7 +190,7 @@ window.__끝 = () => {
 ## 실행 환경
 
 ★★★ 이 주제의 답은 **화면에 없다.** 서버가 받은 `Referer` · 새 창의 `window.opener` · `a.href` 가 푼 값 — **어느 창에서 읽었나**를 같이 적어라.
-★ 소스 펜스 첫 줄의 `<!-- 파일이름 -->` 은 **어느 파일을 던진 것인지 표시**이지 파일 내용이 아니다. 펜스의 소스는 전부 실제로 던진 파일이다.
+★ 소스 펜스 첫 줄의 `<!-- 파일이름 -->` 은 **어느 파일을 실행한 것인지 표시**이지 파일 내용이 아니다. 펜스의 소스는 전부 실제로 실행한 파일이다.
 ★ 서버는 **127.0.0.1:18713(A)** 과 **127.0.0.1:18714(B)** 둘이다 — 포트가 달라 **다른 출처**다.
 ★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰이다. 이식성은 주장 범위 밖이다.
 선행 — [07번 주제](../07-id-and-fragments/1-question.md).

@@ -212,7 +212,7 @@ new Derived() 의 시간 축
   하위 클래스가 조심해야 한다                 언어가 순서를 보장한다
 ```
 
-### 5. `final` 필드 둘의 결과가 갈린다
+### 5. `final` 필드 둘의 결과가 달라진다
 
 **실행 결과** (`ConstFold.java`)
 
@@ -225,7 +225,7 @@ B2 ctor: constant=10 computed=0
 - `constant` = **10**
 - `computed` = **0**
 
-**왜 갈리는가**
+**왜 달라지는가**
 
 - `constant` 는 **상수 변수**다 — `final` + 기본형 + 초기화식이 상수 식(JLS §4.12.4).\
   `javac` 가 값을 **쓰는 자리에 박아 넣는다.** 필드를 읽는 코드 자체가 사라진다.
@@ -286,13 +286,13 @@ c) Holder.BOXED 읽기
   Holder 를 안 건드림        Holder 를 안 건드림        <clinit> 실행
 ```
 
-**`CONST` 와 `BOXED` 가 갈리는 이유**
+**`CONST` 와 `BOXED` 가 달라지는 이유**
 
 - `CONST` 는 `static final int` + 상수 식 -> **상수 변수**라 JLS §12.4.1 의 4번 조건에서 **명시적으로 제외**된다.\
   원문: "A `static` field declared by T is used and the field is **not a constant variable**".
 - `BOXED` 는 `static final Integer` 다.\
   `Integer` 는 기본형도 `String` 도 아니므로 **상수 변수가 될 수 없다**(§4.12.4).
-- 값이 둘 다 `42` 이고 둘 다 `static final` 인데 **타입 하나로 갈린다.**\
+- 값이 둘 다 `42` 이고 둘 다 `static final` 인데 **타입 하나로 나뉜다.**\
   01번 주제의 오토박싱이 여기서 다시 걸린다 — `Integer BOXED = 42` 는 초기화식이 박싱 변환이라 상수 식이 아니다.
 
 **배열이 왜 초기화를 안 일으키는가**

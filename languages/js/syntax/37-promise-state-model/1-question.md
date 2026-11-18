@@ -244,7 +244,7 @@ make("never", () => {});
 
 ### 9. `.finally()` 와 `try`/`finally` (연결) ★★★
 
-- ★★★ 32번의 `try`/`finally` 격자는 `6 / 9`, 이 문서의 `.finally()` 격자는 `4 / 8` 이다. 결정적으로 갈린 칸은 어느 것인가?
+- ★★★ 32번의 `try`/`finally` 격자는 `6 / 9`, 이 문서의 `.finally()` 격자는 `4 / 8` 이다. 결정적으로 달라진 항목은 어느 것인가?
 - ★★ `thenFinally` 가 콜백의 반환값으로 하는 일과 하지 않는 일은?
 
 ### 10. 미처리 거부 — 누가 정하나 (경계) ★★★
@@ -262,7 +262,7 @@ make("never", () => {});
 
 **환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · Google Chrome 151(헤드리스) · x86-64 Linux. 배너의 `node20` 은 v20.19.6 이다.
 
-★★★ **이 주제의 본체는 전수 격자 셋과 틱 세기다** — **1번 · 2번 · 5번 문항이 이 주제의 중심이다.**
+★★★ **이 주제의 핵심은 전수 격자 셋과 틱 세기다** — **1번 · 2번 · 5번 문항이 이 주제의 중심이다.**
 
 **선행** — [36](../36-event-loop-and-microtasks/2-summary.md) · [32](../32-error-handling-and-error/2-summary.md) · [19](../19-iterable-protocol-and-for-of/2-summary.md).
 

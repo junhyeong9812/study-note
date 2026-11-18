@@ -23,7 +23,7 @@
 **왜 그런가**
 
 - ★★★ `--showConfig` 가 `strict` 를 **펼쳐 적는 것은 5.9.3 의 성질**이다 — 7.0.2 에서는 「무엇이 켜졌나」를 이 도구로 알 수 없다.
-- ★★ 그래서 같은 질문을 `--help --all` 로도 물었고(7번), 결론은 **탐침 격자**(2·3번)에 세웠다.
+- ★★ 그래서 같은 질문을 `--help --all` 로도 물었고(7번), 결론은 **probe 격자**(2·3번)에 세웠다.
 
 ### 2. ★★★ a `noImplicitAny` `TS7006` · b `noImplicitThis` `TS2683` · c `strictNullChecks` `TS2322` · d `strictFunctionTypes` `TS2322` · e `strictBindCallApply` `TS2345` · f `strictPropertyInitialization` `TS2564` · g `strictBuiltinIteratorReturn` `TS2322` · h `useUnknownInCatchVariables` `TS18046` · i `alwaysStrict` `TS1212` — 「키 없음」은 7.0.2 **아홉** · 5.9.3·4.9.5 **0**
 
@@ -128,16 +128,16 @@ pr39i.ts  7.0.2    TS1212         TS1212         TS1212         TS5108
 **왜 그런가**
 
 - ★★★ 7.0.2 는 `strict` 키가 없으면 **켜진 것과 같다** — 「키없음」 열이 `true` 열과 칸마다 같다. 5.9.3·4.9.5 는 **꺼진 것과 같다**(「키없음」 열이 전부 OK).
-- ★★ 탐침 하나에 난 코드가 곧 「그 하위 플래그가 켜졌다」의 표시다 — 타입의 모양은 묻지 않았다.
-- ★ 마지막 줄 — 7.0.2 와 5.9.3 이 갈린 칸 **`11 / 36`**, 5.9.3 과 4.9.5 가 갈린 칸 **`2 / 36`**. 스크립트는 칸에 `TS5112` 가 들거나 모든 칸이 같았으면 멈췄다.
+- ★★ probe 하나에 난 코드가 곧 「그 하위 플래그가 켜졌다」의 표시다 — 타입의 모양은 묻지 않았다.
+- ★ 마지막 줄 — 7.0.2 와 5.9.3 이 달라진 항목 **`11 / 36`**, 5.9.3 과 4.9.5 가 달라진 항목 **`2 / 36`**. 스크립트는 칸에 `TS5112` 가 들거나 모든 칸이 같았으면 멈췄다.
 
-### 3. ★★★ `false` — 여덟은 OK, **`pr39i` 만 `TS1212`** · `true+끔` — **그 탐침만 OK**, 단 **`pr39i` 는 `TS5108`** · 4.9.5 — `pr39g` 가 `true` 에서 **OK**, `true+끔` 에서 **`TS5023`**
+### 3. ★★★ `false` — 여덟은 OK, **`pr39i` 만 `TS1212`** · `true+끔` — **그 probe만 OK**, 단 **`pr39i` 는 `TS5108`** · 4.9.5 — `pr39g` 가 `true` 에서 **OK**, `true+끔` 에서 **`TS5023`**
 
 **출력** — 2번의 격자 블록 `false`·`true+끔` 열.
 
 **왜 그런가**
 
-- ★★★ 하위 플래그 `false` 는 묶음 `true` 보다 **우선한다** — 그 탐침만 조용해졌다.
+- ★★★ 하위 플래그 `false` 는 묶음 `true` 보다 **우선한다** — 그 probe만 조용해졌다.
 - ★★★ 7.0.2 의 `alwaysStrict` 는 `strict: false` 로 **안 꺼지고**, `alwaysStrict: false` 는 **제거된 값**(`TS5108`)이다 — 5번이 방출물로 확인한다.
 - ★★ 4.9.5 에는 `strictBuiltinIteratorReturn` 이 **없다** — `strict: true` 로도 안 켜지고, 이름을 적으면 `TS5023`(모르는 옵션).
 
@@ -267,9 +267,9 @@ strictNullChecks+useUnknownInCatchVariables 3      3      13:TS2322 14:TS2322 35
 - ★★★ `strictPropertyInitialization` 은 **`strictNullChecks` 를 전제**로 한다 — 없으면 설정 진단 `TS5052`. 둘을 같이 켜야 23·24행 `TS2564`.
 - ★★★ `strictBuiltinIteratorReturn` 혼자는 `value` 를 `undefined` 로 만들지만 **`strictNullChecks` 가 꺼져 있으면** `undefined` 가 `number` 에 들어간다 — 0건. 같이 켜야 30행.
 - ★★ 21행(`apply` 의 튜플)은 `strictBindCallApply` + `strictFunctionTypes` **짝**에서만 났다. 35행은 `strictNullChecks` 유무로 **`TS2339` ↔ `TS18046`** 코드가 바뀐다.
-- ★★ 그래서 하나씩 켠 합(11 — 그중 하나는 설정 진단)과 한 번에 켠 14 가 **다르다.** 두 판의 수는 **행마다 같았다.**
+- ★★ 그래서 하나씩 켠 합(11 — 그중 하나는 설정 진단)과 한 번에 켠 14 가 **다르다.** 두 버전의 수는 **행마다 같았다.**
 
-### 7. ★★★ **도움말 문구가 실제와 다를 수 있기 때문** — 4.9.5 도움말은 `useUnknownInCatchVariables` 를 「default: false」(`strict` 무관)로 적는데, 탐침은 **`strict: true` 에서 `TS18046`**
+### 7. ★★★ **도움말 문구가 실제와 다를 수 있기 때문** — 4.9.5 도움말은 `useUnknownInCatchVariables` 를 「default: false」(`strict` 무관)로 적는데, probe는 **`strict: true` 에서 `TS18046`**
 
 **출력**
 
@@ -348,7 +348,7 @@ exit 0
 ### 9. ★★★ **`strictNullChecks` 를 축으로** — 그것 없이는 `strictPropertyInitialization` 이 **설정 에러**, `strictBuiltinIteratorReturn` 이 **0건**, `useUnknownInCatchVariables` 가 **다른 코드**를 낸다
 
 - ★★ 「진단이 적은 것부터」만 따르면 `strictPropertyInitialization`(혼자 1건 — 그것도 `TS5052`)이나 `strictBuiltinIteratorReturn`(0건)을 **먼저 켜서 끝났다고** 착각한다.
-- ★★ 혼자 성립하는 넷(`strictFunctionTypes` 1 · `strictBindCallApply` 1 · `noImplicitThis` 2 · `noImplicitAny` 3)을 먼저, `strictNullChecks`(2) 다음, 그 위에서 기대는 셋 — 이것은 **설계 권고**이고 수는 **탐침 한 장**의 것이다.
+- ★★ 혼자 성립하는 넷(`strictFunctionTypes` 1 · `strictBindCallApply` 1 · `noImplicitThis` 2 · `noImplicitAny` 3)을 먼저, `strictNullChecks`(2) 다음, 그 위에서 기대는 셋 — 이것은 **설계 권고**이고 수는 **probe 한 장**의 것이다.
 - ★ 맞물린 진단(21행)은 짝을 다 켠 뒤에야 나온다 — 마지막에 `strict: true` 로 한 번 더 던져 **남은 차이**를 본다.
 
 ### 10. ★★ 02편 맨 위 부분 「7.0 의 **`strict` 기본 `true`**」 · 02편 7절 **`TS5108`(제거된 값)** — `target=ES5`·`moduleResolution=node10` 과 같은 코드 · 35편 6절 **`TS5112`**
@@ -364,16 +364,16 @@ exit 0
 | 판 | `tsc --version` · `node --version` · `"$NODE20" --version` · `python3 --version` | `Version 7.0.2` · `v18.19.1` · `v20.19.6` · `Python 3.12.3` |
 | ★★ `--showConfig` | `bash ts38b-show39.sh` — 두 설정 × 세 판 | **5.9.3 만** 펼친다 |
 | ★★ `--help` 기본값 문구 | `bash ts38b-help39.sh` — 세 판 | 7.0.2 `alwaysStrict` 무조건 · 4.9.5 `useUnknown…` 「false」 |
-| ★★★ 탐침 격자 | `bash ts38b-grid39.sh` — 108칸, 칸마다 디렉토리 | 7.0.2↔5.9.3 **`11 / 36`** · 5.9.3↔4.9.5 **`2 / 36`** |
+| ★★★ probe 격자 | `bash ts38b-grid39.sh` — 108칸, 칸마다 디렉토리 | 7.0.2↔5.9.3 **`11 / 36`** · 5.9.3↔4.9.5 **`2 / 36`** |
 | ★★★ 설정 없이 | `--noEmit pr39c.ts pr39i.ts` × 두 판 | 7.0.2 `TS2322`·`TS1212` · 5.9.3 0줄 |
 | ★★★ `alwaysStrict` | 방출 × 두 판 · `--alwaysStrict false` | `"use strict"` 유무 · `TS5108` |
 | ★★ 단계표 | `bash ts38b-stage39.sh` — 열두 행 × 두 판 + 한 번에 | 합 11 ≠ 14 · `TS5052` · 0건 · 코드 바뀜 |
 
-**구현 의존 항목 — 판이 오르면 다시 돌릴 것**
+**구현 의존 항목 — 버전이 오르면 다시 돌릴 것**
 
 - ★★★ **「키 없음」의 뜻**(2·4번) · **`alwaysStrict` 가 묶음 밖인 것**(3·5번) — 이미 판마다 달랐다.
 - ★★ **`--showConfig` 가 펼치나 · `--help` 문구**(1·7번) — 도구의 성질이 판에 매였다.
-- ★ **맞물린 진단**(6번 21·30·35행) — 이 판들에서 두 판이 같았다.
+- ★ **맞물린 진단**(6번 21·30·35행) — 이 판들에서 두 버전이 같았다.
 
 **안 돌려 본 것**
 
@@ -384,5 +384,5 @@ exit 0
 
 모든 진단·방출물은 `tsc` **7.0.2** 에서 실제로 얻었다. 판 비교는 **5.9.3 · 4.9.5** 를 환경변수(`TSC_OLD`·`TSC_49`)로 받아 **읽기만** 했다.\
 블록은 전부 **캡처 스크립트가 파일로 받은 것**이고 손으로 옮겨 적지 않았다 — 배너의 `(… exit=N)` 도 스크립트가 찍은 값이다.\
-★★★ 이 주제의 **본체 창은 「탐침 격자」(탐침 아홉 × 설정 넷 × 세 판)이다.** `--showConfig` 가 안 열린 판에서는 **`--help` 창으로 바꿔** 물었다(제5의 상태).\
+★★★ 이 주제의 **핵심 창은 「probe 격자」(probe 아홉 × 설정 넷 × 세 판)이다.** `--showConfig` 가 안 열린 판에서는 **`--help` 창으로 바꿔** 물었다(제5의 상태).\
 ★ 소스 펜스 첫 줄 `// 파일명`·`# 파일명` 은 대조용 배너다 — **진단의 행 번호는 그 줄을 뺀 기준**이다.

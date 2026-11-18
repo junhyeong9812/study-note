@@ -77,7 +77,7 @@
   §3·§4       §3·§4·§6     §2·§6       §7·§8           §4·§8            §5
 ```
 
-- **즉시 실패**는 대개 누군가 "하지 않기로" 결정한 것이다. 서킷 열림, 격벽 가득, 리미터 거절, 유계 큐 거절, 연결 거부.
+- **즉시 실패**는 대개 누군가 "하지 않기로" 결정한 것이다. 서킷 열림, 벌크헤드 가득, 리미터 거절, 유계 큐 거절, 연결 거부.
 - **설정값 근처에서 실패**하면 그 값을 가진 타임아웃이 범인이다. 실패까지 걸린 시간을 각 층의 타임아웃 값과 맞춰 본다(1초면 Resilience4j 2.4.0 TimeLimiter 기본값, 30초면 HikariCP 6.3.0 기본 `connectionTimeout`, 약 131초면 리눅스 6.5+ 기본 SYN 재전송 한도 — [07-1](../07-timeout-taxonomy-by-layer/2-summary.md)).
 - **느린 성공**은 어딘가에서 줄을 서고 있다. 줄은 포화된 자원 앞에 생긴다(USE의 포화 — [16-5](../16-metrics-and-golden-signals/2-summary.md)).
 - **에러 없이 틀림**은 로그로는 못 찾는다. 원천과 결과의 건수·합계 대사가 사실상 유일한 탐지 수단인 경우가 많다([01-4](../01-fault-error-failure-availability/2-summary.md)).
@@ -104,7 +104,7 @@
 | 야간 적재가 몇 분, DB CPU 한가. 같은 INSERT `calls`가 행 수만큼 | 행마다 왕복 + 커밋 flush | 문장 통계의 calls·평균 시간 | [40-1](../40-batching-and-round-trips/2-summary.md) |
 | 조용한 시간 뒤 첫 1초에만 하류 지연이 튐 | 토큰 버킷의 1초 상한 = 용량 + 충전량 | 리미터 용량 설정 | [11-3](../11-rate-limiter/2-summary.md) |
 | 리미터를 켠 뒤 요청 스레드 고갈 | Resilience4j `RateLimiter` 기본 `timeoutDuration` 5초 동안 허가를 기다림 | 스레드 덤프의 리미터 대기 | [11-5](../11-rate-limiter/2-summary.md) |
-| 격벽을 넣었는데 지연이 더 김. 스레드 덤프에 `Semaphore.tryAcquire` | 격벽 `maxWaitDuration`이 길어 기다리는 것도 요청 스레드 | 격벽 대기 설정 | [28-2](../28-bulkhead/2-summary.md) |
+| 벌크헤드를 넣었는데 지연이 더 김. 스레드 덤프에 `Semaphore.tryAcquire` | 벌크헤드 `maxWaitDuration`이 길어 기다리는 것도 요청 스레드 | 벌크헤드 대기 설정 | [28-2](../28-bulkhead/2-summary.md) |
 | 한 셀·한 샤드·한 파티션만 느림, 늘려도 그대로 | 큰 테넌트·핫 키. 해시는 고객 수만 고르게 나눔 | `topk`로 테넌트·키별 트래픽 | [51-3](../51-cells-stamps-and-blast-radius/2-summary.md) · [03-3](../03-failure-at-scale/2-summary.md) · [21-5](../21-scaling-principles/2-summary.md) |
 
 **배포·확장 직후에만 느리다** (커리큘럼 추가 증상)
@@ -196,7 +196,7 @@
 | 한도 100/초인데 하류가 초 경계마다 200/초 가까이 받음 | 고정 창 경계 리셋 | 하류 요청률의 초 경계 봉우리 | [11-1](../11-rate-limiter/2-summary.md) |
 | 한도 100인데 사용자당 105~110건 통과, 부하 높을수록 초과 | "GET → 비교 → INCR" 비원자(TOCTOU) | 리미터 구현의 원자성 | [11-2](../11-rate-limiter/2-summary.md) |
 | 새벽에 요청 몇 건 중 1건 실패로 page | 비율 SLI의 분모가 작음 | 그 시간대 요청 수 | [02-5](../02-slo-sli-error-budget/2-summary.md) · [43-4](../43-alerting-and-on-call/2-summary.md) |
-| 특정 서버만 데드라인 초과가 거의 없거나, 받자마자 거절 | 절대 시각을 전파 + 그 서버 시계 어긋남 | `chronyc tracking` 오프셋 | [05-3](../05-timeouts-and-deadline-propagation/2-summary.md) |
+| 특정 서버만 데드라인 초과가 거의 없거나, 받자마자 거절 | 절대 시각을 전파 + 그 서버 클럭 스큐 | `chronyc tracking` 오프셋 | [05-3](../05-timeouts-and-deadline-propagation/2-summary.md) |
 | 헬스체크 업타임 ~100%인데 "자주 안 된다" 문의, 특정 지역·API·고객만 실패 | 시간 기반 가용성이 부분 장애를 못 봄, 헬스체크가 실제 경로를 안 탐 | 요청 기반 SLI를 경로·고객군별로 | [01-3](../01-fault-error-failure-availability/2-summary.md) |
 | 파드 첫 몇 초만 외부 호출 실패, localhost 프록시 포트로 `ConnectException`(raw 소켓은 `Connection refused`, JDK 21 `HttpClient`는 메시지 `null` + 원인 `ClosedChannelException`) | 사이드카보다 앱이 먼저 시작 | 컨테이너 시작 순서 | [50-2](../50-sidecar-ambassador-and-service-mesh/2-summary.md) |
 | 파드 종료 몇 초 동안 그 파드가 보낸 외부 호출 실패 | 일반 컨테이너 사이드카가 먼저 종료 | 사이드카 종료 시각 | [50-5](../50-sidecar-ambassador-and-service-mesh/2-summary.md) |
@@ -268,9 +268,9 @@
 | 재배포(핫 리로드)할 때마다 메모리 증가 → `OutOfMemoryError: Metaspace` | ThreadLocal·리스너가 옛 클래스로더를 붙듦 | 덤프에 같은 클래스가 로더별로 여러 벌 | [37-4](../37-memory-leak-and-heap-analysis/2-summary.md) |
 | 원인 찾으려 덤프를 떴더니 서비스가 오래 멈추고 디스크가 참 | `GC.heap_dump`는 full GC + 힙 전체 쓰기 | GC 로그 `Pause Full (Heap Dump Initiated GC)` | [37-3](../37-memory-leak-and-heap-analysis/2-summary.md) |
 | TimeLimiter 타임아웃이 잦아진 뒤 전용 풀이 차고 큐가 자람 | CompletionStage 경로는 원래 작업을 취소하지 않음 | 스레드 덤프의 하류 호출 중인 풀 스레드 수 | [09-2](../09-cancellation-propagation/2-summary.md) |
-| 스레드풀 격벽으로 응답은 빨라졌는데 하류 부하 그대로 | `Future.get(timeout)`은 호출자만 놓아 줌 | 하류 접근 로그 수 vs 호출자 타임아웃 수 | [28-3](../28-bulkhead/2-summary.md) |
-| 격벽 거절 0인데 결제 타임아웃, 풀 대기 메시지 | 칸 수 > 하류 커넥션 수 | 칸 수 vs 하류별 풀 크기 | [28-4](../28-bulkhead/2-summary.md) |
-| 2코어 컨테이너에서만 `ThreadPoolBulkhead` 스레드 1~2개, 큐 가득 | Resilience4j 기본이 `availableProcessors` 기준 | 격벽 지표의 코어·최대 스레드 | [28-5](../28-bulkhead/2-summary.md) |
+| 스레드풀 벌크헤드로 응답은 빨라졌는데 하류 부하 그대로 | `Future.get(timeout)`은 호출자만 놓아 줌 | 하류 접근 로그 수 vs 호출자 타임아웃 수 | [28-3](../28-bulkhead/2-summary.md) |
+| 벌크헤드 거절 0인데 결제 타임아웃, 풀 대기 메시지 | 칸 수 > 하류 커넥션 수 | 칸 수 vs 하류별 풀 크기 | [28-4](../28-bulkhead/2-summary.md) |
+| 2코어 컨테이너에서만 `ThreadPoolBulkhead` 스레드 1~2개, 큐 가득 | Resilience4j 기본이 `availableProcessors` 기준 | 벌크헤드 지표의 코어·최대 스레드 | [28-5](../28-bulkhead/2-summary.md) |
 | 종료·취소해도 특정 작업이 끝까지 돎 | `catch (InterruptedException e) {}` | 코드의 인터럽트 처리 | [09-3](../09-cancellation-propagation/2-summary.md) |
 | 같은 멱등 키 요청들이 DB 락 대기(`Lock: transactionid`)에 걸려 스레드·연결 고갈 | 한 트랜잭션 방식에서 진 쪽이 이긴 쪽 커밋을 기다림 | 대기 이벤트별 세션 수 | [13-5](../13-idempotency/2-summary.md) |
 | 스레드 수가 시간에 따라 증가 + TIME_WAIT 수만 + `EADDRNOTAVAIL` | 요청마다 `new HttpClient` | `ss -tan state time-wait \| wc -l` | [48-1](../48-performance-and-stability-antipatterns-in-code/2-summary.md) |
@@ -427,7 +427,7 @@
 
 - 참고: 원본 A-1의 "캐시는 p99를 개선하지 않는다"는 미스 비율이 1%를 넘을 때의 이야기다. 미스가 1% 미만이면 p99 위치의 요청도 적중 경로라서 p99가 줄어든다(분위수 정의에서 나오는 산술). 그래서 첫 진단은 "미스 비율이 1%를 넘나"다.
 - 참고: 원본 A-5의 "히트율 80% 미만이면 키 설계나 대상 선정이 잘못된 것"은 출처가 없는 경험칙이다. 받아들일 적중률은 미스 경로 비용과 하류 용량으로 정한다([22-1](../22-capacity-and-load-testing/2-summary.md)·[03-5](../03-failure-at-scale/2-summary.md)가 하류 용량 쪽 사례).
-- 참고: 원본 B-3의 처방 순서("타임아웃 → 서킷 브레이커 → 벌크헤드")와 D-1의 순서("타임아웃 → 벌크헤드 → 서킷 → 폴백")가 서로 다르다. 서킷은 결과가 기록돼야 판단하므로([10-3](../10-circuit-breaker/2-summary.md)) 판단이 늦는 동안의 스레드 고갈은 격벽이 막는다([28-1](../28-bulkhead/2-summary.md)). D-1의 순서로 읽는다.
+- 참고: 원본 B-3의 처방 순서("타임아웃 → 서킷 브레이커 → 벌크헤드")와 D-1의 순서("타임아웃 → 벌크헤드 → 서킷 → 폴백")가 서로 다르다. 서킷은 결과가 기록돼야 판단하므로([10-3](../10-circuit-breaker/2-summary.md)) 판단이 늦는 동안의 스레드 고갈은 벌크헤드가 막는다([28-1](../28-bulkhead/2-summary.md)). D-1의 순서로 읽는다.
 - 참고: 원본 A-1의 헤지 처방(p95를 넘으면 다른 인스턴스에 중복 요청)은 읽기와 멱등 키가 있는 쓰기에만 쓴다. 비멱등 요청은 이중 처리가 된다([34-3](../34-tail-latency-and-stragglers/2-summary.md)). 부하가 높을 때는 오히려 지연을 키운다([34-2](../34-tail-latency-and-stragglers/2-summary.md)).
 - 참고: 원본 G의 "가장 강력한 단서는 항상 '언제부터'"는 단정이 지나치다. SRE 책 1장의 수치는 "약 70%가 변경 때문"이다. 나머지 몫에는 부하 급증·용량 감소·잠복 버그 같은 변경 밖 원인이 들어간다. 해석: Slack 2021은 자기 시스템의 변경이 아니라 연휴 뒤 트래픽 급증이 방아쇠였다([53](../53-reliability-incidents/2-summary.md)).
 
@@ -573,8 +573,8 @@ java.net.http.HttpTimeoutException: request timed out
 
 - **현상**: 요청이 쌓여 톰캣 `max-threads`를 2배로 올렸다. 잠시 나아졌다가 하류가 더 느려진 날 다시 전면 장애.
 - **보이는 형태**: 스레드 덤프 대부분이 한 하류의 소켓 읽기(적용 3의 모양). 스레드를 늘린 뒤에는 하류 커넥션 풀 대기가 늘었다.
-- **원인**: 증상(줄)을 늘려 덮었다. 하류 호출에 타임아웃이 없고 격벽이 없다. 늘린 스레드는 같은 곳에서 기다린다([20-3](../20-performance-method-and-amdahl/2-summary.md) · [21-3](../21-scaling-principles/2-summary.md)).
-- **대처**: 맨 위 프레임으로 센 결과를 근거로 그 호출에 타임아웃 → 하류별 격벽(대기 0) → 서킷 → 폴백 순으로 넣는다([05-2](../05-timeouts-and-deadline-propagation/2-summary.md) · [28-1](../28-bulkhead/2-summary.md)).
+- **원인**: 증상(줄)을 늘려 덮었다. 하류 호출에 타임아웃이 없고 벌크헤드가 없다. 늘린 스레드는 같은 곳에서 기다린다([20-3](../20-performance-method-and-amdahl/2-summary.md) · [21-3](../21-scaling-principles/2-summary.md)).
+- **대처**: 맨 위 프레임으로 센 결과를 근거로 그 호출에 타임아웃 → 하류별 벌크헤드(대기 0) → 서킷 → 폴백 순으로 넣는다([05-2](../05-timeouts-and-deadline-propagation/2-summary.md) · [28-1](../28-bulkhead/2-summary.md)).
 
 ### 3. "exit 137"을 메모리 부족으로 읽고 힙만 늘린다
 

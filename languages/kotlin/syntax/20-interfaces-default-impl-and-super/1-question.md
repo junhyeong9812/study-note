@@ -121,7 +121,7 @@ fun main() {
 
 - `A`\~`D` 네 줄에 각각 무엇이 찍히는가?
 - `legs()` 는 왜 아무것도 안 적어도 되는가?
-- `D` 줄에서 `Walker` 타입으로 보는 것과 `Swimmer` 타입으로 보는 것이 갈리는가?
+- `D` 줄에서 `Walker` 타입으로 보는 것과 `Swimmer` 타입으로 보는 것이 달라지는가?
 
 ### 5. ★★★ 상위 클래스와 인터페이스가 같은 메서드를 가지면 (예측)
 
@@ -177,7 +177,7 @@ public class JavaGreeter implements Greeter {
 
 - 기본값으로 컴파일한 인터페이스에 대해 `javac` 는 통과하는가?
 - `-jvm-default=disable` 로 컴파일한 인터페이스에 대해서는?
-- Java 파일은 **한 글자도 안 바뀌었는데** 결과가 갈린다면, 갈린 것은 무엇인가?
+- Java 파일은 **한 글자도 안 바뀌었는데** 결과가 달라진다면, 달라진 것은 무엇인가?
 
 ### 9. 인터페이스가 상태를 못 가지는 이유는 무엇인가 (왜)
 
@@ -236,8 +236,8 @@ fun main() {
 ★ **backing field 는 [16번 주제](../16-properties-backing-field-lateinit-const/)**, `open`/`override` 의 기본값은 [19번 주제](../19-inheritance-open-final-override/),
 `sealed interface` 와 `when` 완결성은 [목록의 **23번 주제**](../23-sealed-classes-and-when-exhaustiveness/), `fun interface` 는 [목록의 **36번 주제**](../36-function-types-fun-interface-and-sam-conversion/)가 정본이다.
 
-★★ 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 과 **기본 `-jvm-default`** 기준이다 — 뒤엣것을 안 밝히면 답이 셋으로 갈린다.
-이 주제의 모든 답은 **kotlinc 2.4.20 · JRE 21.0.5** 에서 실제로 던져 받은 것이다.
+★★ 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 과 **기본 `-jvm-default`** 기준이다 — 뒤엣것을 안 밝히면 답이 셋으로 나뉜다.
+이 주제의 모든 답은 **kotlinc 2.4.20 · JRE 21.0.5** 에서 실제로 실행해 받은 것이다.
 
 ## 복습 기록
 

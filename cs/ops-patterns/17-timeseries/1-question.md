@@ -8,7 +8,7 @@
 
 ### A. 문제 (구현 대상: RawSeries TODO 1\~2 · RollingSeries TODO 3\~6)
 
-1. RawSeries — summarize / quantile (TODO 1\~2, 기준선. 정확한데 비싸다)
+1. RawSeries — summarize / quantile (TODO 1\~2, 베이스라인. 정확한데 비싸다)
 
 ```java
 // RawSeries.java (src/main) — 채울 것
@@ -114,7 +114,7 @@ static long bucketStart(long at, long width) {
 6. 연결 — 앞뒤 챕터와의 다리
 
 - 반열린 구간 문제는 04번 레이트 리미터의 어디에서 이미 봤는가?
-- 전부 훑는 기준선은 32번 역색인의 무엇과 같은 자리인가?
+- 전부 훑는 베이스라인은 32번 역색인의 무엇과 같은 자리인가?
 - 16번 이벤트 소싱과 이 챕터는 "쌓이는 값"을 다루는 태도가 어떻게 다른가?
 - 18번 블록체인으로 넘어가는 다리는 무엇인가?
 - 변종 9개 중 처음에 살아남은 넷의 공통점은 무엇이었는가? (출처: README 생각해볼 것 10)

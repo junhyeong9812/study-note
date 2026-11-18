@@ -116,9 +116,9 @@ print("[9] hash(incoming) == hash(stored) :", hash(incoming) == hash(stored))
 **왜 그런가**
 
 * ★★★ **`in`·`dict.get`·`set` 은 같음을 쓴다** — 같음이 `False` 이니 **조용히 못 찾는다.** 에러가 안 나서 가장 늦게 드러난다.
-* ★★ **`>`·`sorted`·`max` 는 순서를 쓴다** — 그래서 같은 두 값이 여기서는 터진다. **어느 연산을 지나느냐로 침묵과 에러가 갈린다.**
+* ★★ **`>`·`sorted`·`max` 는 순서를 쓴다** — 그래서 같은 두 값이 여기서는 터진다. **어느 연산을 지나느냐로 침묵과 에러가 달라진다.**
 * ★ `[8]` — `replace(tzinfo=None)` 으로 뒷면을 지우면 같다. 보통은 거꾸로 naive 쪽을 `replace(tzinfo=timezone.utc)` 로 **aware 로 올린다**(그 naive 가 정말 UTC 였을 때만).
-* ★ `[9]` — 이 판에서는 해시도 다르다. 그러나 `set` 이 2 인 **근거는 같음**이다 — 문서가 요구하는 것은 「같으면 해시가 같다」뿐이다.
+* ★ `[9]` — 이 버전에서는 해시도 다르다. 그러나 `set` 이 2 인 **근거는 같음**이다 — 문서가 요구하는 것은 「같으면 해시가 같다」뿐이다.
 
 ### 3. 없는 벽시계 `02:00`·`02:30`·`02:59` 가 예외 없이 만들어지고, 왕복하면 바뀐다(`6 / 12`) — `fold=0` 은 `-0500` 으로 읽혀 `03:30 EDT` 로 · `fold=1` 은 `-0400` 으로 읽혀 `01:30 EST` 로
 
@@ -235,7 +235,7 @@ for hh in (4, 5, 6, 7):
 * ★★ **UTC → 뉴욕 변환은 `fold` 를 알맞게 붙인다** — `05:30 UTC` 는 `fold=0`(EDT), `06:30 UTC` 는 `fold=1`(EST).
 * ★ 실제 경과는 UTC 로 바꿔 빼야 `1:00:00` 이다(`[7]`).
 
-### 5. `start + 24h` 는 세 번 다 다음날 `12:00` — 실제 경과는 3월 `23:00:00` · 10월 `1 day, 1:00:00` · 6월 24시간 · 두 차이가 갈린 칸 `4 / 6` · UTC 에서 더하면 벽시계가 `13:00`·`11:00`
+### 5. `start + 24h` 는 세 번 다 다음날 `12:00` — 실제 경과는 3월 `23:00:00` · 10월 `1 day, 1:00:00` · 6월 24시간 · 두 차이가 달라진 항목 `4 / 6` · UTC 에서 더하면 벽시계가 `13:00`·`11:00`
 
 **출력**
 
@@ -283,7 +283,7 @@ rows where the two differences differ : 4 / 6
 * ★★★ **같은 `tzinfo` 끼리의 빼기도 벽시계 차** — `result - start` 가 `start + 24h` 행에서 늘 `1 day, 0:00:00`. **UTC 로 바꿔 빼야** 23시간·25시간이 보인다.
 * ★★ **UTC 에서 더하면 실제 경과는 24시간이고 대신 뉴욕 벽시계가 한 시간 어긋난다.** 무엇이 맞는지는 요구가 정한다(알림 = 벽시계 · 만료 = UTC).
 
-### 6. `fromisoformat` 아홉 칸은 두 판이 같다(`Z`·기본 형식·주 날짜·`+0900` 다 됨, `2026-03` 은 둘 다 `ValueError`) · 갈린 넷은 전부 폐기 경고(`4 / 18`) · `utcnow()` 의 `tzinfo` 는 두 판 다 `None`
+### 6. `fromisoformat` 아홉 칸은 두 버전이 같다(`Z`·기본 형식·주 날짜·`+0900` 다 됨, `2026-03` 은 둘 다 `ValueError`) · 달라진 넷은 전부 폐기 경고(`4 / 18`) · `utcnow()` 의 `tzinfo` 는 두 버전 다 `None`
 
 **출력**
 
@@ -412,8 +412,8 @@ rows that differ between 3.11 and 3.12 : 4 / 18
 **왜 그런가**
 
 * ★★ **`fromisoformat` 은 3.11 에서 넓어졌다** — 그래서 3.11 과 3.12 는 같다. 3.10 이전에 `Z` 가 거절되던 것은 **이 머신에서 못 잰다**(가장 낮은 판이 3.11) — 문서의 *versionchanged 3.11* 만이 근거다.
-* ★★★ **`utcnow()`·`utcfromtimestamp()` 는 3.12 부터 `DeprecationWarning`** — 경고를 `warnings.catch_warnings(record=True)` 로 잡아 stdout 에 찍었다. 두 판 다 **naive(`tzinfo None`)** 를 준다 — 그것이 폐기 이유다(메시지가 `datetime.now(datetime.UTC)` 로 가라고 한다).
-* ★ `now(timezone.utc)` 는 두 판 다 경고 없이 aware(`UTC`)다. `datetime.UTC` 는 3.11 부터 있다.
+* ★★★ **`utcnow()`·`utcfromtimestamp()` 는 3.12 부터 `DeprecationWarning`** — 경고를 `warnings.catch_warnings(record=True)` 로 잡아 stdout 에 찍었다. 두 버전 다 **naive(`tzinfo None`)** 를 준다 — 그것이 폐기 이유다(메시지가 `datetime.now(datetime.UTC)` 로 가라고 한다).
+* ★ `now(timezone.utc)` 는 두 버전 다 경고 없이 aware(`UTC`)다. `datetime.UTC` 는 3.11 부터 있다.
 
 ### 7. 음수는 「-1일 + 23시간」으로 든다 · 달은 길이가 달마다 달라 칸이 없다 · `2.5` 마이크로초는 `2`(짝수 반올림)
 
@@ -543,7 +543,7 @@ America/New_York : ZoneInfoNotFoundError - 'No time zone found with key America/
 
 * ★★★ **전이일은 파이썬도 명세도 아니고 IANA tzdata 가 정한다** — `zoneinfo` 는 *"uses the system's time zone data if available"*. 이 머신은 `/usr/share/zoneinfo`(판 `2026c`), `tzdata` 패키지는 없다.
 * ★★ **`PYTHONTZPATH=` 는 시스템 자료를 끈다** — 문서는 「그러면 `tzdata` 패키지를 쓴다」고 하지만, 패키지가 없으니 `UTC` 까지 `ZoneInfoNotFoundError` 다. `timezone.utc` 는 자료가 필요 없다.
-* ★★ **[Java 51번](../../../java/syntax/51-java-time-types/2-summary.md)의 「tzdb 판이 갈렸다」** — `America/Asuncion` 이 `2024a` 에서는 2026년 전이 넷, `2025b` 에서는 없음. **예외 없이 답만 바뀐다.** 이 머신(`2026c`)의 파이썬도 1월·7월 모두 `-0300` 으로 뒤쪽 모양이다.
+* ★★ **[Java 51번](../../../java/syntax/51-java-time-types/2-summary.md)의 「tzdb 판이 달라졌다」** — `America/Asuncion` 이 `2024a` 에서는 2026년 전이 넷, `2025b` 에서는 없음. **예외 없이 답만 바뀐다.** 이 머신(`2026c`)의 파이썬도 1월·7월 모두 `-0300` 으로 뒤쪽 모양이다.
 
 ### 9. `fromtimestamp(0, timezone.utc)` 한 줄만 안 바뀐다(`4 / 5`) — naive 를 받는 메서드는 이 머신의 지역 시각으로 가정한다 · `astimezone` 은 같은 순간, `replace(tzinfo=)` 는 다른 순간
 
@@ -655,7 +655,7 @@ print("[7] naive .tzinfo, .utcoffset():", datetime(2026, 3, 8).tzinfo, datetime(
 * ★★ **[Java 51번](../../../java/syntax/51-java-time-types/2-summary.md) 동작 (3)** — `atZone` 이 `2026-03-08T03:30-04:00[America/New_York]` 을 돌려줬다(javadoc — *"shifted forwards by the length of the Gap"*).
   파이썬은 `datetime(2026,3,8,2,30,tzinfo=NY)` 가 **`02:30` 인 채로 남고**, UTC 로 갔다 돌아올 때 `fold=0` 이면 `03:30 EDT`(같은 값), `fold=1` 이면 `01:30 EST` 가 된다(3번).
   ★ Java 의 `ofStrict` 처럼 **엄격하게 거절하는 생성자는 `zoneinfo` 에 없다** — 검사는 스스로 해야 한다(요약의 「더 들어가면」).
-* ★ **[12번](../12-dict-and-key-requirements/2-summary.md)** — `set` 원소는 **2개**(2번 `[4]`). 이 판에서는 해시도 달랐지만(`[9]`), 해시가 같더라도 `==` 가 `False` 면 다른 원소이므로 **근거는 같음 쪽**이다.
+* ★ **[12번](../12-dict-and-key-requirements/2-summary.md)** — `set` 원소는 **2개**(2번 `[4]`). 이 버전에서는 해시도 달랐지만(`[9]`), 해시가 같더라도 `==` 가 `False` 면 다른 원소이므로 **근거는 같음 쪽**이다.
 
 ## 실행 검증
 
@@ -665,7 +665,7 @@ print("[7] naive .tzinfo, .utcoffset():", datetime(2026, 3, 8).tzinfo, datetime(
 | 섞인 값 찾기 | `python3 - <e49_mixed.py` | 3 | `in` `False` · `set` 2 · `sorted` `TypeError` |
 | 갭 | `python3 - <e49_gap.py` | 3 | 왕복해 벽시계가 바뀐 칸 **6 / 12** |
 | fold | `python3 - <e49_fold.py` | 3 | `a == b` `True` · `a == a.astimezone(UTC)` `False` |
-| 24시간 | `python3 - <e49_add24.py` | 3 | 두 차이가 갈린 칸 **4 / 6** |
+| 24시간 | `python3 - <e49_add24.py` | 3 | 두 차이가 달라진 항목 **4 / 6** |
 | `timedelta` | `python3 - <e49_timedelta.py` | 3 | `-1 day, 23:00:00` · 짝수 반올림 |
 | 판 격자 | `cd e49_ver && bash e49_ver_grid.sh`(`python3.11`·`python3`) | 3 | **4 / 18** — 전부 폐기 경고 |
 | 환경 | `cd e49_tz && python3 - <e49_tz_probe.py` · `PYTHONTZPATH= python3 - <e49_tz_empty.py` | 3씩 | tzdata `2026c` · `ZoneInfoNotFoundError` |
@@ -674,7 +674,7 @@ print("[7] naive .tzinfo, .utcoffset():", datetime(2026, 3, 8).tzinfo, datetime(
 | 고정 오프셋·ISO 왕복 | `python3 - <e49_fixed.py` | 3 | 7월 `-0500` · 왕복 뒤 오프셋만 남음 |
 | 서드파티 | `python3 - <e49_thirdparty.py` | 3 | `pytz` `tzinfo=` 는 `LMT` · `relativedelta` 2월 28일 |
 
-**구현 의존 항목** — 판이 오르면 다시 돌려야 하는 것.
+**구현 의존 항목** — 버전이 오르면 다시 돌려야 하는 것.
 
 | 항목 | 왜 |
 |---|---|
@@ -683,8 +683,8 @@ print("[7] naive .tzinfo, .utcoffset():", datetime(2026, 3, 8).tzinfo, datetime(
 | 예외 **문구** · 경고 **메시지** | 구현이다 |
 | ★ `TZ` 격자 | `TZ` 를 행마다 줬으므로 머신의 지역 설정과는 무관하다 — 윈도는 이 머신에 없어 못 잰 것 |
 
-★ **안 흔들리는 칸** — 격자의 **「4 / 20」·「6 / 12」·「4 / 6」·「4 / 18」·「4 / 5」** · 예외 타입 · `fold` 값 · `(exit N)`.
-★★ **이 주제가 한 번도 안 찍은 것** — **「지금 시각」**(부적용 — 값을 전부 만들어 썼다) · **3.10 이전 · 윈도**(판·플랫폼 없음 — 못 잰 것).
+★ **달라지지 않는 항목** — 격자의 **「4 / 20」·「6 / 12」·「4 / 6」·「4 / 18」·「4 / 5」** · 예외 타입 · `fold` 값 · `(exit N)`.
+★★ **이 주제가 한 번도 안 찍은 것** — **「지금 시각」**(해당 없음 — 값을 전부 만들어 썼다) · **3.10 이전 · 윈도**(판·플랫폼 없음 — 못 잰 것).
 
 ## 실행 환경
 

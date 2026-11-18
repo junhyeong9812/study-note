@@ -69,7 +69,7 @@
 ```
 
 - 1단계에서 모두 OK면 2단계에서 커밋, 하나라도 거절하면 모두 중단(CMU L23).
-- **준비(PREPARE)한 참가자는 결과를 스스로 정할 수 없다.** 코디네이터가 준비 뒤 죽으면 참가자는 락을 쥔 채 기다린다(*in-doubt*). Paxos는 과반이 살아 있으면 막히지 않는다(CMU L23).
+- **준비(PREPARE)한 참가자는 결과를 스스로 정할 수 없다.** 코디네이터가 준비 뒤 죽으면 참가자는 락을 잡은 채 기다린다(*in-doubt*). Paxos는 과반이 살아 있으면 막히지 않는다(CMU L23).
 
 로컬 재현(예시, MySQL 8.4.10): 한 세션에서 `XA START → UPDATE acct … id=1 → XA END → XA PREPARE` 후 **연결을 끊었다**.
 
@@ -80,7 +80,7 @@
   XA ROLLBACK 'w20x';              → 정리(결정을 내려 줘야 풀린다)
 ```
 
-- 연결이 끊겨도 준비된 트랜잭션은 사라지지 않고 **행 락을 계속 쥔다**. 누군가 커밋·롤백을 결정해 줄 때까지다.
+- 연결이 끊겨도 준비된 트랜잭션은 사라지지 않고 **행 락을 계속 잡는다**. 누군가 커밋·롤백을 결정해 줄 때까지다.
 - 로컬 재현(예시, PostgreSQL 17.11): `PREPARE TRANSACTION 'w20_t1'` → `ERROR: prepared transactions are disabled` / `HINT: Set "max_prepared_transactions" to a nonzero value.` 기본값 0이라 2PC 참가자가 되려면 설정을 바꿔야 한다.
 
 ### 4. 시계 — "전역 순서"를 어떻게 얻나
@@ -191,7 +191,7 @@ SELECT gid, prepared, owner, database FROM pg_prepared_xacts;
 COMMIT PREPARED 'gid';   -- 또는 ROLLBACK PREPARED 'gid'
 ```
 
-- 준비된 트랜잭션은 연결이 끊겨도 락을 쥔다(위 재현). 오래된 항목을 경보로 잡는다.
+- 준비된 트랜잭션은 연결이 끊겨도 락을 잡는다(위 재현). 오래된 항목을 경보로 잡는다.
 
 ## 장애 시나리오와 대처
 
@@ -212,7 +212,7 @@ COMMIT PREPARED 'gid';   -- 또는 ROLLBACK PREPARED 'gid'
 - **원인**: NTP 동기가 흔들려 노드 간 시계 차이가 커졌다. HLC 계열은 불확실성 구간 안의 쓰기를 만날 때마다 재시작한다. 최대 오프셋을 넘으면 정합성을 지킬 수 없으니 노드를 내린다.
 - **대처**: 모든 노드에 NTP(또는 클라우드 시간 서비스)를 두고 오프셋을 지표로 경보한다. 앱은 40001 재시도를 백오프와 횟수 제한으로 갖춘다. 가상화 환경의 시계 점프(마이그레이션·일시 정지)를 조심한다.
 
-### 3. 2PC 코디네이터 장애 → in-doubt 트랜잭션이 락을 쥔 채 남는다
+### 3. 2PC 코디네이터 장애 → in-doubt 트랜잭션이 락을 잡은 채 남는다
 
 - **현상**: 코디네이터(앱 서버·트랜잭션 매니저)가 죽은 뒤, 특정 행 갱신이 계속 타임아웃난다.
 - **보이는 형태**: MySQL `XA RECOVER`에 오래된 항목, `performance_schema.data_locks`에 그 트랜잭션의 `X` 락, 다른 세션은 `ERROR 1205`(로컬 재현). PostgreSQL은 `pg_prepared_xacts`에 오래된 `prepared`.

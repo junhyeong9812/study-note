@@ -4,7 +4,7 @@
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
 
-### 1. 갈린 칸 18 / 30 — `disabled` 15 칸 전부 · `readonly` 는 `text`·`checkbox`·`textarea` 의 검증 셋 · 비활성 단추의 `requestSubmit` 은 빈 본문으로 제출 · 명세 열과 갈린 칸 1 / 45
+### 1. 달라진 항목 18 / 30 — `disabled` 15 칸 전부 · `readonly` 는 `text`·`checkbox`·`textarea` 의 검증 셋 · 비활성 단추의 `requestSubmit` 은 빈 본문으로 제출 · 명세 열과 달라진 항목 1 / 45
 
 **출력**
 
@@ -58,7 +58,7 @@ Tab 이 닿은 곳 = 없음-text → 없음-checkbox → 없음-select → 없�
 - **`readonly`** — 제출·포커스는 다섯 다 「예」, 검증은 **`text`·`checkbox`·`textarea` 가 「—」**(3 칸) · `select`·`button` 은 「예」.
 - ★★ **폼1** — `submit(submitter=disabled-button)` 이 났고 서버 필드는 **(빈 본문)**.
 - **Tab** — `없음-*` 다섯 → `readonly-*` 다섯 → `BODY` → `시작` → 다시 `없음-*` … **`disabled-*` 에는 한 번도 안 닿았다.**
-- ★★★ **명세 열과 갈린 칸 1 / 45** — `readonly · checkbox` 의 검증(명세 목록으로는 「예」, Chrome 은 「—」 — A6).
+- ★★★ **명세 열과 달라진 항목 1 / 45** — `readonly · checkbox` 의 검증(명세 목록으로는 「예」, Chrome 은 「—」 — A6).
 
 ### 2. 편집을 막은 칸 4 / 8(`text`·`number`·`date`·`textarea`) · `willValidate` 는 `readonly` 칸 중 `select` 만 참 · 세 폼 — 가: 제출 · 나: 제출(체크박스 없이) · 다: `invalid(t)`
 
@@ -186,7 +186,7 @@ m7   (속성 없음) · type=number         ""                            ""    
 - **맞는 것** — `email` · `shipping email` · `home email` · `off` · `current-password webauthn` · `street-address`(`textarea`) · `country`(`select`).
 - **소문자로** — `Shipping email` → `"shipping email"` · `section-A billing tel` → `"section-a billing tel"`.
 - ★★★ **`""`** — `home name`(`home` 은 연락처 필드 앞에만) · `email shipping`(필드가 끝이 아님) · `e-mail`(없는 필드) · `shipping off`(`off` 는 토큰 하나) · 빈 속성 · 속성 없음 · **폼이 off 인 칸**.
-- ★★★ **`EMAIL`** — Chrome **`"email"`** · 명세 열 `"EMAIL"` → **갈린 칸 1 / 24**(A10).
+- ★★★ **`EMAIL`** — Chrome **`"email"`** · 명세 열 `"EMAIL"` → **달라진 항목 1 / 24**(A10).
 - **`inputMode`** — `numeric`·`NUMERIC`(→ `numeric`)·`decimal`·`none` 은 그대로, `zzz`·속성 없음·`type=number` 는 `""`.
 - ★★★ **접근성 노드** — 나온 속성 이름 12 개 중 **`autocomplete`·`inputmode` 에 해당하는 것이 없다.** 같은 타입의 칸은 토큰이 달라도 **같은 줄**이다.
 
@@ -199,7 +199,7 @@ m7   (속성 없음) · type=number         ""                            ""    
 
 - **목록 쪽** — Checkbox 상태의 목록에 `readonly` 가 「**적용되지 않는다**」. [28번](../28-validation-attributes/2-summary.md)은 이 목록을 「적용되지 않는 속성은 **아무 효과도 없다**」로 읽었고 42 칸이 그대로 맞았다. 그 읽기라면 `readonly` 체크박스는 **검증 후보에 남는다.**
 - **`readonly` 절 쪽** — 「`readonly` 속성이 **`input` 요소에 지정되면** 그 요소는 제약 검증에서 빠진다」 — **타입 조건이 없다.**
-- **Chrome** — A2 에서 `checkbox`·`radio`·`range` 의 `readonly` 칸이 **전부 `willValidate=false`**. 뒤 문장을 글자대로 읽은 쪽이다. 두 문장이 **서로 다른 결론**을 내는 자리라 「명세와 갈렸다」고 단정하지 않는다 — 결과로 **`readonly required` 체크박스가 필수 검사를 잃는다**(A7)는 것이 실무의 요점이다.
+- **Chrome** — A2 에서 `checkbox`·`radio`·`range` 의 `readonly` 칸이 **전부 `willValidate=false`**. 뒤 문장을 글자대로 읽은 쪽이다. 두 문장이 **서로 다른 결론**을 내는 자리라 「명세와 달라졌다」고 단정하지 않는다 — 결과로 **`readonly required` 체크박스가 필수 검사를 잃는다**(A7)는 것이 실무의 요점이다.
 
 ### 7. 글자 칸 — 「mutable 이고 값이 빈 문자열이면」 · 체크박스 — 「required 이고 체크가 거짓이면」 · 둘 다 `willValidate` 가 거짓이라 검증이 안 돈다
 
@@ -214,12 +214,12 @@ m7   (속성 없음) · type=number         ""                            ""    
 
 ### 9. 확인하지 않았다(못 잰다) — 잰 것은 IDL 값과 트리의 침묵 · 못 잰 것은 가상 키보드
 
-- ★★★ **못 잰 것** — 데스크톱 headless Chrome 에는 **가상 키보드가 없다.** 「숫자 자판이 뜬다」는 명세의 **「UA 는 숫자 입력이 가능한 가상 키보드를 보여야 한다(should)」** 까지이고, 이 판은 **관찰하지 못했다.**
+- ★★★ **못 잰 것** — 데스크톱 headless Chrome 에는 **가상 키보드가 없다.** 「숫자 자판이 뜬다」는 명세의 **「UA 는 숫자 입력이 가능한 가상 키보드를 보여야 한다(should)」** 까지이고, 이 버전은 **관찰하지 못했다.**
 - **잰 것** — `inputMode` 가 **알려진 값으로만** 반영된다(`NUMERIC` → `numeric` · `zzz` → `""`) · `type=number` 는 `inputMode` 를 채우지 않는다 · **접근성 트리에 흔적이 없다**(A4 — 18-A).
 
 ### 10. `EMAIL` → `email` — 구현(명세와 갈림 · 이탈 1) · `readonly` 체크박스 — 구현(명세 판별) · 조각이면 `autofocus` 없음 — 명세대로
 
-- **`autocomplete="EMAIL"`** — 처리 모델은 필드 토큰을 **대소문자 무시로 비교**하고 IDL 값을 「**field 와 같은 값**」으로 둔다. 소문자 변환은 `section-*` 에만 있다 → Chrome 의 `"email"` 은 **알고리즘의 「IDL value 를 field 로」 단계와 갈린다.**
+- **`autocomplete="EMAIL"`** — 처리 모델은 필드 토큰을 **대소문자 무시로 비교**하고 IDL 값을 「**field 와 같은 값**」으로 둔다. 소문자 변환은 `section-*` 에만 있다 → Chrome 의 `"email"` 은 **알고리즘의 「IDL value 를 field 로」 단계와 달라진다.**
 - **`readonly` 체크박스** — 두 문장이 부딪히는 자리를 Chrome 이 한쪽으로 읽은 것(A6).
 - **`#조각` 이면 `autofocus` 없음** — 「autofocus 후보 비우기」의 **「조각 대상이 있으면 비운다」** 그대로.
 
@@ -235,9 +235,9 @@ m7   (속성 없음) · type=number         ""                            ""    
 
 **환경** — Google Chrome 151.0.7922.173 · Linux · headless · `--window-size=1000,800` · `--force-renderer-accessibility`. **엔진은 이것 하나다.** 하네스는 [29번](../29-constraint-validation/3-answer.md)의 `html29b-form.py`·`html29b-cdp.py`·`html29b-rec.js` 다.\
 ★ **Tab** — `Input.dispatchKeyEvent` 의 `Tab`(가상 키코드 9)을 열여덟 번. 매번 `document.activeElement` 의 `id` 를 모았다.\
-★ **`autofocus`** — 페이지를 연 뒤 **`requestAnimationFrame` 두 번**을 기다리고 물었다(후보 비우기는 렌더 갱신 단계에서 돈다). 같은 판에서 `document.hasFocus()` 가 `true` 였다.
+★ **`autofocus`** — 페이지를 연 뒤 **`requestAnimationFrame` 두 번**을 기다리고 물었다(후보 비우기는 렌더 갱신 단계에서 돈다). 같은 버전에서 `document.hasFocus()` 가 `true` 였다.
 
-**흔들림 확인** — 캡처 세 판의 재대조는 [29번](../29-constraint-validation/3-answer.md)의 `## 실행 검증` 에 있다.
+**재현성 확인** — 캡처 세 번의 재대조는 [29번](../29-constraint-validation/3-answer.md)의 `## 실행 검증` 에 있다.
 
 | 무엇을 | 몇 번 | 결과가 쓰인 곳 |
 |---|---|---|
@@ -248,7 +248,7 @@ m7   (속성 없음) · type=number         ""                            ""    
 
 **구현에 달린 항목**
 
-| 항목 | 이 판의 값 | 왜 다시 찍나 |
+| 항목 | 이 버전의 값 | 왜 다시 찍나 |
 |---|---|---|
 | `readonly` 가 적용되지 않는 `input` 의 `willValidate` | `false` | 명세 두 문장이 부딪힌다 |
 | 필드 토큰의 대소문자 | 소문자로 돌려준다 | 명세는 그대로 |
@@ -257,7 +257,7 @@ m7   (속성 없음) · type=number         ""                            ""    
 
 **못 잰 것** — ① **가상 키보드.** ② **자동 완성 제안 UI.** ③ **보조 기술이 `autocomplete` 를 쓰나.**
 
-**부적용인 창** — **창 ① · ③ · ④ · ⑥**.
+**해당 없는 창** — **창 ① · ③ · ④ · ⑥**.
 
 ## 용어 풀이
 
@@ -271,4 +271,4 @@ m7   (속성 없음) · type=number         ""                            ""    
 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스는 [29번 주제](../29-constraint-validation/3-answer.md)의 `## 실행 검증` 절에 있다.\
 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 disabled·readonly·required·entry list·`requestSubmit`·autofocus·autofill 처리 모델·inputmode 절로 접지했다(앞 배치가 받아 둔 사본).\
 ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-★★★ **본체는 세 지점 격자다** — 45 칸을 미리 선언하고 「「없음」과 갈린 칸」·「명세 열과 갈린 칸」을 스크립트가 센다(A1).
+★★★ **본체는 세 지점 격자다** — 45 칸을 미리 선언하고 「「없음」과 달라진 항목」·「명세 열과 달라진 항목」을 스크립트가 센다(A1).

@@ -4,7 +4,7 @@
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
 
-### 1. ★★★ **열 자리 × 다섯 판이 전부 `ok` — 0 / 50** · 대조 칸 `lateinit` 만 다섯 판 모두 `'lateinit' modifier is not allowed on properties of inline class types.` · 종료 코드는 판마다 **1**(그 칸 때문)
+### 1. ★★★ **열 자리 × 다섯 버전이 전부 `ok` — 0 / 50** · 대조 칸 `lateinit` 만 다섯 판 모두 `'lateinit' modifier is not allowed on properties of inline class types.` · 종료 코드는 판마다 **1**(그 칸 때문)
 
 **출력**
 
@@ -59,7 +59,7 @@ error: language version 1.9 is no longer supported; use version 2.0 or greater i
 
 **왜 그런가**
 
-- ★★ 이 판의 컴파일러는 2.0 아래 **언어 판을 흉내 내지 않는다** — 제한이 있던 판(1.3·1.4)을 직접 던지는 길이 없다. 그래서 7번의 창으로 바꾼다.
+- ★★ 이 버전의 컴파일러는 2.0 아래 **언어 판을 흉내 내지 않는다** — 제한이 있던 판(1.3·1.4)을 직접 던지는 길이 없다. 그래서 7번의 창으로 바꾼다.
 
 ### 3. ★★ `make()`·`getKept()` 는 **`java.lang.Object`** · **`take(java.lang.Object)`**(안 뭉개짐) · **`takeId-tmnojjU(int)`**(뭉개짐) · `makeId()` 는 `int` · `many()` 는 `List<kotlin.Result<java.lang.Integer>>` · `box-impl` 은 **`many`** 에
 
@@ -102,7 +102,7 @@ public final class Val49Kt {
 **왜 그런가**
 
 - ★★★ `Result` 는 `value class` 라 알맹이(`Object`)만 다닌다 — 반환·필드·인자 모두 `Object`.
-- ★★★ 그런데 **사용자 `value class` 를 받는 `takeId` 만 이름이 뭉개졌다** — `Result` 를 받는 `take` 는 그대로다. [26번 주제](../26-value-class-and-boxing/)의 규칙에서 `Result` 가 빠진다(이 판의 관찰 · 까닭은 확인하지 않았다).
+- ★★★ 그런데 **사용자 `value class` 를 받는 `takeId` 만 이름이 뭉개졌다** — `Result` 를 받는 `take` 는 그대로다. [26번 주제](../26-value-class-and-boxing/)의 규칙에서 `Result` 가 빠진다(이 버전의 관찰 · 까닭은 확인하지 않았다).
 - ★ 제네릭 자리(`List<Result<Int>>`)에 넣으면 `box-impl` 로 **포장 객체**가 생긴다.
 
 ### 4. ★★★ `runCatching` 은 **다섯 다 `failure`** · `catch (e: Exception)` 은 **`TODO()`·`AssertionError` 를 놓친다(`escaped`)** · `is Exception` 은 그 둘만 `false` · **2 / 5**
@@ -273,18 +273,18 @@ Python 3.12.3
 (exit 0)
 ```
 
-★ **흔들리는 칸과 안 흔들리는 칸**
+★ **실행마다 달라지는 항목과 달라지지 않는 항목**
 
-| 흔들린다 | 안 흔들린다 |
+| 실행마다 달라진다 | 달라지지 않는다 |
 |---|---|
-| **없다** — 해시코드·주소·시간·스택 트레이스를 찍지 않았다 | 판별 격자 11행 × 5판 · 막힌 칸 수 · 진단 문구 · 실행 출력 |
+| **없다** — 해시코드·주소·시간·스택 트레이스를 찍지 않았다 | 판별 격자 11행 × 5판 · 막힌 항목 수 · 진단 문구 · 실행 출력 |
 | | `javap` 출력 — 뭉개진 이름의 해시 글자까지(판이 바뀌면 달라질 수 있어 **모양**만 근거로 쓴다) |
 | | 컴파일러·stdlib 소스 발췌 · 모든 **종료 코드** |
 
 > 근거 — 캡처 스크립트를 처음부터 다시 돌려 **블록 전체를 대조**했다.
 >
 > 실측 — `capture.sh blocks` 와 `capture.sh blocks-recheck` 를 처음부터 따로 돌려 `normalize-shaky.py` 로 대조했다 —\
-> **블록 71개 · 동일 71 · 흔들린 칸 0 · ★고칠 것 0**(46\~49 네 주제를 한 캡처로 받았다). 추가한 정규화 규칙은 **없다**.
+> **블록 71개 · 동일 71 · 달라진 항목 0 · ★고칠 것 0**(46\~49 네 주제를 한 캡처로 받았다). 추가한 정규화 규칙은 **없다**.
 
 | 프로그램 | 무엇을 확인했나 | 돌린 방법 |
 |---|---|---|
@@ -300,7 +300,7 @@ Python 3.12.3
 **구현 의존 항목** — 진단 문구 · 검사기 클래스 · `take(Object)` 가 안 뭉개지는 것 · `box-impl` 위치 — 이 컴파일러 판의 산출물이다.\
 반면 **1.5+ 의 반환 타입 허용**(언어 판 규칙) · **`runCatching` 의 `Throwable`** · **`map` 의 재던짐** 은 **계약**이다.
 
-**★ 던져 봤더니 예상과 달랐던 것 — 세 건**
+**★ 실행해 봤더니 예상과 달랐던 것 — 세 건**
 
 1. ★★★ **`Result` 를 받는 함수 이름이 뭉개지지 않았다** — 같은 파일의 사용자 `value class` 는 `-tmnojjU` 가 붙었다. `Result` 는 이름 뭉개기 규칙의 **예외**다.
 2. ★★ **컴파일러 jar 에 옛 제한의 문구와 판 게이트가 그대로 남아 있었다** — 1.4 컴파일러 없이 판 경계를 읽을 수 있었다.

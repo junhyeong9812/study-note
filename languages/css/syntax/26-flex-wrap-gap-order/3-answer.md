@@ -25,7 +25,7 @@ wrap-reverse  컨테이너 300x60   1:(x0,y30) 2:(x120,y30) 3:(x0,y0)
 **`flex-wrap: wrap` 을 켜면**
 
 - 첫 줄에 `1`·`2`, 둘째 줄에 `3` 이 놓인다. **컨테이너 높이가 30 → 60 으로** 는다.
-- 줄이 갈리는 기준은 [25번](../25-flex-shorthand-and-sizing/)의 basis 다 — **basis 합이 컨테이너를 넘는 순간 새 줄이 시작된다.**
+- 줄이 달라지는 기준은 [25번](../25-flex-shorthand-and-sizing/)의 basis 다 — **basis 합이 컨테이너를 넘는 순간 새 줄이 시작된다.**
 
 **`wrap-reverse` 가 뒤집는 것**
 
@@ -350,7 +350,7 @@ Tab 키 3회 (CDP Input.dispatchKeyEvent) -> A -> B -> C
 
 - **명세가 보장하는 것** — `flex-wrap` 세 값의 뜻 · `align-content` 가 단일 줄 컨테이너에서 적용되지 않는 것 · `gap` 이 항목 사이에만 들어가는 것 · `order` 가 order-modified document order 를 만들고 **그것이 레이아웃과 그리기에만 쓰이는 것** · 순차 포커스 탐색이 DOM 순서를 따르는 것(HTML 명세).
 - **이 Chrome 의 관찰인 것** — 모든 구체 좌표 · 반올림 표시 · 버려진 선언이 `cssRules` 에서 빈 상자로 보이는 표현 형식 · Tab 이 실제로 A→B→C 로 간 한 판의 결과.
-- **관찰을 보장으로 적지 않았다** — 특히 4번은 **계산값이 같은데 결과가 갈리는** 자리라 「계산값으로 확인했다」고 쓸 수 없다. 좌표로만 접지했다.
+- **관찰을 보장으로 적지 않았다** — 특히 4번은 **계산값이 같은데 결과가 달라지는** 자리라 「계산값으로 확인했다」고 쓸 수 없다. 좌표로만 접지했다.
 
 ## 용어 풀이
 
@@ -364,7 +364,7 @@ Tab 키 3회 (CDP Input.dispatchKeyEvent) -> A -> B -> C
 - **order-modified document order** — `order` 오름차순, 같으면 DOM 순서. **레이아웃과 그리기가 이것을 쓴다.**
 - **순차 포커스 탐색(sequential focus navigation)** — `Tab` 키가 도는 순서. DOM 순서를 따르고 `order` 를 **보지 않는다**.
 - **자유 공간(free space)** — 컨테이너 크기 − (항목 크기 합 + `gap` + 마진). 줄바꿈이 켜지면 **줄마다 따로** 계산된다.
-- **진단 3창** — `cssRules`(담겼나) → `querySelectorAll`(잡혔나) → `getComputedStyle`(이겼나). 4번은 **셋을 다 통과하고도 결과가 갈리는** 자리다.
+- **진단 3창** — `cssRules`(담겼나) → `querySelectorAll`(잡혔나) → `getComputedStyle`(이겼나). 4번은 **셋을 다 통과하고도 결과가 달라지는** 자리다.
 
 ## 실행 환경
 

@@ -199,7 +199,7 @@ blast radius가 JDBC INSERT 경로 하나로 닫혀 있다.
 | `matchInParameterValuesWithInsertColumns(Map)` (`:267`) | 위와 같되 `Map` 입력 | `Map` -> `List<Object>` | `AbstractJdbcInsert:647` | 동일 |
 | `values` | 위 두 메서드가 만든 바인딩 값 목록 | -> `List<Object>` | `doExecute`(:361, :372) | 결함 시 `[1, "Sven"]` (크기 2) |
 | `insertString` / `insertTypes` (`:88` / `:91`) | 컴파일 결과 캐시 | -> `String` / `int[]` | `executeInsertInternal`(:383)이 함께 넘김 | 물음표 1개 vs 타입 2개 |
-| `executeInsertInternal(values)` (`:379`) | 셋을 모아 `JdbcTemplate.update` 호출 | `List<?>` -> `int` | `doExecute` | 어긋남이 실제 SQL 실행에 도달하는 지점 |
+| `executeInsertInternal(values)` (`:379`) | 셋을 모아 `JdbcTemplate.update` 호출 | `List<?>` -> `int` | `doExecute` | 불일치가 실제 SQL 실행에 도달하는 지점 |
 | `args` / `argTypes` (`ArgumentTypePreparedStatementSetter.java:37-39`) | 바인딩 값·타입 쌍 | 생성자에서 길이 일치 검증(:49-51) | `JdbcTemplate.update` | **둘 다 2라 검증을 통과한다** — Spring이 못 막는 이유 |
 | `parameterPosition` (`:59`) | 1부터 증가하는 물음표 위치 | 카운터 | `setValues`(:58) | 위치 2를 세팅하는 순간 드라이버가 거부 |
 | `quoteIdentifiers` (`TableMetaDataContext.java:71`) | 식별자 따옴표 여부 | `boolean` | `compile()`(:276)이 명시 컬럼을 강제 | 사용자를 선언 경로로 밀어넣는 경로 |
@@ -232,11 +232,11 @@ blast radius가 JDBC INSERT 경로 하나로 닫혀 있다.
 | `matchInParameterValues...` L234 | `["Sven"]` | `[1, "Sven"]` |
 | `ArgumentTypePreparedStatementSetter` 생성자 L49 | 1 == 1 -> 통과 | 2 == 2 -> **통과**(Spring이 못 막음) |
 | `setValues` L58-83 | 위치 1에 `"Sven"` -> 정상 | 위치 1에 `1`(id 값, INTEGER), 위치 2 세팅 시도 -> **물음표가 1개뿐** |
-| 최종 결과 | INSERT 성공 | 드라이버가 파라미터 인덱스 범위 오류. 개수 검증이 느슨한 드라이버에서는 예외 대신 `name` 자리에 `id` 값이 들어가는 **정렬 어긋남** |
+| 최종 결과 | INSERT 성공 | 드라이버가 파라미터 인덱스 범위 오류. 개수 검증이 느슨한 드라이버에서는 예외 대신 `name` 자리에 `id` 값이 들어가는 **정렬 불일치** |
 
 전체 겹침(`usingColumns("id")` + key `["id"]`)은 같은 구조의 극단값이다.\
 정상 경로는 `tableColumns=[]`, `columnCount=0`, 값 0개로 `INSERT INTO customers () VALUES()`가 나오고 `generatedKeyColumnsUsed` 덕에 예외가 아니다.\
-결함 경로는 `tableColumns=["id"]`이라 SQL은 물음표 0개인데 값과 타입은 1개가 되어, 어긋남의 방향이 같고 크기만 다르다.
+결함 경로는 `tableColumns=["id"]`이라 SQL은 물음표 0개인데 값과 타입은 1개가 되어, 불일치의 방향이 같고 크기만 다르다.
 
 대소문자가 다른 겹침(`usingColumns("ID","name")` + key `["id"]`)도 결함 경로에서는 필터 자체가 실행되지 않으므로 동일하게 어긋난다.\
 정상 경로는 `keys={"ID"}`와 `meta.getParameterName().toUpperCase()`를 대조하므로 표기 차이를 흡수한다.

@@ -12,7 +12,7 @@
 
 ## 실제 코드
 
-SWC 로더 네 벌이 **`bundleLayer`** 로 갈린다(기본 로더 하나만 `esm: false` 도 다르다).
+SWC 로더 네 벌이 **`bundleLayer`** 로 나뉜다(기본 로더 하나만 `esm: false` 도 다르다).
 
 ```ts
 // webpack-config.ts L596-L620

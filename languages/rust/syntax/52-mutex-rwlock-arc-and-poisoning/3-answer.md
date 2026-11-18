@@ -72,7 +72,7 @@ blocked cells: 13 / 24
 - ★★★ 7행 — **한 문장 안**: 수신자 `m.lock().unwrap()` 의 가드가 인자 `probe(&m)` 평가 동안 살아 있다 → `blocked`.
 - ★★★ 8행 대 9행 — `match` 의 조사 대상은 **문장 끝까지**(`blocked`), `if` 의 조건식은 **그 자체가 임시값 스코프**(`free`).
 - ★★★ 10·11행 — `if let` 의 **then 본문은 두 에디션 다 `blocked`**, **else 갈래는 2021 `blocked` · 2024 `free`**. 두 열이 다른 행은 이 11행이다.
-- ★★ 12행 — `while let` 은 **본문 내내** 쥔다(두 에디션 다).
+- ★★ 12행 — `while let` 은 **본문 내내** 잡는다(두 에디션 다).
 - ★ 42번의 `RefCell` 판(`5 / 12` · `3 / 4`)과 **같은 규칙, 같은 답**이다 — 가드가 참조가 아니라 **값**이라 `Drop` 시점이 기준이다.
 
 ### 2. ★★★ E0499 — 컴파일러가 보는 것은 `count` 에 대한 가변 빌림 둘뿐이다
@@ -229,7 +229,7 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 
 **왜 그런가**
 
-- ★★★ **`[2] is_poisoned true` · `[3] lock() is_err true`** — 가드를 쥔 스레드가 패닉했다. std §Errors: 「this call will return an error **once the mutex is acquired**」.
+- ★★★ **`[2] is_poisoned true` · `[3] lock() is_err true`** — 가드를 잡은 스레드가 패닉했다. std §Errors: 「this call will return an error **once the mutex is acquired**」.
 - ★★ **`[4]`** `Debug` 는 `PoisonError { .. }`, **`[5]`** `Display` 는 `poisoned lock: another task failed inside`(std 구현의 문구).
 - ★★★ **`[6]` 에 `4` 가 있다** — 패닉 **직전의** `push(4)` 가 남았다. 중독은 「망가졌다」가 아니라 「**중간 상태일 수 있다**」는 표시다.
 - ★★ **`[7]`** 값을 꺼내도 표시는 남는다 · **`[8]`** `clear_poison()` 뒤에 `is_poisoned false`, `lock is_ok true`.
@@ -318,7 +318,7 @@ fn main() {
 ### 8. ★★★ `match` 조사 대상은 문장 끝까지 · `if` 조건은 직후 · `while let` 은 본문 내내 — 본문에서 다시 `lock()` 이면 교착
 
 - ★★★ Reference(Destructors · Temporary scopes) — **`if` 의 (패턴이 아닌) 조건식은 임시값 스코프**라 조건 평가 뒤 가드가 버려진다(9행 `free`). **`match` 의 조사 대상은 아니다** — 그 임시값은 문장 끝까지 산다(8행 `blocked`).
-- ★★★ **`while let` 도 조사 대상이라 본문 내내 가드를 쥔다**(12행). 본문에서 `lock()` 을 부르면 **같은 스레드 재잠금** — 6번처럼 돌아오지 않는다.
+- ★★★ **`while let` 도 조사 대상이라 본문 내내 가드를 잡는다**(12행). 본문에서 `lock()` 을 부르면 **같은 스레드 재잠금** — 6번처럼 돌아오지 않는다.
 - ★★ 고치는 법 — **꺼내기를 따로 문장으로**: `loop { let job = m.lock().unwrap().pop(); let Some(job) = job else { break }; … }` 꼴. `let` 문장 끝에서 가드가 버려진다(6행 `free`). ★ **이 꼴 자체는 던지지 않았다** — 근거는 6행이다.
 
 ### 9. ★★ 얻었다 — `Err` 안에 가드가 있다 · `unwrap` 은 「멈춘다」, `into_inner` 는 「이어 쓴다」 · 1.77.0
@@ -337,8 +337,8 @@ fn main() {
 ### 11. ★ 규칙은 같고 실패가 다르다(패닉 대 교착) · Go 는 `go vet` · kotlinx `Mutex` 는 재진입 불가
 
 - ★★ **같은 것** — 가드가 **`Drop` 될 때** 반납된다는 것, 그래서 `match`·`if`·`if let` 행의 답이 42번 격자와 같다.
-- ★★ **다른 것** — `RefCell` 은 겹치면 **패닉**(`already borrowed`), 같은 스레드의 `Mutex` 는 **돌아오지 않는다**(6번 — 이 판에서는 교착). 42번은 실행이 판정했고, 이 편은 `try_lock` 이 판정했다.
-- ★ **Go** — `sync.Mutex` 는 데이터를 감싸지 않고, 값으로 복사하는 실수는 **컴파일러가 아니라 `go vet` 의 `copylocks`** 가 잡는다(Go 32번 — 탐침 18 중 13).
+- ★★ **다른 것** — `RefCell` 은 겹치면 **패닉**(`already borrowed`), 같은 스레드의 `Mutex` 는 **돌아오지 않는다**(6번 — 이 버전에서는 교착). 42번은 실행이 판정했고, 이 편은 `try_lock` 이 판정했다.
+- ★ **Go** — `sync.Mutex` 는 데이터를 감싸지 않고, 값으로 복사하는 실수는 **컴파일러가 아니라 `go vet` 의 `copylocks`** 가 잡는다(Go 32번 — probe 18 중 13).
 - ★ **Kotlin** — kotlinx `Mutex` 는 KDoc 이 **non-reentrant** 라고 적는다. 그리고 `synchronized` 블록 안의 중단점은 **컴파일 에러**다(Kotlin 56번).
 
 ## 실행 검증
@@ -353,7 +353,7 @@ fn main() {
 | `RwLock` 허용 조합 | `r52_rwlock` | 1 | 다섯 줄 |
 | 같은 스레드 재잠금 | `r52_relock` — `timeout 2` | 1 | **`exit 124`**(관찰) |
 | 판 표지 | `r53_since` — 로컬 문서 grep | 1 | `clear_poison` 1.77.0 · `Mutex::new` const 1.63.0 |
-| **안 던진 것** — 속도 · 공정성 · `Condvar` · `ReentrantLock` · `MutexGuard::map` · `unwrap_or_else(\|e\| e.into_inner())` 꼴 · 8번의 `loop` 꼴 | — | 0 | ★ 「안 던졌다」로 표시했다 |
+| **실행하지 않은 것** — 속도 · 공정성 · `Condvar` · `ReentrantLock` · `MutexGuard::map` · `unwrap_or_else(\|e\| e.into_inner())` 꼴 · 8번의 `loop` 꼴 | — | 0 | ★ 「실행하지 않았다」로 표시했다 |
 
 **구현 의존 항목**(버전·환경이 바뀌면 **다시 찍어야 하는** 것).
 

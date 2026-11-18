@@ -4,7 +4,7 @@
 
 ### 1. CertificateVerify만으로 부족한 이유
 
-- CertificateVerify는 "Certificate 메시지에 든 공개키의 개인키를 상대가 쥐고 있다"만 증명한다.
+- CertificateVerify는 "Certificate 메시지에 든 공개키의 개인키를 상대가 잡고 있다"만 증명한다.
 - 공격자도 자기 키쌍으로 "나는 api.example.com"이라는 인증서를 만들어 똑같이 증명할 수 있다.
 - 필요한 것은 "이 공개키가 **정말 그 이름의 것**"이라는 제3자 보증이다.
   - 클라이언트가 원래 믿는 루트까지 서명을 따라 올라가 확인한다. 이것이 체인 검증이다.

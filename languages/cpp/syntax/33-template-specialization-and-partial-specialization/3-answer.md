@@ -4,7 +4,7 @@
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
 
-### 1. ★★★ **`int`→`<int>` · `int*`→`<T*>` · `const int*`→`<T*>` · `int* const`→`<const T>` · `const int`→`<const T>` · `char[3]`→`<T[N]>` · `const char[3]`→error · `double`→기본 · `const int* const`→`<const T>`** — **갈린 칸 0 / 9 · error 1 / 9**
+### 1. ★★★ **`int`→`<int>` · `int*`→`<T*>` · `const int*`→`<T*>` · `int* const`→`<const T>` · `const int`→`<const T>` · `char[3]`→`<T[N]>` · `const char[3]`→error · `double`→기본 · `const int* const`→`<const T>`** — **달라진 항목 0 / 9 · error 1 / 9**
 
 **출력**
 
@@ -101,7 +101,7 @@ pointer overload
 
 **왜 그런가**
 
-- ★★ **`f(T)` 와 `f(T*)` 가 둘 다 맞으면 더 좁은 `f(T*)`** — 오버로드는 해석에 **참가**하므로 부분 순서로 갈린다. `"hi"` 는 `T*` 꼴에서 감쇠해 맞는다.
+- ★★ **`f(T)` 와 `f(T*)` 가 둘 다 맞으면 더 좁은 `f(T*)`** — 오버로드는 해석에 **참가**하므로 부분 순서로 나뉜다. `"hi"` 는 `T*` 꼴에서 감쇠해 맞는다.
 
 ### 4. ★★★ **기본 순서 `(c) f<>(int*)` · `-DSPEC_FIRST` `(b) f(T*)`** — 기호는 **`T void f<int>(int*)`** 대 **`T void f<int*>(int*)` + `W void f<int>(int*)`**
 
@@ -243,7 +243,7 @@ spec07.cpp:12:15: error: ambiguous partial specializations of 'Pick<const char[3
 
 | 무엇을 | 몇 번 · 어느 판 | 결과 |
 |---|---|---|
-| `spec01.cpp` + `spec-grid.sh` | 인자 9 × 컴파일러 2 | ★★★ **갈린 칸 0 / 9 · error 1 / 9** |
+| `spec01.cpp` + `spec-grid.sh` | 인자 9 × 컴파일러 2 | ★★★ **달라진 항목 0 / 9 · error 1 / 9** |
 | `spec01.cpp` `const char[3]` | 두 컴파일러 | ★★ **모호 — 같은 후보 둘** |
 | `spec02.cpp` | 두 컴파일러 | ★★★ **선언에서 거절** |
 | `spec03.cpp` | 두 컴파일러 | ★★ **`primary` · `pointer overload` × 3** |
@@ -262,7 +262,7 @@ spec07.cpp:12:15: error: ambiguous partial specializations of 'Pick<const char[3
 **안 돌려 본 것 / 못 잰 것**
 
 - **안 돌려 본 것** — ★ **변수 템플릿 부분 특수화** · **첫 사용 뒤의 특수화** · **보통 함수 오버로드로 (3) 풀기**.
-- ★ **「부적용인 창」** — ASan · 경고 격자.
+- ★ **「해당 없는 창」** — ASan · 경고 격자.
 
 **버전이 올랐을 때 다시 돌려야 하는 것**
 
@@ -273,5 +273,5 @@ spec07.cpp:12:15: error: ambiguous partial specializations of 'Pick<const char[3
 이 파일의 모든 출력·진단·덤프는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
 **Ubuntu clang version 18.1.3 (1ubuntu1)** · libstdc++ 13 · GNU nm 2.42 · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
 소스는 질문 파일과 같다(출력 블록의 배너에 파일 이름이 있다). 블록은 캡처 스크립트가 받은 것이다 — 손으로 옮긴 줄은 없다.
-**읽는 법** — 흔들리는 칸은 **진단 문구 · 열 번호 · `std::_Bit_reference` 라는 이름**이다.\
-근거로 쓰는 것은 다음이다 — **`cc exit` · 격자 칸 · 「갈린 칸 N / M」 · 실행 출력 · `nm` 의 글자와 기호 이름 · `is_reference` 의 0/1**.
+**읽는 법** — 실행마다 달라지는 항목은 **진단 문구 · 열 번호 · `std::_Bit_reference` 라는 이름**이다.\
+근거로 쓰는 것은 다음이다 — **`cc exit` · 격자 칸 · 「달라진 항목 N / M」 · 실행 출력 · `nm` 의 글자와 기호 이름 · `is_reference` 의 0/1**.

@@ -162,7 +162,7 @@ define(['jquery', './math'], function ($, math) {
 });
 ```
 
-문법이 장황하고 콜백 중첩이 많아 호불호가 갈렸다.\
+문법이 장황하고 콜백 중첩이 많아 호불호가 달라졌다.\
 그래서 **UMD(Universal Module Definition)** 라는 "둘 다 지원" 보일러플레이트가 등장했다 — CommonJS·AMD·전역을 런타임에 감지해 어디서든 동작하는, 파편화 시대의 타협물이었다.
 
 ```javascript

@@ -10,7 +10,7 @@
 
 ## 실제 코드
 
-같은 `redirect()` 가 두 가지 응답으로 갈린다.
+같은 `redirect()` 가 두 가지 응답으로 나뉜다.
 
 ```ts
 // action-handler.ts L1275-L1300

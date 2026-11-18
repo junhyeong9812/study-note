@@ -226,8 +226,8 @@ func main() {
 
 **왜 그런가**
 
-- ★★★ **이 판에서는 여섯 칸 모두 끝났다** — 최적화를 켜도 꺼도, 전역·포인터·필드 어느 모양이든.
-- ★★★ **그러나 이것은 관찰이다** — 이유는 4번(이 판의 gc 가 매번 다시 읽는다), 문서의 입장은 6번.
+- ★★★ **이 버전에서는 여섯 칸 모두 끝났다** — 최적화를 켜도 꺼도, 전역·포인터·필드 어느 모양이든.
+- ★★★ **그러나 이것은 관찰이다** — 이유는 4번(이 버전의 gc 가 매번 다시 읽는다), 문서의 입장은 6번.
 
 ### 4. 매번 읽는다 — `CMPB main.done(SB), $0` 이 루프 안에 있다(둘 다)
 
@@ -306,7 +306,7 @@ func main() {
 
 - ★★★ **기본 빌드** — `CMPB main.done(SB), $0` · `JEQ 0` — 0번 명령으로 돌아가 **메모리를 다시 읽는다.**
 - ★★ **`-N -l`** — 점프가 늘었을 뿐 `CMPB main.done(SB)` 이 **루프 안에** 있다.
-- ★★★ 「컴파일러가 루프에서 읽기를 끌어올린다」는 **이 판의 gc 에는 맞지 않았다.** 그것이 3번의 `0 / 6` 의 **구현 쪽 이유**다.
+- ★★★ 「컴파일러가 루프에서 읽기를 끌어올린다」는 **이 버전의 gc 에는 맞지 않았다.** 그것이 3번의 `0 / 6` 의 **구현 쪽 이유**다.
 
 ### 5. 「아니오」 · exit 66, 보고 2 건 · 빈 문자열 출력을 허용한다
 
@@ -367,7 +367,7 @@ guaranteed to finish.
 (exit 0)
 ```
 
-- ★★★ 「**there is no guarantee that the write to done will ever be observed by main … The loop in main is not guaranteed to finish.**」 — 문서는 **끝나지 않아도 되는 구현**을 허용한다. 3번은 **이 판의 gc 가 그 허용을 쓰지 않은** 한 점이다.
+- ★★★ 「**there is no guarantee that the write to done will ever be observed by main … The loop in main is not guaranteed to finish.**」 — 문서는 **끝나지 않아도 되는 구현**을 허용한다. 3번은 **이 버전의 gc 가 그 허용을 쓰지 않은** 한 점이다.
 - ★★★ 가르는 것은 **문서의 문장**과 **`-race` 의 보고**(1번 `plainflag` — 끝나는 판에서도 보고)다. **「잘 돌아가더라」는 둘 중 어느 것도 못 이긴다.**
 
 ### 7. 「The exit of a goroutine is not guaranteed to be synchronized before any event in the program.」 · `WaitGroup`·채널
@@ -379,14 +379,14 @@ guaranteed to finish.
 
 - ★★★ [`../../../c/syntax/32-what-volatile-actually-guarantees/`](../../../c/syntax/32-what-volatile-actually-guarantees/) (1)절 — gcc `-O2` 의 `wait_plain` 은 **한 번 읽고 `jmp .L3`**, clang 은 **`ret`(루프 삭제)**.
 - ★★★ [`../../../java/syntax/33-synchronized-and-volatile/`](../../../java/syntax/33-synchronized-and-volatile/) (3)절 — 평범한 `boolean` 플래그가 JIT 에서 **5 / 5 안 멈췄고**, `volatile` 은 5 / 5 멈췄다.
-- ★★★ **같은 것** — 셋 다 **동기화 없는 폴링**이고, 각 언어의 메모리 모델이 **안 끝나도 된다**고 허용한다. **다른 것** — 이 판의 Go gc 는 **매번 다시 읽어서** 끝났다. **허용 범위 안의 다른 점**일 뿐이다.
+- ★★★ **같은 것** — 셋 다 **동기화 없는 폴링**이고, 각 언어의 메모리 모델이 **안 끝나도 된다**고 허용한다. **다른 것** — 이 버전의 Go gc 는 **매번 다시 읽어서** 끝났다. **허용 범위 안의 다른 점**일 뿐이다.
 
 ### 9. C++ 의 순차 일관 원자 · 자바의 `volatile` — C `volatile` 은 아니다
 
 - ★★★ 1번 규칙 블록의 마지막 두 줄 — 「**The preceding definition has the same semantics as C++'s sequentially consistent atomics and Java's volatile variables.**」
 - ★★★ **C 의 `volatile` 은 순서를 안 막는다** — C 32편 (4)·(5)절과 (9)절의 표(「스레드 사이 순서 ✗ (UB — 데이터 경쟁)」). 이름이 같은 자바 `volatile` 과 **뜻이 다르다.**
 
-### 10. 「report the race and halt execution」 — 이 판의 기본은 보고하고 계속 간다
+### 10. 「report the race and halt execution」 — 이 버전의 기본은 보고하고 계속 간다
 
 ```text
 ===== 명령: sed -n "3p;224,229p;788,792p;831p" "$(go env GOROOT)/doc/go_mem.html" | sed -e "s/<[^>]*>//g" =====
@@ -438,8 +438,8 @@ Don't be clever.
 
 | 항목 | 무엇에 달렸나 |
 |---|---|
-| 폴링 루프가 끝나나 | ★★★ **이 판 gc 의 코드 생성** — 문서는 보장하지 않는다 |
-| 20판 `hello` | **x86-64 의 메모리 순서 + 이 판 gc** — 약한 순서 CPU 는 **못 쟀다** |
+| 폴링 루프가 끝나나 | ★★★ **이 버전 gc 의 코드 생성** — 문서는 보장하지 않는다 |
+| 20판 `hello` | **x86-64 의 메모리 순서 + 이 버전 gc** — 약한 순서 CPU 는 **못 쟀다** |
 | `-race` 의 보고/침묵 | **검출기** — 순서가 선 칸의 침묵은 관찰 |
 | 동기화 연산의 **시간** | ★ **안 쟀다** |
 
@@ -450,5 +450,5 @@ Don't be clever.
 이 파일의 모든 출력은 **`go version go1.27.1 linux/amd64`** 에서 실제로 돌려
 **파일로 캡처한 것**이다. 소스 펜스도 같은 파일에서 떠 왔다 — 손으로 옮겨 적은 블록은 없다.
 메모리 모델 문장은 **이 툴체인의 `$(go env GOROOT)/doc/go_mem.html`** 에서 줄 번호째 떴다.\
-★ **근거로 읽을 칸** — 격자의 `-race 보고=예/아니오` · `9 / 13` · `0 / 6` · 어셈블리 명령 줄 · 20판 참거짓 · 보고 수 · 문서 문장.
-**근거로 읽지 않을 칸** — 루프가 **몇 ms 만에** 끝났나(안 실었다).
+★ **근거로 읽을 항목** — 격자의 `-race 보고=예/아니오` · `9 / 13` · `0 / 6` · 어셈블리 명령 줄 · 20판 참거짓 · 보고 수 · 문서 문장.
+**근거로 읽지 않을 항목** — 루프가 **몇 ms 만에** 끝났나(안 실었다).

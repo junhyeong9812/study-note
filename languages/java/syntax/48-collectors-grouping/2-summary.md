@@ -305,7 +305,7 @@ partitioningBy(p)                          groupingBy(원소 -> p.test(원소))
   단 이 타입 자체는 javadoc 이 보장하지 않는다 — 보장되는 것은 **"두 키가 항상 있다"** 까지다.
 
 비용 — `HashMap` 보다 가볍다(칸이 둘로 고정이라 배열 둘이면 된다).\
-**조건이 둘로 갈리는 일이면 `groupingBy` 보다 `partitioningBy` 가 맞다.**
+**조건이 둘로 나뉘는 일이면 `groupingBy` 보다 `partitioningBy` 가 맞다.**
 
 ### (6) 조합 — 2단 그룹핑과 `teeing`(12+)
 
@@ -443,7 +443,7 @@ Map<String,Long> base = allTeams.stream()                        // 3) 전체 �
 base.putAll(src.stream().collect(groupingBy(P::team, counting())));
 ```
 
-- **둘로 갈리는 조건이면 `partitioningBy` 를 쓴다** — 그쪽은 이 문제가 없다((5)).
+- **둘로 나뉘는 조건이면 `partitioningBy` 를 쓴다** — 그쪽은 이 문제가 없다((5)).
 
 ### 2. 키 순서를 믿는다
 
@@ -573,7 +573,7 @@ put(null) : java.lang.UnsupportedOperationException
 - `groupingBy` 의 기본값은 **`HashMap` + `ArrayList`** 이고 **둘 다 보장이 아니다.** 순서가 필요하면 3인자로 명시한다.
 - **`groupingBy` 는 원소가 있는 칸만 만들고, `partitioningBy` 는 언제나 두 칸을 만든다.** 이것이 두 메서드의 진짜 차이다.
 - **다운스트림은 칸 안에서 다시 `collect` 를 돌리는 것**이다 — 47번의 수집기가 전부 그 자리에 들어간다.
-- **`filtering`(9+)과 `filter` 는 결과의 키 집합이 다르다.** 빈 그룹을 남기느냐가 갈린다.
+- **`filtering`(9+)과 `filter` 는 결과의 키 집합이 다르다.** 빈 그룹을 남기느냐가 달라진다.
 - 분류 함수가 `null` 을 돌려주면 **`element cannot be mapped to a null key`** 로 터진다 — 메시지가 있는 NPE 다.
 
 ## 관련 자료

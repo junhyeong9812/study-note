@@ -79,7 +79,7 @@ cells where the g column differs from its pair without g: 9 / 21
 - ★★ **실패** — `/x/`·`/x/g` 둘 다 **`null`**(`-` 는 스크립트가 `null` 이라 못 읽은 칸이다).
 - ★★ **`[2]`** — `exec` 는 `g` 가 있어도 **한 매치의 상세**다(`["1","1"]  index 1`). `g` 가 바꾸는 것은 `exec` 의 **`lastIndex` 쓰기**뿐이다(1번).
 - ★★ **`[3]`** — `'a.c'.match('.')` 는 **`"a"`**(인덱스 0). 문자열이 **정규식으로 바뀌어** `.` 이 아무 글자다. `match()` 는 빈 패턴이라 `[""]`.
-- ★ **`9 / 21`** — 세 짝(`(\d)` · `(?<n>\d)` · `x`) × 일곱 행. 실패 짝(`/x/` 대 `/x/g`)은 한 칸도 안 갈렸고, 나머지 두 짝에서 `length`·`[1]`·`index`·`input` 넷씩 + 명명 그룹 짝의 `groups` 하나.
+- ★ **`9 / 21`** — 세 짝(`(\d)` · `(?<n>\d)` · `x`) × 일곱 행. 실패 짝(`/x/` 대 `/x/g`)은 한 칸도 안 달라졌고, 나머지 두 짝에서 `length`·`[1]`·`index`·`input` 넷씩 + 명명 그룹 짝의 `groups` 하나.
 
 ### 3. `g` 없으면 **`TypeError`** · 돌려받는 것은 **`RegExp String Iterator`**(`return` 없음, 한 번 소비) · **복제본**이 넘긴 `lastIndex` 에서 시작하고 원래 것은 안 바뀐다 ★★★
 
@@ -240,7 +240,7 @@ cells where the g column differs from its pair without g: 9 / 21
   new RegExp(new Loud('a')).flags     
 ```
 
-node 18 판(갈린 줄은 `[1]` 의 `v` 한 줄):
+node 18 판(달라진 줄은 `[1]` 의 `v` 한 줄):
 
 ```text
 ===== node18 js28b-29f-flags.js (exit=0) =====
@@ -381,12 +381,12 @@ node 18 판(갈린 줄은 `[1]` 의 `v` 한 줄):
 | `js28b-29c-matchall.js` | ★★★ `g` 필수 · 이터레이터 태그와 `return` 부재 · 한 번 소비 · 복제본과 `lastIndex` · `exec` 호출 로그 | node20 1벌 + node18 대조 1벌 |
 | `js28b-29d-replace-callback.js` | ★★ 콜백 인자 수·순서 · `undefined` 자리 · `groups` · 반환값 `ToString` | node20 1벌 + node18 대조 1벌 |
 | `js28b-29e-literal-identity.js` | ★★★ 리터럴 동일성 · `RegExp(r)` · 상태 공유 · 복사 · `search` 복원 | node20 1벌 + node18 대조 1벌 |
-| `js28b-29f-flags.js` | ★★ 플래그 글자·프로퍼티·순서·거절 · `i m s y` 의 뜻 · `[[OriginalFlags]]` | node20 1벌 + **node18 1벌(갈린 판)** |
+| `js28b-29f-flags.js` | ★★ 플래그 글자·프로퍼티·순서·거절 · `i m s y` 의 뜻 · `[[OriginalFlags]]` | node20 1벌 + **node18 1벌(달라진 판)** |
 | `js28b-29h-literal-vs-constructor.js` | ★★ 백슬래시 두 단계 · `source` · 사용자 문자열 · 리터럴 조기 오류 | node20 1벌 + node18 대조 1벌 |
 | `js28b-29g-python.sh` | ★★ 파이썬 `re` 대비 | Python 3.12.3 1벌 |
-| `js28b-vdiff.sh` · `js28b-versions.sh` | 두 판이 갈린 탐침 수 · 이 문서의 출력이 **어느 판에서 나왔나** + 판별 기능 표 | 1벌씩 |
+| `js28b-vdiff.sh` · `js28b-versions.sh` | 두 버전이 달라진 probe 수 · 이 문서의 출력이 **어느 버전에서 나왔나** + 판별 기능 표 | 1벌씩 |
 
-두 node 판 대조기(이 배치 전체의 node 탐침). 이 주제의 줄(`js28b-29…`)은 `js28b-29f-flags.js` 하나만 `DIFFERS` 다. 그 밖의 `DIFFERS` 줄은 **다른 주제의 탐침**이다(같은 배치가 한 대조기를 공유한다).
+두 node 버전 대조기(이 배치 전체의 node probe). 이 주제의 줄(`js28b-29…`)은 `js28b-29f-flags.js` 하나만 `DIFFERS` 다. 그 밖의 `DIFFERS` 줄은 **다른 주제의 probe**이다(같은 배치가 한 대조기를 공유한다).
 
 ```sh
 # js28b-vdiff.sh
@@ -525,8 +525,8 @@ js28b-31x-node-rawjson.js                    identical
 identical 19  ·  differs 6  ·  total 25
 ```
 
-- ★ **다시 돌릴 것** — node 판이 오르면 `js28b-29f-flags.js` 의 `v` 줄 · 예외 **문구** 전부(V8 의 글자). 파이썬 판이 오르면 `js28b-29g` 의 `error` 줄(예외 **이름**이 판에 매이는 칸이다).
-- ★ **흔들린 칸** — 이 주제의 블록에는 없다(재대조 동일).
+- ★ **다시 돌릴 것** — node 버전이 오르면 `js28b-29f-flags.js` 의 `v` 줄 · 예외 **문구** 전부(V8 의 글자). 파이썬 버전이 오르면 `js28b-29g` 의 `error` 줄(예외 **이름**이 판에 매이는 칸이다).
+- ★ **달라진 항목** — 이 주제의 블록에는 없다(재대조 동일).
 
 ## 실행 환경
 
@@ -534,7 +534,7 @@ identical 19  ·  differs 6  ·  total 25
 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮긴 출력이 하나도 없다).
 
 ★★ **예외는 `e.constructor.name` 과 `e.message` 로만** `이름 「메시지」` 꼴로 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
-★★ **두 node 판이 갈린 블록은 6번 하나**이고, 갈린 줄은 `v` 플래그(ES2024) 한 줄이다.
+★★ **두 node 버전이 달라진 블록은 6번 하나**이고, 달라진 줄은 `v` 플래그(ES2024) 한 줄이다.
 
 **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
 `js28b-29a-lastindex.js`(1번 · 7번) · `js28b-29b-match-shape.js`(2번) · `js28b-29c-matchall.js`(3번 · 10번) · `js28b-29d-replace-callback.js`(4번) ·

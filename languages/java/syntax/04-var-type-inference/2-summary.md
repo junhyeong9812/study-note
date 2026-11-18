@@ -269,7 +269,7 @@ public class Ex { public static void main(String[] a) { var x = new ArrayList<va
 
 그림 해설 (한 단계씩):
 
-- **두 갈래로 갈린다.** `cannot infer type` 은 "자리는 되는데 오른쪽으로 못 정하겠다",
+- **두 갈래로 나뉜다.** `cannot infer type` 은 "자리는 되는데 오른쪽으로 못 정하겠다",
   `'var' is not allowed here` 는 "그 자리 자체가 안 된다".
 - 앞의 것은 **초기화식을 고치면** 풀리고, 뒤의 것은 **타입을 손으로 적어야** 풀린다.
 - 셋(`{1,2,3}`·람다·메서드 참조)의 이유가 같다 — **대상 타입(target type)이 있어야 의미가 정해지는 식**이라,
@@ -559,7 +559,7 @@ class var { }
 - 그래서 **Java 10 이전에 `var` 라는 변수·메서드·패키지 이름을 쓰던 코드는 그대로 컴파일된다.**
 - 막힌 것은 `class var`·`interface var`·`enum var`·`record var` 같은 **타입 선언 이름**뿐이다.
 
-### 추론 결과가 직관과 갈리는 것들
+### 추론 결과가 직관과 달라지는 것들
 
 ```java
 var bytes = (byte) 1;      // byte  — 캐스트 타입이 그대로 온다
@@ -704,7 +704,7 @@ Ex.java:2: error: 'var' is not allowed here
 | 익명 클래스 이름이 `Ex$1` | **구현 세부** | javac 의 명명 규칙 |
 | 에러 문구(`cannot infer type for local variable x`) | **구현 세부** | javac 의 메시지. 17·21·25 에서 같았다 — **관찰이다** |
 
-### 버전에 갈리는 것은 람다 파라미터뿐이다
+### 버전에 달라지는 것은 람다 파라미터뿐이다
 
 같은 소스를 `--release` 만 바꿔 컴파일했다(`Ex.java (04-g3)`, JDK 21.0.5 의 javac).
 
@@ -771,7 +771,7 @@ $ javac --release 11 Ex.java
 - [`../14-records/`](../14-records/) — 이름 있는 작은 묶음이 필요하면 익명 클래스보다 `record` 가 낫다
 - [`../36-stringbuilder-and-concat/`](../36-stringbuilder-and-concat/) — 같은 `javap -c` 로 "컴파일러가 한 일"을 보는 다른 사례
 - [**17번 주제**](../17-generic-declarations/)(제네릭 선언) — 「어디서 틀리나」 2번의 `ArrayList<Object>` 가 왜 타입 안전을 잃는지
-- [**19번 주제**](../19-type-erasure/)(타입 소거) — `LocalVariableTable` 과 `LocalVariableTypeTable` 이 왜 둘로 갈리는지
+- [**19번 주제**](../19-type-erasure/)(타입 소거) — `LocalVariableTable` 과 `LocalVariableTypeTable` 이 왜 둘로 나뉘는지
 
 ## 용어 풀이
 

@@ -147,7 +147,7 @@ frag 안 span.parentElement = null
 (exit 0)
 ```
 
-**갈리는 줄과 그 이유**
+**달라지는 줄과 그 이유**
 
 - 네 번째 줄만 `null` 이다. 그리고 그 이유는 **「부모가 없어서」가 아니다** — 부모는 `#document` 로 멀쩡히 있고, 그것이 **요소가 아닐** 뿐이다(`nodeType 9`).
 
@@ -366,7 +366,7 @@ document instanceof Node/Element = true/false
 
 **둘 다 라이브인 것이 출발점인 이유**
 
-- `childNodes`(`NodeList`)와 `children`(`HTMLCollection`)이 **둘 다 라이브**라, 「`NodeList` 는 정적이고 `HTMLCollection` 은 라이브」라는 흔한 요약이 **틀렸음**이 여기서 이미 드러난다. 갈리는 것은 **타입이 아니라 그 타입을 만든 API** 다([02번 주제](../02-element-queries-and-live-collections/2-summary.md)).
+- `childNodes`(`NodeList`)와 `children`(`HTMLCollection`)이 **둘 다 라이브**라, 「`NodeList` 는 정적이고 `HTMLCollection` 은 라이브」라는 흔한 요약이 **틀렸음**이 여기서 이미 드러난다. 달라지는 것은 **타입이 아니라 그 타입을 만든 API** 다([02번 주제](../02-element-queries-and-live-collections/2-summary.md)).
 
 **경계**
 
@@ -417,7 +417,7 @@ document.body.appendChild(Object.assign(document.createElement('script'),
 | 항목 | 값 | 왜 다시 찍나 |
 |---|---|---|
 | `--dump-dom` 의 직렬화 형태 | `hidden=""` · 속성 순서 = 소스 순서 | 직렬화는 명세가 정하지만 **줄바꿈 위치와 도구 동작은 Chrome 의 것** |
-| `document.implementation.createHTMLDocument` 가 만든 문서의 세부 | 위 출력대로 | 명세가 뼈대를 정하지만 세부는 이 판의 관찰 |
+| `document.implementation.createHTMLDocument` 가 만든 문서의 세부 | 위 출력대로 | 명세가 뼈대를 정하지만 세부는 이 버전의 관찰 |
 | `--dump-dom` 이 **로드 완료 시점**을 잡는 것 | 스크립트 실행 뒤의 트리가 나온다 | 도구 동작이고 명세와 무관하다 |
 
 **안 돌려 본 것** — ① Firefox·Safari 에서의 재현(엔진이 없다). **이 문서의 모든 관찰은 Blink 한 판의 것**이고, 그중 명세가 보장하는 항목은 「구현 세부사항 대 언어 보장」 표에 갈라 적었다. ② 개발자 도구 Elements 패널에서 공백 텍스트 노드가 어떻게 보이는지(headless 라 UI 가 없다).
@@ -440,4 +440,4 @@ document.body.appendChild(Object.assign(document.createElement('script'),
 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 `--dump-dom` 으로 실제로 받은 것**이다. 명령은 블록마다 배너로 실려 있다.\
 규칙은 [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 로 접지했다.\
 **엔진은 Chrome 하나다** — Firefox 는 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. **이식성을 주장하지 않는다.**\
-**이 주제의 블록에는 흔들리는 칸이 없다** — 재는 수치가 없기 때문이다. 트리 문자열·노드 수·`nodeType`·API 반환값은 다시 돌려도 한 글자도 같아야 한다.
+**이 주제의 블록에는 실행마다 달라지는 항목이 없다** — 재는 수치가 없기 때문이다. 트리 문자열·노드 수·`nodeType`·API 반환값은 다시 돌려도 한 글자도 같아야 한다.

@@ -35,7 +35,7 @@
 
 - 상태만 세면 `RUNNABLE` 12, `BLOCKED` 3이다. "대부분 일하는 중"으로 오독한다. 소켓 읽기에서 막힌 스레드도 `RUNNABLE`이기 때문이다.
 - 맨 위 프레임까지 묶으면 12개가 **같은 소켓 읽기**에 모여 있다. 풀 크기만큼 같은 곳에 멈춘 모양이다.
-- 다음: 그 호출의 타임아웃(connect·read·전체)을 확인한다. 공유 풀이면 하류별 격벽을 넣는다([05-2](../05-timeouts-and-deadline-propagation/2-summary.md) · [28-1](../28-bulkhead/2-summary.md)). `BLOCKED` 3개는 같은 `synchronized` 줄이고, 쥔 쪽은 `- locked <0x…>`로 찾는다.
+- 다음: 그 호출의 타임아웃(connect·read·전체)을 확인한다. 공유 풀이면 하류별 벌크헤드를 넣는다([05-2](../05-timeouts-and-deadline-propagation/2-summary.md) · [28-1](../28-bulkhead/2-summary.md)). `BLOCKED` 3개는 같은 `synchronized` 줄이고, 쥔 쪽은 `- locked <0x…>`로 찾는다.
 
 ### 4. 137 가르기
 
@@ -81,7 +81,7 @@
 |---|---|---|
 | 셰딩 중인 인스턴스가 헬스체크까지 버림 → LB가 뺌 → 남은 쪽 과부하 연쇄 | [12-4](../12-backpressure-and-load-shedding/2-summary.md) | 헬스체크·관리 요청은 별도 경로·최고 중요도 |
 | 깊은 헬스체크(DB 확인) → DB 2초 지연에 전 인스턴스 unhealthy → 전면 503 | [47-2](../47-server-design-antipatterns/2-summary.md) | liveness는 프로세스 자신만. 의존성 문제는 오류·폴백으로 |
-| 요청 스레드 전부가 느린 외부 호출에 묶임 + 프로브가 같은 풀 → liveness 실패 → 연쇄 재시작 | [48-3](../48-performance-and-stability-antipatterns-in-code/2-summary.md) | 통합 지점 타임아웃·격벽, 프로브 경로 분리 |
+| 요청 스레드 전부가 느린 외부 호출에 묶임 + 프로브가 같은 풀 → liveness 실패 → 연쇄 재시작 | [48-3](../48-performance-and-stability-antipatterns-in-code/2-summary.md) | 통합 지점 타임아웃·벌크헤드, 프로브 경로 분리 |
 
 ### 9. 에러 없이 틀린 셋
 
@@ -99,4 +99,4 @@
   - 미스 비율 3%: 가장 느린 1%는 미스 경로 안에 있다. p99 = 미스 경로 지연이라 캐시를 넣어도 p99는 그대로다. 원본의 말이 맞는 경우다.
   - 미스 비율 0.5%: p99 위치의 요청도 적중 경로다. p99가 적중 경로 지연으로 내려간다. 원본의 말이 틀리는 경우다(p99.9는 여전히 미스 경로).
   - 그래서 첫 진단은 "미스 비율이 1%를 넘나"다.
-- 처방 순서: B-3("타임아웃 → 서킷 → 벌크헤드")와 D-1("타임아웃 → 벌크헤드 → 서킷 → 폴백")이 다르다. D-1로 읽는다. 서킷은 호출 결과가 기록돼야 판단하므로 느린 하류에는 늦게 열린다([10-3](../10-circuit-breaker/2-summary.md)). 그동안의 스레드 고갈은 격벽이 막는다([28-1](../28-bulkhead/2-summary.md)).
+- 처방 순서: B-3("타임아웃 → 서킷 → 벌크헤드")와 D-1("타임아웃 → 벌크헤드 → 서킷 → 폴백")이 다르다. D-1로 읽는다. 서킷은 호출 결과가 기록돼야 판단하므로 느린 하류에는 늦게 열린다([10-3](../10-circuit-breaker/2-summary.md)). 그동안의 스레드 고갈은 벌크헤드가 막는다([28-1](../28-bulkhead/2-summary.md)).

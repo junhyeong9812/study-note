@@ -2,11 +2,11 @@
 
 **근거로 쓸 칸을 미리 가른다.**
 
-| 안 흔들리는 칸 (근거로 쓴다) | 흔들리는 칸 (근거로 쓰지 않는다) |
+| 달라지지 않는 항목 (근거로 쓴다) | 실행마다 달라지는 항목 (근거로 쓰지 않는다) |
 |---|---|
 | 전후 트리 문자열 · 자식 수 · `parentElement.id` · 반환값(`undefined` 포함) · 예외 이름과 메시지 | Chrome 판 번호 · `performance.now()` 수치 |
 
-이 주제의 블록에도 **흔들리는 칸이 없다.** 삽입 비용을 재는 것은 [04번 주제](../04-textcontent-innerhtml-innertext/2-summary.md)의 몫이다.
+이 주제의 블록에도 **실행마다 달라지는 항목이 없다.** 삽입 비용을 재는 것은 [04번 주제](../04-textcontent-innerhtml-innertext/2-summary.md)의 몫이다.
 
 ## 한눈에 — 쉽게 말하면
 
@@ -149,7 +149,7 @@ append("문자열") -> ok, childNodes[0].nodeType=3
 
 ### (1) ★ `append` 와 `appendChild` — 이름만 비슷하다
 
-**언제 쓰나** — 자식을 끝에 붙일 때. **셋이 갈린다 — 받는 것 · 돌려주는 것 · 여러 개.**
+**언제 쓰나** — 자식을 끝에 붙일 때. **셋이 달라진다 — 받는 것 · 돌려주는 것 · 여러 개.**
 
 ```text
 $ google-chrome --headless --disable-gpu --no-sandbox --dump-dom ex03a.html | sed -n '/^--OUT$/,/^OUT--$/{//!p}' | sed -n '5,6p'
@@ -175,7 +175,7 @@ append 반환값 = undefined
 
 비용 — 같다. 차이는 편의와 계약이지 성능이 아니다.
 
-### (2) ★ 삽입이 곧 이동 — 이 주제의 본체
+### (2) ★ 삽입이 곧 이동 — 이 주제의 핵심
 
 **언제 쓰나** — 이미 화면에 있는 요소를 다른 곳에 넣을 때. **여기서 「원본이 사라졌다」가 난다.**
 
@@ -317,7 +317,7 @@ $ google-chrome --headless --disable-gpu --no-sandbox --dump-dom ex03b.html | se
 
 ### (3) 자리를 지정하는 다섯 — `prepend`·`before`·`after`·`replaceWith`·`remove`
 
-**언제 쓰나** — 끝이 아닌 자리에 넣거나 뺄 때. **기준이 부모냐 형제냐로 갈린다.**
+**언제 쓰나** — 끝이 아닌 자리에 넣거나 뺄 때. **기준이 부모냐 형제냐로 나뉜다.**
 
 ```html
 <!-- ex03d.html -->

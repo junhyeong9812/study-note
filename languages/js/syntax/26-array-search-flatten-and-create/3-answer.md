@@ -50,9 +50,9 @@ rows where the edition rule misses: 3 / 27
 - ★★★ **ES2015 이후인데 `skips` 인 셋** — `copyWithin` 은 `fromPresent` 가 거짓이면 **대상 자리를 지운다**(`[<hole>,<hole>]` — 구멍이 복사됐다). `flat`·`flatMap` 은 `FlattenIntoArray` 가 `exists` 를 묻는다(`[1]` — 구멍이 사라졌다).
 - ★★ **돌려받는 배열** — `map`·`slice()`·`concat()`·`reverse()`·`sort()` 는 구멍을 **남긴다**(`sort` 는 끝으로 옮긴다). `filter`·`flat`·`flatMap` 은 **지운다**(`[1]`). `[...arr]`·`Array.from(arr)` 은 **`undefined` 로 채운다**(`[undefined,1]`).
 - ★ `join('-')` 은 구멍을 **빈 글자**로 이어 `"-1"`. `at(0)` 은 `undefined` — 두 줄은 「건너뛰나」를 물을 거리가 없어 `(n/a)` 로 세지 않았다.
-- 전부 명세가 정한 것이다. 예외도 흔들리는 칸도 없다.
+- 전부 명세가 정한 것이다. 예외도 실행마다 달라지는 항목도 없다.
 
-### 2. `-0` 에서는 **안 갈리고** `NaN` 에서만 갈린다 — 배열은 **`-0` 을 그대로** 담는다 ★★
+### 2. `-0` 에서는 **안 갈리고** `NaN` 에서만 달라진다 — 배열은 **`-0` 을 그대로** 담는다 ★★
 
 **출력**
 
@@ -203,7 +203,7 @@ nested = [1,[2,[3,[4,[5]]]]]
 - ★★★ **`[2]`** — `flatMap` 은 `FlattenIntoArray(…, 1, mapper, …)` 다. **깊이 1 로 고정** — 두 겹 배열은 한 겹만 벗는다. 배열이 아닌 반환값은 그대로 한 원소, `[]` 는 원소를 빼는 효과.
 - ★★★ **`[3]`** — `flat` 은 `IsArray(element)` 로 묻는다. `isConcatSpreadable` 을 켠 객체도 `Set` 도 배열이 아니라 **그대로**. `concat` 은 `IsConcatSpreadable` 을 물어 **편다**(`"p","q"`).
 - ★★ **`[4]`** — `[1,3,5]`. 바깥 자리 1 의 구멍과 안쪽 `[1, , 3]` 의 구멍이 둘 다 `HasProperty` 에서 걸러졌다.
-- ★ **`[5]`** — `RangeError 「Maximum call stack size exceeded」`. `FlattenIntoArray` 가 재귀라 깊이만큼 스택을 쓴다. **명세에는 한계가 없다 — 이 판의 관찰이다.**
+- ★ **`[5]`** — `RangeError 「Maximum call stack size exceeded」`. `FlattenIntoArray` 가 재귀라 깊이만큼 스택을 쓴다. **명세에는 한계가 없다 — 이 버전의 관찰이다.**
 
 ### 6. `Array(3)` 은 **구멍 셋**, `Array.of(3)` 은 **`[3]`**, `Array(3).map` 은 콜백을 **0번** 부른다 ★★★
 
@@ -315,7 +315,7 @@ typeof Array.fromAsync   undefined
 TypeError 「Array.fromAsync is not a function」
 ```
 
-**두 node 판 대조기 — 이 주제의 탐침이 판마다 같았나**
+**두 node 버전 대조기 — 이 주제의 probe가 판마다 같았나**
 
 ```sh
 # js24b-vdiff.sh
@@ -495,7 +495,7 @@ identical 26  ·  differs 4  ·  total 30
 - ★★★ **판별 블록의 `ES2026  Array.fromAsync` 줄** — node 18 `no` · node 20 `no` · Chrome 151 `yes`. 그 줄은 `typeof Array.fromAsync === "function"` 을 묻는다(`js24b-features.js`).
 - ★★ **없는 판에서 부르면 `TypeError 「Array.fromAsync is not a function」`** — `undefined` 를 부른 것이다. ★ 문구만으로 판정하지 않는다 — 23번에서 `getOrInsertComputed` 는 **메서드가 있는데도** 같은 모양의 문구를 냈다. **`typeof` 가 `undefined` 인 줄이 근거**다.
 - ★ **판** — TC39 finished proposals 의 `Array.fromAsync` 행이 **2026** 이다. ECMA-262 **17판(2026)에 있고 16판(2025)에는 없다**(본문 검색). 목록 README 의 「`fromAsync`(ES2026)」와 **같다.**
-- ★ **대조기** — `js24b-26…` 일곱 줄이 전부 `identical`. `DIFFERS` 줄은 **다른 주제의 탐침**이다(같은 배치가 한 대조기를 공유한다).
+- ★ **대조기** — `js24b-26…` 일곱 줄이 전부 `identical`. `DIFFERS` 줄은 **다른 주제의 probe**이다(같은 배치가 한 대조기를 공유한다).
 
 ### 8. `Array.fromAsync` 는 **async function** 이고 한 값씩 `Await` 한다 ★★★
 
@@ -532,7 +532,7 @@ done
 **왜 그런가**
 
 - ★★★ **`[2]`** — `fromAsync` 로그가 `next 0 | settle 0 | next 1 | settle 1 | next 2 | settle 2` 로 **번갈아** 간다. 동기 이터러블을 `CreateAsyncFromSyncIterator` 로 감싼 뒤 **값 하나를 `Await` 하고 나서** 다음 `next` 를 부르기 때문이다.
-  `Promise.all([...gen()])` 은 스프레드가 **먼저 셋을 다 꺼내고**(`next 0 | next 1 | next 2`) 짧은 지연부터 정해진다(`settle 2 | settle 1 | settle 0`). **결과 배열은 같다** — 로그로만 갈린다.
+  `Promise.all([...gen()])` 은 스프레드가 **먼저 셋을 다 꺼내고**(`next 0 | next 1 | next 2`) 짧은 지연부터 정해진다(`settle 2 | settle 1 | settle 0`). **결과 배열은 같다** — 로그로만 달라진다.
 - ★★★ **`[6]`** — 거부된 항목에서 멈춘다: `next 2` 가 없다. **`finally ran`** — 동기 이터레이터가 닫혔다. `AsyncFromSyncIteratorContinuation` 이 `closeOnRejection` 일 때 거부에서 `IteratorClose` 를 한다.
 - ★★★ **`[7]`** — 호출 중에는 예외가 없고 **거부된 프라미스**로 `TypeError 「5 is not a function」` 이 온다. 명세가 이 메서드를 "This **async function** performs the following steps" 로 적는다 — 매핑 함수 검사(`IsCallable(mapper)`)도 async 본문 **안**에 있다.
 - ★ 나머지 — `[1]` 프라미스를 돌려준다 · `[3]` 비동기 이터러블을 세 번 당겼다 · `[4]` 매핑 함수의 반환 프라미스도 기다린다 · `[5]` 유사 배열 · `[8]` `null` 거부, `5` 는 `[]`.
@@ -549,7 +549,7 @@ done
 
 - ★★★ **공통점** — `copyWithin`(ES2015) · `flat`·`flatMap`(ES2019). 셋 다 알고리즘에 `HasProperty` 가 있다. `flat` 은 새 판이지만 **ES5 식 반복**(`forEach` 와 같은 `kPresent` 검사)을 따랐다.
 - ★★ **한 문장** — 「**반복 단계에서 `HasProperty` 를 먼저 묻는 메서드가 구멍을 건너뛴다.** 판은 그 대부분과 겹칠 뿐이다」.
-- ★ **이 격자가 못 보는 것** — 구멍이 **프로토타입에서 값을 얻는** 경우. `HasProperty` 는 체인까지 보므로 `Array.prototype[0]` 이 있으면 `skips` 쪽도 그 자리를 **방문**한다. 격자는 체인이 빈 배열만 봤다 — **그 탐침은 안 돌렸다.**
+- ★ **이 격자가 못 보는 것** — 구멍이 **프로토타입에서 값을 얻는** 경우. `HasProperty` 는 체인까지 보므로 `Array.prototype[0]` 이 있으면 `skips` 쪽도 그 자리를 **방문**한다. 격자는 체인이 빈 배열만 봤다 — **그 probe는 안 돌렸다.**
 
 ### 11. `Map` 은 **`+0` 으로 바꿔 저장**했고 배열은 **`-0` 을 그대로** 담는다 ★★
 
@@ -574,9 +574,9 @@ done
 | `js24b-26f-create.js` | ★★★ `Array(n)` · `Array.of` · `Array.from` 의 입력과 구멍 | node20 1벌 + node18 대조 1벌 |
 | `js24b-26x-node-fromasync.js` | ★ node 두 판에 `Array.fromAsync` 가 없다 | node20 1벌 + node18 대조 1벌 |
 | `js24b-26g-fromasync.web.js` | ★★★ `fromAsync` 의 `next`/`settle` 순서 · 거부 뒤 닫기 · async function 의 거부 | **Chrome 151 만** |
-| `js24b-versions.sh` · `js24b-vdiff.sh` | 이 문서의 출력이 **어느 판에서 나왔나** + 판별 기능 표 · 두 판이 갈린 탐침 수 | 1벌씩 |
+| `js24b-versions.sh` · `js24b-vdiff.sh` | 이 문서의 출력이 **어느 버전에서 나왔나** + 판별 기능 표 · 두 버전이 달라진 probe 수 | 1벌씩 |
 
-브라우저 탐침(8번)을 돌린 페이지 — 탐침 파일 이름을 주소의 `?` 뒤에 붙여 연다. `console.log` 를 가로채 줄이 늘 때마다 `<pre>` 를 다시 쓰고, `--dump-dom` 이 가상 시간 예산(`--virtual-time-budget=2000`)이 끝난 뒤 그것을 내보낸다.
+브라우저 probe(8번)을 돌린 페이지 — probe 파일 이름을 주소의 `?` 뒤에 붙여 연다. `console.log` 를 가로채 줄이 늘 때마다 `<pre>` 를 다시 쓰고, `--dump-dom` 이 가상 시간 예산(`--virtual-time-budget=2000`)이 끝난 뒤 그것을 내보낸다.
 
 ```html
 <!-- js24b-page.html -->
@@ -610,14 +610,14 @@ document.write('<script src="' + location.search.slice(1) + '"><\/script>');
 **격자의 `skips`/`reads` · 비교 규칙 · 방문 범위 · `at` 의 깎기 · `flat` 의 깊이와 `IsArray` · `Array` 생성자의 `RangeError` 조건 · `Array.from` 의 경로 순서와 매핑 인자 · `fromAsync` 의 한 값씩 `Await` 와 거부 뒤 닫기는 구현 의존이 아니다.**
 어느 엔진에서도 같아야 한다.
 
-**안 돌려 본 것 / 못 잰 것 / 부적용인 창**
+**안 돌려 본 것 / 못 잰 것 / 해당 없는 창**
 
 - **안 돌려 본 것** — **구멍이 프로토타입에서 값을 얻는 경우**(10번) · 다른 엔진(SpiderMonkey·JavaScriptCore)의 문구 · 다른 스택 크기에서 `flat(Infinity)` 가 터지는 깊이.
-- ★ **못 잰 것** — **`Array.fromAsync` 의 node 판 동작.** 두 node 판에 메서드가 없다(7번) — Chrome 151 로 창을 바꿨다.
+- ★ **못 잰 것** — **`Array.fromAsync` 의 node 버전 동작.** 두 node 버전에 메서드가 없다(7번) — Chrome 151 로 창을 바꿨다.
 - ★★★ **안 쟀다** — **성능 전부.** 「`find` 가 `filter` 보다 빠르다」·「`includes` 가 느리다」·「`flat` 이 비싸다」를 **한 줄도 쓰지 않았다.** 콜백 호출 수만 셌다.
-- ★★ **부적용인 창** — **③ 브랜드 태그**(`flat` 의 `IsArray` 는 결과로 보인다) · **진단의 `(행,열)`**(`SyntaxError` 가 없다). **「잴 것이 없다」는 뜻**이다.
+- ★★ **해당 없는 창** — **③ 브랜드 태그**(`flat` 의 `IsArray` 는 결과로 보인다) · **진단의 `(행,열)`**(`SyntaxError` 가 없다). **「잴 것이 없다」는 뜻**이다.
 
-**판이 올랐을 때 다시 돌려야 하는 것**
+**버전이 올랐을 때 다시 돌려야 하는 것**
 
 - ★★★ **node 22 이후의 판** — `Array.fromAsync` 가 들어온 판에서는 **8번을 node 로도** 돌린다. 판별 블록의 `no` 가 `yes` 로 바뀌는지 먼저 본다.
 - ★★ **5번 `[5]`** — 스택 크기가 바뀌면 10만 겹이 통과할 수 있다. 통과해도 명세 위반이 아니다.
@@ -629,7 +629,7 @@ document.write('<script src="' + location.search.slice(1) + '"><\/script>');
 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮긴 출력이 하나도 없다).
 
 ★★ **예외는 `e.constructor.name` 과 `e.message` 로만 찍었다** — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
-★★★ **이 주제의 node 탐침은 두 판에서 한 글자도 같았다** — 판이 갈린 블록이 없다(7번의 대조기).
+★★★ **이 주제의 node probe는 두 버전에서 한 글자도 같았다** — 판이 달라진 블록이 없다(7번의 대조기).
 
 **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다(7번의 소스만 여기 싣는다).
 `js24b-26a-hole-grid.js`(1번 · 9번 · 10번) · `js24b-26b-zero-and-nan.js`(2번 · 11번) · `js24b-26c-find-family.js`(3번 · 12번) · `js24b-26d-at.js`(4번) ·

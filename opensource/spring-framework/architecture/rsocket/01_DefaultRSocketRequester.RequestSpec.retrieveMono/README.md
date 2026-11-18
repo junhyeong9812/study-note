@@ -24,7 +24,7 @@ private <T> Mono<T> retrieveMono(ResolvableType elementType) {
 }
 ```
 
-여러 건을 받는 경로는 보낼 것이 하나인지 여럿인지로 갈린다.
+여러 건을 받는 경로는 보낼 것이 하나인지 여럿인지로 나뉜다.
 
 `spring-messaging` / `org.springframework.messaging.rsocket` / `DefaultRSocketRequester.java` L308-L323 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-messaging/src/main/java/org/springframework/messaging/rsocket/DefaultRSocketRequester.java#L308-L323))
 

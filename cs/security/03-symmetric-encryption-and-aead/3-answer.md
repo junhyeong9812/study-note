@@ -25,7 +25,7 @@
 ### 3. `Cipher.getInstance("AES")`
 
 - `AES/ECB/PKCS5Padding`이다. 실험 E3 [B]에서 두 변환의 출력이 같았다(`true`).
-- Java `Cipher` 문서는 "algorithm"만 적으면 **provider별 기본값**을 쓴다고만 적는다. 어떤 값인지는 provider(SunJCE)의 동작이다 — 문서는 보장하지 않고, 실험은 이 판(21.0.12)에서 그렇다는 것을 보인다.
+- Java `Cipher` 문서는 "algorithm"만 적으면 **provider별 기본값**을 쓴다고만 적는다. 어떤 값인지는 provider(SunJCE)의 동작이다 — 문서는 보장하지 않고, 실험은 이 버전(21.0.12)에서 그렇다는 것을 보인다.
 - 그래서 변환 문자열은 `AES/GCM/NoPadding`처럼 전부 적는다.
 
 ### 4. nonce 재사용의 결과

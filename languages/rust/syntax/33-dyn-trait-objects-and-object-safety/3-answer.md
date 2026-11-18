@@ -227,7 +227,7 @@ For more information about this error, try `rustc --explain E0038`.
 - ★★★ **한 문장** — 첫 `note:` 「**for a trait to be dyn compatible it needs to allow building a vtable**」. 제네릭은 칸이 무한, `Self` 반환은 크기를 모르는 값, 상수는 함수가 아님, `Sized` 는 `dyn` 의 무크기와 모순.
 - ★ `help:` 는 `A`·`B`·`C` 에 「**consider moving … to another trait**」, 넷 다에 「**only type `S` implements …; consider using it directly**」를 붙였다. `D` 에는 옮길 항목이 없어 앞 줄이 없다.
 
-### 3. ★★★ 갈린 칸 7 / 9 — `const` 만 여전히 막힌다
+### 3. ★★★ 달라진 항목 7 / 9 — `const` 만 여전히 막힌다
 
 **출력.**
 
@@ -314,8 +314,8 @@ For more information about this error, try `rustc --explain E0658`.
 
 - ★★ **왼쪽 열 — `control`·`by_value` 만 ok, 일곱이 E0038.** `arg_self`(`&Self` 인자)는 「`Self` 를 수신자 밖에서 쓰지 마라」, `gat` 은 「제네릭 연관 타입이 없어야 한다」 조항이다.
 - ★★ **`by_value` 는 처음부터 ok** — Reference 가 「**`self` 수신자(값)는 `where Self: Sized` 를 함의한다**」고 적는다. 값으로 받는 메서드는 **이미 명시적으로 디스패치 불가**다.
-- ★★★ **오른쪽 열 — `const` 만 E0658**, 나머지 전부 ok. 갈린 칸은 **7 / 9** 이고, **안 갈린 줄은 `control`·`by_value`(둘 다 ok → ok)** 둘이다.
-  `const` 줄은 **코드가 E0038 → E0658 로 바뀌었지만** 여전히 에러라 「갈린 칸」에 들어간다 — **풀린 칸은 6** 이다. 상수에 `where` 절을 다는 문법 자체가 **불안정**(generic const items)이다.
+- ★★★ **오른쪽 열 — `const` 만 E0658**, 나머지 전부 ok. 달라진 항목은 **7 / 9** 이고, **안 달라진 줄은 `control`·`by_value`(둘 다 ok → ok)** 둘이다.
+  `const` 줄은 **코드가 E0038 → E0658 로 바뀌었지만** 여전히 에러라 「달라진 항목」에 들어간다 — **풀린 칸은 6** 이다. 상수에 `where` 절을 다는 문법 자체가 **불안정**(generic const items)이다.
 
 ### 4. ★★ 24행 하나 — 번호 없는 에러
 
@@ -428,8 +428,8 @@ fn main() {
 
 - ★★ **`@vtable.1`(Sq)** — `[24 x i8]`(8바이트 세 칸) + `area` + `label` = **다섯 칸.** 첫 칸 `\00…` 은 **드롭할 것이 없는** 타입의 빈 드롭 자리다.
 - ★★ **`@vtable.2`(Tagged)** — **`ptr @drop_in_place::<Tagged>`** + `[16 x i8]`(두 칸) + `area` + `label` = **다섯 칸.** `String` 을 풀어야 하므로 드롭 칸에 함수가 들어갔다.
-- ★★ **메서드는 `area` → `label`** — `impl` 에 적은 순서가 아니라 **트레이트 선언 순서**다(이 판의 관찰).
-- ★ **크기는 `c" \00\00…"` 의 공백 글자** — 바이트 `0x20` = **32**(`String` 24 + `f64` 8). 다음 칸 `\08` 이 정렬이다. **칸 배치의 해석은 이 판의 읽기**다(Reference 는 배치를 적지 않는다).
+- ★★ **메서드는 `area` → `label`** — `impl` 에 적은 순서가 아니라 **트레이트 선언 순서**다(이 버전의 관찰).
+- ★ **크기는 `c" \00\00…"` 의 공백 글자** — 바이트 `0x20` = **32**(`String` 24 + `f64` 8). 다음 칸 `\08` 이 정렬이다. **칸 배치의 해석은 이 버전의 읽기**다(Reference 는 배치를 적지 않는다).
 
 ### 6. ★★ `'static` 이 숨어 있었다 — 번호 없는 수명 에러
 
@@ -697,7 +697,7 @@ u8 9
 (exit 0)
 ```
 
-- ★★ **`&dyn Named` → `&dyn Debug`, `Box<dyn Named>` → `Box<dyn Debug>` 가 통과**했다. 릴리스 노트가 **1.86.0** 「Stabilize upcasting trait objects to supertraits」(서머리 (0)). 이 판(1.92)에서 된다 — **1.85 이하는 이 문서가 돌려 보지 않았다**(툴체인이 하나뿐).
+- ★★ **`&dyn Named` → `&dyn Debug`, `Box<dyn Named>` → `Box<dyn Debug>` 가 통과**했다. 릴리스 노트가 **1.86.0** 「Stabilize upcasting trait objects to supertraits」(서머리 (0)). 이 버전(1.92)에서 된다 — **1.85 이하는 이 문서가 돌려 보지 않았다**(툴체인이 하나뿐).
 - ★ **`as &Sq` 는 E0605**(non-primitive cast). **대신 `Any`** — `downcast_ref::<T>()`(→ `Option`), `Box<dyn Any>` 의 `downcast::<T>()`(→ `Result`).
   **조건** — `Any` 는 `pub trait Any: 'static` 이라 **`'static` 이 아닌 참조를 품은 타입은 안 된다**(std 문서).
 
@@ -747,7 +747,7 @@ sizeof(Shape*) 8
 ### 10. ★★ 「적어도 포인터 크기」까지가 보장이다
 
 - ★★ **Reference 의 두 절이 다르다** — DST 절은 「DST 포인터는 **두 배 크기**」, Type layout 절은 「**적어도** 포인터 크기·정렬이 보장된다. **지금은** 모든 DST 포인터가 `usize` 두 배지만 **기대지 마라**」.
-  **더 정확한 쪽은 layout 절**이다 — 16 은 **이 판의 구현**으로 읽는다. [25번 주제](../25-traits-definition-impl-default-methods-and-associated-types/)도 「언어 보장은 아니다」로 적었다.
+  **더 정확한 쪽은 layout 절**이다 — 16 은 **이 버전의 구현**으로 읽는다. [25번 주제](../25-traits-definition-impl-default-methods-and-associated-types/)도 「언어 보장은 아니다」로 적었다.
 - ★ **vtable 칸 배치는 컴파일러가 정한다** — Reference 는 「각 메서드 구현의 함수 포인터가 든다」까지만 적는다. 드롭·크기·정렬의 **자리**는 5번 답의 **IR 읽기**다.
 
 ### 11. 벌 수는 31, 칸은 33 — 둘 다 시간을 안 쟀다
@@ -760,18 +760,18 @@ sizeof(Shape*) 8
 
 | 무엇을 | 어떻게 | 몇 번 | 결과 |
 |---|---|---|---|
-| 이 문서·서머리의 **모든 블록** | `capture.sh` — 블록마다 명령을 배너에 | 배치 내내 + **제출 전 전수 재실행** | `normalize-shaky.py` — **흔들린 칸 0 · 고칠 것 0** |
+| 이 문서·서머리의 **모든 블록** | `capture.sh` — 블록마다 명령을 배너에 | 배치 내내 + **제출 전 전수 재실행** | `normalize-shaky.py` — **달라진 항목 0 · 고칠 것 0** |
 | 버전 | `r33_versions` — 설치된 `releases.md` | 1 | 1.27.0 · 1.72.0 · 1.78.0 · **1.86.0** |
 | ★★ 포인터 크기 | `r33_size` · `r33_unsized` | 2 | 8 / 16 · `size_of_val` 8·16 · **E0277** |
 | ★★ vtable | `r33_vt` — `--emit=llvm-ir` · `opt-level=0` | 1 | 칸 다섯 · 드롭 칸 0 / `drop_in_place` · 크기 8 / 32 |
-| ★★★ **위반 격자** | `r33_violations` · `r33_grid` · `r33_const_sized` | 3 | E0038 × 4 · **갈린 칸 7 / 9** · `const` 는 **E0658** |
+| ★★★ **위반 격자** | `r33_violations` · `r33_grid` · `r33_const_sized` | 3 | E0038 × 4 · **달라진 항목 7 / 9** · `const` 는 **E0658** |
 | `where Self: Sized` 호출 | `r33_where_call` | 1 | **번호 없는 에러** |
 | 업캐스팅 | `r33_super` | 1 | 통과(1.92) |
 | 트레이트 둘 | `r33_two` · `r33_two_help` · `r33_two_blanket` | 3 | **E0225** · `help:` 대로 **E0277** · 담요 구현으로 통과 |
 | 수명 | `r33_static` · `r33_static_fix` · `r33_static_order` | 3 | **번호 없는 에러** · 통과 · **E0597** |
 | 다운캐스트 | `r33_cast` · `r33_any` | 2 | **E0605** · `Any` 통과 |
 | C++ 대비 | `r33_vptr` — g++ · clang++ | 2 | 두 컴파일러 **같은 값** 8 · 16 · 8 |
-| **안 던진 것** — 실행 시간 · 1.85 이하의 업캐스팅 · 디버추얼라이제이션 · `as_any` 관용구 | — | 0 | ★ 「안 던졌다」로 표시했다 |
+| **실행하지 않은 것** — 실행 시간 · 1.85 이하의 업캐스팅 · 디버추얼라이제이션 · `as_any` 관용구 | — | 0 | ★ 「실행하지 않았다」로 표시했다 |
 
 **구현 의존 항목**(버전·환경이 바뀌면 **다시 찍어야 하는** 것).
 

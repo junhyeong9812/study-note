@@ -273,7 +273,7 @@ ORDER BY dept_id 가 정하는 것        ORDER BY dept_id 가 안 정하는 것
 
 **바깥 질의문은 한 글자도 안 바뀌었다.** 바뀐 것은 입력 순서뿐인데 결과가 달라졌다.
 
-MySQL 에서는 이 판이 안 바뀌었는데, `LIMIT` 을 붙이면 바뀐다.
+MySQL 에서는 이 버전이 안 바뀌었는데, `LIMIT` 을 붙이면 바뀐다.
 
 ```text
 ### SQL: SELECT name, dept_id FROM (SELECT * FROM emp ORDER BY name DESC LIMIT 4) t ORDER BY dept_id;
@@ -417,7 +417,7 @@ MVCC 의 정본은 [목록의 **56번 주제**](../56-isolation-levels-read-phen
 
 **다른 것은 `dan` 의 자리 하나뿐이다.**
 
-**왜 그런가** — 1차 키 `dept_id DESC` 에서 `NULL` 의 위치만 갈렸고, 나머지는 같은 규칙이다.
+**왜 그런가** — 1차 키 `dept_id DESC` 에서 `NULL` 의 위치만 달라졌고, 나머지는 같은 규칙이다.
 
 ```text
 1차 키: dept_id DESC
@@ -617,6 +617,6 @@ collation 의 정본은 [39번](../39-collation/)이다.\
 ## 실행 환경
 
 근거는 **실행 결과**다 — 본문의 출력은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-2026-09-21 에 실제로 던져 받은 것이다. 문서를 보고 적은 출력은 없다.\
+2026-09-21 에 실제로 실행해 받은 것이다. 문서를 보고 적은 출력은 없다.\
 동률 순서는 **각 엔진에서 같은 질의를 10회씩** 돌려 확인했다(5번).\
 문서 근거는 [PG 18 SELECT](https://www.postgresql.org/docs/18/sql-select.html) · [MySQL 8.4 ORDER BY Optimization](https://dev.mysql.com/doc/refman/8.4/en/order-by-optimization.html).

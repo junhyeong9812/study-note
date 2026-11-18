@@ -162,7 +162,7 @@
 - **멱등 키** — 이 챕터에는 없어서 `SKIP + WHOLE_BATCH`가 이중 4건을 낸다. 실무에서 그 구멍을 막는 장치가 [ops-patterns/06-idempotency-store](../../../ops-patterns/06-idempotency-store/2-summary.md)다.
 - **보상(undo)으로 되돌리기** — `ROLLBACK`은 반영한 것을 `undo()`로 하나씩 되감는다. 분산 환경에서 같은 생각을 키운 것이 사가의 보상 트랜잭션 — [ops-patterns/08-saga](../../../ops-patterns/08-saga/2-summary.md).
   - *보상 트랜잭션(compensating transaction)*: 이미 반영된 일을 "취소하는 반대 작업"을 실행해 되돌리는 방식. 원본을 지우는 것이 아니라 취소 기록이 남는다.
-- **무작위 시뮬레이션** — 측정 테스트가 문제 비율을 바꿔가며 100회 돌려 조합별 초과·누락을 센다. 문제 0%에서는 18조합이 다 같으므로(1,800번 중 어긋남 0), 실패를 섞지 않은 테스트로는 조합 사이의 차이를 하나도 못 잡는다.
+- **무작위 시뮬레이션** — 측정 테스트가 문제 비율을 바꿔가며 100회 돌려 조합별 초과·누락을 센다. 문제 0%에서는 18조합이 다 같으므로(1,800번 중 불일치 0), 실패를 섞지 않은 테스트로는 조합 사이의 차이를 하나도 못 잡는다.
 
 ## 적용 — 풀어나가는 법
 
@@ -255,7 +255,7 @@
 
 ## 관련 주제·근거
 
-- 선행 — [basic/10-payment](../../basic/10-payment/2-summary.md): 결제 한 건의 결과 상태. 여기서는 그 결과가 UNKNOWN일 때 배치 전체가 어떻게 흔들리는지를 본다.
+- 선행 — [basic/10-payment](../../basic/10-payment/2-summary.md): 결제 한 건의 결과 상태. 여기서는 그 결과가 UNKNOWN일 때 배치 전체가 어떻게 실행마다 달라지는지를 본다.
 - 이웃 — [16-audit-replay](../16-audit-replay/2-summary.md): 같은 사건이 두 번 적히는 문제를 재생 쪽에서 본 것. 여기의 이중 반영과 짝이다.
 - 후속 — [18-settlement-match](../18-settlement-match/2-summary.md): 배치가 낸 장부를 상대 장부와 맞춰보는 대사. 미처리·이중 반영이 거기서 드러난다.
 - 실무 패턴 — [ops-patterns/01-retry-backoff](../../../ops-patterns/01-retry-backoff/2-summary.md) · [ops-patterns/06-idempotency-store](../../../ops-patterns/06-idempotency-store/2-summary.md) · [ops-patterns/08-saga](../../../ops-patterns/08-saga/2-summary.md).

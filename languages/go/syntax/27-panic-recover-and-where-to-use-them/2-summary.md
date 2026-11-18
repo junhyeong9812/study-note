@@ -1,6 +1,6 @@
 # go/syntax/27 — `panic`·`recover` 와 쓰는 자리 — 정리 (힌트)
 
-★★★ **본체는 넷째 창이다** — 「**`recover` 를 부르는 자리를 여섯 가지로 바꿔 가며, 바깥의 직접 `recover` 가 「안쪽이 멈췄나」를 대신 증언하게 하는 창**」.
+★★★ **핵심은 넷째 창이다** — 「**`recover` 를 부르는 자리를 여섯 가지로 바꿔 가며, 바깥의 직접 `recover` 가 「안쪽이 멈췄나」를 대신 증언하게 하는 창**」.
 `recover()` 가 `nil` 을 돌려주는 것만으로는 **「못 들었다」와 「들을 것이 없었다」가 구별되지 않는다.**
 **바깥 guard 가 그 패닉을 받았는가**로 가른다((3)절).
 ★ 그 짝으로 「**세 프레임에 `defer` 를 심어 되감기를 로그 줄로 보는 창**」((1)절).
@@ -14,7 +14,7 @@
 |---|---|---|
 | **명세 보장** | Go 명세가 약속한 것 | ★★★ 되감기 순서 · `recover` 가 듣는 자리 · 「직접 불렸으면 `nil` 이 아님을 보장」 · `panic(nil)` 이 런타임 패닉 |
 | **표준 라이브러리·런타임** | `runtime`·`fmt`·`encoding/json`·`regexp` 가 한 것 | `runtime.Error` 타입들 · `fmt` 의 `%!v(PANIC=…)` · `GODEBUG=panicnil` · 트레이스 모양 · 종료 코드 2 |
-| **이 판의 관찰** | go1.27.1·linux/amd64 에서 이번에 본 것 | 실행 출력(재실행 대조까지) · ★ **`encoding/json` 이 v2 구현으로 빌드된다는 것**((8)절) |
+| **이 버전의 관찰** | go1.27.1·linux/amd64 에서 이번에 본 것 | 실행 출력(재실행 대조까지) · ★ **`encoding/json` 이 v2 구현으로 빌드된다는 것**((8)절) |
 
 ## 이 판
 
@@ -24,16 +24,16 @@ go version go1.27.1 linux/amd64
 (exit 0)
 ```
 
-## 흔들리는 칸 / 안 흔들리는 칸
+## 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| **흔들린다** | ★★ **다른 고루틴이 터진 블록의 `goroutine N [running]:` 의 N** | 같은 바이너리가 재실행 대조에서 `7` 과 `19` 로 갈렸다 — **런타임이 매기는 고루틴 id** 다. 정규화 규칙 `goroutine \d+ \[running\]` 을 **이 칸 하나에만** 더했다 |
-| **흔들린다** | 트레이스의 `panic({0x…?, 0x…?})` · `[signal … pc=0x…]` | 주소다 — 기본 정규화 규칙(주소)이 잡는다 |
-| 안 흔들린다 | ★★★ **`[defer]` 로그 줄의 차례**와 **guard 가 받은 값** | 명세가 정한 순서다 — 이 주제의 핵심 근거 |
-| 안 흔들린다 | `panic:` 첫 줄 문장 · 프레임 이름 · `파일:줄` · `+0x…`(짧은 오프셋) · 종료 코드 | 같은 바이너리에서 같다(재실행에서 한 글자도 같았다) |
-| 안 흔들린다 | `recover()` 값의 **`%T`** | 런타임 타입 이름 — 판이 오르면 달라질 수 있다 |
-| 안 흔들린다 | `encoding/json` 블록 | ★ **트레이스를 `GOTRACEBACK=none` 으로 껐다** — 표준 라이브러리 프레임의 **짧은 인자 값**(`{0x48?, 0xe0?}`)이 실행마다 흔들렸다. 안 흔들리게 만드는 쪽을 골랐다 |
+| **실행마다 달라진다** | ★★ **다른 고루틴이 터진 블록의 `goroutine N [running]:` 의 N** | 같은 바이너리가 재실행 대조에서 `7` 과 `19` 로 나뉘었다 — **런타임이 매기는 고루틴 id** 다. 정규화 규칙 `goroutine \d+ \[running\]` 을 **이 칸 하나에만** 더했다 |
+| **실행마다 달라진다** | 트레이스의 `panic({0x…?, 0x…?})` · `[signal … pc=0x…]` | 주소다 — 기본 정규화 규칙(주소)이 잡는다 |
+| 달라지지 않는다 | ★★★ **`[defer]` 로그 줄의 차례**와 **guard 가 받은 값** | 명세가 정한 순서다 — 이 주제의 핵심 근거 |
+| 달라지지 않는다 | `panic:` 첫 줄 문장 · 프레임 이름 · `파일:줄` · `+0x…`(짧은 오프셋) · 종료 코드 | 같은 바이너리에서 같다(재실행에서 한 글자도 같았다) |
+| 달라지지 않는다 | `recover()` 값의 **`%T`** | 런타임 타입 이름 — 버전이 오르면 달라질 수 있다 |
+| 달라지지 않는다 | `encoding/json` 블록 | ★ **트레이스를 `GOTRACEBACK=none` 으로 껐다** — 표준 라이브러리 프레임의 **짧은 인자 값**(`{0x48?, 0xe0?}`)이 실행마다 흔들렸다. 달라지지 않게 만드는 쪽을 골랐다 |
 
 ★ 정규화 규칙은 **기본 넷 + 고루틴 id 하나**를 썼다.
 
@@ -112,18 +112,18 @@ go version go1.27.1 linux/amd64
 
 ## 동작 방식
 
-### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「부적용인 창」
+### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「해당 없는 창」
 
 | 창 | 무엇을 보여 주나 | 어디서 왔나 |
 |---|---|---|
 | ★★ **프레임마다 `defer` 를 심어 로그** | 되감기의 **차례** | [26번 주제](../26-defer-evaluation-lifo-named-results-and-loops/)의 `defer` 로그 창 |
-| ★★★ **`recover` 자리 여섯 + 바깥 guard 의 증언** | **누가 멈췄나** | ★ 본체 창 — 이 주제의 넷째 창 |
+| ★★★ **`recover` 자리 여섯 + 바깥 guard 의 증언** | **누가 멈췄나** | ★ 핵심 창 — 이 주제의 넷째 창 |
 | ★★ **`recover()` 값의 `%T` 와 `runtime.Error` 단언** | 런타임 패닉이 **어떤 값**인가 | [22번 주제](../22-type-assertion-any-and-comparable/)의 단언 창 |
-| ★★ **`go.mod` 판 격자 · `GODEBUG`** | `panic(nil)` 의 **1.21 경계** | [13번 주제](../13-closures-variable-capture-and-loop-variable-change/) (3)절의 판 격자 |
+| ★★ **`go.mod` 판 격자 · `GODEBUG`** | `panic(nil)` 의 **1.21 경계** | [13번 주제](../13-closures-variable-capture-and-loop-variable-change/) (3)절의 버전 격자 |
 | ★★ **`GOEXPERIMENT` 격자** | `encoding/json` 이 **어느 구현으로** 빌드됐나 | ★ 이 주제에서 새로 필요해졌다((8)절) |
 | **패닉 트레이스 전문** | 종료 코드 2 · 프레임 | [21번 주제](../21-nil-interface-vs-interface-holding-nil-pointer/)에서 쓰던 창 |
-| **부적용 — 벤치마크** | 안 쟀다. 「`recover` 는 비싸다」·「`defer` 가 있으면 느리다」를 이 문서는 말하지 않는다 | — |
-| **부적용 — `go vet`** | **잴 것이 없다.** 이 주제의 실수(한 겹 감싼 `recover`·`defer recover()`)를 보는 분석기가 **기본 목록에 없다** — [21번 주제](../21-nil-interface-vs-interface-holding-nil-pointer/) (6)절이 목록을 찍었다 | — |
+| **해당 없음 — 벤치마크** | 안 쟀다. 「`recover` 는 비싸다」·「`defer` 가 있으면 느리다」를 이 문서는 말하지 않는다 | — |
+| **해당 없음 — `go vet`** | **잴 것이 없다.** 이 주제의 실수(한 겹 감싼 `recover`·`defer recover()`)를 보는 분석기가 **기본 목록에 없다** — [21번 주제](../21-nil-interface-vs-interface-holding-nil-pointer/) (6)절이 목록을 찍었다 | — |
 
 ★★ **제5의 상태 — 「같은 질문을 다른 창으로 물었다」.**
 「이 `recover()` 가 **패닉을 멈췄나**」는 `recover()` 의 반환값으로는 못 묻는다 — `nil` 이면 **못 들은 것인지 패닉이 없었던 것인지** 모른다.
@@ -312,11 +312,11 @@ func panic(v any)
 ```
 
 - ★ 트레이스의 `goroutine 1 [running]:` 아래 **프레임이 안쪽부터**(`main.g` → `main.f` → `main.main`) 찍힌다 — 각 줄의 `+0x3e` 는 함수 안 오프셋이다.
-- ★ **마커를 전부 `stderr` 로** 찍었다 — 패닉 메시지도 `stderr` 라 **한 흐름**이 되어 순서가 흔들리지 않는다(규칙 18).
+- ★ **마커를 전부 `stderr` 로** 찍었다 — 패닉 메시지도 `stderr` 라 **한 흐름**이 되어 순서가 달라지지 않는다(규칙 18).
 
 비용 — 없다.
 
-### (3) ★★★ `recover` 가 듣는 자리 — 여섯 판을 던진다
+### (3) ★★★ `recover` 가 듣는 자리 — 여섯 버전을 던진다
 
 **언제 쓰나** — `recover` 를 **도우미 함수로 빼고 싶을 때**. 이 주제의 급소다.
 
@@ -513,7 +513,7 @@ created by main.main in goroutine 1
   명세의 「**a panic occurs in a function on the same goroutine**」 — `recover` 는 **같은 고루틴**의 패닉만 본다.
   그리고 되감기가 **그 고루틴의 맨 위**(`main.main.func2`)에 닿으면 프로그램 전체가 끝난다.
 - ★★ **`created by main.main in goroutine 1`** — 트레이스가 그 고루틴을 **누가 만들었나**까지 찍는다.
-- ★★ **`goroutine N` 의 N 은 흔들린다**(같은 바이너리가 `7` 과 `19` 로 갈렸다) — 맨 위 부분의 유일한 비기본 정규화 칸이다.
+- ★★ **`goroutine N` 의 N 은 실행마다 달라진다**(같은 바이너리가 `7` 과 `19` 로 나뉘었다) — 맨 위 부분의 유일한 비기본 정규화 칸이다.
 - ★ 그래서 **고루틴마다 자기 `recover`** 를 둔다. [28번 주제](../28-goroutines-go-statement-cost-and-termination/)의 `sync.WaitGroup.Go` 문서가 「**The function f must not panic.**」이라 적는 것도 같은 사정이다.
 
 **런타임 패닉은 무엇인가 — `recover` 로 받아 `%T`**
@@ -565,11 +565,11 @@ error    %T=*errors.errorString          runtime.Error=false : 내가 던진 오
 (exit 0)
 ```
 
-- ★★★ **런타임이 낸 여섯이 전부 `runtime.Error` 를 구현한다** — 그런데 **구체 타입은 넷으로 갈린다**:
+- ★★★ **런타임이 낸 여섯이 전부 `runtime.Error` 를 구현한다** — 그런데 **구체 타입은 넷으로 나뉜다**:
   인덱스는 **`runtime.boundsError`**, `nil` 맵 쓰기와 닫힌 채널 닫기는 **`runtime.plainError`**,
   `nil` 역참조와 0 나누기는 **`runtime.errorString`**, 단언 실패는 **`*runtime.TypeAssertionError`**.
 - ★★ **내가 던진 문자열·오류는 `runtime.Error` 가 아니다** — `%T=string` · `*errors.errorString`.
-  ★ 그래서 `recover` 뒤 **「런타임 버그인가, 의도한 패닉인가」를 `runtime.Error` 단언으로 가를 수 있다.**
+  ★ 그래서 `recover` 뒤 **「런타임 버그인가, 의도한 패닉인가」를 `runtime.Error` 단언으로 구분할 수 있다.**
 - ★ 구체 타입 이름(`boundsError` 등)은 **공개되지 않은 구현**이다 — 기대는 것은 `runtime.Error` 인터페이스까지.
 
 비용 — 없다.
@@ -947,7 +947,7 @@ panic: 내 MarshalJSON 이 터짐
 - ★★ **`json` 은 내가 오류로 돌려준 것은 오류로** 돌려준다 — `json: error calling MarshalJSON for type *main.Bad: …`.
 - ★★★ **내 `MarshalJSON` 이 패닉하면 — 그대로 죽는다.** `panic: 내 MarshalJSON 이 터짐`, `[recovered]` 표시가 **없다** — **`json` 이 `recover` 를 안 했다.**
 
-★★★ **예상과 달랐다 — 이 판의 `encoding/json` 은 v2 구현으로 빌드된다.**
+★★★ **예상과 달랐다 — 이 버전의 `encoding/json` 은 v2 구현으로 빌드된다.**
 
 ```text
 ===== 명령: R="$(go env GOROOT)/src"; sed -n "5p" "$R/encoding/json/encode.go"; sed -n "5p" "$R/encoding/json/v2_encode.go"; grep -n "JSONv2:" "$R/internal/buildcfg/exp.go" =====
@@ -958,7 +958,7 @@ panic: 내 MarshalJSON 이 터짐
 ```
 
 - ★★★ **`encode.go` 는 `//go:build !goexperiment.jsonv2`**, **`v2_encode.go` 는 `goexperiment.jsonv2`** 이고
-  go1.27.1 의 **기본 실험 목록에 `JSONv2: true`** 가 있다. **내가 읽던 `recover` 코드(`encode.go`)는 이 판에서 컴파일조차 안 된다.**
+  go1.27.1 의 **기본 실험 목록에 `JSONv2: true`** 가 있다. **내가 읽던 `recover` 코드(`encode.go`)는 이 버전에서 컴파일조차 안 된다.**
 - ★★ 그래서 **v1 구현으로 다시 빌드**해 같은 소스를 던졌다 — `GOEXPERIMENT=nojsonv2`.
 
 ```text
@@ -1201,7 +1201,7 @@ func main() {
 
 ### 7. ★ 「재패닉하면 메시지가 두 번 나온다」
 
-- (6)절 실측 — 이 판(1.25+)은 **`[recovered, repanicked]` 한 줄**이다. 다른 값이면 **사슬 전체**가 줄마다 나온다.
+- (6)절 실측 — 이 버전(1.25+)은 **`[recovered, repanicked]` 한 줄**이다. 다른 값이면 **사슬 전체**가 줄마다 나온다.
 
 ### 8. ★ 「패닉은 언제나 나쁘다」
 
@@ -1218,7 +1218,7 @@ func main() {
 | ★★ **`go 1.20` 모듈에서 예전 동작** | **툴체인·런타임(GODEBUG)** | `godebug.md` · (7)절 격자 |
 | **종료 코드 2** | ★ **런타임** | 명세는 「terminated」, `go doc` 은 「non-zero」만 |
 | 트레이스 모양 · `[recovered, repanicked]`(1.25+) | **런타임** | (6)절 · 릴리스 노트 |
-| 고루틴 id | **런타임 — 흔들린다** | (4)절 |
+| 고루틴 id | **런타임 — 실행마다 달라진다** | (4)절 |
 | `runtime.Error` 인터페이스 | **표준 라이브러리 계약** | (4)절 |
 | `boundsError`·`plainError` 같은 **구체 타입 이름** | **구현 내부** | 기대지 마라 |
 | `fmt` 의 `%!v(PANIC=…)` | **표준 라이브러리 계약** | (8)절 · `fmt` 문서 |
@@ -1244,13 +1244,13 @@ func main() {
 - ★★★ **`recover` 는 「`defer` 로 불린 함수 안에서 직접」만 듣는다** — **한 겹 더 감싸면 `nil`** 이고 바깥 guard 가 그 패닉을 받았다.
   **`defer helper()` 는 되고, `defer recover()` 는 안 된다.**
 - ★★★ **다른 고루틴의 패닉은 못 잡는다** — main 의 `defer` 가 **돌지도 않고** 종료 코드 2.
-- ★★ **런타임 패닉은 전부 `runtime.Error`** 이고 구체 타입은 넷으로 갈린다. **내가 던진 것은 `runtime.Error` 가 아니다.**
+- ★★ **런타임 패닉은 전부 `runtime.Error`** 이고 구체 타입은 넷으로 나뉜다. **내가 던진 것은 `runtime.Error` 가 아니다.**
 - ★★★ **패닉을 오류로 바꾸려면 명명 반환값** — 이름이 없으면 **`0, <nil>`**, 패닉이 **조용히 삼켜진다.**
-- ★★★ **`panic(nil)` 은 `go.mod` 한 줄로 갈린다** — `go 1.20` 은 `<nil>`, `go 1.21` 은 `*runtime.PanicNilError`, `GODEBUG=panicnil=1` 은 다시 `<nil>`.
+- ★★★ **`panic(nil)` 은 `go.mod` 한 줄로 나뉜다** — `go 1.20` 은 `<nil>`, `go 1.21` 은 `*runtime.PanicNilError`, `GODEBUG=panicnil=1` 은 다시 `<nil>`.
   **같은 `go` 줄이라도 루프 변수는 컴파일러, 이것은 런타임 GODEBUG 가** 정한다.
 - ★★ **재패닉은 `[recovered, repanicked]`**(1.25+ — 판 격자는 못 돌렸다). 되감는 중의 새 패닉은 **앞의 것을 덮는다.**
 - ★★★ **표준은 남의 패닉을 오류로 바꿔 주지 않았다** — `fmt` 는 **글자로 바꾸고**(`%!v(PANIC=…)`),
-  `json` v1 은 **자기 것만 오류로, 남의 것은 다시 던지고**, 이 판의 기본인 **v2 는 아예 안 받는다.**
+  `json` v1 은 **자기 것만 오류로, 남의 것은 다시 던지고**, 이 버전의 기본인 **v2 는 아예 안 받는다.**
 - ★★ **초기화 시점의 상수 오류는 패닉이 맞다** — `regexp.MustCompile`, `main.init()` 에서 터진다.
 
 ## 관련 자료
@@ -1287,10 +1287,10 @@ func main() {
 
 ## 더 들어가면
 
-- ★ **`runtime.Goexit`** — 패닉이 아닌데 `defer` 를 돌리고 고루틴을 끝낸다. `recover` 는 `nil` 을 준다(`go doc` — [28번 주제](../28-goroutines-go-statement-cost-and-termination/)가 싣는다). 이 문서는 **안 던졌다.**
-- ★ **`text/template`** 에도 `recover()` 가 있다(`exec.go` 셋 · `funcs.go` 하나를 `grep` 으로만 봤다) — **안 던졌다.**
-- ★ **`debug.SetPanicOnFault`**·시그널 패닉 세부는 **안 던졌다.**
-- ★ **트레이스 모양을 바꾸는 `GOTRACEBACK`** — (8)절에서 `none` 을 흔들림 제거용으로만 썼다. 다른 값은 **안 던졌다.**
+- ★ **`runtime.Goexit`** — 패닉이 아닌데 `defer` 를 돌리고 고루틴을 끝낸다. `recover` 는 `nil` 을 준다(`go doc` — [28번 주제](../28-goroutines-go-statement-cost-and-termination/)가 싣는다). 이 문서는 **실행하지 않았다.**
+- ★ **`text/template`** 에도 `recover()` 가 있다(`exec.go` 셋 · `funcs.go` 하나를 `grep` 으로만 봤다) — **실행하지 않았다.**
+- ★ **`debug.SetPanicOnFault`**·시그널 패닉 세부는 **실행하지 않았다.**
+- ★ **트레이스 모양을 바꾸는 `GOTRACEBACK`** — (8)절에서 `none` 을 실행 간 차이 제거용으로만 썼다. 다른 값은 **실행하지 않았다.**
 - ★★ `panic`/`recover` 의 **비용**은 **안 쟀다.**
 
 ## 실행 환경
@@ -1299,7 +1299,7 @@ func main() {
 [`builtin.panic`/`recover`](https://pkg.go.dev/builtin) · [GODEBUG](https://go.dev/doc/godebug) ·
 [Go 1.25 릴리스 노트](https://go.dev/doc/go1.25)(재패닉 표시 — **이것만 웹에서 열었다**).
 명세·`godebug.md`·표준 라이브러리 소스는 **이 툴체인의 `$(go env GOROOT)` 에서 직접 떴다.**\
-**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다.
+**실행 검증** — 이 문서의 출력은 전부 「이 버전」 절의 버전에서 실제로 돌려 **파일로 캡처한 것**이다.
 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
 ★★ **버전** — `panic(nil)` 이 **1.21**부터 `*runtime.PanicNilError`((7)절 — **`go.mod` 판 격자로 전후를 갈랐다**) ·
 재패닉 표시 `[recovered, repanicked]` 가 **1.25**부터(릴리스 노트 — 이 툴체인 하나로는 **판 격자를 못 돌린다**, 제3의 상태).

@@ -92,7 +92,7 @@ horizontal-tb (한국어 가로쓰기 · 기본)        vertical-rl (세로쓰�
 
 ### (2) ★ 똑같은 선언, 다섯 판 — 무엇이 어디로 갔나
 
-**언제 쓰나** — 논리 속성이 실제로 무엇으로 풀리는지 볼 때. **이 주제의 본체다.**
+**언제 쓰나** — 논리 속성이 실제로 무엇으로 풀리는지 볼 때. **이 주제의 핵심이다.**
 
 부모(300×200)에 자식 하나를 넣고 **자식의 선언을 한 글자도 안 바꾼 채** 부모의 `writing-mode`/`direction` 만 바꿔 쟀다.
 
@@ -198,7 +198,7 @@ vertical-rl     ② (250,20) 세로 상자     ⑤ (250,66)  세로 상자
 
 **언제 쓰나** — 기존 코드에 논리 속성을 섞어 넣을 때. **여기서 사고가 난다.**
 
-같은 요소에 둘을 같이 걸고 다섯 판을 쟀다.
+같은 요소에 둘을 같이 걸고 다섯 버전을 쟀다.
 
 ```text
 판                                                          상자 x   계산값
@@ -482,7 +482,7 @@ CSS 의 `direction` 은 **레이아웃만** 돌린다.
 ## 관련 자료
 
 - [`../README.md`](../README.md) — CSS 문법·API 주제 목록(이 주제는 32번) · 「버전·지원 기준」의 Baseline 표
-- [`foundations/data-representation/`](../../../../cs/foundations/data-representation/) — **유니코드·문자 인코딩은 거기 정본이다.** 여기는 **물리 축과 논리 축이 갈리는 CSS 규칙**만
+- [`foundations/data-representation/`](../../../../cs/foundations/data-representation/) — **유니코드·문자 인코딩은 거기 정본이다.** 여기는 **물리 축과 논리 축이 달라지는 CSS 규칙**만
 - [24번](../24-flexbox-axes/) — **주축·교차축의 정본.** 그쪽이 「축이 돈다」고만 적은 자리의 **왜**가 여기 (5)다
 - [25번](../25-flex-shorthand-and-sizing/) · [26번](../26-flex-wrap-gap-order/) — `flex-basis` 가 재는 축, `row-gap`/`column-gap` 이름이 물리인 것
 - [15번](../15-box-model-and-box-sizing/) — **`width` 가 어느 칸을 재는가는 거기.** 여기는 **그 `width` 가 어느 축인가**

@@ -112,7 +112,7 @@ function makeFromInstance(Ctor: Point): Point {
 console.log(instanceSide, staticSide, backToInstance, wrong, right, instWrong, makeFromCtor, makeFromInstance);
 ```
 
-- 10행과 11행의 탐침 답을 **나란히** 적을 수 있는가?
+- 10행과 11행의 probe 답을 **나란히** 적을 수 있는가?
 - 14행 `const wrong: typeof Point = new Point();` 는 통과하는가? 막힌다면 **진단이 무엇을 이름으로 부르는가**?
 - 22행 `new Ctor()` 는 19행과 무엇이 다른가?
 - 16행은 14행의 **반대 방향**이다. 진단이 부르는 이름이 14행과 어떻게 다른가?
@@ -174,7 +174,7 @@ console.log(moduleKeys, oneExport, fnExport, typeExport);
 - 2행의 키 목록에 **몇 개가 들어 있는가**? `mod23.ts` 가 export 한 것은 셋인데 왜 그런가?
 - 5행에는 `typeof` 가 **없다**. 통과하는가?
 - 2행과 5행이 **같은 모듈을 열었다**. 두 줄이 보는 것이 같은가?
-- ★ `typeof import("./mod23")` 를 **통째로** 탐침하지 않은 이유가 있다. 무엇이겠는가?
+- ★ `typeof import("./mod23")` 를 **통째로** probe하지 않은 이유가 있다. 무엇이겠는가?
 
 ### 6. 방출하면 무엇이 남나 (예측)
 
@@ -224,7 +224,7 @@ console.log(copy.level, runtimeTag, describe("가나"), describe(3), ctorTag);
 
 ### 10. `typeof import(…)` 와 `import(…).T` 의 경계 (경계)
 
-- 둘은 **같은 모듈의 무엇을 각각** 보는가? 한 줄로 가를 수 있는가?
+- 둘은 **같은 모듈의 무엇을 각각** 보는가? 한 줄로 구분할 수 있는가?
 - 둘 다 치르는 **공통 대가**가 하나 있다. 무엇인가?
 
 ### 11. 22 와 만나는 자리 (연결)
@@ -234,7 +234,7 @@ console.log(copy.level, runtimeTag, describe("가나"), describe(3), ctorTag);
 
 ### 12. 세 층 가르기 (연결)
 
-- 이 주제에서 **언어 보장** · **이 판(7.0.2)의 관찰** · **부적용인 창**에 해당하는 항목을 하나씩 댈 수 있는가?
+- 이 주제에서 **언어 보장** · **이 버전(7.0.2)의 관찰** · **해당 없는 창**에 해당하는 항목을 하나씩 댈 수 있는가?
   ★ 그리고 이 주제의 **`--strict` 결과가 [21번 주제](../21-inference-control-const-and-noinfer/)와 어떻게 달랐는가**?
 
 ## 실행 환경
@@ -242,13 +242,13 @@ console.log(copy.level, runtimeTag, describe("가나"), describe(3), ctorTag);
 ★★★ 이 주제의 축은 「**값 공간 / 타입 공간**」이다 —
 [**22번 주제**](../22-keyof-and-indexed-access-types/) → [**24번 주제**](../24-conditional-types-and-distribution/) → [**25번 주제**](../25-infer-and-recursive-conditional-types/) 사슬과는 **다른 축**이다.
 **「이 이름이 어느 공간에 사나」를 먼저 물으면 대부분 풀린다.**
-★★★ **본체 창은 3창(방출된 `.js` + `node` 실행)이다** — 6번이 그 문항이다.
+★★★ **핵심 창은 3창(방출된 `.js` + `node` 실행)이다** — 6번이 그 문항이다.
 실행 환경: `tsc` **7.0.2** · `node` **v18.19.1** · `javac` **21.0.5**.
 옵션은 **배너에 적힌 것만** 줬고 `-t es2022 --strict` 를 전부 명시했다.
 **버전** — 타입 질의(`typeof x`)는 **TS 1.0**, `typeof import(…)` 는 **2.9**, `InstanceType` 은 **2.8** 이다.
 
 ★★★ **추론된 타입을 눈으로 보는 법** — 블록에 `const probe: null = null as unknown as X;` 가 자주 나온다.
-**일부러 틀린 주석**을 달아 컴파일러가 `Type 'X' is not assignable to type 'null'` 로 **`X` 를 말하게** 하는 탐침이다.
+**일부러 틀린 주석**을 달아 컴파일러가 `Type 'X' is not assignable to type 'null'` 로 **`X` 를 말하게** 하는 probe다.
 ★★ 그 꼴은 **에러가 아니라 출력**이다 — 세지 말고 읽어라.
 
 ★ 소스 펜스 첫 줄 `// 파일명` 은 대조용 배너다 — **진단의 행 번호는 그 줄을 뺀 기준**이다.

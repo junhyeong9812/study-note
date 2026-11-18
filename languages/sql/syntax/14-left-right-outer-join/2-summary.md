@@ -396,8 +396,8 @@ SELECT d.name, COUNT(e.id) FROM dept d LEFT JOIN emp e ON e.dept_id = d.id GROUP
 | 엔진이 `LEFT JOIN` 을 `INNER JOIN` 으로 바꿔 실행한다 | 옵티마이저의 선택 | 결과가 같을 때만 허용된다 — [15번](../15-on-vs-where-in-outer-join/)에 계획이 있다 |
 | 결과 **행 순서** | 아무도 보장 안 함 | `ORDER BY` 없이는 어느 엔진도 순서를 약속하지 않는다 |
 
-- **이 주제에서는 두 엔진의 출력이 전부 같았다.** 방언이 갈리는 자리가 없다.\
-  갈리는 것은 `FULL OUTER JOIN` 부터이고 그건 [16번](../16-full-outer-join/)이다.
+- **이 주제에서는 두 엔진의 출력이 전부 같았다.** 방언이 달라지는 자리가 없다.\
+  달라지는 것은 `FULL OUTER JOIN` 부터이고 그건 [16번](../16-full-outer-join/)이다.
 - **행 순서는 예외다.** [16번](../16-full-outer-join/)에서 `RIGHT JOIN` 의 동률 행이 두 엔진에서 다른 순서로 나왔다 — **방언 차이가 아니라 순서 무보장**이다.
 - **`WHERE` 가 외부 조인을 내부 조인으로 무너뜨리는 것은 구현이 아니라 정의다.** 옵티마이저가 그걸 알아차려 계획까지 바꾸는 것은 구현이다([15번](../15-on-vs-where-in-outer-join/)).
 
@@ -458,7 +458,7 @@ SELECT d.name, COUNT(e.id) FROM dept d LEFT JOIN emp e ON e.dept_id = d.id GROUP
 
 **기준 소스** — [PostgreSQL 18 · Table Expressions (Joined Tables)](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [MySQL 8.4 · JOIN Clause](https://dev.mysql.com/doc/refman/8.4/en/join.html)\
 **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-본문에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-**버전** — `LEFT`·`RIGHT [OUTER] JOIN` 은 두 엔진 모두 오래전부터 있고, **이 주제에서 갈리는 것은 없다.** 본문의 모든 출력이 양쪽에서 같았다.\
+본문에 실린 출력은 **전부 이 두 서버에 실제로 실행해서 받은 것**이다. 지어낸 출력은 없다.\
+**버전** — `LEFT`·`RIGHT [OUTER] JOIN` 은 두 엔진 모두 오래전부터 있고, **이 주제에서 달라지는 것은 없다.** 본문의 모든 출력이 양쪽에서 같았다.\
 **선행** — [13 INNER JOIN](../13-inner-join/). **13번이 버린 행을 되살리는 것이 이 주제다.**\
 **뒤 주제** — [15 ON 과 WHERE 의 차이](../15-on-vs-where-in-outer-join/)(같은 조건의 자리가 여기서 결과를 바꾼다) · [16 FULL OUTER JOIN](../16-full-outer-join/)(양쪽 다 되살린다).

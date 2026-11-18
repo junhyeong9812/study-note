@@ -216,9 +216,9 @@ WHERE e.dept_id = d.id              (조건 없음)
 
 ---
 
-### 4. `CROSS JOIN … ON` — 두 엔진이 갈린다
+### 4. `CROSS JOIN … ON` — 두 엔진이 달라진다
 
-**언제 쓰나** — `CROSS JOIN` 이라고 써 놓고 조건을 붙이고 싶어질 때. **여기서 방언이 갈린다.**
+**언제 쓰나** — `CROSS JOIN` 이라고 써 놓고 조건을 붙이고 싶어질 때. **여기서 방언이 달라진다.**
 
 ```text
 ### SQL: SELECT e.name, d.name FROM emp e CROSS JOIN dept d ON e.dept_id = d.id;
@@ -289,7 +289,7 @@ PG 는 `CROSS JOIN` 을 「조건 없는 조인」으로 못 박아 두어 `ON` 
 「데이터가 없는 구간이 보고서에서 통째로 빠지는」 사고의 정석 처방이다.\
 비용 — 뼈대 행 수가 곧 결과 행 수의 하한이다. 부서 1,000개 × 365일이면 36만 5천 행이 **항상** 만들어진다.
 
-**분기 목록을 만드는 방법은 방언이 갈린다.** PG 에는 전용 함수가 있다.
+**분기 목록을 만드는 방법은 방언이 달라진다.** PG 에는 전용 함수가 있다.
 
 ```text
 ### SQL: SELECT d.name AS dept, m AS month FROM dept d CROSS JOIN generate_series(1,3) AS m ORDER BY d.id, m;
@@ -316,7 +316,7 @@ ERROR 1064 (42000) at line 1: You have an error in your SQL syntax; check the ma
 | `generate_series(1,3)` | ✓ 3행을 만든다 | **✗ `ERROR 1064`** — 그런 함수가 없다 |
 
 MySQL 에서는 `UNION ALL` 목록이나 재귀 CTE 로 만든다([목록의 **33번 주제**](../33-recursive-cte/)).\
-`VALUES` 리스트로 만들려 하면 **행 생성자 문법까지 갈린다** — [10번](../10-from-clause-aliases-derived-tables/)이 정본이다.
+`VALUES` 리스트로 만들려 하면 **행 생성자 문법까지 달라진다** — [10번](../10-from-clause-aliases-derived-tables/)이 정본이다.
 
 ---
 
@@ -515,6 +515,6 @@ FULL  OUTER  + 양쪽 다 되살린다                        5       16번
 **기준 소스** — [PostgreSQL 18 · Table Expressions (Joined Tables)](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [MySQL 8.4 · JOIN Clause](https://dev.mysql.com/doc/refman/8.4/en/join.html)\
 **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
 본문에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 에러 메시지도 실제로 받은 것이고, 지어낸 출력은 없다.\
-**버전** — `CROSS JOIN` 자체는 두 엔진 모두 오래전부터 있다. 본문의 **`CROSS JOIN … ON`** 의 처리는 갈리는데, 두 매뉴얼에 도입 버전이 없어 **버전은 적지 않는다.**\
+**버전** — `CROSS JOIN` 자체는 두 엔진 모두 오래전부터 있다. 본문의 **`CROSS JOIN … ON`** 의 처리는 달라지는데, 두 매뉴얼에 도입 버전이 없어 **버전은 적지 않는다.**\
 **선행** — [01 논리적 질의 처리 순서](../01-logical-query-processing-order/)(조인은 **1번 칸**에서 일어난다) · [10 FROM 절](../10-from-clause-aliases-derived-tables/)(별칭과 파생 테이블).\
 **이 주제는 조인 전체의 밑동이다** — [13 INNER JOIN](../13-inner-join/) · [14 LEFT·RIGHT OUTER JOIN](../14-left-right-outer-join/) · [16 FULL OUTER JOIN](../16-full-outer-join/) 이 전부 여기서 시작한다.

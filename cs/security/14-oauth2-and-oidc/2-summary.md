@@ -262,7 +262,7 @@ http.authorizeHttpRequests(a -> a
 - **현상**: XSS 한 번으로 다수 사용자의 access·refresh 토큰이 외부로 나갔다.
 - **보이는 형태**: SPA가 `localStorage`에 토큰을 저장. 공격 시간대에 토큰 사용 IP가 사용자와 다르다.
 - **원인**: 공개 클라이언트(SPA)는 비밀을 지킬 수 없고, JS가 읽을 수 있는 곳의 토큰은 XSS가 읽는다.
-- **대처**: BFF(백엔드가 토큰을 쥐고 브라우저에는 `HttpOnly` 세션 쿠키만) 패턴, 짧은 수명, refresh 회전. 자세히는 [17-refresh-token-rotation-and-revocation](../17-refresh-token-rotation-and-revocation/2-summary.md), [api-design/19-api-gateway-and-bff](../../api-design/19-api-gateway-and-bff/2-summary.md).
+- **대처**: BFF(백엔드가 토큰을 잡고 브라우저에는 `HttpOnly` 세션 쿠키만) 패턴, 짧은 수명, refresh 회전. 자세히는 [17-refresh-token-rotation-and-revocation](../17-refresh-token-rotation-and-revocation/2-summary.md), [api-design/19-api-gateway-and-bff](../../api-design/19-api-gateway-and-bff/2-summary.md).
 
 ## 핵심 문장
 

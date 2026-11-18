@@ -207,7 +207,7 @@ x·y = ac·B² + (ad + bc)·B + bd     <- ac, ad, bc, bd : 곱셈 4 번
 ## 쓰이는 자료구조·알고리즘
 
 - **공개키 암호** — RSA·디피헬만의 `a^e mod n`이 빠른 거듭제곱이다. 지수가 수백 자리여도 곱셈 수천 번으로 끝난다. [28-number-theory](../28-number-theory/2-summary.md)의 `ModPow`가 같은 코드다.
-- **큰 정수 라이브러리** — Java `BigInteger`(Java 8+)는 두 수가 모두 일정 문턱을 넘으면 카라추바로, 더 크면 Toom-Cook 3분할로 갈아탄다(소스의 `KARATSUBA_THRESHOLD` = 80 int, `TOOM_COOK_THRESHOLD` = 240 int).
+- **큰 정수 라이브러리** — Java `BigInteger`(Java 8+)는 두 수가 모두 일정 임계값을 넘으면 카라추바로, 더 크면 Toom-Cook 3분할로 갈아탄다(소스의 `KARATSUBA_THRESHOLD` = 80 int, `TOOM_COOK_THRESHOLD` = 240 int).
 - **선형 점화식의 먼 항** — 피보나치·루카스 수, 상태 전이가 선형인 마르코프 계산의 n단계 뒤 상태를 행렬 거듭제곱으로 구한다.
 - **병합 정렬·퀵 정렬** — [02-merge-sort](../02-merge-sort/2-summary.md)는 데이터를 반으로 나누는 분할 정복이고, 마스터 정리 `T(n) = 2T(n/2) + O(n)`의 표준 예다.
 - **슈트라센 행렬 곱** — 8번을 7번으로 줄여 O(n^log2 7) ≈ O(n^2.807). 카라추바와 같은 "부분 문제 하나 줄이기"다(CLRS 4.2).

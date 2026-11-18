@@ -460,7 +460,7 @@ getAttributeValue(i)                   getAttributeNamespace(i)
 3.1의 분기도에서 "정상 반환" 잎이 세 가지 상황을 한꺼번에 흡수하는 그림이 이 실패 모드의 구조적 원인이다.
 
 관련해서 `../../concepts/`에는 이 주제를 다루는 문서가 아직 없다.\
-인접 개념으로 계약과 구현의 어긋남을 다루는 [`../../concepts/annotation-all-or-nothing-contract/annotation-all-or-nothing-contract.md`]
+인접 개념으로 계약과 구현의 불일치를 다루는 [`../../concepts/annotation-all-or-nothing-contract/annotation-all-or-nothing-contract.md`]
 (../../concepts/annotation-all-or-nothing-contract/annotation-all-or-nothing-contract.md)가 있으나, 대상 도메인이 달라 직접 연결되지는 않는다.
 
 ## 출처

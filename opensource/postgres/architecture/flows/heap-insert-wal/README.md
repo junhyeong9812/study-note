@@ -2,7 +2,7 @@
 
 상위: [PostgreSQL 아키텍처 지도](../../README.md)
 
-executor 가 `table_tuple_insert` 로 넘긴 행 하나가 **힙 페이지에 들어가고, 그 변경을 설명하는 WAL 레코드가 공유 WAL 버퍼에 복사되기까지**의 흐름이다. 핵심은 크리티컬 섹션 안의 네 줄 순서다. 페이지에 행을 넣고(`RelationPutHeapTuple`), 버퍼를 더럽다고 표시하고(`MarkBufferDirty`), WAL 레코드를 넣고(`XLogInsert`), 받은 LSN 을 페이지에 찍는다(`PageSetLSN`). 이 사이에 ERROR 가 나면 공유 버퍼에 기록 안 된 변경이 남으므로 PANIC 으로 올라간다. WAL 레코드는 백엔드 지역 메모리에서 조립되고(체크포인트 뒤 첫 변경이면 페이지 전체 이미지를 싣는다), 공유 WAL 버퍼에 넣는 일은 두 단계다. spinlock 아래에서 바이트 위치만 예약하고, 복사는 여덟 개의 WAL 삽입 잠금 중 하나를 쥐고 여러 백엔드가 동시에 한다. 이 흐름에서 WAL 은 아직 메모리에 있다. 디스크에 닿게 하는 `XLogFlush` 는 커밋이나 더러운 페이지 쓰기가 부르며, 이 흐름의 마지막 함수로 함께 둔다.
+executor 가 `table_tuple_insert` 로 넘긴 행 하나가 **힙 페이지에 들어가고, 그 변경을 설명하는 WAL 레코드가 공유 WAL 버퍼에 복사되기까지**의 흐름이다. 핵심은 크리티컬 섹션 안의 네 줄 순서다. 페이지에 행을 넣고(`RelationPutHeapTuple`), 버퍼를 더럽다고 표시하고(`MarkBufferDirty`), WAL 레코드를 넣고(`XLogInsert`), 받은 LSN 을 페이지에 찍는다(`PageSetLSN`). 이 사이에 ERROR 가 나면 공유 버퍼에 기록 안 된 변경이 남으므로 PANIC 으로 올라간다. WAL 레코드는 백엔드 지역 메모리에서 조립되고(체크포인트 뒤 첫 변경이면 페이지 전체 이미지를 싣는다), 공유 WAL 버퍼에 넣는 일은 두 단계다. spinlock 아래에서 바이트 위치만 예약하고, 복사는 여덟 개의 WAL 삽입 잠금 중 하나를 잡고 여러 백엔드가 동시에 한다. 이 흐름에서 WAL 은 아직 메모리에 있다. 디스크에 닿게 하는 `XLogFlush` 는 커밋이나 더러운 페이지 쓰기가 부르며, 이 흐름의 마지막 함수로 함께 둔다.
 
 기준 태그: `REL_18_6` [`724edf9bde`](https://github.com/postgres/postgres/tree/724edf9bde9d356724ad384a2e196edc3c9f80f7). 모든 줄 번호는 이 태그 기준이고, 경로는 따로 적지 않으면 `src/backend/` 아래다.
 
@@ -150,7 +150,7 @@ db-engine 은 heap 을 커밋 뒤에만 바꾸므로 "로그보다 페이지가 
 5. [RelationPutHeapTuple](05_RelationPutHeapTuple/README.md)이 페이지에 행을 붙이고 위치를 `t_self` 와 `t_ctid` 에 적는다.
 6. [XLogInsert](06_XLogInsert/README.md)가 등록된 데이터로 레코드를 조립하고 삽입하며, 조건이 바뀌면 다시 조립한다.
 7. [XLogRecordAssemble](07_XLogRecordAssemble/README.md)이 블록마다 페이지 이미지가 필요한지 정하고 헤더와 CRC 를 만든다.
-8. [XLogInsertRecord](08_XLogInsertRecord/README.md)가 WAL 삽입 잠금을 쥐고 위치를 예약해 WAL 버퍼에 복사한다.
+8. [XLogInsertRecord](08_XLogInsertRecord/README.md)가 WAL 삽입 잠금을 잡고 위치를 예약해 WAL 버퍼에 복사한다.
 9. [ReserveXLogInsertLocation](09_ReserveXLogInsertLocation/README.md)이 spinlock 아래에서 바이트 위치를 늘려 시작과 끝, 이전 레코드 위치를 정한다.
 10. [XLogFlush](10_XLogFlush/README.md)가 주어진 위치까지 WAL 이 디스크에 닿게 하고, 기다리는 다른 백엔드 몫까지 한 번에 쓴다.
 

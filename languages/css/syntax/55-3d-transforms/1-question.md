@@ -39,7 +39,7 @@ b { width: 140px; height: 80px; transform: rotateY(50deg); }
 
 - `perspective-origin` 을 안 적었을 때의 계산값은 무엇인가?
 - `0 0` 과 `100% 100%` 를 줬을 때 상자의 rect 폭은 각각 어떻게 달라지는가?
-- 폭이 몇 배까지 갈리는가?
+- 폭이 몇 배까지 달라지는가?
 - `perspective-origin` 은 부모에 쓰는가 자식에 쓰는가?
 
 ### 4. 손자는 정면을 볼 수 있는가 (예측)

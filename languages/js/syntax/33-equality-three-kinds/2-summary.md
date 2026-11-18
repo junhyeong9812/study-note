@@ -86,7 +86,7 @@ Google Chrome 151.0.7922.173
 Python 3.12.3
 ```
 
-두 node 판 대조기의 집계 줄(이 배치의 모든 node 탐침) — 전문은 [3-answer.md](3-answer.md) 의 「실행 검증」에 있다.
+두 node 버전 대조기의 집계 줄(이 배치의 모든 node probe) — 전문은 [3-answer.md](3-answer.md) 의 「실행 검증」에 있다.
 
 `identical 12  ·  differs 0  ·  total 12`
 
@@ -161,13 +161,13 @@ Python 3.12.3
 | ★ **`Map.groupBy` 의 키** | SameValueZero | 같다 | 같다 | ★ **`-0` → `+0`** | **새로** — 동작 (2)·(4)(Chrome) |
 | ★ **TypedArray `includes`** | SameValueZero | 같다 | 같다 | `Float64Array` 는 `-0` 그대로 · `Int32Array` 는 정수로 | **새로** — 동작 (3) |
 | ★ **TypedArray `indexOf`** | IsStrictlyEqual | 다르다 | — | — | **새로** — 동작 (3) |
-| ★ **`String.prototype.includes`** | **부적용** — 비교가 아니라 `ToString` 뒤 부분 문자열 | (`'NaN'.includes(NaN)` 참) | (`String(-0)` 이 `"0"`) | — | **새로** — 동작 (3) |
+| ★ **`String.prototype.includes`** | **해당 없음** — 비교가 아니라 `ToString` 뒤 부분 문자열 | (`'NaN'.includes(NaN)` 참) | (`String(-0)` 이 `"0"`) | — | **새로** — 동작 (3) |
 
-- ★★★ **인용 10행 · 새로 잰 7행**이다. 새 7행 중 **6행은 비교 알고리즘 하나로 떨어지고**, `String.prototype.includes` 한 행은 **비교가 아님**을 보였다(부적용).
-- ★★★ **`NaN` 을 찾는 자리와 못 찾는 자리가 한 줄로 갈린다** — SameValueZero·SameValue 쪽(`includes`·`Map`·`Set`·`groupBy`·`Object.is`)은 찾고, `===` 쪽(`indexOf`·`switch`·`findIndex(x => x === b)`)은 못 찾는다.
+- ★★★ **인용 10행 · 새로 잰 7행**이다. 새 7행 중 **6행은 비교 알고리즘 하나로 떨어지고**, `String.prototype.includes` 한 행은 **비교가 아님**을 보였다(해당 없음).
+- ★★★ **`NaN` 을 찾는 자리와 못 찾는 자리가 한 줄로 나뉜다** — SameValueZero·SameValue 쪽(`includes`·`Map`·`Set`·`groupBy`·`Object.is`)은 찾고, `===` 쪽(`indexOf`·`switch`·`findIndex(x => x === b)`)은 못 찾는다.
 - ★★★ **`-0` 을 가르는 자리는 SameValue 둘뿐**이다 — `Object.is` 와 **`Object.defineProperty` 의 재정의 판정**. 나머지는 전부 `+0` 과 같다고 본다.
 - ★★ **저장까지 바꾸는 자리는 「키를 보관하는」 셋** — `Map`·`Set`·`Map.groupBy`. **배열(`includes`)은 비교만 SameValueZero 이고 저장은 그대로**다(26번).
-- ★ `instanceof` 도 명세상 **SameValue** 를 쓴다(`OrdinaryHasInstance` 가 프로토타입 객체를 `SameValue` 로 견준다) — 그러나 **객체끼리의 비교라 `===` 와 구별할 방법이 없다.** 잴 것이 없어 표에 넣지 않았다(부적용).
+- ★ `instanceof` 도 명세상 **SameValue** 를 쓴다(`OrdinaryHasInstance` 가 프로토타입 객체를 `SameValue` 로 견준다) — 그러나 **객체끼리의 비교라 `===` 와 구별할 방법이 없다.** 잴 것이 없어 표에 넣지 않았다(해당 없음).
 
 ### (2) ★★★ 새 자리 넷 × 값의 짝 여덟 — 서명으로 가족을 가른다
 
@@ -311,7 +311,7 @@ new columns whose signature equals a reference column: 4 / 4
    ★ 네 열이 모두 기준 넷 중 하나와 글자까지 같다 -- 새 알고리즘은 없다
 ```
 
-- ★★★ **집계 줄 — node 20 은 `3 / 3`, Chrome 151 은 `4 / 4`** 다(`new columns whose signature equals a reference column`). node 판에는 `Map.groupBy` 가 없어 **그 열이 `(absent)`** 로 빠졌다.
+- ★★★ **집계 줄 — node 20 은 `3 / 3`, Chrome 151 은 `4 / 4`** 다(`new columns whose signature equals a reference column`). node 버전에는 `Map.groupBy` 가 없어 **그 열이 `(absent)`** 로 빠졌다.
 - ★★★ **`switch` 는 `===`** 다 — `NaN, NaN` 에서 `n`(`case NaN:` 은 절대 안 걸린다), `0, -0` 에서 `y`. 명세 `CaseClauseIsSelected` 가 **`IsStrictlyEqual(input, clauseSelector)`** 를 돌려준다.
 - ★★ **`findIndex(x => x === b)` 도 `===`** 다 — 당연하다. **비교를 쓴 것이 사용자이기 때문이다.** 26번의 `findIndex(Number.isNaN)` 이 `NaN` 을 찾은 것은 **술어가 다른 자를 썼기 때문**이다.
 - ★★★ **`Object.defineProperty` 재정의는 SameValue** 다 — `NaN, NaN` 은 통과(`y`), **`0, -0` 은 거절(`n`)** — 동작 (3)에서 그 거절이 `TypeError` 로 보인다.
@@ -376,7 +376,7 @@ row("frozen { k: 0 }, redefine with -0", shot(() => (Object.defineProperty(Objec
 - ★★★ **`[1]` TypedArray 는 배열과 같은 짝을 쓴다** — `indexOf(NaN)` 은 `-1`, `includes(NaN)` 은 `true`. 명세가 TypedArray `includes` 를 **SameValueZero** 로, `indexOf` 를 **IsStrictlyEqual** 로 적는다.
   ★★ **`'1'` 은 못 찾는다**(`false` · `-1`) — 저장할 때는 숫자로 바꾸지만 **찾는 값은 안 바꾼다.**
 - ★★ **`-0` 은 원소 타입이 정한다** — `Float64Array` 는 **`-0` 그대로**(`true`), `Int32Array` 는 **정수로 바꿔 `+0`**(`false`). 비교가 아니라 **저장 형식**의 이야기다.
-- ★★★ **`[2]` `String.prototype.includes` 는 동등성이 아니다** — 인자를 **글자로 바꾼 뒤 부분 문자열**을 찾는다. `'NaN'.includes(NaN)` 이 `true` 인 것은 `NaN` 이 `"NaN"` 이 되기 때문이고, **`'10'.includes(1)` 도 `true`** 다. `String(-0)` 이 `"0"` 이라 `'-0'.includes(-0)` 도 `true`. **정본 표에서 부적용 행**이다.
+- ★★★ **`[2]` `String.prototype.includes` 는 동등성이 아니다** — 인자를 **글자로 바꾼 뒤 부분 문자열**을 찾는다. `'NaN'.includes(NaN)` 이 `true` 인 것은 `NaN` 이 `"NaN"` 이 되기 때문이고, **`'10'.includes(1)` 도 `true`** 다. `String(-0)` 이 `"0"` 이라 `'-0'.includes(-0)` 도 `true`. **정본 표에서 해당 없음 행**이다.
 - ★★★ **`[3]` 재정의 판정은 SameValue** — 값이 `0` 인 쓰기 불가·설정 불가 프로퍼티를 **`-0` 으로 재정의하면 `TypeError 「Cannot redefine property: k」`**, `NaN` 을 **다른 식으로 만든 `NaN`(`0/0`)으로 재정의하면 `ok`**, `0` 을 `0` 으로는 `ok`. `Object.freeze` 한 객체도 같다.
   ★ 명세 `ValidateAndApplyPropertyDescriptor` 가 「**`SameValue(Desc.[[Value]], current.[[Value]])` 를 돌려준다**」이고, 바로 위 NOTE 가 이유를 적는다 — 「SameValue returns true for NaN values which may be distinguishable by other means」. **`NaN` 들은 비트가 달라도 같은 값으로 보고, `+0`/`-0` 은 다른 값으로 본다.** 14번의 재정의 격자가 이 판정 위에 서 있다.
 
@@ -422,11 +422,11 @@ row("frozen { k: 0 }, redefine with -0", shot(() => (Object.defineProperty(Objec
 
 ### (2) ★★★ `indexOf` 를 `includes` 로(또는 거꾸로) 바꿔도 같다고 믿는다
 
-**`NaN` 행에서 갈린다**(23번 · 26번). 게다가 **구멍 행에서도** 갈린다(26번 동작 (1)).
+**`NaN` 행에서 달라진다**(23번 · 26번). 게다가 **구멍 행에서도** 달라진다(26번 동작 (1)).
 
 ### (3) ★★★ `Object.is` 를 「더 엄격한 `===`」로 읽는다
 
-**두 칸이 서로 반대로** 갈린다 — `NaN` 은 `Object.is` 가 같다, `-0` 은 `===` 가 같다(02번 · 이 편 동작 (1)).
+**두 칸이 서로 반대로** 달라진다 — `NaN` 은 `Object.is` 가 같다, `-0` 은 `===` 가 같다(02번 · 이 편 동작 (1)).
 
 ### (4) ★★ `Map` 에서 꺼낸 키가 넣은 `-0` 그대로일 것이라 믿는다
 
@@ -448,18 +448,18 @@ row("frozen { k: 0 }, redefine with -0", shot(() => (Object.defineProperty(Objec
 
 ### 명세 보장 — 어느 엔진에서도 같아야 하는 것
 
-- ★★★ 네 알고리즘의 정의 — `IsStrictlyEqual` · `IsLooselyEqual` · `SameValue` · `SameValueZero` 가 `NaN`·`±0` 에서 갈리는 방식.
+- ★★★ 네 알고리즘의 정의 — `IsStrictlyEqual` · `IsLooselyEqual` · `SameValue` · `SameValueZero` 가 `NaN`·`±0` 에서 달라지는 방식.
 - ★★★ **어느 자리가 어느 알고리즘을 부르나** — `CaseClauseIsSelected` 의 `IsStrictlyEqual` · `ValidateAndApplyPropertyDescriptor` 의 `SameValue` · `Map.groupBy` 의 `CanonicalizeKeyedCollectionKey` + `AddValueToKeyedGroup` 의 `SameValue`(키를 먼저 `+0` 으로 접은 뒤 — 결과적으로 SameValueZero) · TypedArray `includes`/`indexOf` · `Array.prototype.includes`/`indexOf`.
 - ★★ `Map`/`Set`/`Map.groupBy` 가 **`-0` 을 `+0` 으로 접어 저장하는 것**.
 
-### 엔진(V8) 구현 · 이 판의 관찰
+### 엔진(V8) 구현 · 이 버전의 관찰
 
 - 재정의 실패의 **문구**(`Cannot redefine property: k`).
 - `Map.groupBy` 가 **node 18·20 에 없고 Chrome 151 에 있는 것** — 판의 사정.
 
 ### 호스트가 정하는 것 — ECMA-262 밖
 
-- ★ **라이브러리·프레임워크의 비교**(상태 변경 감지에 `Object.is` 를 쓰는 UI 라이브러리 등) — **언어 밖**이다. 이 문서는 **언어 안의 자리만** 표에 넣었다(부적용).
+- ★ **라이브러리·프레임워크의 비교**(상태 변경 감지에 `Object.is` 를 쓰는 UI 라이브러리 등) — **언어 밖**이다. 이 문서는 **언어 안의 자리만** 표에 넣었다(해당 없음).
 
 ### 그래서 이렇게 적으면 틀린다
 
@@ -478,7 +478,7 @@ row("frozen { k: 0 }, redefine with -0", shot(() => (Object.defineProperty(Objec
 
 ## 핵심 문장
 
-1. ★★★ 동등성 알고리즘은 **넷**(IsStrictlyEqual · IsLooselyEqual · SameValue · SameValueZero)이고, `==` 의 강제 변환을 빼면 **`NaN` 과 `-0` 두 행에서만** 갈린다.
+1. ★★★ 동등성 알고리즘은 **넷**(IsStrictlyEqual · IsLooselyEqual · SameValue · SameValueZero)이고, `==` 의 강제 변환을 빼면 **`NaN` 과 `-0` 두 행에서만** 달라진다.
 2. ★★★ **`NaN` 을 찾는 자리**는 SameValue·SameValueZero 쪽(`Object.is`·`includes`·`Map`·`Set`·`groupBy`)이고, **`-0` 을 가르는 자리**는 SameValue 둘(`Object.is`·`defineProperty` 재정의)뿐이다.
 3. ★★★ 새로 잰 네 열(`switch`·`findIndex(===)`·재정의·`groupBy`)은 **전부 기준 넷 중 하나와 서명이 글자까지 같았다**(node `3 / 3` · Chrome `4 / 4`).
 4. ★★ `Map`·`Set`·`Map.groupBy` 는 **`-0` 을 `+0` 으로 바꿔 저장**하고, 배열과 `Float64Array` 는 그대로 담는다.
@@ -516,9 +516,9 @@ row("frozen { k: 0 }, redefine with -0", shot(() => (Object.defineProperty(Objec
 [02번](../02-coercion-and-loose-equality/2-summary.md)의 `==`·`===`·`Object.is` **225칸 격자** · [23번](../23-map-set-and-weak-collections/2-summary.md)의 **비교 자리 여덟 곳 × 값의 짝 여덟 개(`9 / 56`)** 와 **`Map` 이 `-0` 을 `+0` 으로 바꿔 저장하는 것** ·
 [26번](../26-array-search-flatten-and-create/2-summary.md)의 **`-0` 은 `indexOf`/`includes` 를 안 가른다**와 **구멍 격자**.
 ★★★ **그래서 다시 재지 않는다.** 동작 (1)의 **정본 표**가 그 조각들을 「**알고리즘 × 쓰는 곳**」 한 장으로 묶고 **칸마다 어느 편에서 쟀나**를 단다.
-**새로 잰 것은 그 표의 빈 칸뿐**이다 — `switch` · `findIndex(x => x === b)` · `Object.defineProperty` 의 재정의 · `Map.groupBy`(ES2024) · 형식화 배열(TypedArray) · `String.prototype.includes`(부적용).
+**새로 잰 것은 그 표의 빈 칸뿐**이다 — `switch` · `findIndex(x => x === b)` · `Object.defineProperty` 의 재정의 · `Map.groupBy`(ES2024) · 형식화 배열(TypedArray) · `String.prototype.includes`(해당 없음).
 
-★★★ **이 주제의 본체는 ② 전수 격자다** — 다만 **새 열만** 돌린다. 23번과 **같은 짝 여덟 개**를 새 자리에 던지고, 열마다 여덟 답의 **서명**(`y`/`n` 여덟 글자)을 뽑아
+★★★ **이 주제의 핵심은 ② 전수 격자다** — 다만 **새 열만** 돌린다. 23번과 **같은 짝 여덟 개**를 새 자리에 던지고, 열마다 여덟 답의 **서명**(`y`/`n` 여덟 글자)을 뽑아
 **기준 비교 넷(`===` · `Object.is` · `includes` · `==`)의 서명과 같은지를 스크립트가 가른다**(동작 (2)). 사람이 「이것은 `===` 가족」이라고 손으로 분류하지 않는다.
 
 **기준 소스** — 열어서 확인한 것만.
@@ -528,37 +528,37 @@ row("frozen { k: 0 }, redefine with -0", shot(() => (Object.defineProperty(Objec
 
 **실행 검증** — 이 문서의 새 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
-★★★ **`Map.groupBy`(ES2024)는 두 node 판에 없다**(판별 블록). 그래서 같은 격자 파일을 **Chrome 151 에서 한 번 더** 돌려 그 열을 채웠다.
-★★ **이 주제에서 두 node 판이 갈린 탐침은 없다**(대조기 — 이 배치 전체 `identical 12`).
+★★★ **`Map.groupBy`(ES2024)는 두 node 버전에 없다**(판별 블록). 그래서 같은 격자 파일을 **Chrome 151 에서 한 번 더** 돌려 그 열을 채웠다.
+★★ **이 주제에서 두 node 버전이 달라진 probe는 없다**(대조기 — 이 배치 전체 `identical 12`).
 
 **버전**
 
 | 무엇 | 판 | 이 머신에서 |
 |---|---|---|
-| `===` · `==` · `switch` · `indexOf` | ES1 · ES3 | 세 판 다 있다 |
-| `Object.is` · `Map`/`Set` · TypedArray `indexOf` | ES2015 | 세 판 다 있다 |
-| `Array.prototype.includes` · TypedArray `includes` | ES2016 | 세 판 다 있다 |
-| `Map.groupBy` | **ES2024** | ★ **두 node 판에 없다** — Chrome 151 로만 돌렸다 |
+| `===` · `==` · `switch` · `indexOf` | ES1 · ES3 | 세 버전 다 있다 |
+| `Object.is` · `Map`/`Set` · TypedArray `indexOf` | ES2015 | 세 버전 다 있다 |
+| `Array.prototype.includes` · TypedArray `includes` | ES2016 | 세 버전 다 있다 |
+| `Map.groupBy` | **ES2024** | ★ **두 node 버전에 없다** — Chrome 151 로만 돌렸다 |
 
-**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+**★★★ 이 주제가 쓰는 창 — 그리고 해당 없는 창**
 
 | 창 | 이 주제에서 무엇을 보나 |
 |---|---|
-| ★★★ **② 전수 격자**(본체) | 새 자리 넷 × 값의 짝 8 — 열마다 서명을 뽑아 **기준 비교와 같은 열 N / M** 을 스크립트가 센다(동작 (2)) |
+| ★★★ **② 전수 격자**(핵심) | 새 자리 넷 × 값의 짝 8 — 열마다 서명을 뽑아 **기준 비교와 같은 열 N / M** 을 스크립트가 센다(동작 (2)) |
 | ★★ **④ 예외의 `constructor.name` + `message`** | `Object.defineProperty` 재정의가 **값이 「다르다」고 판정되면** 던지는 `TypeError` — 그 판정이 곧 비교의 답이다(동작 (3)) |
-| ★ **① 추상 연산에 로그 심기** | **부적용** — 네 비교 알고리즘은 사용자 코드를 한 번도 안 부른다(`==` 의 `ToPrimitive` 는 02번이 로그로 쟀다) |
-| ★ **③ 브랜드 태그** | **부적용** — 비교는 값의 종류가 아니라 값 자체를 본다 |
-| ★ **부적용 — 두 번 컴파일**(엄격/비엄격) | 비교 규칙은 모드를 안 탄다 |
+| ★ **① 추상 연산에 로그 심기** | **해당 없음** — 네 비교 알고리즘은 사용자 코드를 한 번도 안 부른다(`==` 의 `ToPrimitive` 는 02번이 로그로 쟀다) |
+| ★ **③ 브랜드 태그** | **해당 없음** — 비교는 값의 종류가 아니라 값 자체를 본다 |
+| ★ **해당 없음 — 두 번 컴파일**(엄격/비엄격) | 비교 규칙은 모드를 안 탄다 |
 | ★ **안 쟀다 — 성능** | 「`Object.is` 가 `===` 보다 느리다」 같은 문장을 쓰지 않는다 |
 
-**★ 흔들리는 칸 / 안 흔들리는 칸**
+**★ 실행마다 달라지는 항목 / 달라지지 않는 항목**
 
-| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+| 실행마다 달라진다(근거로 쓰지 않는다) | 달라지지 않는다(근거로 쓴다) |
 |---|---|
 | 예외 **문구**(`Cannot redefine property: k`) — V8 의 글자 | ★★★ 격자의 **`y`/`n`** 과 서명 · 「같은 열 N / M」 · 저장된 키가 `-0` 인가 |
-| `Map.groupBy` 열이 **어느 엔진에 있나** — 판의 사정(node 두 판 `(absent)`) | ★★ **이 주제의 탐침에는 재실행에서 흔들린 칸이 없다**(재대조 동일) |
+| `Map.groupBy` 열이 **어느 엔진에 있나** — 판의 사정(node 두 판 `(absent)`) | ★★ **이 주제의 probe에는 재실행에서 달라진 항목이 없다**(재대조 동일) |
 
-**선행** — [02 — 강제 변환과 `==` 대 `===`](../02-coercion-and-loose-equality/2-summary.md)(직접 선행 — ★★★ **`==`·`===`·`Object.is` 의 675칸**, `===` 와 `Object.is` 가 **정확히 두 칸**에서 갈린다) ·
+**선행** — [02 — 강제 변환과 `==` 대 `===`](../02-coercion-and-loose-equality/2-summary.md)(직접 선행 — ★★★ **`==`·`===`·`Object.is` 의 675칸**, `===` 와 `Object.is` 가 **정확히 두 칸**에서 달라진다) ·
 [23 — `Map`·`Set` 과 약한 컬렉션](../23-map-set-and-weak-collections/2-summary.md)(★★★ **비교 자리 여덟 곳의 격자 `9 / 56`** · `-0` 을 `+0` 으로 **바꿔 저장** · 집합 연산과 Upsert 의 `-0`) ·
 [26 — 배열 탐색·평탄화·생성](../26-array-search-flatten-and-create/2-summary.md)(★★ **`-0` 은 `indexOf`/`includes` 를 안 가른다** · `lastIndexOf` · 구멍 · `findIndex(Number.isNaN)`) ·
 [14 — 프로퍼티 디스크립터와 동결](../14-property-descriptors-and-freezing/2-summary.md)(재정의가 막히는 27칸 — 동작 (3)의 무대).

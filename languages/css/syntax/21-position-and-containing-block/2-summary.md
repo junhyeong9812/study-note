@@ -256,7 +256,7 @@
 - **겹치는 쪽**(`transform`·`filter`·`will-change`·`contain: paint`)은 **둘 다** 한다.
 - **`opacity`·`isolation` 은 쌓임 맥락만** 만든다 — 실측에서 `opacity: 0.5` 래퍼 안의 `fixed` 가 **(0,0)** 에 그대로 있었다.
 - **`position: relative`** 는 **`absolute` 의 벽은 되지만 `fixed` 의 벽은 안 된다.**
-- ★ 그래서 **「`z-index` 가 안 먹는다」와 「`fixed` 가 안 붙는다」를 같은 원인으로 오진하면 안 된다.** 겹치는 구간에서는 원인이 같지만, `opacity` 자리에서는 갈린다.
+- ★ 그래서 **「`z-index` 가 안 먹는다」와 「`fixed` 가 안 붙는다」를 같은 원인으로 오진하면 안 된다.** 겹치는 구간에서는 원인이 같지만, `opacity` 자리에서는 달라진다.
 
 ### (6) `sticky` 는 스크롤 컨테이너 안에서만 산다
 
@@ -421,7 +421,7 @@
 | 배지·툴팁을 어떤 상자 모서리에 붙인다 | 그 상자에 `relative` + 자식에 `absolute` | 벽을 만들고 그 안에서 잰다 |
 | 화면 전체 오버레이 | `fixed; inset: 0` | 뷰포트가 벽 |
 | 스크롤해도 따라오는 헤더 | `sticky; top: 0` | 자리를 남기므로 내용이 안 튄다 |
-| 살짝 밀어서 겹치게 한다 | `relative` + `top`/`left` | 자리를 유지하므로 주변이 안 흔들린다 |
+| 살짝 밀어서 겹치게 한다 | `relative` + `top`/`left` | 자리를 유지하므로 주변이 달라지지 않는다 |
 | 흐름은 유지하고 **줄만** 비키게 한다 | [`float`](../20-float-and-clear/2-summary.md) | `absolute` 는 줄을 안 민다 |
 | 여러 칸을 나란히 놓는다 | [flex](../24-flexbox-axes/2-summary.md)/grid | `absolute` 로 레이아웃을 짜지 않는다 |
 | `fixed` 가 조상에 갇히는 것을 막는다 | 그 요소를 `<body>` 밑으로 옮긴다 | 조상의 `transform` 은 못 지울 때가 많다 |
@@ -445,7 +445,7 @@
 
 - [`../README.md`](../README.md) — CSS 문법·API 주제 목록(이 주제는 21번)
 - [22번 주제](../22-stacking-context-and-z-index/2-summary.md)(쌓임 맥락과 `z-index`) — ★ **누가 위에 그려지나는 거기가 정본.** 여기는 **어디에 놓이나**까지다. (5)의 대조표가 두 주제를 잇는 자리다
-- [23번 주제](../23-overflow-and-scroll-containers/2-summary.md)(오버플로·스크롤 컨테이너) — **`sticky` 가 기대는 「스크롤 컨테이너」의 정본.** `hidden` 과 `clip` 이 갈리는 이유도 거기
+- [23번 주제](../23-overflow-and-scroll-containers/2-summary.md)(오버플로·스크롤 컨테이너) — **`sticky` 가 기대는 「스크롤 컨테이너」의 정본.** `hidden` 과 `clip` 이 달라지는 이유도 거기
 - [20번 주제](../20-float-and-clear/2-summary.md)(부동과 해제) — **흐름에서 반쯤 빠지는 쪽.** float 는 줄을 밀고 `absolute` 는 안 민다
 - [15번 주제](../15-box-model-and-box-sizing/2-summary.md)(박스 모델) — **패딩 상자·콘텐츠 상자가 무엇인지**는 거기. 여기는 **그중 어느 것이 벽이 되나**다
 - [04번 주제](../04-value-processing-stages/2-summary.md)(값 처리 단계) — `%` 가 **사용값 단계에서** 포함 블록을 만나 풀린다는 규칙의 정본
@@ -456,7 +456,7 @@
 
 ## 용어 풀이
 
-- **포함 블록(containing block)** — `top`/`left`/`%` 를 재는 기준 사각형. 이 주제의 본체다.
+- **포함 블록(containing block)** — `top`/`left`/`%` 를 재는 기준 사각형. 이 주제의 핵심이다.
 - **위치 지정 조상(positioned ancestor)** — `position` 이 `static` 이 아닌 조상. `absolute` 의 벽 후보다.
 - **초기 포함 블록(initial containing block)** — 위로 아무도 없을 때의 벽. **크기는 뷰포트, 원점은 문서 맨 위.**
 - **뷰포트(viewport)** — 문서가 보이는 창. `fixed` 의 기본 벽.

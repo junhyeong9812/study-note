@@ -159,7 +159,7 @@ console.log("differing cells (string key vs symbol key) " + differ.length + " / 
 ```
 
 - `[1]` 의 격자를 `o`/`.` 로 채워라. **비열거 심볼 줄**은 스프레드·`assign` 에서 어떻게 되나?
-- `[2]` 의 「갈린 열」 목록과 두 `true`/`false`, 마지막 집계 줄을 적어라.
+- `[2]` 의 「달라진 열」 목록과 두 `true`/`false`, 마지막 집계 줄을 적어라.
 - `[3]` — `sym1, b, 2, sym2, a, 1` 순서로 넣은 키를 `Reflect.ownKeys` 는 어떤 순서로 돌려주나?
 
 ### 3. 심볼 하나를 만들고, 설명을 읽고, 변환한다 (예측)
@@ -405,7 +405,7 @@ console.log("  tp.finally(...) constructor " + fin.constructor.name + "   specie
 - `[1]` 의 14줄마다 **species 를 읽었나**와 **결과 생성자**를 적고, 집계 줄 N / 14 를 적어라.
 - `[2]` — species 가 `undefined`·`null`·`42`·`{}` 를 돌려주는 함수일 때 `map` 의 결과는?
 - `[3]` — `then` 과 `finally` 는 species 를 각각 몇 번 읽나?
-- ★ 이 탐침을 **node18** 로 돌리면 어느 줄이 달라지나?
+- ★ 이 probe를 **node18** 로 돌리면 어느 줄이 달라지나?
 
 ### 7. `String(s)` 은 되는데 `Number(s)` 와 `` `${s}` `` 는 던진다 (왜)
 
@@ -463,7 +463,7 @@ console.log("symbol kinds accepted as a WeakMap key " + ok + " / " + kinds.lengt
 
 ### 9. `Symbol.toPrimitive` 가 `null` 이면 조용하고 `1` 이면 던진다 (왜)
 
-- 1번 `[3]` 의 두 줄이 반대로 갈리는 이유를 명세의 추상 연산 이름 하나로 설명하라.
+- 1번 `[3]` 의 두 줄이 반대로 나뉘는 이유를 명세의 추상 연산 이름 하나로 설명하라.
 - 같은 규칙이 `Symbol.hasInstance`·`Symbol.iterator` 에도 서나? 이 문서의 어느 출력이 그것을 보이나?
 
 ### 10. 배열의 `Symbol.iterator` 를 바꾸거나 지우면 누가 따라가나 (연결)
@@ -543,7 +543,7 @@ console.log("a `using` declaration: " + compiled);
 
 - `Symbol.unscopables` 가 바꾸는 문법은 무엇이고, 왜 현대 코드(모듈·`class`)에서 그 효과를 볼 일이 거의 없나?
 - 이 파일을 세 판(node18 · node20 · Chrome 151)에 던지면 잘 알려진 심볼은 몇 개씩인가? `dispose`·`asyncDispose` 는 ES2026 명세 본문에 있나?
-- 「`Symbol.dispose` 가 있다」와 「`using` 을 쓸 수 있다」는 같은 말인가? 마지막 줄은 세 판에서 각각 무엇인가?
+- 「`Symbol.dispose` 가 있다」와 「`using` 을 쓸 수 있다」는 같은 말인가? 마지막 줄은 세 버전에서 각각 무엇인가?
 
 ### 12. 파이썬의 dunder 대 JS 의 잘 알려진 심볼 (연결)
 
@@ -555,7 +555,7 @@ console.log("a `using` declaration: " + compiled);
 **환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · Google Chrome 151(headless) · x86-64 Linux.
 배너의 `node20` 은 v20.19.6, `node18` 은 v18.19.1 이다. 이 파일은 **소스만** 싣는다 — 출력은 정답 파일에 있다.
 
-★★★ **이 주제의 본체는 ① 추상 연산에 로그 심기다.**
+★★★ **이 주제의 핵심은 ① 추상 연산에 로그 심기다.**
 `+`·`instanceof`·`map` 이 **어떤 심볼 키를 읽고 무엇을 넘기는지**는 결과값에 흔적이 없다 — 그 키에 로그를 심어야 보인다.
 **1번 문항(hint 로그)이 이 주제의 중심이다.**
 

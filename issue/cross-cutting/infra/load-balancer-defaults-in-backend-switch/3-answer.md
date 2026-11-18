@@ -39,7 +39,7 @@
 
 6. **로드밸런서 설정을 측정 전에 고정하고, 고칠 수 없는 몫은 창으로 분리해 남긴다.**\
    ①은 고칠 수 있는 결함이라 고쳤고(기술자 한도), ②는 측정 대상이 아닌 동작이라 끄고 책임을 옮겼고(수동 판정), ③은 끌 수 없어 따로 셌다(reload 연결).\
-   어느 것이든 "앱 밖에서 생긴 오류"를 앱·절차의 결과에 섞지 않는다는 같은 기준이다 — 원인을 가를 근거(오류 로그의 errno·upstream 주소·응답 코드 0)를 접근 기록에 남겨야 가를 수 있다.
+   어느 것이든 "앱 밖에서 생긴 오류"를 앱·절차의 결과에 섞지 않는다는 같은 기준이다 — 원인을 가를 근거(오류 로그의 errno·upstream 주소·응답 코드 0)를 접근 기록에 남겨야 구분할 수 있다.
 
 ## 문제 구조 (추상화 코드)
 
@@ -98,4 +98,4 @@ for ev in reload_events:
 ## 관련 카드
 - [nginx-broadband-defense-friendly-fire](../nginx-broadband-defense-friendly-fire/) — 같은 프록시의 다른 기본 보호(레이트리밋·UA 차단)가 자기 트래픽을 막는 경우.
 - [performance-measurement-validity](../../testing/performance-measurement-validity/) — 측정값이 유효하려면 측정 도구 자신의 몫을 갈라야 한다 — 부하 생성기의 자원 한계와 같은 축.
-- [half-open-liveness-watchdog](../../network/half-open-liveness-watchdog/) — 연결이 살아 있다고 믿는 쪽과 이미 닫은 쪽의 어긋남 — keepalive 경합과 같은 계열.
+- [half-open-liveness-watchdog](../../network/half-open-liveness-watchdog/) — 연결이 살아 있다고 믿는 쪽과 이미 닫은 쪽의 불일치 — keepalive 경합과 같은 계열.

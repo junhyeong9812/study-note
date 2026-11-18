@@ -203,7 +203,7 @@ new ReactiveAdapterRegistry()  또는  getSharedInstance()          :93 / :229-2
         block(5s)          ->  아이템 없는 정상 완료를 받고 즉시 null 반환
 ```
 
-두 추적의 차이는 `UniToMultiPublisher.onItem`의 `if (item != null)` 한 줄에서 갈린다.\
+두 추적의 차이는 `UniToMultiPublisher.onItem`의 `if (item != null)` 한 줄에서 달라진다.\
 그 줄이 Reactive Streams의 `onNext(null)` 금지를 지키는 번역기이고, 그래서 **"null item"은 "빈 완료"로 옮겨진다**.\
 수정 전에는 그 `onItem`이 애초에 호출되지 않는다.
 

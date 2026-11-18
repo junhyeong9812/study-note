@@ -1,6 +1,6 @@
 # kotlin/syntax/52 — 코루틴 기초 — `suspend`·`CoroutineScope`·`launch`/`async`/`await` — 정리 (힌트)
 
-★★★ **본체는 첫째 창이다** — 「**`javap` — `suspend fun f(x: Int): Int` 가 JVM 에서 `f(int, Continuation): Object` 가 되고 상태 기계 클래스가 생기는 것**」. 둘째 본체는 **호출 규칙 격자**(어디서 부르면 막히나)다. 「스레드가 아니다」는 **스레드 수를 세는** 로그로만 말한다 — 가볍다·빠르다는 재지 않았다.
+★★★ **핵심은 첫째 창이다** — 「**`javap` — `suspend fun f(x: Int): Int` 가 JVM 에서 `f(int, Continuation): Object` 가 되고 상태 기계 클래스가 생기는 것**」. 둘째 본체는 **호출 규칙 격자**(어디서 부르면 막히나)다. 「스레드가 아니다」는 **스레드 수를 세는** 로그로만 말한다 — 가볍다·빠르다는 재지 않았다.
 
 ## 이 주제가 쓰는 세 층
 
@@ -8,7 +8,7 @@
 |---|---|---|
 | **언어 보장** | 컴파일러가 하는 것 | ★★★ **`suspend` 는 코루틴이나 다른 `suspend` 함수 안에서만 부른다**(진단) · `suspend` 함수는 JVM 에서 **`Continuation` 인자를 하나 더** 받는다 · stdlib `COROUTINE_SUSPENDED` KDoc |
 | **라이브러리 계약(kotlinx-coroutines)** | 라이브러리 문서가 약속한 것 | `launch` 는 `Job` · `async` 는 `Deferred` · `runBlocking` 은 스레드를 막는다 · `delay` 는 스레드를 안 막는다 — ★ **언어가 아니다** |
-| **이 판의 관찰** | kotlinc 2.4.20 + kotlinx-coroutines 1.11.0 에서 이번에 본 것 | `javap` 이름(`Cps52Kt$twice$1` · `I$0` · `label`) · 로그 순서 · 스레드 수 |
+| **이 버전의 관찰** | kotlinc 2.4.20 + kotlinx-coroutines 1.11.0 에서 이번에 본 것 | `javap` 이름(`Cps52Kt$twice$1` · `I$0` · `label`) · 로그 순서 · 스레드 수 |
 
 ## 이 판
 
@@ -33,14 +33,14 @@ Implementation-Version: 1.11.0
 
 - ★ `mv=` 는 클래스에 박힌 **Kotlin 메타데이터 판**이다 — 1.11.0 은 `2.2.0`, 대조용으로 둔 1.10.2 는 `2.1.0`. 둘 다 2.4.20 이 읽는 범위다(53번 주제가 1.10.2 로도 한 번 돌린다).
 
-## 흔들리는 칸 / 안 흔들리는 칸
+## 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| **흔들린다 — 칸으로 안 만들었다** | ★ 걸린 시간 | `form52` 의 시간은 **「190ms 미만인가」·「200ms 이상인가」** 참/거짓으로만 찍었다 |
-| 안 흔들린다 | ★★ 로그 순서(`interleave52` · `order52` · `await52` · `block52`) | **단일 스레드**(`runBlocking` 의 이벤트 루프) 위에서 `yield()`·같은 길이의 `delay` 로 걸음을 맞췄다 — 캡처 두 벌과 **다섯 판 되풀이**((4) 끝의 블록)가 전부 같았다 |
-| 안 흔들린다 | 스레드 수(`distinct thread ids = 1` · `activeCount`) | `runBlocking` 은 **자기 스레드 하나**에서 돈다 · 플랫폼 스레드 100개는 500ms 잠들어 있어 세는 순간 살아 있다 |
-| 안 흔들린다 | `javap` 출력 · 호출 규칙 격자 · 진단 문구 | 같은 판이면 같다 |
+| **실행마다 달라진다 — 칸으로 안 만들었다** | ★ 걸린 시간 | `form52` 의 시간은 **「190ms 미만인가」·「200ms 이상인가」** 참/거짓으로만 찍었다 |
+| 달라지지 않는다 | ★★ 로그 순서(`interleave52` · `order52` · `await52` · `block52`) | **단일 스레드**(`runBlocking` 의 이벤트 루프) 위에서 `yield()`·같은 길이의 `delay` 로 걸음을 맞췄다 — 캡처 두 벌과 **다섯 판 되풀이**((4) 끝의 블록)가 전부 같았다 |
+| 달라지지 않는다 | 스레드 수(`distinct thread ids = 1` · `activeCount`) | `runBlocking` 은 **자기 스레드 하나**에서 돈다 · 플랫폼 스레드 100개는 500ms 잠들어 있어 세는 순간 살아 있다 |
+| 달라지지 않는다 | `javap` 출력 · 호출 규칙 격자 · 진단 문구 | 같은 판이면 같다 |
 | ★ **판에 매인다** | 라이브러리 **1.11.0** 의 동작 전부 | 판이 바뀌면 다시 돌려라 — 53번 주제에서 1.10.2 로 한 격자를 대조했다 |
 
 ★ 근거 — 캡처 스크립트를 처음부터 두 번 돌려 **블록 전체를 대조**했다(수치는 3-answer 의 「실행 검증」).
@@ -79,18 +79,18 @@ Implementation-Version: 1.11.0
 
 ## 동작 방식
 
-### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「부적용인 창」
+### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「해당 없는 창」
 
 | 창 | 무엇을 보여 주나 | 어디서 왔나 |
 |---|---|---|
-| ★★★ **`javap -p` · `javap -c`(발췌)** | CPS 서명 · 상태 기계 클래스 · `label` · `tableswitch` · `COROUTINE_SUSPENDED`((1)) | ★ **본체 창** — 지어낼 수 없는 컴파일러의 일 |
+| ★★★ **`javap -p` · `javap -c`(발췌)** | CPS 서명 · 상태 기계 클래스 · `label` · `tableswitch` · `COROUTINE_SUSPENDED`((1)) | ★ **핵심 창** — 지어낼 수 없는 컴파일러의 일 |
 | ★★★ **호출 규칙 격자(컴파일)** | 어디서 부르면 막히나 · 진단 두 종((2)) | 49편의 격자와 같은 꼴 |
 | ★★ **계수 로그** | 스레드 id 집합 크기 · `Thread.activeCount()`((3)) | 성능이 아니라 **개수**만 |
-| ★★ **순서 로그(단일 스레드)** | 끼어들기 · 부른 순간 무엇이 도나 · 예외가 어디서 나오나((3)(4)) | 흔들림 없이 결정적으로 만들었다 |
+| ★★ **순서 로그(단일 스레드)** | 끼어들기 · 부른 순간 무엇이 도나 · 예외가 어디서 나오나((3)(4)) | 실행 간 차이 없이 결정적으로 만들었다 |
 | ★ **다른 스레드에서 본 상태** | `runBlocking` 중 main 스레드의 `Thread.State`((4)) | ★ **제5의 상태** — 「막혔나」를 main 스스로는 못 묻는다(막혀 있으니까). **감시 스레드**가 대신 물었다 |
 | ★★ **stdlib 소스 발췌** | `COROUTINE_SUSPENDED` · `CancellationException` 의 정체((5)) | — |
 | **인용 — 다시 안 잰다** | 「스레드가 아니라 컴파일러 변환」의 논지 · 가상 스레드 대비 | [`../../언어-특성/README.md`](../../언어-특성/README.md) §6 |
-| **부적용 — 성능** | 「코루틴은 가볍다」·「빠르다」는 **재지 않았다** — (3)은 **스레드 수**만 센다 | — |
+| **해당 없음 — 성능** | 「코루틴은 가볍다」·「빠르다」는 **재지 않았다** — (3)은 **스레드 수**만 센다 | — |
 
 ### (1) ★★★ `suspend` 는 컴파일러 변환이다 — `javap` 로 본 CPS
 
@@ -253,7 +253,7 @@ fun p9() { p2() }                                                        // plai
 (exit 1)
 ```
 
-- ★★★ **막힌 탐침 5 / 9 · 진단이 두 종이다** —
+- ★★★ **막힌 probe 5 / 9 · 진단이 두 종이다** —
   일반 함수 몸통에서 부르면 「`suspend function 'suspend fun f(x: Int): Int' can only be called from a coroutine or another suspend function.`」 ·
   `suspend` 함수 **안의 일반 람다**에서 부르면 「`suspension functions can only be called within coroutine body.`」.
 - ★★★ **같은 `suspend` 함수 안이라도 람다의 종류가 가른다** — `forEach { }` 는 **`inline`** 이라 람다 몸통이 바깥 `suspend` 함수에 펼쳐져 **된다.** `val g: () -> Unit = { }` 와 `Sequence.map { }`(인라인이 아니다)는 **막힌다.** `val g: suspend () -> Unit = { }` 는 **된다** — 람다 자체가 `suspend` 다.
@@ -419,7 +419,7 @@ launch: after delay
 | **Python `async def`** | 코루틴 객체만 나오고 **몸통 0줄** — `await`·`asyncio.run` 이 돌린다 | [Python 51번](../../../python/syntax/51-asyncio-coroutine-basics/) |
 | **C# `async`** | ★ **이 문서는 재지 않았다** — C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **40번**이 서면 이 칸을 채운다 | — |
 
-★★ **가장 크게 갈리는 자리** — Python 과 C# 은 **부르는 쪽이 일반 함수여도** 부를 수는 있다(객체·작업이 나온다). Kotlin 은 **부르는 쪽이 `suspend` 가 아니면 컴파일이 안 된다**((2)).
+★★ **가장 크게 달라지는 자리** — Python 과 C# 은 **부르는 쪽이 일반 함수여도** 부를 수는 있다(객체·작업이 나온다). Kotlin 은 **부르는 쪽이 `suspend` 가 아니면 컴파일이 안 된다**((2)).
 
 ```kotlin
 // block52.kt
@@ -516,7 +516,7 @@ outside the scope: IllegalStateException: boom
 (exit 0)
 ```
 
-- ★ **순서 로그 셋(`interleave52` · `order52` · `await52`)을 다섯 판씩 돌려 출력 전체의 해시를 센 것**이다 — 서로 다른 해시가 **셋**이고 각각 **`5`** 번이다. 한 판이라도 줄 순서가 달랐으면 해시가 넷 이상으로 갈린다(규칙 11 — 「가짓수」를 찍는다).
+- ★ **순서 로그 셋(`interleave52` · `order52` · `await52`)을 다섯 판씩 돌려 출력 전체의 해시를 센 것**이다 — 서로 다른 해시가 **셋**이고 각각 **`5`** 번이다. 한 판이라도 줄 순서가 달랐으면 해시가 넷 이상으로 나뉜다(규칙 11 — 「가짓수」를 찍는다).
 - ★★ 까닭(`await52`) — `async` 자식이 실패한 순간 **부모 scope 가 이미 취소됐다.** `await` 에서 잡은 것은 **값 쪽 통로**일 뿐이고, **구조 쪽 통로**(부모에게 실패 알리기)는 따로 돈다. 이것이 [53번 주제](../53-structured-concurrency-job-cancellation-exceptions/)의 본론이다.
 
 ### (5) ★★ stdlib 소스 — 「중단됐다」 표지와 취소 예외의 정체
@@ -610,10 +610,10 @@ two direct calls took at least 200ms: true
 |---|---|---|
 | `suspend` 는 코루틴·`suspend` 함수 안에서만 호출 | ★★★ **언어 규칙**(컴파일 에러) | (2) |
 | `suspend` 함수가 `Continuation` 을 더 받고 `Object` 를 돌려준다 | ★★ **JVM 백엔드의 변환**(CPS) — 논지는 [`언어-특성`](../../언어-특성/README.md) §6 | (1) |
-| 상태 기계 클래스의 이름·필드 이름(`$twice$1` · `I$0` · `label`) | ★ **컴파일러 구현** — 이 판의 관찰 | (1) |
+| 상태 기계 클래스의 이름·필드 이름(`$twice$1` · `I$0` · `label`) | ★ **컴파일러 구현** — 이 버전의 관찰 | (1) |
 | `COROUTINE_SUSPENDED` 가 「중단됐다」 표지 | ★★ **stdlib 계약(KDoc)** | (5) |
 | `launch`·`async`·`runBlocking`·`delay`·`yield` 의 동작 | ★★ **kotlinx-coroutines 1.11.0 의 계약** — 언어가 아니다 | (3)(4) |
-| `runBlocking` 이 부른 스레드 하나에서 돈다 · 로그 순서 | ★ **이 판의 관찰**(라이브러리 구현) | (3)(4) |
+| `runBlocking` 이 부른 스레드 하나에서 돈다 · 로그 순서 | ★ **이 버전의 관찰**(라이브러리 구현) | (3)(4) |
 | 「코루틴은 가볍다」 | **재지 않았다** | — |
 
 ## 언제 쓰고 언제 안 쓰나
@@ -673,10 +673,10 @@ two direct calls took at least 200ms: true
 
 ## 실행 환경
 
-**기준 소스** — **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 `kotlin.coroutines.intrinsics`(`COROUTINE_SUSPENDED`) · **`kotlinx-coroutines-core-jvm` 1.11.0 의 소스 jar**(같은 판 — 53번 주제에서 발췌). ★ 공식 문서 페이지와 KEEP 문서는 **이 작업에서 열지 못했다**(외부 네트워크를 쓰지 않았다) — 설계 논거는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §6 이 원고째 인용한다.
+**기준 소스** — **이 버전의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 `kotlin.coroutines.intrinsics`(`COROUTINE_SUSPENDED`) · **`kotlinx-coroutines-core-jvm` 1.11.0 의 소스 jar**(같은 판 — 53번 주제에서 발췌). ★ 공식 문서 페이지와 KEEP 문서는 **이 작업에서 열지 못했다**(외부 네트워크를 쓰지 않았다) — 설계 논거는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §6 이 원고째 인용한다.
 **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java`·`javap` 에서 실제로 얻었다.\
 `kotlinc` 9회(호출 규칙 격자 스크립트 안의 1회 포함) · `java` 6회 + 순서 로그 셋을 다섯 판씩 되풀이한 15회 · `javap` 3회 · stdlib 소스 jar 발췌 2곳.\
-★★★ **라이브러리 판 — `kotlinx-coroutines-core-jvm` 1.11.0**(이 머신의 gradle 캐시에 있던 판 중 가장 새 것 · 매니페스트 `Implementation-Version: 1.11.0` · 클래스 메타데이터 `mv=[2,2,0]` 이라 kotlinc 2.4.20 이 **그대로 읽는다** — `-Xskip-metadata-version-check` 불필요). `launch`·`async`·`runBlocking`·`delay`·`yield` 는 **이 라이브러리의 것**이다. 라이브러리 판이 결과를 바꿀 수 있어 **흔들리는 칸 표에 판을 선언**한다.\
-★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「막힌 탐침 N / M」은 스크립트가 스스로 센 것**이다.
+★★★ **라이브러리 판 — `kotlinx-coroutines-core-jvm` 1.11.0**(이 머신의 gradle 캐시에 있던 판 중 가장 새 것 · 매니페스트 `Implementation-Version: 1.11.0` · 클래스 메타데이터 `mv=[2,2,0]` 이라 kotlinc 2.4.20 이 **그대로 읽는다** — `-Xskip-metadata-version-check` 불필요). `launch`·`async`·`runBlocking`·`delay`·`yield` 는 **이 라이브러리의 것**이다. 라이브러리 판이 결과를 바꿀 수 있어 **실행마다 달라지는 항목 표에 판을 선언**한다.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「막힌 probe N / M」은 스크립트가 스스로 센 것**이다.
 **버전** — `COROUTINE_SUSPENDED` 는 stdlib 소스에 **`@SinceKotlin("1.3")`**(코루틴이 Stable 이 된 판)((5)).
 **경계** — ★★★ 「**코루틴 = 스레드가 아니라 컴파일러 변환**」이라는 **논지**와 가상 스레드와의 대비는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §6 이 정본이다. **스레드·프로세스 개념**은 [`cs/foundations/process-thread/`](../../../../cs/foundations/process-thread/) 가 정본이다 — 여기는 **`suspend` 함수의 호출 규칙과 JVM 에서의 모양**만 본다. 람다가 JVM 에서 무엇이 되나는 [10번 주제](../10-lambdas-and-higher-order-functions/), `coroutineScope { }` 의 `this` 가 수신자 람다라는 것은 [37번 주제](../37-lambdas-with-receiver-and-type-safe-builders/)가 정본이다. **취소·예외가 형제와 부모로 번지는 규칙**은 [53번 주제](../53-structured-concurrency-job-cancellation-exceptions/)다. 디스패처와 `withContext` 는 [목록의 **54번 주제**](../54-coroutine-context-dispatchers-and-withcontext/)다.

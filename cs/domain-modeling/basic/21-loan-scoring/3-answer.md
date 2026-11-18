@@ -133,7 +133,7 @@ return Optional.of(
 ```
 
 - AS_AVERAGE인데 점수가 하나도 없으면: `average == null`이므로 **`Optional.empty()`** — 즉 UNSCORABLE.\
-  (AS_ZERO였다면 0÷100 = **0점**이 나오고 거절이다. 같은 입력인데 결과가 "심사 불가"와 "0점 거절"로 갈린다.)
+  (AS_ZERO였다면 0÷100 = **0점**이 나오고 거절이다. 같은 입력인데 결과가 "심사 불가"와 "0점 거절"로 나뉜다.)
 - 반올림은 `divide(..., 0, RoundingMode.HALF_UP)` — 소수 0자리, 5부터 올림.\
   이 한 줄이 컷오프 근처 사람들의 운명을 정한다.
 

@@ -220,7 +220,7 @@ int main(void) {
 **환경** — gcc 13.3.0 · clang 18.1.3 · glibc 2.39 · x86-64 Linux · `-fsanitize=address`.
 
 ③ **크기를 모르는 입력 함수**(`gets` · `scanf("%s")`)와 **반환값을 안 보는 `scanf`**.
-★★★ **본체 창은 둘째 창 — 실행 결과의 EOF 대 오류 격자**다. 1번은 **칸마다 「읽은 바이트 · `feof` · `ferror`」** 를 적어야 답이다.
+★★★ **핵심 창은 둘째 창 — 실행 결과의 EOF 대 오류 격자**다. 1번은 **칸마다 「읽은 바이트 · `feof` · `ferror`」** 를 적어야 답이다.
 ★ **출력 쪽 스트림 · 버퍼링**은 [47번 형제](../47-stdio-streams-buffering-and-formatted-output/)가 정본이다.
 선행 — [47번 형제](../47-stdio-streams-buffering-and-formatted-output/).
 

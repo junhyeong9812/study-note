@@ -497,7 +497,7 @@ build  deps  examples  incremental  q  q.d  <- 이제 q 가 있다
 - `cargo check` 로 못 잡는 것:
   - **런타임 동작** — 패닉·오버플로·논리 오류. 안 돌리니 당연하다.
   - 링크 단계의 문제(외부 심볼 누락 등).
-  - **최적화에 따라 갈리는 동작** — 예컨대 정수 오버플로의 디버그/릴리스 차이([03번](../03-primitive-types-and-integer-overflow/)).
+  - **최적화에 따라 달라지는 동작** — 예컨대 정수 오버플로의 디버그/릴리스 차이([03번](../03-primitive-types-and-integer-overflow/)).
 
 ### 10. 다른 주제와 잇기
 

@@ -60,7 +60,7 @@ dberr_t row_log_apply(const trx_t *trx, dict_index_t *index,
 }
 ```
 
-`row_log_apply_ops` 의 블록 고르기다. 파일에 블록이 남아 있으면 `index->lock` 을 놓고 읽고, 남은 것이 꼬리 블록뿐이면 락을 쥔 채로 읽는다.
+`row_log_apply_ops` 의 블록 고르기다. 파일에 블록이 남아 있으면 `index->lock` 을 놓고 읽고, 남은 것이 꼬리 블록뿐이면 락을 잡은 채로 읽는다.
 
 `storage` / `innobase` / `row` / `row0log.cc` L3515-L3805 ([GitHub](https://github.com/mysql/mysql-server/blob/008e09c2834b98143a8c067d4d225c90953050cf/storage/innobase/row/row0log.cc#L3515-L3805))
 

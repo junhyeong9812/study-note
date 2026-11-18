@@ -108,7 +108,7 @@ btnClone.click();
 ### 10. 다른 주제와 잇기 (연결)
 
 - 여기서 노드를 옮기면 [02번 주제](../02-element-queries-and-live-collections/2-summary.md)의 라이브 컬렉션과 정적 스냅샷은 각각 어떻게 되는가?
-- 옛 3형제(`appendChild`·`insertBefore`·`removeChild`)와 새 메서드들의 **반환값 규약이 갈린** 이유는 무엇인가?
+- 옛 3형제(`appendChild`·`insertBefore`·`removeChild`)와 새 메서드들의 **반환값 규약이 달라진** 이유는 무엇인가?
 - `replaceChildren()` 이 `innerHTML = ''` 보다 권장되는 이유는 무엇인가?
 - 「한 번에 넣는 것이 싸다」를 이 주제가 **주장하지 않은** 이유는 무엇인가?
 

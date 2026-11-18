@@ -19,7 +19,7 @@
 | 뜻 | 락을 `innodb_lock_wait_timeout`(8.4 기본 50초) 넘게 기다림. 사이클이 없어도 난다 | 탐지기가 wait-for 사이클을 찾아 한쪽을 롤백 |
 | 걸린 시간 | 약 50초 멈춘 뒤 | 거의 즉시 |
 | 롤백 범위 | 기본(`innodb_rollback_on_timeout=OFF`)은 **마지막 문장만**. 트랜잭션은 열려 있다 | 트랜잭션 전체 |
-| 첫 진단 | `sys.innodb_lock_waits`, `innodb_trx.trx_started` — 오래 쥔 쪽. DDL이 기다렸다면 메타데이터 락(`performance_schema.metadata_locks`) | `SHOW ENGINE INNODB STATUS`의 `LATEST DETECTED DEADLOCK` — 두 쿼리와 잠금 순서 |
+| 첫 진단 | `sys.innodb_lock_waits`, `innodb_trx.trx_started` — 오래 잡은 쪽. DDL이 기다렸다면 메타데이터 락(`performance_schema.metadata_locks`) | `SHOW ENGINE INNODB STATUS`의 `LATEST DETECTED DEADLOCK` — 두 쿼리와 잠금 순서 |
 
 - 교착인데 1205가 되는 경우: `innodb_deadlock_detect=OFF`면 교착은 락 대기 시간 초과로만 풀린다(15번). 앱 락과 DB 락이 섞인 교착처럼 탐지기 밖의 사이클도 대기 초과로 끝난다.
 - 1205 뒤에는 명시적으로 `ROLLBACK`하고 트랜잭션 전체를 재시도한다. 그대로 커밋하면 반쪽 반영이 된다(13·15번).
@@ -32,7 +32,7 @@
 | PostgreSQL `… read/write dependencies among transactions` | SSI 위험 구조, 순차 스캔의 넓은 술어 락(14번) | 재시도 + 인덱스로 술어 락 좁히기 |
 | PostgreSQL 팔로워 `canceling statement due to conflict with recovery` | 복제 재생과 충돌(32번) | 재시도보다 `max_standby_streaming_delay`·`hot_standby_feedback`·조회 쪼개기 |
 | MySQL `1213 (40001)` 교착 | 반대 순서 잠금·갭 락(15번) | 잠금 순서 통일 + 재시도 |
-| MySQL 1205 (Connector/J가 `40001`로 올림) | 오래 쥔 락(15번) | 오래 쥔 쪽 제거, 명시 롤백 |
+| MySQL 1205 (Connector/J가 `40001`로 올림) | 오래 잡은 락(15번) | 오래 잡은 쪽 제거, 명시 롤백 |
 | CockroachDB `ReadWithinUncertaintyIntervalError` | 시계 불확실성·핫 키(55번) | 시계 오프셋 경보, 키 분산, 백오프 재시도 |
 
 원인이 다르니 대처가 다르다. 같은 "재시도"도 팔로워 충돌에서는 설정을 바꾸지 않으면 계속 실패하고, 1205에서는 롤백 없이 재시도하면 반쪽 커밋이 남는다.
@@ -49,7 +49,7 @@
 
 ### 5. "재시작하니 풀렸다"
 
-- 의심: 앱이 끊어도 DB에서 계속 도는 폭주 쿼리(PostgreSQL 기본 `client_connection_check_interval = 0`이면 다음 소켓 상호작용까지 모른다), 또는 앞에서 락을 쥔 `idle in transaction`·DDL 락 큐. 앱 재시작은 앱 쪽 대기열만 비운다. 새 인스턴스가 재시도로 같은 쿼리를 다시 올리면 더 쌓인다.
+- 의심: 앱이 끊어도 DB에서 계속 도는 폭주 쿼리(PostgreSQL 기본 `client_connection_check_interval = 0`이면 다음 소켓 상호작용까지 모른다), 또는 앞에서 락을 잡은 `idle in transaction`·DDL 락 큐. 앱 재시작은 앱 쪽 대기열만 비운다. 새 인스턴스가 재시도로 같은 쿼리를 다시 올리면 더 쌓인다.
 - 먼저 볼 것: `pg_stat_activity`의 `state`·`wait_event_type`·`now() - query_start`·`now() - xact_start`·`pg_blocking_pids(pid)`. 원인 세션만 `pg_cancel_backend`·`pg_terminate_backend`(MySQL `KILL QUERY`).
 - 재발 방지:
   1. 서버 측 `statement_timeout`을 소켓 타임아웃보다 짧게.
@@ -69,7 +69,7 @@
 
 - 생길 수 있는 일:
   - PostgreSQL `max_connections`는 공유 메모리 등을 그만큼 잡고, 바꾸려면 재시작해야 한다(21번).
-  - 풀을 키워 동시 실행이 코어 수를 크게 넘으면 전환·락 경합 비용이 늘어 쿼리 하나하나가 느려진다. 쥔 시간이 늘어 풀이 더 필요해 보이는 악순환이 생긴다(21번 시나리오 3). 결과는 p99 악화다.
+  - 풀을 키워 동시 실행이 코어 수를 크게 넘으면 전환·락 경합 비용이 늘어 쿼리 하나하나가 느려진다. 잡은 시간이 늘어 풀이 더 필요해 보이는 악순환이 생긴다(21번 시나리오 3). 결과는 p99 악화다.
 - 먼저 할 계산: 커넥션 예산 = 인스턴스 수 × 풀 크기 + 배치·도구 커넥션. 배포 중 신구 인스턴스가 겹치는 순간(최대 2배)을 넣는다. 캐시 눈사태 때 DB로 몰리는 요청도 고려한다(30번).
 - 대처: 풀은 작게, 앞단 풀러(PgBouncer)로 서버 커넥션 수를 줄인다.
 

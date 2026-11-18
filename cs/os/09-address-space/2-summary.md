@@ -53,7 +53,7 @@
 - 유저 공간은 4단계 페이지 테이블에서 약 128 TB(`0` ~ `00007fffffffefff`)다. 커널은 위쪽 절반에 있고, 사이는 쓸 수 없는 구멍이다(Documentation/arch/x86/x86_64/mm.rst).
 - 5단계 페이지 테이블(57비트 가상 주소)을 쓰면 유저 공간이 약 64 PB로 512배 커진다(같은 문서 "48- and 57-bit virtual addresses").
 - **힙(brk)은 위로, 스택은 아래로** 자란다. 큰 `malloc`·공유 라이브러리·스레드 스택은 그 사이 mmap 영역에 놓인다.
-- glibc `malloc`은 기본적으로 128 KB 이상 요청을 `mmap`으로 받는다. 이 문턱은 동적으로 오른다(mallopt(3) `M_MMAP_THRESHOLD`). 문턱 이상이어도 기존 빈 청크로 채울 수 있으면 그쪽을 쓰고, 메인 스레드가 아닌 스레드의 작은 요청은 `mmap`으로 만든 별도 arena에서 나올 수 있다(glibc `malloc/arena.c`). 위 예(메인 스레드)에서 64바이트는 `[heap]`, 1 MB는 익명 mmap 영역에 있었다.
+- glibc `malloc`은 기본적으로 128 KB 이상 요청을 `mmap`으로 받는다. 이 임계값은 동적으로 오른다(mallopt(3) `M_MMAP_THRESHOLD`). 임계값 이상이어도 기존 빈 청크로 채울 수 있으면 그쪽을 쓰고, 메인 스레드가 아닌 스레드의 작은 요청은 `mmap`으로 만든 별도 arena에서 나올 수 있다(glibc `malloc/arena.c`). 위 예(메인 스레드)에서 64바이트는 `[heap]`, 1 MB는 익명 mmap 영역에 있었다.
 - 주소가 매번 다른 것은 ASLR이다. `randomize_va_space = 2`면 스택·mmap·vDSO·힙까지 무작위 배치한다(proc_sys_kernel(5)).
 
   - *VMA(가상 메모리 영역)*: `maps`의 한 줄이다. 시작·끝 주소, 권한(`rwxp`), 원본 파일로 이뤄진 연속 구간이다.
@@ -252,7 +252,7 @@ int main(void) {
   - [10-paging-and-tlb](../10-paging-and-tlb/2-summary.md) — VMA 안의 페이지를 실제로 찾는 페이지 테이블과 TLB.
   - [06-signals](../06-signals/2-summary.md) — SIGSEGV 전달, 128+N 종료 코드.
   - [07-threads-and-context-switch](../07-threads-and-context-switch/2-summary.md) — 스레드 스택과 가드 페이지.
-  - [11-heap-allocation](../11-heap-allocation/2-summary.md) — malloc·mmap 문턱, free list.
+  - [11-heap-allocation](../11-heap-allocation/2-summary.md) — malloc·mmap 임계값, free list.
   - [14-mmap-and-page-cache](../14-mmap-and-page-cache/2-summary.md) — 파일 매핑.
   - [29-linking-and-loading](../29-linking-and-loading/2-summary.md) — ELF 적재·PIE.
   - [architecture/10-calling-convention-and-stack-frame](../../architecture/10-calling-convention-and-stack-frame/2-summary.md).

@@ -142,7 +142,7 @@ P.defer 가 P.cleanup2 보다 먼저	true	true	true
 - ★★★ 2번의 판 2 — `P.defer 가 s2.body 보다 먼저 true`. 판 2 의 `P.cleanup*` 은 하위 뒤 · 판 3 은 `0 / 9`.
 - ★★ 이 문서는 **`httptest` 서버로 직접 돌려 보지는 않았다** — 2번의 순서 기록에서 따라 나오는 결론이다. 증상은 대개 `connection refused` 이고, 예외도 컴파일 에러도 없다.
 
-### 4. `go vet exit=1`(`loop variable tc captured by func literal` — `old_test.go` 만) · `go test(-run ^$) exit=0` · go1.21 파일은 `c c c`, go1.22+ 파일은 `a b c` · 테스트는 **통과**(`test exit=0`) — 「두 파일이 갈린 칸 2 / 3」
+### 4. `go vet exit=1`(`loop variable tc captured by func literal` — `old_test.go` 만) · `go test(-run ^$) exit=0` · go1.21 파일은 `c c c`, go1.22+ 파일은 `a b c` · 테스트는 **통과**(`test exit=0`) — 「두 파일이 달라진 항목 2 / 3」
 
 **출력**
 
@@ -388,7 +388,7 @@ PASS
 | 루프 변수 의미 | **언어 판**(`go` 줄 · `//go:build go1.NN`) |
 | `Run`·`Cleanup`·`FailNow` 의 순서 | **`testing` 문서의 계약** |
 | `go test` 가 도는 `vet` 분석기 | **`go` 명령의 판** |
-| 하위가 안 섞인 것 · 씨앗 → 순서 | **이 판의 관찰** |
+| 하위가 안 섞인 것 · 씨앗 → 순서 | **이 버전의 관찰** |
 
 ★ **다시 찍는 법** — `capture.sh <디렉토리>` 를 그대로 돌리고 `normalize-shaky.py` 로 견준다(기본 규칙만).
 
@@ -396,5 +396,5 @@ PASS
 
 이 파일의 모든 출력은 **`go version go1.27.1 linux/amd64`** 에서 실제로 돌려
 **파일로 캡처한 것**이다. 소스 펜스도 같은 파일에서 떠 왔다 — 손으로 옮겨 적은 블록은 없다.\
-★ **근거로 읽을 칸** — 정리 순서 격자의 참/거짓 · `3 / 9` · `0 / 9` · 두 파일 격자 · `vet` 문구 · 종료 코드 · `--- FAIL:` 이름.
-**흔들리는 칸** — `(0.00s)` · `ok`/`FAIL` 줄의 시간.
+★ **근거로 읽을 항목** — 정리 순서 격자의 참/거짓 · `3 / 9` · `0 / 9` · 두 파일 격자 · `vet` 문구 · 종료 코드 · `--- FAIL:` 이름.
+**실행마다 달라지는 항목** — `(0.00s)` · `ok`/`FAIL` 줄의 시간.

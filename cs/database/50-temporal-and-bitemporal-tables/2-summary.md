@@ -251,7 +251,7 @@ Optional<String> cityOf(long custId, AsOf at);   // WHERE valid @> ? AND recorde
 
 ### 3. 기간 겹침 제약이 없어 같은 시점에 유효한 행이 둘
 
-- **현상**: 같은 상품의 가격 조회가 가끔 두 행을 돌려준다. `LIMIT 1`이 둘 중 아무거나 골라 금액이 흔들린다. 또는 앱 코드가 `IncorrectResultSizeDataAccessException`처럼 "하나를 기대했는데 둘"이라는 오류를 던진다.
+- **현상**: 같은 상품의 가격 조회가 가끔 두 행을 돌려준다. `LIMIT 1`이 둘 중 아무거나 골라 금액이 실행마다 달라진다. 또는 앱 코드가 `IncorrectResultSizeDataAccessException`처럼 "하나를 기대했는데 둘"이라는 오류를 던진다.
 - **보이는 형태** (로컬 재현, MySQL 8.4.10): 두 세션이 각자 겹침 검사에서 `0`을 본 뒤 둘 다 INSERT했다.
 
 ```text

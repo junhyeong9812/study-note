@@ -207,11 +207,11 @@ cells where a for await row differs from row A in (return() called, finally ran)
 ```
 
 - ★★★ **`break` · `return` · `throw` · 끝까지 — 네 열은 세 행이 한 글자도 같다.** 앞의 셋은 `return() yes · finally yes`, 끝까지는 `return() no · finally yes` 다. 19번 격자에서 `break`·`return`·몸통의 `throw` 가 **전부 `return()`** 이었던 것과 같은 모양이다 — **`for await` 도 같은 규칙으로 닫는다.**
-- ★★★ **갈린 것은 `rejects` 열 하나다**(`1 / 10`) — 그런데 **세 행이 세 가지로** 갈렸다.
+- ★★★ **달라진 것은 `rejects` 열 하나다**(`1 / 10`) — 그런데 **세 행이 세 가지로** 달라졌다.
   - **A**(`for...of`) — 거부된 프라미스는 **그냥 값**이다(`got a Promise`). 기다리지 않으니 던지지도 않고 **끝까지** 간다.
   - **B**(async generator) — `yield` 가 값을 **기다리다 거부를 받아** 제너레이터 **안에서** 던져진다. 그래서 `finally` 는 **제너레이터 스스로** 돌리고, 루프는 `caught rejected value` 로 나온다. **`return()` 은 안 불렸다** — 닫을 필요가 없다(이미 끝났다).
   - **C**(동기 제너레이터 + 프라미스) — 제너레이터는 거부된 프라미스를 **값으로 내보냈을 뿐** 아무 일도 없다. 기다리는 쪽은 **감싸개**(`CreateAsyncFromSyncIterator`)다.
-- ★★★ **C 행 `rejects` 칸이 판마다 갈렸다** — **node 18·20 은 `return() no · finally no`**(제너레이터가 **열린 채 버려졌다**), **Chrome 151 은 `return() yes · finally yes`** 다. 명세 본문의 `AsyncFromSyncIteratorContinuation` 이 「값 프라미스가 거부되면 **`closeOnRejection` 일 때 동기 이터레이터를 닫는다**」고 적고, 그 낱말이 **ES2025(16판)에서 처음 보인다**(15판·14판 0건). node 20 의 V8(11.3)이 그 판보다 앞선다 — **판의 차이이지 흔들림이 아니다.**
+- ★★★ **C 행 `rejects` 칸이 판마다 달라졌다** — **node 18·20 은 `return() no · finally no`**(제너레이터가 **열린 채 버려졌다**), **Chrome 151 은 `return() yes · finally yes`** 다. 명세 본문의 `AsyncFromSyncIteratorContinuation` 이 「값 프라미스가 거부되면 **`closeOnRejection` 일 때 동기 이터레이터를 닫는다**」고 적고, 그 낱말이 **ES2025(16판)에서 처음 보인다**(15판·14판 0건). node 20 의 V8(11.3)이 그 판보다 앞선다 — **판의 차이이지 실행 간 차이가 아니다.**
 
 ```text
    「rejects」 열 — 둘째 값이 거부된 프라미스일 때 누가 그것을 기다리나
@@ -313,7 +313,7 @@ rows where node18 gives the same two answers as node20: 4 / 4
 - ★★★ **`array-a-b-c` 는 `caught Error 「b」` 가 찍히는데도 `unhandledRejection(b)` 가 먼저 끼고, 훅이 없으면 `exit 1`** 이다 — `try`/`catch` 가 코드에 **분명히 있다.** `for await` 는 배열을 **하나씩** 기다리므로, `a` 를 기다리는 동안 먼저 깨진 `b` 에는 **처리기가 없다.**
 - ★★★ **`array-b-d` 는 다른 모양의 같은 함정** — 루프는 `b` 에서 **던지고 떠난다.** 뒤에 남은 `d` 는 **영영 기다려지지 않아** 거부가 처리기 없이 도착한다(`unhandledRejection(d)` · `exit 1`).
 - ★★ **`all-a-b-c`·`gen-a-b-c` 는 `exit 0`** — `Promise.all` 은 **모두에 곧바로** 처리기를 걸고, async generator 는 **당길 때 만든다**(`a settles got a b rejects` — `c` 는 **시작도 안 했다**).
-- ★★ 두 node 판이 **같은 두 답**을 냈다(`4 / 4`). 보고와 종료 코드는 **node 의 것**이다(37번 동작 (5)가 정본).
+- ★★ 두 node 버전이 **같은 두 답**을 냈다(`4 / 4`). 보고와 종료 코드는 **node 의 것**이다(37번 동작 (5)가 정본).
 
 ### (3) ★★ 어떤 메서드를 찾나 — `@@asyncIterator` 먼저, 없으면 `@@iterator` 를 감싼다
 
@@ -470,7 +470,7 @@ const measure = (label, loop) => new Promise((done) => {
 
 - ★★★ **`yield settledP` 도 몸통에는 `string "v"`** 가 왔다 — 명세의 `Yield` 가 async 제너레이터에서는 **`AsyncGeneratorYield(? Await(arg))`** 다. 동기 제너레이터를 `for...of` 로 돌면 **`a Promise @0`** — 아무도 안 기다린다.
 - ★★ **`yield 1` 과 `yield settledP` 가 같은 `@2`**, **`yield await settledP` 는 `@3`** — `await` 를 하나 더 쓰면 **한 틱 더** 든다. 배열을 감싼 `for await` 도 `@2` 였다.
-- ★ 세 판이 같은 `@k` 를 냈다. 이 문서는 **이 판의 잡 개수**를 보일 뿐 옛 판의 틱 수를 말하지 않는다.
+- ★ 세 버전이 같은 `@k` 를 냈다. 이 문서는 **이 버전의 잡 개수**를 보일 뿐 옛 판의 틱 수를 말하지 않는다.
 
 ### (5) ★★ `next()` 를 겹쳐 부르면 — 줄을 선다
 
@@ -549,11 +549,11 @@ const measure = (label, loop) => new Promise((done) => {
 - ★★ **node 의 미처리 거부 보고와 종료 코드**(동작 (2)) — 37번이 정본이다.
 - ★ 걸음을 만든 `setTimeout` 0 — 같은 지연의 타이머는 등록 순서(36번).
 
-### 구현(V8) · 이 판의 관찰
+### 구현(V8) · 이 버전의 관찰
 
 - ★★★ **node 18·20(V8 10.2·11.3)은 `closeOnRejection` 을 하지 않았다**, Chrome 151 은 했다 — 이 문서가 본 **유일한 판 차이**다.
 - ★ 예외 문구 — `… is not a function or its return value is not iterable` · `… not async iterable`.
-- ★ 틱 수(`@2`·`@3`)는 세 판이 같았다.
+- ★ 틱 수(`@2`·`@3`)는 세 버전이 같았다.
 
 ### 그래서 이렇게 적으면 틀린다
 
@@ -572,7 +572,7 @@ const measure = (label, loop) => new Promise((done) => {
 
 1. ★★★ `for await` 는 `@@asyncIterator` 를 먼저 찾고, 없으면 **`@@iterator` 를 감싸서** 쓴다 — 몸통은 늘 **확정된 값**을 받는다.
 2. ★★★ `break`·`return`·`throw` 는 동기 `for...of` 와 **똑같이** `return()` 을 부르고 `finally` 를 돌린다 — 그리고 **그 결과를 기다린다.**
-3. ★★★ 격자에서 동기판과 갈린 칸은 **`1 / 10`** — 값이 거부된 프라미스일 때뿐이고, 감싼 동기 제너레이터를 닫느냐는 **Chrome 151 만 닫았다**(ES2025 본문의 `closeOnRejection`).
+3. ★★★ 격자에서 동기판과 달라진 항목은 **`1 / 10`** — 값이 거부된 프라미스일 때뿐이고, 감싼 동기 제너레이터를 닫느냐는 **Chrome 151 만 닫았다**(ES2025 본문의 `closeOnRejection`).
 4. ★★★ 미리 만든 프라미스 배열을 `for await` 로 돌면 **먼저 깨진 뒤의 것에 처리기가 없다** — node 는 `exit 1`. async generator 는 **당길 때 만든다.**
 5. ★★ async generator 의 `yield` 는 **값을 기다린다** · `next()` 를 겹쳐 부르면 **줄을 선다.**
 
@@ -603,7 +603,7 @@ const measure = (label, loop) => new Promise((done) => {
 
 ## 실행 환경
 
-★★★ **이 주제의 본체는 ② 전수 격자다** — 루프 셋(`for...of` + 동기 제너레이터 · `for await` + async generator · `for await` + **프라미스를 내는 동기 제너레이터**) × 루프가 끝나는 법 다섯(`break` · `return` · `throw` · 끝까지 · **값이 거부된 프라미스**) = 15칸에서 **`return()` 이 불렸나 · `finally` 가 돌았나**를 찍고, 마지막 줄에 「**동기판과 갈린 칸 N / M**」을 스크립트가 찍는다(동작 (1)).
+★★★ **이 주제의 핵심은 ② 전수 격자다** — 루프 셋(`for...of` + 동기 제너레이터 · `for await` + async generator · `for await` + **프라미스를 내는 동기 제너레이터**) × 루프가 끝나는 법 다섯(`break` · `return` · `throw` · 끝까지 · **값이 거부된 프라미스**) = 15칸에서 **`return()` 이 불렸나 · `finally` 가 돌았나**를 찍고, 마지막 줄에 「**동기판과 달라진 항목 N / M**」을 스크립트가 찍는다(동작 (1)).
 ★★ 보조로 **① 추상 연산에 로그 심기**(`Symbol.asyncIterator`/`Symbol.iterator` 를 읽는 getter · 계수 잡의 `@k` · `next()` 세 번의 줄 순서)와 **④ 예외의 `constructor.name` + `message`**(이터러블이 아닐 때의 `TypeError`)를 쓴다.
 
 **기준 소스** — 열어서 확인한 것만.
@@ -617,35 +617,35 @@ const measure = (label, loop) => new Promise((done) => {
 
 **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다. Chrome 151 은 `./js40b-browser.sh`(소스는 [42번](../42-esm-modules/2-summary.md) 맨 위 부분 — `file://` 에 **`--allow-file-access-from-files`** 를 기본으로 넣었다).
-★★★ **격자 한 칸이 Chrome 151 과 두 node 판에서 갈렸다** — 동작 (1)의 C 행 `rejects` 칸. 나머지 탐침은 세 판이 한 글자도 같았다(맨 위 대조기).
+★★★ **격자 한 칸이 Chrome 151 과 두 node 버전에서 달라졌다** — 동작 (1)의 C 행 `rejects` 칸. 나머지 probe는 세 버전이 한 글자도 같았다(맨 위 대조기).
 ★★ **시간은 재지 않았다** — 「`for await` 가 느리다」·「스트림이 메모리를 아낀다」를 **쓰지 않는다.**
 
 **버전**
 
 | 무엇 | 판 | 이 머신에서 |
 |---|---|---|
-| `for await...of` · `async function*` · `Symbol.asyncIterator` | **ES2018** | 세 판 다 있다 |
+| `for await...of` · `async function*` · `Symbol.asyncIterator` | **ES2018** | 세 버전 다 있다 |
 | 값이 거부되면 감싼 동기 이터레이터를 닫는다(`closeOnRejection`) | **ES2025(16판) 본문에서 처음 보인다** | ★★★ **Chrome 151 만 닫았다**, node 18·20 은 안 닫았다(동작 (1)) |
 | `Array.fromAsync` | **ES2026** | node 18·20 에 없다 · Chrome 151 에 있다(26번) |
 
 ★★ **판 경계는 TC39 finished proposals 표와 이 목록의 README 를 대조했다** — Asynchronous Iteration **2018**. README 40행은 판을 적지 않는다.
 
-**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+**★★★ 이 주제가 쓰는 창 — 그리고 해당 없는 창**
 
 | 창 | 이 주제에서 무엇을 보나 |
 |---|---|
-| ★★★ **② 전수 격자**(본체) | 루프 3 × 끝나는 법 5 = 15칸 — `return()` · `finally` · 결과 · 이벤트 줄 · 마지막 줄 「`… differs from row A …: N / 10`」(동작 (1)) · 미리 만든 프라미스 4행(동작 (2)) |
+| ★★★ **② 전수 격자**(핵심) | 루프 3 × 끝나는 법 5 = 15칸 — `return()` · `finally` · 결과 · 이벤트 줄 · 마지막 줄 「`… differs from row A …: N / 10`」(동작 (1)) · 미리 만든 프라미스 4행(동작 (2)) |
 | ★★ **① 추상 연산에 로그 심기** | `@@asyncIterator`/`@@iterator` 를 **읽는 순간** getter 가 찍는다(동작 (3)) · 계수 잡의 `@k`(동작 (4)) · `next()` 세 번의 줄 순서(동작 (5)) |
 | ★★ **④ 예외의 `constructor.name` + `message`** | 이터러블이 아닌 것에 `for await`/`for...of` → `TypeError` 문구(동작 (3)) · 거부가 어디로 올라오나 |
-| ★ **부적용 — ③ 브랜드 태그** | 판정할 객체의 종류가 없다(async generator 객체가 무엇을 가졌나는 `typeof` 로 충분했다) |
+| ★ **해당 없음 — ③ 브랜드 태그** | 판정할 객체의 종류가 없다(async generator 객체가 무엇을 가졌나는 `typeof` 로 충분했다) |
 | ★ **안 쟀다 — 시간·메모리** | 「스트림처럼 조금씩 읽으면 가볍다」는 **이 문서의 근거가 아니다** |
 
-**★ 흔들리는 칸 / 안 흔들리는 칸**
+**★ 실행마다 달라지는 항목 / 달라지지 않는 항목**
 
-| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+| 실행마다 달라진다(근거로 쓰지 않는다) | 달라지지 않는다(근거로 쓴다) |
 |---|---|
 | 판별 블록의 판 문자열 — 머신에 매인다 | ★★★ 격자의 `yes`/`no` · 이벤트 줄 순서 · `@k` · 종료 코드 `0`·`1` — 걸음은 전부 **마이크로태스크나 `setTimeout` 0 하나씩**이다(36번) |
-| ★ **이 주제의 탐침에는 재실행에서 흔들린 칸이 없다**(재대조 동일) | ★★ **판 사이에서 갈린 칸**(C 행 `rejects`)은 흔들림이 아니라 **판의 차이**다 — 세 판 모두 재실행에서 같았다 |
+| ★ **이 주제의 probe에는 재실행에서 달라진 항목이 없다**(재대조 동일) | ★★ **판 사이에서 달라진 항목**(C 행 `rejects`)은 실행 간 차이가 아니라 **판의 차이**다 — 세 판 모두 재실행에서 같았다 |
 
 **층** — `for await` 와 async generator 는 **언어(ECMA-262)** 의 것이다. **호스트가 끼는 자리는 둘**이다 — 걸음을 만든 **타이머**와, 기다리기 전에 거부된 프라미스를 **보고하는** node(동작 (2) · 37번).
 

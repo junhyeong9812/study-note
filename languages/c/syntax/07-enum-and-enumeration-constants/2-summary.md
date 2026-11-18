@@ -43,7 +43,7 @@
 
 원고가 없는 문법 주제라 「문제」 대신 이 세 질문을 둔다.
 
-1. `enum` 에서 **타입이 셋**(상수·열거 타입·연산 결과)인데 각각 무엇이고 왜 갈리는가.
+1. `enum` 에서 **타입이 셋**(상수·열거 타입·연산 결과)인데 각각 무엇이고 왜 달라지는가.
 2. `sizeof(enum E)` 와 **부호**는 누가 정하는가 — 값 범위를 바꾸면 달라지는가.
 3. C23 이 바꾼 것은 정확히 무엇이고, **이 컴파일러에서 확인되는가.**
 
@@ -234,7 +234,7 @@ red green ?
 [-Wall -Wswitch-enum] 1
 ```
 
-`default:` 를 넣으면 갈린다.
+`default:` 를 넣으면 달라진다.
 
 ```text
 [-Wall] 0
@@ -264,7 +264,7 @@ sw2.c:4:5: warning: enumeration value ‘BLUE’ not handled in switch [-Wswitch
 
 비용 — 열거자를 늘릴 때마다 `switch` 를 고쳐야 한다. **그게 목적이다.**
 
-### (5) 익명 `enum` 대 `#define` — 디버거로 갈린다
+### (5) 익명 `enum` 대 `#define` — 디버거로 나뉜다
 
 **언제 쓰나** — 정수 상수가 필요할 때.
 
@@ -285,7 +285,7 @@ sizeof(BUFSZ)=4
 N=4 sizeof arr=16 비트필드 폭 4
 ```
 
-갈리는 곳은 **디버거**다. `gdb` 로 물어봤다.
+달라지는 곳은 **디버거**다. `gdb` 로 물어봤다.
 
 ```text
 Breakpoint 1, main () at dbg.c:7
@@ -648,7 +648,7 @@ sizeof(enum Small)=1 Neg=1 Big=4 Huge=4 Tiny=1  (int=4)
 
 **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — Enumerations (C)](https://en.cppreference.com/w/c/language/enum) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html) · [GCC 13 Code Gen Options — `-fshort-enums`](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Code-Gen-Options.html)
 **실행 검증** — 이 문서의 모든 출력·경고·에러는 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-**표준 버전이 갈리는 자리는 `-std=c17`·`-std=c2x` 로 나눠 돌렸고, `-pedantic` 유무까지 나눠 세었다.**\
+**표준 버전이 달라지는 자리는 `-std=c17`·`-std=c2x` 로 나눠 돌렸고, `-pedantic` 유무까지 나눠 세었다.**\
 `gdb`·`clang 18.1.3` 을 쓴 자리는 그 자리에 밝혔다. 기본 플래그는 `-std=c17 -Wall -Wextra`.
 **버전** — `enum` 은 C89 부터 있다. **열거 상수가 `int` 범위를 넘어도 되는 것**과\
 **고정 기반 타입**(`enum E : unsigned char`)은 **C23부터**다.\

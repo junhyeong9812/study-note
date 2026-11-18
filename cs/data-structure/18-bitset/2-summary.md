@@ -352,7 +352,7 @@ nextSetBit(from) : 시작 워드는 (-1L << (from & 63)) 로 앞자리를 지우
 #### `public void and(BitVector other)` (TODO)
 
 - 하는 일:
-- 논리(상대 타입에 따라 워드 단위 / 비트 단위로 갈리는 이유):
+- 논리(상대 타입에 따라 워드 단위 / 비트 단위로 나뉘는 이유):
 - 비용(왜):
 
 #### `private void trimTail()` (TODO)
@@ -489,7 +489,7 @@ TreeMap<Integer, Long> - "0 이 아닌 워드"만 워드 번호를 키로 띄엄
 - **Java `java.util.BitSet`** — `long[]` 위의 표준 구현. `and`·`or`·`cardinality`·`nextSetBit`이 이 노트의 `WordBitSet`과 같은 모양이다.
 - **DB 비트맵 인덱스·비트맵 스캔** — 카디널리티가 낮은 컬럼(성별·지역·등급)의 조건별 비트맵을 `and`/`or`해 여러 조건을 워드 단위로 접는다. Oracle의 비트맵 인덱스는 이 비트맵을 디스크에 저장해 두는 쪽이고, PostgreSQL은 비트맵 인덱스를 저장하지 않는 대신 비트맵 힙 스캔에서 여러 인덱스의 결과를 조회 시점에 메모리 비트맵으로 만들어 `and`/`or`한다.
 - **Roaring Bitmap** — 희소·조밀 구간을 컨테이너별로 다르게 담는 압축 비트맵. Lucene/Elasticsearch(문서 ID 집합)·ClickHouse(`groupBitmap` 함수)·Spark·Druid 등이 쓴다(roaringbitmap.org 사용처 목록). 이 노트의 `SparseBitSet`이 그 발상의 가장 단순한 형태다.
-- **운영체제의 할당 비트맵** — 파일시스템의 블록·inode 비트맵([33-filesystem](../33-filesystem/2-summary.md)), 페이지 할당기의 free 비트맵([35-allocator](../35-allocator/2-summary.md)). "비어 있는 칸 찾기"가 `nextSetBit`이다.
+- **운영체제의 할당 비트맵** — 파일시스템의 블록·inode 비트맵([33-filesystem](../33-filesystem/2-summary.md)), 페이지 할당기의 free 비트맵([35-allocator](../35-allocator/2-summary.md)). "비어 있는 항목 찾기"가 `nextSetBit`이다.
 - **[11-bloom-filter](../11-bloom-filter/2-summary.md)** — 비트 배열을 쓰기만 하고 안 가르쳤던 곳. k개의 해시 자리를 켜고 읽는 것이 `set`·`get`이다.
 - **권한·상태 플래그** — Unix 파일 모드(`rwx`), Java `Modifier`, 소켓 옵션처럼 "켜짐/꺼짐 여러 개"를 정수 하나에 담고 마스크로 검사한다.
 - **비트마스크 DP·집합 열거** — 외판원 문제·집합 분할처럼 "부분집합"을 정수 하나로 표현하고 `(s - 1) & mask`로 열거한다. [algorithm/29-bit-manipulation](../../algorithm/29-bit-manipulation/2-summary.md) · [algorithm/22-dp-advanced](../../algorithm/22-dp-advanced/2-summary.md).
@@ -497,9 +497,9 @@ TreeMap<Integer, Long> - "0 이 아닌 워드"만 워드 번호를 키로 띄엄
 
 ## 적용 — 풀어나가는 법
 
-비트셋 문제는 "이 집합을 워드 단위로 접을 수 있는가"에서 갈린다.\
+비트셋 문제는 "이 집합을 워드 단위로 접을 수 있는가"에서 달라진다.\
 순서: ① 원소가 0..n-1 정수로 번호 매겨지고 "있다/없다"만 필요한지 확인한다 — 값이 붙거나 번호 공간이 너무 크면 해시맵(05)이나 희소 변형이다 → ② 켜진 비율을 본다 — 워드의 1/6 미만이면 `SparseBitSet`, 아니면 `WordBitSet` → ③ 집합 연산(교집합·합집합·차집합·세기)을 워드 루프 하나로 쓴다 → ④ 워드를 통째로 다루는 연산(`flipAll`·`and`의 상대 타입) 뒤에 size 밖 자리가 켜지지 않았는지 정리한다 → ⑤ 0/0 같은 정의되지 않는 경계를 먼저 못 박는다.\
-아래 과제(기준선 → 본체 → 희소 변형 → 응용 문제 3개)가 이 순서다.
+아래 과제(베이스라인 → 본체 → 희소 변형 → 응용 문제 3개)가 이 순서다.
 
 ### 문제 — 이 챕터가 시키는 것
 
@@ -508,12 +508,12 @@ TreeMap<Integer, Long> - "0 이 아닌 워드"만 워드 번호를 키로 띄엄
 **그런데 진짜 이유는 메모리가 아니다.** `a[i] & b[i]` 하나가 비트 64개를 처리해 교집합 걸음 수가 100만에서 15,625로 준다.
 `BitVectorContractTest.java` 를 따라친 뒤 TODO 를 채운다(처음에는 98개 중 82개가 실패한다).
 
-- `BooleanArrayBitSet` 의 TODO 1개 — `boolean[]` 그대로인 기준선. **어려울 게 없다는 것이 요점**이다.
+- `BooleanArrayBitSet` 의 TODO 1개 — `boolean[]` 그대로인 베이스라인. **어려울 게 없다는 것이 요점**이다.
 - `WordBitSet` 의 TODO 8개 — `long[]` 에 눌러 담는 본체. `wordCountFor` · `wordIndex` · `mask` · `cardinality` · `nextSetBit` · `and` · `trimTail` · `flipAll`.
 - `SparseBitSet` 의 TODO 3개 — 켜진 워드만 `TreeMap` 에. `set` · `clear` · `nextSetBit`.
 - `BitSetProblems` 의 TODO 3개 — `sieve`(에라토스테네스의 체) · `jaccard`(자카드 유사도) · `enumerateSubsets`(부분집합 열거).
-- 기준선 → 본체 → 희소 변형 → 응용 문제 순으로, **먼저 만들어 보고 무엇이 문제인지 본 다음** 고친다.
-- 응용으로 따져볼 것: 꼬리 비트가 `set()` 에는 없고 `flipAll()` 에만 생기는 이유와 정리 마스크 자체의 함정 둘 · `and(other)` 의 비용이 상대 타입에 따라 64배 갈리는 것 · `1L << bit` 만 써도 우연히 맞지만 `bit & 63` 을 명시하는 이유 · `nextSetBit` 의 "크기 밖이면 -1" 이 `trimTail` 덕에 도달 불가라는 것(11번 `h2 == 0`, 16번 "뿌리를 빨갛게" 에 이어 **세 번째**) · 체의 `p*p` 가 답이 아니라 비용만 바꾼다는 것 · 자카드의 0/0 을 안 정하면 `NaN` 이 조용히 퍼지는 것 · 부분집합 열거의 종료 조건 함정.
+- 베이스라인 → 본체 → 희소 변형 → 응용 문제 순으로, **먼저 만들어 보고 무엇이 문제인지 본 다음** 고친다.
+- 응용으로 따져볼 것: 꼬리 비트가 `set()` 에는 없고 `flipAll()` 에만 생기는 이유와 정리 마스크 자체의 함정 둘 · `and(other)` 의 비용이 상대 타입에 따라 64배 달라지는 것 · `1L << bit` 만 써도 우연히 맞지만 `bit & 63` 을 명시하는 이유 · `nextSetBit` 의 "크기 밖이면 -1" 이 `trimTail` 덕에 도달 불가라는 것(11번 `h2 == 0`, 16번 "뿌리를 빨갛게" 에 이어 **세 번째**) · 체의 `p*p` 가 답이 아니라 비용만 바꾼다는 것 · 자카드의 0/0 을 안 정하면 `NaN` 이 조용히 퍼지는 것 · 부분집합 열거의 종료 조건 함정.
 
 아래 서머리는 이 문제(README)를 분석·정리한 것이다.
 
@@ -531,7 +531,7 @@ TreeMap<Integer, Long> - "0 이 아닌 워드"만 워드 번호를 키로 띄엄
 
 > 문제 설명: n 이하의 소수를 전부 찾는다. 반환한 비트셋의 i번 비트가 켜져 있으면 i 가 소수다.
 > 비트셋의 고전적인 쓰임이다. 100만까지면 `boolean[]` 은 1MB, 비트셋은 125KB 다.
-> 캐시에 들어가느냐 마느냐가 갈리는 크기다.
+> 캐시에 들어가느냐 마느냐가 달라지는 크기다.
 > (n < 2 이면 IllegalArgumentException)
 
 - 내 접근:

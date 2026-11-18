@@ -78,4 +78,4 @@ private @Nullable ModelAndView getModelAndView(ModelAndViewContainer mavContaine
       --> 그 요청의 invokeHandlerMethod L922에서 모델 초기값이 됨
 ```
 
-`requestHandled` 플래그 하나로 `@ResponseBody`와 뷰 렌더링이 갈리는 곳이 여기다. 플래그를 세우는 쪽은 [handleReturnValue](../02_ServletInvocableHandlerMethod.invokeAndHandle/03_HandlerMethodReturnValueHandlerComposite.handleReturnValue/README.md)의 처리기들이다.
+`requestHandled` 플래그 하나로 `@ResponseBody`와 뷰 렌더링이 달라지는 곳이 여기다. 플래그를 세우는 쪽은 [handleReturnValue](../02_ServletInvocableHandlerMethod.invokeAndHandle/03_HandlerMethodReturnValueHandlerComposite.handleReturnValue/README.md)의 처리기들이다.

@@ -1,6 +1,6 @@
 # web-api/28 — CORS: 단순 요청과 프리플라이트, 막는 것과 못 막는 것 — 정리 (힌트)
 
-**이 판의 Chrome · Go**
+**이 버전의 Chrome · Go**
 
 ```text
 $ google-chrome --version
@@ -14,24 +14,24 @@ go version go1.27.1 linux/amd64
 (exit 0)
 ```
 
-### 흔들리는 칸 / 안 흔들리는 칸
+### 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| **안 흔들린다** | 격자 32칸 · 격자 밖 여덟 칸 · 프리플라이트 거부 · `Max-Age` 세 판 · 노출 헤더 · `no-cors` · 리다이렉트 · Go 대비 · 콘솔 문구 | 캡처 세 판이 **한 글자도 같았다** |
-| ★ **시간에 기댄 칸 하나** | `Max-Age` 헤더 **없음** 칸의 「OPTIONS 1번」 | 명세의 기본값은 **5초**다. 두 PUT 이 5초 안에 연달아 나갔기 때문에 캐시가 답했다. 루프백에서 넉넉하다 — 캡처 세 판 × 블록 안 세 판 모두 같았다 |
-| **흔들린다** | Chrome·Go 판 번호 · 포트 | 포트는 출력에 안 나온다(`<A>`·`<B>` 로 바꿔 적는다) |
+| **달라지지 않는다** | 격자 32칸 · 격자 밖 여덟 칸 · 프리플라이트 거부 · `Max-Age` 세 판 · 노출 헤더 · `no-cors` · 리다이렉트 · Go 대비 · 콘솔 문구 | 캡처 세 번이 **한 글자도 같았다** |
+| ★ **시간에 기댄 칸 하나** | `Max-Age` 헤더 **없음** 칸의 「OPTIONS 1번」 | 명세의 기본값은 **5초**다. 두 PUT 이 5초 안에 연달아 나갔기 때문에 캐시가 답했다. 루프백에서 넉넉하다 — 캡처 세 번 × 블록 안 세 판 모두 같았다 |
+| **실행마다 달라진다** | Chrome·Go 판 번호 · 포트 | 포트는 출력에 안 나온다(`<A>`·`<B>` 로 바꿔 적는다) |
 
 - 재대조에서 정규화하는 칸은 없다. **위 표에 없는 차이는 전부 고칠 것**이다.
 
-### 이 주제가 쓰는 창 / 부적용인 창
+### 이 주제가 쓰는 창 / 해당 없는 창
 
 | 창 | 이 주제에서 | 무엇을 답하나 |
 |---|---|---|
-| 창 ① `--dump-dom` 트리 | **부적용** | — |
+| 창 ① `--dump-dom` 트리 | **해당 없음** | — |
 | 창 ② 노드 프로브 | ★ **쓴다** | `res.status` · `res.type` · `res.headers.get()` · 오류 이름 |
 | 창 ③ 같은 것을 두 번 읽기 | ★★ **쓴다** | **같은 주소에 같은 PUT 두 번** — 두 번째에 OPTIONS 가 또 오나((5)) |
-| **창 ④ 서버 요청 로그 — 서버가 받은 순서** | ★★★ **본체** | OPTIONS 가 **먼저 왔나** · 본 요청이 **왔나** · `Access-Control-Request-*` 에 무엇이 실렸나 |
+| **창 ④ 서버 요청 로그 — 서버가 받은 순서** | ★★★ **핵심** | OPTIONS 가 **먼저 왔나** · 본 요청이 **왔나** · `Access-Control-Request-*` 에 무엇이 실렸나 |
 | ★ **「프리플라이트가 났나」를 페이지 대신 서버에게** | ★★ **같은 질문을 다른 창으로(제5의 상태)** | 페이지는 프리플라이트를 **볼 수 없다** — `then`/`catch` 만 받는다. 그래서 칸마다 **서버 B 에게 `/seen` 으로 물었다.** ★ 바꾼 창이 못 보는 것 — **브라우저 캐시가 답한 프리플라이트는 서버에 안 온다.** 「OPTIONS 가 안 왔다」가 **「안 보냈다」인지 「캐시가 답했다」인지**는 서버 창만으로는 못 가른다((5)은 같은 주소의 첫 번째가 왔다는 것으로 가른다) |
 | 콘솔(CDP Log 도메인) | ★★ **쓴다** | `catch` 가 **말해 주지 않는** 거부 이유 |
 | Go `net/http` 클라이언트 | ★ **대비** | 브라우저가 아닌 클라이언트는 **CORS 를 모른다**((9)) |
@@ -40,9 +40,9 @@ go version go1.27.1 linux/amd64
 
 | 무엇을 | 왜 못 보나 |
 |---|---|
-| ★ **프리플라이트가 드는 시간** | **재지 않았다.** 「왕복이 한 번 더 붙는다」는 서버 로그의 **줄 수**로만 봤다 — 지연이 몇 배인지는 이 판으로 말할 수 없다 |
+| ★ **프리플라이트가 드는 시간** | **재지 않았다.** 「왕복이 한 번 더 붙는다」는 서버 로그의 **줄 수**로만 봤다 — 지연이 몇 배인지는 이 버전으로 말할 수 없다 |
 | **HTTP/2 에서의 스트림 본문 업로드** | 이 서버는 HTTP/1.1 이다 — 스트림 본문은 **프리플라이트까지만 가고 본 요청은 `ERR_ALPN_NEGOTIATION_FAILED`** 였다((3)). HTTP/2 서버에서 본 요청이 어떻게 되는지는 못 봤다 |
-| **`Max-Age` 의 상한** | 명세는 「imposed limit」 만 말한다. **이 판이 몇 초에서 자르는지는 재지 않았다**(600초는 두 요청 사이를 넘지 않는다) |
+| **`Max-Age` 의 상한** | 명세는 「imposed limit」 만 말한다. **이 버전이 몇 초에서 자르는지는 재지 않았다**(600초는 두 요청 사이를 넘지 않는다) |
 | **Private Network Access 같은 추가 검사** | 페이지도 서버도 루프백이라 그런 검사가 걸릴 자리가 없다 |
 
 ## 한눈에 — 쉽게 말하면
@@ -86,7 +86,7 @@ go version go1.27.1 linux/amd64
 - **`/cors`**(28) — `OPTIONS` 에는 질의로 고른 답(`pf=ok`·`noacao`·`nomethod`·`redirect` · `ma=` 로 `Max-Age`)을 주고, 본 요청에는 `Access-Control-Allow-Origin`(기본은 **요청의 `Origin` 을 그대로**)과 `X-Secret`·`Content-Language` 를 붙여 준다.
 - **`/seen?id=`** — 그 `id` 로 **무엇이 어떤 순서로 왔나**를 돌려준다. 페이지는 이것으로 **서버에게 물어** 격자를 채운다(로그에는 안 적는다).
 - **`/c29`·`/setcookie`·`/note`**(29) · **`/echo`**(30·31 — 받은 `Content-Type`·본문 원문·직접 짠 multipart 파서의 결과).
-- ★ 서버는 **IPv4·IPv6 둘 다** 받는다 — 29편이 `localhost` 로 부르기 때문이다. ★ 로그를 찍기 전에 **처리 중인 요청이 0 이 되기를 기다린다**(25편에서 잡은 흔들림).
+- ★ 서버는 **IPv4·IPv6 둘 다** 받는다 — 29편이 `localhost` 로 부르기 때문이다. ★ 로그를 찍기 전에 **처리 중인 요청이 0 이 되기를 기다린다**(25편에서 잡은 실행 간 차이).
 
 ```python
 # wa28b-net.py
@@ -639,7 +639,7 @@ if __name__ == "__main__":
 
 **언제 쓰나** — 「같은 코드인데 어떤 요청은 OPTIONS 가 먼저 가고 어떤 요청은 안 간다」 · 「`Content-Type` 하나 바꿨더니 서버 로그가 두 줄이 됐다」일 때.
 
-**던진 것** — 다른 출처 B 에 **메서드 4 × `Content-Type` 4 × 커스텀 헤더(없음 / `X-A: 1`) = 32칸.** B 의 `OPTIONS` 답은 **넉넉하게**(메서드 넷 · 헤더 `content-type, x-a` 허용) 해 두어서 **본 요청이 늘 나간다** — 그래야 「프리플라이트가 붙었나」만 고립된다. 칸마다 주소(`id`)가 달라 **프리플라이트 캐시가 칸끼리 안 겹친다.**
+**실행한 것** — 다른 출처 B 에 **메서드 4 × `Content-Type` 4 × 커스텀 헤더(없음 / `X-A: 1`) = 32칸.** B 의 `OPTIONS` 답은 **넉넉하게**(메서드 넷 · 헤더 `content-type, x-a` 허용) 해 두어서 **본 요청이 늘 나간다** — 그래야 「프리플라이트가 붙었나」만 고립된다. 칸마다 주소(`id`)가 달라 **프리플라이트 캐시가 칸끼리 안 겹친다.**
 
 ```html
 <!-- wa28b-28-grid.html -->
@@ -810,7 +810,7 @@ B OPTIONS /cors?id=e6  Origin=http://127.0.0.1:<A> · Access-Control-Request-Met
 - **`text/plain;charset=UTF-8` 과 대문자 `TEXT/PLAIN` 은 안전하다** — 본질이 `text/plain` 이다.
 - ★★ **값이 129바이트면 붙는다** — `text/plain` 인데도 OPTIONS 가 먼저 왔다(`Access-Control-Request-Headers=content-type`). 명세의 「**값이 128바이트를 넘으면 안전 목록이 아니다**」 그대로다.
 - **`Accept`·`Accept-Language` 는 안 붙는다** — 안전 목록 헤더다. ★ 서버 로그를 보면 이 둘의 `Content-Type` 은 **`text/plain;charset=UTF-8`** — 문자열 본문에 브라우저가 붙인 것이다(30편).
-- ★★★ **스트림 본문은 커스텀 헤더가 없어도 붙는다** — `duplex: 'half'` 칸의 OPTIONS 에 **`Access-Control-Request-Headers=(없음)`** 이다. 붙인 이유가 헤더가 아니라 **본문의 종류**라는 증거다(명세: `ReadableStream` 을 쓰면 use-CORS-preflight flag). 그런데 **본 요청은 서버에 안 왔고** 페이지는 `TypeError 「Failed to fetch」`, 콘솔은 **`net::ERR_ALPN_NEGOTIATION_FAILED`** — 이 판의 Chrome 은 HTTP/1.1 서버로 스트림 본문을 **안 보낸다**(구현의 성질 — 명세 문장이 아니다).
+- ★★★ **스트림 본문은 커스텀 헤더가 없어도 붙는다** — `duplex: 'half'` 칸의 OPTIONS 에 **`Access-Control-Request-Headers=(없음)`** 이다. 붙인 이유가 헤더가 아니라 **본문의 종류**라는 증거다(명세: `ReadableStream` 을 쓰면 use-CORS-preflight flag). 그런데 **본 요청은 서버에 안 왔고** 페이지는 `TypeError 「Failed to fetch」`, 콘솔은 **`net::ERR_ALPN_NEGOTIATION_FAILED`** — 이 버전의 Chrome 은 HTTP/1.1 서버로 스트림 본문을 **안 보낸다**(구현의 성질 — 명세 문장이 아니다).
 - ★ **`duplex` 를 빼면 · `no-cors` 로 하면 보내기 전에 `TypeError`** 이고 서버에는 **아무것도 안 왔다** — Request 생성자 단계다.
 
 ```text
@@ -870,7 +870,7 @@ B OPTIONS /cors?id=d3&pf=nomethod  Origin=http://127.0.0.1:<A> · Access-Control
 ```
 
 - ★★★ **거부된 두 칸(나·다)은 서버 로그에 `OPTIONS` 한 줄뿐이다 — `PUT` 이 없다.** 주문은 서버에 **닿지도 않았다.** 25편의 「주문을 처리했다 · 허용 헤더 없음」과 정반대다. 명세 — HTTP fetch 는 **프리플라이트 응답이 network error 면 그것을 그대로 돌려주고 끝난다.**
-- ★★ **페이지 쪽은 셋 다 같은 모양의 실패다** — `catch · TypeError 「Failed to fetch」`. 25편의 「처리된 뒤 막힌 칸」과 **글자가 같다.** 스크립트는 **「서버가 처리했다」와 「서버에 안 갔다」를 가를 수 없다.**
+- ★★ **페이지 쪽은 셋 다 같은 모양의 실패다** — `catch · TypeError 「Failed to fetch」`. 25편의 「처리된 뒤 막힌 항목」과 **글자가 같다.** 스크립트는 **「서버가 처리했다」와 「서버에 안 갔다」를 구분할 수 없다.**
 - ★ **이유는 콘솔에만, 그리고 콘솔은 둘을 가른다** — 나는 「**Response to preflight request** doesn't pass access control check: No 'Access-Control-Allow-Origin' header …」, 다는 「**Method PUT is not allowed by Access-Control-Allow-Methods** in preflight response.」.
 - 넉넉한 답(가)의 `PUT` 은 `Content-Type=text/plain;charset=UTF-8` 로 닿았다 — 문자열 본문이다.
 
@@ -1205,14 +1205,14 @@ B POST /cors?acao=none&id=go  Origin=(없음) · Content-Type=text/plain · X-A=
 
 | 이 문서의 서술 | 누가 보장하나 |
 |---|---|
-| 안전 목록 메서드 `GET`·`HEAD`·`POST` · 안전 목록 `Content-Type` 셋 · 128바이트 · 안전 목록 밖 헤더 → 프리플라이트 | **명세**(Fetch — CORS-safelisted method · CORS-safelisted request-header · main fetch 조건) · 이 판도 그랬다((2)·(3)) |
+| 안전 목록 메서드 `GET`·`HEAD`·`POST` · 안전 목록 `Content-Type` 셋 · 128바이트 · 안전 목록 밖 헤더 → 프리플라이트 | **명세**(Fetch — CORS-safelisted method · CORS-safelisted request-header · main fetch 조건) · 이 버전도 그랬다((2)·(3)) |
 | ★ 프리플라이트가 network error 면 **본 요청을 안 보낸다** | **명세**(HTTP fetch — 「preflightResponse 가 network error 면 그것을 돌려준다」) · ★ **서버 로그가 증명**((4)) |
-| 스트림 본문은 커스텀 헤더 없이도 프리플라이트 | **명세**(use-CORS-preflight flag) · 이 판도 그랬다((3)) |
+| 스트림 본문은 커스텀 헤더 없이도 프리플라이트 | **명세**(use-CORS-preflight flag) · 이 버전도 그랬다((3)) |
 | ★ HTTP/1.1 서버로 스트림 본문을 **안 보낸다**(`ERR_ALPN_NEGOTIATION_FAILED`) | ★ **Chrome 의 성질** — 명세 문장이 아니다 |
-| `Max-Age` 가 없으면 5초 · 상한은 구현이 정함 | **명세**(CORS-preflight cache) · 5초 안의 두 번째가 캐시였던 것은 **이 판의 관찰**((5)) |
-| 안전 목록 응답 헤더 · 노출 헤더 · `*` | **명세**(CORS-safelisted response-header name · Expose-Headers) · 이 판도 그랬다((6)) |
-| `no-cors` → opaque(status 0 · 헤더·본문 없음) · 안전 목록 밖 메서드는 `TypeError` | **명세**(opaque filtered response · Request 생성자) · 이 판도 그랬다((7)) |
-| 다른 출처를 거쳐 오면 `Origin: null` | **명세**(요청 출처 직렬화 — redirect-taint) · 이 판도 그랬다((8)) |
+| `Max-Age` 가 없으면 5초 · 상한은 구현이 정함 | **명세**(CORS-preflight cache) · 5초 안의 두 번째가 캐시였던 것은 **이 버전의 관찰**((5)) |
+| 안전 목록 응답 헤더 · 노출 헤더 · `*` | **명세**(CORS-safelisted response-header name · Expose-Headers) · 이 버전도 그랬다((6)) |
+| `no-cors` → opaque(status 0 · 헤더·본문 없음) · 안전 목록 밖 메서드는 `TypeError` | **명세**(opaque filtered response · Request 생성자) · 이 버전도 그랬다((7)) |
+| 다른 출처를 거쳐 오면 `Origin: null` | **명세**(요청 출처 직렬화 — redirect-taint) · 이 버전도 그랬다((8)) |
 | 프리플라이트에 307 → 실패 | **명세**(CORS-preflight fetch — ok status 여야) · 콘솔 문구는 **Chrome 의 글자** |
 | 콘솔의 CORS 문구 · `Failed to fetch` | ★ **Chrome 의 글자** — 명세는 `TypeError` 만 정한다 |
 | 브라우저 밖의 클라이언트는 CORS 를 모른다 | **CORS 의 정의**(브라우저의 fetch 알고리즘) · Go 로 관찰((9)) |
@@ -1231,7 +1231,7 @@ B POST /cors?acao=none&id=go  Origin=(없음) · Content-Type=text/plain · X-A=
 
 1. **프리플라이트를 부르는 문은 셋이다** — 안전하지 않은 메서드 · 안전 목록 밖의 `Content-Type` 값 · 안전 목록 밖의 헤더 이름(OPTIONS 가 먼저 온 칸 26 / 32). 스트림 본문이 넷째다.
 2. **프리플라이트가 거부되면 본 요청은 서버에 가지도 않는다** — 서버 로그에 OPTIONS 한 줄뿐. 단순 요청은 처리된 뒤 읽기만 막힌다(25편).
-3. **페이지는 둘을 가를 수 없다** — 둘 다 `TypeError 「Failed to fetch」`. 이유는 콘솔에만.
+3. **페이지는 둘을 구분할 수 없다** — 둘 다 `TypeError 「Failed to fetch」`. 이유는 콘솔에만.
 4. **프리플라이트 답은 기억된다** — `Max-Age` 가 없어도 5초.
 5. **CORS 는 브라우저가 다른 출처 페이지에게 응답을 보여 줄지의 규칙이다** — 브라우저 밖의 클라이언트는 그냥 읽는다.
 
@@ -1255,17 +1255,17 @@ B POST /cors?acao=none&id=go  Origin=(없음) · Content-Type=text/plain · X-A=
 - **프리플라이트 캐시** — 프리플라이트 답을 `Max-Age` 초(없으면 5초) 동안 기억하는 것.
 - **opaque 응답** — `no-cors` 로 받은 다른 출처 응답. status 0 · 헤더와 본문이 안 보인다.
 - **redirect-taint** — 리다이렉트가 다른 출처를 거쳤는지. `same-origin` 이 아니면 `Origin` 이 `null` 이 된다.
-- **프리플라이트 격자** — 메서드 × `Content-Type` × 헤더 32칸 × 「OPTIONS 가 먼저 왔나」. 이 편의 본체.
+- **프리플라이트 격자** — 메서드 × `Content-Type` × 헤더 32칸 × 「OPTIONS 가 먼저 왔나」. 이 편의 핵심.
 
 ## 더 들어가면
 
 - **`Access-Control-Allow-Methods: *`·`Allow-Headers: *`** 는 자격 증명이 없을 때만 와일드카드로 읽힌다(명세의 메서드·헤더 검사 문장) — 던지지 않았다.
 - **`HEAD`** 는 안전 목록이지만 격자에 넣지 않았다.
-- **HTTP/2 서버에서의 스트림 업로드**와 **`Max-Age` 상한**은 이 판으로 못 본다(맨 위 부분 「도구가 못 보는 것」).
+- **HTTP/2 서버에서의 스트림 업로드**와 **`Max-Age` 상한**은 이 버전으로 못 본다(맨 위 부분 「도구가 못 보는 것」).
 
 ## 실행 환경
 
-★★★ **이 편의 본체는 창 ④ 「서버 요청 로그」 — 서버 B 가 받은 순서(OPTIONS 가 먼저 왔나)를 칸마다 서버에게 묻는 「프리플라이트 격자」다.** 메서드 4 × `Content-Type` 4 × 커스텀 헤더 2 = 32칸을 다른 출처로 던지고, 마지막 줄을 스크립트가 「OPTIONS 가 먼저 온 칸 N / 32」로 찍는다. 그 옆에 **프리플라이트가 거부되면 본 요청이 서버에 가나**를 서버 로그로 싣는다.\
+★★★ **이 편의 핵심은 창 ④ 「서버 요청 로그」 — 서버 B 가 받은 순서(OPTIONS 가 먼저 왔나)를 칸마다 서버에게 묻는 「프리플라이트 격자」다.** 메서드 4 × `Content-Type` 4 × 커스텀 헤더 2 = 32칸을 다른 출처로 던지고, 마지막 줄을 스크립트가 「OPTIONS 가 먼저 온 칸 N / 32」로 찍는다. 그 옆에 **프리플라이트가 거부되면 본 요청이 서버에 가나**를 서버 로그로 싣는다.\
 **기준 소스** — [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 「CORS-safelisted method」(**`GET`·`HEAD`·`POST`**) · 「CORS-safelisted request-header」(값이 **128바이트를 넘으면 거짓** · `content-type` 은 파싱한 MIME 의 본질이 **`application/x-www-form-urlencoded`·`multipart/form-data`·`text/plain`** 일 때만) · main fetch 의 프리플라이트 조건(「**use-CORS-preflight flag** 가 켜졌거나, unsafe-request flag 가 켜졌고 메서드가 안전 목록이 아니거나 **CORS-unsafe request-header names 가 비지 않았을 때**」) · 요청 절(「use-CORS-preflight flag 는 … **`ReadableStream` 을 요청에 쓰면** 켜진다」) · HTTP fetch 의 「**If preflightResponse is a network error, then return** preflightResponse」 · CORS-preflight fetch(OPTIONS 에 `Access-Control-Request-Method`·`-Headers` 를 싣는다 · 「CORS check 가 성공하고 **status 가 ok status** 여야」 · 메서드·헤더 목록 검사) · CORS-preflight cache(「max-age 가 없으면 **5**」 · 「imposed limit」) · 「CORS-safelisted response-header name」 · 「opaque filtered response」(**status 0 · header list 비움 · body null**) · Request 생성자(「mode 가 `no-cors` 인데 메서드가 안전 목록이 아니면 **TypeError**」 · 스트림 본문에 「`duplex` 가 없으면 TypeError」·「mode 가 `same-origin`·`cors` 가 아니면 TypeError」) · 요청 출처 직렬화(「redirect-taint 가 `same-origin` 이 아니면 **`"null"`**」). 열어서 확인한 것만 적었다(기준일 2026-09-26).\
 **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. 페이지는 **서버 A**(`http://127.0.0.1`)에서 열었고 다른 출처는 **같은 기계의 다른 포트인 서버 B** 다. **바깥 인터넷으로는 한 번도 요청하지 않았다.** 하네스의 Chrome·CDP 쪽은 [24번 주제](../24-document-lifecycle-events/2-summary.md)의 (1)을 그대로 빌려 쓰고, **서버만 새로 세웠다**((1)).\
 **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\

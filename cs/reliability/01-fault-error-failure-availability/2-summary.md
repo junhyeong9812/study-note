@@ -215,7 +215,7 @@ sum(increase(http_server_requests_seconds_count{job="order", status!~"5.."}[30d]
 sum(increase(http_server_requests_seconds_count{job="order"}[30d]))
 ```
 
-- MTTR은 사고 기록(영향 시작 시각 → 복구 시각)에서 뽑는다. 탐지 시각부터 재면 탐지 전 중단이 빠져 가용성 식에 넣을 값보다 작아진다. 시작 → 탐지 구간은 *MTTD*(Mean Time To Detect, 탐지까지 평균 시간)로 따로 보고, AWS 가용성 백서는 이를 MTTR 안의 한 구간으로 둔다(<https://docs.aws.amazon.com/whitepapers/latest/availability-and-beyond-improving-resilience/understanding-availability.html>). 평균만 보지 말고 분포(중앙값·최댓값)를 같이 본다. 사고 몇 건의 평균은 한 건에 크게 흔들린다.
+- MTTR은 사고 기록(영향 시작 시각 → 복구 시각)에서 뽑는다. 탐지 시각부터 재면 탐지 전 중단이 빠져 가용성 식에 넣을 값보다 작아진다. 시작 → 탐지 구간은 *MTTD*(Mean Time To Detect, 탐지까지 평균 시간)로 따로 보고, AWS 가용성 백서는 이를 MTTR 안의 한 구간으로 둔다(<https://docs.aws.amazon.com/whitepapers/latest/availability-and-beyond-improving-resilience/understanding-availability.html>). 평균만 보지 말고 분포(중앙값·최댓값)를 같이 본다. 사고 몇 건의 평균은 한 건에 크게 달라진다.
 - 외부 의존성은 호출 쪽에서 잰다(내 클라이언트가 본 성공률). 상대가 발표한 숫자와 다를 수 있다.
 
 ## 장애 시나리오와 대처

@@ -7,24 +7,24 @@ v18.19.1
 Python 3.12.3
 ```
 
-> ★★★ **본체 창 선언 — 이 주제의 본체는 세 판 해석 격자(옵션 × 판)와 해석 격자(import 경로 × 해석 방식)이고, 급소는 호스트 창(`node` 가 실제로 푸나)이다.**
-> ★★★ **축이 세 층이다.** 「이 경로가 풀리나」를 **TS 명세**가 정하는 것이 아니다 — **tsc 는 호스트(node·번들러)의 해석을 흉내 낼 뿐**이고, 실제로 푸는 것은 **호스트**다. 그래서 tsc 판정과 node 판정을 **한 쌍으로** 싣는다(4절).
+> ★★★ **핵심 창 선언 — 이 주제의 핵심은 세 판 해석 격자(옵션 × 판)와 해석 격자(import 경로 × 해석 방식)이고, 급소는 호스트 창(`node` 가 실제로 푸나)이다.**
+> ★★★ **축이 세 층이다.** 「이 경로가 풀리나」를 **TS 명세**가 정하는 것이 아니다 — **tsc 는 호스트(node·번들러)의 해석을 흉내 낼 뿐**이고, 실제로 푸는 것은 **호스트**다. 그래서 tsc 버전정과 node 버전정을 **한 쌍으로** 싣는다(4절).
 > ★★★ **35 는 02 와 JS 43 에서 온다.** [**02번 주제**](../02-type-checking-vs-emit/) 7절이 `tsconfig.json` 의 `moduleResolution: "node10"` 이 7.0.2 에서 **`TS5108`** 인 것을 **이미 쟀다** — 여기서는 그것을 **세 판 × 여덟 행**으로 넓힌다.
 > JS 쪽의 짝 — [JS 갈래 **42번**(ESM 모듈)](../../../js/syntax/42-esm-modules/) · [JS 갈래 **43번**(CJS 와 ESM 상호운용 — `type` 필드·확장자 해석)](../../../js/syntax/43-cjs-and-esm-interop/)이다. 이 문서의 node 쪽 사실은 **직접 던진 `node` 출력**으로 적었고, node 규칙 자체의 정본은 그 두 편이다.
 > ★ 소스 펜스 첫 줄 `// 파일명`·`# 파일명` 은 대조용 배너다 — 실파일에는 없다. **진단의 행 번호는 그 줄을 뺀 기준**이다.
 > ★★ JSON(`package.json`·`tsconfig.json`)은 주석을 달 수 없어 **캡처가 `===== 소스: 경로 =====` 배너를 찍어** 싣는다.
 > ★★ 표 안의 `\|` 는 이스케이프이고 **뜻은 `|` 다.**
 
-## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
+## 이 문서에서 실행마다 달라지는 항목과 달라지지 않는 항목
 
 | | 무엇 | 왜 |
 |---|---|---|
-| **안 흔들린다** | 에러 코드(`TS####`)·`(행,열)` · node 의 오류 **코드**(`ERR_…`) | 같은 입력·같은 옵션이면 같은 글자다 |
-| **안 흔들린다** | ★★★ 격자 넷의 칸과 마지막 줄의 **수** | 스크립트가 세어 찍는다 |
+| **달라지지 않는다** | 에러 코드(`TS####`)·`(행,열)` · node 의 오류 **코드**(`ERR_…`) | 같은 입력·같은 옵션이면 같은 글자다 |
+| **달라지지 않는다** | ★★★ 격자 넷의 칸과 마지막 줄의 **수** | 스크립트가 세어 찍는다 |
 | **판에 매인다** | ★★ **종료 코드** — 진단 있는 `--noEmit` 이 7.0.2 는 `1`, 5.9.3·4.9.5 는 `2`(6절 블록) | 격자는 **진단 코드로** 갈랐다 |
-| **안 흔들린다** | `--traceResolution` 의 줄 | ★ **절대 경로가 박힌다** — 배너의 `sed` 가 `.`·`..` 로 바꿨다. 바꾼 것은 **경로 앞부분뿐**이다 |
-| **호스트에 매인다** | `node` 의 판정 | **node v18.19.1** 의 것이다 — 5절은 **node 판이 오르면 답이 바뀌는 칸**이다 |
-| **★ 부적용 — 5창(`.d.ts` 방출)** | 선언 방출은 안 물었다 | 질문은 「**풀리나**」다 |
+| **달라지지 않는다** | `--traceResolution` 의 줄 | ★ **절대 경로가 박힌다** — 배너의 `sed` 가 `.`·`..` 로 바꿨다. 바꾼 것은 **경로 앞부분뿐**이다 |
+| **호스트에 매인다** | `node` 의 판정 | **node v18.19.1** 의 것이다 — 5절은 **node 버전이 오르면 답이 바뀌는 칸**이다 |
+| **★ 해당 없음 — 5창(`.d.ts` 방출)** | 선언 방출은 안 물었다 | 질문은 「**풀리나**」다 |
 | **안 잰 것** | 해석 방식이 검사 **시간**에 주는 영향 | **재지 않았다** |
 
 ## 한눈에 — 쉽게 말하면
@@ -69,12 +69,12 @@ Python 3.12.3
 
 | 창 | 무엇을 보여 주나 | 성질 | 이 주제에서 |
 |---|---|---|---|
-| ★★★ **세 판 해석 격자** | 옵션 여덟 행 × (7.0.2 · 5.9.3 · 4.9.5) | 세 판 대조 | **본체**(1절) |
-| ★★★ **해석 격자** | import 경로 여섯 × 해석 방식 다섯 | 칸마다 진단 코드 | **본체**(2절) |
+| ★★★ **세 판 해석 격자** | 옵션 여덟 행 × (7.0.2 · 5.9.3 · 4.9.5) | 세 판 대조 | **핵심**(1절) |
+| ★★★ **해석 격자** | import 경로 여섯 × 해석 방식 다섯 | 칸마다 진단 코드 | **핵심**(2절) |
 | ★★ **`--traceResolution`** | tsc 가 **어느 파일을 어떤 순서로** 찾았나 | 추적 로그 | 3절 |
 | ★★★ **호스트 창 — `node` 실행** | 방출물의 import 를 **node 가 푸나** | 실행 결과 · 오류 코드 | **급소**(4·5·6절) |
 | ★★ **`--module` × 판 격자** | CJS 파일이 ESM 을 부를 때 | 세 판 대조 | 5절 |
-| ★ **부적용 — 5창(`.d.ts` 방출)** · **2창(`null` 탐침)** | 이 주제의 질문은 「**풀리나**」다 — 타입의 모양을 묻지 않는다 | — | — |
+| ★ **해당 없음 — 5창(`.d.ts` 방출)** · **2창(`null` probe)** | 이 주제의 질문은 「**풀리나**」다 — 타입의 모양을 묻지 않는다 | — | — |
 
 비용 — 격자 넷(여덟 행 × 세 판 · 여섯 × 다섯 · 여섯 × (tsc 둘 + node) · 넷 × 세 판) + 추적 넷 · 방출 셋 · `node` 셋.
 
@@ -168,7 +168,7 @@ nodenext+baseUrl   TS5102         OK             OK
 - ★★★ **`bundler+commonjs` 는 7.0.2 에서 `OK`, 5.9.3 에서 `TS5095`** — 7.0 은 **없앤 것만 있는 게 아니라 푼 것도 있다.** `bundler` 를 `--module commonjs` 와 같이 쓰는 길이 새로 열렸다.
 - ★★ **4.9.5 의 `TS6046`** — 「Argument for '--moduleResolution' option must be …」. **`node10` 이라는 이름과 `bundler` 가 둘 다 5.0 부터**라서다. 4.9.5 에서 `node` 는 되는데 `node10` 은 안 되는 까닭이다.
 - ★★★ **아무것도 안 줬을 때 판마다 다른 것을 고른다** — 7.0.2 **`Bundler`** · 5.9.3 **`Node10`** · 4.9.5 **`NodeJs`**. 같은 명령이 **판마다 다른 해석 규칙으로** 돈다.
-- ★★ 마지막 줄 — **받아들인 행 7.0.2 4 / 8 · 5.9.3 7 / 8 · 4.9.5 5 / 8 · 7.0.2 와 5.9.3 이 갈린 행 5 / 8**.
+- ★★ 마지막 줄 — **받아들인 행 7.0.2 4 / 8 · 5.9.3 7 / 8 · 4.9.5 5 / 8 · 7.0.2 와 5.9.3 이 달라진 행 5 / 8**.
 
 ```text
   세 판 — 사라진 것, 생긴 것, 기본값
@@ -353,7 +353,7 @@ File './util35.ts' exists - use it as a name resolution result.
   **확장자를 붙여 보는 시도가 아예 없다.** 적힌 그대로의 파일(과 디렉토리)만 본다.
 - ★★★ `bundler` 는 같은 후보에서 **`File './util35.ts' exists`** — **`.ts` 를 붙여 봤다.**
 - ★★ 줄 2 — `nodenext` 는 **`Module resolution kind is not specified, using 'NodeNext'.`**(`--module nodenext` 가 해석 방식까지 정했다), `bundler` 는 **`Explicitly specified …`**.
-- ★ 줄 3 — `nodenext` 는 **`Resolving in ESM mode`**(`type: "module"` 때문), `bundler` 는 **`Resolving in CJS mode with conditions 'import', 'types'`** — 이 판의 문구다. `bundler` 가 ESM 파일을 「CJS mode」라 적는 까닭은 **확인하지 못했다**(조건은 `import` 를 쓴다).
+- ★ 줄 3 — `nodenext` 는 **`Resolving in ESM mode`**(`type: "module"` 때문), `bundler` 는 **`Resolving in CJS mode with conditions 'import', 'types'`** — 이 버전의 문구다. `bundler` 가 ESM 파일을 「CJS mode」라 적는 까닭은 **확인하지 못했다**(조건은 `import` 를 쓴다).
 
 ```text
 ===== cd p35/src && tsc --pretty false --noEmit --module nodenext --traceResolution imp35e.ts | sed "s#$PWD#.#g; s#${PWD%/*}#..#g" (tsc exit=0) =====
@@ -451,7 +451,7 @@ node 와 같은 판정 -- nodenext 6 / 6 · bundler 4 / 6
 
 그림 해설 — 한 단계에 한 문장.
 
-- ★★★ **`nodenext` 판정과 node 판정이 여섯 칸 다 같다 — 6 / 6.** `nodenext` 는 node 의 해석을 **정확히** 흉내 냈다.
+- ★★★ **`nodenext` 판정과 node 버전정이 여섯 칸 다 같다 — 6 / 6.** `nodenext` 는 node 의 해석을 **정확히** 흉내 냈다.
 - ★★★ **`bundler` 는 4 / 6** — `imp35a`(확장자 없음) · `imp35d`(디렉토리) 둘을 **`OK` 로 통과시켰는데** node 는 각각 **`ERR_MODULE_NOT_FOUND`** · **`ERR_UNSUPPORTED_DIR_IMPORT`**.
   node 의 ESM 은 **확장자를 붙여 보지 않고 디렉토리의 `index` 를 찾지 않는다** — 3절 추적에서 `nodenext` 가 **시도조차 안 한** 것과 같은 규칙이다.
 - ★★ `imp35e`(`pkg35/feature`) — node 가 **`feature35`** 를 찍었다. node 는 `exports` 의 **`default`**(`./out/feature35.js`)로 갔고 tsc 는 **`types`**(`./src/feature35.ts`)로 갔다 — **같은 지정자, 다른 파일, 같은 판정**.
@@ -520,9 +520,9 @@ nodenext     OK         OK         TS1479
 그림 해설 — 한 단계에 한 문장.
 
 - ★★★ **`--module nodenext` 가 판마다 다른 답을 낸다** — 4.9.5 **`TS1479`**(「The current file is a CommonJS module whose imports will produce 'require' calls; however, the referenced file is an ECMAScript module and cannot be imported with 'require'.」), **5.9.3 · 7.0.2 는 `OK`**.
-- ★★ **`node16`·`node18` 은 세 판 다(있는 판에서) `TS1479`**, **`node20` 은 `OK`**. `node18`·`node20` 은 4.9.5 에 **없는 값**(`TS6046`).
+- ★★ **`node16`·`node18` 은 세 버전 다(있는 판에서) `TS1479`**, **`node20` 은 `OK`**. `node18`·`node20` 은 4.9.5 에 **없는 값**(`TS6046`).
 - ★★★ 읽는 법 — `nodenext` 는 「**그 판의 tsc 가 아는 가장 새 node**」를 흉내 낸다. 4.9.5 의 `nodenext` 는 `node16` 과 같았고, 5.9.3·7.0.2 의 `nodenext` 는 **`node20` 쪽**(ESM 을 `require` 할 수 있는 node)이다.
-- ★★ 마지막 줄 **7.0.2 와 4.9.5 가 갈린 행 3 / 4**.
+- ★★ 마지막 줄 **7.0.2 와 4.9.5 가 달라진 행 3 / 4**.
 
 ```js
 // run35c.cjs
@@ -630,7 +630,7 @@ Error ERR_MODULE_NOT_FOUND
 - ★★★ **`baseUrl` 없이 `paths` 만** — 7.0.2 가 `exit 0`. 6.0 릴리스 글의 처방(「`paths` 항목에 접두를 직접 넣어라」)대로 `"./src/*"` 를 **설정 파일 기준 상대 경로**로 적었다.
 - ★★★ **방출물의 import 는 `"@src/util35g.js"` 그대로** — tsc 는 별칭을 **풀어서 검사만** 하고, 경로는 **다시 쓰지 않는다.**
 - ★★★ node → **`ERR_MODULE_NOT_FOUND`**. node 는 `@src` 가 무엇인지 **모른다.** 핸드북의 문장 그대로 — 「TypeScript 는 통과, Node.js 는 깨진다」.
-- ★★ 같은 설정을 5.9.3 · 4.9.5 에 — 둘 다 `(exit 0)`. **`baseUrl` 없는 `paths` 는 옛 판에서도 됐다** — 7.0 은 **`baseUrl` 만** 뺐다.
+- ★★ 같은 설정을 5.9.3 · 4.9.5 에 — 둘 다 `(exit 0)`. **`baseUrl` 없는 `paths` 는 옛 버전에서도 됐다** — 7.0 은 **`baseUrl` 만** 뺐다.
 
 ```text
 ===== cd p35g/src && tsc --pretty false --noEmit imp35g.ts ; 이어서 "$TSC_OLD" · "$TSC_49" 로 같은 것 (sh exit=0) =====
@@ -672,7 +672,7 @@ imp35g.ts(1,27): error TS2307: Cannot find module '@src/util35g.js' or its corre
   --traceResolution             tsc 의 해석 과정을 찍는다 — 절대 경로가 박힌다            (3절)
 ```
 
-**금지 사례** — 이 주제에서 던져 받은 것이다.
+**금지 사례** — 이 주제에서 실행해 받은 것이다.
 
 | 쓴 꼴 | 진단 | 어느 절 |
 |---|---|---|
@@ -699,7 +699,7 @@ imp35g.ts(1,27): error TS2307: Cannot find module '@src/util35g.js' or its corre
 - ★★★ 「**tsc 가 import 를 통과시켰으니 실행된다**」 — `bundler` 로 검사한 **확장자 없는 경로·디렉토리**가 node 에서 깨진다(4절).
 - ★★★ 「**`.ts` 파일을 가져오니 `.ts` 로 적는다**」 — `TS5097`. `nodenext` 는 **`.js`** 로 적기를 요구한다(2절).
 - ★★★ 「**5.x 설정을 그대로 7.0 에 올려도 된다**」 — `node10`·`classic`·`baseUrl` 은 **막히고**, 아무것도 안 적은 프로젝트는 **조용히 `Bundler`** 로 바뀐다(1절).
-- ★★★ 「**`nodenext` 면 지금 쓰는 node 와 맞다**」 — **tsc 판이 정한 node** 다. node v18 에서 `ERR_REQUIRE_ESM`(5절).
+- ★★★ 「**`nodenext` 면 지금 쓰는 node 와 맞다**」 — **tsc 버전이 정한 node** 다. node v18 에서 `ERR_REQUIRE_ESM`(5절).
 - ★★★ 「**`paths` 를 설정했으니 별칭이 동작한다**」 — **tsc 에서만.** 방출물은 `@src/…` 그대로, node 는 `ERR_MODULE_NOT_FOUND`(6절).
 - ★★ 「**`exports` 가 있어도 깊은 경로로 가져오면 된다**」 — tsc `TS2307`, node `ERR_PACKAGE_PATH_NOT_EXPORTED`(2·4절).
 - ★★ 「**파일을 직접 주면 설정 파일은 무시된다**」 — 7.0.2 는 **위쪽에 설정 파일이 있으면 `TS5112`** 로 거부한다(6절). 옛 판의 성질이었다.
@@ -711,11 +711,11 @@ imp35g.ts(1,27): error TS2307: Cannot find module '@src/util35g.js' or its corre
 | **호스트(node) 규칙** | ESM 의 상대 import 는 **확장자를 붙여 보지 않고 디렉토리 `index` 를 찾지 않는다** · `exports` 밖 경로 차단 · CJS `require` 가 ESM 을 부르면(v18) 막힌다 | 4·5절의 `node` 출력 — **node v18.19.1 의 관찰** |
 | **컴파일러(tsc) — 호스트 흉내** | `node16`·`nodenext` 는 위 규칙을 흉내 내고, `bundler` 는 번들러의 관대한 규칙을 흉내 낸다 | 2·3절 · 핸드북 Modules Reference |
 | **컴파일러 보장(핸드북)** | TS 는 import 지정자를 **다시 쓰지 않는다** · `paths` 는 방출물을 안 바꾼다 · `exports` 의 `types` 조건을 먼저 맞춘다 | 핸드북 · 4·6절 |
-| **판 경계(7.0.2)** | `node10`·`classic` 값 제거(`TS5108`) · `baseUrl` 옵션 제거(`TS5102`) · 기본 해석 `Bundler` · `bundler`+`commonjs` 허용 · `TS5112` | 1·6절 — **세 판을 던졌다** |
+| **판 경계(7.0.2)** | `node10`·`classic` 값 제거(`TS5108`) · `baseUrl` 옵션 제거(`TS5102`) · 기본 해석 `Bundler` · `bundler`+`commonjs` 허용 · `TS5112` | 1·6절 — **세 버전을 던졌다** |
 | **판 경계(5.0 · 4.9.5)** | `node10` 이름·`bundler` 는 5.0 부터(4.9.5 `TS6046`) | 1절 — ★ 5.0 그 자체는 **없다** |
-| **★ 이 판의 관찰** | `nodenext` 가 5.9.3·7.0.2 에서 CJS→ESM import 를 받는다(4.9.5 는 `TS1479`) | 5절 |
-| **★ 이 판의 관찰** | `bundler` 추적이 ESM 파일에 「CJS mode」라 적는다 | 3절 — 까닭은 **확인 못 했다** |
-| **★ 부적용 — 5창(`.d.ts` 방출)** · **2창** | 이 주제의 질문은 「풀리나」 | — |
+| **★ 이 버전의 관찰** | `nodenext` 가 5.9.3·7.0.2 에서 CJS→ESM import 를 받는다(4.9.5 는 `TS1479`) | 5절 |
+| **★ 이 버전의 관찰** | `bundler` 추적이 ESM 파일에 「CJS mode」라 적는다 | 3절 — 까닭은 **확인 못 했다** |
+| **★ 해당 없음 — 5창(`.d.ts` 방출)** · **2창** | 이 주제의 질문은 「풀리나」 | — |
 | **안 잰 것** | 해석 방식별 검사 시간 · 새 node(v20+)에서의 5절 | **재지 않았다** · 이 머신에 v18 뿐 |
 
 ## 언제 쓰고 언제 안 쓰나
@@ -730,16 +730,16 @@ imp35g.ts(1,27): error TS2307: Cannot find module '@src/util35g.js' or its corre
 
 ## 핵심 문장
 
-1. **7.0.2 는 `node10`·`node`·`classic` 을 `TS5108`, `baseUrl` 을 `TS5102` 로 막고, 아무것도 안 주면 `Bundler` 를 고른다** — 받아들인 행 **4 / 8**(5.9.3 은 7 / 8), 7.0.2 와 5.9.3 이 갈린 행 **5 / 8**.
+1. **7.0.2 는 `node10`·`node`·`classic` 을 `TS5108`, `baseUrl` 을 `TS5102` 로 막고, 아무것도 안 주면 `Bundler` 를 고른다** — 받아들인 행 **4 / 8**(5.9.3 은 7 / 8), 7.0.2 와 5.9.3 이 달라진 행 **5 / 8**.
 2. **같은 import 가 해석 방식마다 다르게 풀린다** — 해석 격자 **13 / 30**. 다섯 방식이 다 받는 모양은 **`.js` 로 적은 상대 경로** 하나다.
 3. **tsc 의 해석은 호스트의 흉내다** — `nodenext` 는 node 와 **6 / 6**, `bundler` 는 **4 / 6**. tsc 는 경로를 **다시 쓰지 않으니** 판정이 어긋나면 node 에서 깨진다.
-4. **`nodenext` 는 tsc 판이 정한 node 이고, `paths` 는 tsc 만 아는 별칭이다** — 둘 다 **호스트가 모르는 약속**을 tsc 가 통과시킨 자리다.
+4. **`nodenext` 는 tsc 버전이 정한 node 이고, `paths` 는 tsc 만 아는 별칭이다** — 둘 다 **호스트가 모르는 약속**을 tsc 가 통과시킨 자리다.
 
 ## 관련 자료
 
 - [**02번 주제** — 타입 검사와 코드 방출의 분리](../02-type-checking-vs-emit/) — ★★★ **README 의 선행.** `tsconfig.json` 의 `moduleResolution=node10` 이 `TS5108` 인 것 · `TS5102` 와 `TS5108` 의 구분 · 에러여도 방출한다는 것은 그쪽 1·7절이 정본이다. **여기는 세 판 × 여덟 행 · import 경로 격자 · node 와의 한 쌍부터.** ★ 그쪽의 「파일을 직접 주면 설정 파일을 무시한다」는 7.0.2 의 `TS5112` 로 **바뀐 자리**가 있다(6절).
 - [JS 갈래 **42번**(ESM 모듈)](../../../js/syntax/42-esm-modules/) · [JS 갈래 **43번**(CJS 와 ESM 상호운용)](../../../js/syntax/43-cjs-and-esm-interop/) — ★★★ **README 의 선행(JS 43).** node 쪽 규칙(확장자·`type` 필드·`require` 와 ESM)의 정본이다 — 이 문서는 node 출력을 직접 던져 실었다.
-- [Python 갈래 — 모듈·패키지와 import](../../../python/syntax/42-modules-packages-and-import/) — 대비. 파이썬은 import 해석을 **런타임 하나**가 하고(검사기와 실행기가 따로 없다), 상대 import 의 기준이 **`__package__`** 라 `python3 pkg/mod.py` 와 `-m` 이 갈린다(그쪽 5절). TS 는 **검사기와 실행기가 따로** 풀어서 **둘이 어긋날** 수 있다.
+- [Python 갈래 — 모듈·패키지와 import](../../../python/syntax/42-modules-packages-and-import/) — 대비. 파이썬은 import 해석을 **런타임 하나**가 하고(검사기와 실행기가 따로 없다), 상대 import 의 기준이 **`__package__`** 라 `python3 pkg/mod.py` 와 `-m` 이 달라진다(그쪽 5절). TS 는 **검사기와 실행기가 따로** 풀어서 **둘이 어긋날** 수 있다.
 - [Go 갈래 — 패키지 공개 범위·이름·`internal`](../../../go/syntax/40-package-visibility-naming-and-internal/) — 대비. Go 는 import 경로가 **곧 모듈 경로**(`go.mod` 의 `module` + 디렉토리)이고, 빌드 도구 **하나**가 해석과 실행을 다 맡는다 — 해석 방식을 고를 일이 없다.
 - [목록의 **36번 주제**](../36-type-only-imports-and-exports/)(타입 전용 import·export) — 사슬의 다음. **풀린 import 가 방출물에 남나**를 묻는다.
 - [목록의 **43번 주제**](../43-remaining-tsconfig-choices/)(`tsconfig` 의 나머지 선택) — `module` 값의 일반론.
@@ -752,7 +752,7 @@ imp35g.ts(1,27): error TS2307: Cannot find module '@src/util35g.js' or its corre
 > **모듈 해석(module resolution)** — 지정자를 **실제 파일**로 바꾸는 규칙. tsc 는 `--moduleResolution` 으로 고르고, 실행 때는 호스트가 제 규칙으로 한다.\
 > 예: 3절 추적.
 
-> **`nodenext`** — tsc 가 **그 판이 아는 가장 새 node** 의 해석을 흉내 내는 값. tsc 판이 오르면 뜻이 움직인다.\
+> **`nodenext`** — tsc 가 **그 판이 아는 가장 새 node** 의 해석을 흉내 내는 값. tsc 버전이 오르면 뜻이 움직인다.\
 > 예: 5절 — 4.9.5 `TS1479`, 7.0.2 `OK`.
 
 > **`bundler`** — 번들러의 해석을 흉내 낸다. 확장자·디렉토리 `index` 를 붙여 본다. 7.0.2 의 **기본값**.\
@@ -790,5 +790,5 @@ imp35g.ts(1,27): error TS2307: Cannot find module '@src/util35g.js' or its corre
 
 **기준 소스** — [Handbook — Modules Reference](https://www.typescriptlang.org/docs/handbook/modules/reference.html)(`node16`/`nodenext` 의 상대 ESM import 는 **확장자가 필요** · `bundler` 는 확장자 없는 경로와 디렉토리 모듈을 받는다 · **`paths` 는 방출물의 import 경로를 바꾸지 않는다** · `exports` 의 `types` 조건) ·
 [Announcing TypeScript 6.0](https://devblogs.microsoft.com/typescript/announcing-typescript-6-0/)(`--moduleResolution node`·`classic` 과 `baseUrl` 의 deprecation — 「`node` 를 쓰던 사용자는 대개 `nodenext` 로, 번들러는 `bundler` 로」 · 「`baseUrl` 은 더 이상 해석의 조회 루트가 아니다 — `paths` 항목에 접두를 직접 넣어라」).
-위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·추적·실행 출력은 **전부 직접 던져 받은 것**이다. 핸드북 예제를 옮기지 않았다.
+위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·추적·실행 출력은 **전부 직접 실행해 받은 것**이다. 핸드북 예제를 옮기지 않았다.
 **실행 검증** — 본판은 맨 위 블록이다. ★ 판 격자에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 5.9.3 · 4.9.5** 를 **읽기만** 해서 썼다 — 환경변수 **`TSC_OLD`·`TSC_49`**. **6.0 은 이 머신에 없다.**

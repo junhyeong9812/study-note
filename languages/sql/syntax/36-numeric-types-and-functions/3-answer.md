@@ -266,7 +266,7 @@ DESCRIBE tt;
 > **짝수 반올림(banker's rounding)** — 정확히 절반일 때 가까운 **짝수**로 보내는 규칙.\
 > 예: 부동소수 `2.5 → 2`, `3.5 → 4`. 한쪽으로만 올리면 합계가 위로 치우치는 것을 막는다.
 
-**갈리는 것은 2인자 형태다.**
+**달라지는 것은 2인자 형태다.**
 
 ```text
 ### SQL: SELECT ROUND(CAST(2.675 AS DOUBLE PRECISION), 2) AS a;
@@ -528,7 +528,7 @@ FLOOR = 항상 왼쪽(작은 쪽)
 ```
 
 `-5/2` 와 `CEIL(-2.5)` 이 **둘 다 `-2` 라서 같은 규칙처럼 보이지만 아니다.**\
-양수에서 갈린다 — `5/2 = 2`(절단) 인데 `CEIL(2.5) = 3`(올림) 이다.
+양수에서 달라진다 — `5/2 = 2`(절단) 인데 `CEIL(2.5) = 3`(올림) 이다.
 
 ---
 
@@ -655,7 +655,7 @@ DISTINCT f              같은 이유로 위험하다 — 같아 보이는 값�
 | `0.1+0.2` 십진수·부동소수 (3번) | PG 18.6 · MySQL 8.4.10 | 각 2회 | **두 엔진 동일** |
 | `0.1` 열 번 합 (3번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | `0.9999999999999999` — **두 엔진 동일** |
 | `ROUND` 십진수 5값 (4번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | **두 엔진 동일** |
-| `ROUND` 부동소수 4값 (4번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | **두 엔진 동일** — 갈린 것은 타입 |
+| `ROUND` 부동소수 4값 (4번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | **두 엔진 동일** — 달라진 것은 타입 |
 | `ROUND(double, n)` (4번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | **PG 함수 없음 에러가 근거다** |
 | 식 오버플로 (5번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | |
 | 열 오버플로 (5번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | 트랜잭션 롤백 |
@@ -667,7 +667,7 @@ DISTINCT f              같은 이유로 위험하다 — 같아 보이는 값�
 | `ABS`·`MOD`·`POWER`·`SQRT` | PG 18.6 · MySQL 8.4.10 | 각 1회 | **마지막 자리까지 동일** |
 
 **같은 값을 여러 번 돌린 이유** — 「두 엔진이 같다」를 주장하는 자리(3·4·7·8번)는 **확증이 아니라 반증을 찾기 위해** 반복했다.\
-반복해도 갈리지 않았고, 갈릴 근거도 없다 — 두 엔진이 같은 IEEE 754 배정밀도와 같은 십진 반올림 규칙을 쓰기 때문이다.
+반복해도 달라지지 않았고, 갈릴 근거도 없다 — 두 엔진이 같은 IEEE 754 배정밀도와 같은 십진 반올림 규칙을 쓰기 때문이다.
 
 **설정 의존 항목** — 2번(`div_precision_increment` = 4) · 6번의 (b)(`sql_mode` 의 `STRICT_TRANS_TABLES`·`ERROR_FOR_DIVISION_BY_ZERO`).\
 **이 둘은 서버 설정이 바뀌면 답이 바뀐다.** 「실행 환경」에 적은 값에서 나온 결과다.
@@ -684,7 +684,7 @@ DISTINCT f              같은 이유로 위험하다 — 같아 보이는 값�
 ## 실행 환경
 
 근거는 **실행 결과**다 — 본문의 출력·에러·경고는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다. **손계산으로 유도한 값은 하나도 없다.**\
+2026-09-21 에 실제로 실행해 받은 것이다. 지어낸 출력은 없다. **손계산으로 유도한 값은 하나도 없다.**\
 표를 쓴 실험은 전부 트랜잭션으로 감싸 **롤백**했고, `emp`·`dept` 는 읽기만 했다.\
 **MySQL 조건** — `sql_mode` 기본값(`STRICT_TRANS_TABLES`·`ERROR_FOR_DIVISION_BY_ZERO` 포함) · `div_precision_increment` = 4.\
 문서 근거는 [PG 18 Numeric Types](https://www.postgresql.org/docs/18/datatype-numeric.html) · [PG 18 Math Functions](https://www.postgresql.org/docs/18/functions-math.html) · [MySQL 8.4 Arithmetic Operators](https://dev.mysql.com/doc/refman/8.4/en/arithmetic-functions.html).

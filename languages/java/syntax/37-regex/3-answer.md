@@ -145,7 +145,7 @@ as many times as possible and the array can have any length.
 - **버려지는 것은 `trailing`(뒤쪽) 빈 조각뿐**이다. 앞쪽은 손대지 않는다.
 - `limit > 0` 이면 패턴을 최대 `limit - 1` 번만 적용한다 → `split(",", 2)` 가 `[a, "b,,c,,"]`.
 
-**`""` 와 `","` 가 갈리는 이유**
+**`""` 와 `","` 가 달라지는 이유**
 
 - `"".split(",")` — 패턴이 **한 번도 안 맞았다.** javadoc: *"If this pattern does not match any subsequence of the input then the resulting array has just one element, namely the input sequence in string form."*\
   그래서 `[""]`, 길이 1 이다.
@@ -568,7 +568,7 @@ private static final Pattern P = Pattern.compile("...");   // 클래스 로딩 �
 이 파일의 모든 출력·예외는 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
 JDK 소스 인용은 `lib/src.zip` 의 `java.base/java/util/regex/Pattern.java` 실파일에서 그대로 옮겼다.\
 실행 파일명은 전부 `Ex.java` 로 고정했고, 프로그램이 여럿이라 `Ex.java (37-a)` 처럼 라벨로 구분한다.\
-17.0.13 · 25.0.1 에서도 같은 프로그램을 돌렸다. **갈린 곳은 2번 하나**다.
+17.0.13 · 25.0.1 에서도 같은 프로그램을 돌렸다. **달라진 곳은 2번 하나**다.
 **★ 측정 조건**(9·10번) — **JMH 가 아니다.** `System.nanoTime()` 반복 측정이고,
 머신은 13th Gen Intel Core i7-13700HX · 24 스레드 · Linux 7.0.0-31-generic 이다.\
 **재현되는 것은 절댓값이 아니라 기울기(+2 글자마다 약 4배)와 자릿수(3\~4배)다.**

@@ -56,7 +56,7 @@ enum Plain { A, B }
 - 컴파일하면 클래스 파일이 몇 개 생기는가?
 - `javap -v Op` 에만 나타나는 속성은 무엇이며, 그것이 어느 주제와 이어지는가?
 
-### 4. `EnumSet`·`EnumMap` 과 `HashSet`·`HashMap` 의 출력이 갈린다 (예측)
+### 4. `EnumSet`·`EnumMap` 과 `HashSet`·`HashMap` 의 출력이 달라진다 (예측)
 
 ```java
 enum Day { MON, TUE, WED, THU, FRI, SAT, SUN }
@@ -92,7 +92,7 @@ System.out.println(Status.valueOf("SHIPPED"));
 - `Enum.ordinal()` 의 javadoc 은 이 메서드에 대해 무엇이라고 쓰는가?
 - 그런데도 `EnumSet`/`EnumMap` 이 `ordinal` 을 쓰는 것은 왜 안전한가?
 
-### 6. 같은 파일이냐 다른 파일이냐로 `switch` 의 컴파일 결과가 갈린다 (왜)
+### 6. 같은 파일이냐 다른 파일이냐로 `switch` 의 컴파일 결과가 달라진다 (왜)
 
 ```java
 // (A) Ex.java 하나에 enum Day 와 kind() 가 같이 있다
@@ -113,7 +113,7 @@ static String kind(Day d) {
 ### 7. enum 이 싱글턴인 것을 무엇이 보장하는가 (왜)
 
 - 인스턴스를 더 만들려는 길이 **몇 개**이고 각각을 무엇이 막는가?
-- 그중 **컴파일러가** 막는 것과 **런타임이** 막는 것은 어떻게 갈리는가?
+- 그중 **컴파일러가** 막는 것과 **런타임이** 막는 것은 어떻게 달라지는가?
 - 리플렉션으로 생성자를 불러 보면 어떤 예외 메시지가 나오는가?
 - 이 보장이 [**06번 주제**](../06-initialization-order/)의 어느 규칙에 기대고 있는가?
 

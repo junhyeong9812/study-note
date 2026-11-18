@@ -143,7 +143,7 @@ HashMap<Integer, Long> - 원소마다 칸을 하나씩 잡고 정확한 횟수�
 #### `public long memoryBytes()` / `public int distinctCount()`
 
 - 하는 일:
-- 논리(기준선으로서 무엇을 재려고 있는가):
+- 논리(베이스라인으로서 무엇을 재려고 있는가):
 - 비용(왜):
 
 ### 구현 — ExactCardinality (`src/main/java/com/datastructure/sketch/ExactCardinality.java`)
@@ -523,12 +523,12 @@ estimate() = 작은 값 구간 보정
 - **분석 DB의 `APPROX_COUNT_DISTINCT` 류** — BigQuery(`APPROX_COUNT_DISTINCT`, HLL++)·Trino(`approx_distinct`, HLL)가 정확한 `COUNT(DISTINCT)` 대신 HLL 계열로 어림한다. ClickHouse는 함수마다 다르다 — `uniqHLL12`는 HLL, `uniqCombined`는 배열·해시표·HLL 혼합, 기본 `uniq`는 HLL이 아니라 적응형 샘플링이다(ClickHouse 문서). 집계를 파티션별로 돌리고 합치는 것이 문제 2다.
 - **웹 분석의 UV(unique visitors)** — 일·주·월 UV를 일별 HLL을 합쳐 만든다. 합집합은 되고 교집합("두 날 모두 온 사용자")은 안 되는 것이 정답 8번의 이유다.
 - **네트워크 트래픽 heavy hitter 탐지** — 요청을 가장 많이 보낸 IP 상위 k개(DDoS 감시·레이트 리밋 후보)를 CMS + 최소 힙으로 뽑는다. 문제 1의 구조다.
-- **Java `HashMap`·`HashSet`** — 기준선. 이 노트의 `ExactCounter`·`ExactCardinality`가 그것을 감싼 것이다. 종류 수가 작으면 이쪽이 맞다.
+- **Java `HashMap`·`HashSet`** — 베이스라인. 이 노트의 `ExactCounter`·`ExactCardinality`가 그것을 감싼 것이다. 종류 수가 작으면 이쪽이 맞다.
 - **다른 챕터의 재료** — [11-bloom-filter](../11-bloom-filter/2-summary.md)의 이중 해싱과 "한 방향으로만 틀린다"를 그대로 가져왔고, 문제 1의 상위 k 관리는 [07-heap](../07-heap/2-summary.md)의 `KthLargest`와 같은 발상이다.
 
 ## 적용 — 풀어나가는 법
 
-스케치 문제는 "정확해야 하는가"를 먼저 묻는 데서 갈린다.
+스케치 문제는 "정확해야 하는가"를 먼저 묻는 데서 달라진다.
 순서: ① 답이 위로만 틀려도 되는지 확인한다(안 되면 `HashMap`/`HashSet`) → ② 무엇을 묻는지 고른다 — "몇 번"이면 CMS, "몇 종류"면 HLL → ③ 허용 오차에서 표 크기를 역산한다(`epsilon`·`delta` → `width`·`depth`, `p` → `m`) → ④ 원소를 되찾아야 하면 스케치 밖에 후보 목록을 따로 둔다(문제 1이 스트림을 두 번 훑는 이유).
 아래 두 문제가 이 순서로 풀린다.
 
@@ -539,12 +539,12 @@ estimate() = 작은 값 구간 보정
 그래서 칸 수를 미리 고정하고, 11번의 비대칭("한 방향으로만 틀린다")을 `추정치 >= 실제` 라는 모양으로 다시 가져온다.
 `FrequencyEstimatorContractTest.java` 를 따라친 뒤 TODO 를 채운다(처음에는 96개 중 90개가 실패한다).
 
-- `ExactCounter` 의 TODO 1개 — `add(int, long)` (기준선)
-- `ExactCardinality` 의 TODO 1개 — `add(int)` (기준선)
+- `ExactCounter` 의 TODO 1개 — `add(int, long)` (베이스라인)
+- `ExactCardinality` 의 TODO 1개 — `add(int)` (베이스라인)
 - `CountMinSketch` 의 TODO 5개 — `widthFor` · `depthFor` · `indexes` · `add(int, long)` · `estimateCount`
 - `HyperLogLog` 의 TODO 4개 — `add` · `rawEstimate` · `estimate` · `merge`
 - `SketchProblems` 의 TODO 2개 — `heavyHitters` · `distinctAcrossShards`
-- 덩어리는 넷이다 — 기준선(정확 구현 2개) → 공식·이중 해싱·최소(CMS) → 랭크·조화평균·보정·merge(HLL) → 문제 2개
+- 덩어리는 넷이다 — 베이스라인(정확 구현 2개) → 공식·이중 해싱·최소(CMS) → 랭크·조화평균·보정·merge(HLL) → 문제 2개
 - 응용으로 따져볼 것: 왜 행별 **최소**인가 · 행(d)을 늘려도 오차 크기는 안 줄고 "한계를 넘을 확률"만 준다는 것 · 오차 `epsilon x 전체개수` 가 **절대량**이라 heavy hitter 에만 쓸모가 있다는 것 · HLL 이 작은 카디널리티에서 무너지고 linear counting 이 그것을 대신한다는 것 · `merge` 가 max 한 줄인데 결과가 바이트 단위로 같은 이유 · 합집합은 되고 **교집합은 안 되는** 이유 · 무작위(seed)를 주입받게 만든 덕에 11번에서 못 잡았던 `h2 == 0` 방어선을 여기서 잡는다는 것
 
 아래 서머리는 이 문제(README)를 분석·정리한 것이다.
@@ -623,7 +623,7 @@ estimate() = 작은 값 구간 보정
 ## 관련 주제·근거
 
 - 선행 — [11-bloom-filter](../11-bloom-filter/2-summary.md): 이중 해싱 `h1 + i*h2`와 "한 방향으로만 틀린다"의 원형. 여기서는 `h2 == 0` 방어선을 seed 주입으로 실제로 찌른다.
-- 선행 — [05-hashmap](../05-hashmap/2-summary.md) · [07-heap](../07-heap/2-summary.md): 기준선 `ExactCounter`/`ExactCardinality`의 재료, 문제 1의 상위 k 최소 힙.
+- 선행 — [05-hashmap](../05-hashmap/2-summary.md) · [07-heap](../07-heap/2-summary.md): 베이스라인 `ExactCounter`/`ExactCardinality`의 재료, 문제 1의 상위 k 최소 힙.
 - 후속 — [20-radix-trie](../20-radix-trie/2-summary.md): 여기서는 정확도를 팔아 공간을 얻었고, 거기서는 정확도를 그대로 두고 표현의 중복만 줄인다.
 - 연결 — [31-consistent-hashing](../31-consistent-hashing/2-summary.md): 샤드별로 세고 합치는 문제 2의 전제(어느 원소가 어느 샤드로 가는가).
 - 영역 표 — [data-structure/curriculum.md](../curriculum.md) `21-probabilistic-counting` (선행 `20`, 원전 Flajolet 외 2007 · Cormode–Muthukrishnan 2005).
@@ -660,5 +660,5 @@ estimate() = 작은 값 구간 보정
 - **merge / 샤드**: 데이터를 여러 서버(샤드)에 나눠 두고 각자 센 뒤, 레지스터끼리 max를 취해 합치는 것. 원본을 안 옮기고도 합계가 "정확히" 통째로 센 것과 같다.
 - **결합법칙·교환법칙**: 묶는 순서/두 항의 순서를 바꿔도 결과가 같다는 성질. max가 둘 다 지켜서 merge 순서가 자유롭다.
 - **멱등**: 같은 일을 반복해도 결과가 같다는 성질. HLL의 add가 그래서 중복을 저절로 걸러낸다.
-- **HashMap / HashSet**: 키→값 대응표 / 중복 없는 집합. 정확하지만 메모리가 원소 종류 수에 비례하는 기준선(정답지) 구현.
+- **HashMap / HashSet**: 키→값 대응표 / 중복 없는 집합. 정확하지만 메모리가 원소 종류 수에 비례하는 베이스라인(정답지) 구현.
 - **O(1) / O(depth) / O(m)**: 걸리는 시간의 눈금. 상수 / 행 수에 비례(행 수는 고정이라 사실상 상수) / 버킷 수에 비례.

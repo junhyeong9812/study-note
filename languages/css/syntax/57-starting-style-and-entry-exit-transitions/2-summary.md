@@ -127,7 +127,7 @@ CSS 는 에러가 없는 언어라 「안 걸렸다」와 「안 담겼다」와
 
 - 실측에서 **둘의 결과가 완전히 같았다** — 위 창 ④ 의 `b2`(바깥)와 `b3`(중첩)가 같은 키프레임을 냈다.
 - **중첩 형태의 명시도는 바깥 규칙의 명시도**다. `#b3 { @starting-style { … } }` 의 선언은 `(1,0,0)` 으로 경쟁한다.
-- CSSOM 에서는 갈린다 — 바깥 형태만 `CSSStartingStyleRule` 로 **최상위에 보이고**, 중첩 형태는 `CSSStyleRule` 안에 들어간다(창 ①).
+- CSSOM 에서는 달라진다 — 바깥 형태만 `CSSStartingStyleRule` 로 **최상위에 보이고**, 중첩 형태는 `CSSStyleRule` 안에 들어간다(창 ①).
 
 비용 — 없음. 취향이지만, **한 요소의 진입 전환은 중첩 형태가 읽기 쉽다**(선언이 한자리에 모인다).
 
@@ -336,7 +336,7 @@ transition: display 1s allow-discrete;
 display · visibility · overlay · content-visibility
 ```
 
-### 금지 사례 — 던져서 확인한 것
+### 금지 사례 — 실행해서 확인한 것
 
 ```css
 /* ✗ @starting-style 안에 또 @starting-style — 명세가 금지 */
@@ -350,7 +350,7 @@ overlay: auto;            /* 저자 스타일에서는 무시된다 */
 
 - **`allow-discrete` 는 값이지 속성이 아니다.** 단축에서는 속성 이름과 같은 자리(`display 1s allow-discrete`)에 쓰고,\
   롱핸드로는 `transition-behavior: allow-discrete` 라고 **따로** 쓴다.
-- **`transition-behavior` 는 속성별로 갈리지 않는다.** 롱핸드로 쓰면 `transition-property` 목록 **전체**에 같은 순서로 대응한다.
+- **`transition-behavior` 는 속성별로 달라지지 않는다.** 롱핸드로 쓰면 `transition-property` 목록 **전체**에 같은 순서로 대응한다.
 - `@starting-style` 은 **전환을 만들지 않는다.** `transition` 이 따로 걸려 있어야 한다 — **출발선만 그려 주는 것**이다.
 
 ## 어디서 틀리나

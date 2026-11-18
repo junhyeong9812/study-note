@@ -450,7 +450,7 @@
    "여러 짝"이 애초에 안 생긴다 — 그래서 행이 안 는다
 ```
 
-**「`IN` 이 느리니 `EXISTS` 로 바꿔라」는 이 판에서는 근거가 없다.**\
+**「`IN` 이 느리니 `EXISTS` 로 바꿔라」는 이 버전에서는 근거가 없다.**\
 느린 질의를 고칠 때 볼 것은 **문법이 아니라 인덱스·통계·조인 순서**다([목록의 **47번 주제**](../47-when-indexes-are-used/)·[**58번 주제**](../58-explain-plan-tree/)).
 
 > **재현 주** — PG 의 추정 행 수(`rows=1130`·`rows=1270`)는 **통계가 없을 때의 기본값**이다. 두 표가 작아 실제(4·3)와 무관하다.\
@@ -630,7 +630,7 @@ MySQL 계획의 `Filter: (e.dept_id is not null)` 이 그 사정을 보여 준�
 
 ### 13. `LEFT JOIN … IS NULL` 의 계획
 
-**두 엔진이 갈렸다. MySQL 은 안티 조인으로 바꿨고, PG 는 외부 조인 + 필터로 남겼다.**
+**두 엔진이 달라졌다. MySQL 은 안티 조인으로 바꿨고, PG 는 외부 조인 + 필터로 남겼다.**
 
 ```text
 ### SQL: EXPLAIN SELECT d.id, d.name FROM dept d LEFT JOIN emp e ON e.dept_id = d.id WHERE e.id IS NULL;
@@ -690,7 +690,7 @@ MySQL 계획의 `Filter: (e.dept_id is not null)` 이 그 사정을 보여 준�
 | `IN`/`EXISTS` 계획 (9번) | PG 18.6 · MySQL 8.4.10 | 각 2회 | **두 엔진 다 완전히 같은 계획** |
 | `JOIN`+`DISTINCT` 계획 (10번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | dedup 이 조인 뒤로 간다 |
 | `NOT EXISTS`/`NOT IN` 계획 (11번) | PG 18.6 · MySQL 8.4.10 | 각 2회 + PG `ANALYZE` 2회 | **`Anti Join` 연산자 이름** · `Rows Removed by Filter: 3` |
-| `LEFT JOIN … IS NULL` 계획 (13번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | **여기서만 두 엔진이 갈렸다** |
+| `LEFT JOIN … IS NULL` 계획 (13번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | **여기서만 두 엔진이 달라졌다** |
 
 **구현 의존 항목** — 9~13번의 **계획 전부**다. 연산자 이름·모양·비용은 옵티마이저의 선택이고, 통계·버전에 따라 달라질 수 있다.\
 추정 행 수는 **통계가 없을 때의 기본값**이라 재현되지 않을 수 있다. 볼 것은 모양과 연산자 이름이다.
@@ -703,8 +703,8 @@ MySQL 계획의 `Filter: (e.dept_id is not null)` 이 그 사정을 보여 준�
 
 **언어 보장 항목** — 1~8번. `NOT IN` 의 `NULL` 처리, `NOT EXISTS` 의 안전, `EXISTS` 의 `SELECT` 목록 무관, 세미 조인이 행을 안 늘리는 것은 전부 결과의 정의다.
 
-**방언이 갈리는 항목** — **결과는 한 자리도 안 갈렸다.** 갈린 것은 **13번의 실행 계획 하나**뿐이다.\
-목록 README 의 `19 … 표준` 표기는 **결과 기준으로 확인됐다** — 14·15번과 같은 성격이다(결과는 같고 계획만 갈린다).
+**방언이 달라지는 항목** — **결과는 한 자리도 달라지지 않았다.** 달라진 것은 **13번의 실행 계획 하나**뿐이다.\
+목록 README 의 `19 … 표준` 표기는 **결과 기준으로 확인됐다** — 14·15번과 같은 성격이다(결과는 같고 계획만 달라진다).
 
 **순서 보장** — 없다. 위 출력에 `ORDER BY` 를 붙인 것은 그 때문이다.\
 **`emp`·`dept` 변경** — 없다. 이 주제는 기존 두 표를 읽기만 했다.
@@ -712,6 +712,6 @@ MySQL 계획의 `Filter: (e.dept_id is not null)` 이 그 사정을 보여 준�
 ## 실행 환경
 
 근거는 **실행 결과**다 — 본문의 출력은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-2026-09-21 에 실제로 던져 받은 것이다. 실행 계획도 실제로 받은 것이고, 지어낸 출력은 없다.\
+2026-09-21 에 실제로 실행해 받은 것이다. 실행 계획도 실제로 받은 것이고, 지어낸 출력은 없다.\
 표는 기존 `emp`·`dept` 만 썼다 — **새로 만든 표가 없다.**\
 문서 근거는 [PG 18 Subquery Expressions](https://www.postgresql.org/docs/18/functions-subquery.html) · [MySQL 8.4 EXISTS/NOT EXISTS](https://dev.mysql.com/doc/refman/8.4/en/exists-and-not-exists-subqueries.html).

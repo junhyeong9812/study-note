@@ -1,6 +1,6 @@
 # kotlin/syntax/54 — `CoroutineContext` 와 디스패처 · `withContext` — 정리 (힌트)
 
-★★★ **본체는 첫째 창이다** — 「**디스패처 격자 — 디스패처 일곱 가지 × 블로킹 호출(`Thread.sleep(200)`) N 개 동시 → 스레드 이름이 하나뿐인가 · 전부 main 인가 · 가장 많이 겹친 순간 몇 개였나(구간 겹침) · 줄을 섰나**」. 시간은 **절댓값을 찍지 않는다** — 각 호출의 시작·끝 시각으로 **겹침 수**만 센다.
+★★★ **핵심은 첫째 창이다** — 「**디스패처 격자 — 디스패처 일곱 가지 × 블로킹 호출(`Thread.sleep(200)`) N 개 동시 → 스레드 이름이 하나뿐인가 · 전부 main 인가 · 가장 많이 겹친 순간 몇 개였나(구간 겹침) · 줄을 섰나**」. 시간은 **절댓값을 찍지 않는다** — 각 호출의 시작·끝 시각으로 **겹침 수**만 센다.
 
 ## 이 주제가 쓰는 세 층
 
@@ -8,7 +8,7 @@
 |---|---|---|
 | **언어 보장(stdlib)** | 컴파일러·stdlib 가 하는 것 | `CoroutineContext` 는 **키로 찾는 원소 집합**(`get`·`plus`·`minusKey`·`fold`) · `ContinuationInterceptor` 키 · ★ **`Thread.sleep` 을 `suspend` 함수 안에서 불러도 진단이 없다**((1)의 컴파일 줄) · 폐기 선언 `level = ERROR` 를 **에러로 만드는 것**은 컴파일러다((3)) |
 | **라이브러리 계약(kotlinx-coroutines KDoc)** | 라이브러리 문서가 약속한 것 | `Default` 는 「코어 수, 최소 2」 · `IO` 는 「64 또는 코어 수 중 큰 쪽」 · `Unconfined` 는 「중단 뒤 그 함수가 쓴 스레드에서 재개」 · `limitedParallelism` 은 「같은 스레드라는 보장은 없다 · mutex 가 아니다」 · `withContext` 는 「**새 lexically scoped 자식 코루틴**」 · ★ **언어가 아니다** |
-| **이 판의 관찰** | 1.11.0 + 이 머신에서 이번에 본 것 | 격자의 참/거짓 · `withContext` 안의 `Job` 클래스 이름(`DispatchedCoroutine` 등) · 스레드 이름(`kotlinx.coroutines.DefaultExecutor` · `DefaultDispatcher-worker-#`) · `BlockingEventLoop` |
+| **이 버전의 관찰** | 1.11.0 + 이 머신에서 이번에 본 것 | 격자의 참/거짓 · `withContext` 안의 `Job` 클래스 이름(`DispatchedCoroutine` 등) · 스레드 이름(`kotlinx.coroutines.DefaultExecutor` · `DefaultDispatcher-worker-#`) · `BlockingEventLoop` |
 
 ## 이 판
 
@@ -38,16 +38,16 @@ availableProcessors = 24
 
 - ★★ **코어 수는 머신에 매인다** — 격자는 이 수를 **직접 찍지 않고** `N = cores + 1` 처럼 **코어 수에서 유도한 크기**로 돌아서, 칸 값이 「`cores`」·「`all N`」 같은 **이름**으로 나온다. KDoc 대로라면 코어가 2\~63 개인 머신에서 같은 칸이 나온다(`IO` 의 `cores+1` 행은 `cores + 1 ≤ 64` 일 때만 「`all N`」이다 — **다른 머신에서는 돌리지 않았다**).
 
-## 흔들리는 칸 / 안 흔들리는 칸
+## 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| **흔들린다 — 머신에 매인다** | ★ `availableProcessors = 24` | 머신마다 다르다 — 그래서 격자가 이 수를 칸에 안 쓴다 |
-| **흔들린다 — 칸으로 안 만들었다** | 걸린 시간 · 스레드 이름의 숫자 | 시간은 **겹침 수**로만 · 이름의 숫자는 **`#` 로 가려** 찍었다(`unconf54.kt` 의 `tn54`) |
-| 안 흔들린다(이 머신) | ★★ 격자 8행 · 줄을 선 칸 수 | 200ms 블로킹이라 겹침 판정에 여유가 크다 — **격자를 여덟 판 돌려 출력 해시가 하나**였고(탐침), 캡처 두 벌도 같았다 |
+| **실행마다 달라진다 — 머신에 매인다** | ★ `availableProcessors = 24` | 머신마다 다르다 — 그래서 격자가 이 수를 칸에 안 쓴다 |
+| **실행마다 달라진다 — 칸으로 안 만들었다** | 걸린 시간 · 스레드 이름의 숫자 | 시간은 **겹침 수**로만 · 이름의 숫자는 **`#` 로 가려** 찍었다(`unconf54.kt` 의 `tn54`) |
+| 달라지지 않는다(이 머신) | ★★ 격자 8행 · 줄을 선 칸 수 | 200ms 블로킹이라 겹침 판정에 여유가 크다 — **격자를 여덟 판 돌려 출력 해시가 하나**였고(probe), 캡처 두 벌도 같았다 |
 | ★ **관찰일 뿐** | `Default.limitedParallelism(1)` 행의 「`one thread` = `true`」 | KDoc 이 **「같은 스레드라는 보장은 없다」** 고 적는다((5)) — 이 판·이 부하에서 **본 것**이지 약속이 아니다 |
-| 안 흔들린다 | 순서 로그(`within54` · `compose54` · `unconf54`) | 부모가 자식의 끝을 기다린 뒤 다음 줄로 간다 — **세 판 되풀이 해시가 셋, 각 3번**((4) 끝의 블록) |
-| 안 흔들린다 | 소스 발췌 · 진단 문구 · 종료 코드 | 같은 판이면 같다 |
+| 달라지지 않는다 | 순서 로그(`within54` · `compose54` · `unconf54`) | 부모가 자식의 끝을 기다린 뒤 다음 줄로 간다 — **세 판 되풀이 해시가 셋, 각 3번**((4) 끝의 블록) |
+| 달라지지 않는다 | 소스 발췌 · 진단 문구 · 종료 코드 | 같은 판이면 같다 |
 | ★ **판에 매인다** | 라이브러리 **1.11.0** 의 동작 전부 · 내부 클래스 이름 | 판이 바뀌면 다시 돌려라 |
 
 ★ 근거 — 캡처 스크립트를 처음부터 두 번 돌려 **블록 전체를 대조**했다(수치는 3-answer 의 「실행 검증」).
@@ -59,7 +59,7 @@ availableProcessors = 24
 | 비유 | 실체 | 이 문서에서 |
 |---|---|---|
 | 화구가 코어 수만큼 | `Dispatchers.Default` — 동시 실행 최대 `cores` | (1) ★ |
-| 멍하니 기다리면 화구가 막힌다 | `Thread.sleep` 은 스레드를 쥔 채 잔다 — 줄을 선다 | (1) ★ |
+| 멍하니 기다리면 화구가 막힌다 | `Thread.sleep` 은 스레드를 잡은 채 잔다 — 줄을 선다 | (1) ★ |
 | 기다리기 전용 화구 64개 | `Dispatchers.IO` — 상한 `max(64, cores)` | (1)(5) ★ |
 | 옆 주방에 다녀온다 | `withContext(IO) { }` — 결과를 들고 원래 디스패처로 | (2) ★ |
 | 주문서의 칸 | `CoroutineContext[Job]`·`[CoroutineName]`·`[ContinuationInterceptor]` | (3) |
@@ -89,11 +89,11 @@ availableProcessors = 24
 
 ## 동작 방식
 
-### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「부적용인 창」
+### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「해당 없는 창」
 
 | 창 | 무엇을 보여 주나 | 어디서 왔나 |
 |---|---|---|
-| ★★★ **디스패처 격자(실행 · 구간 겹침)** | 디스패처 × 블로킹 N 개 → 스레드 하나인가 · main 인가 · 가장 많이 겹친 수 · 줄을 섰나((1)) | ★ **본체 창** |
+| ★★★ **디스패처 격자(실행 · 구간 겹침)** | 디스패처 × 블로킹 N 개 → 스레드 하나인가 · main 인가 · 가장 많이 겹친 수 · 줄을 섰나((1)) | ★ **핵심 창** |
 | ★★ **`withContext` 로그** | 안쪽 `Job` 이 바깥 `Job` 의 자식인가 · 결과 · 예외 · 취소 · 경로마다 `Job` 클래스((2)) | — |
 | ★★ **문맥 합성 로그** | `+`·`minusKey`·`fold` 로 원소 수와 값((3)) | — |
 | ★★ **컴파일러 진단** | 디스패처 `+` 디스패처 → 폐기 에러 전문((3)) · `Thread.sleep` 은 **진단 0줄**((1)) | — |
@@ -101,12 +101,12 @@ availableProcessors = 24
 | ★★ **코루틴 소스 jar 발췌** | 디스패처 KDoc 의 상한 · `withContext` 의 세 갈래 경로((5)) | — |
 | **인용 — 다시 안 잰다** | `runBlocking` 은 스레드 하나 · `delay` 는 끼어들고 `Thread.sleep` 은 안 끼어든다 · `suspend` 호출 규칙 | [52번 주제](../52-coroutine-basics-suspend-scope-launch-async/) |
 | ★ **제5의 상태 — 창을 바꿔 물었다** | 「스레드 풀이 막혔나」를 **풀 내부 계측**(큐 길이·활성 스레드 수)이 아니라 **각 호출의 시작·끝 시각의 겹침 수**로 물었다 | (1) — 이 창은 **스레드가 몇 개 만들어졌는지는 못 본다**(이름 집합 크기가 1 인가만 본다) |
-| **부적용 — 실행 시간 · 처리량** | ★★★ 「`IO` 가 빠르다」·「`Default` 가 느리다」는 **재지 않았다** — 이 문서가 말하는 것은 **겹쳤나 줄을 섰나**뿐이다 | — |
-| **부적용 — IDE 경고** | 「부적절한 블로킹 호출」 경고는 **IDE 검사**다 — `kotlinc` 에는 없다((1)) · IDE 는 **돌리지 않았다** | — |
+| **해당 없음 — 실행 시간 · 처리량** | ★★★ 「`IO` 가 빠르다」·「`Default` 가 느리다」는 **재지 않았다** — 이 문서가 말하는 것은 **겹쳤나 줄을 섰나**뿐이다 | — |
+| **해당 없음 — IDE 경고** | 「부적절한 블로킹 호출」 경고는 **IDE 검사**다 — `kotlinc` 에는 없다((1)) · IDE 는 **돌리지 않았다** | — |
 
 ### (1) ★★★ 디스패처 격자 — 블로킹 N 개를 걸면
 
-**언제 쓰나** — 코루틴 안에서 JDBC·파일·옛 HTTP 클라이언트처럼 **스레드를 쥐고 기다리는** API 를 부를 때.
+**언제 쓰나** — 코루틴 안에서 JDBC·파일·옛 HTTP 클라이언트처럼 **스레드를 잡고 기다리는** API 를 부를 때.
 
 방법 — 행마다 코루틴 N 개를 `launch` 하고 각 코루틴이 `Thread.sleep(200)` 한다. 호출마다 **스레드 이름과 시작·끝 시각**을 모아 — 이름 집합 크기가 1 인가(`one thread`) · 전부 `main` 인가(`all on main`) · **가장 많이 겹친 순간의 수**(`most at once` — `N` 이면 `all N`, 코어 수면 `cores`, `IO` 상한이면 `ioLimit`) · 그 수가 N 보다 작은가(`queued`)를 찍는다. 마지막 줄은 **줄을 선 행 수**다. ★ N 은 코어 수에서 유도했다(`cores + 1` · `ioLimit + 1`).
 
@@ -202,7 +202,7 @@ rows where blocking calls queued: 6 / 8
 ```
 
 - ★★★ **8행 중 6행이 줄을 섰다** — 겹친 것은 **`Dispatchers.IO` 에 `cores + 1` 개**와 **`Default` 에서 `withContext(IO)` 로 옮긴 것** 둘뿐이다.
-- ★★★ **`Dispatchers.Default` 는 `cores` 개까지만 겹쳤다** — `cores + 1` 번째는 **앞의 하나가 끝나야** 시작했다. `Default` 의 스레드 수는 코어 수이고((5) KDoc), `Thread.sleep` 은 **스레드를 쥔 채** 자므로 그 스레드에서는 다른 코루틴이 못 돈다.
+- ★★★ **`Dispatchers.Default` 는 `cores` 개까지만 겹쳤다** — `cores + 1` 번째는 **앞의 하나가 끝나야** 시작했다. `Default` 의 스레드 수는 코어 수이고((5) KDoc), `Thread.sleep` 은 **스레드를 잡은 채** 자므로 그 스레드에서는 다른 코루틴이 못 돈다.
 - ★★★ **`withContext(Dispatchers.IO)` 로 감싸면 `Default` 에서 걸어도 전부 겹친다** — 블로킹 구간만 `IO` 로 옮겨졌다. `IO` 도 **상한이 있다** — `ioLimit + 1` 개를 걸자 `most at once` 가 **`ioLimit`**(이 머신에서 64)이었다. 「`IO` 는 무한」이 아니다.
 - ★★ **한 스레드짜리 넷(`runBlocking` · `Unconfined` · `newSingleThreadContext` · `limitedParallelism(1)`)은 전부 `1`** — 하나씩 차례로 잤다. `runBlocking` 과 `Unconfined` 는 **main 에서**, 나머지 둘은 **다른 스레드 하나에서** 돌았다.
 - ★★ **`Unconfined` 는 한 줄도 안 겹쳤다** — `launch(Unconfined)` 는 **부른 자리(main)에서 첫 중단점까지 바로** 돌고((4)), `Thread.sleep` 에는 중단점이 없으니 **`launch` 호출이 200ms 씩 막혔다.**
@@ -432,7 +432,7 @@ C4 after withContext(IO): main
 - ★★★ **`Unconfined` 는 `launch` 자리에서 바로 돈다** — `U1` 이 `M1` 보다 먼저, **main** 에서. 기본 `launch` 는 줄을 세우므로 `M2` 가 `C1` 보다 먼저다([52번 주제](../52-coroutine-basics-suspend-scope-launch-async/)가 잰 「`launch { }` 는 몸통을 바로 안 돌린다」).
 - ★★★ **중단 뒤에는 다른 스레드다** — `delay` 뒤 `U2` 는 **`kotlinx.coroutines.DefaultExecutor`**(지연을 깨우는 스레드), `withContext(IO)` 뒤 `U4` 는 **IO 워커 그대로** 남았다. KDoc 「`lets the coroutine resume in whatever thread that is used by the corresponding suspending function`」.
 - ★★ **대조 — `runBlocking` 안 기본 `launch` 는 늘 main 으로 돌아온다**(`C2`·`C4`) — `withContext` 의 결과가 **원래 디스패처(`BlockingEventLoop`)로 다시 디스패치**되기 때문이다((5) SLOW PATH).
-- ★ 스레드 이름은 **내부 구현**이다 — 숫자는 `#` 로 가렸고, `DefaultExecutor` 라는 이름도 이 판의 것이다.
+- ★ 스레드 이름은 **내부 구현**이다 — 숫자는 `#` 로 가렸고, `DefaultExecutor` 라는 이름도 이 버전의 것이다.
 
 ```text
 ===== for i in 1 2 3; do java -cp o54w:kotlinx-coroutines-core-jvm-1.11.0.jar:kotlin-stdlib.jar Within54Kt | md5sum; java -cp o54c:kotlinx-coroutines-core-jvm-1.11.0.jar:kotlin-stdlib.jar Compose54Kt | md5sum; java -cp o54u:kotlinx-coroutines-core-jvm-1.11.0.jar:kotlin-stdlib.jar Unconf54Kt | md5sum; done | sort | uniq -c =====
@@ -483,7 +483,7 @@ C4 after withContext(IO): main
 ```
 
 - ★★★ **`Default`** — 「`the maximum number of threads used by this dispatcher is equal to the number of CPU cores, but is at least two`」. (1)의 `cores` 칸이 이것이다.
-- ★★★ **`IO`** — 「`It defaults to the limit of 64 threads or the number of cores (whichever is larger)`」 · 상한은 시스템 속성 `kotlinx.coroutines.io.parallelism` 으로 바꾼다. (1)의 `ioLimit` 칸이 이것이다. [`../../언어-특성/README.md`](../../언어-특성/README.md) §6 의 「64스레드 상한」이 **이 판에서도 같은 문장**이다.
+- ★★★ **`IO`** — 「`It defaults to the limit of 64 threads or the number of cores (whichever is larger)`」 · 상한은 시스템 속성 `kotlinx.coroutines.io.parallelism` 으로 바꾼다. (1)의 `ioLimit` 칸이 이것이다. [`../../언어-특성/README.md`](../../언어-특성/README.md) §6 의 「64스레드 상한」이 **이 버전에서도 같은 문장**이다.
 - ★★ **`Unconfined`** — 「`executes the initial continuation of a coroutine in the current call-frame and lets the coroutine resume in whatever thread …`」 — (4)의 `U1` 과 `U2`·`U4`.
 
 ```text
@@ -627,7 +627,7 @@ CoroutineName(form54)
 | `Default` = 코어 수(최소 2) · `IO` = `max(64, cores)` | ★★★ **라이브러리 계약(KDoc)** | (5) |
 | `withContext` 가 새 lexically scoped 자식을 만들고 예외를 부른 자리로 던진다 | ★★★ **라이브러리 계약(KDoc)** | (2)(5) |
 | `Unconfined` 가 깨운 쪽 스레드에서 재개 | ★★ **라이브러리 계약(KDoc)** — 어느 스레드인지(`DefaultExecutor`)는 **구현** | (4)(5) |
-| `limitedParallelism(1)` 이 한 스레드에서만 돌았다 | ★ **이 판의 관찰** — KDoc 은 보장하지 않는다 | (1)(5) |
+| `limitedParallelism(1)` 이 한 스레드에서만 돌았다 | ★ **이 버전의 관찰** — KDoc 은 보장하지 않는다 | (1)(5) |
 | `DispatchedCoroutine`·`UndispatchedCoroutine`·`ScopeCoroutine`·`BlockingEventLoop` · 스레드 이름 | ★ **라이브러리 구현(1.11.0)** | (2)(3)(4) |
 | 「`IO` 가 빠르다」 | **재지 않았다** | — |
 
@@ -647,7 +647,7 @@ CoroutineName(form54)
 
 ## 핵심 문장
 
-1. **디스패처는 코루틴이 도는 스레드를 고르고, 블로킹 호출은 그 스레드를 쥔 채 잔다** — `Default` 에서는 코어 수를 넘으면 줄을 선다(8행 중 6행이 줄을 섰다).
+1. **디스패처는 코루틴이 도는 스레드를 고르고, 블로킹 호출은 그 스레드를 잡은 채 잔다** — `Default` 에서는 코어 수를 넘으면 줄을 선다(8행 중 6행이 줄을 섰다).
 2. **`withContext(Dispatchers.IO)` 로 블로킹 구간만 옮기면 겹친다** — 그러나 `IO` 도 `max(64, cores)` 에서 멈춘다.
 3. **`withContext` 는 새 lexically scoped 자식 `Job` 을 만들어 끝날 때까지 기다리고, 결과를 돌려주며, 예외는 부른 자리로 던진다** — 취소는 안으로 번진다.
 4. **`CoroutineContext` 는 키로 찾는 원소 집합이고 `+` 는 같은 키를 덮어쓴다** — 디스패처끼리 `+` 는 라이브러리가 막아 둔 에러다.
@@ -670,7 +670,7 @@ CoroutineName(form54)
 
 > **디스패처(`CoroutineDispatcher`)** — 코루틴을 **어느 스레드에서 돌릴지** 정하는 문맥 원소. 키는 `ContinuationInterceptor`.
 
-> **블로킹 호출** — 끝날 때까지 **스레드를 쥔 채 기다리는** 호출(`Thread.sleep` · JDBC · `InputStream.read`). 중단점이 아니다.
+> **블로킹 호출** — 끝날 때까지 **스레드를 잡은 채 기다리는** 호출(`Thread.sleep` · JDBC · `InputStream.read`). 중단점이 아니다.
 
 > **`withContext(ctx) { }`** — 문맥을 바꿔 블록을 돌리고, 끝날 때까지 부른 쪽을 멈춘 뒤 **결과를 돌려주는** `suspend` 함수.
 
@@ -694,5 +694,5 @@ CoroutineName(form54)
 `kotlinc` 7회 · `java` 6회 + 순서 로그 셋을 세 판씩 되풀이한 9회 · 코루틴 소스 jar 발췌 8곳.\
 ★★★ **라이브러리 판 — `kotlinx-coroutines-core-jvm` 1.11.0**(이 머신의 gradle 캐시에 있던 판 중 가장 새 것 · 매니페스트 `Implementation-Version: 1.11.0`). 디스패처·`withContext`·`CoroutineName` 은 전부 **이 라이브러리의 것**이고 언어에는 `CoroutineContext`·`ContinuationInterceptor` **인터페이스만** 있다.\
 ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「줄을 선 칸 N / M」은 격자 프로그램이 스스로 센 것**이다.
-**버전** — `limitedParallelism(parallelism, name)` 의 `name` 인자 판은 이 판의 소스에 있다(도입 판은 **확인하지 않았다**). `Dispatchers.IO` 의 기본 상한은 KDoc 에 「64 또는 코어 수 중 큰 쪽」((5)).
+**버전** — `limitedParallelism(parallelism, name)` 의 `name` 인자 판은 이 버전의 소스에 있다(도입 판은 **확인하지 않았다**). `Dispatchers.IO` 의 기본 상한은 KDoc 에 「64 또는 코어 수 중 큰 쪽」((5)).
 **경계** — ★★★ 「코루틴은 스레드가 아니라 컴파일러 변환」이라는 **논지**와 「JDBC 는 결국 `withContext(IO)` 로 격리된다 · 가상 스레드와의 대비」는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §6 이 정본이다. **`suspend` 호출 규칙 · `runBlocking` 이 스레드 하나로 돈다 · `delay` 대 `Thread.sleep` 끼어들기**는 [52번 주제](../52-coroutine-basics-suspend-scope-launch-async/)가 쟀다 — 여기서는 인용만 한다. **`Job` 트리에서 취소·예외가 번지는 규칙**은 [53번 주제](../53-structured-concurrency-job-cancellation-exceptions/)다. 공유 가변 상태(`Mutex`·단일 스레드 한정)는 [56번 주제](../56-channel-mutex-and-shared-mutable-state/)다. 스레드 개념은 [`cs/foundations/process-thread/`](../../../../cs/foundations/process-thread/) 가 정본이다.

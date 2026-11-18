@@ -194,7 +194,7 @@ fun more() {
 선행은 [13번 주제](../13-extension-functions-and-properties/)다 — 확장 함수가 **정적 호출**이라는 것을 거기서 봤다. `infix` 의 우선순위는 [09번 주제](../09-varargs-spread-local-and-infix-functions/)가 정본이다.
 
 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
-이 주제의 모든 답은 **kotlinc 2.4.20 · JRE 21.0.5** 에서 실제로 던져 받은 것이다.
+이 주제의 모든 답은 **kotlinc 2.4.20 · JRE 21.0.5** 에서 실제로 실행해 받은 것이다.
 
 ## 복습 기록
 

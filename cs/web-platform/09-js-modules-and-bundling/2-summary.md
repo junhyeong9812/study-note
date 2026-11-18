@@ -273,7 +273,7 @@ function reloadOnce() {
 
 - **현상**: React 훅 오류("Invalid hook call"), 상태 공유 라이브러리의 상태가 둘로 갈림.
 - **보이는 형태**: 번들 분석에 같은 패키지가 두 경로·두 버전으로 보인다.
-- **원인**: 의존 해석이 서로 다른 버전·경로로 갈렸다(중복 설치, 마이크로 프론트엔드별 사본).
+- **원인**: 의존 해석이 서로 다른 버전·경로로 나뉘었다(중복 설치, 마이크로 프론트엔드별 사본).
 - **대처**: 패키지 매니저 dedupe·`resolutions`/`overrides`, 번들러 alias로 한 경로에 고정. 마이크로 프론트엔드의 공유 모듈은 [22 `islands-and-micro-frontends`](../22-islands-and-micro-frontends/2-summary.md).
 
 ## 핵심 문장

@@ -414,7 +414,7 @@ done
 
 **환경** — node v18.19.1 · v20.19.6 · Google Chrome 151(헤드리스 — 하네스는 2-summary 맨 위 부분) · tsc 7.0.2 · x86-64 Linux.
 
-★★★ **이 주제의 본체는 지원 판별 격자다** — 판 셋 × 기능 일곱. **1번 문항이 이 주제의 중심이고, 3번 · 4번이 그다음이다.**
+★★★ **이 주제의 핵심은 지원 판별 격자다** — 판 셋 × 기능 일곱. **1번 문항이 이 주제의 중심이고, 3번 · 4번이 그다음이다.**
 
 **선행** — [32](../32-error-handling-and-error/2-summary.md) · [20](../20-generators/2-summary.md) · [40](../40-async-iteration-and-for-await/2-summary.md) · [47](../47-weakref-and-finalizationregistry/2-summary.md).
 

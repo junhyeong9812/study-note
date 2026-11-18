@@ -1,6 +1,6 @@
 # web-api/19 — `passive` 와 스크롤 성능: 기본값이 바뀐 이유 — 정리 (힌트)
 
-**이 판의 Chrome**
+**이 버전의 Chrome**
 
 ```text
 $ google-chrome --version
@@ -8,30 +8,30 @@ Google Chrome 151.0.7922.173
 (exit 0)
 ```
 
-### 흔들리는 칸 / 안 흔들리는 칸
+### 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| **안 흔들린다** | 기본값 격자 42칸 · 인자 꼴 9줄 · body 바꿔 끼우기 · 진짜 입력의 「불렸나 · `cancelable` · `defaultPrevented` · 움직였나」 · 콘솔 줄 수 · 섞인 리스너의 `cancelable` · 탭의 `click` 횟수 | 캡처 네 판이 **한 글자도 같았다** |
+| **달라지지 않는다** | 기본값 격자 42칸 · 인자 꼴 9줄 · body 바꿔 끼우기 · 진짜 입력의 「불렸나 · `cancelable` · `defaultPrevented` · 움직였나」 · 콘솔 줄 수 · 섞인 리스너의 `cancelable` · 탭의 `click` 횟수 | 캡처 네 번이 **한 글자도 같았다** |
 | **흔들릴 수 있어 안 실었다** | 스크롤한 **거리**(`scrollY` 의 숫자) | 터치는 끄는 속도에 따라 관성이 붙는다. 그래서 **「움직였나(예/아니오)」로만** 찍었다 |
 | ★ **못 잰다** | **스크롤 지연 · 프레임 · 입력에서 화면까지의 시간** | 이 하네스는 **합성 스레드의 시간**을 보지 못한다. **안 돌려 본 것이 아니라 못 잰 것**이다 |
-| **흔들린다** | Chrome 판 번호 | 판이 오르면 바뀐다 |
+| **실행마다 달라진다** | Chrome 판 번호 | 버전이 오르면 바뀐다 |
 
 - 재대조에서 정규화하는 칸은 없다. **위 표에 없는 차이는 전부 고칠 것**이다.
 - ★ **스크롤이 끝났나**는 시간 상수로 기다리지 않았다 — **`scrollend` 이벤트**가 오면 끝, 안 오면(막힌 경우) **animation frame 30장**을 넘긴 뒤 끝이다. 이 편이 읽는 것은 **거리가 아니라 「0 인가 아닌가」** 라서 30장 안에 끝나지 않은 스크롤도 판정이 같다.
 
-### 이 주제가 쓰는 창 / 부적용인 창
+### 이 주제가 쓰는 창 / 해당 없는 창
 
 | 창 | 이 주제에서 | 무엇을 답하나 |
 |---|---|---|
-| 창 ① `--dump-dom` 트리 | **부적용** | 리스너의 성질은 트리에 안 남는다 |
+| 창 ① `--dump-dom` 트리 | **해당 없음** | 리스너의 성질은 트리에 안 남는다 |
 | 창 ② 노드 프로브 | ★ **쓴다** | `scrollY`·`scrollTop` 이 **0 에서 움직였나**((4)·(5)) |
-| 창 ③ 같은 것을 두 번 읽기 | **부적용** | — |
-| **창 ④ 디스패치 계수기 → 행동으로 묻는 passive 판정** | ★★ **본체** | `preventDefault()` 뒤 **`defaultPrevented` 가 `true` 로 바뀌나** — 바뀌면 passive 가 아니다 |
+| 창 ③ 같은 것을 두 번 읽기 | **해당 없음** | — |
+| **창 ④ 디스패치 계수기 → 행동으로 묻는 passive 판정** | ★★ **핵심** | `preventDefault()` 뒤 **`defaultPrevented` 가 `true` 로 바뀌나** — 바뀌면 passive 가 아니다 |
 | **진짜 입력(CDP)** | ★ **쓴다 — 입력 쪽** | 진짜 휠 · 진짜 터치 끌기 |
 | **창 ⑤ 콘솔(CDP `Log` 도메인)** | ★ **쓴다** | 막으려다 무시된 호출마다 **몇 줄이 남나**((6)) |
 
-- ★★ **제5의 상태 — 「이 리스너가 passive 인가」를 옵션값이 아니라 행동으로 물었다.** 표준에 등록된 리스너의 옵션을 **읽는 표면이 없다**([15번 주제](../15-listener-registration/2-summary.md) — `EventTarget` 의 표면은 세 메서드뿐). 그래서 **리스너 안에서 `preventDefault()` 를 불러 보고 `defaultPrevented` 로 판정**했다. ★ 바꾼 창이 못 보는 것 — **`cancelable: false` 인 이벤트**에서는 passive 든 아니든 `defaultPrevented` 가 `false` 다. 그래서 격자는 **`cancelable: true` 로 만든 합성 이벤트**로만 던졌다.
+- ★★ **제5의 상태 — 「이 리스너가 passive 인가」를 옵션값이 아니라 행동으로 물었다.** 표준에 등록된 리스너의 옵션을 **읽는 표면이 없다**([15번 주제](../15-listener-registration/2-summary.md) — `EventTarget` 의 표면은 세 메서드뿐). 그래서 **리스너 안에서 `preventDefault()` 를 불러 보고 `defaultPrevented` 로 판정**했다. ★ 바꾼 창이 못 보는 것 — **`cancelable: false` 인 이벤트**에서는 passive 든 아니든 `defaultPrevented` 가 `false` 다. 그래서 격자는 **`cancelable: true` 로 만든 합성 이벤트**로만 실행했다.
 
 ### 도구가 못 보는 것
 
@@ -84,7 +84,7 @@ Google Chrome 151.0.7922.173
 
 **언제 쓰나** — 「나는 `passive` 를 쓴 적이 없는데 `preventDefault()` 가 안 먹는다」일 때.
 
-**던진 것** — 대상 일곱 × 이벤트 여섯에 **옵션 없이** 리스너를 달고, `cancelable: true` 인 합성 이벤트를 던져 `preventDefault()` 뒤의 `defaultPrevented` 를 읽었다. [15번 주제](../15-listener-registration/2-summary.md)의 (10)이 **10칸**을 쟀고 **「?」로 남긴 칸**을 여기서 채운다. 아래 (2)·(3)의 블록도 같은 실행에서 잘라 낸 것이다.
+**실행한 것** — 대상 일곱 × 이벤트 여섯에 **옵션 없이** 리스너를 달고, `cancelable: true` 인 합성 이벤트를 던져 `preventDefault()` 뒤의 `defaultPrevented` 를 읽었다. [15번 주제](../15-listener-registration/2-summary.md)의 (10)이 **10칸**을 쟀고 **「?」로 남긴 칸**을 여기서 채운다. 아래 (2)·(3)의 블록도 같은 실행에서 잘라 낸 것이다.
 
 ```html
 <!-- wa16b-19-default.html -->
@@ -235,8 +235,8 @@ window 와 div 가 갈린 줄 = 7 / 9
 
 - ★★ **`window` 에서는 `{ passive: false }` 한 줄만 먹힌다.** **`false`·`true`·`{}`·`{ capture: true }`·`{ passive: undefined }`·`{ once: true }`** 는 전부 **기본이 passive** 다.
 - ★ **`false` 는 `capture` 다** — 세 번째 인자가 불리언이면 **`capture` 로만** 읽힌다([15번 주제](../15-listener-registration/2-summary.md)의 동일성 격자). `passive` 는 **안 적은 것**이 된다.
-- ★ **`{ passive: undefined }` 도 안 적은 것처럼** 굴었다 — 명세의 flatten more options 는 「`passive` **가 있으면**」 그 값을 쓴다. `undefined` 를 준 멤버가 「없는 것」으로 읽힌 것은 **이 판의 결과**이고, 그 규칙을 정하는 WebIDL 의 사전 변환 절은 **열어 확인하지 않았다.**
-- **`div` 에서는 `{ passive: true }` 만 무시**된다 — 7 / 9 줄이 `window` 와 갈렸다.
+- ★ **`{ passive: undefined }` 도 안 적은 것처럼** 굴었다 — 명세의 flatten more options 는 「`passive` **가 있으면**」 그 값을 쓴다. `undefined` 를 준 멤버가 「없는 것」으로 읽힌 것은 **이 버전의 결과**이고, 그 규칙을 정하는 WebIDL 의 사전 변환 절은 **열어 확인하지 않았다.**
+- **`div` 에서는 `{ passive: true }` 만 무시**된다 — 7 / 9 줄이 `window` 와 달라졌다.
 
 ```text
    passive 가 정해지는 길 — DOM 「flatten more options」 + 「add an event listener」
@@ -284,7 +284,7 @@ $ google-chrome --headless --disable-gpu --no-sandbox --window-size=1000,800 --d
 
 **언제 쓰나** — 「합성 이벤트로는 `cancelable: true` 인데 실제 휠에서는?」일 때.
 
-**던진 것** — 높이 3000px 문서와 안쪽 스크롤 상자. 리스너는 **`preventDefault()` 를 부른다.** 진짜 휠을 **아래로 100** 한 번 굴리고, 문서(`scrollY`)와 상자(`scrollTop`)가 0 에서 움직였나를 본다. 매 판 스크롤을 0 으로 돌리고 리스너를 뗀다. 아래 (5)의 블록도 같은 실행에서 잘라 낸 것이다.
+**실행한 것** — 높이 3000px 문서와 안쪽 스크롤 상자. 리스너는 **`preventDefault()` 를 부른다.** 진짜 휠을 **아래로 100** 한 번 굴리고, 문서(`scrollY`)와 상자(`scrollTop`)가 0 에서 움직였나를 본다. 매 판 스크롤을 0 으로 돌리고 리스너를 뗀다. 아래 (5)의 블록도 같은 실행에서 잘라 낸 것이다.
 
 ```html
 <!-- wa16b-19-real.html -->
@@ -407,13 +407,13 @@ $ python3 wa16b-cdp.py page wa16b-19-real.html | sed -n '1,10p'
                     「이벤트를 uncancelable 로 만들 수 있다」
 ```
 
-- ★ **그래서 진짜 입력에서는 「`cancelable` 을 보고 막을 수 있나 판정」이 맞게 된다** — 합성 이벤트([15번 주제](../15-listener-registration/2-summary.md))에서는 그것이 틀렸다. **같은 코드의 답이 입력 종류에 따라 갈린다.** [17번 주제](../17-stoppropagation-vs-preventdefault/2-summary.md)의 「막을 수 있나(`cancelable`)와 막혔나(`defaultPrevented`)는 다르다」가 합성 쪽의 이야기다.
+- ★ **그래서 진짜 입력에서는 「`cancelable` 을 보고 막을 수 있나 판정」이 맞게 된다** — 합성 이벤트([15번 주제](../15-listener-registration/2-summary.md))에서는 그것이 틀렸다. **같은 코드의 답이 입력 종류에 따라 달라진다.** [17번 주제](../17-stoppropagation-vs-preventdefault/2-summary.md)의 「막을 수 있나(`cancelable`)와 막혔나(`defaultPrevented`)는 다르다」가 합성 쪽의 이야기다.
 
 ### (5) ★★ 진짜 터치 — `touchmove` 기본 passive 와 `touch-action`
 
 **언제 쓰나** — 모바일에서 「끌기로 그림을 옮기는데 페이지가 같이 스크롤된다」일 때.
 
-**던진 것** — 문서 위의 한 점에 손가락을 대고 **위로 100 을 다섯 번에 나눠** 끈 뒤 뗐다. 마지막 줄은 리스너 없이 **`touch-action: none` 인 상자** 위에서 끌었다.
+**실행한 것** — 문서 위의 한 점에 손가락을 대고 **위로 100 을 다섯 번에 나눠** 끈 뒤 뗐다. 마지막 줄은 리스너 없이 **`touch-action: none` 인 상자** 위에서 끌었다.
 
 ```text
 $ python3 wa16b-cdp.py page wa16b-19-real.html | sed -n '11,17p'
@@ -452,7 +452,7 @@ $ python3 wa16b-cdp.py page wa16b-19-real.html | sed -n '11,17p'
 
 **언제 쓰나** — 「콘솔에 경고가 없으니 passive 문제는 없다」고 읽으려 할 때.
 
-**던진 것** — passive 리스너 안에서 `preventDefault()` 를 부르는 네 칸, **칸마다 네 번**. 주소의 `#1`\~`#4` 로 **한 칸씩 따로** 열어 CDP `Log` 도메인에 남은 줄을 셌다.
+**실행한 것** — passive 리스너 안에서 `preventDefault()` 를 부르는 네 칸, **칸마다 네 번**. 주소의 `#1`\~`#4` 로 **한 칸씩 따로** 열어 CDP `Log` 도메인에 남은 줄을 셌다.
 
 ```html
 <!-- wa16b-19-console.html -->
@@ -560,7 +560,7 @@ javascript · error · Unable to preventDefault inside passive event listener in
 (exit 0)
 ```
 
-- **두 줄은 그 페이지의 14행 리스너(명시 `{ passive: true }`)가 두 번 불린 것**과 맞는다 — 한 번은 첫 디스패치, 한 번은 같은 `#상자` 에 `wheel` 을 던진 격자 줄에서다. **나머지 호출은 전부 ③ 칸(기본 passive + 합성)** 이라 **한 줄도 안 남았다.** 이 판에서는 **합치는 것이 아니라 ③ 칸이 침묵하는 것**이었다.
+- **두 줄은 그 페이지의 14행 리스너(명시 `{ passive: true }`)가 두 번 불린 것**과 맞는다 — 한 번은 첫 디스패치, 한 번은 같은 `#상자` 에 `wheel` 을 던진 격자 줄에서다. **나머지 호출은 전부 ③ 칸(기본 passive + 합성)** 이라 **한 줄도 안 남았다.** 이 버전에서는 **합치는 것이 아니라 ③ 칸이 침묵하는 것**이었다.
 - ★ **그래서 콘솔은 「무시가 있었다」의 근거는 되지만 「없었다」의 근거는 못 된다.** 합성 이벤트로 짠 테스트에서는 **기본 passive 의 무시가 콘솔에 안 보인다.**
 
 ```text
@@ -665,12 +665,12 @@ $ python3 wa16b-cdp.py page wa16b-19-more.html | sed -n '4,6p'
 - ★ **`touchstart` 를 `{ passive: false }` 로 막자 탭의 `click` 이 0번**이 됐다. 막지 않으면 1번이었다.
 - ★ **그래서 「스크롤을 막으려고 `touchstart` 에서 `preventDefault()`」는 그 영역의 탭(클릭)까지 죽인다.** 스크롤만 막고 싶으면 **`touchmove`** 에서 막거나 **`touch-action`** 을 쓴다((5)).
 
-### (8) ★ 층을 가른다 — 명세 · Chrome 의 개입 · 이 판의 관찰
+### (8) ★ 층을 가른다 — 명세 · Chrome 의 개입 · 이 버전의 관찰
 
 **언제 쓰나** — 「문서 수준 기본 passive 는 브라우저의 꼼수다」 또는 「표준이다」 중 무엇으로 적어야 하나.
 
 - ★★ **지금은 DOM 표준 본문에 있다** — 「default passive value」 절이 (1)의 사각형을 그대로 정의한다(기준일에 열어 확인).
-- ★ **출발은 Chrome 의 개입(intervention)이었다** — chromestatus 에 **터치 쪽이 Chrome 56**, **휠 쪽이 Chrome 73** 에 기본으로 켜졌다고 적혀 있다. 이 판의 콘솔도 출처를 **`intervention`** 으로 찍고 그 기록의 주소를 건다((6)).
+- ★ **출발은 Chrome 의 개입(intervention)이었다** — chromestatus 에 **터치 쪽이 Chrome 56**, **휠 쪽이 Chrome 73** 에 기본으로 켜졌다고 적혀 있다. 이 버전의 콘솔도 출처를 **`intervention`** 으로 찍고 그 기록의 주소를 건다((6)).
 - ★ **두 기록의 「표준화 상태」 칸은 아직 「인큐베이션」** 으로 남아 있다 — **표준 본문보다 늦게 갱신된 메타데이터**로 읽는다. 이 문서의 층 판정은 **표준 본문**을 따른다.
 - **진짜 입력에서 `cancelable` 이 `false` 로 오는 것** — 명세는 2.8 절에서 「그렇게 **할 수 있다**」는 **설명**으로만 적는다. **그렇게 하는 것은 Chrome 의 구현**이고 이 편은 그것을 **관찰**했다((4)·(5)).
 - ★★★ **「성능」은 이 편이 잰 것이 아니다.** chromestatus 의 휠 쪽 기록은 「**개입이 휠 스크롤의 입력부터 화면 반영까지의 지연을 5% 줄였다**」는 **Chromium 쪽 실험 결과**를 적는다 — **그들의 측정**이지 이 편의 측정이 아니다. 이 편은 그 수치를 **재현하지 않았다.**
@@ -759,12 +759,12 @@ $ python3 wa16b-cdp.py page wa16b-19-more.html | sed -n '4,6p'
 
 | 이 문서의 서술 | 누가 보장하나 |
 |---|---|
-| `window`·`document`·`html`·`body` × 네 이벤트가 **옵션을 생략하면 passive** 인 것 | **명세**(DOM — default passive value) · 출발은 Chrome 의 개입(chromestatus) · **이 판도 42칸이 그대로였다**((1)) |
+| `window`·`document`·`html`·`body` × 네 이벤트가 **옵션을 생략하면 passive** 인 것 | **명세**(DOM — default passive value) · 출발은 Chrome 의 개입(chromestatus) · **이 버전도 42칸이 그대로였다**((1)) |
 | 불리언 인자·`{}`·`{ passive: undefined }` 가 **passive 를 안 정한 것**으로 읽히는 것 | **명세**(DOM — flatten more options) |
-| passive 가 **등록 순간에** 정해지는 것 | **명세**(DOM — add an event listener) · 이 판도 그랬다((3)) |
+| passive 가 **등록 순간에** 정해지는 것 | **명세**(DOM — add an event listener) · 이 버전도 그랬다((3)) |
 | passive 리스너 안의 `preventDefault()` 가 **아무것도 안 하는** 것 | **명세**(DOM — set the canceled flag) |
-| 리스너가 전부 passive 면 **이벤트를 uncancelable 로 보내는** 것 | ★ **명세는 「할 수 있다」는 설명(2.8 절)** · **하는 것은 Chrome 의 구현** · 이 판에서 관찰((4)·(5)) — 비passive 가 하나 끼면 `cancelable` 이 `true` 로 돌아왔다((7)) |
-| `touchstart` 를 막으면 **탭의 `click` 이 안 나는** 것 | ★ **이 판의 관찰**((7)) — 어느 명세 절이 그렇게 정하는지 이 문서는 확인하지 않았다 |
+| 리스너가 전부 passive 면 **이벤트를 uncancelable 로 보내는** 것 | ★ **명세는 「할 수 있다」는 설명(2.8 절)** · **하는 것은 Chrome 의 구현** · 이 버전에서 관찰((4)·(5)) — 비passive 가 하나 끼면 `cancelable` 이 `true` 로 돌아왔다((7)) |
+| `touchstart` 를 막으면 **탭의 `click` 이 안 나는** 것 | ★ **이 버전의 관찰**((7)) — 어느 명세 절이 그렇게 정하는지 이 문서는 확인하지 않았다 |
 | 콘솔 경고의 **출처·문구·줄 수** · ③ 칸의 침묵 | ★ **구현.** Chrome 의 것이다((6)) |
 | `touch-action: none` 이 리스너 없이 터치 스크롤을 막는 것 | ★ **CSS(Pointer Events 쪽) 명세의 몫**이고 이 문서는 **Chrome 151 의 관찰**로만 적는다((5)) |
 | **스크롤 지연·성능 이득** | ★★ **재지 않았다.** 「5% 감소」는 **Chromium 의 실험**을 인용한 것이다 |
@@ -781,7 +781,7 @@ $ python3 wa16b-cdp.py page wa16b-19-more.html | sed -n '4,6p'
 
 ## 핵심 문장
 
-1. **문서 수준 네 자리 × 스크롤 네 이벤트는 옵션을 생략하면 passive** 다 — 이 판 42칸 중 16칸, 사각형 하나.
+1. **문서 수준 네 자리 × 스크롤 네 이벤트는 옵션을 생략하면 passive** 다 — 이 버전 42칸 중 16칸, 사각형 하나.
 2. **되돌리는 꼴은 `{ passive: false }` 를 적는 것뿐**이다 — 불리언 `false` 는 `capture` 다.
 3. **passive 는 등록 순간에 굳는다.**
 4. **진짜 휠·터치에서 passive 리스너는 `cancelable: false` 인 이벤트를 받고, 화면은 이미 움직인다.**
@@ -810,7 +810,7 @@ $ python3 wa16b-cdp.py page wa16b-19-more.html | sed -n '4,6p'
 - **개입(intervention)** — 브라우저가 호환성을 조금 깨면서 기본 동작을 바꾸는 것. Chrome 의 콘솔이 출처를 이 이름으로 찍는다.
 - **`touch-action`** — 요소 위의 터치가 **브라우저 기본 동작**(스크롤·확대)을 할지 CSS 로 미리 정하는 속성.
 - **`scrollend`** — 스크롤이 끝났을 때 오는 이벤트. 이 편은 「스크롤이 끝났나」를 이것으로 기다렸다.
-- **행동으로 묻는 passive 판정** — 옵션값을 못 읽으므로 `preventDefault()` 뒤 `defaultPrevented` 로 판정하는 관측. 이 편의 본체.
+- **행동으로 묻는 passive 판정** — 옵션값을 못 읽으므로 `preventDefault()` 뒤 `defaultPrevented` 로 판정하는 관측. 이 편의 핵심.
 
 ## 더 들어가면
 
@@ -821,7 +821,7 @@ $ python3 wa16b-cdp.py page wa16b-19-more.html | sed -n '4,6p'
 
 ## 실행 환경
 
-★ **이 편의 본체는 「행동으로 묻는 passive 판정」이다** — 리스너의 `passive` 값을 **읽는 API 가 없으므로**, 리스너 안에서 `preventDefault()` 를 불러 **`defaultPrevented` 가 바뀌나**로 묻는다(제5의 상태). 여기에 **진짜 휠·진짜 터치에서 화면이 움직였나**를 한 칸 더 얹는다.\
+★ **이 편의 핵심은 「행동으로 묻는 passive 판정」이다** — 리스너의 `passive` 값을 **읽는 API 가 없으므로**, 리스너 안에서 `preventDefault()` 를 불러 **`defaultPrevented` 가 바뀌나**로 묻는다(제5의 상태). 여기에 **진짜 휠·진짜 터치에서 화면이 움직였나**를 한 칸 더 얹는다.\
 ★★★ **제목에 「성능」이 있지만 이 편은 시간도 프레임도 재지 않았다.** 「합성 스레드가 리스너를 기다려야 하나」는 **DOM 표준의 설명 절과 Chromium 쪽 기록을 인용**할 뿐이고, **이 머신에서 잰 것은 「passive 인가」와 「움직였나」뿐**이다.\
 **기준 소스** — [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 「2.8 Observing event listeners」·「default passive value」·「flatten more options」·「add an event listener」·「set the canceled flag」 절. Chromium 의 기록은 [chromestatus — Treat Document Level Touch Event Listeners as Passive](https://chromestatus.com/feature/5093566007214080) · [chromestatus — Treat Document Level Wheel/Mousewheel Event Listeners as Passive](https://chromestatus.com/feature/6662647093133312). 열어서 확인한 것만 적었다(기준일 2026-09-26).\
 **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. **휠과 터치는 CDP 로 넣은 진짜 입력**(`Input.dispatchMouseEvent` 의 `mouseWheel` · `Input.dispatchTouchEvent`)이고, 기본값 격자는 합성 이벤트로 물었다. 하네스는 [16번 주제](../16-event-propagation-phases/2-summary.md)의 (1)에 있다.\

@@ -43,9 +43,9 @@
 > **코루틴(coroutine)** — 코루틴 함수를 불러 얻은 객체. **`send` 로 한 걸음씩 돌릴 수 있고**, `await` 자리에서 멈췄다가 이어 간다.\
 > 예: `c = f()` 의 `c` — 이 시점에 `f` 의 몸통은 한 줄도 안 돌았다.
 
-### ★★ 이 주제가 쓰는 창 / 부적용인 창
+### ★★ 이 주제가 쓰는 창 / 해당 없는 창
 
-**본체는 ① 로그 창(「몸통이 돌았나」를 표준 출력 줄로)과 ② 경고 창(never awaited — 표준 오류 · `catch_warnings`) 두 짝이다.**
+**핵심은 ① 로그 창(「몸통이 돌았나」를 표준 출력 줄로)과 ② 경고 창(never awaited — 표준 오류 · `catch_warnings`) 두 짝이다.**
 ★★★ **네 번째 창은 ④ `send` 창이다** — 루프 없이 **손으로 한 걸음씩** 돌려, `await` 가 **무엇을 바깥으로 내보내는지**를 본다. 로그 창만으로는 「멈췄다」와 「안 돌았다」가 같은 모양(줄 없음)이다.
 
 | 창 | 무엇을 말해 주나 | 못 보는 것 |
@@ -54,11 +54,11 @@
 | ② ★★★ **경고 창**(표준 오류 블록 · `catch_warnings(record=True)`) | 돌지 않은 코루틴이 **버려졌나 · 어느 줄에서** | 버려지지 않고 **살아 있는** 안 돈 코루틴 |
 | ③ ★★ **상태 창**(`inspect.getcoroutinestate`) | `CORO_CREATED`·`SUSPENDED`·`CLOSED` | — |
 | ④ ★★★ **`send` 창**(루프 없이 손으로) | `await` 가 **바깥으로 낸 값** · `StopIteration.value` | 실제 루프가 그 값을 **어떻게 쓰나**(그건 `asyncio` 의 구현) |
-| ⑤ ★ **판 격자**(3.11 대 3.12) | 여덟 탐침이 판에 따라 **갈리나** | 3.13 이후 |
+| ⑤ ★ **판 격자**(3.11 대 3.12) | 여덟 probe가 판에 따라 **갈리나** | 3.13 이후 |
 | ⑥ ★★ **교차 갈래 창**(node 두 블록) | 같은 모양의 **JS** 는 부른 순간 무엇을 하나 | — |
 | ★ **제5의 상태** — 「몸통이 안 돌았다」 | 같은 질문을 로그 대신 **상태 창**으로 물었다 — `getcoroutinestate(c)` 가 `CORO_CREATED`(동작 4) | 상태 창은 **왜** 안 돌았는지(버려질 운명인지)를 못 본다 — 그건 ② 가 본다 |
-| ★ **부적용** — 시간 · 스레드 | — | 한 번도 재지 않았다 · 이 주제는 **스레드 하나**다(동시성 구조는 [52번](../52-asyncio-concurrency-structure/2-summary.md), 스레드는 [53번](../53-gil-and-choosing-concurrency/2-summary.md)) |
-| ★ **못 잰 것** — 3.13·3.14 의 같은 탐침 | — | 이 머신에 없다 |
+| ★ **해당 없음** — 시간 · 스레드 | — | 한 번도 재지 않았다 · 이 주제는 **스레드 하나**다(동시성 구조는 [52번](../52-asyncio-concurrency-structure/2-summary.md), 스레드는 [53번](../53-gil-and-choosing-concurrency/2-summary.md)) |
+| ★ **못 잰 것** — 3.13·3.14 의 같은 probe | — | 이 머신에 없다 |
 | ★ **안 실은 것** — 디버그 모드의 「Coroutine created at」 트레이스백 · `tracemalloc` 의 할당 위치 | — | 둘 다 **절대 경로가 박힌다** — 문서가 적은 모양(`asyncio-dev`)만 인용 |
 
 ## 이 주제가 답하려는 질문
@@ -305,7 +305,7 @@ caller: end
 그림 해설.
 
 * ★★★ **파이썬은 `f: line 1` 이 없다** — 몸통이 안 돌았으니 `ValueError("boom")` 은 **만들어지지도 않았다.** 남는 것은 `del c`(10행)에서 난 **never awaited 경고 한 줄**(표준 오류)과 `exit 0`.
-* ★★★ **JS 는 `f: line 1` 이 `caller: after f()` 앞에 찍힌다** — 첫 `await` 까지(이 함수는 `await` 가 없으니 끝까지) **지금** 돈다. 던진 것은 **거부된 `Promise`** 가 되고, 아무도 안 받았으니 **미처리 거부**다.
+* ★★★ **JS 는 `f: line 1` 이 `caller: after f()` 앞에 찍힌다** — 첫 `await` 까지(이 함수는 `await` 가 없으니 끝까지) **지금** 돈다. 실행한 것은 **거부된 `Promise`** 가 되고, 아무도 안 받았으니 **미처리 거부**다.
 * ★★ **node 는 기본으로 그 거부에 죽는다** — 훅이 없으면 **`exit 1`**(표준 오류의 스택은 경로가 박혀 `2>/dev/null` 로 버렸다). 훅이 있으면 `unhandledRejection(boom)` 이 표준 출력에 찍히고 `exit 0`. 미처리 거부가 **언제** 보고되는지는 [JS 37번 동작 (5)](../../../js/syntax/37-promise-state-model/2-summary.md)가 정본이다.
 * ★★ **두 언어의 「보고」는 뜻이 다르다** — JS 는 「**돌았는데** 실패를 아무도 안 받았다」, 파이썬은 「**돌지도 않았다**」. 파이썬 쪽에는 **실패가 아예 없다.**
 
@@ -405,7 +405,7 @@ after close, state              : CORO_CLOSED
 * ★ **`getcoroutinestate(c)` 가 `CORO_CREATED`** — 동작 1 의 「몸통이 안 돌았다」를 **로그 없이** 물은 창이다(제5의 상태). `close()` 뒤에는 `CORO_CLOSED`.
 * ★ **`c.__await__()` 는 `coroutine_wrapper`** — `await` 가 실제로 붙잡는 이터레이터다. 그 이름은 CPython 의 것이다.
 
-★ [history 06번 §5.5](../../../../history/python/06-핵심-개념-진화.md)는 *「내부적으로 코루틴은 여전히 특수한 제너레이터이며」* 라고 적는다 — **이 판의 타입으로는 별개**(`CoroutineType is GeneratorType` 이 `False`)이고, 닮은 것은 **조종 손잡이와 멈춤·재개 기계**다. 그 문장은 **구현의 계보**로 읽어라.
+★ [history 06번 §5.5](../../../../history/python/06-핵심-개념-진화.md)는 *「내부적으로 코루틴은 여전히 특수한 제너레이터이며」* 라고 적는다 — **이 버전의 타입으로는 별개**(`CoroutineType is GeneratorType` 이 `False`)이고, 닮은 것은 **조종 손잡이와 멈춤·재개 기계**다. 그 문장은 **구현의 계보**로 읽어라.
 
 ### 5. ★★★ `send(None)` 으로 손으로 돌리기 — 루프 없이
 
@@ -595,7 +595,7 @@ sleep(0.01): yielded [] ; RuntimeError | no running event loop
 
 그림 해설.
 
-* ★★ **`sleep(0)` 은 루프 없이도 끝까지 돈다** — 팻말 `None` 을 **한 번** 내밀고 끝(`yielded ['None']`). 「한 번 양보」는 **팻말 하나**일 뿐, 누가 받든 상관없다. ★ 이 판의 소스로는 **맨 `yield` 하나**다(「더 들어가면」).
+* ★★ **`sleep(0)` 은 루프 없이도 끝까지 돈다** — 팻말 `None` 을 **한 번** 내밀고 끝(`yielded ['None']`). 「한 번 양보」는 **팻말 하나**일 뿐, 누가 받든 상관없다. ★ 이 버전의 소스로는 **맨 `yield` 하나**다(「더 들어가면」).
 * ★★★ **`sleep(0.01)` 은 첫 `send` 에서 `RuntimeError | no running event loop`** — 「0.01 뒤에 다시 불러 줄 쪽」을 찾다가 없다. **루프가 하는 일은 팻말을 받아 두었다가 알맞은 때에 `send` 를 불러 주는 것**이다.
 * ★ 문서의 note 가 그 경계를 적는다 — *"The language doesn't place any restriction on the type or value of the objects yielded by the iterator returned by `__await__`, as this is specific to the implementation of the asynchronous execution framework (e.g. `asyncio`)"*. **팻말의 모양은 언어가 아니라 `asyncio` 의 약속**이다.
 
@@ -887,7 +887,7 @@ create_then_await : both created > B start > B end > A start > A end
 * ★★★ **만들어 둔 순서는 상관없다** — `a`·`b` 를 먼저 만들고 `await b` 부터 하면 **`B` 가 먼저** 돈다. 동작 1 의 「부르면 주문서만」이 여기서 **순서**로 드러난다.
 * ★ **둘을 겹쳐 돌리려면 코루틴을 루프에 따로 올려야 한다**(`asyncio.create_task` · `gather` · `TaskGroup`) — 그 구조와 취소 전파는 [52번](../52-asyncio-concurrency-structure/2-summary.md)이 정본이다.
 
-### 11. ★ 판 격자 — 3.11 대 3.12, 여덟 탐침
+### 11. ★ 판 격자 — 3.11 대 3.12, 여덟 probe
 
 **언제 쓰나** — 이 문서의 결론이 판을 타는지 확인할 때.
 
@@ -1002,7 +1002,7 @@ rows that differ between the two versions: 0 / 8
 
 그림 해설.
 
-* ★ **마지막 줄 `0 / 8`** — 호출만 하기 · 타입 이름 · 상태 · 첫 `send` 값 · 재사용 · `next` · 중첩 `run` · `run(42)` 의 **예외 타입·문구·경고**가 두 판에서 한 글자도 같았다. 이 주제의 핵심은 **3.5\~3.7 에 굳은 것**이다.
+* ★ **마지막 줄 `0 / 8`** — 호출만 하기 · 타입 이름 · 상태 · 첫 `send` 값 · 재사용 · `next` · 중첩 `run` · `run(42)` 의 **예외 타입·문구·경고**가 두 버전에서 한 글자도 같았다. 이 주제의 핵심은 **3.5\~3.7 에 굳은 것**이다.
 * ★ `nested_run` 행은 `gc.collect()` 를 해야 경고가 **그 행 안에서** 잡혔다 — 예외의 트레이스백이 프레임을 붙들어 코루틴이 **늦게** 사라진다(동작 2 의 「순환」과 같은 꼴). 처음 판(수집 없음)은 경고가 **프로그램 끝에** `sys:1:` 로 표준 오류에 나왔다.
 
 ## 문법 — 형태와 규칙
@@ -1065,9 +1065,9 @@ rows that differ between the two versions: 0 / 8
 | **언어 레퍼런스** | 코루틴 객체 · `send`/`throw`/`close` · `StopIteration.value` · `await` 의 자리 | 데이터 모델·식 문서 인용 |
 | **라이브러리 보장**(`asyncio` 문서) | `asyncio.run` 의 루프 수명 · 중첩 금지 · 「부르기만 하면 안 돈다」 | 문서 문장을 열어서 인용 |
 | **CPython 구현** | never awaited 경고 · 그 **시점**(참조 계수) · 예외·경고 **문구** · `coroutine_wrapper` | 실행 |
-| **이 판(3.12.3 · 3.11.15)의 관찰** | 여덟 탐침 판 차이 `0 / 8` | 출력 |
+| **이 버전(3.12.3 · 3.11.15)의 관찰** | 여덟 probe 판 차이 `0 / 8` | 출력 |
 | ★ **못 잰 것** | 3.13·3.14 | 판이 없다 |
-| ★ **부적용** | 시간 · 스레드 | 재지 않았다 · 스레드 하나 |
+| ★ **해당 없음** | 시간 · 스레드 | 재지 않았다 · 스레드 하나 |
 
 ### 라이브러리 보장 — 언어 레퍼런스와 `asyncio` 문서
 
@@ -1093,11 +1093,11 @@ rows that differ between the two versions: 0 / 8
 | 예외 문구 — `cannot reuse already awaited coroutine` · `can't send non-None value to a just-started coroutine` · `object int can't be used in 'await' expression` · `'coroutine' object is not an iterator` | 실행 |
 | `c.__await__()` 의 타입 이름 `coroutine_wrapper` | 실행 |
 
-### 이 판(3.12.3)의 관찰
+### 이 버전(3.12.3)의 관찰
 
-- **여덟 탐침이 3.11.15 와 한 칸도 안 갈린 것**(`0 / 8`).
+- **여덟 probe가 3.11.15 와 한 칸도 안 달라진 것**(`0 / 8`).
 - **`sleep(0)` 이 팻말 `None` 을 한 번 내민 것**(동작 6) — `asyncio` 의 구현이 그렇다. 문서는 「한 번 양보한다」까지만.
-- **node v18.19.1 이 미처리 거부에 `exit 1` 로 끝난 것** — node 의 기본값(JS 37번이 node 18·20 두 판에서 쟀다).
+- **node v18.19.1 이 미처리 거부에 `exit 1` 로 끝난 것** — node 의 기본값(JS 37번이 node 18·20 두 버전에서 쟀다).
 
 ### 그래서 이렇게 적으면 틀린다
 
@@ -1108,7 +1108,7 @@ rows that differ between the two versions: 0 / 8
 * ✗ 「코루틴은 부르면 첫 `await` 까지 돈다」\
   ○ 그건 **JS** 다. 파이썬은 **0 줄**.
 * ✗ 「코루틴은 제너레이터다」\
-  ○ **이 판에서 타입이 다르고 이터레이터가 아니다.** 같은 것은 손잡이와 멈춤·재개 기계다.
+  ○ **이 버전에서 타입이 다르고 이터레이터가 아니다.** 같은 것은 손잡이와 멈춤·재개 기계다.
 * ✗ 「이벤트 루프가 코루틴을 멈춘다」\
   ○ 코루틴은 **스스로** `await` 에서 멈춘다(팻말을 내민다). 루프는 **다시 불러 주는 쪽**이다 — 루프 없이 손으로도 돌았다(동작 5).
 
@@ -1121,7 +1121,7 @@ rows that differ between the two versions: 0 / 8
 | 이미 루프가 도는 곳 | `await` (절대 `asyncio.run` 아님) | 중첩은 `RuntimeError` |
 | 여러 코루틴을 **겹쳐** 돌리기 | `create_task`·`gather`·`TaskGroup` | [52번](../52-asyncio-concurrency-structure/2-summary.md) |
 | CPU 를 오래 쓰는 일 | 코루틴이 아니다 | 스레드 하나라 겹칠 곳이 없다 — [53번](../53-gil-and-choosing-concurrency/2-summary.md) |
-| 코루틴인지 검사 | `inspect.iscoroutine(x)` / 함수는 `inspect.iscoroutinefunction(f)` | 제너레이터와 갈린다(동작 4) |
+| 코루틴인지 검사 | `inspect.iscoroutine(x)` / 함수는 `inspect.iscoroutinefunction(f)` | 제너레이터와 달라진다(동작 4) |
 | `await` 누락을 잡기 | 표준 오류를 모은다 · 테스트는 `catch_warnings(record=True)` 로 개수를 단언 · 디버그 모드 | 경고는 `exit 0` 이고 `-W error` 로도 `exit 0` 이었다(동작 1) |
 
 ## 핵심 문장
@@ -1173,7 +1173,7 @@ rows that differ between the two versions: 0 / 8
 
 * ★ **경고를 실패로 만들고 싶으면** — 동작 1 의 `-W error` 는 `Exception ignored in` 으로 버려졌다. 테스트에서는 `warnings.catch_warnings(record=True)` 로 받아 **개수를 단언**하는 쪽이 이 문서의 창(동작 2)과 같은 모양이다.
 * ★ **디버그 모드**(`asyncio.run(main(), debug=True)` · `PYTHONASYNCIODEBUG=1`) — 문서(`asyncio-dev`)는 경고에 **「Coroutine created at」** 트레이스백이 붙는다고 적는다. 절대 경로가 박혀 이 문서는 싣지 않았다.
-* ★ **`types.coroutine`** — 제너레이터 함수에 붙여 **`await` 할 수 있게** 만드는 데코레이터. 데이터 모델 note — *"The generator iterator objects returned from generators decorated with `types.coroutine` are also awaitable, but they do not implement `__await__()`."* ★ 이 판 `asyncio/tasks.py` 의 `sleep(0)` 이 그 길이다 — `@types.coroutine` 을 붙인 `__sleep0` 이 **맨 `yield` 하나**를 하고, 그 docstring 이 *"It uses a bare 'yield' expression (which Task.__step knows how to handle) instead of creating a Future object."* 라고 적는다(동작 6 의 `yielded ['None']`).
+* ★ **`types.coroutine`** — 제너레이터 함수에 붙여 **`await` 할 수 있게** 만드는 데코레이터. 데이터 모델 note — *"The generator iterator objects returned from generators decorated with `types.coroutine` are also awaitable, but they do not implement `__await__()`."* ★ 이 버전 `asyncio/tasks.py` 의 `sleep(0)` 이 그 길이다 — `@types.coroutine` 을 붙인 `__sleep0` 이 **맨 `yield` 하나**를 하고, 그 docstring 이 *"It uses a bare 'yield' expression (which Task.__step knows how to handle) instead of creating a Future object."* 라고 적는다(동작 6 의 `yielded ['None']`).
 * ★ **비동기 제너레이터·`async for`·`async with`** — PEP 525·492. 이 주제는 **`async def` 가 코루틴이 되는 경우**까지다.
 
 ## 실행 환경
@@ -1195,13 +1195,13 @@ rows that differ between the two versions: 0 / 8
 ★★ **표준 출력과 표준 오류를 한 블록에 섞지 않았다** — 「never awaited」 경고는 **표준 오류**라, 같은 파일을 `2>/dev/null`(출력만)과 `2>&1 >/dev/null`(오류만) **두 번 던져 두 블록**으로 실었다. 나머지는 `warnings.catch_warnings(record=True)` 로 받아 **표준 출력**에 찍었다.\
 ★ **스택이 `asyncio` 를 지나는 예외는 트레이스백을 싣지 않았다**(절대 경로가 박힌다) — **예외 타입 + 메시지**만 찍었다.\
 ★★★ **이 문서는 시간을 한 번도 재지 않았다** — `asyncio.sleep(0)` 은 「한 번 양보」로만 썼다.\
-**버전** — `async def`/`await` **3.5**(PEP 492) · 비동기 제너레이터 **3.6**(PEP 525) · `asyncio.run` **3.7** · 「두 번 `await` 하면 `RuntimeError`」 **3.5.2**. 이 문서의 탐침 여덟 줄은 3.11 과 3.12 에서 **한 칸도 안 갈렸다**(`0 / 8`).\
+**버전** — `async def`/`await` **3.5**(PEP 492) · 비동기 제너레이터 **3.6**(PEP 525) · `asyncio.run` **3.7** · 「두 번 `await` 하면 `RuntimeError`」 **3.5.2**. 이 문서의 probe 여덟 줄은 3.11 과 3.12 에서 **한 칸도 달라지지 않았다**(`0 / 8`).\
 ★ **구현 대 언어 보장 한 줄** — 「부르면 코루틴 객체만 돌려준다 · `send` 가 돌린다 · 끝나면 `StopIteration.value`」는 **언어 레퍼런스**, 「`asyncio.run` 은 새 루프를 만들고 닫는다 · 도는 루프 안에서는 못 부른다」는 **`asyncio` 문서**, 「never awaited 경고 · 그 경고가 **나오는 시점** · 예외 문구」는 **CPython** 이다.\
-★ **흔들리는 칸 / 안 흔들리는 칸**
+★ **실행마다 달라지는 항목 / 달라지지 않는 항목**
 
-| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+| 실행마다 달라진다 | 달라지지 않는다(근거로 써도 되는 항목) |
 |---|---|
-| 판이 오르면 예외 **문구**와 경고 **문구**(CPython 의 것) | 예외 **타입** · `(exit N)` · 로그 줄의 **순서와 개수** · `inspect.getcoroutinestate` 의 상태 이름 |
+| 버전이 오르면 예외 **문구**와 경고 **문구**(CPython 의 것) | 예외 **타입** · `(exit N)` · 로그 줄의 **순서와 개수** · `inspect.getcoroutinestate` 의 상태 이름 |
 | — (주소·시간을 한 곳도 안 찍었다 — `repr(코루틴)` 에는 주소가 들어가서 `type(c).__name__` 으로 찍었다) | ★★ 경고가 **몇 번째 줄에서** 기록됐나(`line 18` 등 — 소스 줄 번호) · 판 격자 마지막 줄 **「0 / 8」** |
 
 **선행** — [17-generators-yield](../17-generators-yield/2-summary.md)(★★★ **「호출해도 몸통이 안 돈다」·`send`·`StopIteration.value` 는 그쪽이 정본** — 코루틴은 그 기계를 물려받았다) ·

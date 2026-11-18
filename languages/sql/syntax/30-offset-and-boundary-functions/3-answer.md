@@ -114,7 +114,7 @@ dan : 앞 행은 cho 다. 있다 -> 기본값이 안 쓰인다
                           -> cho 의 salary 를 그대로 -> NULL
 ```
 
-★ **기본값을 줬다고 모든 `NULL` 이 사라지지 않는다.** 1번의 두 `NULL` 이 **여기서 행동으로 갈린다** —\
+★ **기본값을 줬다고 모든 `NULL` 이 사라지지 않는다.** 1번의 두 `NULL` 이 **여기서 행동으로 나뉜다** —\
 경계의 `NULL` 만 메워지고 값의 `NULL` 은 그대로다.
 
 `lag2` 의 `eve` 가 `NULL` 인 것도 같은 이유다 — 두 칸 앞은 `cho` 이고 **`cho` 는 있는데 값이 `NULL`** 이다.\
@@ -122,7 +122,7 @@ dan : 앞 행은 cho 다. 있다 -> 기본값이 안 쓰인다
 
 `lead_def` 의 `hui` 가 **-1** 인 것이 기본값이 쓰인 또 하나의 자리다 — 마지막 행이라 뒤 행이 없다.
 
-**두 엔진이 한 자리도 안 갈렸다.**
+**두 엔진이 한 자리도 달라지지 않았다.**
 
 ---
 
@@ -239,7 +239,7 @@ LAST_VALUE  는 오른쪽 끝을 본다 -> 나 자신  -> 기대와 다르다
 +------+--------+------+------+------+
 ```
 
-★ **`fv` 는 전부 300 으로 한 번도 안 흔들린다.** `lv` 만 행마다 다르다.
+★ **`fv` 는 전부 300 으로 한 번도 달라지지 않는다.** `lv` 만 행마다 다르다.
 
 ★ **`FIRST_VALUE` 가 멀쩡한 것은 운이다.** 이름과 계약이 우연히 겹쳤을 뿐,\
 프레임을 `ROWS BETWEEN 1 PRECEDING AND CURRENT ROW` 같은 것으로 바꾸면 **`FIRST_VALUE` 도 「창의 처음」이 아니게 된다.**\
@@ -260,7 +260,7 @@ LAST_VALUE(salary) OVER (ORDER BY salary RANGE BETWEEN CURRENT ROW AND UNBOUNDED
 FIRST_VALUE(salary) OVER (ORDER BY salary DESC)
 ```
 
-(2)를 실제로 던졌다.
+(2)를 실제로 실행했다.
 
 ```text
 ### SQL: SELECT name, salary, LAST_VALUE(salary) OVER (ORDER BY salary RANGE BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING) AS lv_alt
@@ -533,7 +533,7 @@ PG 문서가 규정을 적는다: *"instead returns `default` (which must be of 
 | MySQL 의 `Warning 1292` | 통과한 쪽이 **조용히 값을 바꿨다**는 근거다 |
 
 ★ **경고는 `SHOW WARNINGS` 를 물어야 보인다.** 애플리케이션 드라이버가 경고를 안 읽으면\
-**에러도 없고 로그도 없이 0이 들어간다** — [21번](../21-aggregate-functions-count-forms/)에서 본 무음 실패와 같은 종류다.
+**에러도 없고 로그도 없이 0이 들어간다** — [21번](../21-aggregate-functions-count-forms/)에서 본 조용한 실패와 같은 종류다.
 
 기본값에 표시 문자열을 넣고 싶으면 **바깥에서 문자열로 바꾼다** — `COALESCE(CAST(lead_col AS CHAR), '없음')` 처럼.\
 (이 형태는 **던져 보지 않았다.** 타입 변환 규칙은 [35번](../35-type-system-and-casting/)이 정본이다.)
@@ -626,7 +626,7 @@ MySQL 의 파서는 이런 인자 자리에 **부호 없는 정수 리터럴만*
 ## 실행 환경
 
 근거는 **실행 결과**다 — 본문의 출력·에러·경고는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+2026-09-21 에 실제로 실행해 받은 것이다. 지어낸 출력은 없다.\
 MySQL 의 경고는 **`SHOW WARNINGS` 로 따로 물어서** 받았다(11번).\
 모든 질의는 [1-question.md](1-question.md) 머리의 `WITH emp8 AS (...)` CTE 를 앞에 붙여 돌렸다.\
 문서 근거는 [PG 18 Window Functions](https://www.postgresql.org/docs/18/functions-window.html) · [MySQL 8.4 Window Function Descriptions](https://dev.mysql.com/doc/refman/8.4/en/window-function-descriptions.html).

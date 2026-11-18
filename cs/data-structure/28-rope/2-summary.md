@@ -101,7 +101,7 @@
 
 #### 구조
 
-로프가 얼마나 이득인지 재려면 비교 대상이 필요하다. 이 클래스가 그 기준선 — "문서 전체를 배열 한 덩어리로 드는" 가장 단순한 방법이다.
+로프가 얼마나 이득인지 재려면 비교 대상이 필요하다. 이 클래스가 그 베이스라인 — "문서 전체를 배열 한 덩어리로 드는" 가장 단순한 방법이다.
   - *StringBuilder / 버퍼(buffer)*: 글자들을 연속된 메모리 한 줄에 담아두는 자바의 글자 통. 여기서는 "연속 배열"의 대표로 쓴다.
   - *char*: 글자 하나를 담는 자바 타입.
 
@@ -519,14 +519,14 @@ insert = splitNode 한 번 + concatNodes 두 번.   delete = splitNode 두 번 +
 - **텍스트 에디터의 문서 버퍼** — Xi 에디터·CodeMirror 6·Zed가 로프를 쓴다(원본 README). VS Code는 piece table의 조각들을 레드블랙 트리로 묶은 piece tree를 쓴다(VS Code 블로그 「Text Buffer Reimplementation」 2018) — 로프는 아니지만 "조각 + 트리 + 옮긴 글자 최소화"라는 발상은 같다.
 - **협업 편집기·CRDT 문서** — 여러 사용자의 삽입·삭제가 문서 곳곳에 흩어져 들어온다. 편집마다 전체 복사는 불가능하므로 조각 트리 위에 얹는다. [ops-patterns/15-crdt](../../ops-patterns/15-crdt/2-summary.md)의 시퀀스 CRDT가 그 위층이다.
 - **대용량 로그 뷰어** — 뒤에 계속 붙는 문서를 `concat` O(1)로 받는다. 대신 앞에만 붙이면 기울어 `rebalance` 정책이 필요하다.
-- **Java `String` / `StringBuilder`** — 기준선. `String`은 불변이라 이어붙이기마다 전체 복사, `StringBuilder`는 뒤만 밀지만 가운데 삽입은 여전히 O(n). 이 노트의 `StringBuilderStore`가 그것을 감싼 것이다.
+- **Java `String` / `StringBuilder`** — 베이스라인. `String`은 불변이라 이어붙이기마다 전체 복사, `StringBuilder`는 뒤만 밀지만 가운데 삽입은 여전히 O(n). 이 노트의 `StringBuilderStore`가 그것을 감싼 것이다.
 - **C++ SGI STL의 `rope`** — C++ 표준에는 없는 SGI STL의 확장 구현이고, GCC libstdc++에 `<ext/rope>`(`__gnu_cxx::rope`)로 남아 있다. 원전 Boehm 외 1995의 저자가 만들었다 [?].
 - **영속 자료구조의 문자열 판** — 옛 버전이 그대로 살아 undo·버전 비교(문제 2의 공유 부분트리 건너뛰기)가 공짜다. [26-persistent](../26-persistent/2-summary.md)와 같은 원리다.
 - **다른 챕터의 재료** — [01-dynamic-array](../01-dynamic-array/2-summary.md)의 "맨 앞 삽입 O(n)"이 출발점이고, 기운 트리를 다시 세우는 문제는 [06-binary-search-tree](../06-binary-search-tree/2-summary.md)·[23-splay-tree](../23-splay-tree/2-summary.md)와 같은 자리다.
 
 ## 적용 — 풀어나가는 법
 
-로프 문제는 "편집이 많은가, 읽기가 많은가"를 먼저 묻는 데서 갈린다.\
+로프 문제는 "편집이 많은가, 읽기가 많은가"를 먼저 묻는 데서 달라진다.\
 순서: ① 워크로드를 센다 — 가운데 편집이 잦으면 로프, 읽기가 압도적이면 배열(정답 4번 참고) → ② 모든 편집을 `split`과 `concat`으로 분해한다(insert = split 1 + concat 2, delete = split 2 + concat 1) → ③ 비용은 시간이 아니라 **옮긴 글자 수**로 센다(`charsCopiedByLastOp`) → ④ 편집을 반복한 뒤 깊이를 보고 `rebalance` 시점을 정한다.\
 아래 과제와 두 문제가 이 순서로 풀린다.
 
@@ -539,11 +539,11 @@ insert = splitNode 한 번 + concatNodes 두 번.   delete = splitNode 두 번 +
 
 과제 목록 — `src/main/java/com/datastructure/rope/`의 TODO 12개:
 
-- `StringBuilderStore`(기준선) — TODO 1(`concat`) · TODO 2(`insert`) · TODO 3(`delete`) — "왜 한 글자에 문서 전체를 옮기는가"를 손으로 보는 자리
+- `StringBuilderStore`(베이스라인) — TODO 1(`concat`) · TODO 2(`insert`) · TODO 3(`delete`) — "왜 한 글자에 문서 전체를 옮기는가"를 손으로 보는 자리
 - `Rope` — TODO 4(`concatNodes`) · TODO 5(`charAt`) · **TODO 6(`splitNode` — 본체, 네 경우)** · TODO 7(`insert` = split 1 + concat 2) · TODO 8(`delete` = split 2) · TODO 9(`appendRange`) · TODO 10(`rebalance`)
 - `RopeProblems` — TODO 11(`applyEdits`) · TODO 12(`longestCommonPrefix` — 공유한 부분트리는 참조 비교로 건너뛰기)
 
-순서: `StringBuilderStore` 3개로 기준선을 먼저 만들고 → `Rope` 7개(`splitNode` 가 본체, 나머지는 그 위에 얹힌다) → `RopeProblems` 2개.\
+순서: `StringBuilderStore` 3개로 베이스라인을 먼저 만들고 → `Rope` 7개(`splitNode` 가 본체, 나머지는 그 위에 얹힌다) → `RopeProblems` 2개.\
 실행: `cd ~/project/myway/data-structure && ./run.sh 28` — README 기준 **110개 중 82개가 실패**한다.
 
 아래 서머리는 이 문제(README)를 분석·정리한 것이다.

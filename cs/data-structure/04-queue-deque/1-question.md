@@ -23,7 +23,7 @@
 7. `enqueue`/`dequeue` 가 O(1)인 구조적 이유는 무엇인가.\
    원형 배열에서 `(head + i) % capacity` 한 줄이 무엇을 대신해 주는가, 연결 구현에서는 그 자리에 무엇이 오는가.
 8. `ArrayQueue` 는 `Queue` 계약을 전부 지키고 테스트도 대부분 통과한다.\
-   그런데 왜 "문제가 있다"고 하는가 — `ArrayQueueTest.wastesSpace` 와 `CircularQueueTest.reusesSpace` 가 같은 시나리오에서 용량 2048 과 4 로 갈리는 이유는 무엇인가.\
+   그런데 왜 "문제가 있다"고 하는가 — `ArrayQueueTest.wastesSpace` 와 `CircularQueueTest.reusesSpace` 가 같은 시나리오에서 용량 2048 과 4 로 나뉘는 이유는 무엇인가.\
    `dequeue` 로 비운 앞쪽 칸을 왜 되쓸 수 없는가.
 9. `tail` 인덱스를 두지 않고 `head` + `size` 로 표현하는 이유는 무엇인가.\
    `head == tail` 이 왜 모호한가, 한 칸 비워두기나 플래그 방식과 비교하면 무엇을 얻는가.

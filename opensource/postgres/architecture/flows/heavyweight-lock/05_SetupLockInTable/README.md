@@ -2,7 +2,7 @@
 
 상위: [heavyweight lock](../README.md)
 
-**공유 해시에서 대상의 LOCK 과 (대상, proc) 쌍의 PROCLOCK 을 찾거나 만들고, 요청 수를 하나 올린다.** 승인 여부는 여기서 정하지 않는다. `requested[]` 는 승인과 대기를 모두 세므로 여기서 바로 올리고, `granted[]` 는 [07] `GrantLock` 이 올린다. 호출자는 파티션 LWLock 을 쥐고 부른다.
+**공유 해시에서 대상의 LOCK 과 (대상, proc) 쌍의 PROCLOCK 을 찾거나 만들고, 요청 수를 하나 올린다.** 승인 여부는 여기서 정하지 않는다. `requested[]` 는 승인과 대기를 모두 세므로 여기서 바로 올리고, `granted[]` 는 [07] `GrantLock` 이 올린다. 호출자는 파티션 LWLock 을 잡고 부른다.
 
 ## 위치
 

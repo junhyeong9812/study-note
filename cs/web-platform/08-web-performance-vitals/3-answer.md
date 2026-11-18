@@ -41,7 +41,7 @@
 (실험, headless Chrome 151, 스로틀 없음)
 - 20ms 핸들러: `click` 24~32ms, INP 32ms → "좋음". 이 32는 첫 상호작용의 `first-input` 항목 값이다(`web-vitals` 기본 `durationThreshold` 40 미만인 `event` 항목은 보지 않는다).
 - 300ms 핸들러: `click` 304~312ms, INP 312ms → "개선 필요"(200 초과 500 이하).
-- 300ms 쪽 조각: input delay 1~2ms, processing 300~301ms. **processing이 거의 전부**다. 다른 긴 태스크가 먼저 메인 스레드를 쥐고 있었다면 input delay가 커졌을 것이다.
+- 300ms 쪽 조각: input delay 1~2ms, processing 300~301ms. **processing이 거의 전부**다. 다른 긴 태스크가 먼저 메인 스레드를 잡고 있었다면 input delay가 커졌을 것이다.
 
 ### 6. INP 선택 규칙
 

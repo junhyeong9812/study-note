@@ -194,7 +194,7 @@ fn add2(a: f64, b: f64) -> f64 { a + b }
 
 ## 실행 환경
 
-★ 답을 모르겠으면 **던져 보라.** `rustc --edition 2021 ex.rs -o /tmp/ex && /tmp/ex`.
+★ 답을 모르겠으면 **실행해 보라.** `rustc --edition 2021 ex.rs -o /tmp/ex && /tmp/ex`.
 타입만 궁금하면 `let _: () = 식;` 을 넣어 **컴파일러에게 물어본다**([**04번 주제**](../04-expressions-and-semicolons/) 8번).
 ★ **에러 번호까지 답해라.** 이 주제는 「거부당했을 때 무엇을 고치나」가 인출 대상이다.
 

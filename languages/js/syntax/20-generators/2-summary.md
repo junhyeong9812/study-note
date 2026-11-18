@@ -80,8 +80,8 @@ Google Chrome 151.0.7922.173
   ES2026  WeakMap.prototype.getOrInsert       yes
 ```
 
-- ★★ **제너레이터 한 줄은 세 판이 전부 `yes`** 다. 이 주제의 본문은 **node20 한 판**으로 돌리고, node18 과 갈린 곳만 따로 싣는다.
-- ★ 두 node 판에 **이터레이터 헬퍼가 없다**는 줄이 이 주제에 걸리는 유일한 판 사정이다 — 그래서 동작 (8)의 `take`/`map` 을 **손으로 짰다.**
+- ★★ **제너레이터 한 줄은 세 버전이 전부 `yes`** 다. 이 주제의 본문은 **node20 한 판**으로 돌리고, node18 과 달라진 곳만 따로 싣는다.
+- ★ 두 node 버전에 **이터레이터 헬퍼가 없다**는 줄이 이 주제에 걸리는 유일한 판 사정이다 — 그래서 동작 (8)의 `take`/`map` 을 **손으로 짰다.**
 
 ## 한눈에 — 쉽게 말하면
 
@@ -240,7 +240,7 @@ catch (e) { console.log("  destructure()                   " + e.constructor.nam
   ★ 명세의 `EvaluateGeneratorBody` 가 그 순서를 적는다 — "Perform ? FunctionDeclarationInstantiation(funcObj, argList)." 로 **매개변수를 먼저 묶고**,
   그 다음에 제너레이터 객체를 만들어 "Perform GeneratorStart(gen, FunctionBody)." 로 **본문을 매달아 두기만** 한다.
 
-### (2) ★★★ 양방향 흐름 — `next(값)` 은 「지난번 멈춘 자리」에 닿는다 · 이 주제의 본체
+### (2) ★★★ 양방향 흐름 — `next(값)` 은 「지난번 멈춘 자리」에 닿는다 · 이 주제의 핵심
 
 **언제 쓰나** — 제너레이터에 **바깥에서 값을 밀어 넣는**(코루틴처럼 쓰는) 코드를 읽거나 쓸 때.
 
@@ -322,7 +322,7 @@ for (const x of [10, 5, 1]) console.log("  " + ("next(" + x + ")").padEnd(10) + 
   `"A"` 는 **어느 로그에도 없다.** 에러도 경고도 없이 사라졌다.
   ★ `arguments.length 0` 은 **「첫 `next` 의 인자가 제너레이터 함수의 인자로 들어오지도 않는다」** 는 증거다 — 제너레이터 함수는 `echo()` 로 **인자 없이** 불렸다.
 - ★★★ **`next("B")` 에서야 `yield#1 evaluated to "B"`** — **`B` 는 `out-2` 를 요청한 호출의 인자인데 `out-1` 을 내보낸 `yield` 의 값이 됐다.**
-  이것이 「한 박자 어긋남」이다. **`yield` 식의 값은 그 `yield` 를 재개시킨 다음 `next` 의 인자다.**
+  이것이 「한 박자 불일치」이다. **`yield` 식의 값은 그 `yield` 를 재개시킨 다음 `next` 의 인자다.**
 - ★★ **`next("C")` 가 `return` 을 부르며 `done: true` 를 받고, 그 `value` 는 `["B","C"]` 를 담은 문자열이다** — **`A` 가 끝까지 없다.**
 - ★★ **`next("D")` 는 끝난 뒤라 본문이 없다** — `(no log)`. `D` 도 사라진다(동작 (1)의 `next#4` 와 같다).
 - ★★★ **`[2]` 누산기 — 먼저 `next()` 를 한 번 부르고(프라이밍) 나서 `next(10)`·`next(5)`·`next(1)`** 이 `10`·`15`·`16` 이다. 값이 **전부** 들어갔다.
@@ -428,7 +428,7 @@ log("after the loop", "-");
       g.return("R")   -> "F" 가 "R" 을 덮는다                                     { F, done: true }
 ```
 
-- ★★★ **`[1]` 세 상태에서 돌려받는 것은 전부 `{"value":"R","done":true}`** 로 **똑같다.** 갈리는 것은 **본문 로그**다.
+- ★★★ **`[1]` 세 상태에서 돌려받는 것은 전부 `{"value":"R","done":true}`** 로 **똑같다.** 달라지는 것은 **본문 로그**다.
   **시작 전과 끝난 뒤는 `(no log)`**, **`yield 1` 에서 멈춘 것만 `finally`** 다.
   ★★ 시작 전에 `return()` 을 부르면 **`try` 에 들어간 적이 없으니 `finally` 도 없다** — 명세의 `GeneratorResumeAbrupt` 가
   "If state is suspended-start, then Set gen.[[GeneratorState]] to completed." 로 **본문을 안 돌리고 끝난 것으로 표시**한다.
@@ -769,7 +769,7 @@ cells where body code ran: 4 / 9
 
 - ★★★ **마지막 줄의 집계가 곧 결론이다 — 본문 코드가 돈 칸은 넷이다.** 「시작 전 × `next`」 하나와 「`yield` 에서 멈춤」 줄 셋.
   **나머지 다섯 칸은 본문이 한 줄도 안 돈다** — 시작 전과 끝난 뒤의 `return`/`throw` 는 **본문을 거치지 않고** 결과를 만든다.
-- ★★ **`return` 칸 셋은 전부 `{"value":"R","done":true}`** — **결과만 보면 상태를 못 가른다.** 본문 로그(`["finally"]` 대 `[]`)로만 갈린다.
+- ★★ **`return` 칸 셋은 전부 `{"value":"R","done":true}`** — **결과만 보면 상태를 못 가른다.** 본문 로그(`["finally"]` 대 `[]`)로만 달라진다.
   ★ 이것이 이 주제에서 ① 로그 창이 본체인 이유다.
 - ★★ **`throw` 칸은 시작 전·끝남이 둘 다 `throws Error 「err」`** — 이것도 결과로는 못 가른다.
   「`yield` 에서 멈춤 × `throw`」만 `catch` 가 받아 **`done: true`** 로 끝난다(`catch` 뒤에 `yield` 가 없어서다).
@@ -850,7 +850,7 @@ row("GenProto.return.call({})", () => GenProto.return.call({}));
 - ★★★ **`() => { yield 1; }` 은 `SyntaxError 「Unexpected number」`** — **`yield` 가 아니라 `1` 에서 막혔다.**
   비엄격 스크립트의 평범한 함수 안에서 **`yield` 는 키워드가 아니라 식별자**라서, `yield 1` 이 「식별자 뒤에 숫자」로 읽혔다.
 - ★★ **제너레이터 안의 콜백 `x => { yield x; }` 도 막힌다** — `yield` 는 **그것을 직접 감싼 함수**가 제너레이터여야 한다. 콜백은 평범한 화살표다.
-  ★ **이 줄이 두 판이 갈린 유일한 줄이다** — node18 은 `Unexpected identifier`, node20 은 `Unexpected identifier 'x'`(node18 판 블록은 [3-answer.md](3-answer.md) 의 같은 문항에 있다).
+  ★ **이 줄이 두 버전이 달라진 유일한 줄이다** — node18 은 `Unexpected identifier`, node20 은 `Unexpected identifier 'x'`(node18 판 블록은 [3-answer.md](3-answer.md) 의 같은 문항에 있다).
 - ★ **객체·클래스의 `*m() {}` 는 된다** — 제너레이터 **메서드**의 문법이다.
 - ★★★ **`[3]` 실행 중에 자기 `next()` 를 부르면 `TypeError 「Generator is already running」`.**
   명세의 `GeneratorValidate` — "If state is executing, throw a TypeError exception."
@@ -859,7 +859,7 @@ row("GenProto.return.call({})", () => GenProto.return.call({}));
   `%GeneratorPrototype%` 의 메서드는 받는 쪽이 **제너레이터의 내부 슬롯(`[[GeneratorState]]`)을 가졌나**를 본다(`GeneratorValidate`).
   ★ 동작 (1)의 `[object Generator]` 는 **`Symbol.toStringTag` 프로퍼티**가 낸 글자라 이것과 성격이 다르다 — 22번 주제가 그 바꿔치기를 다룬다.
 
-두 판 대조기의 집계 줄 — 이 배치 네 주제의 node 탐침 전부를 센다(대조기 전문과 출력은 [3-answer.md](3-answer.md) 의 실행 검증에 있다).
+두 판 대조기의 집계 줄 — 이 배치 네 주제의 node probe 전부를 센다(대조기 전문과 출력은 [3-answer.md](3-answer.md) 의 실행 검증에 있다).
 
 `identical 18  ·  differs 6  ·  total 24`
 
@@ -1033,16 +1033,16 @@ console.log("  log " + J(L)); L.length = 0;
 - ★★ **안쪽에 `throw` 가 없으면 닫고 `TypeError`** 인 것(`yield*` 의 NOTE).
 - ★★ **실행 중 재진입이 `TypeError`**(`GeneratorValidate`) · **`new` 가 `TypeError`** · **화살표 제너레이터가 문법에 없는 것.**
 
-### 엔진(V8) 구현 · 이 판의 관찰
+### 엔진(V8) 구현 · 이 버전의 관찰
 
 - **예외 문구 전부** — `gen is not a constructor` · `Unexpected token '*'` · `Unexpected number` · `Unexpected identifier 'x'`(v20) / `Unexpected identifier`(v18) ·
   `Generator is already running` · `Method [Generator].prototype.next called on incompatible receiver #<Object>` · `The iterator does not provide a 'throw' method.`
   **종류(`TypeError`·`SyntaxError`)만 명세가 정한다.**
-- ★ **두 node 판에 이터레이터 헬퍼가 없는 것**(판별 블록) — 판의 사정이다.
+- ★ **두 node 버전에 이터레이터 헬퍼가 없는 것**(판별 블록) — 판의 사정이다.
 
 ### 호스트가 정하는 것 — ECMA-262 밖
 
-- **이 주제의 블록에서 호스트가 정하는 칸은 없다.** 출력은 전부 `console.log` 에 **우리가 만든 문자열**만 넘겼다.
+- **이 주제의 블록에서 호스트가 정하는 항목은 없다.** 출력은 전부 `console.log` 에 **우리가 만든 문자열**만 넘겼다.
 
 ### 그래서 이렇게 적으면 틀린다
 
@@ -1100,7 +1100,7 @@ console.log("  log " + J(L)); L.length = 0;
 
 ## 실행 환경
 
-★★★ **이 주제의 본체는 ① 추상 연산에 로그 심기 — 그중에서도 「양방향 흐름」의 로그다.**
+★★★ **이 주제의 핵심은 ① 추상 연산에 로그 심기 — 그중에서도 「양방향 흐름」의 로그다.**
 제너레이터는 **값이 두 방향으로 흐른다** — `yield` 가 바깥으로 값을 내보내고, `next(값)` 이 안으로 값을 들여보낸다.
 그런데 결과 객체 `{ value, done }` 에는 **바깥으로 나간 쪽만** 찍힌다. 안으로 들어간 값이 **어디에 닿았나(또는 안 닿았나)** 는 결과에 한 글자도 안 남는다.
 그래서 제너레이터 본문 안에 「**`yield` 식이 무엇으로 평가됐나**」를 찍는 로그를 심고, 바깥에서 준 값과 **한 줄에 나란히** 찍었다.
@@ -1118,7 +1118,7 @@ console.log("  log " + J(L)); L.length = 0;
 **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
 ★★ **예외는 `try`/`catch` 로 받아 `이름 「메시지」` 꼴로만** 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
-★ **이 주제의 블록에는 주소도 시간도 난수도 없다.** 같은 판에서 다시 돌리면 한 글자도 안 변한다.
+★ **이 주제의 블록에는 주소도 시간도 난수도 없다.** 같은 버전에서 다시 돌리면 한 글자도 안 변한다.
 
 **버전** — 이 주제의 거의 전부가 **한 판에 들어왔다.**
 
@@ -1126,31 +1126,31 @@ console.log("  log " + J(L)); L.length = 0;
 |---|---|
 | `function*` · `yield` · `yield*` · `next`/`return`/`throw` | **ES2015** |
 | 객체·클래스의 제너레이터 메서드(`*m() {}`) | **ES2015** |
-| 이터레이터 헬퍼(제너레이터 객체에도 붙는 `map`·`take` 등) | **ES2025** — ★ 두 node 판에는 **없다**(맨 위 판별 블록). [목록의 **21번 주제**](../21-iterator-helpers/)가 정본 |
+| 이터레이터 헬퍼(제너레이터 객체에도 붙는 `map`·`take` 등) | **ES2025** — ★ 두 node 버전에는 **없다**(맨 위 판별 블록). [목록의 **21번 주제**](../21-iterator-helpers/)가 정본 |
 | `async function*` · `for await...of` | **ES2018** — 이 주제 밖([목록의 **40번 주제**](../40-async-iteration-and-for-await/)) |
 
-**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+**★★★ 이 주제가 쓰는 창 — 그리고 해당 없는 창**
 
 | 창 | 이 주제에서 무엇을 보나 |
 |---|---|
-| ★★★ **① 추상 연산에 로그 심기**(본체) | 본문 안에 「`yield` 식이 무엇으로 평가됐나」를 찍고, 바깥의 `next(값)` 과 **한 줄에 나란히** 찍는다. 첫 `next(값)` 이 **어디에도 안 닿는 것**은 오직 이것으로만 보인다 |
+| ★★★ **① 추상 연산에 로그 심기**(핵심) | 본문 안에 「`yield` 식이 무엇으로 평가됐나」를 찍고, 바깥의 `next(값)` 과 **한 줄에 나란히** 찍는다. 첫 `next(값)` 이 **어디에도 안 닿는 것**은 오직 이것으로만 보인다 |
 | ★★★ **② 전수 격자** | **세 메서드(`next`·`return`·`throw`) × 세 상태(시작 전 · `yield` 에서 멈춤 · 끝남)** 아홉 칸. 칸마다 결과와 본문 로그를 찍고, **본문 코드가 돈 칸 수**를 스크립트가 센다 |
 | ★★ **③ 브랜드 태그** | `%GeneratorPrototype%.next` 를 평범한 객체에 빌려 부르면 **`incompatible receiver`** 로 막힌다 — 제너레이터인지는 **내부 슬롯**이 가른다. ★ `Object.prototype.toString` 이 `[object Generator]` 라고 답하는 것은 **프로퍼티(`Symbol.toStringTag`) 하나**라 브랜드가 아니다([목록의 **22번 주제**](../22-symbol-and-well-known-symbols/)) |
 | ★★ **④ 예외의 `constructor.name` + `message`** | `new gen()` · 화살표 제너레이터 · 콜백 안의 `yield` · 실행 중 재진입 · 배열을 `yield*` 하던 중의 `throw()` |
-| ★★ **⑤ 두 판 대조기** | 두 판이 갈린 줄은 **`SyntaxError` 문구 한 줄**뿐이다(동작 (7)) |
-| ★ **부적용 — 진단의 `(행,열)`**(18-C) | 이 주제의 `SyntaxError` 는 **값으로 가를 수 없는 문법 성질**을 증명하려는 것이 아니라 「안 된다」를 보이려는 것이다. `new Function` 으로 던져 **문구만** 받았다 — 열을 읽을 질문이 없다 |
+| ★★ **⑤ 두 판 대조기** | 두 버전이 달라진 줄은 **`SyntaxError` 문구 한 줄**뿐이다(동작 (7)) |
+| ★ **해당 없음 — 진단의 `(행,열)`**(18-C) | 이 주제의 `SyntaxError` 는 **값으로 구분할 수 없는 문법 성질**을 증명하려는 것이 아니라 「안 된다」를 보이려는 것이다. `new Function` 으로 던져 **문구만** 받았다 — 열을 읽을 질문이 없다 |
 | ★ **안 쟀다 — 성능·메모리** | 「제너레이터는 메모리를 아낀다」·「느리다」를 **한 줄도 쓰지 않는다.** 잰 것은 **몇 개를 만들었나(호출 횟수)** 뿐이다(동작 (8)) |
 | ★ **안 돌렸다 — 파이썬 · 브라우저** | 파이썬 `send()` 대비는 **파이썬 17번 문서가 이미 실은 출력**을 인용했다(동작 (9)). 이 주제는 Chrome 을 판별 블록 말고는 돌리지 않았다 |
 
-**★ 흔들리는 칸 / 안 흔들리는 칸**
+**★ 실행마다 달라지는 항목 / 달라지지 않는 항목**
 
-| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+| 실행마다 달라진다(근거로 쓰지 않는다) | 달라지지 않는다(근거로 쓴다) |
 |---|---|
-| 예외 **문구** — ★ **이 주제에서 실제로 판마다 갈렸다**(`Unexpected identifier` 뒤의 `'x'`) | ★★★ **로그의 개수와 순서** · 결과 객체의 `value`/`done` |
+| 예외 **문구** — ★ **이 주제에서 실제로 판마다 달라졌다**(`Unexpected identifier` 뒤의 `'x'`) | ★★★ **로그의 개수와 순서** · 결과 객체의 `value`/`done` |
 | Node 스택트레이스의 절대 경로 — 한 줄도 싣지 않았다 | ★★★ **예외의 종류**(`TypeError`·`SyntaxError`) |
 | | ★★ 격자의 **「본문 코드가 돈 칸」 수** |
 
-두 판 대조기가 **갈렸다고 세는 이 주제의 탐침은 `js20b-20f-errors.js` 하나**다 — 집계 줄은 동작 (7)의 끝에 있다.
+두 판 대조기가 **달라졌다고 세는 이 주제의 probe는 `js20b-20f-errors.js` 하나**다 — 집계 줄은 동작 (7)의 끝에 있다.
 
 **선행** — [19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md)(★★★ 직접 선행) ·
 [08 — 함수 정의 형태와 매개변수](../08-function-forms-and-parameters/2-summary.md)(제너레이터의 `prototype` 과 `new`) ·

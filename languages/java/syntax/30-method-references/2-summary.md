@@ -4,7 +4,7 @@
 
 **메서드 참조는 "그 일은 이미 있는 저 메서드가 한다"고 손가락으로 가리키는 것이다.**
 
-네 형태는 **무엇을 가리키느냐**로 갈린다.
+네 형태는 **무엇을 가리키느냐**로 나뉜다.
 
 | 비유 | 실체 | 문법 |
 |---|---|---|
@@ -265,7 +265,7 @@ toArray(String[]::new) = [가, 나] / [Ljava.lang.String;
 
 - `(String[]) stream.toArray()` 는 **컴파일은 되고 런타임에 `ClassCastException`** 이다.
 - 배열은 원소가 아니라 **배열 자체의 타입**이 `Object[]` 라 캐스트가 실패한다.
-- 생성자 참조는 **인자 개수와 타입으로 오버로드가 갈린다.**\
+- 생성자 참조는 **인자 개수와 타입으로 오버로드가 달라진다.**\
   `ArrayList::new` 하나가 `Supplier`·`IntFunction`·`Function<Collection,...>` 셋 다 된다.\
   마지막 것만 `[가]` 가 나온 것이 그 증거다 — `IntFunction` 쪽은 용량 10을 준 빈 리스트다.
 
@@ -603,7 +603,7 @@ Ex.java:10: error: reference to run is ambiguous
 | 모호하면 컴파일 에러 | **언어 규칙** | `javac` 가 거부한다. 세 JDK 에서 같은 메시지 |
 | 제네릭 배열 생성자 참조 금지 | **언어 규칙** | `javac` 가 거부한다 |
 | `null` 검사가 `Objects.requireNonNull` 이다 | 구현 세부 | javac 가 고른 방식. 「그 자리에서 터진다」만 성질이다 |
-| 메서드 참조가 합성 메서드를 안 만든다 | 구현 세부 | 배열 생성자 참조는 만든다 — 같은 컴파일러 안에서도 갈린다 |
+| 메서드 참조가 합성 메서드를 안 만든다 | 구현 세부 | 배열 생성자 참조는 만든다 — 같은 컴파일러 안에서도 달라진다 |
 | `REF_invokeVirtual`·`REF_newInvokeSpecial` 같은 핸들 종류 | 구현 세부 | 대상 메서드의 종류에 따라 정해진다 |
 
 **실측 — 세 JDK 에서 달랐던 것**
@@ -675,7 +675,7 @@ Ex.java:10: error: reference to run is ambiguous
 
 ## 더 들어가면
 
-- **`super::m` 은 디스패치를 건너뛴다.** `Ex.java (30-a)` 에서 같은 객체인데 결과가 갈렸다.
+- **`super::m` 은 디스패치를 건너뛴다.** `Ex.java (30-a)` 에서 같은 객체인데 결과가 달라졌다.
 
   ```text
   +) this::toString     [내가 재정의한 toString]

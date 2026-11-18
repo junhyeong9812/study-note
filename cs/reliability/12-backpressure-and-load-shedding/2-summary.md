@@ -220,7 +220,7 @@ t=12.4s 큐    999 · 거절  48148 · 힙 사용  36MB / 최대 64MB
 
 - **유계 큐(원형 배열)** — 정원이 있는 FIFO. Java의 `ArrayBlockingQueue`. 원리는 [data-structure/04-queue-deque](../../data-structure/04-queue-deque/2-summary.md).
 - **덱(deque)** — 적응형 LIFO는 같은 덱의 앞(FIFO)과 뒤(LIFO)에서 꺼낸다.
-- **CoDel 상태 기계** — 상태 둘(버리지 않음 / 버리는 중). 구간(INTERVAL) 동안의 **최소** 체류 시간이 TARGET을 넘으면 버리는 상태로 간다. 다음 버림 시각 = `t + INTERVAL / sqrt(count)`(RFC 8289 §5 의사코드). 최소값을 보는 이유는 짧은 버스트에 흔들리지 않기 위해서다.
+- **CoDel 상태 기계** — 상태 둘(버리지 않음 / 버리는 중). 구간(INTERVAL) 동안의 **최소** 체류 시간이 TARGET을 넘으면 버리는 상태로 간다. 다음 버림 시각 = `t + INTERVAL / sqrt(count)`(RFC 8289 §5 의사코드). 최소값을 보는 이유는 짧은 버스트에 달라지지 않기 위해서다.
 - **다중 우선순위 큐** — 중요도별 큐 또는 중요도별 입장 한도. 힙 기반 우선순위 큐는 [data-structure/07-heap](../../data-structure/07-heap/2-summary.md). 셰딩에서는 "꺼내는 순서"보다 "어느 등급부터 거절하나"가 핵심이라 등급별 임계치로 충분한 경우가 많다.
 - **지수 감쇠 평균(EWMA)** — SRE 21장은 실행 중·실행 대기 스레드 수를 지수 감쇠로 평활해, 프로세서 수를 넘으면 거절을 시작한다. 짧은 팬아웃 스파이크는 평활이 삼킨다.
 - **슬라이딩 윈도 카운터** — 적응형 스로틀링의 2분 `requests`·`accepts`. 토큰 버킷·창 카운터는 [11-rate-limiter](../11-rate-limiter/2-summary.md).

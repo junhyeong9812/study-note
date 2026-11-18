@@ -42,7 +42,7 @@
 
 ★ **(B)에서 뒤의 둘이 같아진 것은 함수가 같아서가 아니라 데이터에 중복이 없어서다.**\
 `salary` 의 남은 세 값 `300·500·400` 은 전부 다르므로 접을 게 없다.\
-**「예전에 같은 답이 나왔으니 `COUNT(열)` 로 충분하다」가 사고의 시작이다** — `salary` 가 같은 사람이 하나만 들어와도 갈린다.
+**「예전에 같은 답이 나왔으니 `COUNT(열)` 로 충분하다」가 사고의 시작이다** — `salary` 가 같은 사람이 하나만 들어와도 달라진다.
 
 > **`COUNT(*)`** — **행**을 세는 형태. 인자의 값을 보지 않는다.\
 > 예: `emp` 에서 4. `dept_id` 가 `NULL` 인 `dan` 도 한 행으로 센다.
@@ -295,7 +295,7 @@ MySQL 이 **아무 줄도 출력하지 않는 것**도 출력이다 — 헤더�
 | `dev` | 1 | **1** | 0 | 사원이 **있다**(`cho`). 급여만 기록이 없다 |
 | `hr` | 1 | **0** | 0 | 사원이 **없다**. 세어진 1은 조인이 만든 행이다 |
 
-★ **`COUNT(*)` 만 보면 두 행이 똑같이 1이다.** 세 열을 나란히 뽑아야 갈린다.\
+★ **`COUNT(*)` 만 보면 두 행이 똑같이 1이다.** 세 열을 나란히 뽑아야 달라진다.\
 [14번](../14-left-right-outer-join/)이 `hr` 의 `COUNT(*)`=1 을 함정으로 들었고, **`sal_cnt` 를 더해 `dev` 와 갈라 놓은 것이 이 주제의 몫**이다.
 
 `sum_sal` 도 보라 — `dev` 와 `hr` 이 **둘 다 `NULL`** 이다. 「합계가 없다」와 「사원이 없다」가 여기서도 뭉친다(5번).
@@ -361,9 +361,9 @@ MySQL 이 **아무 줄도 출력하지 않는 것**도 출력이다 — 헤더�
                                         AVG 로 바꾸면 갈린다
 ```
 
-★ **`SUM` 에서는 두 형태가 같은 답을 내지만 `AVG` 에서는 갈린다.**\
+★ **`SUM` 에서는 두 형태가 같은 답을 내지만 `AVG` 에서는 달라진다.**\
 `AVG(COALESCE(salary,0))` 은 **`NULL` 을 0으로 분모에 합류시켜** 평균을 끌어내린다.\
-그 대비는 [24번](../24-conditional-aggregation-filter-case/)이 정본이다 — 거기서 `AVG` 가 400 과 200 으로 갈리는 실측을 본다.
+그 대비는 [24번](../24-conditional-aggregation-filter-case/)이 정본이다 — 거기서 `AVG` 가 400 과 200 으로 나뉘는 실측을 본다.
 
 **표현의 문제이지 집계의 문제가 아니다.** `COALESCE`·`NULLIF`·`CASE` 는 [목록의 **6번 주제**](../06-conditional-expressions-case-coalesce/)가 정본이다.
 
@@ -555,14 +555,14 @@ SELECT COUNT(*) FROM (SELECT DISTINCT dept_id, salary FROM emp) t;
 **구현 의존 항목** — `AVG` 결과의 소수 자릿수(PG `numeric` · MySQL `DECIMAL`)와 `COUNT` 의 반환 타입(PG 는 `pg_typeof` 로 `bigint` 확인).\
 **값은 두 엔진에서 같았다.**
 
-**방언 항목** — **11번 하나다.** `COUNT(DISTINCT 열1, 열2)` 는 문법도 결과도 갈린다.\
+**방언 항목** — **11번 하나다.** `COUNT(DISTINCT 열1, 열2)` 는 문법도 결과도 달라진다.\
 **언어 보장 항목** — 1~10·12번. 세 `COUNT` 형태의 정의, `NULL` 건너뛰기, 0행 규칙, 중첩 금지는 두 문서가 같은 모양으로 적는다.
 
-**버전** — 이 주제에서 버전에 갈리는 것은 없다. 다음 버전에서도 **11번만 다시 확인하면 된다.**\
+**버전** — 이 주제에서 버전에 달라지는 것은 없다. 다음 버전에서도 **11번만 다시 확인하면 된다.**\
 **재지 않은 것** — `COUNT(1)` 대 `COUNT(*)` 의 속도, `COUNT(DISTINCT)` 의 비용. **측정하지 않았으므로 적지 않았다.**
 
 ## 실행 환경
 
 근거는 **실행 결과**다 — 본문의 출력·에러는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+2026-09-21 에 실제로 실행해 받은 것이다. 지어낸 출력은 없다.\
 문서 근거는 [PG 18 Aggregate Functions](https://www.postgresql.org/docs/18/functions-aggregate.html) · [PG 18 Aggregate Expressions](https://www.postgresql.org/docs/18/sql-expressions.html) · [MySQL 8.4 Aggregate Function Descriptions](https://dev.mysql.com/doc/refman/8.4/en/aggregate-functions.html).

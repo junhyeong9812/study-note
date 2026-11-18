@@ -242,7 +242,7 @@ FROM ( SELECT *                                      <- 이 안에서 부를 수
    바깥이 보는 것은 e2 의 "출력 열"이지 e2 안의 별칭이 아니다
 ```
 
-**왜 이게 좋은가** — 격벽이 있어서 안쪽 이름을 바깥과 겹치게 지어도 안전하다.\
+**왜 이게 좋은가** — 벌크헤드가 있어서 안쪽 이름을 바깥과 겹치게 지어도 안전하다.\
 중첩 질의를 조립할 때 이름 충돌을 걱정하지 않아도 된다.
 
 중첩 자체는 잘 돈다 — 안쪽부터 바깥으로 차례로 끝난다.
@@ -430,7 +430,7 @@ SELECT id  ->  후보가 둘  ->  엔진이 고르지 않고 거부한다
 
 ★ 여기서 **바깥의 `WHERE t.cnt >= 2` 가 `HashAggregate` 의 `Filter` 가 됐다** — `HAVING COUNT(*) >= 2` 라고 쓴 것과 같은 자리다([03번](../03-where-vs-having/)).
 
-MySQL 도 두 경우가 갈린다.
+MySQL 도 두 경우가 달라진다.
 
 ```text
 ### SQL: EXPLAIN FORMAT=TREE SELECT t.name FROM (SELECT * FROM emp WHERE salary >= 400) AS t WHERE t.id = 2;

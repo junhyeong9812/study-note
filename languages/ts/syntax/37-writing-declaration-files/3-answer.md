@@ -199,7 +199,7 @@ usebroken37.mts(3,7): error TS2322: Type 'number' is not assignable to type 'nul
 - ★★ 앰비언트 모듈 선언은 **상대 경로를 못 받는다**(`TS2436`) — 상대 경로의 JS 에는 옆에 같은 이름의 `.d.ts` 를 둔다.
 - ★★ 종료 코드 — `.d.mts` 만 던지면 `2`, `.mts` 가 들면 `1`(같은 `TS2304` 인데도). 7.0.2 의 관찰이고 까닭은 확인하지 못했다.
 
-### 5. ★★★ `secret` **없음** · `Up` **적은 그대로**(`Uppercase<"ab">`) · `double` **`: number` 가 붙음** · `pick` **양쪽에 `?: undefined`** · `Counter` **`#private;`·`private count;`** · 옛 두 판과 **`n?: undefined` 의 자리만** 다르다
+### 5. ★★★ `secret` **없음** · `Up` **적은 그대로**(`Uppercase<"ab">`) · `double` **`: number` 가 붙음** · `pick` **양쪽에 `?: undefined`** · `Counter` **`#private;`·`private count;`** · 옛 두 버전과 **`n?: undefined` 의 자리만** 다르다
 
 **출력**
 
@@ -320,7 +320,7 @@ usedup37.ts(1,7): error TS2322: Type 'number' is not assignable to type 'null'.
 - ★★ 4번 — `short37.d.ts` 와 함께면 `greet(1)` 도 `(exit 0)`. 소비자가 **틀려도** 통과한다.
 - ★★ 6번 — `--skipLibCheck` 에서도 `p2` 의 `TS2322` 는 남았다. 끈 것은 **선언 파일 안**의 진단이다. 대신 그 파일이 망가져 있으면 소비자가 받는 타입이 **조용히** 달라진다(`p1`·순서).
 
-### 10. ★★★ **내용이 같아도 글자는 판마다 다를 수 있다** — tsc 판을 올리면 **의미 없는 `diff`** 가 생긴다
+### 10. ★★★ **내용이 같아도 글자는 판마다 다를 수 있다** — tsc 버전을 올리면 **의미 없는 `diff`** 가 생긴다
 
 - ★★ 5번 — `n?: undefined` 한 줄이 **자리만** 옮겼다. 타입으로는 같다(프로퍼티 순서는 객체 타입의 뜻을 안 바꾼다).
 - ★★ 「`.d.ts` 의 `diff` = 공개 API 의 변경」으로 읽으면 **판 변경이 API 변경처럼** 보인다. 비교는 **판을 고정한 뒤**에 한다.
@@ -343,7 +343,7 @@ usedup37.ts(1,7): error TS2322: Type 'number' is not assignable to type 'null'.
 | ★★★ 선언 방출 | `bash ts34b-dts37.sh` (세 판) | 추론 · 그대로 · **`n?: undefined` 자리만 다르다** |
 | ★★★ `skipLibCheck` | `usebroken37` × 2 · `usedup37` × 3 | `TS2304` 꺼짐 · `TS2403` 꺼짐 · **순서로 `string`↔`number`** |
 
-**구현 의존 항목 — 판이 오르면 다시 돌릴 것**
+**구현 의존 항목 — 버전이 오르면 다시 돌릴 것**
 
 - ★★★ **`--declaration` 의 프로퍼티 순서**(5번) — 이미 판마다 달랐다.
 - ★★ **풀리지 않는 타입을 받은 소비자의 침묵**(6번 `p1`).
@@ -359,5 +359,5 @@ usedup37.ts(1,7): error TS2322: Type 'number' is not assignable to type 'null'.
 
 모든 진단·방출물·실행은 `tsc` **7.0.2** · `node` **v18.19.1** 에서 실제로 얻었다. 5번의 판 비교는 **5.9.3 · 4.9.5** 를 환경변수(`TSC_OLD`·`TSC_49`)로 받아 **읽기만** 했다.\
 블록은 전부 **캡처 스크립트가 파일로 받은 것**이고 손으로 옮겨 적지 않았다 — 배너의 `(… exit=N)` 도 스크립트가 찍은 값이다.\
-★★★ 이 주제의 **본체 창은 3창(`.d.ts` 를 믿고 방출한 `.js` + `node`)이고, 둘째 기둥은 5창(`.d.ts` 방출)이다.**\
+★★★ 이 주제의 **핵심 창은 3창(`.d.ts` 를 믿고 방출한 `.js` + `node`)이고, 둘째 기둥은 5창(`.d.ts` 방출)이다.**\
 ★ 소스 펜스 첫 줄 `// 파일명`·`# 파일명` 은 대조용 배너다 — **진단의 행 번호는 그 줄을 뺀 기준**이다.

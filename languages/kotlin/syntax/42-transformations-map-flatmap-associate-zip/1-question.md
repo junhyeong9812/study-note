@@ -189,7 +189,7 @@ fun main() {
 
 선행은 [41번 주제](../41-collection-creation-and-copying/)(만드는 꼴마다 복사가 일어나는 자리)다.
 
-이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5** 에서 실제로 던져 받은 것이다.
+이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5** 에서 실제로 실행해 받은 것이다.
 
 ## 복습 기록
 

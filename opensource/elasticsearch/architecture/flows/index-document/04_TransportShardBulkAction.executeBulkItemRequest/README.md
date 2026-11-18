@@ -76,7 +76,7 @@ update 를 index 나 delete 로 번역한다. 이 구간에서만 try 로 감싼
             );
 ```
 
-색인이면 파싱할 소스를 만들어 넘긴다. 매핑이 모자라면 여기서 갈린다.
+색인이면 파싱할 소스를 만들어 넘긴다. 매핑이 모자라면 여기서 달라진다.
 
 `server` / `org.elasticsearch.action.bulk` / `TransportShardBulkAction.java` L547-L581 ([GitHub](https://github.com/elastic/elasticsearch/blob/60bb239edb99f0e002eb620e4e82a6f2b15a49b0/server/src/main/java/org/elasticsearch/action/bulk/TransportShardBulkAction.java#L547-L581))
 

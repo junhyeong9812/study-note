@@ -4,7 +4,7 @@
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
 
-### 1. 갈린 칸 6 / 60 — 전부 `T4`·`T5` 의 `:user-*` · `change` 는 `r=0 e=1 ok=1` · 명세 열과 갈린 칸 1 / 72(`r :user-invalid` 의 `T4`)
+### 1. 달라진 항목 6 / 60 — 전부 `T4`·`T5` 의 `:user-*` · `change` 는 `r=0 e=1 ok=1` · 명세 열과 달라진 항목 1 / 72(`r :user-invalid` 의 `T4`)
 
 **출력**
 
@@ -164,16 +164,16 @@ c2·c3 을 채우고 c1.setCustomValidity('이유') · 보냄
 
 ### 6. 참 — focus update steps(값이 달라졌으면) · 제출 시도(`submit()` 제외) / 거짓 — `reset` · 도장이 검증보다 앞이다
 
-- **참으로** — ① **focus update steps**: 포커스를 잃는 칸이 「포커스 중에 사용자가 값을 바꿨고 **처음 포커스 받을 때와 달라졌으면**」 user validity 를 참으로 두고 `change` 를 쏜다. ② **제출 알고리즘**: 「`submit()` 에서 온 것이 아니면 … **폼이 소유한 제출 가능 요소마다** user validity 를 참으로」. (그 밖에 `select` 의 선택 변경 알림에도 같은 문장이 있다 — 이 판은 안 던졌다.)
+- **참으로** — ① **focus update steps**: 포커스를 잃는 칸이 「포커스 중에 사용자가 값을 바꿨고 **처음 포커스 받을 때와 달라졌으면**」 user validity 를 참으로 두고 `change` 를 쏜다. ② **제출 알고리즘**: 「`submit()` 에서 온 것이 아니면 … **폼이 소유한 제출 가능 요소마다** user validity 를 참으로」. (그 밖에 `select` 의 선택 변경 알림에도 같은 문장이 있다 — 이 버전은 실행하지 않았다.)
 - **거짓으로** — `input` 의 **초기화(reset) 알고리즘**: 「user validity · 더러움 표시 · 체크 더러움 표시를 **거짓으로** 되돌린다」(A1 의 `T6`).
 - ★★★ **순서** — ② 의 도장 찍기가 **no-validate 검사보다 먼저** 적혀 있다. 그래서 **`novalidate` 폼도 제출 시도만으로 손대지 않은 칸에 `:user-invalid` 가 켜진다**(A3 의 `d1`). 검증이 멈추는 판에서는 **멈춘 화면에 빨간 줄**이 선다(Selectors 4 의 「제출 시도 뒤에는 **반드시** 맞아야 한다」).
 
-### 7. 문장대로면 안 찍힌다 · 이 판은 찍었다(`change` 0 번) — HTML 의 의사 클래스 정의 절을 못 읽어서 이탈로 세지 않았다
+### 7. 문장대로면 안 찍힌다 · 이 버전은 찍었다(`change` 0 번) — HTML 의 의사 클래스 정의 절을 못 읽어서 이탈로 세지 않았다
 
-- focus update steps 의 조건은 「**처음 포커스 받을 때와 달라졌으면**」이다. `x` → Backspace 로 `""` 에 돌아왔으니 **거짓** → 도장 없음 · `change` 없음. 이 판은 **`change` 는 0 번**(명세대로)인데 **`:user-invalid` 는 켜졌다**(A1).
+- focus update steps 의 조건은 「**처음 포커스 받을 때와 달라졌으면**」이다. `x` → Backspace 로 `""` 에 돌아왔으니 **거짓** → 도장 없음 · `change` 없음. 이 버전은 **`change` 는 0 번**(명세대로)인데 **`:user-invalid` 는 켜졌다**(A1).
 - ★★ **이탈로 세지 않은 이유** — Selectors 4 가 「그 밖의 시점에도 **맞아도 된다(may)**」·「**호스트 언어가 더 정확한 규칙을 정해도 된다**」고 넘기고, HTML 은 그 규칙을 **「Pseudo-classes」 절**에 둔다. **이 배치의 사본에 그 절이 없다.** 그래서 적을 수 있는 것은 「**Chrome 의 도장은 `change` 에 묶여 있지 않다**」까지다.
 
-### 8. 같다 — `invalid` 를 무효 칸마다 · `false` / 갈린다 — `reportValidity` 만 포커스 · 둘 다 `:user-invalid` 를 켜지 않는다
+### 8. 같다 — `invalid` 를 무효 칸마다 · `false` / 달라진다 — `reportValidity` 만 포커스 · 둘 다 `:user-invalid` 를 켜지 않는다
 
 - A3 — 둘 다 **`invalid(c2) → invalid(c3)`**, 반환 **`false`**. `reportValidity()` 만 포커스를 **`c2`** 로 옮겼다. 명세 — `reportValidity` 는 「문제를 사용자에게 **알리고** … 포커스를 옮겨도 된다(may)」.
 - ★★★ **둘 다 `user-invalid=(없음)`** — 도장을 찍는 문장(A6)에 이 호출들이 없다. 「스크립트로 검증 결과를 보여 줘도 **CSS 의 빨간 줄은 따로**」.
@@ -183,11 +183,11 @@ c2·c3 을 채우고 c1.setCustomValidity('이유') · 보냄
 - A2 의 넷이 **같은 본문**을 보냈고, [21번](../21-form-submission-model/2-summary.md)의 (5) 가 `curl` 로 **같은 본문**을 보냈다. 서버가 보는 것은 메서드·경로·본문뿐이다 — `fetch` 의 `charset` 꼬리표 말고는 **다섯이 같다.**
 - 명세의 「Security」 — 「**서버는 클라이언트 쪽 검증에 기대면 안 된다.** 적대적인 사용자가 일부러 건너뛸 수 있고, 오래된 UA 나 자동화 도구가 의도치 않게 건너뛴다. 제약 검증 기능은 **사용자 경험**을 높이려는 것이지 **어떤 보안 장치도 아니다**」.
 
-### 10. 포커스 이동 — 구현(명세는 may) · `novalidate` 제출의 도장 — 명세대로 · 원래대로 돌아온 편집의 도장 — 이 판의 관찰(명세층 미확인)
+### 10. 포커스 이동 — 구현(명세는 may) · `novalidate` 제출의 도장 — 명세대로 · 원래대로 돌아온 편집의 도장 — 이 버전의 관찰(명세층 미확인)
 
 - **`reportValidity()` 의 포커스** — 명세가 **허용(may)** 한 것을 Chrome 이 **했다** → 구현.
 - **`novalidate` 폼의 제출 시도가 `:user-invalid` 를 켠다** — 제출 알고리즘의 **순서** 그대로다 → 명세(HTML) + Selectors 4.
-- **값이 원래대로 돌아온 편집에 도장** — focus update steps 문장과는 맞지 않지만, 판정할 절을 못 읽었다 → **이 판의 관찰**(A7).
+- **값이 원래대로 돌아온 편집에 도장** — focus update steps 문장과는 맞지 않지만, 판정할 절을 못 읽었다 → **이 버전의 관찰**(A7).
 
 ### 11. 정본 경계
 
@@ -216,7 +216,7 @@ $ stat -c '%s %n' files/p1.png files/t1.txt files/t2.png
 (exit 0)
 ```
 
-**흔들림 확인** — 이 배치의 캡처를 **세 번** 돌려(`capture.sh blocks` · `blocks-r1` · `blocks-r2`) `normalize-shaky.py` 로 첫 판과 견줬다 — 결과는 이 절 끝의 「재대조」 줄이다. 29\~32번의 블록이 전부 그 안에 있다.
+**재현성 확인** — 이 배치의 캡처를 **세 번** 돌려(`capture.sh blocks` · `blocks-r1` · `blocks-r2`) `normalize-shaky.py` 로 첫 판과 견줬다 — 결과는 이 절 끝의 「재대조」 줄이다. 29\~32번의 블록이 전부 그 안에 있다.
 
 | 무엇을 | 몇 번 | 결과가 쓰인 곳 |
 |---|---|---|
@@ -226,7 +226,7 @@ $ stat -c '%s %n' files/p1.png files/t1.txt files/t2.png
 
 **구현에 달린 항목**
 
-| 항목 | 이 판의 값 | 왜 다시 찍나 |
+| 항목 | 이 버전의 값 | 왜 다시 찍나 |
 |---|---|---|
 | `reportValidity()` 의 포커스 | 첫 무효 칸으로 옮긴다 | 명세는 허용(may) |
 | 원래대로 돌아온 편집의 도장 | 찍는다(`change` 0 번) | HTML 의 의사 클래스 절을 확인하지 못했다 |
@@ -235,9 +235,9 @@ $ stat -c '%s %n' files/p1.png files/t1.txt files/t2.png
 
 **못 잰 것** — ① **검증 풍선.** ② **보조 기술의 알림.**
 
-**부적용인 창** — **창 ① · ③ · ④ · ⑥** · **창 ⑦ 은 안 쟀다.**
+**해당 없는 창** — **창 ① · ③ · ④ · ⑥** · **창 ⑦ 은 안 쟀다.**
 
-**재대조** — `capture.sh blocks-r1`·`blocks-r2` 를 첫 판(`blocks`)과 `normalize-shaky.py` 로 견준 결과가 **두 번 다 「블록 43개 · 동일 43 · 흔들린 칸 0 · ★고칠 것 0 · 한쪽에만 0」** 이다 — 정규화 규칙은 기본 넷만 썼다(`--rule` 없음 — 경계·포트는 하네스가 애초에 안 찍는다).
+**재대조** — `capture.sh blocks-r1`·`blocks-r2` 를 첫 판(`blocks`)과 `normalize-shaky.py` 로 견준 결과가 **두 번 다 「블록 43개 · 동일 43 · 달라진 항목 0 · ★고칠 것 0 · 한쪽에만 0」** 이다 — 정규화 규칙은 기본 넷만 썼다(`--rule` 없음 — 경계·포트는 하네스가 애초에 안 찍는다).
 
 **하네스 전문** — 30\~32번이 같은 파일을 쓴다.
 
@@ -1145,4 +1145,4 @@ src_sh   capture-sh       ../capture.sh
 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스는 위 `## 실행 검증` 절에 전문이 있다(30\~32번이 같은 하네스를 쓴다).\
 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 「Constraints」·「Form submission algorithm」·user validity·focus update steps 와 [Selectors Level 4 §12.3.4](https://drafts.csswg.org/selectors-4/#user-pseudos) 로 접지했다(앞 배치가 받아 둔 사본).\
 ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-★★★ **본체는 `matches()` 격자다** — 72 칸을 미리 선언하고 「로드와 갈린 칸」·「명세 열과 갈린 칸」을 스크립트가 센다(A1).
+★★★ **본체는 `matches()` 격자다** — 72 칸을 미리 선언하고 「로드와 달라진 항목」·「명세 열과 달라진 항목」을 스크립트가 센다(A1).

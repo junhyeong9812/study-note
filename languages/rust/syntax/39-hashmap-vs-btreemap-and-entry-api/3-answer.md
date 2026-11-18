@@ -28,7 +28,7 @@ btree line: fig kiwi plum
 
 - ★★★ **`hash` 6 · `btree` 1 · `btree line: fig kiwi plum`.** 키 셋에서 가능한 순서는 **3! = 6** — `HashMap` 은 **그 전부**를 냈다.
 - ★★ `HashMap` 은 **실행마다 씨앗이 바뀐다**(std — 「randomly seeded」 · 「each `HashMap` instance uses a different seed」). 순회는 「**arbitrary order**」.
-- ★ `BTreeMap` 은 **키 순서**(`&str` 의 바이트 순) — std 보장. ★ 이 블록은 **한 판의 `HashMap` 순서를 싣지 않는다** — 그것은 흔들린다. **가짓수**가 흔들리지 않는 칸이다.
+- ★ `BTreeMap` 은 **키 순서**(`&str` 의 바이트 순) — std 보장. ★ 이 블록은 **한 판의 `HashMap` 순서를 싣지 않는다** — 그것은 실행마다 달라진다. **가짓수**가 달라지지 않는 항목이다.
 
 ### 2. ★★★ 없는 키 `2 · 3 · 1` / 있는 키 `1 · 2 · 1` — `BTreeMap` `25 · 8` / `8 · 4`
 
@@ -167,7 +167,7 @@ fn main() {
 - ★★★ **없는 키** — `[A]` `hash 2 eq 0`(`contains_key` 1 + `insert` 1) · `[B]` `hash 3 eq 1`(+ `get_mut` 1 — 넣은 것을 찾아 `eq` 1) · **`[C]` `hash 1 eq 0`**.
 - ★★★ **있는 키** — `[A]` `hash 1 eq 1`(찾았으니 `insert` 안 함) · `[B]` `hash 2 eq 2` · **`[C]` `hash 1 eq 1`**. **`entry` 는 있든 없든 한 번 찾는다.**
 - ★★ **`BTreeMap`** — 없는 키 `[D]` **`cmp 25`** 대 `[E]` **`cmp 8`** · 있는 키 **`cmp 8`** 대 **`cmp 4`**. 찾기 한 번이 `cmp` 여러 번이라 차이가 **탐색 분량씩** 벌어진다.
-- ★ **해셔 고정의 이유** — `hash` **횟수**는 씨앗과 무관하지만, **`eq` 횟수는 씨앗이 바꿀 수 있다**(해시가 우연히 겹친 칸마다 `eq` 로 맞춰 본다). 그래서 씨앗을 고정해 `eq` 칸도 **안 흔들리게** 했다([28번 주제](../28-partialeq-eq-partialord-ord-and-hash-contracts/)의 방식). 또 **용량을 64 로 미리 잡아** 재할당을 뺐다.
+- ★ **해셔 고정의 이유** — `hash` **횟수**는 씨앗과 무관하지만, **`eq` 횟수는 씨앗이 바꿀 수 있다**(해시가 우연히 겹친 칸마다 `eq` 로 맞춰 본다). 그래서 씨앗을 고정해 `eq` 칸도 **달라지지 않게** 했다([28번 주제](../28-partialeq-eq-partialord-ord-and-hash-contracts/)의 방식). 또 **용량을 64 로 미리 잡아** 재할당을 뺐다.
 
 ### 3. ★★ `old`·`new1`·`new2` 세 번 — `or_insert` 는 있어도 만든다
 
@@ -464,7 +464,7 @@ js Map: kiwi fig plum
 | ② 60 이상 80 미만 | ★★ **`BTreeMap`** + `range(60..80)` | **범위 조회** — `HashMap` 에는 `range` 가 없다(6번) |
 | ③ `f64` 키 | ★ **어느 쪽도 그대로는 안 된다** — `total_cmp` 로 순서를 준 새 타입(28번 (7))이나 **정수로 바꾼 키** | **키 트레이트** — `f64` 는 `Eq`·`Hash`·`Ord` 가 없다(4·5번) |
 
-- ★ 셋 다 **속도가 아니라 요건**으로 갈렸다. 요건이 없으면 std 의 권고대로 **`HashMap`**.
+- ★ 셋 다 **속도가 아니라 요건**으로 나뉘었다. 요건이 없으면 std 의 권고대로 **`HashMap`**.
 
 ### 11. ★ 센 것은 호출 횟수와 가짓수 — `O(…)` 는 std 의 표, `~` 는 기댓값
 
@@ -483,7 +483,7 @@ js Map: kiwi fig plum
 | std 소스의 경계 | `r39_bounds.py` — 설치된 `rust-docs` 소스 페이지 | 1 | 765(impl 블록) · 909(`get`) · 887(`entry`) · 1046(`BTreeMap::insert`) |
 | 범위 조회·`&str` 조회 | `r39_range` | 1 | 다섯 줄 |
 | 대비 | `r39_contrast.sh`(Python · node) | 1 | 둘 다 넣은 순서 |
-| **안 던진 것** — 속도 · 재할당 때의 `hash` 호출 · `BTreeMap<f64>`(28번이 받았다) · Go 재실행(09번 인용) · `extract_if` | — | 0 | ★ 「안 던졌다」로 표시했다 |
+| **실행하지 않은 것** — 속도 · 재할당 때의 `hash` 호출 · `BTreeMap<f64>`(28번이 받았다) · Go 재실행(09번 인용) · `extract_if` | — | 0 | ★ 「실행하지 않았다」로 표시했다 |
 
 **구현 의존 항목**(버전·환경이 바뀌면 **다시 찍어야 하는** 것).
 

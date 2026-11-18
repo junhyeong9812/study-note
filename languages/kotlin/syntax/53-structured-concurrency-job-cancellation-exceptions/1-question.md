@@ -312,9 +312,9 @@ fun main() = runBlocking {
 
 - 1번의 `supervisorScope · one raises · async` 행에서 호출자도 핸들러도 예외를 못 봤다. 예외는 어디에 있고, 누가 꺼내야 하나?
 
-### 7. `launch(SupervisorJob())` 의 두 가지 어긋남 (왜)
+### 7. `launch(SupervisorJob())` 의 두 가지 불일치 (왜)
 
-- 1번에서 이 구조가 `supervisorScope` 와 갈린 칸들을 **두 가지 성질**로 설명하면? 1.10.2 로 같은 격자를 돌리면 무엇이 같고 무엇이 다른가?
+- 1번에서 이 구조가 `supervisorScope` 와 달라진 항목들을 **두 가지 성질**로 설명하면? 1.10.2 로 같은 격자를 돌리면 무엇이 같고 무엇이 다른가?
 
 ### 8. 취소는 실패인가 (경계)
 
@@ -332,7 +332,7 @@ fun main() = runBlocking {
 
 선행은 [52번 주제](../52-coroutine-basics-suspend-scope-launch-async/)(코루틴 기초)다.
 
-이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5 · kotlinx-coroutines 1.11.0** 에서 실제로 던져 받은 것이다.
+이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5 · kotlinx-coroutines 1.11.0** 에서 실제로 실행해 받은 것이다.
 
 ## 복습 기록
 

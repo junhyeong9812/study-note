@@ -139,7 +139,7 @@ print("③ 둘이 같은 일인가:", a is not None and b is not None)
 
 - **`@deco` 를 붙인 쪽과 `b = deco(b)` 라고 쓴 쪽이 똑같이 `deco 가 돈다` 를 찍는다.** 같은 일이다.
 - ★ **「잠시 묶이지 않는다」는 것도 언어 보장이다**(위 인용의 `except that …`).
-  눈에 띄는 자리는 드물지만, **데코레이터가 예외를 던지면** 갈린다 —
+  눈에 띄는 자리는 드물지만, **데코레이터가 예외를 던지면** 달라진다 —
   손으로 푼 쪽은 이름 `b` 가 **원래 함수를 가리킨 채** 남고, `@` 쪽은 **이름이 아예 안 생긴다.**
 - ★ **돌려주는 것이 함수일 필요는 없다.** 레퍼런스는 **호출 가능한 것**(callable)을 넣으라고만 한다 —
   받는 쪽 제약이지 돌려주는 쪽 제약이 아니다(동작 9).
@@ -562,7 +562,7 @@ __wrapped__     감싼 뒤가 원본을 가리키나: True
 - **여섯 칸은 `WRAPPER_ASSIGNMENTS` 로 대입**되고, **`__dict__` 한 칸만 `WRAPPER_UPDATES` 로 합쳐진다.**
   출력에 그 두 튜플이 그대로 찍혀 있다 — 대입 목록 여섯 개, 합침 목록은 `('__dict__',)` 하나뿐이다.
 - ★ **`__type_params__` 가 목록에 들어 있다** — 3.12 의 타입 파라미터 문법(PEP 695)이 붙인 속성이다.
-  **이 판의 관찰**이고, 다른 판의 목록은 안 돌려 봤다.
+  **이 버전의 관찰**이고, 다른 판의 목록은 안 돌려 봤다.
 - ★ **`wraps` 있이 감싼 래퍼의 `__dict__` 키에 `__wrapped__` 가 들어 있다** —
   `__wrapped__` 는 특별한 슬롯이 아니라 **그냥 속성 하나**라는 뜻이다.
 
@@ -1119,7 +1119,7 @@ TypeError: 'str' object is not callable
 |---|---|---|
 | **언어 보장** | 레퍼런스·PEP·라이브러리 문서가 정한 것 | 공식 문서 문장을 열어서 인용 |
 | **CPython 구현** | 이 구현이 그렇게 하는 것 | `__closure__`·`co_freevars`·예외 문구 |
-| **이 판의 관찰** | 3.12.3 에서 그랬을 뿐 | `WRAPPER_ASSIGNMENTS` 의 내용 · `__qualname__` 표기 |
+| **이 버전의 관찰** | 3.12.3 에서 그랬을 뿐 | `WRAPPER_ASSIGNMENTS` 의 내용 · `__qualname__` 표기 |
 
 ### 언어 보장
 
@@ -1145,7 +1145,7 @@ TypeError: 'str' object is not callable
 | `TypeError` 문구 — `'function' object cannot be interpreted as an integer` · `'str' object is not callable` | 실행 |
 | `wraps` 가 붙인 `__wrapped__` 가 래퍼의 **`__dict__` 키로** 보인다 | 실행 |
 
-### 이 판(3.12.3)의 관찰
+### 이 버전(3.12.3)의 관찰
 
 | 관찰 | 어디가 흔들리나 |
 |---|---|
@@ -1178,7 +1178,7 @@ TypeError: 'str' object is not callable
   ○ **CPython 의 내성 인터페이스**다. 클로저는 명세, 셀의 모양은 아니다.
 
 **판정 기준 한 줄**: **「지금 도는 것이 데코레이터인가 래퍼인가」를 물으면 시점이 갈리고,
-「이 칸이 원본에도 있었나」를 물으면 `wraps` 가 옮긴 것과 새로 붙인 것이 갈린다.**
+「이 칸이 원본에도 있었나」를 물으면 `wraps` 가 옮긴 것과 새로 붙인 것이 달라진다.**
 
 ## 언제 쓰고 언제 안 쓰나
 
@@ -1254,7 +1254,7 @@ TypeError: 'str' object is not callable
 - **`functools.wraps(fn)`**: 래퍼 위에 붙이는 데코레이터. 원본의 표식을 래퍼로 옮긴다.\
   예: `@functools.wraps(fn)` 한 줄이면 `help()` 가 되살아난다.
 - **`functools.update_wrapper`**: `wraps` 가 실제로 하는 일. `wraps` 는 그것의 데코레이터 판이다.
-- **`WRAPPER_ASSIGNMENTS`**: **대입**되는 속성 목록. 이 판에서 여섯 개다.
+- **`WRAPPER_ASSIGNMENTS`**: **대입**되는 속성 목록. 이 버전에서 여섯 개다.
 - **`WRAPPER_UPDATES`**: **합쳐지는**(`update`) 속성 목록. `('__dict__',)` 하나뿐이다.
 - **`__wrapped__`**: `wraps` 가 래퍼에 새로 붙이는 속성. **원본을 가리킨다.**\
   예: 겹겹이 쌓으면 **체인**이 된다.
@@ -1299,15 +1299,15 @@ TypeError: 'str' object is not callable
 **다른 판의 목록이 어떤지는 여기서 안 돌려 봤다.**\
 **구현 대 언어 보장 한 줄** — **「`@deco` 가 `f = deco(f)` 이고 그것이 정의 시점에 돈다」까지가 언어 보장**이고,
 `__closure__`·셀·`co_freevars` 로 그 속을 들여다본 것은 **CPython 구현**이다.\
-**★ 흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
+**★ 실행마다 달라지는 항목 / 달라지지 않는 항목** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
 
 | | 무엇 |
 |---|---|
-| **흔들린다** | `<cell at 0x…>`·`<function … at 0x…>` 의 **주소**, `id()` 값 |
-| **안 흔들린다** | 예외 **타입**과 **메시지 본문**, `File "<stdin>", line N`, **셀 개수**, `is` 판정, `co_freevars`·`co_varnames`, `__defaults__` 값, `(exit N)` |
+| **실행마다 달라진다** | `<cell at 0x…>`·`<function … at 0x…>` 의 **주소**, `id()` 값 |
+| **달라지지 않는다** | 예외 **타입**과 **메시지 본문**, `File "<stdin>", line N`, **셀 개수**, `is` 판정, `co_freevars`·`co_varnames`, `__defaults__` 값, `(exit N)` |
 
 ★ **이 주제의 블록에는 주소가 한 곳도 안 찍힌다** — `is` 판정(`True`·`False`)과 이름·개수만 찍게 짰다.
-그래서 같은 판에서 다시 돌리면 **한 글자도 안 변한다.**\
+그래서 같은 버전에서 다시 돌리면 **한 글자도 안 변한다.**\
 **선행** — [19번](../19-function-argument-rules/2-summary.md)(`*args`·`**kwargs` 로 받는 법) ·
 [21번](../21-scope-legb-global-nonlocal/2-summary.md)(이름이 어디서 풀리나) ·
 [22번](../22-closures-and-late-binding/2-summary.md)(셀과 자유 변수) ·

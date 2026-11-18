@@ -61,7 +61,7 @@
 
 - 메서드 **호출 횟수**와 **백엣지 횟수**를 센다(compilationPolicy.hpp).
 - 호출 횟수만 세면 "한 번 불려서 안에서 수백만 번 도는" 메서드(예: `main` 안의 큰 반복문)를 놓친다. 백엣지를 세서 잡고, 반복문 도중에 OSR로 갈아탄다.
-- 문턱 예(JDK 21 기본): `Tier3InvocationThreshold` 200, `Tier3BackEdgeThreshold` 60000, `Tier4InvocationThreshold` 5000. 컴파일 큐가 길면 배율 s가 커져 문턱이 올라간다.
+- 임계값 예(JDK 21 기본): `Tier3InvocationThreshold` 200, `Tier3BackEdgeThreshold` 60000, `Tier4InvocationThreshold` 5000. 컴파일 큐가 길면 배율 s가 커져 임계값이 올라간다.
 
 ### 7. 배포 직후 p99 급등
 

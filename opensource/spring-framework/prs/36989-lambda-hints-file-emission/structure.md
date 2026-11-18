@@ -508,7 +508,7 @@ Spring은 이 메타데이터를 자바 객체 모델로 모으는 API를 `org.s
 `findAny().isPresent()` 사슬은 항목이 몇 개든 문법적으로 완전하기 때문이다.\
 gh-36339이 `LambdaHint`·`ReflectionHints`·`ReflectionHintsAttributes`를 확장하면서 `NativeConfigurationWriter`만 옛 목록에 남겨 둔 것이 이 성질의 직접적 결과다.
 
-그 어긋남을 종류별로 펼치면 빠진 칸이 하나라는 것이 보인다.
+그 불일치를 종류별로 펼치면 빠진 칸이 하나라는 것이 보인다.
 
 ```text
   힌트 종류                        직렬화 쪽이 아는가   게이트가 아는가(수정 전)

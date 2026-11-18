@@ -17,7 +17,7 @@ javac 21.0.5
 | **언어 명세(ECMA-334)** | ★★★ **C# 언어가 약속한 것** | ★★★ `foreach` 는 **`GetEnumerator`·`MoveNext`·`Current` 를 이름으로 찾는다**(인터페이스가 아니어도) · 열거자가 **`IDisposable` 이면 `finally` 에서 `Dispose`** · 배열은 **인덱스 고리로 풀어도 된다** · 확장 `GetEnumerator`(C# 9) |
 | **BCL 계약** | 라이브러리 문서가 약속한 것 | ★★ `List<T>` 열거 중 수정은 **`InvalidOperationException`** · `List<T>.GetEnumerator()` 는 **구조체**를 돌려준다 |
 | **런타임 · 컴파일러 구현** | ★★★ 그것을 **어떻게 적나** | ★★★ 구조체 열거자 → **`call` + `constrained. callvirt Dispose`**(박싱 없음) · 인터페이스로 받으면 → **박스 하나** · 배열 → **`ldelem` 고리** · `List<T>._version` · ★ `Dictionary.Remove` 가 열거를 안 깨는 것 |
-| **이 판의 관찰** | .NET 10.0.12 · linux-x64 · javac 21.0.5 | 할당 바이트 · 예외 문구 |
+| **이 버전의 관찰** | .NET 10.0.12 · linux-x64 · javac 21.0.5 | 할당 바이트 · 예외 문구 |
 
 ★★★ **이 주제의 층 구분 —**\
 **「`foreach` 는 패턴으로 풀린다(인터페이스를 안 봐도 된다)」는 명세**다. **「구조체 열거자라서 할당 0」은 BCL 이 구조체를 고른 결과 + 컴파일러가 박싱 없이 부르는 것**이다 — `List<int>` 를 **`IEnumerable<int>` 로 받는 순간** 사라진다.
@@ -41,7 +41,7 @@ javac 21.0.5
 | 개정 번호 | ★★★ `Add`·`l[2]=9`·`Remove` → **`InvalidOperationException`** · `_version` **3 → 4 → 5** | (6) |
 | 책 덮기 | ★★ 끝까지·`break`·예외 **셋 다** 마지막이 `Dispose` | (7) |
 
-★★★ **이 주제의 본체 그림 — `foreach (var x in xs) 몸통` 이 풀리는 모양.**
+★★★ **이 주제의 핵심 그림 — `foreach (var x in xs) 몸통` 이 풀리는 모양.**
 
 ```text
    foreach (var x in xs) 몸통          ── 컴파일러가 이름으로 찾는다 ──▶
@@ -71,7 +71,7 @@ javac 21.0.5
 
 ### (0) 이 주제가 쓰는 창
 
-★★★ **본체 창은 ① IL 덤프다.**
+★★★ **핵심 창은 ① IL 덤프다.**
 
 | 창 | 무엇을 보여 주나 | 이 주제에서 |
 |---|---|---|
@@ -79,7 +79,7 @@ javac 21.0.5
 | ★★★ **④ 할당 바이트** | ★★★ 같은 `List<int>` 가 받는 타입에 따라 **0 대 40000** · 배열 **0 대 32000** — 2×2 판 격자 | (5) |
 | ★★ **③ 리플렉션** | ★★ 인터페이스 **0 개** · 세 인터페이스의 **자기 멤버** · `List<int>.GetEnumerator()` 가 **구조체** · `_version` 필드 | (1)(3)(6) |
 | ★★ **② 진단 격자** | ★ `CS8400`(C# 8 의 확장 `GetEnumerator`) · `CS1579`(`GetEnumerator` 없음) | (2) |
-| **부적용인 창** | 없다 — 네 창을 다 썼다 | — |
+| **해당 없는 창** | 없다 — 네 창을 다 썼다 | — |
 
 ### (1) ★★★ 본체 — 인터페이스 없이 `foreach` 된다
 
@@ -138,7 +138,7 @@ class Program {
 
 - ★★★ **`[1]`·`[2]` 인터페이스 수 `0` · `0` — 그런데 `[3]` `Sum` 이 `60`** — `Bag` 은 `IEnumerable` 을 **구현하지 않았다.** `foreach` 는 **`GetEnumerator` 라는 이름**만 찾았다.
 - ★★★ **IL — `callvirt Bag::GetEnumerator` · `call Bag+Walker::get_Current` · `call Bag+Walker::MoveNext`** — **인터페이스 메서드 호출이 한 줄도 없다.** 찾은 **구조체의 메서드를 직접** 부른다(`ldloca.s 1` — 지역 변수의 주소로).
-- ★★★ **`Walker.Dispose 불림` 이 안 찍혔고, IL 에 `.try … finally` 가 없다** — `Walker` 는 `public void Dispose()` 를 **가졌지만 `IDisposable` 이 아니다.** 패턴은 `GetEnumerator`·`MoveNext`·`Current` 까지이고 **`Dispose` 는 인터페이스로 찾는다**(`ref struct` 는 예외라고 알려져 있다 — **이 판에서 안 던졌다**).
+- ★★★ **`Walker.Dispose 불림` 이 안 찍혔고, IL 에 `.try … finally` 가 없다** — `Walker` 는 `public void Dispose()` 를 **가졌지만 `IDisposable` 이 아니다.** 패턴은 `GetEnumerator`·`MoveNext`·`Current` 까지이고 **`Dispose` 는 인터페이스로 찾는다**(`ref struct` 는 예외라고 알려져 있다 — **이 버전에서 안 던졌다**).
 - ★ `callvirt Bag::GetEnumerator` — 비가상 인스턴스 메서드도 `callvirt` 로 불러 **널 검사**를 얻는다([16번](../16-inheritance-virtual-override-abstract-sealed-new/)).
 
 ### (2) ★★ 확장 메서드 `GetEnumerator` · 없는 타입
@@ -381,11 +381,11 @@ class Program {
 네 판에서 갈린 줄 0 / 4
 ```
 
-- ★★★ **네 판에서 갈린 줄 0 / 4** — **`[1]` 0 · `[2]` 40000 · `[3]` 0 · `[4]` 32000**.
+- ★★★ **네 버전에서 달라진 줄 0 / 4** — **`[1]` 0 · `[2]` 40000 · `[3]` 0 · `[4]` 32000**.
 - ★★★ **`[1]` 대 `[2]` — 같은 `List<int>` 객체**다. `List<int>` 로 받으면 **구조체 열거자를 스택에** 두고, `IEnumerable<int>` 로 받으면 **`GetEnumerator()` 가 인터페이스 변수로 돌아와 박스**가 된다((3)(4)). **`foreach` 한 번마다 박스 하나**다.
 - ★★ **`[3]` 대 `[4]`** — 배열도 `int[]` 로 받으면 **열거자 자체가 없다**((4) `ldelem` 고리). `IEnumerable<int>` 로 받으면 배열의 **열거자 객체**가 생긴다.
 - ★★ **제네릭 코드에서의 뜻** — 매개변수를 `IEnumerable<T>` 로 받는 메서드는 **무엇을 넘기든 열거자 할당**을 한다. [24번](../24-generics-and-type-parameters/) 의 「제네릭은 값 타입마다 코드를 따로 만든다」는 **타입 인자가 값 타입일 때** 이야기고, 여기의 박싱은 **인터페이스 변수**에서 생긴다 — 다른 축이다.
-- ★★★ **흔들린 칸이 있었다** — 첫 캡처는 **짧게 데운 판**(200번)이었고 `-optimize` + 티어링 기본 칸에서 **`[4]` 가 한 번 `32`** 로 나왔다(나머지 세 판 `32000`). 그 뒤 같은 dll 을 6번 다시 돌려 **6번 다 `32000`** 이었다 — **데우는 도중 티어가 바뀐** 잡음으로 보고, 캡처를 **길게 데우는 판**(200 + 쉼 + 300 + 쉼 + 300)으로 바꿨다. 위 블록이 그 판이다(규칙 24).
+- ★★★ **달라진 항목이 있었다** — 첫 캡처는 **짧게 데운 판**(200번)이었고 `-optimize` + 티어링 기본 칸에서 **`[4]` 가 한 번 `32`** 로 나왔다(나머지 세 판 `32000`). 그 뒤 같은 dll 을 6번 다시 돌려 **6번 다 `32000`** 이었다 — **데우는 도중 티어가 바뀐** 잡음으로 보고, 캡처를 **길게 데우는 판**(200 + 쉼 + 300 + 쉼 + 300)으로 바꿨다. 위 블록이 그 판이다(규칙 24).
 - ★★★ **「구조체 열거자가 빠르다」는 이 문서가 잰 것이 아니다** — 잰 것은 **할당 바이트**뿐이다. 시간은 안 쟀다.
 
 ### (6) ★★★ 순회 중에 고치면 — `_version` 대조 · Java 와 한 쌍
@@ -442,7 +442,7 @@ public class Ex31 {
 - ★★★ **`[1]`\~`[3]` `List` 는 `Add`·`l[2] = 9`·`Remove` 전부 `InvalidOperationException: Collection was modified; enumeration operation may not execute.`** — **값을 덮어쓰는 `l[2] = 9` 도** 수정이다.
 - ★★★ **`[8]` `_version` — 처음 `3` · `Add` 뒤 `4` · `l[0]=7` 뒤 `5` · 읽기 뒤 `5`** — 쓰기마다 오르는 **개정 번호**다. 열거자는 만들 때의 번호를 들고 있다가 `MoveNext` 마다 대조한다(BCL 구현 — **필드 이름은 계약이 아니다**).
 - ★★★ **`[3]` — 마지막 원소 직전(`x==2`)에서 마지막 원소를 지워도 C# 은 던진다. Java 는 `끝까지 돎`** — [Java 43번](../../../java/syntax/43-iterator-and-fail-fast/)이 먼저 실측한 **「끝에서 두 번째를 지우면 안 터지고 마지막 원소를 조용히 건너뛴다」** 가 여기서도 재현됐다. Java 의 `hasNext()` 는 **`cursor != size` 만 보고 검사 없이 끝나고**(Java 43번), C# `List<T>` 의 `MoveNext` 는 **끝에 닿을 때도 번호를 대조**한다.
-- ★★ **`[4]`·`[5]` `Dictionary` 는 `Remove`·기존 키 덮어쓰기에서 `끝까지 돎` · `[6]` 새 키 추가만 던진다** — `Dictionary` 는 **모든 쓰기에서 번호를 올리지 않는다**(이 판의 관찰 — 계약으로 읽지 마라).
+- ★★ **`[4]`·`[5]` `Dictionary` 는 `Remove`·기존 키 덮어쓰기에서 `끝까지 돎` · `[6]` 새 키 추가만 던진다** — `Dictionary` 는 **모든 쓰기에서 번호를 올리지 않는다**(이 버전의 관찰 — 계약으로 읽지 마라).
 - ★★ **`[7]` 배열은 `끝까지 돎`** — 배열 `foreach` 는 **인덱스 고리**라 대조할 번호가 없다((4)).
 
 ```text
@@ -563,7 +563,7 @@ bac · x=1 · bac
 3. ★★★ **「`List<T>` 의 `foreach` 는 할당이 없다」** — **`List<T>` 로 받을 때만**이다. **`IEnumerable<T>` 로 받으면 매번 박스**((5) 40000).
 4. ★★★ **「값만 바꾸는 `l[i] = …` 는 괜찮다」** — `List<T>` 에서는 **수정**이다((6) `[2]`).
 5. ★★★ **「C# 도 Java 처럼 끝에서 두 번째를 지우면 안 터진다」** — C# 은 **터진다**((6) `[3]`).
-6. ★★ **「`Dictionary` 에서 순회 중 `Remove` 는 항상 던진다」** — 이 판은 **안 던졌다**. 새 키 추가만 던졌다((6)).
+6. ★★ **「`Dictionary` 에서 순회 중 `Remove` 는 항상 던진다」** — 이 버전은 **안 던졌다**. 새 키 추가만 던졌다((6)).
 7. ★★ **「열거자에 `Dispose` 메서드만 있으면 `foreach` 가 부른다」** — **`IDisposable` 이어야** 부른다((1)).
 8. ★ **「배열 `foreach` 도 열거자를 만든다」** — **인덱스 고리**다((4)).
 
@@ -578,13 +578,13 @@ bac · x=1 · bac
 | **`List<T>.GetEnumerator()` 가 구조체** | ★★ **BCL 설계**(공개 API 모양) | (3) |
 | **구조체 열거자를 `constrained.` 로 박싱 없이 `Dispose`** | ★★ **Roslyn 구현** | (4) |
 | **`List<T>` 열거 중 수정이 `InvalidOperationException`** | ★★ **BCL 계약** | (6) |
-| **`_version` 필드 · `Dictionary.Remove` 가 안 깨는 것** | ★ **BCL 구현 · 이 판의 관찰** | (6) |
-| **할당 바이트 값** | ★ **이 판의 관찰** | (5) |
+| **`_version` 필드 · `Dictionary.Remove` 가 안 깨는 것** | ★ **BCL 구현 · 이 버전의 관찰** | (6) |
+| **할당 바이트 값** | ★ **이 버전의 관찰** | (5) |
 
 ## 언제 쓰고 언제 안 쓰나
 
 - ★★★ **뜨거운 경로에서 열거자 할당을 없애고 싶으면 매개변수를 구체 타입(`List<T>`·배열·`Span<T>`)으로 받아라** — `IEnumerable<T>` 로 받으면 **호출마다 할당**이다((5)). 할당이 문제인지는 **재 보고** 판단해라 — 이 문서는 시간을 안 쟀다.
-- ★★★ **순회 중에 지울 것은 따로 모아 두었다가 순회 뒤에 지워라** — 또는 `List<T>.RemoveAll(조건)`. 「이 판에서 안 터졌다」(`Dictionary`)에 기대지 마라((6)).
+- ★★★ **순회 중에 지울 것은 따로 모아 두었다가 순회 뒤에 지워라** — 또는 `List<T>.RemoveAll(조건)`. 「이 버전에서 안 터졌다」(`Dictionary`)에 기대지 마라((6)).
 - ★★ **열거자를 직접 만들면 `IDisposable` 을 붙여라** — 안 붙이면 `foreach` 가 정리를 안 부른다((1)).
 - ★★ **열거자를 손으로 쓰지 마라** — 대부분 `yield return` 이 낫다([32번](../32-yield-return-iterators-and-deferred-execution/)).
 
@@ -620,10 +620,10 @@ bac · x=1 · bac
 
 ## 더 들어가면
 
-- ★ **`ref struct` 열거자의 패턴 `Dispose`**(C# 8) — `IDisposable` 없이도 부른다고 알려져 있다. **이 판에서 안 던졌다.**
-- ★ **`Span<T>` 의 `foreach` · `foreach (ref var x in span)`** — Learn 예제가 있다. **안 던졌다.**
+- ★ **`ref struct` 열거자의 패턴 `Dispose`**(C# 8) — `IDisposable` 없이도 부른다고 알려져 있다. **이 버전에서 실행하지 않았다.**
+- ★ **`Span<T>` 의 `foreach` · `foreach (ref var x in span)`** — Learn 예제가 있다. **실행하지 않았다.**
 - ★ **`await foreach`(C# 8)** — `GetAsyncEnumerator` 패턴. 비동기 묶음에서.
-- ★ **`IEnumerable<T>` 로 받은 `foreach` 를 JIT 이 탈가상화해 박싱을 없애는 판** — (5)의 흔들린 칸이 그 흔적일 수 있다. **확인하지 않았다.**
+- ★ **`IEnumerable<T>` 로 받은 `foreach` 를 JIT 이 탈가상화해 박싱을 없애는 판** — (5)의 달라진 항목이 그 흔적일 수 있다. **확인하지 않았다.**
 
 ## 실행 환경
 
@@ -631,17 +631,17 @@ bac · x=1 · bac
 [Learn — 반복문(`foreach`)](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/iteration-statements)(열어서 확인: 「`foreach` 는 `IEnumerable`·`IEnumerable<T>` 를 구현한 타입에 쓴다 — **그 타입들로 한정되지 않는다**」 ·\
 「타입에 **공개 매개변수 없는 `GetEnumerator`** 가 있고(**확장 메서드여도 된다**), 그 반환 타입에 **공개 `Current` 속성과 `bool` 을 돌려주는 매개변수 없는 `MoveNext`** 가 있으면 된다」 ·\
 「`Span<T>` 는 **아무 인터페이스도 구현하지 않는다**」 · 「`null` 에 `foreach` 하면 `NullReferenceException`」).
-**실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 맨 위 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
+**실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 맨 위 「이 버전」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
 ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. **대비는 실측이다** — **javac 21.0.5** 로 같은 수정 두 줄을 던졌다((6)).
 **버전** — `foreach`·`IEnumerable` **C# 1** · `IEnumerable<T>` **C# 2** · **확장 `GetEnumerator` C# 9**(★ `-langversion:8` 에서 **`CS8400 … extension GetEnumerator … 9.0 or greater`** · (2)) · `foreach` 반복 변수 캡처 의미 **C# 5**([28번](../28-lambdas-and-closure-capture/) (3) — **판 플래그에 안 묶였다**).
 **경계** — ★★★ **컬렉션을 무엇으로 고르나**는 [10번](../10-collection-choosing-list-dictionary-hashset-queue-stack/) 이 정본이다 — 여기는 **`foreach` 가 그 컬렉션을 어떻게 도나**만.\
 ★★ **열거자를 손으로 안 쓰고 만드는 법(`yield return`)** 은 [32번](../32-yield-return-iterators-and-deferred-execution/) · ★ **목록 패턴 `[1, .., 3]`** 은 [21번](../21-pattern-matching-type-property-relational-list/) — 그쪽은 `GetEnumerator` 가 아니라 **`Length`/`Count` + 인덱서**를 찾는다(21번 (2)) — **`foreach` 와 무관**하다.\
 ★★ **순회 중 수정의 교차 갈래 대비는 인용한다** — [Java 43번](../../../java/syntax/43-iterator-and-fail-fast/)(`ConcurrentModificationException` · **끝에서 두 번째를 지우면 안 터진다**) · [Rust 38번](../../../rust/syntax/38-vec-api-capacity-retain-and-drain/)(**`E0502` — 컴파일 에러**).
-★★★ **본체 창은 ① IL 덤프다** — 「패턴으로 풀린다」는 **`call Bag+Walker::MoveNext`**(인터페이스 호출이 아니다)로만 보인다.
+★★★ **핵심 창은 ① IL 덤프다** — 「패턴으로 풀린다」는 **`call Bag+Walker::MoveNext`**(인터페이스 호출이 아니다)로만 보인다.
 
-★★ **흔들리는 칸 / 안 흔들리는 칸**
+★★ **실행마다 달라지는 항목 / 달라지지 않는 항목**
 
-| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+| 실행마다 달라진다(근거로 쓰지 않는다) | 달라지지 않는다(근거로 쓴다) |
 |---|---|
 | 진단 **문구** · IL **오프셋 폭** | ★★★ **진단 코드**(`CS8400` · `CS1579`) · **옵코드**(`call …Walker::MoveNext` · `constrained.` + `callvirt IDisposable::Dispose` · `ldelem.i4`) · **`.try … finally` 가 있나** |
-| ★ **증분의 절댓값 일부**(규칙 24 — 짧게 데운 판에서 한 칸이 움직였다 · (5)) | ★★★ 할당 바이트의 **0 대 비(非)0** · **「네 판에서 갈린 줄 N / M」** · 예외 **타입과 메시지** · `_version` 이 **움직였나** |
+| ★ **증분의 절댓값 일부**(규칙 24 — 짧게 데운 판에서 한 칸이 움직였다 · (5)) | ★★★ 할당 바이트의 **0 대 비(非)0** · **「네 버전에서 달라진 줄 N / M」** · 예외 **타입과 메시지** · `_version` 이 **움직였나** |

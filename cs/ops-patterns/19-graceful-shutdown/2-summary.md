@@ -58,8 +58,8 @@ shutdown(timeoutMillis):
 isHealthy(): DRAINING 이면 false  <- 로드밸런서가 이걸 보고 트래픽을 뺀다
 ```
 
-### 동작 — 기준선: 즉시 종료 (AbruptServer)
-**언제 쓰나**: 안 기다리면 무엇이 사라지는지 보여주는 기준선.\
+### 동작 — 베이스라인: 즉시 종료 (AbruptServer)
+**언제 쓰나**: 안 기다리면 무엇이 사라지는지 보여주는 베이스라인.\
 그리고 실제로 대부분의 서비스가 이 모양이다.
 
 전 상태:
@@ -176,7 +176,7 @@ LB ──요청──> [DRAINING 서버] -> 전부 거절   LB: isHealthy()=fals
 과제(원본 README "하는 방법"):
 
 1. `ShutdownTest.java` 를 따라친다.
-2. `AbruptServer` 의 **TODO 1** — 기준선.\
+2. `AbruptServer` 의 **TODO 1** — 베이스라인.\
    **기다리면 안 된다**(즉시 STOPPED).\
    다만 **몇 개를 버렸는지는 센다.**
 3. `GracefulServer` 의 **TODO 2**(accept — RUNNING 일 때만 받는다.\
@@ -282,7 +282,7 @@ LB ──요청──> [DRAINING 서버] -> 전부 거절   LB: isHealthy()=fals
 ### 관련 자료
 - 챕터 안내: `/home/jun/project/myway/ops-patterns/19-graceful-shutdown/README.md`
 - 단계·보고(TODO 없음): `.../src/main/java/com/ops/shutdown/Phase.java`, `ShutdownReport.java` (clean/timedOut — 숨기지 않는 것이 요점)
-- 내 구현(TODO 껍데기): `.../src/main/java/com/ops/shutdown/AbruptServer.java`(TODO 1 — 기준선, 기다리면 안 된다), `GracefulServer.java`(TODO 2~4 — shutdown이 본체)
+- 내 구현(TODO 껍데기): `.../src/main/java/com/ops/shutdown/AbruptServer.java`(TODO 1 — 베이스라인, 기다리면 안 된다), `GracefulServer.java`(TODO 2~4 — shutdown이 본체)
 - 시계: `.../src/main/java/com/ops/shutdown/Ticker.java`
 - 정답 기준 소스: `/home/jun/project/myway/ops-patterns/19-graceful-shutdown/impl/AbruptServer.java`, `impl/GracefulServer.java`
 - 테스트: `.../src/test/java/com/ops/shutdown/ShutdownTest.java` (즉시 멈춤 / 배수 / 기한 / 나란히 비교 + 한계 2개), `FakeTicker.java`, `ScriptedTicker.java`

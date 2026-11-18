@@ -1,17 +1,17 @@
 # rust/syntax/52 — `Mutex`/`RwLock` 과 `Arc<Mutex<T>>` · 중독 — 정리 (힌트)
 
-★★★ **본체 창 — ① 가드 해제 격자(모양마다 두 번째 잠금이 막히나)다.** 판정은 **`try_lock` 한 번**으로 한다 — `lock` 을 두 번 부르면 교착으로 멈추므로((7)), 멈추지 않는 물음으로 바꿔 물었다.
+★★★ **핵심 창 — ① 가드 해제 격자(모양마다 두 번째 잠금이 막히나)다.** 판정은 **`try_lock` 한 번**으로 한다 — `lock` 을 두 번 부르면 교착으로 멈추므로((7)), 멈추지 않는 물음으로 바꿔 물었다.
 
-## 흔들리는 칸 / 안 흔들리는 칸
+## 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| ★★ **흔들린다(정규화)** | 패닉 첫 줄의 **스레드 id** `thread '<unnamed>' (NNN)` · `thread 'main' (NNN)` | 실행마다 바뀐다 — 기본 규칙이 `(<tid>)` 로 바꾼다 |
-| 안 흔들린다 | ★★★ **가드 격자의 `blocked`/`free` 칸과 「`blocked cells: N / M`」** | 가드가 버려지는 줄은 **언어**(임시값 스코프)가 정한다 — **이 주제의 본체** |
-| 안 흔들린다 | `total 800000` · `strong after join 1` · 중독 로그 `[1]`\~`[8]` · `RwLock` 격자 | 동기화가 걸린 값·순서다(`join` 뒤에 읽는다) |
-| 안 흔들린다 — 단 **std 판의 문구** | `poisoned lock: another task failed inside` · `PoisonError { .. }` | ★ **std 구현**이다. 「`Err` 가 온다」는 계약, **문구는 구현** |
+| ★★ **실행마다 달라진다(정규화)** | 패닉 첫 줄의 **스레드 id** `thread '<unnamed>' (NNN)` · `thread 'main' (NNN)` | 실행마다 바뀐다 — 기본 규칙이 `(<tid>)` 로 바꾼다 |
+| 달라지지 않는다 | ★★★ **가드 격자의 `blocked`/`free` 칸과 「`blocked cells: N / M`」** | 가드가 버려지는 줄은 **언어**(임시값 스코프)가 정한다 — **이 주제의 핵심** |
+| 달라지지 않는다 | `total 800000` · `strong after join 1` · 중독 로그 `[1]`\~`[8]` · `RwLock` 격자 | 동기화가 걸린 값·순서다(`join` 뒤에 읽는다) |
+| 달라지지 않는다 — 단 **std 판의 문구** | `poisoned lock: another task failed inside` · `PoisonError { .. }` | ★ **std 구현**이다. 「`Err` 가 온다」는 계약, **문구는 구현** |
 | ★ **관찰일 뿐** | 같은 스레드 재잠금의 `(exit 124)` | std 는 「unspecified」라고 적는다((7)) — 이 판·이 OS 에서 멈췄다는 한 판의 결과 |
-| 안 흔들린다 | E0499 번호·`파일:줄:칸` · 종료 코드(`101`) | 같은 rustc 판에서 고정이다 |
+| 달라지지 않는다 | E0499 번호·`파일:줄:칸` · 종료 코드(`101`) | 같은 rustc 버전에서 고정이다 |
 
 ★ 정규화 규칙은 **기본 넷**만 쓴다(패닉 스레드 id 가 걸린다). 격자는 `try_lock` 결과만 칸에 옮겨 스레드 id 가 들어가지 않는다.
 
@@ -28,7 +28,7 @@ Rust 는 물건을 **금고 안에** 넣어 버렸다 — 열쇠(가드)를 받�
 | 「**손에 쥔 열쇠**」 | ★★ **`MutexGuard<T>`** — `Deref`/`DerefMut` 로 `T` 처럼 쓰인다 |
 | 「**손을 놓는 때**」 | ★★★ **가드가 `Drop` 될 때** — 스코프 끝·`drop(g)`·**문장 끝(임시값)**·**`match`/`if let`/`while let` 이 든 문장 끝**((1)) |
 | 「**문 앞에서 한 번 당겨 보기**」 | ★★ **`try_lock()`** — 잠겨 있으면 기다리지 않고 `Err`((1)의 판정 도구) |
-| 「**열쇠를 쥔 채 쓰러진 사람**」 | ★★★ **중독(poisoning)** — 가드를 쥔 스레드가 패닉하면 다음 `lock()` 은 `Err(PoisonError)`((4)) |
+| 「**열쇠를 잡은 채 쓰러진 사람**」 | ★★★ **중독(poisoning)** — 가드를 잡은 스레드가 패닉하면 다음 `lock()` 은 `Err(PoisonError)`((4)) |
 | 「**그래도 물건은 꺼낼 수 있다**」 | ★★ **`PoisonError::into_inner()`** · **`clear_poison()`**(1.77)((4)) |
 | 「**구경은 여럿, 손대는 건 혼자**」 | ★ **`RwLock<T>`** — 읽기 가드 여럿 또는 쓰기 가드 하나((6)) |
 | 「**금고를 여럿이 나눠 들기**」 | ★ **`Arc<Mutex<T>>`** — `'static` 스레드에 넘길 때. 스코프 스레드면 `&Mutex<T>` 로 충분((3)) |
@@ -46,10 +46,10 @@ Rust 는 물건을 **금고 안에** 넣어 버렸다 — 열쇠(가드)를 받�
    (2) r52_wrap_fix    : count 를 Mutex 안에 → 통과, 2
 ```
 
-> **가드(guard)** — `lock()` 이 돌려주는 `MutexGuard<T>`. 이것을 쥔 동안만 안의 값에 닿을 수 있고, **`Drop` 될 때 잠금이 풀린다.**\
+> **가드(guard)** — `lock()` 이 돌려주는 `MutexGuard<T>`. 이것을 잡은 동안만 안의 값에 닿을 수 있고, **`Drop` 될 때 잠금이 풀린다.**\
 > 예: `let mut g = m.lock().unwrap(); g.push(1);` — `g` 의 스코프가 끝나면 풀린다.
 
-> **중독(poisoning)** — std 의 말: 가드를 쥔 스레드가 패닉하면 그 락은 **중독된** 것으로 표시되고, 이후의 `lock()` 은 `Err` 를 돌려준다. 데이터가 **반쯤 고쳐진 채** 남았을 수 있다는 경고다.\
+> **중독(poisoning)** — std 의 말: 가드를 잡은 스레드가 패닉하면 그 락은 **중독된** 것으로 표시되고, 이후의 `lock()` 은 `Err` 를 돌려준다. 데이터가 **반쯤 고쳐진 채** 남았을 수 있다는 경고다.\
 > 예: 스레드가 `g.push(4)` 뒤 패닉 → 다음 `m.lock()` 은 `Err(PoisonError { .. })`.
 
 ## 이 주제가 답하려는 질문
@@ -65,16 +65,16 @@ Rust 는 물건을 **금고 안에** 넣어 버렸다 — 열쇠(가드)를 받�
 
 ## 동작 방식
 
-### (0) 이 주제가 쓰는 창 — 본체는 ① 가드 해제 격자다
+### (0) 이 주제가 쓰는 창 — 핵심은 ① 가드 해제 격자다
 
 | 창 | 무엇을 보여 주나 | 이 주제에서 |
 |---|---|---|
-| ① ★★★ **가드 해제 격자**(모양마다 소스를 만들어 **실행**, 판정은 `try_lock`) × 에디션 둘 | 가드가 **어느 줄까지** 사나 | ★ **본체**((1)) |
+| ① ★★★ **가드 해제 격자**(모양마다 소스를 만들어 **실행**, 판정은 `try_lock`) × 에디션 둘 | 가드가 **어느 줄까지** 사나 | ★ **핵심**((1)) |
 | ② ★★ **컴파일러 진단** E0499 | 락이 데이터 **옆에** 있으면 왜 안 되나 | 쓴다((2)) |
 | ③ ★★ **중독 로그**(`is_poisoned`·`Err`·`into_inner`·`clear_poison`) | 패닉 뒤의 락 상태 | 쓴다((4)·(5)) |
 | ④ ★ **`RwLock` 격자**(`try_read`·`try_write`) | 읽기 여럿 / 쓰기 하나 | 쓴다((6)) |
 | ⑤ ★ **`timeout` 의 종료 코드** | 같은 스레드 재잠금이 돌아오나 | 쓴다 — **관찰**((7)) |
-| 실행 시간 · 경합 비용 · `RwLock` 대 `Mutex` 속도 | 「어느 쪽이 빠르다」 | ★ **부적용 — 재지 않는다** |
+| 실행 시간 · 경합 비용 · `RwLock` 대 `Mutex` 속도 | 「어느 쪽이 빠르다」 | ★ **해당 없음 — 재지 않는다** |
 | 데이터 레이스 탐지기(TSan·Miri) | — | ★ **잴 것이 없다** — 안전한 코드에서 락 없이 공유 값을 고치는 프로그램은 **컴파일이 안 된다**((2)). 탐지할 실행 파일이 생기지 않는다 |
 
 ★★ **제5의 상태 — 「같은 질문을 다른 창으로」.** 「이 자리에서 가드가 아직 살아 있나」의 정직한 창은 **두 번째 `lock()`** 이다. 그런데 그 창은 살아 있으면 **영영 돌아오지 않는다**((7) — 멈춘다). 그래서 같은 질문을 **`try_lock()` 의 `Ok`/`Err`** 로 옮겨 물었다.
@@ -82,7 +82,7 @@ Rust 는 물건을 **금고 안에** 넣어 버렸다 — 열쇠(가드)를 받�
 
 ### (1) ★★★ 가드 해제 격자 — 열두 모양 × 두 에디션
 
-**언제 쓰나** — 락을 쥔 코드에서 「여기서 다시 잠그면 막히나(교착하나)」를 판정할 때마다.
+**언제 쓰나** — 락을 잡은 코드에서 「여기서 다시 잠그면 막히나(교착하나)」를 판정할 때마다.
 
 ```text
 ===== 소스: r52_grid.sh =====
@@ -141,14 +141,14 @@ blocked cells: 13 / 24
 (exit 0)
 ```
 
-- ★★★ **「`blocked cells: 13 / 24`」.** **두 에디션 열이 서로 다른 행은 `if let … else` 의 else 갈래 행**이다(2021 `blocked` · 2024 `free`). 그 밖의 행은 두 열이 같다. ★ 스크립트는 「갈린 행」을 따로 세지 않았다 — 표를 행으로 읽은 것이다.
+- ★★★ **「`blocked cells: 13 / 24`」.** **두 에디션 열이 서로 다른 행은 `if let … else` 의 else 갈래 행**이다(2021 `blocked` · 2024 `free`). 그 밖의 행은 두 열이 같다. ★ 스크립트는 「달라진 행」을 따로 세지 않았다 — 표를 행으로 읽은 것이다.
 - ★★ **변수에 담으면 스코프 끝까지** — `let g` 도 `let _g` 도 `blocked`(1·2행). **`_g` 는 이름 있는 변수**다. `let _ = …` 만 그 자리에서 버리는데 그것은 컴파일 에러다(44번 — `let_underscore_lock`).
 - ★★ **풀어 주는 세 가지** — 안쪽 블록 끝(3행) · `drop(g)`(4행) · **자기 문장이 끝난 임시값**(5행). `let n = m.lock().unwrap().len();` 도 `free`(6행) — `len()` 이 `usize` 를 넘기고 그 `let` 문장 끝에서 가드가 버려진다.
 - ★★★ **한 문장 안이면 겹친다** — 7행 `m.lock().unwrap().push(probe(&m));` 은 `blocked`. 수신자의 가드가 **인자를 평가하는 동안** 살아 있다. 실제 코드에서 `probe` 자리에 `m.lock()` 을 쓰면 **교착**이다.
 - ★★★ **`match` 의 조사 대상은 문장 끝까지** — 8행 `blocked`. 값은 `usize` 하나인데도 가드가 팔 전체를 따라간다.
 - ★★ **`if` 조건은 조건 직후에 풀린다** — 9행 `free`. `match` 와 `if` 가 반대다 — 42번 (1)의 10·11행과 **같은 모양 같은 답**이다.
 - ★★★ **`if let` 의 then 본문은 두 에디션 다 `blocked`**(10행) · **else 갈래만 2024 에서 `free`**(11행). 42번 (2)의 `3 / 4` 와 같은 규칙이다 — 2024 가 바꾼 것은 「`if let` 임시값은 `else` 블록 전에 버려진다」까지다.
-- ★★★ **`while let` 은 본문 내내 쥔다** — 12행 `blocked`(두 에디션 다). `while let Some(x) = m.lock().unwrap().pop() { … }` 의 본문에서 같은 락을 다시 잡으면 **매 바퀴** 교착이다. **꺼낸 뒤 가드를 버리는 모양**(`let x = m.lock().unwrap().pop();` 을 루프 안에서 따로)으로 바꾼다.
+- ★★★ **`while let` 은 본문 내내 잡는다** — 12행 `blocked`(두 에디션 다). `while let Some(x) = m.lock().unwrap().pop() { … }` 의 본문에서 같은 락을 다시 잡으면 **매 바퀴** 교착이다. **꺼낸 뒤 가드를 버리는 모양**(`let x = m.lock().unwrap().pop();` 을 루프 안에서 따로)으로 바꾼다.
 
 ```text
    가드(MutexGuard)는 언제 풀리나 — (1)의 blocked / free 가 이 표로 갈린다
@@ -289,7 +289,7 @@ strong after join 1
 - ★ **`thread::scope` 를 쓸 수 있으면 `Arc` 는 필요 없다**((2)의 `r52_wrap_fix`). `Arc` 는 스레드가 **함수보다 오래 살 수 있을 때**의 값이다.
 - ★ 이 블록은 **맞는 값이 나왔다는 것만** 보인다. 동기화 없는 판과의 대비(잃은 갱신)는 [목록의 **53번 주제**](../53-atomics-oncelock-and-lazylock/)가 원자 연산 격자로 쟀다.
 
-### (4) ★★★ 중독 — 가드를 쥔 채 패닉하면
+### (4) ★★★ 중독 — 가드를 잡은 채 패닉하면
 
 **언제 쓰나** — `lock().unwrap()` 을 쓰는 모든 곳. 그 `unwrap` 이 무엇을 풀고 있는지 알아야 한다.
 
@@ -341,7 +341,7 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 (exit 0)
 ```
 
-- ★★★ **`[2] is_poisoned true` · `[3] lock() is_err true`** — 자식 스레드가 가드를 쥔 채 패닉했다. std §Errors: 「If another user of this mutex panicked while holding the mutex, then this call will return an error once the mutex is acquired.」 — ★ **잠금 자체는 얻는다**(「once the mutex is acquired」). `Err` 안에 **가드가 들어 있다.**
+- ★★★ **`[2] is_poisoned true` · `[3] lock() is_err true`** — 자식 스레드가 가드를 잡은 채 패닉했다. std §Errors: 「If another user of this mutex panicked while holding the mutex, then this call will return an error once the mutex is acquired.」 — ★ **잠금 자체는 얻는다**(「once the mutex is acquired」). `Err` 안에 **가드가 들어 있다.**
 - ★★ **`[4] Debug PoisonError { .. }` · `[5] Display "poisoned lock: another task failed inside"`** — 문구는 std 구현이다.
 - ★★★ **`[6] into_inner -> guard, data [1, 2, 3, 4]`** — `PoisonError::into_inner()` 가 가드를 돌려준다. **패닉 직전의 `push(4)` 가 들어 있다** — 중독은 「데이터가 망가졌다」가 아니라 **「중간 상태일 수 있다」는 표시**다. 그 값이 쓸 만한지는 **프로그램이 판단한다.**
 - ★★ **`[7] still poisoned after that true`** — 값을 꺼내 봤다고 표시가 지워지지 않는다.
@@ -441,7 +441,7 @@ nothing      try_read ok     try_write ok
 (exit 0)
 ```
 
-- ★★ **읽기 가드를 쥔 동안 `try_read ok`, `try_write no`**(one read · two reads) · **쓰기 가드를 쥔 동안 둘 다 `no`**(one write). 규칙은 42번 `RefCell` 과 같다 — 「공유 여럿 또는 독점 하나」. 42번 (7)에서 컴파일러가 `RefCell` 의 스레드 판으로 **`RwLock`** 을 권한 이유다.
+- ★★ **읽기 가드를 잡은 동안 `try_read ok`, `try_write no`**(one read · two reads) · **쓰기 가드를 잡은 동안 둘 다 `no`**(one write). 규칙은 42번 `RefCell` 과 같다 — 「공유 여럿 또는 독점 하나」. 42번 (7)에서 컴파일러가 `RefCell` 의 스레드 판으로 **`RwLock`** 을 권한 이유다.
 - ★ 블록이 끝나면 가드가 버려져 다시 `ok ok`(마지막 줄).
 - ★ **`RwLock` 이 `Mutex` 보다 빠르다는 주장은 하지 않는다 — 재지 않았다.** 이 블록이 보이는 것은 **어느 조합이 허용되나**뿐이다.
 
@@ -501,7 +501,7 @@ fn main() {
 
 ### 2. ★★★ 「`while let Some(job) = queue.lock().unwrap().pop()` 은 한 번 꺼내고 놓는다」
 
-(1)의 12행 — **본문 내내 쥔다.** 본문에서 같은 큐에 넣으면 교착이다. 2024 에디션도 같다.
+(1)의 12행 — **본문 내내 잡는다.** 본문에서 같은 큐에 넣으면 교착이다. 2024 에디션도 같다.
 
 ### 3. ★★★ 「락만 잡으면 옆의 변수를 고쳐도 된다」
 
@@ -517,7 +517,7 @@ fn main() {
 
 ### 6. ★★ 「같은 스레드에서 두 번 잠그면 패닉한다」 / 「교착한다」
 
-(7) — std 는 **unspecified** 다. 보장은 「돌아오지 않는다」 뿐이고, 이 판에서 멈춘 것은 관찰이다.
+(7) — std 는 **unspecified** 다. 보장은 「돌아오지 않는다」 뿐이고, 이 버전에서 멈춘 것은 관찰이다.
 
 ### 7. ★ 「`Mutex` 는 늘 `Arc` 로 감싸야 한다」
 
@@ -535,7 +535,7 @@ fn main() {
 | `if let` 임시값이 2024 에서 `else` 전에 버려진다 | ★ **언어 · 에디션** | (1)의 11행 |
 | 락 옆의 변수를 두 스레드가 고치면 거부 | ★ **언어**(빌림 규칙 E0499) | (2) |
 | `Mutex<T>: Sync`(`T: Send` 일 때) · `MutexGuard: !Send` | ★ **std 의 트레이트 구현** — 컴파일러가 강제 | 50번 |
-| 가드를 쥔 채 패닉하면 `lock()` 이 `Err` | ★ **std 의 계약**(`lock` §Errors) | (4) |
+| 가드를 잡은 채 패닉하면 `lock()` 이 `Err` | ★ **std 의 계약**(`lock` §Errors) | (4) |
 | 중독 문구 · `PoisonError { .. }` 의 `Debug` | ★ **std 구현** — 판에 매인다 | (4) |
 | 같은 스레드 재잠금 | ★ **std: unspecified** — 「돌아오지 않는다」만 계약 | (7) |
 | 재잠금에서 **멈췄다**(`exit 124`) | ★ **이 판·이 OS 의 관찰** | (7) |
@@ -550,14 +550,14 @@ fn main() {
 | 여러 스레드가 **같은 값을 고친다** | **`Mutex<T>`** — 스코프 스레드면 `&Mutex`, 아니면 `Arc<Mutex<T>>` | (2)·(3) |
 | 읽기 여럿이 동시에 봐야 한다 | **`RwLock<T>`** — 허용 조합만 근거, 속도는 재지 않았다 | (6) |
 | 카운터 하나·플래그 하나 | 락 없이 되는지 먼저 본다 — [목록의 **53번 주제**](../53-atomics-oncelock-and-lazylock/) | — |
-| 가드를 쥔 채 `await` 한다 | ★ **다른 문제** — [목록의 **55번 주제**](../55-async-in-practice-runtime-send-and-pin/) | — |
+| 가드를 잡은 채 `await` 한다 | ★ **다른 문제** — [목록의 **55번 주제**](../55-async-in-practice-runtime-send-and-pin/) | — |
 | 루프 조건에서 잠근다(`while let … lock()`) | ★ **꺼내기와 처리를 떼라** | (1)의 12행 |
 | 중독을 복구할 근거가 있다 | `into_inner()` · `clear_poison()` | (4) |
 
 ## 핵심 문장
 
 - ★★★ **Rust 의 락은 데이터를 감싼다 — 가드 없이는 닿을 길이 없어서, 「잠그고 고친다」가 타입이 된다.**
-- ★★★ **가드는 `Drop` 될 때 풀린다 — `match`·`if let`(then)·`while let` 의 조사 대상이면 그 구문 끝까지 쥔다.**
+- ★★★ **가드는 `Drop` 될 때 풀린다 — `match`·`if let`(then)·`while let` 의 조사 대상이면 그 구문 끝까지 잡는다.**
 - ★★ **에디션 2024 가 이 격자에서 바꾼 것은 `if let` 의 else 갈래 행이다 — then 본문·`match`·`while let` 은 그대로다.**
 - ★★ **중독된 `lock()` 은 잠금을 얻고 `Err` 안에 가드를 넣어 준다 — 데이터는 꺼낼 수 있고, 판단은 프로그램이 한다.**
 - ★ **같은 스레드 재잠금은 unspecified 다 — 보장은 「돌아오지 않는다」뿐이다.**
@@ -573,7 +573,7 @@ fn main() {
 - [**53번 주제**](../53-atomics-oncelock-and-lazylock/) — 락 없이 되는 경우 · `static` 에 두는 전역.
 - [목록의 **55번 주제**](../55-async-in-practice-runtime-send-and-pin/) — `await` 를 가로지르는 락.
 - 대비 한 줄씩 —
-  [Go 32번](../../../go/syntax/32-sync-mutex-rwmutex-waitgroup-once/): Go 의 `sync.Mutex` 는 데이터를 감싸지 않고, **값으로 복사하면 컴파일러가 아니라 `go vet` 의 `copylocks` 가** 잡는다(그 편의 탐침 18 중 13 이 답했다) ·
+  [Go 32번](../../../go/syntax/32-sync-mutex-rwmutex-waitgroup-once/): Go 의 `sync.Mutex` 는 데이터를 감싸지 않고, **값으로 복사하면 컴파일러가 아니라 `go vet` 의 `copylocks` 가** 잡는다(그 편의 probe 18 중 13 이 답했다) ·
   [Kotlin 56번](../../../kotlin/syntax/56-channel-mutex-and-shared-mutable-state/): kotlinx `Mutex` 는 KDoc 이 **non-reentrant** 라고 적고, `synchronized` 블록 안의 중단점은 **컴파일 에러**다 ·
   [Python 53번](../../../python/syntax/53-gil-and-choosing-concurrency/): `n += 1` 은 바이트코드 명령 넷이라 GIL 이 한 덩어리로 묶지 않는다(그 격자에서는 안 잃었지만 **보장이 아니다**).
 
@@ -582,7 +582,7 @@ fn main() {
 - **`Mutex<T>`** — 한 번에 한 스레드만 안의 `T` 에 닿게 하는 락. 데이터를 감싼다.
 - **`MutexGuard<T>`** — `lock()` 이 주는 가드. `Deref`/`DerefMut` 로 `T` 처럼 쓰이고, `Drop` 될 때 풀린다. `!Send`.
 - **`try_lock`** — 기다리지 않는 잠금 시도. 잠겨 있으면 `Err(TryLockError::WouldBlock)`.
-- **중독(poisoning)** — 가드를 쥔 스레드가 패닉했다는 표시. 이후 `lock()` 이 `Err(PoisonError)`.
+- **중독(poisoning)** — 가드를 잡은 스레드가 패닉했다는 표시. 이후 `lock()` 이 `Err(PoisonError)`.
 - **`PoisonError<G>`** — 중독 오류. `into_inner()` 로 안의 가드(`G`)를 꺼낸다.
 - **`RwLock<T>`** — 읽기 가드 여럿 또는 쓰기 가드 하나를 허용하는 락.
 - **`Arc<T>`** — 원자적 참조 카운팅 공유 소유권(41번). 스레드에 나눠 줄 때 쓴다.

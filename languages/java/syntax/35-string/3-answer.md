@@ -542,7 +542,7 @@ substring(5)   = []
 
 - **예외가 아니라 빈 문자열**이다.
 - `beginIndex == length` 는 유효한 경계다 — "끝에서부터 0글자"라는 뜻이다.
-- 그래서 `substring(5)` 와 `substring(6)` 이 **하나 차이로 갈린다.**
+- 그래서 `substring(5)` 와 `substring(6)` 이 **하나 차이로 나뉜다.**
 
 **두 예외** — JDK 21.0.5 · 25.0.1:
 
@@ -565,7 +565,7 @@ substring(6)   -> java.lang.StringIndexOutOfBoundsException: begin 6, end 5, len
 ```
 
 - **다르다.** 같은 코드·같은 예외 클래스인데 **메시지 문구가 바뀌었다.**
-- 이 문서에서 세 JDK의 출력이 갈린 **유일한 자리**다.
+- 이 문서에서 세 JDK의 출력이 달라진 **유일한 자리**다.
 
 **테스트 코드에 주는 함의**
 
@@ -669,4 +669,4 @@ substring(6)   -> java.lang.StringIndexOutOfBoundsException: begin 6, end 5, len
 이 파일의 모든 출력은 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
 바이트코드는 `javap -c` 출력을, JDK 소스는 `lib/src.zip` 의 실파일을, JLS는 원문을 그대로 옮겼다.\
 실행 파일명은 전부 `Ex.java` 로 고정했다 — 예외 트레이스에 그 이름이 박힌다.\
-17.0.13 · 25.0.1 에서도 같은 프로그램을 돌렸다. **갈린 곳은 10번 하나**다.
+17.0.13 · 25.0.1 에서도 같은 프로그램을 돌렸다. **달라진 곳은 10번 하나**다.

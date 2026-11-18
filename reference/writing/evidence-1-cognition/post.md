@@ -229,7 +229,7 @@
 - 너무 짧은 줄과 너무 긴 줄 **양쪽 다** 안구운동(saccade·return sweep) 패턴을 깨뜨려 읽기를 늦춘다.
 - Dyson & Haselgrove: 중간 길이(약 55 CPL)가 정상 속도·빠른 속도 양쪽에서 효과적.
 - 모바일은 30\~40 CPL 권장.
-- [불확실] 문헌 리뷰 자체가 "결정적 단일 최적값은 없다"는 결론에 가깝다 — 연구마다 과제(스캔 vs 정독)와 매체가 달라 값이 흔들린다. **"극단(아주 좁거나 아주 넓음)을 피하라" 수준으로만 사용 권장.**
+- [불확실] 문헌 리뷰 자체가 "결정적 단일 최적값은 없다"는 결론에 가깝다 — 연구마다 과제(스캔 vs 정독)와 매체가 달라 값이 실행마다 달라진다. **"극단(아주 좁거나 아주 넓음)을 피하라" 수준으로만 사용 권장.**
 
 **원 출처**
 - Dyson, M. C. (2004/2005). *Optimal Line Length in Reading — A Literature Review.* Visible Language. https://journals.uc.edu/index.php/vl/article/view/5765 · https://eric.ed.gov/?id=EJ749012
@@ -493,7 +493,7 @@
 1. **WebSearch 예산 200회 소진** — 축 6의 Wright & Reid(1973)/Larkin & Simon(1987), 축 5의 Kintsch 텍스트 이해 모형, 문단 길이 독립 실증, 한국어 조사 구조 연구는 조사하지 못했다.
 2. **원문 전문 확인 완료**: Miller 1956, Cowan 2010, NN/g(F-pattern·layer-cake·how-little-do-users-read·how-users-read·plain-language-experts), fact box RCT.
    **초록·2차 요약만 확인**: Sweller 2019, Kalyuga 2003, Chandler & Sweller 1992, Bransford & Johnson 1972, Luiten 1980, Rey 2012, Mayer 핸드북 효과크기, DeStefano & LeFevre 2007, 한국어 이독성 공식.
-3. **효과크기의 절댓값은 신뢰하지 말 것** — coherence는 d 0.70\~1.32, signaling은 0.35\~0.69로 집계마다 크게 흔들린다. **순위(빼기 > 순서 > 강조)만 근거로 사용 권장.**
+3. **효과크기의 절댓값은 신뢰하지 말 것** — coherence는 d 0.70\~1.32, signaling은 0.35\~0.69로 집계마다 크게 달라진다. **순위(빼기 > 순서 > 강조)만 근거로 사용 권장.**
 4. NN/g 수치(79%, 20\~28%, +124%)는 널리 인용되지만 **동료심사 논문 형태의 방법론 공개가 아니다.** 방향성 근거로만.
 5. 표 밀도의 인지 비용은 통제 실험 근거를 확보하지 못했다 — 현재 서술은 축 1·3-5에서의 연역이다.
 

@@ -30,7 +30,7 @@ CSS.supports('selector(:is(.a, ::zzbogus))')  = false
 
 - **`:is(.f14) span`** 이다. 브라우저가 무효한 인자 `::zzbogus` 를 **지워 버린 것이 눈에 보인다.**
 
-**왜 갈리는가**
+**왜 달라지는가**
 
 ```text
    경로 A — 스타일시트 파싱                경로 B — selector() 질의

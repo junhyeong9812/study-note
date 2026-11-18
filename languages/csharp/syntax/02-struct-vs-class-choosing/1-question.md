@@ -218,7 +218,7 @@ struct Fast : IEquatable<Fast> {
 ```
 
 - 네 줄의 할당 증분을 **각각** 맞힐 수 있는가?
-- `Plain`(필드가 전부 `int`)과 `RefField`(`string` 필드가 있다)가 **갈리는** 이유는?
+- `Plain`(필드가 전부 `int`)과 `RefField`(`string` 필드가 있다)가 **달라지는** 이유는?
 - `Fast`(`IEquatable<Fast>`)가 **0** 인 이유는?
 - `p1.Equals(p2)` 에서 **무엇이 몇 개** 박싱되는가?
 

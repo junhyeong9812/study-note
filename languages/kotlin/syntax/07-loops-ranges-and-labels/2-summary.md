@@ -388,7 +388,7 @@ for (i in 5..1) 의 반복 횟수 = 0
 - ★ **`for (i in 5..1)` 은 에러가 아니라 0회다.** 거꾸로 돌고 싶으면 `downTo` 를 써야 한다 —\
   **조용히 아무 일도 안 일어나는** 자리라 눈으로는 안 잡힌다.
 
-**타입도 갈린다.**
+**타입도 달라진다.**
 
 **출력** (`ex.kt`)
 
@@ -871,7 +871,7 @@ operator fun iterator(): Iterator<T>
 - `for` 는 **`iterator()` 규약**으로 돈다. 없으면 `for-loop range must have an 'iterator()' method.`
 - **람다 안의 `return` 은 바깥 `fun` 까지 나간다.** 람다만 끝내려면 `return@라벨`.
 - **비지역 `break`/`continue` 는 2.2.0** — `-language-version 2.1` 이 거부하는 것으로 확인했다.
-- **`for`/`while`/`do-while` 은 식이 아니다.** `if`·`when` 과 갈리는 자리다.
+- **`for`/`while`/`do-while` 은 식이 아니다.** `if`·`when` 과 달라지는 자리다.
 
 ## 관련 자료
 

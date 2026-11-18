@@ -53,7 +53,7 @@ getComputedStyle(b).width = 50%          display:none 인 요소
 
 - `a` = **`"200px"`**, `b` = **`"50%"`**.
 
-**갈리는 조건 한 문장**
+**달라지는 조건 한 문장**
 
 - **그 요소가 상자를 만드는가.** 상자가 없으면 ③ 사용값이 존재하지 않으므로 ② 계산값이 대신 나온다.
 
@@ -72,7 +72,7 @@ getComputedStyle(b).width = 50%          display:none 인 요소
 
 **`color`·`letter-spacing` 은**
 
-- **안 갈린다.** 둘 다 해석값이 계산값으로 규정돼 있어 상자와 무관하다.
+- **안 달라진다.** 둘 다 해석값이 계산값으로 규정돼 있어 상자와 무관하다.
 - 실측: `display: none` 인 요소에서도 `letter-spacing: 0.1em`(부모 글꼴 20px)이 `2px` 로 나왔다.
 
 **`parseFloat` 코드에서의 버그**

@@ -61,7 +61,7 @@ final class Cps52Kt$twice$1 extends kotlin.coroutines.jvm.internal.ContinuationI
 - ★★★ `suspend` 함수는 **`Continuation` 을 마지막 인자로 더 받고 `Object` 를 돌려준다**(CPS) — 중단점 유무와 무관하게 **서명은 늘 바뀐다**(`plain`).
 - ★★★ 중단점이 있는 `twice` 만 상태 기계 클래스가 생겼다 — 지역 변수 `x`·`y` 가 **필드 `I$0`·`I$1`** 로 옮겨졌고, 중단점 둘 → 들어올 자리 셋 → **`tableswitch` 0\~2**.
 
-### 2. ★★★ **막힌 탐침 5 / 9 · 문구 두 종** — 일반 함수 몸통(`plain-function` · `Thread-lambda` · `plain-calls-suspend-fun`)은 「`suspend function '…' can only be called from a coroutine or another suspend function.`」 · 일반 람다(`plain-lambda-type` · `Sequence-map-lambda`)는 「`suspension functions can only be called within coroutine body.`」
+### 2. ★★★ **막힌 probe 5 / 9 · 문구 두 종** — 일반 함수 몸통(`plain-function` · `Thread-lambda` · `plain-calls-suspend-fun`)은 「`suspend function '…' can only be called from a coroutine or another suspend function.`」 · 일반 람다(`plain-lambda-type` · `Sequence-map-lambda`)는 「`suspension functions can only be called within coroutine body.`」
 
 **출력**
 
@@ -354,23 +354,23 @@ Implementation-Version: 1.11.0
 (exit 0)
 ```
 
-★ **흔들리는 칸과 안 흔들리는 칸**
+★ **실행마다 달라지는 항목과 달라지지 않는 항목**
 
-| 흔들린다 | 안 흔들린다 |
+| 실행마다 달라진다 | 달라지지 않는다 |
 |---|---|
 | ★ **걸린 시간** — 칸으로 안 만들었다(`form52` 의 참/거짓만) | `javap` 출력 · 호출 규칙 격자 · 진단 문구 |
-| ★ **라이브러리 판** — 1.11.0 이 아니면 다시 돌려라 | 순서 로그 — 단일 스레드 · 셋은 다섯 판 되풀이에서도 해시가 안 갈렸다 |
+| ★ **라이브러리 판** — 1.11.0 이 아니면 다시 돌려라 | 순서 로그 — 단일 스레드 · 셋은 다섯 판 되풀이에서도 해시가 달라지지 않았다 |
 | | 스레드 수 · `Thread.State` · 모든 **종료 코드** |
 
 > 근거 — 캡처 스크립트를 처음부터 다시 돌려 **블록 전체를 대조**했다.
 >
 > 실측 — `capture.sh blocks` 와 `capture.sh blocks-recheck` 를 처음부터 따로 돌려 `normalize-shaky.py` 로 대조했다 —\
-> **블록 74개 · 동일 74 · 흔들린 칸 0 · ★고칠 것 0**(50\~53 네 주제를 한 캡처로 받았다). 추가한 정규화 규칙은 **없다**.
+> **블록 74개 · 동일 74 · 달라진 항목 0 · ★고칠 것 0**(50\~53 네 주제를 한 캡처로 받았다). 추가한 정규화 규칙은 **없다**.
 
 | 프로그램 | 무엇을 확인했나 | 돌린 방법 |
 |---|---|---|
 | `cps52.kt` | ★★★ CPS 서명 · 상태 기계 클래스 · `label` · `tableswitch` · `COROUTINE_SUSPENDED` | `kotlinc` → `ls` → `javap -p` · `javap -c`(전부 받은 뒤 `grep`) |
-| `call52.kt` · `grid52.py` | ★★★ 호출 규칙 9탐침 | 스크립트가 컴파일 · 진단을 줄마다 읽는다 + 에러 전문 |
+| `call52.kt` · `grid52.py` | ★★★ 호출 규칙 9probe | 스크립트가 컴파일 · 진단을 줄마다 읽는다 + 에러 전문 |
 | `threads52.kt` | ★★ 스레드 id 집합 크기 · `activeCount` | `kotlinc` → `java` |
 | `interleave52.kt` · `order52.kt` · `await52.kt` | ★★ 끼어들기 · 부른 순간 · `await` 뒤 | `kotlinc` → `java` + 다섯 판 되풀이 해시 |
 | `block52.kt` | ★★ `runBlocking` 중 main 의 상태 | 감시 스레드가 150ms 에 `main.state` 를 읽는다 |
@@ -380,7 +380,7 @@ Implementation-Version: 1.11.0
 **구현 의존 항목** — 상태 기계 클래스·필드 이름 · 로그 순서 · 스레드 수 — 이 컴파일러 판과 **라이브러리 판**의 산출물이다.\
 반면 **호출 규칙**(언어) · **`Continuation` 인자와 `COROUTINE_SUSPENDED`**(stdlib 계약) 은 **계약**이다.
 
-**★ 던져 봤더니 예상과 달랐던 것 — 네 건**
+**★ 실행해 봤더니 예상과 달랐던 것 — 네 건**
 
 1. ★★★ **호출 규칙의 진단이 한 종이 아니라 두 종이었다** — 일반 함수 몸통과 일반 람다가 문구가 다르다. 문구도 「`should be called only from`」이 아니라 「**`can only be called from`**」이고, 함수 이름 자리에 **서명 전체**(`'suspend fun f(x: Int): Int'`)가 들어간다.
 2. ★★ **중단점이 없는 `suspend` 함수도 서명이 바뀐다** — 상태 기계 클래스만 안 생긴다.

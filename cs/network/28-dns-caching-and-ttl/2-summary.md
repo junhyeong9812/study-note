@@ -292,7 +292,7 @@ console.log(recs); // [{ address: '203.0.113.10', ttl: 60 }, ...]
   - [27-dns-resolution](../27-dns-resolution/2-summary.md) — 재귀·반복 질의, 레코드 종류.
 - 후속·연결
   - [51-email-delivery-and-authentication](../51-email-delivery-and-authentication/2-summary.md) — TXT 레코드 기반 인증(SPF·DKIM·DMARC)
-  - [35-http-connection-management](../35-http-connection-management/2-summary.md) — 커넥션 풀이 옛 IP를 쥐는 문제.
+  - [35-http-connection-management](../35-http-connection-management/2-summary.md) — 커넥션 풀이 옛 IP를 잡는 문제.
   - [reliability/07-timeout-taxonomy-by-layer](../../reliability/07-timeout-taxonomy-by-layer/2-summary.md) — DNS 타임아웃이 호출 타임아웃에 포함되는 방식.
   - [data-structure/05-hashmap](../../data-structure/05-hashmap/2-summary.md) · [data-structure/10-lru-cache](../../data-structure/10-lru-cache/2-summary.md)
 - RFC 1035 §3.2.1 TTL 필드 <https://www.rfc-editor.org/rfc/rfc1035>

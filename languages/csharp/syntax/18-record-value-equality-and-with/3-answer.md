@@ -268,7 +268,7 @@ class Program {
 - ★★ **`[4]` `False` · `True`** — record 는 새 객체, 리스트는 **같은 객체**다. **`[5]` `True`** — 같은 리스트를 가리키니 멤버가 같다.
 - ★ **`[6]`** — ``List`1[System.Int32]`` 뿐이다. **내용이 안 보인다.**
 
-### 6. ★★ 진단은 **탐침 1 의 `CS8851` 하나** — 나머지 여섯은 침묵
+### 6. ★★ 진단은 **probe 1 의 `CS8851` 하나** — 나머지 여섯은 침묵
 
 **출력**
 
@@ -322,13 +322,13 @@ cs18b-probe.cs(5,40): warning CS8851: 'R1' defines 'Equals' but not 'GetHashCode
 **왜 그런가**
 
 - ★★★ **진단이 붙은 줄은 1** — `CS8851`(「`Equals` 를 정의했는데 `GetHashCode` 가 없다」).
-- ★★★ **탐침 4 — `Contains(k)` `False` · `Contains(new R4(1))` `True`.** 셋이 가진 것은 **사본**이다.\
+- ★★★ **probe 4 — `Contains(k)` `False` · `Contains(new R4(1))` `True`.** 셋이 가진 것은 **사본**이다.\
   `k.X = 2` 는 **내 변수만** 바꿨고 셋 안의 `R4(1)` 은 그대로다. ★★ **클래스 키였다면 셋 안의 그 객체가 바뀌어\
   `Contains(new …(1))` 도 `False` 가 됐을 것이다**(목록의 **19번 주제** 격자의 `R3`).
-- ★★★ **탐침 5 — `new R5(x) == new R5(y)` 는 `True`, `x == y` 는 `False`.** 생성된 동등성은 필드를 **`double.Equals`** 로 비교하고\
+- ★★★ **probe 5 — `new R5(x) == new R5(y)` 는 `True`, `x == y` 는 `False`.** 생성된 동등성은 필드를 **`double.Equals`** 로 비교하고\
   그것은 **`NaN` 을 `NaN` 과 같다고 본다.** `==` 연산자는 **IEEE** 라 `False` 다.
-- ★★ **탐침 6 — `Contains` `False`.** 위치 밖의 `Y` 도 **필드**라 동등성과 해시에 들어가고, 넣은 뒤 바꾸니 **다른 칸**을 본다.
-- ★ 탐침 2 는 5번 `[1]` 과 같은 모양이다(`False`).
+- ★★ **probe 6 — `Contains` `False`.** 위치 밖의 `Y` 도 **필드**라 동등성과 해시에 들어가고, 넣은 뒤 바꾸니 **다른 칸**을 본다.
+- ★ probe 2 는 5번 `[1]` 과 같은 모양이다(`False`).
 
 ### 7. ★★ **`with RC` 와 `RS.Equals(object)` 만 24000** — 네 판 모두
 
@@ -405,7 +405,7 @@ RS.Equals(object) 1000회 : 24000 바이트
 
 - ★★★ **`with RC` 24000**(호출당 24) — `<Clone>$` 의 `newobj`. **`with RS`·`with RR` 은 0** — 대입 복사라 힙에 안 간다.
 - ★★ **`==` 셋은 0** — 생성된 `op_Equality` 가 **`Equals(R)`** 를 부른다. **`RS.Equals(object)` 는 24000** — **인자 박싱**이다.
-- ★★★ **네 판에서 갈린 줄 0 / 7** — 근거로 쓸 수 있다.
+- ★★★ **네 버전에서 달라진 줄 0 / 7** — 근거로 쓸 수 있다.
 - ★★★ **「`record struct` 가 빠르다」고 말하면 안 된다** — 잰 것은 **할당**이고 **시간은 안 쟀다.**\
   ★ 구조체는 대입마다 **통째로 복사**하므로 멤버가 크면 다른 비용이 생긴다 — 그것도 **안 쟀다.**
 
@@ -462,7 +462,7 @@ Pt[x=1, y=2] -> Pt[x=9, y=2] · p.equals(new Pt(1, 2)) = true
 **왜 그런가**
 
 - ★★★ **`';' expected` · `not a statement`** — 파서가 `with` 를 **식의 일부로 모른다.** 문법 단계에서 막혔다.
-- ★★ **javac 25 `--enable-preview --release 25` 도 같다** — 이 판에서는 **미리보기로도 없다.**
+- ★★ **javac 25 `--enable-preview --release 25` 도 같다** — 이 버전에서는 **미리보기로도 없다.**
 - ★ Java 는 **`withX` 같은 메서드를 손으로** 쓴다. 동등성은 C# record 와 같게 **값 동등**이다(`true`).
 
 ### 9. ★★ **참조가 같나 · 실제 타입이 같나** — 그다음에 필드
@@ -536,7 +536,7 @@ class Program {
 **왜 그런가**
 
 - ★★★ **`beq.s`** — 같은 참조면 곧장 `true`. 그다음 **`EqualityContract` 둘을 `Type::op_Equality`** 로 비교한다.
-- ★★★ **필드는 `EqualityComparer<T>.Default.Equals`** — `double` 이면 `double.Equals`(**`NaN` 이 같다**, 6번 탐침 5),\
+- ★★★ **필드는 `EqualityComparer<T>.Default.Equals`** — `double` 이면 `double.Equals`(**`NaN` 이 같다**, 6번 probe 5),\
   배열이면 **참조 비교**(5번 `[1]`).
 - ★★★ **`op_Equality` 는 참조 비교 → 널 확인 → `callvirt Pt::Equals`** — **`==` 가 `Equals` 를 부르므로 둘이 어긋날 수 없다.**\
   ★ 목록의 **19번 주제**의 「`Equals` 만 고친 클래스에서 `==` 가 여전히 참조 비교」는 **record 에서는 원리상 안 난다.**
@@ -559,7 +559,7 @@ cs18b-dup.cs(2,26): error CS0111: Type 'R' already defines a member called 'Equa
 **왜 그런가**
 
 - ★★★ **`Equals(object)` 를 쓰면 `CS0111`** — 컴파일러가 이미 만든 것과 겹친다. Learn — 「명시적으로 선언하면 **에러**」.
-- ★★ **`Equals(R)` 는 쓸 수 있다** — 대신 **`GetHashCode` 를 같이** 써야 하고, 안 쓰면 **`CS8851`**(6번 탐침 1).
+- ★★ **`Equals(R)` 는 쓸 수 있다** — 대신 **`GetHashCode` 를 같이** 써야 하고, 안 쓰면 **`CS8851`**(6번 probe 1).
 - ★★★ **유일한 문은 `Equals(R)` + `GetHashCode`** — `==`·`Equals(object)` 는 그것을 **부르도록 생성되므로** 자동으로 따라온다(9번).
 
 ### 11. 잇기
@@ -580,18 +580,18 @@ cs18b-dup.cs(2,26): error CS0111: Type 'R' already defines a member called 'Equa
 | `cs18b-eqil.cs` 동등성 IL | csc 1회(`-optimize`) | ★★★ **`beq` 지름길 → `EqualityContract` → 필드별 `EqualityComparer`** · `op_Equality` → `Equals` |
 | `cs18b-contract.cs` 파생 record | csc 1회 | ★★★ **셋 다 `False`** · `with` 결과 `Tagged` |
 | `cs18b-mut.cs` 위치 속성 대입 | csc 1회 | ★★★ **`CS8852` 둘** · `RS` 통과 |
-| `cs18b-alloc.cs` 할당 바이트 | **2×2 판 격자** | ★★★ `with RC`·`RS.Equals(object)` **24000** · 나머지 **0** · **갈린 줄 0 / 7** |
+| `cs18b-alloc.cs` 할당 바이트 | **2×2 판 격자** | ★★★ `with RC`·`RS.Equals(object)` **24000** · 나머지 **0** · **달라진 줄 0 / 7** |
 | `cs18b-shallow.cs` 얕음 | csc 1회 | ★★★ 배열 **참조 비교** · `with` 가 **리스트 공유** |
-| `cs18b-probe.cs` 탐침 일곱 | csc 1회(`-warn:9`) + 실행 | ★★★ **진단이 붙은 줄 1**(`CS8851`) · `NaN` 이 같다 · struct 키는 사본 |
+| `cs18b-probe.cs` probe 일곱 | csc 1회(`-warn:9`) + 실행 | ★★★ **진단이 붙은 줄 1**(`CS8851`) · `NaN` 이 같다 · struct 키는 사본 |
 | `cs18b-dup.cs` `Equals(object)` 손으로 | csc 1회 | ★★★ **`CS0111`** |
 | `Ex18.java` · `Ex18b.java` | javac 21 두 번 · javac 25 한 번 | ★★★ **`with` 는 파서가 모른다**(25 preview 도) |
 | `cs18b-form.cs` 형태 | csc 1회 | `민수,31 / True` |
 
-**구현 의존 항목** — 다음은 **이 판(.NET SDK 10.0.401 · Roslyn · javac 21.0.5 · 25.0.1)에서만** 그렇다.
+**구현 의존 항목** — 다음은 **이 버전(.NET SDK 10.0.401 · Roslyn · javac 21.0.5 · 25.0.1)에서만** 그렇다.
 
 - ★★★ **복제 메서드 이름 `<Clone>$`** · **`Equals` 의 `beq` 지름길** · **해시 상수 `-1521134295`** · **`EqualityComparer<T>.Default` 경유** — 전부 **Roslyn 이 짠 IL 모양**이다.
 - ★★ **`with RC` 호출당 24바이트** — 객체 크기는 런타임 배치다.
-- ★★ **`-warn:9` 탐침 일곱 중 하나만 답한 것** · ★ **javac 25 preview 에 `with` 가 없는 것** — 다음 판에서 바뀔 수 있다.
+- ★★ **`-warn:9` probe 일곱 중 하나만 답한 것** · ★ **javac 25 preview 에 `with` 가 없는 것** — 다음 판에서 바뀔 수 있다.
 
 **언어가 보장하는 것**(구현이 바뀌어도 같다)
 
@@ -603,7 +603,7 @@ cs18b-dup.cs(2,26): error CS0111: Type 'R' already defines a member called 'Equa
 
 - **안 돌려 본 것** — ★★ **`sealed record` 의 생성 멤버 한정자** · ★★ **사용자 정의 복사 생성자**(깊은 복사) ·\
   ★ **본문 `init` 속성이 `with` 에서 어떻게 복사되나**(Kotlin `copy` 와의 대비를 값으로) · ★ **`record struct` 의 매개변수 없는 생성자** ·\
-  ★ **C# 15 의 `closed` record**(이 판의 `latest` 범위 밖).
+  ★ **C# 15 의 `closed` record**(이 버전의 `latest` 범위 밖).
 - **못 잰 것** — ★★★ **「record 가 빠르다/느리다」.** 할당만 쟀고 **시간은 한 줄도 안 쟀다.**
 - **잴 것이 없는 것** — 없다. **④ 할당 바이트는 적용**이다(`with` 가 새 객체를 만든다).
 
@@ -620,6 +620,6 @@ cs18b-dup.cs(2,26): error CS0111: Type 'R' already defines a member called 'Equa
 대비는 **javac 21.0.5 · 25.0.1** 이다. 진단은 **`-preferreduilang:en-US`** 로 영어로 고정했다.\
 ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 손으로 옮긴 줄은 없다.\
 ★ 진단을 싣는 블록은 전부 **그 진단을 낸 소스를 같은 블록 안에** 다시 싣는다(`===== 소스: … =====`).
-**읽는 법** — **진단 문구·IL 오프셋 폭·생성 멤버의 IL 모양**은 흔들리는 칸이다(IL 모양은 **Roslyn 의 구현**).\
-근거로 쓰는 것은 **생성 멤버의 목록 · 진단 코드와 `(행,열)` · 옵코드와 호출 대상 · 네 판에서 갈린 줄 수** 다.
+**읽는 법** — **진단 문구·IL 오프셋 폭·생성 멤버의 IL 모양**은 실행마다 달라지는 항목이다(IL 모양은 **Roslyn 의 구현**).\
+근거로 쓰는 것은 **생성 멤버의 목록 · 진단 코드와 `(행,열)` · 옵코드와 호출 대상 · 네 버전에서 달라진 줄 수** 다.
 ★★★ **이 문서는 시간을 재지 않았다.** 「`record struct` 가 빠르다」는 문장이 **한 줄도 없다.**

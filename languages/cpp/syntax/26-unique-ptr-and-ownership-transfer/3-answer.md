@@ -84,7 +84,7 @@ clang 에러 3 · 그중 use of deleted function 0
 - ★★ **clang 은 같은 사실을 `call to deleted constructor` · `selected deleted operator '='` 로** 말한다 — **문구로 세면 0** 이 되니 근거는 **줄과 개수(3 · 3)다**.
 - ★ 4번은 **이동 생성자**가 후보가 되어 통과한다(clang 의 후보 목록에 `expects an rvalue` 로 보인다).
 
-### 2. ★★ **`0 1 0 1 1`** · `shared_ptr` 와 **갈린 칸 2 / 5**(복사 생성·복사 대입)
+### 2. ★★ **`0 1 0 1 1`** · `shared_ptr` 와 **달라진 항목 2 / 5**(복사 생성·복사 대입)
 
 **출력**
 
@@ -348,7 +348,7 @@ clang -Wall -Wextra -pedantic 경고 0
 **왜 그런가**
 
 - ★★★ **`release()` 는 소유권 포기**다 — 포인터를 돌려주고 자기는 비운다. 받은 쪽이 버리면 **아무도 소유하지 않는다.**
-- ★★ **이 판의 선언에 `[[nodiscard]]` 가 없어** 컴파일러가 버린 것을 모른다.
+- ★★ **이 버전의 선언에 `[[nodiscard]]` 가 없어** 컴파일러가 버린 것을 모른다.
 
 ### 8. ★★ **`reset()` 과 `std::move(p)` 가 막히고 `*p = 5` 는 통과**
 
@@ -401,7 +401,7 @@ uptr09.cpp:5:26: error: call to deleted constructor of 'std::unique_ptr<int>'
 - ★★ **`reset()` 은 비`const` 멤버**라 `const` 객체에서 못 부른다.
 - ★★ **`std::move(p)` 는 `const unique_ptr&&`** 가 되어 이동 생성자(`unique_ptr&&`)에 안 맞고 **복사 생성자로 떨어지는데 복사는 지워져 있다** — [17번](../17-move-constructor-assignment-and-moved-from-state/) (5)의 「이동이 복사로 조용히 되돌아가는 자리」가 **여기서는 에러로** 드러났다.
 
-### 9. ★★ **두 판 다 안 샌다 · 순서는 반대**(g++ `g()` 먼저 · clang `new W` 먼저) — 걱정은 **이 두 구현에서 재현되지 않을 뿐**이고, **순서를 손으로 풀어 쓰면 샌다** · C++11 은 **`make_unique` 가 없다**
+### 9. ★★ **두 버전 다 안 샌다 · 순서는 반대**(g++ `g()` 먼저 · clang `new W` 먼저) — 걱정은 **이 두 구현에서 재현되지 않을 뿐**이고, **순서를 손으로 풀어 쓰면 샌다** · C++11 은 **`make_unique` 가 없다**
 
 **출력**
 
@@ -481,7 +481,7 @@ uptr11.cpp:4:34: error: expected '(' for function-style cast or type constructio
 | 무엇을 | 몇 번 · 어느 판 | 결과 |
 |---|---|---|
 | `uptr01.cpp` 복사 | g++ · clang 각 1회 + 문구 세기 | ★★★ **에러 3 · 3** · `use of deleted function` **3 · 0** |
-| `uptr02.cpp` 타입 특성 | g++ 1회 | ★★ **`0 1 0 1 1`** · 갈린 칸 **2 / 5** |
+| `uptr02.cpp` 타입 특성 | g++ 1회 | ★★ **`0 1 0 1 1`** · 달라진 항목 **2 / 5** |
 | `uptr03.cpp` 팩토리 | g++ C++20 · 두 컴파일러 생략 끔 · g++ C++14 생략 끔 | ★★★ **`0 0 1 1` → `0 1 1 1` → `2 2 2 3`** |
 | `uptr04.cpp` 삭제자 크기 | g++ · clang 각 1회 + 헤더 줄 | ★★★ **커진 칸 7 / 10** |
 | `uptr05.cpp`·`uptr10.cpp` 배열 | 실행 1 · 에러 2 · ASan g++ 2 · clang 1 · 이름 세기 2 | ★★ **`~Cell` 3 · 1** · **`bad-free` · `alloc-dealloc-mismatch`** |
@@ -501,7 +501,7 @@ uptr11.cpp:4:34: error: expected '(' for function-style cast or type constructio
 
 - **못 잰 것** — ★★ **C++14 인자 끼워 넣기 누수**: 끼워 넣는 구현이 이 머신에 없다. 조각(손 순서)만 쟀다.
 - **안 돌려 본 것** — ★ **pimpl 의 불완전 타입** · ★ **`out_ptr`(C++23)** · ★ **Rust `Box<T>`**(40번, 폴더 없음).
-- ★ **「부적용인 창」** — `-O2` 어셈블리. **27번이 `UNIQUE` 판으로 `lock 접두 0개` 를 같이 센다**(제5의 상태).
+- ★ **「해당 없는 창」** — `-O2` 어셈블리. **27번이 `UNIQUE` 판으로 `lock 접두 0개` 를 같이 센다**(제5의 상태).
 - ★ **cppreference 의 해당 쪽들을 이 배치에서 열지 못했다**(도구 한도) — 규칙은 **헤더 줄과 실행**으로만 적었다.
 
 **버전이 올랐을 때 다시 돌려야 하는 것**
@@ -515,5 +515,5 @@ uptr11.cpp:4:34: error: expected '(' for function-style cast or type constructio
 **Ubuntu clang version 18.1.3 (1ubuntu1)** · libstdc++ 13 · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
 **진단의 줄 번호는 그 파일 기준**이므로 **출력을 싣는 블록마다 그 출력을 낸 소스를 같은 자리에** 뒀다(소스는 질문 파일과 같다).\
 ★ ASan 블록은 마커를 `stderr` 로 찍었고, 자른 블록은 **자르는 명령을 배너에** 적었다. 블록은 캡처 스크립트가 받은 것이다 — 손으로 옮긴 줄은 없다.
-**읽는 법** — 흔들리는 칸은 **ASan 의 PID·주소 · 진단 문구**다.\
+**읽는 법** — 실행마다 달라지는 항목은 **ASan 의 PID·주소 · 진단 문구**다.\
 근거로 쓰는 것은 다음이다 — **에러 줄·개수 · `cc exit`/`run exit` · 삭제자 이동 횟수 · `sizeof` · 타입 특성 0/1 · ASan 오류 이름 · 소멸자 로그**.

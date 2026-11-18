@@ -76,7 +76,7 @@
   마지막 키프레임(200px)이 화면에 박힌다
 ```
 
-**두 무리가 갈리는 지점**
+**두 무리가 달라지는 지점**
 
 - **`timeline` 이 `null` 이냐**(모양 ②) **`currentTime` 이 `null` 이냐**(모양 ①)다.
 - 모양 ① 은 「시계는 달렸는데 바늘이 안 읽힌다」 → 애니메이션이 **적용되지 않고** 기본 스타일이 보인다.
@@ -223,7 +223,7 @@
 
 **`block`/`inline` 과 `y`/`x`**
 
-- **쓰기 모드가 세로쓰기이거나 방향이 RTL 일 때** 갈린다. `block`/`inline` 은 글 흐름을 따르고 `y`/`x` 는 물리 축이다.\
+- **쓰기 모드가 세로쓰기이거나 방향이 RTL 일 때** 달라진다. `block`/`inline` 은 글 흐름을 따르고 `y`/`x` 는 물리 축이다.\
   정본은 [32번 주제](../32-logical-properties-and-writing-mode/2-summary.md).
 
 **붙을 스크롤 컨테이너가 없으면**
@@ -350,7 +350,7 @@ google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars \
 | demo — 스크롤 5지점 + 휠 3회 | 1 | demo |
 | demo 「바꿔 볼 것」 ① duration 10s / ② inline 축 | 2 | demo |
 | Baseline 조회 | 1 | 「실행 환경」 · A8 |
-| **제출 직전 demo 재추출·재실행 대조** | 1 | 어긋남 0건 |
+| **제출 직전 demo 재추출·재실행 대조** | 1 | 불일치 0건 |
 
 **구현에 달린 항목**
 

@@ -282,7 +282,7 @@ created by main.main in goroutine 1
 **왜 그런가**
 
 - ★★★ main 의 `[defer]` 줄은 **없다** — `recover` 는 **같은 고루틴**의 패닉만 보고, 그 고루틴의 맨 위에 닿으면 **프로세스가 끝난다.** 종료 코드 **2**.
-- ★★ 흔들리는 칸 — **`goroutine 7 [running]:` 의 7**. 같은 바이너리가 재실행에서 `19` 도 냈다. 런타임이 매기는 id 다.
+- ★★ 실행마다 달라지는 항목 — **`goroutine 7 [running]:` 의 7**. 같은 바이너리가 재실행에서 `19` 도 냈다. 런타임이 매기는 id 다.
 
 ### 4. 여섯 줄 · 네 가지 · 「런타임 버그인가, 의도한 패닉인가」
 
@@ -339,7 +339,7 @@ error    %T=*errors.errorString          runtime.Error=false : 내가 던진 오
 
 - ★★★ **`runtime.Error=true` 가 여섯 줄**(런타임이 낸 것 전부), 내가 던진 문자열·오류 두 줄은 `false`.
 - ★★ 구체 타입은 **넷** — `runtime.boundsError` · `runtime.plainError`(nil 맵·닫힌 채널) · `runtime.errorString`(nil 역참조·0 나누기) · `*runtime.TypeAssertionError`.
-- ★ 그래서 `recover` 뒤에 **`r.(runtime.Error)`** 로 「런타임 버그」와 「내가 의도한 패닉」을 가를 수 있다. 구체 타입 이름은 **구현 내부**라 기대지 않는다.
+- ★ 그래서 `recover` 뒤에 **`r.(runtime.Error)`** 로 「런타임 버그」와 「내가 의도한 패닉」을 구분할 수 있다. 구체 타입 이름은 **구현 내부**라 기대지 않는다.
 
 ### 5. `0, safeDiv(7, 0): …` 대 `0, <nil>`
 
@@ -579,7 +579,7 @@ main.main()
 (exit 2)
 ```
 
-### 8. `fmt` 는 글자로, `json` 은 이 판(v2)에서 안 받는다
+### 8. `fmt` 는 글자로, `json` 은 이 버전(v2)에서 안 받는다
 
 **출력**
 
@@ -647,7 +647,7 @@ panic: 내 MarshalJSON 이 터짐
 (exit 0)
 ```
 
-  `encode.go`(recover 가 있는 v1)는 `//go:build !goexperiment.jsonv2` 이고 기본 실험에 **`JSONv2: true`**. **그 파일은 이 판에서 컴파일되지 않는다.**
+  `encode.go`(recover 가 있는 v1)는 `//go:build !goexperiment.jsonv2` 이고 기본 실험에 **`JSONv2: true`**. **그 파일은 이 버전에서 컴파일되지 않는다.**
 - ★★ v1 으로 다시 빌드하면(`GOEXPERIMENT=nojsonv2`) —
 
 ```text
@@ -753,7 +753,7 @@ main.init()
 | 이 문서의 모든 블록 | `capture.sh <디렉토리>` 가 소스 배너 + 명령 배너 + 출력 + `(exit N)` 을 파일로 받고 `assemble-blocks.py` 가 원고에 꽂는다 | 배치 내내 + **제출 전 전수 재실행** | `normalize-shaky.py` (+ 고루틴 id 규칙 하나)로 **★고칠 것 0** |
 | ★★★ 되감기 (`t27a`·`t27b`) | `go build && ./prog` | 1 | 안쪽부터 · 받지 않으면 exit 2 |
 | ★★★ `recover` 자리 (`t27c`·`t27c2`) | 〃 | 1 | 판2·5·6 못 멈춤 · guard 없으면 exit 2 |
-| ★★ 다른 고루틴 (`t27d`) | 〃 | 1 + 재실행 | exit 2 · **고루틴 id 가 7/19 로 흔들림** |
+| ★★ 다른 고루틴 (`t27d`) | 〃 | 1 + 재실행 | exit 2 · **고루틴 id 가 7/19 로 실행 간 차이** |
 | ★★ 런타임 패닉 타입 (`t27f`) | 〃 | 1 | `runtime.Error` 6/8 · 구체 타입 4가지 |
 | ★★ 명명 반환값 (`t27e`) | 〃 | 1 | `lostDiv` 가 `0, <nil>` |
 | ★★★ `panic(nil)` 격자 (`t27g`) | **`go.mod` 의 `go` 줄만** 1.20/1.21/1.27+GODEBUG | 3 | `<nil>` · `*runtime.PanicNilError` · `<nil>` |
@@ -766,7 +766,7 @@ main.init()
 | 항목 | 무엇에 달렸나 |
 |---|---|
 | 종료 코드 2 · 트레이스 모양 · `[recovered, repanicked]` | **런타임 판** — 1.25 이전은 이 툴체인으로 못 돌렸다 |
-| 고루틴 id | **런타임** — 흔들리는 칸 |
+| 고루틴 id | **런타임** — 실행마다 달라지는 항목 |
 | `boundsError`·`plainError` 같은 구체 타입 이름 | **구현 내부** |
 | `encoding/json` 이 v2 로 빌드되는 것 | ★★ **이 툴체인 판의 기본 실험(`JSONv2: true`)** — 판이 바뀌면 다시 찍어라 |
 | `json` 오류 문구(`*main.Bad` 대 `main.Bad`) | **구현 판** |
@@ -781,5 +781,5 @@ main.init()
 이 파일의 모든 출력은 **`go version go1.27.1 linux/amd64`** 에서 실제로 돌려
 **파일로 캡처한 것**이다. 소스 펜스도 같은 파일에서 떠 왔다 — 손으로 옮겨 적은 블록은 없다.\
 판 경계를 보이는 블록은 **`===== 소스: go.mod =====` 까지** 싣는다.
-★ **근거로 읽을 칸** — `[defer]` 줄의 **차례** · guard 가 받은 값 · `panic:` 첫 줄 · 프레임 이름·`파일:줄` · 종료 코드 · `%T`.
-**근거로 읽지 않을 칸** — 다른 고루틴 블록의 **`goroutine N` 의 N** · `panic({0x…})`·`pc=0x…` 주소.
+★ **근거로 읽을 항목** — `[defer]` 줄의 **차례** · guard 가 받은 값 · `panic:` 첫 줄 · 프레임 이름·`파일:줄` · 종료 코드 · `%T`.
+**근거로 읽지 않을 항목** — 다른 고루틴 블록의 **`goroutine N` 의 N** · `panic({0x…})`·`pc=0x…` 주소.

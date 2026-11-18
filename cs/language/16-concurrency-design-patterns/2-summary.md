@@ -422,7 +422,7 @@ CompletableFuture.supplyAsync(() -> pgClient.approve(req), paymentPool)   // 블
 - 스레드 풀은 블로킹 큐 + 워커 + 거부 정책이고, 큐가 무한이면 과부하가 거부 대신 메모리 사용량으로 바뀌어 OOM으로 끝난다.
 - 풀 크기는 코어 수 × (1 + 대기/CPU)로 시작해 재서 정하고, 블로킹 작업은 공용 풀이 아니라 전용 풀에 둔다.
 - `Future`·`CompletableFuture`는 예외를 결과 안에 담으므로, 사슬 끝에서 꺼내지 않으면 실패가 사라진다.
-- Active Object는 호출을 큐의 메시지로 바꿔 (기본형에서는) 스레드 하나가 상태를 독점하게 하고, Monitor Object는 호출자 스레드가 락을 쥐고 직접 들어온다.
+- Active Object는 호출을 큐의 메시지로 바꿔 (기본형에서는) 스레드 하나가 상태를 독점하게 하고, Monitor Object는 호출자 스레드가 락을 잡고 직접 들어온다.
 - Scoped Locking은 잠금 수명을 블록 수명에 묶어 예외 경로의 unlock 누락을 없애고, Thread-Specific Storage는 풀에서 쓰면 요청 끝에 직접 비워야 한다.
 - 여러 필드를 한 번에 바꿔야 하는 공유 상태는 불변 스냅샷을 새로 만들어 참조 하나를 원자 교체하고, 지연 초기화는 `volatile` DCL이나 홀더 클래스로 한다.
 

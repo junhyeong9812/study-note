@@ -584,8 +584,8 @@ FROM emp e LEFT JOIN LATERAL (SELECT COUNT(*) AS n FROM asg a WHERE a.emp_id = e
 | 세 처방의 **비용 차이** | **재지 않았다** | 스캔 구조만 적었고 수치는 적지 않는다 |
 | 결과 **행 순서** | 아무도 보장 안 함 | `ORDER BY` 없이는 어느 엔진도 순서를 약속하지 않는다 |
 
-- ★ **이 주제에서 두 엔진의 값이 한 자리도 안 갈렸다.** 팬아웃은 **방언이 아니라 조인의 정의**다.
-- **갈린 것은 `ORDER BY` 가 없는 자리의 줄 순서뿐**이다(그룹 결과에서 `NULL` 이 앞이냐 뒤냐 — [목록의 **8번 주제**](../08-order-by-null-position-stability/)).
+- ★ **이 주제에서 두 엔진의 값이 한 자리도 달라지지 않았다.** 팬아웃은 **방언이 아니라 조인의 정의**다.
+- **달라진 것은 `ORDER BY` 가 없는 자리의 줄 순서뿐**이다(그룹 결과에서 `NULL` 이 앞이냐 뒤냐 — [목록의 **8번 주제**](../08-order-by-null-position-stability/)).
 - ★ **한 번 재현되지 않은 관찰이 있다.** 6번 첫 질의(`ORDER BY e.id`)를 MySQL 에서 처음 돌렸을 때 `ann · cho · bob · dan` 순으로 나왔고,\
   그 뒤 **같은 문을 8회 더 돌렸지만 전부 `ann · bob · cho · dan`** 이었다. **원인을 규명하지 못했다.**\
   본문에는 **재현된 출력**을 실었고, 이 관찰은 「정렬 키가 있어도 한 번 어긋나 보인 일이 있었다」로만 남긴다 — **설명 없이 단정하지 않는다.**
@@ -668,7 +668,7 @@ FROM emp e LEFT JOIN LATERAL (SELECT COUNT(*) AS n FROM asg a WHERE a.emp_id = e
 
 **기준 소스** — [PostgreSQL 18 · Joined Tables](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [MySQL 8.4 · JOIN Clause](https://dev.mysql.com/doc/refman/8.4/en/join.html)\
 **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-본문에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-**버전** — 이 주제에서 버전·방언에 갈리는 것은 **없다.** 세 처방(선집계·`COUNT(DISTINCT)`·`LATERAL`)이 **두 엔진에서 같은 답을 냈다.**\
+본문에 실린 출력은 **전부 이 두 서버에 실제로 실행해서 받은 것**이다. 지어낸 출력은 없다.\
+**버전** — 이 주제에서 버전·방언에 달라지는 것은 **없다.** 세 처방(선집계·`COUNT(DISTINCT)`·`LATERAL`)이 **두 엔진에서 같은 답을 냈다.**\
 **선행** — [14 LEFT·RIGHT OUTER JOIN](../14-left-right-outer-join/) · [22 GROUP BY 와 비집계 열 규칙](../22-group-by-nonaggregated-columns/).\
 **이 묶음의 정점이다** — [21](../21-aggregate-functions-count-forms/)·[22](../22-group-by-nonaggregated-columns/)에서 배운 것이 [13](../13-inner-join/)·[14](../14-left-right-outer-join/)의 조인 위에서 어떻게 틀어지나.

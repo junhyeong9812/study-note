@@ -283,7 +283,7 @@ Console.WriteLine($"{plain} {nested.HasValue} {refType.HasValue}");
 ### 11. ★★ 06 · 07 과 잇기 (연결)
 
 - `string?` 과 `int?` 중 **런타임에 타입이 생기는 쪽**은?
-- 같은 실수(`int x = maybe;` / `string s = maybeStr;`)의 **심각도가 왜 갈리는가**?
+- 같은 실수(`int x = maybe;` / `string s = maybeStr;`)의 **심각도가 왜 달라지는가**?
 - [07번](../07-null-operators/)의 `arr?.Length < 2` 가 **여기 어느 규칙**으로 설명되는가?
 - `?.` 가 값 타입 멤버에서 만드는 것이 **정확히 무엇**인가?
 

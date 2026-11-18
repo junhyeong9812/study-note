@@ -87,7 +87,7 @@ ProcArrayEndTransaction(PGPROC *proc, TransactionId latestXid)
 }
 ```
 
-실제로 지우는 부분이다. 호출자가 `ProcArrayLock` 을 배타로 쥐고 있다.
+실제로 지우는 부분이다. 호출자가 `ProcArrayLock` 을 배타로 잡고 있다.
 
 `storage` / `ipc` / `procarray.c` L725-L777 ([GitHub](https://github.com/postgres/postgres/blob/724edf9bde9d356724ad384a2e196edc3c9f80f7/src/backend/storage/ipc/procarray.c#L725-L777))
 

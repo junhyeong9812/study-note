@@ -192,7 +192,7 @@ Tom Johnson: "Writers end up fragmenting their content into these different info
 
 - Information Mapping 사 공식 페이지는 "Research-Based Principles"라 칭하고 "Robert E. Horn's study at Harvard and Columbia universities"를 근거로 들지만 **구체 수치를 제시하지 않는다** — [informationmapping.com](https://informationmapping.com/pages/information-mapping-methodology)
 - 라이선시 배포 자료는 수치를 제시: **단어 수 −57%, 정보수집·초안 시간 −83%, 검토 시간 −75%.** 출처는 *"The Information Mapping® Method: 30 Years of Research"* — **벤더 자체 발간물** — [globaltna PDF](https://www.globaltna.com/upload/InformationMapping.pdf). 모두 **작성자 측 효율 지표이며 독자 이해도 지표가 아니다.**
-- 인물 기술도 흔들린다: 벤더 자료 "cognitive psychologist at Harvard and Columbia" vs Wikipedia "**American political scientist**" — [Robert E. Horn](https://en.wikipedia.org/wiki/Robert_E._Horn). Marnell도 Horn을 political scientist로 표기.
+- 인물 기술도 실행마다 달라진다: 벤더 자료 "cognitive psychologist at Harvard and Columbia" vs Wikipedia "**American political scientist**" — [Robert E. Horn](https://en.wikipedia.org/wiki/Robert_E._Horn). Marnell도 Horn을 political scientist로 표기.
 - Horn 본인이 Information Mapping, Inc.의 **1987년 이래 회장**이며(Marnell이 Stanford CV로 확인), 주요 근거집(*How High Can It Fly?*, 1992)은 **본인 소유 Lexington Institute 발간**.
 
 ### 5.2 Horn이 인용하는 연구의 재검토 (Jansen et al. 2003의 감사)

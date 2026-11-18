@@ -210,7 +210,7 @@ Comparator 에 람다가 들어가나 = -1
 
 그림 해설 (한 단계씩):
 
-- **`andThen` 은 왼쪽부터**, **`compose` 는 오른쪽부터**다. 5로 넣으면 12와 11로 갈린다.
+- **`andThen` 은 왼쪽부터**, **`compose` 는 오른쪽부터**다. 5로 넣으면 12와 11로 나뉜다.
 - 헷갈리면 **`andThen` 만 쓴다.** 읽는 순서와 실행 순서가 같다.
 - `Predicate` 의 `and`·`or` 는 **단락 평가된다** — `false and ...` 에서 오른쪽이 안 찍혔다.\
   `&&`·`||` 와 같은 동작이다.
@@ -790,7 +790,7 @@ Ex.java:10: error: reference to run is ambiguous
   「받는 것도 내놓는 것도 없음」이라 이름 규칙의 빈칸을 메운다.
 - **`Callable` 도 이 패키지 밖이다.** `java.util.concurrent` 에 있고 `V call() throws Exception` 이다.\
   실행 결과에서 `Files::readString` 람다가 `Supplier` 에는 못 들어가고 `Callable` 에는 들어갔다.\
-  **모양이 같아도 `throws` 하나로 갈린다.**
+  **모양이 같아도 `throws` 하나로 나뉜다.**
 - **`Comparator` 도 함수형 인터페이스다.** `java.util` 에 있고 SAM 은 `compare(T,T)` 다.\
   `equals(Object)` 를 선언하고도 함수형인 것이 (6)의 규칙을 보여 주는 표준 예다 — 정본은 [**28번 주제**](../28-comparable-comparator/).
 - **`java.util.function` 은 Java 8 이후 거의 안 바뀌었다.** 17 · 21 · 25 세 `src.zip` 에서 파일 수가 전부 44개였고,\

@@ -156,7 +156,7 @@ executed = [재고 차감, 결제 승인]      failedAt = 배송 예약
 과제(원본 README "하는 방법"):
 
 1. `SagaTest.java` 를 따라친다.
-2. `NaiveRunner` 의 **TODO 1** — 기준선.\
+2. `NaiveRunner` 의 **TODO 1** — 베이스라인.\
    차례로 하다가 실패하면 그냥 멈춘다.\
    되돌리는 코드를 여기 쓰면 안 된다("보상이 없으면 무엇이 남는가"를 보여주는 클래스다).
 3. `Saga` 의 **TODO 2**(run — 실패하면 한 것들을 되돌린다.\
@@ -171,11 +171,11 @@ executed = [재고 차감, 결제 승인]      failedAt = 배송 예약
 아래 서머리는 이 문제(README)를 분석·정리한 것이다.
 
 실제 시스템에 붙일 때의 순서: ① 걸음을 all-or-nothing 단위로 나눈다(걸음 안은 저장소 하나 + 트랜잭션) → ② 되돌릴 수 없는 걸음(메일·물리 배송)을 **가능한 한 뒤로** 보낸다 → ③ 걸음마다 보상을 절대값으로 쓴다 → ④ 어디까지 했는지를 영속화한다(사가 로그) → ⑤ `stuck`이 사람에게 닿는 경로(알림·대시보드)를 만든다.\
-①·②가 설계이고, 코드는 ③부터다. 위 「문제」절의 TODO는 기준선(보상 없음)으로 남는 것을 먼저 보고 ③을 만든다.
+①·②가 설계이고, 코드는 ③부터다. 위 「문제」절의 TODO는 베이스라인(보상 없음)으로 남는 것을 먼저 보고 ③을 만든다.
 
 ## 장애 시나리오와 대처
 
-아래 「실패」·「한계」절이 다루는 것(보상 없는 기준선·중간 상태 노출·되돌릴 수 없는 걸음) 말고, 운영에서 따로 보이는 장애들이다.
+아래 「실패」·「한계」절이 다루는 것(보상 없는 베이스라인·중간 상태 노출·되돌릴 수 없는 걸음) 말고, 운영에서 따로 보이는 장애들이다.
 
 **1. 조정자가 죽어 어디까지 했는지 모른다**
 
@@ -201,7 +201,7 @@ executed = [재고 차감, 결제 승인]      failedAt = 배송 예약
   예약도 가용 재고를 줄이므로 품절 표시가 아예 없어지지는 않는다. 예약에 짧은 만료를 두어 그 창을 짧게 만드는 것이 실제 효과다.\
   실패하면 예약을 풀고 승인을 취소(void)할 뿐이라, 확정 결제·환불 쌍이 명세서에 남지 않는다(승인 보류는 카드사에 따라 잠시 보일 수 있다 [?]). 되돌릴 수 없는 확정이 맨 뒤로 가는 효과도 같이 얻는다.
 
-### 실패 — 기준선(NaiveRunner): 실패하면 절반이 남는다
+### 실패 — 베이스라인(NaiveRunner): 실패하면 절반이 남는다
 **언제 문제인가**: 여러 서비스에 걸친 작업을 그냥 차례로 부르고, 실패하면 멈출 때.\
 되돌리는 코드가 없어서 짧고, 읽으면 맞는 것 같고, 정상 경로에서는 실제로 맞는다.
 
@@ -246,7 +246,7 @@ executed = [재고 차감, 결제 승인]      failedAt = 배송 예약
 
 ### 관련 자료
 - 챕터 안내: `/home/jun/project/myway/ops-patterns/08-saga/README.md`
-- 정답 기준 소스: `/home/jun/project/myway/ops-patterns/08-saga/impl/NaiveRunner.java`(기준선 — 보상 없음), `impl/Saga.java`(본체)
+- 정답 기준 소스: `/home/jun/project/myway/ops-patterns/08-saga/impl/NaiveRunner.java`(베이스라인 — 보상 없음), `impl/Saga.java`(핵심)
 - 조각들: `.../src/main/java/com/ops/saga/SagaStep.java`(execute/compensate 계약), `SagaResult.java`(success/compensated/stuck + needsHumanHelp), `Ledger.java`(검증 장비 — 트랜잭션이 없다는 점이 요점)
 - 테스트: `.../src/test/java/com/ops/saga/SagaTest.java`
 - 이웃 주제: `06-idempotency-store`(보상의 멱등이 기대는 곳), `07-outbox`(각 걸음 안의 원자성), 다음 챕터 `09-stampede`(여럿이 같은 것을 원할 때)

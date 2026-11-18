@@ -63,7 +63,7 @@ Ed25519 verifier + RSA key -> InvalidKeyException
 ```
 
 - 세 방식 모두 1비트 변경을 거부했다.
-- 서명 길이가 다르다. Ed25519 64바이트 고정, ECDSA P-256은 DER 인코딩이라 흔히 70~72바이트로 흔들린다(r·s의 앞자리가 작으면 더 짧을 수도 있다), RSA-3072은 384바이트(모듈러스 크기).
+- 서명 길이가 다르다. Ed25519 64바이트 고정, ECDSA P-256은 DER 인코딩이라 흔히 70~72바이트로 실행마다 달라진다(r·s의 앞자리가 작으면 더 짧을 수도 있다), RSA-3072은 384바이트(모듈러스 크기).
 - 같은 메시지를 두 번 서명하면 Ed25519는 같은 값, ECDSA는 다른 값이 나왔다. 이 차이가 아래 §4의 핵심이다.
 
 ### 2. 어려운 문제 — 왜 공개키에서 개인키가 안 나오나
@@ -166,7 +166,7 @@ toy RSA n=3233 phi=3120 d=2753 sig=h^d mod n=588, sig^e mod n=65
 - **모듈러 거듭제곱(제곱-곱셈)**, **확장 유클리드로 역원** — RSA의 d = e⁻¹ mod φ, 서명·검증의 h^d·σ^e. [algorithm/28-number-theory](../../algorithm/28-number-theory/2-summary.md). 수학 배경은 [math/11-modular-arithmetic](../../math/11-modular-arithmetic/2-summary.md).
 - **타원곡선 군 연산** — 점 덧셈, 2배, 스칼라 곱(double-and-add). 이진 거듭제곱과 같은 구조를 곱셈 대신 점 덧셈으로 한다.
 - **암호 해시** — 서명 전 메시지 축약(SHA-256), Ed25519 내부 SHA-512, RFC 6979의 HMAC_DRBG. [algorithm/12-hash-functions](../../algorithm/12-hash-functions/2-summary.md), [원고 hmac](../../foundations/security/hmac.md).
-- **DER(ASN.1) 인코딩** — ECDSA 서명 (r, s)를 정수 두 개로 감싼다. 정수를 최소 바이트로 적고 앞자리 0 바이트를 붙이기도 해서 길이가 흔히 70~72바이트로 흔들린다(실험 출력, 그보다 짧은 서명도 가능).
+- **DER(ASN.1) 인코딩** — ECDSA 서명 (r, s)를 정수 두 개로 감싼다. 정수를 최소 바이트로 적고 앞자리 0 바이트를 붙이기도 해서 길이가 흔히 70~72바이트로 실행마다 달라진다(실험 출력, 그보다 짧은 서명도 가능).
 
 ## 적용 — 풀어나가는 법
 

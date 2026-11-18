@@ -217,7 +217,7 @@ fit-content = min( max-content , max( min-content , 쓸 수 있는 공간 ) )
 - 같은 일을 지금 하려면 **`width: fit-content; max-width: 150px`** 로 나눠 쓴다.
 - Grid 트랙에서의 `fit-content()` 는 **다른 자리**이고 지원 상황도 다르다 — [목록의 **27번 주제**](../27-grid-track-sizing/)가 정본이다.
 
-### (6) `width: auto` 와 `fit-content` 가 갈리는 자리
+### (6) `width: auto` 와 `fit-content` 가 달라지는 자리
 
 **언제 쓰나** — 「글자 길이만큼만 넓은 상자」를 만들 때.
 
@@ -233,7 +233,7 @@ display: inline-block       128.02                  ✓ 같다
 (부모 400px, 그 글의 fit-content = 128.02)
 ```
 
-*(Chrome 151 headless 실측 — 네 판을 같은 문서에서 같은 부모 안에 넣고 쟀다.)*
+*(Chrome 151 headless 실측 — 네 버전을 같은 문서에서 같은 부모 안에 넣고 쟀다.)*
 
 ```text
 왜 갈리나 — auto 의 뜻이 상자마다 다르다
@@ -507,7 +507,7 @@ Chrome 151 에서 **선언이 담기지도 않는다**((5)). `getComputedStyle` 
 - **`contain-intrinsic-size`** 는 `content-visibility` 로 렌더를 건너뛴 요소에 「내재적 크기가 이만큼이라고 쳐라」를 알려 주는 속성이다(Baseline **widely**, 2023-09-18 → 2026-03-18). 내재적 크기를 **측정하지 않고 선언하는** 유일한 표면이다. 정본은 [목록의 **56번 주제**](../56-rendering-pipeline-and-will-change/).
 - **`aspect-ratio: auto <ratio>`** 라고 두 값을 쓰면 「원래 비율이 있으면 그것을, 없으면 이 비율을」이라는 뜻이다. `<img>` 처럼 대체 요소에 대비책을 줄 때 쓴다.
 - ★ **`min-content` 는 「가장 긴 낱말」이 아니라 「가장 큰 쪼갤 수 없는 조각」** 이다. 표·인라인 블록·이미지가 섞이면 낱말이 아닌 것이 최댓값이 될 수 있다. (3)의 하이픈 실측이 그 축소판이다.
-- ★ **줄바꿈 속성 중 어떤 것은 `min-content` 를 실제로 줄이고 어떤 것은 안 줄인다.** 이름이 비슷해서 헷갈리는데, **실측으로 갈린다.**\
+- ★ **줄바꿈 속성 중 어떤 것은 `min-content` 를 실제로 줄이고 어떤 것은 안 줄인다.** 이름이 비슷해서 헷갈리는데, **실측으로 나뉜다.**\
   *(Chrome 151 headless 실측 — 같은 글 `hi javascript ok` 를 `width: min-content` 상자에 넣고 한 줄씩 더했다.\
   기본 → **80.00**(높이 72) · `overflow-wrap: anywhere` → **8.02**(높이 336) · `word-break: break-word` → **8.02** · `word-break: break-all` → **8.02** · ★ **`overflow-wrap: break-word` → 80.00 — 줄지 않았다.**)*\
   즉 `anywhere` 는 **내재적 크기 계산에 반영되고** `break-word` 는 **넘칠 때만 쪼갠다.** 이름이 한 쌍처럼 생겼는데 성질이 반대다.\

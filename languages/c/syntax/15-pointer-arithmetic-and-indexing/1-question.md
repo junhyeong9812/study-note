@@ -149,7 +149,7 @@ printf("%ld\n", (long)((uintptr_t)v1 - (uintptr_t)vp));
 **환경** — gcc 13.3.0 · clang 18.1.3 · x86-64 Linux · 기본 `-std=c17 -Wall -Wextra -pedantic`.
 ★★ **이 주제는 UB 가 본체**다. [13번 형제](../13-goto-cleanup-idiom/)가 **표준이 본체**였던 것과 정반대다 —
 그래서 「**무엇이 출력되나**」보다 「**어느 도구가 무엇이라 하나**」가 더 자주 답이 된다.
-★★★ **UB 가 걸린 문항에서는 「값」을 답으로 외우지 마라.** 값이 갈리는 것 자체가 답인 자리가 있다.
+★★★ **UB 가 걸린 문항에서는 「값」을 답으로 외우지 마라.** 값이 달라지는 것 자체가 답인 자리가 있다.
 ★ **「경고 0건」은 종료 코드와 sanitizer 출력을 같이 봐야 뜻이 있다.**
 선행 — [14번 형제](../14-pointers-address-dereference-and-pointer-types/) · [09번 형제](../09-operator-precedence-and-associativity/).
 

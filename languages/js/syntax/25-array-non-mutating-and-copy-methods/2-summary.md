@@ -83,7 +83,7 @@ Google Chrome 151.0.7922.173
   ES2026  Array.fromAsync                             yes
 ```
 
-두 node 판 대조기의 집계 줄(이 배치의 모든 node 탐침) — 이 주제에서 갈린 것은 `25a` · `25b` · `25c` · `25f` 넷이고, 갈린 판의 전문은 [3-answer.md](3-answer.md) 의 9번에 있다.
+두 node 버전 대조기의 집계 줄(이 배치의 모든 node probe) — 이 주제에서 달라진 것은 `25a` · `25b` · `25c` · `25f` 넷이고, 달라진 판의 전문은 [3-answer.md](3-answer.md) 의 9번에 있다.
 
 `identical 26  ·  differs 4  ·  total 30`
 
@@ -142,7 +142,7 @@ Google Chrome 151.0.7922.173
 
 > 이 절이 본문이다. 그림을 먼저 두고 그 그림을 출력으로 읽는다.
 
-### (1) ★★★ 쓰기 트랩 격자 — 이 주제의 본체
+### (1) ★★★ 쓰기 트랩 격자 — 이 주제의 핵심
 
 **언제 쓰나** — 「이 메서드는 원본을 건드리나」를 **결과가 아니라 과정으로** 확인하고 싶을 때 · 라이브러리 함수가 입력 배열에 손대는지 의심될 때.
 
@@ -359,9 +359,9 @@ for (const i of [-1, -3, -4, 3]) {
   `with` 는 **길이를 절대 안 바꾼다** — 명세 `with` 는 `actualIndex ≥ len` 이거나 `< 0` 이면 `RangeError` 를 던지고, 결과는 늘 `ArrayCreate(len)` 이다.
 - ★★★ **음수의 뜻이 정반대다** — `with(-1, 9)` 는 **끝 칸**(`[0,1,9]`)을 바꾸고, `a[-1] = 9` 는 **`"-1"` 이라는 이름의 평범한 프로퍼티**를 만든다(`own keys` 에 `"-1"`, `length 3` 그대로).
   배열 칸은 **정수처럼 보이는 문자열 키**일 때만이다 — 정수 키 규칙은 [13번](../13-object-literals-and-properties/2-summary.md)이 정본이다.
-- ★★ **`1.5` 도 갈린다** — `with(1.5, 9)` 는 **`1` 로 잘라** `[0,9,2]`, `a[1.5] = 9` 는 **`"1.5"` 프로퍼티**. `"1"` 은 둘 다 칸 `1` 이다.
+- ★★ **`1.5` 도 달라진다** — `with(1.5, 9)` 는 **`1` 로 잘라** `[0,9,2]`, `a[1.5] = 9` 는 **`"1.5"` 프로퍼티**. `"1"` 은 둘 다 칸 `1` 이다.
 - ★ **`[3]` `with` 의 인덱스 해석은 `at` 과 같다** — `at` 이 `undefined` 를 주는 자리(`-4` · `3`)에서 `with` 가 던진다. `at` 의 전수는 [26번](../26-array-search-flatten-and-create/2-summary.md)이다.
-- ★ **node 18 에서는 `[1]` 여덟 줄이 전부 `TypeError 「a.with is not a function」`** 이다(판 경계). `[2]` 대입 쪽은 두 판이 같다.
+- ★ **node 18 에서는 `[1]` 여덟 줄이 전부 `TypeError 「a.with is not a function」`** 이다(판 경계). `[2]` 대입 쪽은 두 버전이 같다.
 
 ### (4) ★★ `reduce` — 초기값이 있으면 한 번 더 불리고, 없고 비었으면 던진다
 
@@ -611,7 +611,7 @@ for (const cmp of [undefined, null, "desc", 1]) {
 - ★★★ **파이썬은 반대였다** — 파이썬 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **10번**이 `[3,1,2,'a'].sort()` 가 `TypeError` 로 끝난 뒤 `m2 = [1, 2, 3, 'a']` 로 **바뀐 채 남는 것**을 찍었다(문서가 "the list will likely be left in a partially modified state" 라 적는다).
   **JS `sort` 는 「제자리」지만 「원자적」이다** — 한 번에 쓰거나 아예 안 쓴다(비교가 던지는 경우에 한해서 — `Set` 자체가 던지는 경우는 이 문서 밖이다).
 - ★★ **`[3]` 비교 함수 검사는 `sort` 와 `toSorted` 가 같다** — `null` · `"desc"` · `1` 은 전부 `TypeError`, `undefined` 만 기본 비교. ★ `sort(null)` 도 던진다 — **「비워 두기」는 `undefined` 만**이다.
-- ★ **`[0]` 비교 함수 호출 횟수(`4` · `108`)는 근거로 쓰지 않는다** — 명세는 "an implementation-defined sequence of calls to SortCompare" 라고만 적는다. `sort` 와 `toSorted` 가 같은 수(`4`)인 것도 **이 판의 관찰**이다.
+- ★ **`[0]` 비교 함수 호출 횟수(`4` · `108`)는 근거로 쓰지 않는다** — 명세는 "an implementation-defined sequence of calls to SortCompare" 라고만 적는다. `sort` 와 `toSorted` 가 같은 수(`4`)인 것도 **이 버전의 관찰**이다.
 - ★ node 18 에서는 `toSorted` 줄이 전부 `TypeError` 라 **`sort` 쪽만 근거가 선다**(`toSorted 0` 은 「안 불렸다」가 아니라 「메서드가 없다」다).
 
 ### (7) ★★ 짝 넷 — 복사 메서드는 돌려준 값이 원본이 아니고, 구멍을 `undefined` 로 채운다
@@ -867,7 +867,7 @@ row("b.filter(() => false)", b.filter(() => false));
 
 ### (7) ★★ 「`toSorted` 가 구멍을 남긴다」고 믿는다 — 또는 그 반대
 
-복사 메서드 넷은 **`undefined` 로 채우고**, `slice`·`map`·`sort`·`reverse` 는 **구멍을 남긴다**(동작 (7)의 `[4]`). `in` 으로 칸을 검사하는 코드는 둘에서 답이 갈린다.
+복사 메서드 넷은 **`undefined` 로 채우고**, `slice`·`map`·`sort`·`reverse` 는 **구멍을 남긴다**(동작 (7)의 `[4]`). `in` 으로 칸을 검사하는 코드는 둘에서 답이 달라진다.
 
 ### (8) ★★ `Array` 하위 클래스에 `toSorted` 를 쓰고 하위 클래스 메서드를 부른다
 
@@ -894,7 +894,7 @@ row("b.filter(() => false)", b.filter(() => false));
 - 비교 함수가 `undefined` 가 아닌 비함수면 **원본을 읽기 전에** `TypeError`.
 - 예외의 **종류**(`TypeError` · `RangeError`).
 
-### 엔진(V8) 구현 · 이 판의 관찰
+### 엔진(V8) 구현 · 이 버전의 관찰
 
 - ★★ **비교 함수 호출 횟수**(`4` · `108`)와 **순서** — 명세는 "implementation-defined sequence of calls" 다.
 - ★ **`get` 트랩 횟수** — 명세 단계를 따르는 것으로 보이지만 이 문서는 그 수를 하나하나 명세와 맞춰 보지 않았다. 근거로 안 쓴다.
@@ -958,7 +958,7 @@ row("b.filter(() => false)", b.filter(() => false));
 
 ## 실행 환경
 
-★★★ **이 주제의 본체는 ① 추상 연산에 로그 심기 — `Proxy` 쓰기 트랩이다.**
+★★★ **이 주제의 핵심은 ① 추상 연산에 로그 심기 — `Proxy` 쓰기 트랩이다.**
 「이 메서드는 원본을 안 바꾼다」는 결과 배열을 봐서는 반만 증명된다 — **도중에 썼다가 되돌렸을 수도** 있기 때문이다.
 그래서 원본을 `Proxy` 로 감싸 **`set` · `defineProperty` · `deleteProperty` 트랩이 몇 번 불리나**를 메서드마다 세고,
 마지막 줄의 「쓰기 트랩 0 으로 돌아온 메서드 N / M」을 **스크립트가 직접 센다**(동작 (1)).
@@ -980,25 +980,25 @@ row("b.filter(() => false)", b.filter(() => false));
 
 | 무엇 | 판 | 이 머신에서 |
 |---|---|---|
-| `map` · `filter` · `reduce` · `reduceRight` · `slice` · `concat` | **ES2015 이전부터** | 세 판 다 있다 |
-| `Symbol.species` · `Symbol.isConcatSpreadable` | **ES2015** | 세 판 다 있다 — [22번](../22-symbol-and-well-known-symbols/2-summary.md)이 정본 |
+| `map` · `filter` · `reduce` · `reduceRight` · `slice` · `concat` | **ES2015 이전부터** | 세 버전 다 있다 |
+| `Symbol.species` · `Symbol.isConcatSpreadable` | **ES2015** | 세 버전 다 있다 — [22번](../22-symbol-and-well-known-symbols/2-summary.md)이 정본 |
 | ★★★ `toSorted` · `toReversed` · `toSpliced` · `with`(Change Array by Copy) | ★★★ **ES2023** — [README](../README.md) 는 「ES2024」라 적었다. **finished proposals 표가 2023 이다**(목록 쪽이 틀렸다 — 이 편은 고치지 않고 보고만 한다) | ★ **node 18 에 없고** node 20 · Chrome 에 있다 |
 
-**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+**★★★ 이 주제가 쓰는 창 — 그리고 해당 없는 창**
 
 | 창 | 이 주제에서 무엇을 보나 |
 |---|---|
-| ★★★ **① 추상 연산에 로그 심기**(본체) | 원본을 `Proxy` 로 감싸 메서드 **17개**의 `set` · `defineProperty` · `deleteProperty` · `get` 트랩 횟수(동작 (1)) · `map` 이 콜백에 넘기는 인자(동작 (5)) · `reduce` 콜백이 받는 `(acc, x, i)`(동작 (4)) · 비교 함수 호출 횟수(동작 (6)) |
+| ★★★ **① 추상 연산에 로그 심기**(핵심) | 원본을 `Proxy` 로 감싸 메서드 **17개**의 `set` · `defineProperty` · `deleteProperty` · `get` 트랩 횟수(동작 (1)) · `map` 이 콜백에 넘기는 인자(동작 (5)) · `reduce` 콜백이 받는 `(acc, x, i)`(동작 (4)) · 비교 함수 호출 횟수(동작 (6)) |
 | ★★★ **② 전수 격자** | 동작 (1)의 격자 자체 — **「쓰기 트랩 0 으로 돌아온 메서드 N / M」과 「던진 메서드 N / M」을 스크립트가 센다** · 인덱스 8개 × (`with` · 대입)(동작 (3)) |
 | ★★ **④ 예외의 `constructor.name` + `message`** | `with` 의 `RangeError` · 빈 배열 `reduce` 의 `TypeError` · 비교 함수 자리의 `TypeError` · ★ **node 18 에서 메서드가 없는 `TypeError`** |
-| ★★ **⑤ 두 판 대조기** | 이 주제에서 갈린 탐침은 **넷**(`25a` · `25b` · `25c` · `25f`) — 전부 **복사 메서드 넷이 node 18 에 없어서**다 |
-| ★ **부적용 — ③ 브랜드 태그** | 결과가 「배열인가」는 `Array.isArray` 로 충분했다. 「어느 클래스인가」(species)는 **22번이 이미 쟀다** — 인용만 한다(동작 (8)) |
-| ★ **부적용 — 진단의 `(행,열)`**(18-C) | `SyntaxError` 가 한 줄도 없다. 전부 런타임 의미다 — **잴 것이 없다** |
+| ★★ **⑤ 두 판 대조기** | 이 주제에서 달라진 probe는 **넷**(`25a` · `25b` · `25c` · `25f`) — 전부 **복사 메서드 넷이 node 18 에 없어서**다 |
+| ★ **해당 없음 — ③ 브랜드 태그** | 결과가 「배열인가」는 `Array.isArray` 로 충분했다. 「어느 클래스인가」(species)는 **22번이 이미 쟀다** — 인용만 한다(동작 (8)) |
+| ★ **해당 없음 — 진단의 `(행,열)`**(18-C) | `SyntaxError` 가 한 줄도 없다. 전부 런타임 의미다 — **잴 것이 없다** |
 | ★★★ **안 쟀다 — 성능** | 「`toSorted` 는 복사라서 느리다」·「`slice().sort()` 가 더 빠르다」를 **한 줄도 쓰지 않는다.** 시간도 메모리도 안 쟀다. 센 것은 **트랩 횟수와 호출 횟수**뿐이다 |
 
-**★ 흔들리는 칸 / 안 흔들리는 칸**
+**★ 실행마다 달라지는 항목 / 달라지지 않는 항목**
 
-| 흔들린다 · 근거로 쓰지 않는다 | 안 흔들린다 · 근거로 쓴다 |
+| 실행마다 달라진다 · 근거로 쓰지 않는다 | 달라지지 않는다 · 근거로 쓴다 |
 |---|---|
 | 예외 **문구** — ★ **판마다 다르다**(node 18 의 `[3,(intermediate value),1].toSorted is not a function` 처럼 **소스 모양이 문구에 박힌다**) | ★★★ **쓰기 트랩 횟수**(`set`·`defineProperty`·`deleteProperty`)와 두 집계 줄 · 원본이 바뀌었나 · 돌려준 값이 원본과 `===` 인가 · 예외의 **종류** |
 | ★ **`get` 트랩 횟수** — 명세 단계를 따르지만 이 문서의 주장은 여기에 기대지 않는다 | `with` 가 던지는 **인덱스 범위** · `reduce` 가 던지는 **조건**(원소가 하나도 없고 초기값이 없을 때) |

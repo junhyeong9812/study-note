@@ -1,10 +1,10 @@
 # go/syntax/32 — `sync`: `Mutex`·`RWMutex`·`WaitGroup`·`Once` — 정리 (힌트)
 
-★★★ **본체는 넷째 창이다** — 「**`-race`(데이터 경쟁 검출기)의 `WARNING: DATA RACE` 보고**」.
+★★★ **핵심은 넷째 창이다** — 「**`-race`(데이터 경쟁 검출기)의 `WARNING: DATA RACE` 보고**」.
 「안 터졌다」는 동시성에서 **가장 약한 근거**다 — 동기화 없는 코드도 대개 맞는 값을 낸다((1)절의 `1`).
 **검출기가 「이 두 접근 사이에 순서가 없다」를 줄 번호째** 짚어야 비로소 근거가 된다.
 ★ 이 창은 **cgo(gcc)가 있어야 열린다** — 그래서 **판별 블록부터** 실었다(규칙 26). **이 판·이 머신에서 열린다.**
-★★ 그 짝으로 「**`go vet` 의 `copylocks` 탐침 18개 중 몇 개가 답했나**」((3)절 — 규칙 18-A) — **복사하면 안 되는 타입**은 컴파일러가 아니라 `vet` 이 지킨다.
+★★ 그 짝으로 「**`go vet` 의 `copylocks` probe 18개 중 몇 개가 답했나**」((3)절 — 규칙 18-A) — **복사하면 안 되는 타입**은 컴파일러가 아니라 `vet` 이 지킨다.
 
 ★★★ **이 주제의 경계** — 상호 배제·경쟁 조건의 **원리**(임계 구역·락이 왜 필요한가)는
 [`../../../../cs/foundations/process-thread/`](../../../../cs/foundations/process-thread/)가 정본이다. **그쪽은 락이 무엇을 막는가까지**, 여기는 **Go `sync` 타입의 계약·복사 금지·함정부터.**
@@ -18,7 +18,7 @@
 | **명세·메모리 모델 보장** | 명세·메모리 모델이 약속한 것 | ★ **명세에는 `sync` 가 없다** — 표준 라이브러리다. 메모리 모델이 「**n 번째 `Unlock` 은 m 번째 `Lock` 보다 먼저(n < m)**」와 `Once` 의 순서를 정한다 |
 | **표준 라이브러리 계약** | `sync` 문서가 약속한 것 | ★★★ **「must not be copied after first use」** · `RWMutex` 는 **재귀 읽기 잠금 금지** · `Once` 는 **정확히 한 번** · `Mutex` 는 **특정 고루틴에 묶이지 않는다** |
 | **구현(runtime·도구)** | runtime·`vet`·`-race` 가 한 것 | ★★★ **`-race` 는 실행 중에 본 접근만** 판단한다 · **`copylocks`·`waitgroup` 은 `vet` 의 휴리스틱** · 안 잠근 것을 풀면 **`fatal error`** · 교착 탐지 · `[sync.Mutex.Lock]` 상태 문구 |
-| **이 판의 관찰** | go1.27.1·linux/amd64 에서 이번에 본 것 | 18탐침 중 13 · `-race` 가 `WaitGroup.Add` 함정을 **어떤 판은 잡고 어떤 판은 못 잡는다** |
+| **이 버전의 관찰** | go1.27.1·linux/amd64 에서 이번에 본 것 | 18probe 중 13 · `-race` 가 `WaitGroup.Add` 함정을 **어떤 판은 잡고 어떤 판은 못 잡는다** |
 
 ★★★ **선을 긋는다** — 「`Mutex` 를 복사하지 마라」는 **문서의 계약**이고, 그것을 **잡아 주는 것은 컴파일러가 아니라 `vet`** 이다.
 「이 코드에는 경쟁이 없다」는 **`-race` 가 말해 줄 수 없다** — `-race` 는 **이번 실행에서 일어난 접근**만 본다((4)절 — 같은 코드에서 **어떤 판은 보고하고 어떤 판은 안 했다**).
@@ -41,23 +41,23 @@ go1.21.txt:405:pkg sync, func OnceValue[$0 interface{}](func() $0) func() $0 #56
 
 - ★ `TryLock` 이 **1.18**, `OnceValue` 가 **1.21** — 이 문서가 쓰는 API 중 판이 걸린 것들이다(`WaitGroup.Go` 의 1.25 는 [28번 주제](../28-goroutines-go-statement-cost-and-termination/) (2)절).
 
-## 흔들리는 칸 / 안 흔들리는 칸
+## 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| **흔들린다** | ★★ **`-race` 보고·트레이스의 `goroutine N`·`Goroutine N` 의 N** | 고루틴 id — 정규화 규칙 `([Gg]oroutine) \d+` **하나**(대소문자 둘 다 — `-race` 는 `Goroutine 8 (finished)` 로 적는다) |
-| **흔들린다** | `-race` 의 `Read at 0x00c00011e028` · 트레이스 인자의 긴 주소 | 기본 정규화 규칙(주소)이 잡는다 |
-| **흔들린다** | ★★ **교착 트레이스 프레임의 짧은 인자 값** — `runtime_SemacquireRWMutexR(0x2faf080?, 0x0?, …)` | 재실행 대조에서 **`0x0?` 와 `0x8?` 로** 갈렸다 — 5자리 미만이라 주소 규칙이 못 잡는다. 정규화 규칙 `\((?:0x\|\{0x)[^()]*\)` 를 **이 칸 하나에** 더했다((6)·(7)·(8)절의 트레이스). [27번 주제](../27-panic-recover-and-where-to-use-them/)는 같은 칸을 `GOTRACEBACK=none` 으로 껐지만, 여기서는 **상태 줄(`[sync.RWMutex.RLock]`)이 근거**라 트레이스를 끌 수 없었다 |
-| **흔들린다(그래서 안 실었다)** | ★★★ `WaitGroup.Add` 를 고루틴 안에서 부른 판의 **결과값**과 **`-race` 가 보고한 판 수** | 스케줄링 — 20판 돌려 「**100 이 아닌 판이 있었나**」·「**한 판이라도 보고했나**」·「**모두 보고했나**」 참거짓만 실었다 |
-| 안 흔들린다 | ★★★ **`WARNING: DATA RACE`·`Read at … by main goroutine`·`Previous write … by goroutine N`·줄 번호·`exit 66`** | 50ms 잠으로 순서를 벌려 **같은 보고**가 나왔다(재실행 대조) |
-| 안 흔들린다 | ★★★ **`copylocks` 탐침 18개 중 `답한 탐침 13 / 18`** · `vet` 의 문장 · `파일:줄:칸` | 정적 분석이다 |
-| 안 흔들린다 | `100000` · `Once` 의 `1` · `100 / 100` · 교착의 `[sync.Mutex.Lock]`·`[sync.RWMutex.RLock]` · 종료 코드 | |
+| **실행마다 달라진다** | ★★ **`-race` 보고·트레이스의 `goroutine N`·`Goroutine N` 의 N** | 고루틴 id — 정규화 규칙 `([Gg]oroutine) \d+` **하나**(대소문자 둘 다 — `-race` 는 `Goroutine 8 (finished)` 로 적는다) |
+| **실행마다 달라진다** | `-race` 의 `Read at 0x00c00011e028` · 트레이스 인자의 긴 주소 | 기본 정규화 규칙(주소)이 잡는다 |
+| **실행마다 달라진다** | ★★ **교착 트레이스 프레임의 짧은 인자 값** — `runtime_SemacquireRWMutexR(0x2faf080?, 0x0?, …)` | 재실행 대조에서 **`0x0?` 와 `0x8?` 로** 달라졌다 — 5자리 미만이라 주소 규칙이 못 잡는다. 정규화 규칙 `\((?:0x\|\{0x)[^()]*\)` 를 **이 칸 하나에** 더했다((6)·(7)·(8)절의 트레이스). [27번 주제](../27-panic-recover-and-where-to-use-them/)는 같은 칸을 `GOTRACEBACK=none` 으로 껐지만, 여기서는 **상태 줄(`[sync.RWMutex.RLock]`)이 근거**라 트레이스를 끌 수 없었다 |
+| **실행마다 달라진다(그래서 안 실었다)** | ★★★ `WaitGroup.Add` 를 고루틴 안에서 부른 판의 **결과값**과 **`-race` 가 보고한 판 수** | 스케줄링 — 20판 돌려 「**100 이 아닌 판이 있었나**」·「**한 판이라도 보고했나**」·「**모두 보고했나**」 참거짓만 실었다 |
+| 달라지지 않는다 | ★★★ **`WARNING: DATA RACE`·`Read at … by main goroutine`·`Previous write … by goroutine N`·줄 번호·`exit 66`** | 50ms 잠으로 순서를 벌려 **같은 보고**가 나왔다(재실행 대조) |
+| 달라지지 않는다 | ★★★ **`copylocks` probe 18개 중 `답한 탐침 13 / 18`** · `vet` 의 문장 · `파일:줄:칸` | 정적 분석이다 |
+| 달라지지 않는다 | `100000` · `Once` 의 `1` · `100 / 100` · 교착의 `[sync.Mutex.Lock]`·`[sync.RWMutex.RLock]` · 종료 코드 | |
 
 ★ 정규화 규칙은 **기본 넷 + 고루틴 id + 프레임 인자, 둘**을 썼다.
 
 ## 한눈에 — 쉽게 말하면
 
-**`Mutex` 는 화장실 열쇠 하나다.** 열쇠를 쥔 사람만 들어가고, 나오면서 **걸어 둔다.**
+**`Mutex` 는 화장실 열쇠 하나다.** 열쇠를 잡은 사람만 들어가고, 나오면서 **걸어 둔다.**
 Go 의 열쇠는 **벽에 따로 걸려 있다** — 화장실(데이터)과 **붙어 있지 않다.** 그래서 **열쇠 없이 문을 열어도 아무도 안 막는다**(컴파일러는 모른다).
 열쇠를 **복사해 두 개**로 만들면 — 두 사람이 **각자 자기 열쇠로** 들어간다. `vet` 이라는 관리인이 **복사하는 장면**을 대부분 잡는다.
 
@@ -66,7 +66,7 @@ Go 의 열쇠는 **벽에 따로 걸려 있다** — 화장실(데이터)과 **�
 | 화장실 열쇠 하나 | ★★ **`sync.Mutex`** — `Lock`·`Unlock` |
 | 열쇠는 **벽에**, 화장실과 **따로** | ★★★ **Go 는 뮤텍스와 데이터가 따로다** — 잠그지 않고 만져도 컴파일된다. ★ **Rust `Mutex<T>` 는 데이터를 감싼다** — 잠그지 않으면 **만질 방법이 없다**((2)절) |
 | 나올 때 **반드시** 건다 | ★★ **`defer mu.Unlock()`** — 패닉으로 나가도 풀린다((2)절, [26번 주제](../26-defer-evaluation-lifo-named-results-and-loops/)) |
-| 열쇠를 **복사** | ★★★ **`Mutex`·`WaitGroup`·`Once`·`RWMutex` 를 값으로 넘기기** — `vet copylocks` 가 18탐침 중 13 에 답한다((3)절) |
+| 열쇠를 **복사** | ★★★ **`Mutex`·`WaitGroup`·`Once`·`RWMutex` 를 값으로 넘기기** — `vet copylocks` 가 18probe 중 13 에 답한다((3)절) |
 | 안에 있는 사람이 **또 열쇠를 찾는다** | ★★★ **재진입 없음** — 같은 고루틴이 두 번 `Lock` 하면 **교착**((6)절). 자바 `synchronized` 는 들어간다 |
 | 열람실 — **여럿이 읽고, 쓸 땐 혼자** | ★★ **`RWMutex`** — 단, **쓰려는 사람이 줄을 서면** 새 읽는 사람도 막힌다 → **재귀 읽기 잠금이 교착**((7)절) |
 | 출석부 — **다 돌아왔나** | ★★ **`WaitGroup`** — `Add` 는 **띄우기 전에**((4)절) |
@@ -97,7 +97,7 @@ Go 의 열쇠는 **벽에 따로 걸려 있다** — 화장실(데이터)과 **�
 
 > **데이터 경쟁(data race)** — 두 고루틴이 같은 변수에 **동기화 없이** 접근하고 그중 하나가 쓰기인 것. `-race` 가 **실행 중에** 찾는다.
 
-> **`go vet`** — 컴파일은 되지만 의심스러운 코드를 찾는 정적 분석기. `copylocks`(락 복사)·`waitgroup`(`Add` 위치) 분석기가 여기 든다 — 이 판의 목록:
+> **`go vet`** — 컴파일은 되지만 의심스러운 코드를 찾는 정적 분석기. `copylocks`(락 복사)·`waitgroup`(`Add` 위치) 분석기가 여기 든다 — 이 버전의 목록:
 
 ```text
 ===== 명령: go tool vet help | grep -E "^    (copylocks|waitgroup) " =====
@@ -106,7 +106,7 @@ Go 의 열쇠는 **벽에 따로 걸려 있다** — 화장실(데이터)과 **�
 (exit 0)
 ```
 
-- [29번 주제](../29-channels-buffering-direction-close-range-and-nil/)가 목록상 **선행**이다 — 채널이 「**값을 넘겨 소유를 옮기는**」 도구라면, 뮤텍스는 「**한 자리의 값을 여럿이 번갈아 만지는**」 도구다((9)절의 판단표).
+- [29번 주제](../29-channels-buffering-direction-close-range-and-nil/)가 목록상 **선행**이다 — 채널이 「**값을 넘겨 소유를 옮기는**」 도구라면, 뮤텍스는 「**한 자리의 값을 여럿이 번갈아 만지는**」 도구다((9)절의 버전단표).
 - ★★ [26번 주제](../26-defer-evaluation-lifo-named-results-and-loops/)가 **`defer` 의 실행 시점**의 정본이다 — `defer mu.Unlock()` 이 패닉 경로에서도 도는 것은 거기의 규칙이다((2)절).
 - ★★ [28번 주제](../28-goroutines-go-statement-cost-and-termination/) (2)절이 **`WaitGroup.Go`(1.25)** 의 `go doc` 과 `api/go1.25.txt:96` 을 이미 실었다 — 여기서는 **다시 판별하지 않았다.**
 
@@ -118,19 +118,19 @@ Go 의 열쇠는 **벽에 따로 걸려 있다** — 화장실(데이터)과 **�
 
 ## 동작 방식
 
-### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「부적용인 창」
+### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「해당 없는 창」
 
 | 창 | 무엇을 보여 주나 | 어디서 왔나 |
 |---|---|---|
-| ★★★ **`-race` 의 `WARNING: DATA RACE`** | **순서 없는 두 접근**을 줄 번호째 | ★ 본체 창 — 이 주제의 넷째 창. **판별 블록으로 열리는 것을 확인** |
-| ★★★ **`go vet copylocks` × 탐침 18개** | **복사하면 안 되는 것**을 어디서 잡나 · **몇 개가 답했나** | 규칙 18-A |
-| ★★ **`go vet waitgroup`** | `Add` 의 자리 | 이 판의 분석기 |
-| ★★ **교착 탐지** | 재진입·재귀 읽기 잠금의 **교착** | [29번 주제](../29-channels-buffering-direction-close-range-and-nil/)의 본체 창 |
+| ★★★ **`-race` 의 `WARNING: DATA RACE`** | **순서 없는 두 접근**을 줄 번호째 | ★ 핵심 창 — 이 주제의 넷째 창. **판별 블록으로 열리는 것을 확인** |
+| ★★★ **`go vet copylocks` × probe 18개** | **복사하면 안 되는 것**을 어디서 잡나 · **몇 개가 답했나** | 규칙 18-A |
+| ★★ **`go vet waitgroup`** | `Add` 의 자리 | 이 버전의 분석기 |
+| ★★ **교착 탐지** | 재진입·재귀 읽기 잠금의 **교착** | [29번 주제](../29-channels-buffering-direction-close-range-and-nil/)의 핵심 창 |
 | ★ **`TryLock`** | 락이 **풀렸나**를 막히지 않고 묻기 | (2)·(8)절 |
-| ★ **20판 참거짓** | 흔들리는 함정(`Add` 위치)의 **성질** | [28번 주제](../28-goroutines-go-statement-cost-and-termination/)의 방식 |
+| ★ **20판 참거짓** | 실행마다 달라지는 함정(`Add` 위치)의 **성질** | [28번 주제](../28-goroutines-go-statement-cost-and-termination/)의 방식 |
 | ★ **다른 갈래 컴파일러** | Rust `Mutex<T>` · C++ `std::mutex` 복사 · 자바 재진입 | 대비 |
-| **부적용 — 시간·처리량** | ★★★ **안 쟀다.** 「채널은 느리고 뮤텍스는 빠르다」·「`RWMutex` 가 읽기에 유리하다」를 이 문서는 **적지 않는다** | — |
-| **부적용 — `sync/atomic`·`sync.Map`** | [목록의 **33번 주제**](../33-sync-atomic-and-sync-map/) | — |
+| **해당 없음 — 시간·처리량** | ★★★ **안 쟀다.** 「채널은 느리고 뮤텍스는 빠르다」·「`RWMutex` 가 읽기에 유리하다」를 이 문서는 **적지 않는다** | — |
+| **해당 없음 — `sync/atomic`·`sync.Map`** | [목록의 **33번 주제**](../33-sync-atomic-and-sync-map/) | — |
 
 ### (1) ★★★ `-race` 가 되나 — 판별부터, 그리고 첫 보고
 
@@ -151,7 +151,7 @@ CGO_ENABLED=0 go build -race exit=2
 ```
 
 - ★★★ **`CGO_ENABLED=1` · `gcc 13.3.0` · `go build -race exit=0`** — 이 머신에서 **`-race` 창이 열린다.**
-- ★★ 마지막 줄 — **`CGO_ENABLED=0` 으로 끄면 `go: -race requires cgo`, exit 2.** cgo 가 꺼진 환경(정적 빌드 이미지 등)에서는 **이 문서의 본체 창이 통째로 안 열린다.** 그래서 이 블록이 전제다.
+- ★★ 마지막 줄 — **`CGO_ENABLED=0` 으로 끄면 `go: -race requires cgo`, exit 2.** cgo 가 꺼진 환경(정적 빌드 이미지 등)에서는 **이 문서의 핵심 창이 통째로 안 열린다.** 그래서 이 블록이 전제다.
 
 동기화 없는 `n++` 하나 —
 
@@ -242,7 +242,7 @@ Found 1 data race(s)
 - ★★★ 둘 사이에 **순서를 세우는 것(동기화)이 없다** — `time.Sleep(50ms)` 는 **동기화가 아니다.** 실제로는 거의 늘 쓰기가 먼저 끝나지만, **메모리 모델은 그것을 약속하지 않는다.**
 - ★★ **`Goroutine N (finished) created at: main.main() ex/t32race.go:10`** — 쓴 고루틴은 **이미 끝났는데도** 잡혔다. 검출기는 **「동시에 일어났나」가 아니라 「순서가 세워졌나」를** 본다.
 - ★ `Found 1 data race(s)` · **exit 66** — 프로그램은 정상으로 끝났는데 **종료 코드가 66** 이다. 검출기가 보고를 남기면 종료 코드를 바꾼다(이 문서는 `GORACE` 설정을 **안 건드렸다** — 그 설정은 [목록의 **35번 주제**](../35-data-races-and-the-race-detector/)).
-- ★ 주소·고루틴 id 는 흔들린다 — 맨 위 부분의 정규화 칸. **줄 번호와 `Read`/`Previous write` 의 짝은 안 흔들렸다.**
+- ★ 주소·고루틴 id 는 실행마다 달라진다 — 맨 위 부분의 정규화 칸. **줄 번호와 `Read`/`Previous write` 의 짝은 안 흔들렸다.**
 
 같은 파일에 `vet` 은 —
 
@@ -419,7 +419,7 @@ For more information about this error, try `rustc --explain E0614`.
 
 비용 — 없다(재지 않았다).
 
-### (3) ★★★ 복사하면 안 되는 타입 — `copylocks` 탐침 18개
+### (3) ★★★ 복사하면 안 되는 타입 — `copylocks` probe 18개
 
 **언제 쓰나** — `sync` 타입을 **구조체 필드**로 둘 때(거의 늘 그렇다). 문서가 먼저 말한다:
 
@@ -451,7 +451,7 @@ func (m *Mutex) TryLock() bool
 - ★★★ 「**A Mutex must not be copied after first use.**」 — 복사하면 **잠김 상태까지 같이 복사**된 별개의 락이 둘 생긴다. 한쪽을 잠가도 다른 쪽은 모른다.
 - ★ 「**the n'th call to Mutex.Unlock "synchronizes before" the m'th call to Mutex.Lock for any n < m**」 — (2)절의 근거.
 
-**누가 그것을 잡나** — 탐침 18개를 한 파일에 두고 `vet` 에 물었다:
+**누가 그것을 잡나** — probe 18개를 한 파일에 두고 `vet` 에 물었다:
 
 ```go
 // t32copy.go
@@ -616,7 +616,7 @@ p18 (줄 57) : 침묵
 
 그림 해설 (한 단계씩):
 
-- ★★★ **마지막 줄 `답한 탐침 13 / 18`.** 스크립트가 셌다 — `vet` 줄의 **줄 번호**를 탐침 주석(`// pNN`)의 줄과 맞췄다.
+- ★★★ **마지막 줄 `답한 탐침 13 / 18`.** 스크립트가 셌다 — `vet` 줄의 **줄 번호**를 probe 주석(`// pNN`)의 줄과 맞췄다.
 - ★★★ **답한 13** — 값 리시버(p01) · 값 매개변수(p02 `Mutex`·p03 `WaitGroup`·p04 `Once`·p05 `RWMutex`) · `*p` 반환(p06) · 대입(p08) · `range` 값(p09) · 인터페이스에 담기(p11) ·
   **`atomic.Int64` 복사(p13 — `sync/atomic.noCopy`)** · 배열째(p15) · 함수 리터럴 매개변수(p16) · 맵의 포인터 역참조(p17).
   ★ `WaitGroup`·`Once`·`atomic.Int64` 는 문구가 **「contains sync.noCopy」** 다 — 락이 아닌데도 **`noCopy` 표식**을 품어 같은 분석기에 걸린다.
@@ -772,7 +772,7 @@ t32wgadd.go:14:10: WaitGroup.Add called from inside new goroutine
 (exit 1)
 ```
 
-- ★★★ **`WaitGroup.Add called from inside new goroutine`**, exit 1 — 이 판 `vet` 의 **`waitgroup` 분석기**가 **정적으로** 잡았다. 매번 같다.
+- ★★★ **`WaitGroup.Add called from inside new goroutine`**, exit 1 — 이 버전 `vet` 의 **`waitgroup` 분석기**가 **정적으로** 잡았다. 매번 같다.
 
 실제로 돌리면 —
 
@@ -815,7 +815,7 @@ func main() {
 - ★★★ **「20판 중 100 이 아닌 판이 있었나 : 예」** — `wg.Wait()` 가 **고루틴들이 `Add` 를 부르기도 전에** 카운터 0 을 보고 돌아왔다. 100 개를 다 못 기다렸다.
 - ★★★ **「-race 가 한 판이라도 보고했나 : 예」 · 「20판 모두 보고했나 : 아니오」** — **같은 바이너리가 어떤 판은 잡고 어떤 판은 못 잡았다.**
   `-race` 는 **이번 실행에서 실제로 순서가 어긋난 접근**만 본다. 운이 좋으면(모든 `Add` 가 `Wait` 보다 먼저 돌면) **아무것도 안 보인다.**
-  ★ **몇 판이었나는 흔들린다** — 블록에는 참거짓만 실었다.
+  ★ **몇 판이었나는 실행마다 달라진다** — 블록에는 참거짓만 실었다.
 - ★★ 보고할 때는 이런 모양이다 —
 
 ```text
@@ -961,10 +961,10 @@ OnceValue 두 번         : 42 42 · 누적 호출 2
 (exit 0)
 ```
 
-  ★★ 「**no call to Do returns until the one call to f returns**」 — 그래서 **초기화 중에 `Do` 를 또 부르면 교착**이다(같은 문장의 뒷부분 — 이 문서는 **안 던졌다**).
+  ★★ 「**no call to Do returns until the one call to f returns**」 — 그래서 **초기화 중에 `Do` 를 또 부르면 교착**이다(같은 문장의 뒷부분 — 이 문서는 **실행하지 않았다**).
   ★ 그래서 `config` 에 락이 없어도 경쟁이 아니다 — 순서를 `Once` 가 세운다.
 - ★★ **`OnceValue`(1.21) 두 번 — `42 42`, 누적 호출 2** — `Do` 의 1 번 + `OnceValue` 의 1 번. 두 번 불렀는데 **함수는 한 번**만 돌았다.
-- ★ 안 흔들린다 — 100 고루틴의 도착 순서와 무관하게 **1 과 100** 이다.
+- ★ 달라지지 않는다 — 100 고루틴의 도착 순서와 무관하게 **1 과 100** 이다.
 
 비용 — 없다.
 
@@ -1007,7 +1007,7 @@ main.main()
 
 - ★★★ **`첫 Lock` 뒤 `fatal error: all goroutines are asleep - deadlock!`**, 상태 줄 **`goroutine 1 [sync.Mutex.Lock]:`**, exit 2 — **자기 자신을 기다린다.**
   Go 의 `Mutex` 는 **누가 잠갔는지 기억하지 않는다**((8)절) — 그러니 「같은 사람이면 들여보낸다」가 원리상 없다.
-- ★★ 트레이스가 **`internal/sync.(*Mutex).lockSlow`** 를 지난다 — 이 판의 `sync.Mutex` 는 `internal/sync` 에 구현이 있다(**구현**이다).
+- ★★ 트레이스가 **`internal/sync.(*Mutex).lockSlow`** 를 지난다 — 이 버전의 `sync.Mutex` 는 `internal/sync` 에 구현이 있다(**구현**이다).
 
 **자바 `synchronized` 는 들어간다** —
 
@@ -1066,7 +1066,7 @@ outer 뒤 줄
 
 - ★★★ **`inner 안: holdsLock=true` · `outer 뒤 줄`** — 같은 스레드가 **같은 모니터에 다시 들어갔다.** 자바 모니터는 **재진입**이다.
   정본은 [`../../../java/syntax/33-synchronized-and-volatile/`](../../../java/syntax/33-synchronized-and-volatile/) (6)절(재진입 계수까지 실측).
-- ★★ **Go 에서 같은 모양을 쓰려면** — 잠근 채 부를 내부 함수를 **「잠금이 이미 잡혀 있다고 가정하는」 버전**(`incLocked`)으로 나누는 것이 관례다. 이 문서는 **그 패턴을 블록으로 안 던졌다.**
+- ★★ **Go 에서 같은 모양을 쓰려면** — 잠근 채 부를 내부 함수를 **「잠금이 이미 잡혀 있다고 가정하는」 버전**(`incLocked`)으로 나누는 것이 관례다. 이 문서는 **그 패턴을 블록으로 실행하지 않았다.**
 
 비용 — 없다.
 
@@ -1307,7 +1307,7 @@ main.main()
 
 - ★★★ **`fatal error: sync: unlock of unlocked mutex`**, exit 2 — 그리고 **`defer` 안의 `recover()` 줄이 안 찍혔다.**
   **`panic` 이 아니라 `fatal error`** 라 [27번 주제](../27-panic-recover-and-where-to-use-them/)의 `recover` 가 **못 듣는다.** 되감기 없이 프로세스가 끝난다.
-- ★ 트레이스의 `internal/sync.fatal` — 이 판의 구현 경로다.
+- ★ 트레이스의 `internal/sync.fatal` — 이 버전의 구현 경로다.
 
 비용 — 없다.
 
@@ -1325,7 +1325,7 @@ main.main()
 | 정수 하나를 더하기만 | **`sync/atomic`** | [목록의 **33번 주제**](../33-sync-atomic-and-sync-map/)(경계만) |
 
 ★★★ **이 표에 「빠르다·느리다」 칸이 없는 것이 의도다** — 이 배치는 **어떤 시간도 재지 않았다.** 고르는 기준은 **문제의 모양**이다.
-★ 채널이 맞는 문제를 뮤텍스로 풀면 「끝」을 알리는 법이 따로 필요하고, 뮤텍스가 맞는 문제를 채널로 풀면 **상태를 쥔 고루틴 하나**를 만들어야 한다 — 이것은 **구조**의 비용이지 **실행 시간** 주장이 아니다.
+★ 채널이 맞는 문제를 뮤텍스로 풀면 「끝」을 알리는 법이 따로 필요하고, 뮤텍스가 맞는 문제를 채널로 풀면 **상태를 잡은 고루틴 하나**를 만들어야 한다 — 이것은 **구조**의 비용이지 **실행 시간** 주장이 아니다.
 
 ### (10) ★ `sync/atomic` — 경계만
 
@@ -1468,7 +1468,7 @@ func main() {
 
 ## 언제 쓰고 언제 안 쓰나
 
-(9)절의 판단표가 이 절이다. 덧붙여 —
+(9)절의 버전단표가 이 절이다. 덧붙여 —
 
 | 상황 | 고를 것 | 이유 |
 |---|---|---|
@@ -1480,7 +1480,7 @@ func main() {
 ## 핵심 문장
 
 - ★★★ **`-race` 가 이 판·이 머신에서 열린다**(`CGO_ENABLED=1`·`gcc 13.3.0`) — 동기화 없는 `n++` 은 **값이 `1` 로 맞았는데 exit 66, `Read … by main goroutine` / `Previous write … by goroutine N`.** `vet` 은 침묵했다.
-- ★★★ **복사하면 안 되는 것 — `Mutex`·`RWMutex`·`WaitGroup`·`Once`(+ `atomic.Int64`)** — 컴파일러는 전부 통과시키고 **`vet copylocks` 가 18 탐침 중 13** 에 답했다. **`ch <- a` 는 복사인데 침묵.** C++ 는 **컴파일러가** 막는다.
+- ★★★ **복사하면 안 되는 것 — `Mutex`·`RWMutex`·`WaitGroup`·`Once`(+ `atomic.Int64`)** — 컴파일러는 전부 통과시키고 **`vet copylocks` 가 18 probe 중 13** 에 답했다. **`ch <- a` 는 복사인데 침묵.** C++ 는 **컴파일러가** 막는다.
 - ★★★ **`WaitGroup.Add` 를 고루틴 안에서** — **`vet` 은 늘 잡고, `-race` 는 20판 중 어떤 판만** 잡는다. 결과가 100 이 아닌 판이 있다.
 - ★★★ **재진입이 없다** — 같은 고루틴의 둘째 `Lock` 은 `[sync.Mutex.Lock]` 교착. **`RWMutex` 의 재귀 `RLock` 은 쓰는 쪽이 낄 때만** 교착한다(`alone` 은 된다).
 - ★★ **`defer mu.Unlock()`** — 패닉 뒤 `TryLock: true` 대 `false`. **안 잠근 것을 풀면 `fatal error`** — `recover` 도 못 듣는다.
@@ -1508,7 +1508,7 @@ func main() {
 - **`sync.RWMutex`** — 읽기는 여럿, 쓰기는 혼자. 쓰는 쪽이 기다리면 새 읽기도 막힌다.
 - **`sync.WaitGroup`** — 고루틴 여럿이 끝나길 기다리는 계수기. `Add`·`Done`·`Wait`, 1.25 `Go`.
 - **`sync.Once`** — 함수를 정확히 한 번만 돌린다. `OnceValue`·`OnceFunc`(1.21)는 그 함수형.
-- **재진입(reentrancy)** — 락을 쥔 쪽이 같은 락을 다시 잡을 수 있는 성질. Go `Mutex` 는 **없다.**
+- **재진입(reentrancy)** — 락을 잡은 쪽이 같은 락을 다시 잡을 수 있는 성질. Go `Mutex` 는 **없다.**
 - **`noCopy`** — `vet copylocks` 가 알아보는 빈 표식 타입. `WaitGroup`·`Once`·`atomic.*` 가 품는다.
 - **`-race`** — 데이터 경쟁 검출기를 붙여 빌드하는 플래그. cgo 가 필요하다. 경쟁을 보면 exit 66.
 - **데이터 경쟁** — 동기화 없는 두 접근 중 하나가 쓰기인 것.
@@ -1529,7 +1529,7 @@ func main() {
 **기준 소스** — [`sync`](https://pkg.go.dev/sync) 문서 · [Go 메모리 모델](https://go.dev/ref/mem) ·
 [`go vet` 의 `copylocks`·`waitgroup` 분석기](https://pkg.go.dev/cmd/vet) · [Data Race Detector](https://go.dev/doc/articles/race_detector).
 문서는 **이 툴체인의 `go doc`·`go tool vet help`** 에서 직접 떴다(웹의 race detector 글은 **안 열었다**).\
-**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다.
+**실행 검증** — 이 문서의 출력은 전부 「이 버전」 절의 버전에서 실제로 돌려 **파일로 캡처한 것**이다.
 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
 ★ **버전** — `sync.OnceValue` 가 **1.21** · `WaitGroup.Go` 가 **1.25**(`api/go1.25.txt:96` — [28번 주제](../28-goroutines-go-statement-cost-and-termination/) (2)절이 이미 판별했다, 다시 재지 않았다) ·
-`go vet` 의 **`waitgroup` 분석기**가 이 판에 있다((4)절 — 이 판의 `go tool vet help` 에 **있다는 것**만 확인했다).
+`go vet` 의 **`waitgroup` 분석기**가 이 판에 있다((4)절 — 이 버전의 `go tool vet help` 에 **있다는 것**만 확인했다).

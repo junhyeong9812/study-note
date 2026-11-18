@@ -97,7 +97,7 @@ SELECT id AS from FROM emp ORDER BY id LIMIT 1;
 
 - `SELECT id, name FROM emp` 에서 쉼표 하나를 빠뜨려 `SELECT id name FROM emp` 가 되면 무엇이 일어나는가?
 
-### 12. 이 주제에서 갈리는 자리 (연결)
+### 12. 이 주제에서 달라지는 자리 (연결)
 
 - PostgreSQL 18.6 과 MySQL 8.4.10 의 **결과가 다른 자리**를 네 개 들 수 있는가?
 

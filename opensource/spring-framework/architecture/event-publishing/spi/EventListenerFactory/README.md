@@ -2,7 +2,7 @@
 
 상위: [Spring 이벤트 발행](../../README.md) / [spi](../README.md)
 
-`@EventListener` 메서드 하나를 `ApplicationListener` 구현으로 바꾸는 공장이다. 어떤 어댑터를 쓸지가 이 구현으로 갈린다.
+`@EventListener` 메서드 하나를 `ApplicationListener` 구현으로 바꾸는 공장이다. 어떤 어댑터를 쓸지가 이 구현으로 나뉜다.
 
 ## 실제 코드
 

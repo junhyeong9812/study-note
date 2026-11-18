@@ -34,7 +34,7 @@ void resourceConfigWithNonAsciiPatternIsWrittenAsUtf8() throws IOException {
 > **비ASCII 문자(non-ASCII)** — 7비트 ASCII 표(영문자·숫자·기본 기호) 밖에 있는 문자.\
 > 예: 이 테스트가 쓰는 `é`(U+00E9)가 그런 문자이고, charset에 따라 바이트 표현이 달라진다.
 
-- **fix 전 결과와 이유 — 환경에 따라 갈린다**: 이 판별은 diff 논리만으로 결정되지 않고 실행 환경의 기본 charset에 의존한다.\
+- **fix 전 결과와 이유 — 환경에 따라 달라진다**: 이 판별은 diff 논리만으로 결정되지 않고 실행 환경의 기본 charset에 의존한다.\
   두 갈래를 나눠서 보면 이렇다.
 
   - 기본 charset이 UTF-8인 JVM(CI 포함): `new FileWriter(file)`이 우연히 UTF-8로 인코딩하므로 수정 전에도 green이다.\
@@ -42,7 +42,7 @@ void resourceConfigWithNonAsciiPatternIsWrittenAsUtf8() throws IOException {
   - 기본 charset이 UTF-8이 아닌 JVM(예: JDK 18 이전 Windows의 windows-1252): `é`가 단일 바이트 `0xE9`로 기록되는데 단언이 찾는 UTF-8 시퀀스는 `0xC3 0xA9` 두 바이트이므로 `containsSequence`가 실패한다.\
     즉 red다.
 
-  두 갈래 모두 `FileWriter(File)`이 플랫폼 기본 charset을 쓰고 `BasicJsonWriter`가 비ASCII를 이스케이프 없이 통과시킨다는 사실에서 곧바로 도출되므로, "환경에 따라 갈린다"는 결론 자체는 근거가 충분하다.\
+  두 갈래 모두 `FileWriter(File)`이 플랫폼 기본 charset을 쓰고 `BasicJsonWriter`가 비ASCII를 이스케이프 없이 통과시킨다는 사실에서 곧바로 도출되므로, "환경에 따라 달라진다"는 결론 자체는 근거가 충분하다.\
   불확실한 것은 어느 갈래가 발동하느냐뿐이다.
 
 네 칸으로 된 격자에 놓으면 이 테스트가 무엇을 덮고 무엇을 못 덮는지가 한눈에 보인다.

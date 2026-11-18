@@ -210,7 +210,7 @@ Files.createDirectories(Path.of("sandbox/p/q"));   // 여러 단계를 새로 �
 ## 실행 환경
 
 **선행** — [`../26-try-with-resources/`](../26-try-with-resources/)와 [`../44-stream-creation/`](../44-stream-creation/)의 질문을 먼저 푼다. 4~6번이 그 둘이 만나는 자리다.
-예측형 문항의 출력은 **Temurin JDK 21.0.5 · Linux · ext4** 기준이다. 세 판에서 갈린 것은 12번이 따로 묻는다.
+예측형 문항의 출력은 **Temurin JDK 21.0.5 · Linux · ext4** 기준이다. 세 버전에서 달라진 것은 12번이 따로 묻는다.
 모든 실험은 임시 디렉터리 안의 `sandbox/` 아래에서 했다.
 
 ## 복습 기록

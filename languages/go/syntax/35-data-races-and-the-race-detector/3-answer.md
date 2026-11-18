@@ -313,7 +313,7 @@ race: limit on %u simultaneously alive goroutines is exceeded, dying
 
 - ★★★ 1번 `many` 칸 — **100001 고루틴이 살아 있는 채로 레이스를 보고**했다. 죽지 않았다.
 - ★★★ Go 1.19 릴리스 노트(웹) — 「**… thread sanitizer version v3 … it supports an unlimited number of goroutines.**」
-- ★★ 그런데 **`race: limit on %u simultaneously alive goroutines is exceeded, dying`** 문구는 이 판의 검출기 바이너리(`amd64v1/race_linux.syso` — `GOAMD64=v1`)에 **남아 있다.** `%u` 자리의 값은 **문자열에 없다** — 8128 이라는 값은 이 판에서 **확인 못 했다.**
+- ★★ 그런데 **`race: limit on %u simultaneously alive goroutines is exceeded, dying`** 문구는 이 버전의 검출기 바이너리(`amd64v1/race_linux.syso` — `GOAMD64=v1`)에 **남아 있다.** `%u` 자리의 값은 **문자열에 없다** — 8128 이라는 값은 이 버전에서 **확인 못 했다.**
 
 ### 5. ``E0502 — cannot borrow `n` as immutable because it is also borrowed as mutable``
 
@@ -427,7 +427,7 @@ For more information about this error, try `rustc --explain E0277`.
 
 - ★★★ `goOnC` — 접근은 Go 코드인데 **메모리가 `C.malloc` 의 것**이라 안 봤다. `cOnGo` — 메모리는 Go 것인데 **접근이 C 함수**라 안 봤다. `cOnC` 는 둘 다 C 쪽.
 - ★★ 셋 다 탐색 실행에서 **증가를 잃었다** — 레이스는 실제로 있었다. 그 수는 흔들려서 안 실었다.
-- ★ 이 한 문장은 **이 판의 관찰**이다 — 검출기의 주소 범위 판정 코드는 **안 열었다.**
+- ★ 이 한 문장은 **이 버전의 관찰**이다 — 검출기의 주소 범위 판정 코드는 **안 열었다.**
 - 그래서 cgo 경계의 공유 메모리는 **Go 쪽 `Mutex`** 로 지킨다.
 
 ### 8. 보장하지 않는다(글에 그 문장이 없다) · 36편의 침묵 9칸 — 관찰
@@ -461,10 +461,10 @@ For more information about this error, try `rustc --explain E0277`.
 | 항목 | 무엇에 달렸나 |
 |---|---|
 | `-race` 창 | **cgo + gcc**(32편 판별) |
-| cgo 칸의 침묵 | **이 판 검출기(ThreadSanitizer 기반)** |
-| 같은 자리 한 번 보고 | **이 판 검출기** |
+| cgo 칸의 침묵 | **이 버전 검출기(ThreadSanitizer 기반)** |
+| 같은 자리 한 번 보고 | **이 버전 검출기** |
 | 고루틴 수 한계 없음 | **v3 검출기**(1.19 부터) — `windows/amd64`·`openbsd/amd64` 는 **못 잰다** |
-| 주소 · 고루틴 id | **흔들린다** — 정규화 규칙 `([Gg]oroutine) \d+` + 기본 넷 |
+| 주소 · 고루틴 id | **실행마다 달라진다** — 정규화 규칙 `([Gg]oroutine) \d+` + 기본 넷 |
 | 검출기 비용 | ★ **안 쟀다** |
 
 ★ **다시 찍는 법** — `capture.sh <디렉토리>` 를 그대로 돌리고 `normalize-shaky.py` 로 견준다.
@@ -473,5 +473,5 @@ For more information about this error, try `rustc --explain E0277`.
 
 이 파일의 모든 출력은 **`go version go1.27.1 linux/amd64`** 에서 실제로 돌려
 **파일로 캡처한 것**이다. 소스 펜스도 같은 파일에서 떠 왔다 — 손으로 옮겨 적은 블록은 없다.\
-★ **근거로 읽을 칸** — 격자의 `-race 보고=예/아니오` · `3 / 7` · `100001` · `Found 2` · `GORACE` 판의 종료 코드 · 보고의 줄 번호와 `(finished)` · rustc 진단.
-**근거로 읽지 않을 칸** — 주소 · `goroutine N`/`Goroutine N` 의 N(2-summary 맨 위 부분의 정규화 칸) · cgo 칸에서 잃은 값(안 실었다).
+★ **근거로 읽을 항목** — 격자의 `-race 보고=예/아니오` · `3 / 7` · `100001` · `Found 2` · `GORACE` 판의 종료 코드 · 보고의 줄 번호와 `(finished)` · rustc 진단.
+**근거로 읽지 않을 항목** — 주소 · `goroutine N`/`Goroutine N` 의 N(2-summary 맨 위 부분의 정규화 칸) · cgo 칸에서 잃은 값(안 실었다).

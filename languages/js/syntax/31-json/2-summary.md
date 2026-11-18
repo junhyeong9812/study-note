@@ -127,7 +127,7 @@ go version go1.27.1 linux/amd64
 Python 3.12.3
 ```
 
-두 node 판 대조기의 집계 줄(이 배치의 모든 node 탐침) — 이 주제의 탐침(`js28b-31?-*.js`) 가운데 `DIFFERS` 는 `js28b-31d-parse-reviver.js` 하나다. 전문은 [3-answer.md](3-answer.md) 의 「실행 검증」에 있다.
+두 node 버전 대조기의 집계 줄(이 배치의 모든 node probe) — 이 주제의 probe(`js28b-31?-*.js`) 가운데 `DIFFERS` 는 `js28b-31d-parse-reviver.js` 하나다. 전문은 [3-answer.md](3-answer.md) 의 「실행 검증」에 있다.
 
 `identical 19  ·  differs 6  ·  total 25`
 
@@ -187,7 +187,7 @@ Python 3.12.3
 
 > 이 절이 본문이다. 그림을 먼저 두고 그 그림을 출력으로 읽는다.
 
-### (1) ★★★ 자리별 타입 매핑 격자 — 이 주제의 본체
+### (1) ★★★ 자리별 타입 매핑 격자 — 이 주제의 핵심
 
 **언제 쓰나** — API 응답·로그·저장 파일에 객체를 JSON 으로 내보낼 때. 「이 필드가 빠졌나, `null` 이 됐나」를 가를 때.
 ★★★ 값 하나를 **세 자리**에 놓고 각각 `JSON.stringify` 한다. 칸에는 **그 값이 된 글자만** 적는다(속성 자리는 `{"k":…}` 의 `…`, 배열 자리는 `[…]` 의 `…`).
@@ -304,7 +304,7 @@ rows whose three positions do not all agree: 3 / 14
        └─ 그 밖(undefined · 함수 · 심볼) -> undefined       ← 이것을 받은 쪽이 자리마다 다르게 처리한다
 ```
 
-- ★★★ **갈린 행은 `3 / 14`** 다 — **`undefined` · 함수 · 심볼** 셋. 셋 다 속성 자리에서 **`(key gone)`**, 배열 자리에서 **`null`**, 최상위에서 **`(undefined)`** 로 **세 자리가 전부 다르다.**
+- ★★★ **달라진 행은 `3 / 14`** 다 — **`undefined` · 함수 · 심볼** 셋. 셋 다 속성 자리에서 **`(key gone)`**, 배열 자리에서 **`null`**, 최상위에서 **`(undefined)`** 로 **세 자리가 전부 다르다.**
   나머지 11행은 **세 자리가 한 글자도 같다** — 값이 무엇이 되는지는 자리와 상관없고, **「못 싣는 값」을 받았을 때의 처리만** 자리가 정한다(위 그림의 마지막 줄).
 - ★★★ **최상위의 `(undefined)` 는 `"undefined"` 라는 글자가 아니다.** `JSON.stringify(undefined)` 의 반환값 자체가 **`undefined`** 다 — 그대로 `JSON.parse` 에 넘기면 `"undefined"` 라는 글자를 파싱하다 `SyntaxError` 다(동작 (4)의 `[4]`).
 - ★★ **`NaN`·`Infinity` 는 세 자리 모두 `null`** 이다 — 「못 싣는 값」이 아니라 **「숫자이지만 유한하지 않다」** 는 다른 갈래라서, 속성에서도 **키가 남는다.**
@@ -661,7 +661,7 @@ console.log("  " + J('{"a":1,"a":2}').padEnd(18) + "-> " + J(JSON.parse('{"a":1,
   명세의 note 가 이 차이를 적어 둔다 — 「`ParseJSON` 동안에는 속성 정의 의미가 **다르게** 동작해서 같은 글자가 다른 결과를 낸다」.
 - ★★★ **`[4]` 문법 가장자리** — 작은따옴표 · 끝 쉼표 · 따옴표 없는 키 · `NaN` · `undefined` · 앞자리 `0` · 빈 문자열은 **전부 `SyntaxError`** 다(JSON 은 JS 리터럴보다 **좁다**).
   앞뒤 공백은 통과하고, ★ **중복 키는 뒤의 것이 이긴다**(`{"a":2}` — 에러가 아니다).
-- ★★★ **실패 문구는 두 node 판이 다르다** — 아래 node18 판과 위 node20 판을 견줘 보라. node18 은 「`Unexpected token ' in JSON at position 1`」, node20 은 「`Expected property name or '}' in JSON at position 1`」이다. **종류(`SyntaxError`)와 위치 숫자는 같다.**
+- ★★★ **실패 문구는 두 node 버전이 다르다** — 아래 node18 판과 위 node20 판을 견줘 보라. node18 은 「`Unexpected token ' in JSON at position 1`」, node20 은 「`Expected property name or '}' in JSON at position 1`」이다. **종류(`SyntaxError`)와 위치 숫자는 같다.**
 
 ```text
 ===== node18 js28b-31d-parse-reviver.js (exit=0) =====
@@ -699,7 +699,7 @@ console.log("  " + J('{"a":1,"a":2}').padEnd(18) + "-> " + J(JSON.parse('{"a":1,
   "{\"a\":1,\"a\":2}"-> {"a":2}
 ```
 
-- ★★ **이 블록이 이 주제에서 두 판이 갈린 유일한 자리**다(대조기의 `DIFFERS`). 갈린 것은 **`[4]` 의 문구 여섯 줄뿐**이고 `[1]`\~`[3]` 은 한 글자도 같다.
+- ★★ **이 블록이 이 주제에서 두 버전이 달라진 유일한 자리**다(대조기의 `DIFFERS`). 달라진 것은 **`[4]` 의 문구 여섯 줄뿐**이고 `[1]`\~`[3]` 은 한 글자도 같다.
 
 ### (5) ★★★ 깊은 복사 대용의 손실 — JSON 왕복 대 `structuredClone`
 
@@ -790,16 +790,16 @@ rows where the two columns differ: 11 / 13
    순환         stack 에 걸림   TypeError            복사 자체가 실패
 ```
 
-- ★★★ **두 열이 갈린 행은 `11 / 13`** 이다. **안 갈린 두 행은 `class instance` 와 `getter`** — 둘 다 **두 도구가 똑같이 잃는다**(프로토타입은 `plain {"x":1}`, getter 는 `data 1`).
+- ★★★ **두 열이 달라진 행은 `11 / 13`** 이다. **안 달라진 두 행은 `class instance` 와 `getter`** — 둘 다 **두 도구가 똑같이 잃는다**(프로토타입은 `plain {"x":1}`, getter 는 `data 1`).
 - ★★★ JSON 왕복의 손실 — **`Date` → 문자열 · `Map`/`Set` → `{}` · `undefined` 속성 → 키가 없음 · `NaN` → `null` · `-0` → `0` · `BigInt` → `TypeError` · `RegExp` → `{}` · 공유 객체 → 둘로 갈라짐 · 순환 → `TypeError`.**
 - ★★ **`structuredClone` 은 그 대부분을 지킨다** — `Date`·`Map`·`Set`·`RegExp`·`NaN`·`-0`·`BigInt`·**공유(`still one object`)·순환(`cycle kept`)**.
   ★★ 그러나 **함수가 있으면 던진다** — `DOMException`(이름 `DataCloneError`). JSON 왕복은 함수 속성을 **조용히 뺀다**(`undefined`). **한쪽은 조용히 잃고, 한쪽은 시끄럽게 거절한다.**
-- ★★ **예외 문구는 첫 줄만** 찍었다(탐침의 `split("\n")[0]`) — 순환 참조의 전문은 동작 (2)에 있다.
+- ★★ **예외 문구는 첫 줄만** 찍었다(probe의 `split("\n")[0]`) — 순환 참조의 전문은 동작 (2)에 있다.
 
 ### (6) ★★ 원문 접근 — `JSON.rawJSON` 과 `reviver` 의 셋째 인자(ES2026)
 
 **언제 쓰나** — 20자리 ID 처럼 **double 에 안 들어가는 숫자**를 잃지 않고 읽고 쓰고 싶을 때.
-★★★ **두 node 판에는 없다**(판별 블록의 `ES2026` 두 줄 · 아래 node 탐침). 그래서 **Chrome 151 에서만** 돌렸다.
+★★★ **두 node 버전에는 없다**(판별 블록의 `ES2026` 두 줄 · 아래 node probe). 그래서 **Chrome 151 에서만** 돌렸다.
 
 ```text
    글자 "12345678901234567890"
@@ -908,7 +908,7 @@ show("replacer returns rawJSON for a BigInt", () => J({ id: 10n ** 20n }, (k, v)
 ### (7) ★★ 파이썬 `json` 과의 대비
 
 **언제 쓰나** — 파이썬 서비스와 JSON 을 주고받을 때 「같은 값이 양쪽에서 같은 글자가 되나」를 볼 때.
-파이썬 쪽은 Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **47번**(`json`)이 정본인데 **아직 폴더가 없어**, 같은 질문을 **직접 던졌다**(python3 3.12.3).
+파이썬 쪽은 Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **47번**(`json`)이 정본인데 **아직 폴더가 없어**, 같은 질문을 **직접 실행했다**(python3 3.12.3).
 
 ```sh
 # js28b-31g-python-contrast.sh
@@ -1036,7 +1036,7 @@ show("json.loads('[1,]')", lambda: json.loads("[1,]"))
 
 ### (1) ★★★ `undefined` 인 필드가 `null` 로 나갈 것이라 믿는다
 
-**키째 빠진다**(동작 (1)의 `(key gone)`). 받는 쪽이 「키 없음」과 「`null`」을 다르게 다루면 여기서 갈린다. `null` 을 보내려면 `null` 을 넣어라.
+**키째 빠진다**(동작 (1)의 `(key gone)`). 받는 쪽이 「키 없음」과 「`null`」을 다르게 다루면 여기서 달라진다. `null` 을 보내려면 `null` 을 넣어라.
 
 ### (2) ★★★ 배열에서 `undefined`·함수를 빼면 배열이 짧아질 것이라 믿는다
 
@@ -1048,7 +1048,7 @@ show("json.loads('[1,]')", lambda: json.loads("[1,]"))
 
 ### (4) ★★★ `JSON.parse(JSON.stringify(x))` 가 깊은 복사라 믿는다
 
-**`Date` → 문자열 · `Map` → `{}` · `undefined` → 키 없음 · `NaN` → `null` · 공유 → 둘로 · 순환 → `TypeError`**(동작 (5) — 두 열이 `11 / 13` 행에서 갈린다). 깊은 복사 수단의 선택은 [목록의 **48번 주제**](../48-deep-copy-methods-compared/).
+**`Date` → 문자열 · `Map` → `{}` · `undefined` → 키 없음 · `NaN` → `null` · 공유 → 둘로 · 순환 → `TypeError`**(동작 (5) — 두 열이 `11 / 13` 행에서 달라진다). 깊은 복사 수단의 선택은 [목록의 **48번 주제**](../48-deep-copy-methods-compared/).
 
 ### (5) ★★★ `replacer` 에서 `value instanceof Date` 로 날짜를 잡는다
 
@@ -1086,10 +1086,10 @@ show("json.loads('[1,]')", lambda: json.loads("[1,]"))
 - `ParseJSON` 동안 `"__proto__"` 가 **정의**로 처리되는 것(note).
 - (ES2026) `reviver` 가 원시값에 `context.source` 를 받는 것 · `JSON.rawJSON` 이 **동결된 null 프로토타입 객체**를 만드는 것.
 
-### 엔진(V8) 구현 · 이 판의 관찰
+### 엔진(V8) 구현 · 이 버전의 관찰
 
 - 예외 **문구 전부** — ★★ 순환 참조의 **여러 줄 경로 그림**(`-->`·`|`·`---`) · `Do not know how to serialize a BigInt` · `JSON.parse` 의 실패 문구(★ **node18 과 node20 이 다르다**).
-- 그 밖의 이 주제 node 탐침이 두 판에서 **한 글자도 같았다**는 것 — 관찰이다.
+- 그 밖의 이 주제 node probe가 두 버전에서 **한 글자도 같았다**는 것 — 관찰이다.
 
 ### 호스트가 정하는 것 — ECMA-262 밖
 
@@ -1116,11 +1116,11 @@ show("json.loads('[1,]')", lambda: json.loads("[1,]"))
 
 ## 핵심 문장
 
-1. ★★★ `JSON.stringify` 는 `undefined`·함수·심볼을 **속성이면 빼고, 배열 원소면 `null`, 최상위면 `undefined`** 로 만든다 — 값 14종 × 자리 3 의 격자에서 **갈린 행이 `3 / 14`** 였고, 셋이 정확히 그 값들이다.
+1. ★★★ `JSON.stringify` 는 `undefined`·함수·심볼을 **속성이면 빼고, 배열 원소면 `null`, 최상위면 `undefined`** 로 만든다 — 값 14종 × 자리 3 의 격자에서 **달라진 행이 `3 / 14`** 였고, 셋이 정확히 그 값들이다.
 2. ★★★ 숫자는 유한하지 않으면 `null`, `-0` 은 `0`, **`BigInt` 는 자리와 상관없이 `TypeError`** 다. `Date` 는 `toJSON` 으로 문자열, `Map`·`Set` 은 `{}`.
 3. ★★★ 한 키마다 **`toJSON` 이 먼저, `replacer` 가 그 다음**이고 `replacer` 의 `this` 는 그 값을 들고 있던 객체다. 첫 호출은 감싸개 `{"": root}` 에 `key ""`.
 4. ★★★ `reviver` 는 **후위 순서**(잎 → 뿌리 `""`)로 불리고, `undefined` 를 돌려주면 지운다(배열이면 구멍).
-5. ★★★ 순환 참조는 **`TypeError`** 이고, V8 은 **경로를 그려 준다** — 그 모양은 엔진의 것이다. JSON 왕복은 `structuredClone` 과 **`11 / 13` 행**에서 갈렸다.
+5. ★★★ 순환 참조는 **`TypeError`** 이고, V8 은 **경로를 그려 준다** — 그 모양은 엔진의 것이다. JSON 왕복은 `structuredClone` 과 **`11 / 13` 행**에서 달라졌다.
 
 ## 관련 자료
 
@@ -1132,7 +1132,7 @@ show("json.loads('[1,]')", lambda: json.loads("[1,]"))
 - [13 — 객체 리터럴과 프로퍼티](../13-object-literals-and-properties/2-summary.md) — 리터럴 `__proto__:` 의 정본 · 정수 키 순서(동작 (1)의 `[3]`).
 - [03 — 숫자와 `BigInt`](../03-numbers-and-bigint/2-summary.md) — `-0`·`NaN`·안전 정수(동작 (6)의 20자리 숫자).
 - [목록의 **48번 주제**](../48-deep-copy-methods-compared/)(깊은 복사 수단 비교) — ★ **경계**: 그쪽이 **`structuredClone`·JSON 왕복·스프레드의 선택**의 정본, 여기는 **JSON 왕복의 손실과 비교 열 하나**.
-- Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **47번**(`json`) — 동작 (7)의 대비. 폴더가 아직 없어 직접 던졌다.
+- Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **47번**(`json`) — 동작 (7)의 대비. 폴더가 아직 없어 직접 실행했다.
 
 ## 용어 풀이
 
@@ -1159,9 +1159,9 @@ show("json.loads('[1,]')", lambda: json.loads("[1,]"))
 
 ## 실행 환경
 
-★★★ **이 주제의 본체는 ② 전수 격자다.**
+★★★ **이 주제의 핵심은 ② 전수 격자다.**
 `JSON.stringify` 가 값을 무엇으로 바꾸는지는 **값만 보고는 답이 안 나온다** — 같은 `undefined` 가 **객체의 속성이면 키째 사라지고, 배열의 원소면 `null` 이 되고, 맨 위면 문자열조차 아닌 `undefined`** 가 된다.
-그래서 값 **14종** × 자리 **셋**(속성 · 배열 원소 · 최상위)을 스크립트가 전부 찍고, **세 자리가 갈린 행을 스크립트가 센다**(동작 (1)).
+그래서 값 **14종** × 자리 **셋**(속성 · 배열 원소 · 최상위)을 스크립트가 전부 찍고, **세 자리가 달라진 행을 스크립트가 센다**(동작 (1)).
 ★★ 보조로 **① 추상 연산에 로그 심기**(`toJSON`·`replacer`·`reviver` 가 **어떤 순서로 누구에게** 불리나 — 동작 (3)·(4))와 **④ 예외의 이름·문구**(순환 참조 · `BigInt` · 파싱 실패 — 동작 (2)·(4))를 쓴다.
 
 **기준 소스** — 열어서 확인한 것만.
@@ -1176,39 +1176,39 @@ show("json.loads('[1,]')", lambda: json.loads("[1,]"))
 **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
 ★★ **예외는 `try`/`catch` 로 받아 `e.constructor.name` 과 `e.message` 만** 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
-★★ **순환 참조 메시지는 여러 줄**이라, 탐침이 **줄마다 `| ` 를 앞에 붙여** 한 줄도 자르지 않고 찍는다(동작 (2)).
-★★★ **`JSON.rawJSON` 과 `reviver` 의 셋째 인자(ES2026)는 두 node 판에 없다**(맨 위 판별 블록). 그 탐침은 **Google Chrome 151 을 헤드리스로** 돌렸다 — 배너가 `google-chrome --headless` 로 시작하는 블록이다.
-★★ **이 주제에서 두 node 판이 갈린 탐침은 하나다** — `JSON.parse` 의 **실패 문구**(동작 (4)의 `[4]`). 값·순서·예외 종류는 전부 같았다.
+★★ **순환 참조 메시지는 여러 줄**이라, probe가 **줄마다 `| ` 를 앞에 붙여** 한 줄도 자르지 않고 찍는다(동작 (2)).
+★★★ **`JSON.rawJSON` 과 `reviver` 의 셋째 인자(ES2026)는 두 node 버전에 없다**(맨 위 판별 블록). 그 probe는 **Google Chrome 151 을 헤드리스로** 돌렸다 — 배너가 `google-chrome --headless` 로 시작하는 블록이다.
+★★ **이 주제에서 두 node 버전이 달라진 probe는 하나다** — `JSON.parse` 의 **실패 문구**(동작 (4)의 `[4]`). 값·순서·예외 종류는 전부 같았다.
 
 **버전** — 판별 블록이 세 판(node 18 · node 20 · Chrome 151)에 같은 스크립트를 던진다.
 
 | 무엇 | 판 | 이 머신에서 |
 |---|---|---|
-| `JSON.parse` · `JSON.stringify` · `toJSON` · `replacer` · `reviver` · `space` | ES5 | 세 판 다 있다 |
-| 짝 없는 서로게이트를 `\ud800` 으로 이스케이프(Well-formed `JSON.stringify`) | **ES2019** | 세 판 다 있다 |
+| `JSON.parse` · `JSON.stringify` · `toJSON` · `replacer` · `reviver` · `space` | ES5 | 세 버전 다 있다 |
+| 짝 없는 서로게이트를 `\ud800` 으로 이스케이프(Well-formed `JSON.stringify`) | **ES2019** | 세 버전 다 있다 |
 | JSON superset(문자열 안의 U+2028·U+2029 를 JS 도 받는다) | ES2019 | 이 문서는 돌리지 않았다 |
-| `structuredClone` | — **호스트 API**(HTML) | 세 판 다 있다 |
-| `JSON.rawJSON` · `JSON.isRawJSON` · `reviver` 의 `context.source`(JSON.parse source text access) | **ES2026** | ★ **두 node 판에 없다** — Chrome 151 로만 돌렸다 |
+| `structuredClone` | — **호스트 API**(HTML) | 세 버전 다 있다 |
+| `JSON.rawJSON` · `JSON.isRawJSON` · `reviver` 의 `context.source`(JSON.parse source text access) | **ES2026** | ★ **두 node 버전에 없다** — Chrome 151 로만 돌렸다 |
 
-**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+**★★★ 이 주제가 쓰는 창 — 그리고 해당 없는 창**
 
 | 창 | 이 주제에서 무엇을 보나 |
 |---|---|
-| ★★★ **② 전수 격자**(본체) | 값 **14종** × 자리 **3** — 세 자리가 **갈린 행을 스크립트가 센다**(동작 (1)) · 깊은 복사 대용 두 가지 × 값 **13종** — 두 열이 **갈린 행**(동작 (5)) |
+| ★★★ **② 전수 격자**(핵심) | 값 **14종** × 자리 **3** — 세 자리가 **달라진 행을 스크립트가 센다**(동작 (1)) · 깊은 복사 대용 두 가지 × 값 **13종** — 두 열이 **달라진 행**(동작 (5)) |
 | ★★ **① 추상 연산에 로그 심기** | `toJSON` 과 `replacer` 가 **어느 쪽이 먼저, 어떤 `this` 로** 불리나(동작 (3)) · `reviver` 가 **어느 키부터** 불리나(동작 (4)) |
-| ★★ **④ 예외의 `constructor.name` + `message`** | 순환 참조의 **여러 줄 메시지** · `BigInt` · `JSON.parse` 의 실패 문구(★ 두 node 판이 **갈린** 유일한 자리) · `structuredClone` 의 `DOMException` |
-| ★ **③ 브랜드 태그** | **부적용** — 이 주제는 `Object.prototype.toString` 으로 가를 것이 없다. 결과가 **글자**라 글자 자체가 답이다 |
-| ★ **⑤ 두 판 대조기** | 이 주제의 node 탐침 가운데 **`JSON.parse` 실패 문구 하나만** `DIFFERS` — 그 블록만 node18 판을 따로 실었다 |
-| ★ **부적용 — 진단의 `(행,열)`**(18-C) | `SyntaxError` 가 **코드의 문법 오류가 아니라 입력 글자의 오류**다. 위치는 메시지 안의 `position N` 으로만 나오고 그것도 node18/20 에서 표기가 다르다 |
+| ★★ **④ 예외의 `constructor.name` + `message`** | 순환 참조의 **여러 줄 메시지** · `BigInt` · `JSON.parse` 의 실패 문구(★ 두 node 버전이 **달라진** 유일한 자리) · `structuredClone` 의 `DOMException` |
+| ★ **③ 브랜드 태그** | **해당 없음** — 이 주제는 `Object.prototype.toString` 으로 가를 것이 없다. 결과가 **글자**라 글자 자체가 답이다 |
+| ★ **⑤ 두 판 대조기** | 이 주제의 node probe 가운데 **`JSON.parse` 실패 문구 하나만** `DIFFERS` — 그 블록만 node18 판을 따로 실었다 |
+| ★ **해당 없음 — 진단의 `(행,열)`**(18-C) | `SyntaxError` 가 **코드의 문법 오류가 아니라 입력 글자의 오류**다. 위치는 메시지 안의 `position N` 으로만 나오고 그것도 node18/20 에서 표기가 다르다 |
 | ★ **안 쟀다 — 성능** | 「JSON 왕복이 `structuredClone` 보다 빠르다」를 **한 줄도 쓰지 않는다.** 시간도 바이트도 안 쟀다 |
 
-**★ 흔들리는 칸 / 안 흔들리는 칸**
+**★ 실행마다 달라지는 항목 / 달라지지 않는 항목**
 
-| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+| 실행마다 달라진다(근거로 쓰지 않는다) | 달라지지 않는다(근거로 쓴다) |
 |---|---|
-| ★★ **`JSON.parse` 실패 문구** — node18(V8 10.2)과 node20(V8 11.3)이 **실제로 다르다**(동작 (4)의 `[4]`). 다른 엔진은 또 다르게 적는다 | ★★★ 격자의 **칸 글자**와 「갈린 행 N / M」 · 호출 로그의 **순서와 개수** · 예외의 **종류**(`TypeError`·`SyntaxError`) |
+| ★★ **`JSON.parse` 실패 문구** — node18(V8 10.2)과 node20(V8 11.3)이 **실제로 다르다**(동작 (4)의 `[4]`). 다른 엔진은 또 다르게 적는다 | ★★★ 격자의 **칸 글자**와 「달라진 행 N / M」 · 호출 로그의 **순서와 개수** · 예외의 **종류**(`TypeError`·`SyntaxError`) |
 | 순환 참조 메시지의 **모양**(`-->`·`\|`·`---` 로 경로를 그리는 것) — V8 의 것이다. 명세는 「`TypeError` 를 던진다」까지만 정한다 | 순환 참조가 **`TypeError`** 인 것 · `BigInt` 가 **`TypeError`** 인 것(명세) |
-| 대조기 블록의 **다른 주제 줄**(같은 배치가 한 대조기를 공유한다) | ★★ **이 주제의 탐침에는 재실행에서 흔들린 칸이 없다**(재대조 동일) |
+| 대조기 블록의 **다른 주제 줄**(같은 배치가 한 대조기를 공유한다) | ★★ **이 주제의 probe에는 재실행에서 달라진 항목이 없다**(재대조 동일) |
 
 **선행** — [27 — `Object` 정적 메서드](../27-object-static-methods/2-summary.md)(직접 선행 — ★★★ **복사 도구 격자 `3 / 18` 과 `"__proto__"` 를 `fromEntries`·`assign` 에 넣는 실험은 거기서 쟀다**) ·
 [23 — `Map`·`Set` 과 약한 컬렉션](../23-map-set-and-weak-collections/2-summary.md)(★★ **`JSON.stringify(map)` 이 `{}`** 인 것과 `[...map]` 으로 우회하는 것은 거기가 정본) ·

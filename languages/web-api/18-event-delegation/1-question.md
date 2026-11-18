@@ -53,7 +53,7 @@ for (const b of 목록.querySelectorAll('.지움')) b.addEventListener('click', 
 ```
 
 - 두 항목 각각 `e.target` · `closest('li')` · 가드 · 직접 등록 리스너의 호출 여부를 적어라.
-- 두 결과가 갈리는 이유는 무엇인가?
+- 두 결과가 달라지는 이유는 무엇인가?
 - 「비활성 항목을 `pointer-events: none` 으로 막는다」의 함정은?
 
 ### 4. 그림자 안의 × 를 누르면 (예측)
@@ -91,7 +91,7 @@ for (const b of 목록.querySelectorAll('.지움')) b.addEventListener('click', 
 ```
 
 - 세 리스너 각각 불리나? 불리면 무엇을 찾나?
-- 셋이 갈리는 이유를 [16번 주제](../16-event-propagation-phases/1-question.md)의 격자로 설명하라.
+- 셋이 달라지는 이유를 [16번 주제](../16-event-propagation-phases/1-question.md)의 격자로 설명하라.
 
 ### 6. `mouseenter` 와 `mouseover` 를 위임하면 (예측)
 

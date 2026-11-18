@@ -91,7 +91,7 @@ type ctxKey int
 type middleware func(http.Handler) http.Handler
 ```
 
-인터페이스에서 Go가 다른 언어와 갈리는 지점은 **구현을 명시적으로 선언하지 않는다**는 것이다. Java의 `implements`나 Kotlin의 `: Interface` 같은 표기가 없다. 어떤 타입이 인터페이스의 메서드를 전부 가지고 있으면, 그 사실만으로 자동으로 그 인터페이스를 만족한다([Effective Go: interfaces](https://go.dev/doc/effective_go#interfaces_and_types)). `store.go`의 `SQLStore`는 어디에도 "나는 LockStore다"라고 적지 않지만, `Acquire`·`Renew`·`Read` 같은 메서드를 다 가졌으므로 `LockStore`다.
+인터페이스에서 Go가 다른 언어와 달라지는 지점은 **구현을 명시적으로 선언하지 않는다**는 것이다. Java의 `implements`나 Kotlin의 `: Interface` 같은 표기가 없다. 어떤 타입이 인터페이스의 메서드를 전부 가지고 있으면, 그 사실만으로 자동으로 그 인터페이스를 만족한다([Effective Go: interfaces](https://go.dev/doc/effective_go#interfaces_and_types)). `store.go`의 `SQLStore`는 어디에도 "나는 LockStore다"라고 적지 않지만, `Acquire`·`Renew`·`Read` 같은 메서드를 다 가졌으므로 `LockStore`다.
 
 이 암묵성에는 함정이 있다 — 메서드 하나를 오타 내면 컴파일러가 "이 타입은 그 인터페이스가 아니다"라고 조용히 판단할 뿐, 어디가 틀렸는지 알려주지 않는다. 그래서 우리 코드는 컴파일 시점에 이를 못박는 관용구를 쓴다.
 
@@ -195,7 +195,7 @@ func (d Deps) rejectUnverified(ctx context.Context, requestID, reason string) {
 	Skew *time.Duration
 ```
 
-`time.Duration`이 아니라 `*time.Duration`(포인터)으로 둔 데는 이유가 있다. 값 타입이면 "설정 안 함"과 "0으로 설정함"이 둘 다 `0`이라 구분되지 않는다. 포인터로 두면 **`nil`은 "운영자가 값을 안 줬다(미설정)", `nil`이 아닌 값은 "명시적으로 이만큼 주었다**"로 갈린다. 그 판정을 하는 자리가 이렇다.
+`time.Duration`이 아니라 `*time.Duration`(포인터)으로 둔 데는 이유가 있다. 값 타입이면 "설정 안 함"과 "0으로 설정함"이 둘 다 `0`이라 구분되지 않는다. 포인터로 두면 **`nil`은 "운영자가 값을 안 줬다(미설정)", `nil`이 아닌 값은 "명시적으로 이만큼 주었다**"로 나뉜다. 그 판정을 하는 자리가 이렇다.
 
 ```go
 	skew := DefaultClockSkew

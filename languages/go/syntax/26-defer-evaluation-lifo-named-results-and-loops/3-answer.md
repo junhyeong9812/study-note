@@ -252,10 +252,10 @@ func main() {
 **왜 그런가**
 
 - ★★★ `bad` — **참**. 50번 연 파일이 **함수 끝까지 하나도 안 닫혔다.** `defer` 의 단위는 **함수**다.
-- ★★ 돌아온 뒤 **참** — 새지는 않았다. **LIFO 로 한꺼번에** 닫혔다. 문제는 **루프 내내 쥐고 있는 것**이다.
+- ★★ 돌아온 뒤 **참** — 새지는 않았다. **LIFO 로 한꺼번에** 닫혔다. 문제는 **루프 내내 잡고 있는 것**이다.
 - ★★★ `fixFunc`·`fixClose` — 둘 다 **참**(최대 증가 ≤ 1). 회차 함수의 `defer` 가 회차마다 돌거나, 직접 닫았다.
 - ★ 절댓값을 안 찍은 이유 — **런타임이 처음 한 번 여는 fd**(폴러 등)가 있고 판·환경마다 다를 수 있다.
-  기준을 잡기 전에 한 번 열고 닫아 두고, **「늘었나」만** 본다 — 그래야 재실행에서 안 흔들린다.
+  기준을 잡기 전에 한 번 열고 닫아 두고, **「늘었나」만** 본다 — 그래야 재실행에서 달라지지 않는다.
 
 ### 5. `<nil>` · `<nil>` · `save /dev/full: write /dev/full: no space left on device`
 
@@ -404,7 +404,7 @@ when the function is invoked, not when the "defer" statement is executed.
 ### 8. C++ 는 블록 끝, Go 는 함수 끝
 
 - ★★★ **C++ 소멸자 — 스코프(블록) 끝. Go `defer` — 둘러싼 함수 끝.**
-- ★★ 둘 다 **쌓인 역순**이다(C++ 14번의 「지역 3 → 2 → 1」, Go 의 LIFO). 갈리는 것은 **쌓는 통의 크기**다 —
+- ★★ 둘 다 **쌓인 역순**이다(C++ 14번의 「지역 3 → 2 → 1」, Go 의 LIFO). 달라지는 것은 **쌓는 통의 크기**다 —
   루프 본문 `{ }` 은 C++ 에서는 **회차마다 비워지는 통**이고 Go 에서는 **통이 아니다.** 그래서 Go 에서만 쌓인다.
 - ★ **Python `with`·Rust `Drop` 은 C++ 쪽**이다 — 블록(스코프) 끝에서 닫는다.
   ([`../../../python/syntax/28-context-managers-and-with/`](../../../python/syntax/28-context-managers-and-with/) · [Rust 09번](../../../rust/syntax/09-copy-clone-and-drop/).)
@@ -456,7 +456,7 @@ t26vet.go:27:20: call to time.Since is not deferred
 (exit 1)
 ```
 
-- ★★★ **1개** — `call to time.Since is not deferred`(탐침 3). 종료 코드 1.
+- ★★★ **1개** — `call to time.Since is not deferred`(probe 3). 종료 코드 1.
 - ★★ **(1)번의 규칙 그 자체**다 — `time.Since(start)` 가 인자 자리에 있으니 **등록 시점에 평가돼 0 근처**가 찍힌다.
 - ★★ 안 잡힌 셋 — 「루프가 도나」·「이 파일이 쓰기용인가」·「`os.Exit` 가 `defer` 를 버리나」는
   **그 식 하나만 봐서는 안 보이는 사실**이다. `time.Since` 는 **식의 모양**만 보면 된다.
@@ -481,14 +481,14 @@ t26vet.go:27:20: call to time.Since is not deferred
 | ★★★ 루프 fd (`t26d`) | 〃 (리눅스 `/proc/self/fd`) | 1 | `bad` N 이상 · 고친 둘 ≤ 1 |
 | ★★★ 버려지는 오류 (`t26f`) | 〃 (`/dev/full`) | 1 | `<nil>` · `<nil>` · ENOSPC |
 | ★★ `os.Exit` (`t26e`) | 〃 | 1 | `[defer]` 0줄 · exit 3 |
-| ★ `go vet` 탐침 (`t26vet`) | `go vet ./...` | 1 | **4개 중 1개** · exit 1 |
+| ★ `go vet` probe (`t26vet`) | `go vet ./...` | 1 | **4개 중 1개** · exit 1 |
 | 명세 | `go_spec.html` 7361\~7374행 | 1 | 위 인용문 |
 
 **구현·환경에 달린 항목**
 
 | 항목 | 무엇에 달렸나 |
 |---|---|
-| `nil` 함수 패닉의 `pc=0x…` | **실행 주소** — 흔들리는 칸 |
+| `nil` 함수 패닉의 `pc=0x…` | **실행 주소** — 실행마다 달라지는 항목 |
 | `/proc/self/fd` · `/dev/full` | **리눅스** — 다른 OS 에서는 이 블록이 안 돈다 |
 | 런타임이 처음 여는 fd 의 수 | **구현** — 그래서 절댓값을 안 실었다 |
 | `go vet` 이 무엇을 잡나 | **도구 판(go1.27.1)** |
@@ -500,5 +500,5 @@ t26vet.go:27:20: call to time.Since is not deferred
 
 이 파일의 모든 출력은 **`go version go1.27.1 linux/amd64`** 에서 실제로 돌려
 **파일로 캡처한 것**이다. 소스 펜스도 같은 파일에서 떠 왔다 — 손으로 옮겨 적은 블록은 없다.\
-★ **근거로 읽을 칸** — 로그 줄의 **차례** · fd 블록의 **참거짓** · 종료 코드 · `go vet` 문장.
-**근거로 읽지 않을 칸** — `nil` 함수 패닉의 `[signal …]` 줄 **`pc=0x…`**(실행 주소).
+★ **근거로 읽을 항목** — 로그 줄의 **차례** · fd 블록의 **참거짓** · 종료 코드 · `go vet` 문장.
+**근거로 읽지 않을 항목** — `nil` 함수 패닉의 `[signal …]` 줄 **`pc=0x…`**(실행 주소).

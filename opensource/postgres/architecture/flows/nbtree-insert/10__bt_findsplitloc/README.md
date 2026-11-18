@@ -484,7 +484,7 @@ _bt_bestsplitloc(FindSplitData *state, int perfectpenalty,
 
 `_bt_recsplitloc` 은 왼쪽 high key 를 `firstright` 크기 + 힙 TID 8 바이트로 셌지만, 실제로는 키가 모두 달라 [09] 의 `_bt_truncate` 가 힙 TID 를 붙이지 않으므로 high key 는 `firstright` 와 같은 16 바이트다. 그래서 계산상 왼쪽 남는 공간은 804 인데 실제 분할 뒤에는 812 다.
 
-중복이 많아 interval 안에 키 열만으로 갈리는 지점(벌점 <= 키 열 수)이 없으면 전략이 바뀐다(L934 `_bt_strategy`).
+중복이 많아 interval 안에 키 열만으로 나뉘는 지점(벌점 <= 키 열 수)이 없으면 전략이 바뀐다(L934 `_bt_strategy`).
 
 ```text
  전략 (FindSplitStrat, L20-L26)

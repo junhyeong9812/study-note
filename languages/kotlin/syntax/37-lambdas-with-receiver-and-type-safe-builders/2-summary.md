@@ -1,6 +1,6 @@
 # kotlin/syntax/37 — 리시버 지정 람다와 type-safe builder (DSL) — 정리 (힌트)
 
-★★★ **본체는 첫째 창이다** — 「**빌더가 스스로 찍은 로그 — `head()` 가 어느 수신자 위에서 불렸나**」. 중첩 DSL 의 사고는 **컴파일도 되고 예외도 안 나서** 출력의 **트리 모양**으로만 드러난다. 둘째 창(`@DslMarker` 의 컴파일 에러)이 그것을 **막는 장치**다.
+★★★ **핵심은 첫째 창이다** — 「**빌더가 스스로 찍은 로그 — `head()` 가 어느 수신자 위에서 불렸나**」. 중첩 DSL 의 사고는 **컴파일도 되고 예외도 안 나서** 출력의 **트리 모양**으로만 드러난다. 둘째 창(`@DslMarker` 의 컴파일 에러)이 그것을 **막는 장치**다.
 
 ## 이 주제가 쓰는 세 층
 
@@ -8,7 +8,7 @@
 |---|---|---|
 | **언어 보장** | 명세·공식 문서가 약속한 것 | ★★★ `A.() -> Unit` 안에서 **`this` 는 넘겨받은 `A`** · 암묵 수신자는 **안쪽부터** 찾는다 · ★★ **바깥 수신자의 멤버도 부를 수 있다**(그래서 사고가 난다) · `@DslMarker` 는 **표시된 수신자끼리** 바깥 것을 암묵으로 못 부르게 한다 · `this@라벨` |
 | **구현(JVM 백엔드)** | kotlinc 가 JVM 으로 내리는 방식 | `A.() -> Unit` → **`Function1<? super A, Unit>`** · `a.block()` 과 `block(a)` 가 **같은 명령** · 「수신자가 있다」는 사실은 **메타데이터의 `ExtensionFunctionType`** 에만 |
-| **이 판의 관찰** | kotlinc 2.4.20 에서 이번에 본 것 | ★ `@DslMarker` 진단 문구(「`cannot be called in this context with an implicit receiver`」) |
+| **이 버전의 관찰** | kotlinc 2.4.20 에서 이번에 본 것 | ★ `@DslMarker` 진단 문구(「`cannot be called in this context with an implicit receiver`」) |
 
 ## 이 판
 
@@ -18,13 +18,13 @@ info: kotlinc-jvm 2.4.20 (JRE 21.0.5+11-LTS)
 (exit 0)
 ```
 
-## 흔들리는 칸 / 안 흔들리는 칸
+## 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| **흔들린다** | (이 주제에는 없다) | 해시코드·주소를 찍지 않았다 — 수신자는 **`name` 문자열**로 가렸다 |
-| 안 흔들린다 | 빌더 로그 · 트리 | 순서가 **호출 순서**로 정해진다(단일 스레드) |
-| 안 흔들린다 | `javap` 출력 · 진단 문구·`파일:줄:칸` | 결정적이다 |
+| **실행마다 달라진다** | (이 주제에는 없다) | 해시코드·주소를 찍지 않았다 — 수신자는 **`name` 문자열**로 가렸다 |
+| 달라지지 않는다 | 빌더 로그 · 트리 | 순서가 **호출 순서**로 정해진다(단일 스레드) |
+| 달라지지 않는다 | `javap` 출력 · 진단 문구·`파일:줄:칸` | 결정적이다 |
 
 ★ 근거 — 캡처 스크립트를 처음부터 두 번 돌려 **블록 전체를 바이트 단위로 대조**했다(수치는 3-answer 의 「실행 검증」).
 
@@ -65,17 +65,17 @@ info: kotlinc-jvm 2.4.20 (JRE 21.0.5+11-LTS)
 
 ## 동작 방식
 
-### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「부적용인 창」
+### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「해당 없는 창」
 
 | 창 | 무엇을 보여 주나 | 어디서 왔나 |
 |---|---|---|
-| ★★★ **빌더의 자기 로그 + 트리** | 어느 수신자 위에서 불렸나 · 무엇이 **어디에 붙었나**((1)(3)) | ★ **본체 창** |
+| ★★★ **빌더의 자기 로그 + 트리** | 어느 수신자 위에서 불렸나 · 무엇이 **어디에 붙었나**((1)(3)) | ★ **핵심 창** |
 | ★★ **컴파일 에러** | `@DslMarker` 가 막은 줄((2)) · 수신자 람다와 일반 람다의 경계((5)) | 이 갈래의 기본 창 |
 | ★★ **`javap -c` — 세 호출 몸통 대조** | `a.block()` · `block(a)` · `(A) -> Unit` 이 **같은 명령**((4)) | 이 갈래의 기본 창 |
 | ★ **`javap -v` 의 메타데이터 문자열** | 「수신자가 있다」가 **어디에만** 남나((4)) | [14번 주제](../14-scope-functions/) (2)의 결론을 호출 자리에서 |
 | ★ **Java 에서 던지기** | Java 람다의 **첫 매개변수**가 수신자((5)) | [36번 주제](../36-function-types-fun-interface-and-sam-conversion/) (2)의 창 |
-| **부적용 — 실행 시간** | 「DSL 은 비용이 없다」·「빌더가 느리다」는 **재지 않았다** | — |
-| **부적용 — 할당 계수** | 빌더가 만드는 람다·노드 객체 수는 이 주제의 질문이 아니다 | — |
+| **해당 없음 — 실행 시간** | 「DSL 은 비용이 없다」·「빌더가 느리다」는 **재지 않았다** | — |
+| **해당 없음 — 할당 계수** | 빌더가 만드는 람다·노드 객체 수는 이 주제의 질문이 아니다 | — |
 
 ### (1) ★★★ 중첩 빌더 — `head()` 는 어느 수신자로 갔나
 
@@ -203,7 +203,7 @@ dslm.kt:37:13: error: 'fun head(init: Head.() -> Unit): Head' cannot be called i
 - ★★★ **「`'fun head(init: Head.() -> Unit): Head' cannot be called in this context with an implicit receiver. Use an explicit receiver if necessary.`」** — 37번째 줄 `head { }` 하나만 막혔다.
 - ★★ **같은 블록의 `name`·`this.name`·`this@html.name`(35번째 줄)은 안 막혔다.** `name` 은 **가장 안쪽 수신자**(`Body`)의 것이고, `this@html.name` 은 **명시 수신자**다. `@DslMarker` 가 막는 것은 「**표시된 바깥 수신자를 암묵으로**」 쓰는 것 하나다.
 - ★★ **`Tag` 한 곳에 달았는데 네 클래스 전부가 표시됐다** — 마커는 **상위 타입에서 상속**된다. 공통 조상 하나에 다는 것이 관용이다.
-- ★ 브리핑의 문구 「`can't be called in this context by implicit receiver`」는 **이 판의 문구가 아니다** — 2.4.20 은 「`cannot be called in this context with an implicit receiver`」다. 진단 문구는 판에 매인다.
+- ★ 브리핑의 문구 「`can't be called in this context by implicit receiver`」는 **이 버전의 문구가 아니다** — 2.4.20 은 「`cannot be called in this context with an implicit receiver`」다. 진단 문구는 판에 매인다.
 
 ### (3) ★★ `this@html` — 바깥 수신자를 **명시해서** 부르기
 
@@ -419,7 +419,7 @@ public class JRecv {
 (exit 0)
 ```
 
-- ★★★ **람다 리터럴에서는 두 형태가 갈린다** — 수신자 자리의 람다에서 `it` 은 「`unresolved reference 'it'.`」 **값끼리는 대입되지만((4)), 리터럴 안에서는 `this` 와 `it` 이 다른 이름**이다.
+- ★★★ **람다 리터럴에서는 두 형태가 달라진다** — 수신자 자리의 람다에서 `it` 은 「`unresolved reference 'it'.`」 **값끼리는 대입되지만((4)), 리터럴 안에서는 `this` 와 `it` 이 다른 이름**이다.
 - ★★ **`B("y").plain()` 도 막힌다** — 「`unresolved reference 'plain' on receiver of type 'B'.`」 일반 함수 타입 값은 **수신자 문법으로 부를 수 없다.** (4)의 `A("v").ext()` 와 대칭이 아니다.
 - ★★ **Java 는 첫 매개변수로 받는다** — `a -> { … a.getName() …; return Unit.INSTANCE; }`. Java 에게 `A.() -> Unit` 은 **`Function1<A, Unit>`** 일 뿐이라 수신자가 **평범한 첫 인자**다. `Unit` 을 돌려주는 것까지 적어야 한다.
 
@@ -477,7 +477,7 @@ fun main() {
 - 암묵 수신자는 **안쪽부터** 찾고, 없으면 **바깥 수신자**로 넘어간다 — ★ 사고의 원천((1)).
 - **`@DslMarker`** 를 단 애너테이션을 빌더 클래스(또는 공통 조상)에 달면, **표시된 바깥 수신자를 암묵으로** 못 부른다((2)).
 - 바깥 수신자는 **`this@라벨`** — 라벨은 람다를 받은 **함수 이름**이다((1)(3)).
-- `A.() -> R` 값과 `(A) -> R` 값은 **서로 대입된다** — 리터럴 안의 `this`/`it` 과 **수신자 호출 문법**은 갈린다((4)(5)).
+- `A.() -> R` 값과 `(A) -> R` 값은 **서로 대입된다** — 리터럴 안의 `this`/`it` 과 **수신자 호출 문법**은 달라진다((4)(5)).
 
 ## 어디서 틀리나
 
@@ -501,7 +501,7 @@ fun main() {
 | `A.() -> R` 값과 `(A) -> R` 값이 서로 대입되는 것 | **언어 보장** | (4) |
 | `A.() -> Unit` → **`Function1<? super A, Unit>`** · 수신자가 **첫 인자** | ★★ **JVM 백엔드의 구현** | (4)(5) · [10번 주제](../10-lambdas-and-higher-order-functions/) (1) |
 | 「수신자 있음」이 **메타데이터에만** 있는 것 | ★ **JVM 백엔드의 구현** | (4) · [14번 주제](../14-scope-functions/) (2) |
-| `@DslMarker` 진단 문구 | **이 판의 산출물** | (2) |
+| `@DslMarker` 진단 문구 | **이 버전의 산출물** | (2) |
 
 ★★ **가장 조심할 자리** — 「DSL 은 비용이 없다」는 이 문서가 **뒷받침하지 않는다.** (4)가 보인 것은 「수신자 람다 **호출**이 일반 람다 호출과 **같은 명령**이다」라는 구조 사실이다. 빌더 함수가 `inline` 이 아니면 **람다 객체**가 생기고(`invokedynamic` — [36번 주제](../36-function-types-fun-interface-and-sam-conversion/) (3)), 노드 객체도 생긴다. **시간도 개수도 재지 않았다.**
 
@@ -562,7 +562,7 @@ fun main() {
 **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`java`·`javap` 에서 실제로 얻었다.\
 `kotlinc` 6회(컴파일 실패 2벌) · `javac` 1회 · `java` 5회 · `javap` 2회.\
 ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「수신자가 누구인가」는 전부 프로그램이 스스로 찍은 로그**다.
-**버전** — 수신자 있는 함수 타입·type-safe builder 는 1.0, `@DslMarker` 의 **도입 판은 확인하지 않았다**(이 판은 `-language-version 2.0` 미만을 거부해 잴 수도 없다 — [36번 주제](../36-function-types-fun-interface-and-sam-conversion/) (6)). ★ `@DslMarker` 의 진단 문구는 **이 판(K2)의 것**이다((2)).
+**버전** — 수신자 있는 함수 타입·type-safe builder 는 1.0, `@DslMarker` 의 **도입 판은 확인하지 않았다**(이 버전은 `-language-version 2.0` 미만을 거부해 잴 수도 없다 — [36번 주제](../36-function-types-fun-interface-and-sam-conversion/) (6)). ★ `@DslMarker` 의 진단 문구는 **이 버전(K2)의 것**이다((2)).
 **경계** — ★★ **`T.() -> R` 과 `(T) -> R` 이 JVM 에서 둘 다 `Function1` 이고 디스크립터가 같다**는 것은 [14번 주제](../14-scope-functions/) (2)가 stdlib 의 `run`/`with` 로 이미 보였고, 「수신자가 **첫 파라미터**로 내려간다」는 [10번 주제](../10-lambdas-and-higher-order-functions/) (1)이 `fRecv` 로 보였다 — 여기서는 **다시 재지 않고**, **호출 자리**(`a.block()` 대 `block(a)`)와 **Java 쪽**만 더한다((4)(5)).\
 확장 함수의 정적 디스패치는 [13번 주제](../13-extension-functions-and-properties/)가, `apply`/`with` 의 고르는 법은 [14번 주제](../14-scope-functions/)가, 함수 타입과 `Function1` 은 [36번 주제](../36-function-types-fun-interface-and-sam-conversion/)가 정본이다. **DSL 이 왜 Kotlin 의 강점인가**라는 논지는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §7 이다. 암묵 인자를 **타입으로** 넘기는 다음 단계(context parameters)는 [**38번 주제**](../38-context-parameters/)다.\
 ★ **대비** — JS 의 `this` 는 **호출 방식**이 정한다([`../../../js/syntax/07-this-binding-four-rules/`](../../../js/syntax/07-this-binding-four-rules/)) — Kotlin 수신자는 **타입과 호출자가 넘긴 값**이 정한다((4)).

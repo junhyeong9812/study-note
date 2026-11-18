@@ -67,9 +67,9 @@ spring-security core 모듈 14개 패키지군을 병렬 에이전트로 훑는 
 | `Assert.state(user != null, ...)` :154 | 조회 실패를 "있을 수 없는 상태"로 보고 | 결함을 사용자에게 모순된 메시지로 전달한다 |
 | `MutableUser` | 값 래퍼. `setPassword`로 제자리 변경 가능 | 갱신 후 맵에 다시 put 하지 않는 이유 |
 
-## 4. 결함 경로 - 저장과 조회가 갈리는 지점
+## 4. 결함 경로 - 저장과 조회가 달라지는 지점
 
-발동 조건은 하나뿐이고, 그 조건 아래에서 연산별 결과가 갈린다.
+발동 조건은 하나뿐이고, 그 조건 아래에서 연산별 결과가 달라진다.
 
 | 연산 | 조회 키 | 대문자 username 사용자에서의 결과 |
 |---|---|---|
@@ -120,7 +120,7 @@ codex는 핵심 수정을 반박하지 못했고(판정: 승인) 지적 다섯 �
 남은 하나가 null 회귀 위험이다.\
 `users`가 `HashMap`이므로 `getName()`이 null인 별난 `Authentication` 구현에서는 수정 전에 `users.get(null)` -> null -> `IllegalStateException`이 났는데, 수정 후에는 `null.toLowerCase(...)`가 먼저 `NullPointerException`을 던진다.
 
-예외 종류가 어떻게 갈리는지를 나란히 놓으면 이렇다.
+예외 종류가 어떻게 달라지는지를 나란히 놓으면 이렇다.
 
 ```text
 getName() 이 null 인 별난 구현

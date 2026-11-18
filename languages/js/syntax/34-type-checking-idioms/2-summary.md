@@ -86,7 +86,7 @@ Google Chrome 151.0.7922.173
 Python 3.12.3
 ```
 
-두 node 판 대조기의 집계 줄(이 배치의 모든 node 탐침) — 전문은 [3-answer.md](3-answer.md) 의 「실행 검증」에 있다.
+두 node 버전 대조기의 집계 줄(이 배치의 모든 node probe) — 전문은 [3-answer.md](3-answer.md) 의 「실행 검증」에 있다.
 
 `identical 12  ·  differs 0  ·  total 12`
 
@@ -142,7 +142,7 @@ Python 3.12.3
 
 > 이 절이 본문이다. 그림을 먼저 두고 그 그림을 출력으로 읽는다.
 
-### (1) ★★★ 타입 5 × 조건 5 × 방법 5 — 이 주제의 본체
+### (1) ★★★ 타입 5 × 조건 5 × 방법 5 — 이 주제의 핵심
 
 **언제 쓰나** — 함수 인자·메시지·라이브러리 반환값의 **종류를 판정하는 코드**를 짤 때. 특히 그 값이 **다른 전역(iframe·워커·`vm`)** 에서 올 수 있을 때.
 ★★★ 「진짜」 = **그 타입의 생성자가 만든 것**(내부 슬롯이 있다). 어느 realm 에서 만들었는지는 묻지 않는다.
@@ -316,7 +316,7 @@ cells that differ from the truth: 32 / 100
 
 동작 (1)의 블록 `[2]` 가 이것이다.
 
-- ★★★ **`Array.isArray` 는 프록시를 뚫는다**(`y`) — 명세 `IsArray` 가 「**Proxy 면 대상을 다시 `IsArray`**」다. **`Error.isError`(Chrome)·`isNativeError`(node) 는 못 뚫는다**(`n`) — 슬롯이 **대상에** 있기 때문이다. **이름이 닮은 두 함수가 여기서 갈린다**(32번 동작 (7)).
+- ★★★ **`Array.isArray` 는 프록시를 뚫는다**(`y`) — 명세 `IsArray` 가 「**Proxy 면 대상을 다시 `IsArray`**」다. **`Error.isError`(Chrome)·`isNativeError`(node) 는 못 뚫는다**(`n`) — 슬롯이 **대상에** 있기 때문이다. **이름이 닮은 두 함수가 여기서 달라진다**(32번 동작 (7)).
 - ★★ **`instanceof` 는 다섯 모두 `y`** — 프록시의 `getPrototypeOf` 가 대상의 사슬을 그대로 돌려준다.
 - ★★ **`toString` 은 `Array` 와 `Promise` 만 `y`** — 배열은 `IsArray` 가 뚫어서, `Promise` 는 **자칭 명찰이 사슬에 있어서**다. `Error`·`Date`·`RegExp` 는 `n`(슬롯이 프록시에 없다).
 - ★★ **슬롯 두드리기는 셋 다 `n`** — `Date.prototype.getTime.call(proxy)` 는 던진다. 16번의 「`#private` 가 있는 인스턴스를 `Proxy` 로 감싸면 메서드가 던진다」와 **같은 이유**다.
@@ -402,7 +402,7 @@ cells that differ from the truth: 32 / 100
 ```
 
 - ★★★ **칸 글자까지 같다** — `32 / 100` · 방법별 · 조건별 · `[2]` 의 프록시 행까지 전부. **다른 것은 둘째 줄(오류 슬롯 열에 쓴 함수의 이름) 하나**다.
-  ★★ node 판의 그 열은 **`util.types.isNativeError`(호스트)**, Chrome 판은 **`Error.isError`(ES2026)** — **함수가 달라도 그 열의 답이 같았다** — 오류 행 다섯 칸(`[1]`)과 프록시 한 칸(`[2]`).
+  ★★ node 버전의 그 열은 **`util.types.isNativeError`(호스트)**, Chrome 판은 **`Error.isError`(ES2026)** — **함수가 달라도 그 열의 답이 같았다** — 오류 행 다섯 칸(`[1]`)과 프록시 한 칸(`[2]`).
 - ★★ **「`vm` 이 명세의 realm 과 같은 것인가」는 이 문서가 확인하지 않았다** — 다만 **판정 다섯이 보는 것**(사슬의 객체 · 슬롯)에 관해서는 **두 창이 같은 결과**를 냈다. 22번이 「레지스트리 심볼은 `vm` 을 넘어도 같다」를 잰 것과 같은 결의 관찰이다.
 
 ### (4) ★★ 배열처럼 보이는 것들 — `typeof` 와 판정 셋을 한 줄에
@@ -504,10 +504,10 @@ for (const [label, v] of items) {
 - ★★ `Date.prototype.getTime` · `RegExp.prototype.exec` · `Promise.prototype.then` 이 **슬롯이 없는 `this` 에 `TypeError`** 를 던지는 것.
 - ★ `Array.prototype` 이 배열 이국 객체인 것.
 
-### 엔진(V8) 구현 · 이 판의 관찰
+### 엔진(V8) 구현 · 이 버전의 관찰
 
 - 슬롯 두드리기가 던지는 **문구** — 이 편은 싣지 않았다(던지나만 봤다).
-- 이 주제 node 탐침이 두 판에서 **한 글자도 같았다**는 것 — 관찰이다.
+- 이 주제 node probe가 두 버전에서 **한 글자도 같았다**는 것 — 관찰이다.
 
 ### 호스트가 정하는 것 — ECMA-262 밖
 
@@ -518,7 +518,7 @@ for (const [label, v] of items) {
 
 - ✗ 「`instanceof` 는 타입 검사다」 → ○ 「**사슬 검사**다 — 같은 realm·안 고친 사슬에서만 타입 검사처럼 보인다(`15 / 25`)」
 - ✗ 「`Object.prototype.toString` 은 내부 `[[Class]]` 를 읽어 속일 수 없다」 → ○ 「**`[[Class]]` 는 ES2015 에서 없어졌고**, 지금은 슬롯 태그를 **`Symbol.toStringTag` 가 덮는다**」
-- ✗ 「`Array.isArray` 와 `Error.isError` 는 같은 규칙이다」 → ○ 「**프록시에서 갈린다**」
+- ✗ 「`Array.isArray` 와 `Error.isError` 는 같은 규칙이다」 → ○ 「**프록시에서 달라진다**」
 - ✗ 「`instanceof` 가 `Array.isArray` 보다 빠르다」 → ○ **안 쟀다**
 
 ## 언제 쓰고 언제 안 쓰나
@@ -575,7 +575,7 @@ for (const [label, v] of items) {
 [22번](../22-symbol-and-well-known-symbols/2-summary.md) ★ **`Symbol.toStringTag` 로 브랜드를 위조한다(`7 / 7`)** · [01번](../01-value-types-and-typeof/2-summary.md) **`typeof`**.
 ★★★ **다시 재지 않는다.** 새로 잰 빈 칸은 **realm** 하나다 — **다른 realm(node `vm` · Chrome iframe)에서 만든 값**에 같은 판정들을 던졌다.
 
-★★★ **이 주제의 본체는 ② 전수 격자다** — **내장 타입 5 × 조건 5 × 판정 방법 5**. 조건은 **같은 realm · 다른 realm · 프로토타입 교체 · `Object.create(proto)` · `toStringTag` 위조**,
+★★★ **이 주제의 핵심은 ② 전수 격자다** — **내장 타입 5 × 조건 5 × 판정 방법 5**. 조건은 **같은 realm · 다른 realm · 프로토타입 교체 · `Object.create(proto)` · `toStringTag` 위조**,
 칸마다 그 방법의 답이 **「진짜인가」와 맞는지**를 찍고 **어긋난 칸을 스크립트가 센다**(동작 (1)).
 ★★ **③ 브랜드 태그는 이 격자의 한 열**이다 — 22번의 위조를 **조건 한 행**으로 넣어 다른 방법들과 나란히 채점한다.
 ★★ **같은 격자를 두 창에서** 돌렸다 — **node 의 `vm.runInNewContext`** 와 **Chrome 151 의 같은 출처 iframe**. 둘이 같은 답을 냈나가 이 편의 둘째 질문이다.
@@ -587,35 +587,35 @@ for (const [label, v] of items) {
 
 **실행 검증** — 이 문서의 새 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
-★★★ **격자 코드는 한 파일**(`js32b-34-h-realm-core.js`)이고, node 판과 Chrome 판은 **다른 realm 을 만드는 법**과 **오류 슬롯 검사 함수**만 넘겨준다.
-★★ **`Error.isError`(ES2026)는 두 node 판에 없다** — node 판의 오류 슬롯 열은 **호스트 함수 `util.types.isNativeError`** 로 물었다(제5의 상태 — 창을 바꿔 물었다). Chrome 판은 `Error.isError` 다.
-★★ **이 주제에서 두 node 판이 갈린 탐침은 없다**(대조기 — 이 배치 전체 `identical 12`).
+★★★ **격자 코드는 한 파일**(`js32b-34-h-realm-core.js`)이고, node 버전과 Chrome 판은 **다른 realm 을 만드는 법**과 **오류 슬롯 검사 함수**만 넘겨준다.
+★★ **`Error.isError`(ES2026)는 두 node 버전에 없다** — node 버전의 오류 슬롯 열은 **호스트 함수 `util.types.isNativeError`** 로 물었다(제5의 상태 — 창을 바꿔 물었다). Chrome 판은 `Error.isError` 다.
+★★ **이 주제에서 두 node 버전이 달라진 probe는 없다**(대조기 — 이 배치 전체 `identical 12`).
 
 **버전**
 
 | 무엇 | 판 | 이 머신에서 |
 |---|---|---|
-| `instanceof` · `typeof` · `Object.prototype.toString` | ES1\~ES3 | 세 판 다 있다 |
-| `Array.isArray` | ES5 | 세 판 다 있다 |
-| `Symbol.hasInstance` · `Symbol.toStringTag` · `Proxy` | ES2015 | 세 판 다 있다 |
-| `#x in o`(프라이빗 브랜드 검사) | ES2022 | 세 판 다 있다 |
-| `Error.isError` | **ES2026** | ★ **두 node 판에 없다** — Chrome 151 로만 |
+| `instanceof` · `typeof` · `Object.prototype.toString` | ES1\~ES3 | 세 버전 다 있다 |
+| `Array.isArray` | ES5 | 세 버전 다 있다 |
+| `Symbol.hasInstance` · `Symbol.toStringTag` · `Proxy` | ES2015 | 세 버전 다 있다 |
+| `#x in o`(프라이빗 브랜드 검사) | ES2022 | 세 버전 다 있다 |
+| `Error.isError` | **ES2026** | ★ **두 node 버전에 없다** — Chrome 151 로만 |
 
-**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+**★★★ 이 주제가 쓰는 창 — 그리고 해당 없는 창**
 
 | 창 | 이 주제에서 무엇을 보나 |
 |---|---|
-| ★★★ **② 전수 격자**(본체) | 타입 5 × 조건 5 × 방법 5 — **어긋난 칸 N / M** 을 방법별 · 조건별 · 전체로 스크립트가 센다(동작 (1)) |
+| ★★★ **② 전수 격자**(핵심) | 타입 5 × 조건 5 × 방법 5 — **어긋난 칸 N / M** 을 방법별 · 조건별 · 전체로 스크립트가 센다(동작 (1)) |
 | ★★★ **③ 브랜드 태그** | 격자의 한 열(`toString tag`) + 22번의 위조를 **조건 한 행**으로(동작 (1)) |
 | ★★ **창을 바꿔 물었다**(제5의 상태) | node 에는 `Error.isError` 가 없어 **`util.types.isNativeError`(호스트)** 로 같은 질문을 물었다 — 그 열만 node 와 Chrome 의 **함수가 다르다** |
 | ★ **④ 예외의 `constructor.name` + `message`** | **보조** — 「슬롯을 두드리는 메서드」 열이 **던지나 안 던지나**로 답한다(문구는 싣지 않았다) |
-| ★ **① 추상 연산에 로그 심기** | **부적용** — 이 편의 판정은 사용자 코드를 안 부른다(`Symbol.hasInstance` 로 끼어드는 것은 15번이 쟀다) |
-| ★ **부적용 — 두 번 컴파일** | 판정 결과가 모드를 안 탄다 |
+| ★ **① 추상 연산에 로그 심기** | **해당 없음** — 이 편의 판정은 사용자 코드를 안 부른다(`Symbol.hasInstance` 로 끼어드는 것은 15번이 쟀다) |
+| ★ **해당 없음 — 두 번 컴파일** | 판정 결과가 모드를 안 탄다 |
 | ★ **안 쟀다 — 성능** | 「`instanceof` 가 빠르다」 같은 문장을 쓰지 않는다 |
 
-**★ 흔들리는 칸 / 안 흔들리는 칸**
+**★ 실행마다 달라지는 항목 / 달라지지 않는 항목**
 
-| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+| 실행마다 달라진다(근거로 쓰지 않는다) | 달라지지 않는다(근거로 쓴다) |
 |---|---|
 | 오류 슬롯 열이 **어느 함수인가**(node 는 호스트 함수, Chrome 은 ES2026 함수) — 판과 호스트의 사정 | ★★★ 격자의 **`y`/`n`/`*`** 과 「어긋난 칸 N / M」(방법별 · 조건별 · 전체) |
 | `Proxy` 행(동작 (2)) — **채점하지 않았다.** 「프록시가 진짜인가」에 답이 하나가 아니다 | ★★ **node `vm` 과 Chrome iframe 의 격자가 칸 글자까지 같았다**(둘째 줄 — 오류 슬롯 열에 쓴 함수의 이름 — 만 다르다) · 재대조 동일 |

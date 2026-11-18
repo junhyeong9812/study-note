@@ -205,7 +205,7 @@ out/IcodeKt.class
 - ★ **`nameOf<Int>()` 가 `java/lang/Integer` 다.** `Int` 가 아니라 **박싱된 클래스**다 — `T::class.java` 는\
   타입 파라미터 자리에 온 `Int` 를 **참조 타입으로** 본다((6)).
 - ★ **`typeOf<T>()` 만 구조를 통째로 만든다.** `List` 와 `String` 두 클래스가 **둘 다** 상수로 박히고,\
-  `KTypeProjection.invariant` 로 **타입 인자로 조립**된다. `is T` 와 결정적으로 갈리는 자리다.
+  `KTypeProjection.invariant` 로 **타입 인자로 조립**된다. `is T` 와 결정적으로 나뉘는 자리다.
 - **클래스 파일은 하나뿐이다.** `reified` 는 객체도 클래스도 만들지 않는다 —\
   만드는 것이 아니라 **호출 자리에 글자를 박는** 변환이기 때문이다.
 
@@ -441,7 +441,7 @@ I typeText<String?>()          : java.lang.String? (Kotlin reflection is not ava
 - ★★ **컴파일러가 아무 말도 안 했다**(`exit 0`, 경고 0줄). 같은 코드를 `reified` 없이 쓰면 **에러**인데((1)),\
   `reified` 를 붙이면 **조용히 반쪽짜리 검사**가 된다. **에러가 경고도 없는 오답으로 바뀌는 교환**이다.
 - ★ **null 가능성은 다르다 — 그쪽은 살아남는다**((7)의 앞부분).
-- **`D`·`F` 가 갈린다.** 같은 `Int` 인데 `T::class.java.name` 은 **`java.lang.Integer`**, `T::class.simpleName` 은 **`Int`** 다.\
+- **`D`·`F` 가 달라진다.** 같은 `Int` 인데 `T::class.java.name` 은 **`java.lang.Integer`**, `T::class.simpleName` 은 **`Int`** 다.\
   ★ **`T::class` 는 `KClass` 이고 `.java` 를 붙이는 순간 JVM 클래스로 내려간다** — 그때 원시 타입이 박싱된다.
 - `G`\~`I` 는 `typeOf` 가 타입 인자(`<java.lang.String>`)와 null 가능성(`?`)을 **다 들고 있다**는 것을 보여 준다.\
   다만 그 출력의 **모양이 클래스패스에 달려 있다** — (6).
@@ -898,7 +898,7 @@ inline fun <reified T> f(): String = T::class.javaObjectType.name  // ERROR: 수
 - ★★ **되살아나는 것은 raw class 와 null 가능성뿐이다.**\
   `isA<List<String>>(listOf(1))` 이 **`true`** 이고 **경고도 안 난다** — `instanceof java/util/List` 까지만 보기 때문이다.
 - ★ **`T::class.java` 와 `typeOf<T>()` 는 다른 것을 준다.** `List<Int>` 와 `List<String>` 이 전자에서는 **둘 다 `java.util.List`**,\
-  후자에서는 **갈린다**. 그리고 후자의 출력은 **`kotlin-reflect.jar` 가 클래스패스에 있느냐로 통째로 달라진다.**
+  후자에서는 **달라진다**. 그리고 후자의 출력은 **`kotlin-reflect.jar` 가 클래스패스에 있느냐로 통째로 달라진다.**
 - ★ **선언 쪽 본체는 남지만 지뢰다** — `Intrinsics.reifiedOperationMarker(3, "T")` 다음 줄이 자리표(`instanceof Object` 등)이고,\
   인라인할 때 그것이 실제 타입으로 바꿔치기된다.
 - ★★ **Java 는 이 함수를 못 부른다.** `ACC_SYNTHETIC` 이라 `javac` 가 **`cannot find symbol`** 이라고 하고,\
@@ -977,7 +977,7 @@ R castR<String>(1) 를 Any 로 받기 : java.lang.ClassCastException
   ★ **`castE` 는 아무 일도 안 일어났다** — `String` 으로 받기로 한 값이 `Integer` 인 채 흘러간다.\
   소거된 `as T` 는 **바이트코드에 아무것도 안 남기고**, 검사는 호출자가 결과를 **구체 타입으로 받을 때**로 밀린다.\
   `Any` 로만 받으면 그 검사조차 안 온다. **`reified` 를 붙이면 그 자리에서 `checkcast` 가 돌아 즉시 터진다.**\
-  ★ 「무음 실패를 에러로 바꾼다」가 `reified` 의 값어치 중 가장 실무적인 것이다.
+  ★ 「조용한 실패를 에러로 바꾼다」가 `reified` 의 값어치 중 가장 실무적인 것이다.
 - **`reifiedOperationMarker` 의 정수 코드**는 `3`(`is`)·`4`(`T::class`)·`6`(`typeOf`) 로 관찰됐다.\
   **다른 코드가 무엇인지는 안 찍어 봤다** — stdlib 소스를 읽으면 나오겠지만 **이 문서는 읽지 않았다.**
 - **`javap` 로 본 본체의 자리표가 서로 다르다** — `isA` 는 `instanceof java/lang/Object`,\

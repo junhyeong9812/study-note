@@ -244,7 +244,7 @@ Objects involved in the operation:
 **왜 그런가**
 
 - ★★ **`c(1, 1) = 1`** 이 비반사성을 깬다. 컴파일러는 비교자의 **값**을 모른다 — 보통 빌드는 침묵한다.
-- ★★ **libstdc++ 디버그 모드는 이 판에서 `sort` 에 `!(a < a)` 단언을 둔다** — `set::insert` 에는 그 검사가 없었다(두 줄째 「set 에 1 을 두 번 넣었다」가 먼저 찍혔다).
+- ★★ **libstdc++ 디버그 모드는 이 버전에서 `sort` 에 `!(a < a)` 단언을 둔다** — `set::insert` 에는 그 검사가 없었다(두 줄째 「set 에 1 을 두 번 넣었다」가 먼저 찍혔다).
 
 ### 5. ★★ **둘 다 `bucket_count 1109` · `load_factor 0.902` — `std::hash<int>` 는 빈 아닌 버킷 1000 · 가장 큰 1, `Zero` 는 빈 아닌 버킷 1 · 가장 큰 1000**
 
@@ -299,11 +299,11 @@ key01.cpp:42:58:   required from here
 
 - ★★ 첫 에러가 **`std::equal_to<P>` 안의 `__x == __y`** 다(`stl_function.h:378`).
 
-### 8. ★★★ **말할 수 없다 — 이 머신의 세 판은 libstdc++ 한 계열이다.** 명세는 「**not sorted in any particular order**」라고만 적는다
+### 8. ★★★ **말할 수 없다 — 이 머신의 세 버전은 libstdc++ 한 계열이다.** 명세는 「**not sorted in any particular order**」라고만 적는다
 
 - ★★★ [Go 09번](../../../go/syntax/09-maps-declaration-comma-ok-delete-and-iteration-order/) — **명세가 순서를 정하지 않고 gc 가 일부러 섞는다**(3 개 키 600 판에서 3 가지). [Rust 39번](../../../rust/syntax/39-hashmap-vs-btreemap-and-entry-api/) — **`HashMap` 은 프로세스 300 개에서 6 가지.** libstdc++ 는 섞지 않았을 뿐이다 — **그래서 가장 잘 속는다.**
 
-### 9. ★★ **가를 수 없다 — 두 줄의 `load_factor` 가 0.902 로 같다.** 봐야 할 것은 **`bucket_size` 분포**(빈 아닌 버킷 수 · 가장 큰 버킷)다
+### 9. ★★ **구분할 수 없다 — 두 줄의 `load_factor` 가 0.902 로 같다.** 봐야 할 것은 **`bucket_size` 분포**(빈 아닌 버킷 수 · 가장 큰 버킷)다
 
 ### 10. ★★ **말할 수 없다 — 디버그 모드가 그 자리를 검사하지 않았을 뿐이다.** 요구사항 위반은 UB 이고, **같은 비교자가 `sort` 에서는 잡혔다**
 
@@ -336,7 +336,7 @@ size 128 에서 bucket_count 257
 
 | 무엇을 | 몇 번 · 어느 판 | 결과 |
 |---|---|---|
-| `key01.cpp` + `key-grid.sh` | 6 × 4 × 컴파일러 2 | ★★★ **통과 12 / 48 · 내 파일 16 / 36 · 갈린 행 0 / 24** |
+| `key01.cpp` + `key-grid.sh` | 6 × 4 × 컴파일러 2 | ★★★ **통과 12 / 48 · 내 파일 16 / 36 · 달라진 행 0 / 24** |
 | `order01.cpp` + `order-grid.sh` | 컴파일러 3 × 최적화 2 × 3 번 | ★★ **18 판 모두 1 가지** |
 | `sub01.cpp` | 두 컴파일러 + `-DCONSTMAP` | ★★★ **size 2 · `out_of_range` · const 에러** |
 | `swo01.cpp` | 두 컴파일러 × 보통 / `_GLIBCXX_DEBUG` | ★★ **`sort` 에서만 잡힘** |
@@ -364,5 +364,5 @@ size 128 에서 bucket_count 257
 이 파일의 모든 출력·진단은 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** · **g++-12 (Ubuntu 12.4.0-2ubuntu1\~24.04.1) 12.4.0** ·\
 **Ubuntu clang version 18.1.3 (1ubuntu1)** · libstdc++ 13 · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
 소스는 질문 파일과 같다(출력 블록의 배너에 파일 이름이 있다). 블록은 캡처 스크립트가 받은 것이다 — 손으로 옮긴 줄은 없다.
-**읽는 법** — 흔들리는 칸은 **진단 문구와 총 줄 수 · 디버그 모드 리포트의 `@ 0x…` 주소** 다.\
+**읽는 법** — 실행마다 달라지는 항목은 **진단 문구와 총 줄 수 · 디버그 모드 리포트의 `@ 0x…` 주소** 다.\
 근거로 쓰는 것은 다음이다 — **통과 칸 · 첫 error 의 O/X · `cc exit`/`run exit` · `Error:` 줄 · 격자의 마지막 줄**.

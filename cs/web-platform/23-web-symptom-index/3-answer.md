@@ -29,7 +29,7 @@
 - (가) 500: `then`으로 `ok:false`인 응답이 왔다. 예외가 없다. 감싼 `fetch`가 `fetch-not-ok`로 따로 셌다([05-1](../05-fetch-from-browser/2-summary.md)).
 - (나) CORS: 앱에는 `TypeError: Failed to fetch`만 왔다. `… has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.`는 **DevTools 콘솔에만** 있었다.
 - (다) 지워진 청크: `TypeError: Failed to fetch dynamically imported module: http://127.0.0.1:PORT/assets/chart-OLDHASH.js`. webpack 런타임이면 `ChunkLoadError`로 보인다([09-2](../09-js-modules-and-bundling/2-summary.md)).
-- RUM에는 예외 문구만이 아니라 요청 URL·상태 코드·배포 식별자를 함께 남긴다. 그래야 CORS(교차 출처 URL)와 옛 탭(배포 식별자)을 가를 수 있다.
+- RUM에는 예외 문구만이 아니라 요청 URL·상태 코드·배포 식별자를 함께 남긴다. 그래야 CORS(교차 출처 URL)와 옛 탭(배포 식별자)을 구분할 수 있다.
 
 ### 4. 300ms 핸들러 — 신호 두 개
 

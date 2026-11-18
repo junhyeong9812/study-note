@@ -228,7 +228,7 @@ static long sumGood(List<Integer> xs) {
 
 - **현상**: 이미 정렬된 데이터를 직접 구현한 퀵정렬에 넣으면 느리고, 크면 스택 오버플로까지 난다.
 - **보이는 형태**: 정렬된(끝 원소 피벗이면 역순 정렬도) 입력에서 느림. `StackOverflowError` 스택에 `quickSort` 반복.
-- **원인**: 피벗이 끝 원소면 분할이 n−1과 0으로 갈린다. T(n) = T(n−1) + n — 장애 1과 2가 겹친 꼴이다.
+- **원인**: 피벗이 끝 원소면 분할이 n−1과 0으로 나뉜다. T(n) = T(n−1) + n — 장애 1과 2가 겹친 꼴이다.
 - **대처**: 무작위 피벗(기대 Θ(n log n)), 작은 쪽만 재귀하고 큰 쪽은 루프(깊이 O(log n), CLRS 3판 문제 7-4). 실무는 라이브러리 정렬을 쓴다([algorithm/39](../../algorithm/39-randomized-algorithms/2-summary.md), [algorithm/09-sorting-in-practice](../../algorithm/09-sorting-in-practice/2-summary.md)).
 
 ### 5. 마스터 정리를 잘못 적용 → 용량 추정이 차수째 틀림

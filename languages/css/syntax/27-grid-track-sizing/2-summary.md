@@ -183,7 +183,7 @@ grid-template-columns: 0.25fr        (600px)   -> 남은 공간의 1/4 만 쓴�
 </style>
 ```
 
-> **보이는 것** — 위아래 두 줄 다 폭이 300px 인데 **칸이 나뉘는 자리가 다르다.** 위(`1fr 1fr`)는 긴 단어가 들어간 첫 칸이 넓어져 경계가 오른쪽으로 밀려 있고, 아래(`minmax(0, 1fr)`)는 **정확히 절반**에서 갈린다. 아래 줄에서는 긴 단어가 자기 칸을 넘어 옆 칸 위로 삐져나온다.\
+> **보이는 것** — 위아래 두 줄 다 폭이 300px 인데 **칸이 나뉘는 자리가 다르다.** 위(`1fr 1fr`)는 긴 단어가 들어간 첫 칸이 넓어져 경계가 오른쪽으로 밀려 있고, 아래(`minmax(0, 1fr)`)는 **정확히 절반**에서 달라진다. 아래 줄에서는 긴 단어가 자기 칸을 넘어 옆 칸 위로 삐져나온다.\
 > **바꿔 볼 것** — `.bad` 에 `overflow: hidden` 을 더하면 `minmax(0, 1fr)` 없이도 **150px · 150px** 이 된다(자동 최솟값이 0 이 되므로) · `.fix` 의 항목에 `overflow: hidden; text-overflow: ellipsis; white-space: nowrap` 을 주면 삐져나온 글자가 `…` 로 잘린다
 
 *(Chrome 151 headless 실측 — `gridTemplateColumns` 계산값: `1fr 1fr` → **`215.031px 84.9688px`** · `minmax(0, 1fr) minmax(0, 1fr)` → **`150px 150px`**. `.bad` 에 `overflow: hidden` 을 더한 판은 `150px 150px` 이었다.)*
@@ -517,7 +517,7 @@ grid-template-columns: 200px 1fr 1fr   (500px)
 - [목록의 **25번 주제**](../25-flex-shorthand-and-sizing/)(`flex` 단축) — `min-width: auto` 함정의 정본. (3)의 `minmax(0, 1fr)` 과 **같은 모양의 함정**이다
 - [목록의 **26번 주제**](../26-flex-wrap-gap-order/)(flex 줄바꿈·`gap`·`order`) — ★ **`gap` 의 정본은 거기.** 여기는 `gap` 이 `fr` 계산에 끼어드는 자리까지만
 - [목록의 **31번 주제**](../31-intrinsic-sizing-and-aspect-ratio/)(내재적 크기) — ★ **`min-content`/`max-content`/`fit-content` 자체의 정의는 거기.** 여기는 트랙 값으로 쓰일 때까지만
-- [목록의 **16번 주제**](../16-display-inner-outer/)(`display` 의 내부/외부 값) — `grid` 와 `inline-grid` 가 갈리는 자리
+- [목록의 **16번 주제**](../16-display-inner-outer/)(`display` 의 내부/외부 값) — `grid` 와 `inline-grid` 가 달라지는 자리
 - [목록의 **15번 주제**](../15-box-model-and-box-sizing/)(박스 모델) — 트랙 폭이 가리키는 것이 내용 영역인가 테두리까지인가
 - [목록의 **07번 주제**](../07-syntax-and-error-recovery/)(구문과 오류 복구) — 무효한 선언 하나가 버려지는 규칙
 - [`history/web/03-HTML-CSS-진화.md`](../../../../history/web/03-HTML-CSS-진화.md) — **2차원 레이아웃이 언제 왜 들어왔나는 거기.** 여기는 오늘의 규칙만
@@ -561,4 +561,4 @@ grid-template-columns: 200px 1fr 1fr   (500px)
 **실행 검증** — 이 문서의 `demo` 블록 **4개 전부**와 본문의 트랙 값 표를 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getComputedStyle(el).gridTemplateColumns` 로 **엔진이 푼 트랙 값**을 읽고, 항목 자리는 `getBoundingClientRect()` 로 따로 쟀다.\
 본문의 px 값은 전부 그 실측값이다. **엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 스크린샷이 산출되지 않고 WebKit 은 이 머신에 없다. 「두 엔진에서 확인했다」고 적지 않았다.
 **버전** — Grid 는 Baseline **widely**(newly 2017-10-17 → widely 2020-04-17). `subgrid` 만 늦다(widely 2026-03-15 — 목록의 [**30번 주제**](../30-subgrid/)).
-**여기서 다루지 않는 것** — 트랙에 **무엇을 놓는가**는 [**28번**](../28-grid-placement/), **이름으로** 놓는 것은 [**29번**](../29-grid-template-areas/)이다. `min-content`/`max-content` 자체의 정의는 [목록의 **31번 주제**](../31-intrinsic-sizing-and-aspect-ratio/)가 정본이고 여기서는 **트랙 값으로 쓰일 때**까지만 쓴다. 정렬(`justify-*`/`align-*`)의 정본은 [**24번**](../24-flexbox-axes/)이고, 여기서는 **Grid 에서 의미가 갈리는 것만** 쓴다.
+**여기서 다루지 않는 것** — 트랙에 **무엇을 놓는가**는 [**28번**](../28-grid-placement/), **이름으로** 놓는 것은 [**29번**](../29-grid-template-areas/)이다. `min-content`/`max-content` 자체의 정의는 [목록의 **31번 주제**](../31-intrinsic-sizing-and-aspect-ratio/)가 정본이고 여기서는 **트랙 값으로 쓰일 때**까지만 쓴다. 정렬(`justify-*`/`align-*`)의 정본은 [**24번**](../24-flexbox-axes/)이고, 여기서는 **Grid 에서 의미가 달라지는 것만** 쓴다.

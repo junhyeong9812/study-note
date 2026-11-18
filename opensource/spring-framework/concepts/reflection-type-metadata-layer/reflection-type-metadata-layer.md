@@ -271,7 +271,7 @@ this.type = this.resolvableType.resolve(field.getType());   // 폴백 = 소거�
 
 그 위의 편의 메서드는 모두 `resolvableType`으로의 위임이다. `getElementTypeDescriptor()`는
 배열이면 `getComponentType()`, `Stream`이면 `as(Stream.class).getGeneric(0)`, 그 외에는
-`asCollection().getGeneric(0)`으로 갈린다(370-377행). `upcast(...)`는 `as(superType)`(234-239행),
+`asCollection().getGeneric(0)`으로 나뉜다(370-377행). `upcast(...)`는 `as(superType)`(234-239행),
 `narrow(value)`는 값의 실제 클래스를 기존 타입을 owner로 삼아 다시 감싼다(218-222행).
 정리하면 **`TypeDescriptor` = `ResolvableType` + annotation + 변환용 어휘**이며, 새로운 타입
 해석 능력을 더하지는 않는다.

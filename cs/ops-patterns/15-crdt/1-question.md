@@ -8,7 +8,7 @@
 
 ### A. 문제 (구현 대상: NaiveCounter TODO 1 · GCounter TODO 2\~4 · OrSet TODO 5\~8)
 
-1. NaiveCounter — merge (TODO 1, 기준선. 고치면 안 된다)
+1. NaiveCounter — merge (TODO 1, 베이스라인. 고치면 안 된다)
 
 ```java
 // NaiveCounter.java (src/main) — 채울 것

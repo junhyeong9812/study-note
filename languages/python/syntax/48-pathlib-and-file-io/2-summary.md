@@ -44,9 +44,9 @@
 > **바이너리 모드(binary mode)** — 모드에 `'b'` 를 붙여 **`bytes` 를 그대로** 주고받는 모드.\
 > 예: `open('a.png', 'rb').read()` 는 `bytes` 를 준다.
 
-### ★★ 이 주제가 쓰는 창 / 부적용인 창
+### ★★ 이 주제가 쓰는 창 / 해당 없는 창
 
-**본체는 ① `open` 모드 격자다.** 모드 10개 × 파일이 **없을 때 / 있을 때** × (열리나 · 읽으면 · 쓰면) 을 한 표로 찍고, **두 상태에서 결과가 갈린 칸을 스크립트가 센다.**
+**핵심은 ① `open` 모드 격자다.** 모드 10개 × 파일이 **없을 때 / 있을 때** × (열리나 · 읽으면 · 쓰면) 을 한 표로 찍고, **두 상태에서 결과가 달라진 항목을 스크립트가 센다.**
 그리고 ② **디스크 바이트 창**(`rb` 로 다시 읽기)이 텍스트 모드가 **몰래 한 일**을 보인다.
 
 | 창 | 무엇을 말해 주나 | 못 보는 것 |
@@ -57,10 +57,10 @@
 | ④ ★★ **경고 창**(`-X warn_default_encoding` + `warnings`) | `encoding` 을 **어디서 빠뜨렸나**(줄 번호) | — |
 | ⑤ ★ **판 격자**(3.11 대 3.12) | `pathlib` 의 새 API | 3.13 이후 |
 | ⑥ ★ **교차 갈래 창**(Go 한 블록) | 텍스트 모드가 **없는 언어**는 같은 파일을 어떻게 읽나 | — |
-| ★ **부적용인 창** — 쓰기 쪽 `\n` → `os.linesep` 변환 | — | ★★★ 이 머신의 `os.linesep` 이 `'\n'` 이라 **바꿀 것이 없다** — 「재 봤더니 같았다」가 아니라 **「잴 것이 없다」**(동작 5) |
+| ★ **해당 없는 창** — 쓰기 쪽 `\n` → `os.linesep` 변환 | — | ★★★ 이 머신의 `os.linesep` 이 `'\n'` 이라 **바꿀 것이 없다** — 「재 봤더니 같았다」가 아니라 **「잴 것이 없다」**(동작 5) |
 | ★ **제5의 상태** — 윈도의 쓰기 변환 | 같은 질문을 **`newline='\r\n'` 을 손으로 줘서** 물었다 — 윈도가 기본으로 할 일을 리눅스에서 흉내 낸 것 | ★ 그 창은 **「윈도의 `os.linesep` 이 정말 `'\r\n'` 인가」는 못 본다** — 그건 문서의 말이다 |
 | ★ **못 잰 것** — 3.15 의 UTF-8 기본 | — | 이 머신에 3.15 가 없다 — 문서 인용만 |
-| ★ **부적용** — 시간·처리량 | — | 한 번도 재지 않았다 |
+| ★ **해당 없음** — 시간·처리량 | — | 한 번도 재지 않았다 |
 
 ★★ **②가 이 주제의 네 번째 창이다.** 텍스트 모드로 쓰고 텍스트 모드로 읽으면 **통역사가 양쪽에 있어** 바뀐 것이 안 보인다.
 `\r\n` 파일을 읽어 그대로 다시 쓴 뒤 **`rb` 로 열어 봐야** 바이트가 바뀐 것이 드러난다(동작 5 의 `[3]` — `same bytes : False`).
@@ -72,7 +72,7 @@
 3. ★★ **텍스트 모드는 바이트를 어떻게 바꾸나** — `newline` 다섯 값 · 바이너리 모드 · 그리고 `Path` 가 경로 문자열을 어떻게 조립하나.
 
 ★ 첫째가 이 주제의 인출 목표다.
-**「`'w'` 는 쓰기 전에 이미 비운다 · `'a'` 는 `seek` 을 무시한다 · `'x'` 는 검사와 생성이 한 번이다」 세 문장으로 모드 격자의 갈린 칸을 설명할 수 있는 것**이 아는 것과 들은 것의 경계다.
+**「`'w'` 는 쓰기 전에 이미 비운다 · `'a'` 는 `seek` 을 무시한다 · `'x'` 는 검사와 생성이 한 번이다」 세 문장으로 모드 격자의 달라진 항목을 설명할 수 있는 것**이 아는 것과 들은 것의 경계다.
 
 ## 동작 방식
 
@@ -204,8 +204,8 @@ cells where the two states give different results: 21 / 30
 
 그림 해설.
 
-* ★★★ **마지막 줄 — 두 상태에서 결과가 갈린 칸 `21 / 30`.** 안 갈린 칸이 곧 **「파일이 있든 없든 똑같이 하는」** 칸이다.
-  ★ **`w` 행은 세 칸 다 안 갈렸다** — 있던 `abc` 가 **연 순간 `b''`** 이고, 쓰면 `b'Z'` 로 **없던 파일과 구별이 안 된다.** `w+` 도 같다.
+* ★★★ **마지막 줄 — 두 상태에서 결과가 달라진 항목 `21 / 30`.** 안 달라진 항목이 곧 **「파일이 있든 없든 똑같이 하는」** 칸이다.
+  ★ **`w` 행은 세 칸 다 달라지지 않았다** — 있던 `abc` 가 **연 순간 `b''`** 이고, 쓰면 `b'Z'` 로 **없던 파일과 구별이 안 된다.** `w+` 도 같다.
   스크립트가 그 둘을 뽑아 적었다 — `modes whose open() leaves an existing 'abc' file empty: w, w+`.
   ★ 문서 — *"`'w'` for writing (truncating the file if it already exists)"* · *"Modes `'w+'` and `'w+b'` open and truncate the file."*
 * ★★★ **`r+` 는 안 비우고 앞에서부터 덮어쓴다** — `abc` 에 `Z` 를 쓰면 **`b'Zbc'`**. 「읽고 쓰기」라 해서 끝에 붙는 것이 아니다.
@@ -365,7 +365,7 @@ with open(NAME, encoding="utf-8") as f:
    끄는 자리 — PYTHONUTF8=0 (또는 -X utf8=0)
 ```
 
-같은 탐침(한 줄, ASCII 만 찍는다)을 **환경 여덟 가지 × 인터프리터 둘**에 던진다.
+같은 probe(한 줄, ASCII 만 찍는다)을 **환경 여덟 가지 × 인터프리터 둘**에 던진다.
 ★ **`env -i` 로 환경을 비우고 행마다 로캘 환경 전체를 적었다** — 이 머신의 `LANG` 이 섞이지 않게.
 
 ```python
@@ -477,7 +477,7 @@ rows where 3.11 and 3.12 differ (version column excluded): 0 / 8
 
 그림 해설.
 
-* ★★★ **`LANG=C` 행은 한글 쓰기가 `ok` 다** — `utf8_mode` 가 **`1`** 이다. 「`LANG=C` 로 띄우면 한글이 깨진다」는 **이 판에서는 틀렸다.**
+* ★★★ **`LANG=C` 행은 한글 쓰기가 `ok` 다** — `utf8_mode` 가 **`1`** 이다. 「`LANG=C` 로 띄우면 한글이 깨진다」는 **이 버전에서는 틀렸다.**
   두 장치가 겹쳐서다 — **로캘 강제 변환**(PEP 538: `C` 를 `C.UTF-8` 같은 UTF-8 로캘로 바꾼다 — 그래서 `getencoding` 이 `UTF-8`)과 **UTF-8 모드 자동 켜짐**(PEP 540).
   ★ 문서 — *"The Python UTF-8 Mode is enabled if the LC_CTYPE locale is `C` or `POSIX` at Python startup"*.
 * ★★★ **`LC_ALL=C` 행은 `getencoding` 이 `ANSI_X3.4-1968`(ASCII)인데도 쓰기가 `ok`** 다 — 로캘 강제 변환은 안 됐지만(`LC_ALL` 이 이긴다) **UTF-8 모드가 켜져서** `f.encoding` 이 `utf-8` 이다.
@@ -485,8 +485,8 @@ rows where 3.11 and 3.12 differ (version column excluded): 0 / 8
 * ★★★ **깨지는 것은 `PYTHONUTF8=0` 을 더한 두 행뿐** — `UnicodeEncodeError(ascii)` · 읽기는 `UnicodeDecodeError(ascii)`. 스크립트의 집계 — **`2 / 8`**.
   **UTF-8 모드를 명시적으로 꺼야** ASCII 로 떨어진다.
 * ★★ **`-X utf8` 이 `PYTHONUTF8=0` 을 이겼다** — `LC_ALL=C PYTHONUTF8=0 -X utf8` 행이 `ok`(이 격자의 관찰).
-* ★★ **3.11 과 3.12 는 한 칸도 안 갈렸다** — `rows where 3.11 and 3.12 differ … : 0 / 8`. 이 격자에서 **판 경계는 없다.** 다음 경계는 **3.15**(PEP 686 — UTF-8 모드가 기본) — ★ **문서의 말이다**(못 잰 것).
-* ★★ **마지막 행 — `-X warn_default_encoding`** 이 `EncodingWarning` 을 **세 번** 냈다 — 탐침 파일의 **12행**(`open("plain.txt", "w")`) · **20행**(`open("utf8.txt")`) · **24행**(`locale.getpreferredencoding(False)`).
+* ★★ **3.11 과 3.12 는 한 칸도 달라지지 않았다** — `rows where 3.11 and 3.12 differ … : 0 / 8`. 이 격자에서 **판 경계는 없다.** 다음 경계는 **3.15**(PEP 686 — UTF-8 모드가 기본) — ★ **문서의 말이다**(못 잰 것).
+* ★★ **마지막 행 — `-X warn_default_encoding`** 이 `EncodingWarning` 을 **세 번** 냈다 — probe 파일의 **12행**(`open("plain.txt", "w")`) · **20행**(`open("utf8.txt")`) · **24행**(`locale.getpreferredencoding(False)`).
   ★ 셋째는 `open` 이 아니다 — **`getpreferredencoding` 자체도 경고 대상**이다(UTF-8 모드에 휘둘리는 함수라서). 문서의 권고가 **`locale.getencoding()` 을 쓰라**는 이유다.
   ★ 줄 번호는 **파일의 줄**이다 — 위 소스 펜스는 첫 줄에 배너(`# e48_enc_probe.py`)가 하나 더 있어 **펜스 안에서는 한 줄씩 밀린다.**
 
@@ -582,7 +582,7 @@ print("    same bytes :", back == RAW)
 * ★★ **`f.newlines`** — 유니버설 모드(`None`·`''`)에서만 **만난 줄 끝 종류**를 튜플로 준다. 나머지 셋은 `None`.
 * ★ **`'rb'` 는 아무것도 안 바꾼다** — 줄은 **`\n` 에서만** 끊는다(`b'two\rthree\n'` 이 한 줄). `Path.read_text()` 는 `open` 기본값과 같다(`\n` 으로 바뀜).
 * ★★★ **`[2]` 쓰기 — `None`·`''`·`'\n'` 세 칸이 전부 `b'a\nb'`** 다. `None` 은 `\n` 을 **`os.linesep` 으로** 바꾸는데 이 머신의 `os.linesep` 이 `'\n'`(`[0]`)이라 **바꿀 것이 없다.**
-  ★ **이것은 「재 봤더니 같았다」가 아니라 「잴 것이 없다」**(부적용)다 — 창 표의 그 칸. 윈도라면 `None` 칸이 달라질 **것이라는 말은 문서의 말**이다.
+  ★ **이것은 「재 봤더니 같았다」가 아니라 「잴 것이 없다」**(해당 없음)다 — 창 표의 그 칸. 윈도라면 `None` 칸이 달라질 **것이라는 말은 문서의 말**이다.
   ★ **제5의 상태** — 같은 질문을 **`newline='\r\n'` 을 손으로 줘서** 물었다 → `b'a\r\nb'`. 「윈도의 기본 쓰기」가 **바이트로 무엇이 되나**는 이 칸이 답한다.
 * ★★★ **`[3]` 왕복 — `same bytes : False`** — 기본값으로 읽고 기본값으로 쓰면 `\r\n`·`\r` 이 **`\n` 으로 굳는다.** 텍스트로만 보면 안 보인다 — **`rb` 로 다시 읽어야**(네 번째 창) 보인다.
 
@@ -635,7 +635,7 @@ func main() {
 ```
 
 * ★★ **`os.ReadFile` 은 바이트 그대로** — `\r\n` 이 살아 있다. `strings.Split(s, "\n")` 은 **`"one\r"`** 를 남긴다 — 파이썬의 `newline='\n'` 칸과 같은 모양이다.
-* ★ **`bufio.Scanner` 는 줄 끝의 `\r\n` 은 벗기고 외톨이 `\r` 은 안 벗긴다** — `"two\rthree"` 가 한 줄. 파이썬의 기본(`None`)은 **외톨이 `\r` 도 줄 끝**으로 봤다. **같은 파일의 줄 수가 3 대 4** 로 갈린다.
+* ★ **`bufio.Scanner` 는 줄 끝의 `\r\n` 은 벗기고 외톨이 `\r` 은 안 벗긴다** — `"two\rthree"` 가 한 줄. 파이썬의 기본(`None`)은 **외톨이 `\r` 도 줄 끝**으로 봤다. **같은 파일의 줄 수가 3 대 4** 로 나뉜다.
 
 **비용** — 기본값은 **읽을 때 정보를 잃는다**(어느 줄 끝이었는지). 바이트를 지켜야 하면 `newline=''`(줄 끝 보존) 또는 `'rb'`.
 
@@ -721,7 +721,7 @@ with open("k.txt", "rb") as f:
 * ★★★ **`[3]` 두 모드는 서로의 타입을 거절한다** — 바이너리에 `str` 을 쓰면 `a bytes-like object is required, not 'str'`, 텍스트에 `bytes` 를 쓰면 `write() argument must be str, not bytes`. 그리고 **`'rb'` 에 `encoding=` 을 주면 `ValueError`** — 바이너리엔 통역사가 없다.
 * ★★★ **`[4]` `tell()` 이 `3`** — 한 글자를 읽었는데 3. 텍스트 모드의 `tell()` 은 **글자 수가 아니다.** `seek(1)` 로 **글자 한가운데**에 서면 `read()` 가 **`UnicodeDecodeError`**.
   ★ 텍스트 모드는 **현재 위치 기준 이동(`seek(1, SEEK_CUR)`)을 거절한다**(`can't do nonzero cur-relative seeks`) — 바이너리는 된다(`1`).
-  ★ `tell()` 이 돌려주는 숫자의 **뜻**은 문서가 *"opaque number"* 로만 약속한다 — **바이트 자리와 같았다는 것은 이 판의 관찰**이다(「구현 세부사항」).
+  ★ `tell()` 이 돌려주는 숫자의 **뜻**은 문서가 *"opaque number"* 로만 약속한다 — **바이트 자리와 같았다는 것은 이 버전의 관찰**이다(「구현 세부사항」).
 
 **비용** — 텍스트 모드의 자리 이동은 **`tell()` 로 받은 값으로만** 돌아가는 것이 안전하다.
 
@@ -940,7 +940,7 @@ python 3.11
 
 * ★★ **`Path.walk`·`with_segments`·`is_junction` 은 3.11 에 없다**(`False`) — 대조로 찍은 `read_text` 는 둘 다 `True`.
 * ★★ **`relative_to(…, walk_up=True)`** — 3.12 는 `../b`, 3.11 은 **`TypeError … unexpected keyword argument 'walk_up'`**.
-* ★ **같은 `ValueError` 의 문구가 두 판에서 다르다** — 3.11 은 `… OR one path is relative and the other is absolute.` 가 더 붙는다. **문구는 구현이다** — 타입(`ValueError`)만 근거로 쓴다.
+* ★ **같은 `ValueError` 의 문구가 두 버전에서 다르다** — 3.11 은 `… OR one path is relative and the other is absolute.` 가 더 붙는다. **문구는 구현이다** — 타입(`ValueError`)만 근거로 쓴다.
 
 ## 문법 — 형태와 규칙
 
@@ -962,7 +962,7 @@ p.mkdir(parents=True, exist_ok=True)
 
 규칙 열.
 
-1. ★★★ **`'w'`·`'w+'` 는 여는 순간 자른다** — 모드 격자에서 **있는 파일과 없는 파일이 한 칸도 안 갈린 행**이 이 둘이다.
+1. ★★★ **`'w'`·`'w+'` 는 여는 순간 자른다** — 모드 격자에서 **있는 파일과 없는 파일이 한 칸도 안 달라진 행**이 이 둘이다.
 2. ★★★ **`'x'` 는 있으면 `FileExistsError`** — 검사와 생성이 **한 번**이다(`exists()` + `'w'` 는 두 번이라 틈이 있다).
 3. ★★ **`'a'` 계열은 `seek` 을 무시하고 끝에 쓴다**(이 머신에서) · **`'r+'` 는 자르지 않고 그 자리에 덮어쓴다.**
 4. ★★★ **`encoding` 을 늘 적는다** — 안 적으면 UTF-8 모드 여부와 로캘이 고른다. `LANG=C` 는 **UTF-8 모드를 켠다**(PEP 540), 끄려면 `PYTHONUTF8=0`.
@@ -1022,9 +1022,9 @@ p.mkdir(parents=True, exist_ok=True)
 |---|---|---|
 | **라이브러리 보장** | `open`·`io`·`os`·`pathlib` 문서가 정한 것 | 문서 문장을 열어서 인용 |
 | **CPython 구현** | 예외 문구 · `tell()` 숫자의 뜻 | 실행 |
-| **이 판(3.12.3 · 3.11.15)·이 머신의 관찰** | 이 판·이 로캘에서 그랬을 뿐 | 출력 |
+| **이 버전(3.12.3 · 3.11.15)·이 머신의 관찰** | 이 판·이 로캘에서 그랬을 뿐 | 출력 |
 | ★ **못 잰 것** | 3.15 의 UTF-8 기본 · 윈도의 `os.linesep` | 판·플랫폼이 없다 |
-| ★ **부적용** | 쓰기 쪽 `\n` → `os.linesep`(이 머신은 `'\n'`) · 시간 | 잴 것이 없다 · 재지 않았다 |
+| ★ **해당 없음** | 쓰기 쪽 `\n` → `os.linesep`(이 머신은 `'\n'`) · 시간 | 잴 것이 없다 · 재지 않았다 |
 
 ### 라이브러리 보장
 
@@ -1051,11 +1051,11 @@ p.mkdir(parents=True, exist_ok=True)
 | 텍스트 모드 `tell()` 이 **바이트 자리와 같은 숫자**(`3`) — 문서는 *"opaque number"* 라고만 한다 | 실행(동작 6) |
 | `f.newlines` 튜플의 **원소 순서** | 실행(동작 5) |
 
-### 이 판(3.12.3)의 관찰
+### 이 버전(3.12.3)의 관찰
 
 - **`'a'` 가 `seek(0)` 뒤에도 끝에 쓴 것** — Linux 에서 그랬다(문서는 「some Unix systems」).
-- **환경 격자 여덟 행이 3.11 과 3.12 에서 한 칸도 안 갈린 것**(`0 / 8`).
-- **이 머신의 기본 로캘이 `ko_KR.UTF-8` 이고 `os.linesep` 이 `'\n'` 인 것** — 그래서 쓰기 변환 칸이 부적용이다.
+- **환경 격자 여덟 행이 3.11 과 3.12 에서 한 칸도 안 달라진 것**(`0 / 8`).
+- **이 머신의 기본 로캘이 `ko_KR.UTF-8` 이고 `os.linesep` 이 `'\n'` 인 것** — 그래서 쓰기 변환 칸이 해당 없음이다.
 - **`[Errno 17]`·`[Errno 2]`** — 문구 안의 숫자는 플랫폼의 것이다. 본문은 `errno` **이름**(`EEXIST`)을 근거로 썼다.
 
 ### 그래서 이렇게 적으면 틀린다
@@ -1087,7 +1087,7 @@ p.mkdir(parents=True, exist_ok=True)
 
 ## 핵심 문장
 
-1. **`'w'` 는 쓰기 전에 이미 비운다** — 모드 격자에서 두 상태가 갈린 칸 **21 / 30**, `w`·`w+` 행만 한 칸도 안 갈렸다.
+1. **`'w'` 는 쓰기 전에 이미 비운다** — 모드 격자에서 두 상태가 달라진 항목 **21 / 30**, `w`·`w+` 행만 한 칸도 달라지지 않았다.
 2. **`'x'` 는 「없으면 만들기」를 한 번에 한다** — `exists()` + `'w'` 는 둘 다 「없다」를 보고 나중 것이 이긴다.
 3. **`encoding` 을 안 주면 환경이 고른다** — `LANG=C` 는 UTF-8 모드를 켜서 한글이 되고, `PYTHONUTF8=0` 까지 줘야 깨졌다(**2 / 8**, 3.11 과 3.12 차이 **0 / 8**). 3.15 는 UTF-8 기본(문서).
 4. **`newline=None` 은 리눅스에서도 `\r\n` 을 `\n` 으로 바꾼다** — 쓰기 쪽 `os.linesep` 변환은 이 머신에서 잴 것이 없다.
@@ -1100,7 +1100,7 @@ p.mkdir(parents=True, exist_ok=True)
 * 선행: [28-context-managers-and-with](../28-context-managers-and-with/2-summary.md) — `with` 계약과 닫기는 그쪽. 여기는 **`with open(...)` 의 인자**(모드·`encoding`·`newline`)다.
 * 선행: [26-eafp-vs-lbyl](../26-eafp-vs-lbyl/2-summary.md) — ★ **경계**: 읽기의 경쟁 조건(`exists()` 뒤 삭제)은 그쪽. 여기는 **만들기의 경쟁 조건과 `'x'`**(동작 3).
 * 함께 보는 곳: [16-iterator-protocol](../16-iterator-protocol/2-summary.md) — 파일 객체가 자기 이터레이터(`iter(f) is f`)인 것은 그쪽이 정본. [15-generator-expressions-lazy-eval](../15-generator-expressions-lazy-eval/2-summary.md) — 파일을 그냥 돌기.
-* 다른 갈래: Go 갈래 목록([`go/syntax/README.md`](../../../go/syntax/README.md)) — 파일 I/O 주제가 **그 목록에 없다**. 동작 5 의 Go 블록은 이 문서가 직접 던진 것이다.
+* 다른 갈래: Go 갈래 목록([`go/syntax/README.md`](../../../go/syntax/README.md)) — 파일 I/O 주제가 **그 목록에 없다**. 동작 5 의 Go 블록은 이 문서가 직접 실행한 것이다.
 * 공식 문서: [`open()`](https://docs.python.org/3.12/library/functions.html#open) · [`io`](https://docs.python.org/3.12/library/io.html) · [Python UTF-8 Mode](https://docs.python.org/3.12/library/os.html#utf8-mode) · [`pathlib`](https://docs.python.org/3.12/library/pathlib.html) · [PEP 538](https://peps.python.org/pep-0538/) · [PEP 540](https://peps.python.org/pep-0540/) · [PEP 597](https://peps.python.org/pep-0597/) · [PEP 686](https://peps.python.org/pep-0686/)
 
 ## 용어 풀이
@@ -1136,7 +1136,7 @@ p.mkdir(parents=True, exist_ok=True)
 * ★ **`csv` 문서는 파일을 `newline=''` 로 열라고 적는다**(*"it should be opened with `newline=''`"*). 동작 5 의 `''` 칸 — 끊되 안 바꾼다 — 이 그 까닭과 맞닿는다.
 * ★ **`encoding="locale"`**(3.10+) — 문서의 말로 *"can be used to specify the current locale's encoding explicitly"*. 「로캘 인코딩이 의도다」를 코드에 적는 값이다.
 * ★ **3.15 를 설치하게 되면 다시 돌릴 것** — 동작 4 의 환경 격자. 문서대로면 `LC_ALL=C PYTHONUTF8=0` 행만 깨지고 **아무것도 안 준 행의 기본이 UTF-8** 이 된다 — ★ **예측이지 측정이 아니다.**
-* ★ **윈도에서 다시 돌릴 것** — 동작 5 의 `[2]` `None` 칸이 `b'a\r\nb'` 가 **될 것이라는 말은 문서의 말**이다. 이 머신은 리눅스라 그 칸은 부적용이었다.
+* ★ **윈도에서 다시 돌릴 것** — 동작 5 의 `[2]` `None` 칸이 `b'a\r\nb'` 가 **될 것이라는 말은 문서의 말**이다. 이 머신은 리눅스라 그 칸은 해당 없음이었다.
 
 ## 실행 환경
 
@@ -1157,12 +1157,12 @@ p.mkdir(parents=True, exist_ok=True)
 ★★★ **이 문서는 시간·바이트 처리량을 한 번도 재지 않았다** — 「바이너리 모드가 빠르다」 같은 말은 하지 않는다.\
 **버전** — `EncodingWarning`·`encoding="locale"` **3.10** · `locale.getencoding` **3.11** · `Path.walk`·`relative_to(walk_up=)` **3.12** · UTF-8 모드 **3.7**(PEP 540) · UTF-8 기본 **3.15**(PEP 686 — 문서만).\
 ★ **구현 대 언어 보장 한 줄** — 모드 표·`newline` 규칙·UTF-8 모드의 켜지는 조건이 **라이브러리 보장**이고, 예외 **문구**와 `tell()` 이 돌려주는 **숫자의 뜻**은 CPython 의 것이다. **로캘 환경**(이 머신 `LANG=ko_KR.UTF-8`)은 관찰이다.\
-★ **흔들리는 칸 / 안 흔들리는 칸**
+★ **실행마다 달라지는 항목 / 달라지지 않는 항목**
 
-| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+| 실행마다 달라진다 | 달라지지 않는다(근거로 써도 되는 항목) |
 |---|---|
 | 머신의 로캘이 바뀌면 **아무 환경변수도 안 준 행**(그래서 환경 격자는 `env -i` 로 **행마다 환경 전체**를 적었다) | ★★ 격자 마지막 줄 **「… N / M」** · 디스크 바이트(`rb` 로 다시 읽은 것) |
-| 판이 오르면 예외 **문구**(3.11 과 3.12 의 `relative_to` 문구가 이미 다르다 — 동작 8) | 예외 **타입** · `(exit N)` · 경로 문자열(상대) |
+| 버전이 오르면 예외 **문구**(3.11 과 3.12 의 `relative_to` 문구가 이미 다르다 — 동작 8) | 예외 **타입** · `(exit N)` · 경로 문자열(상대) |
 | — (주소·시간·`set` 출력·`iterdir` 날것의 순서를 한 곳도 안 찍었다 — `iterdir` 은 `sorted` 로 찍었다) | `errno` 는 **이름**(`EEXIST`)으로 찍었다 · `[Errno 17]` 은 문구 안의 것 |
 
 **선행** — [06-strings-bytes-unicode](../06-strings-bytes-unicode/2-summary.md)(★★★ **텍스트 모드는 안에서 `decode`/`encode` 를 해 준다 — 그때 쓰는 인코딩이 이 주제의 절반이다**) ·

@@ -44,7 +44,7 @@
  [08] cosine_distance / vector_negative_inner_product L672 / L638   <=>, <#>
 ```
 
-연산자 하나가 SQL 함수로 불릴 때와 인덱스 안에서 쓰일 때 실제 계산이 어떻게 갈리는지 정리하면 다음과 같다.
+연산자 하나가 SQL 함수로 불릴 때와 인덱스 안에서 쓰일 때 실제 계산이 어떻게 달라지는지 정리하면 다음과 같다.
 
 ```text
  연산자   SQL 에서 불리는 함수            HNSW 가 쓰는 FUNCTION 1         HNSW FUNCTION 2

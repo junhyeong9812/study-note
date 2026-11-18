@@ -55,11 +55,11 @@ Kotlin 공식 레퍼런스는 **타입 → 클래스·객체 → 함수·람다 
 | 41 | 컬렉션 생성 — `listOf`/`mutableListOf`/`buildList`/`toList` | 표준 API | 만드는 시점에 가변성을 정하는 형태를 고르고 복사가 일어나는 자리를 판단할 수 있다 | 40 | — | A |
 | 42 | 변환 연산 — `map`/`flatMap`/`associate`/`zip` | 표준 API | 컬렉션을 다른 모양으로 바꾸는 연산을 타입으로 골라낼 수 있다 | 41 | — | A |
 | 43 | 필터·검색 — `filter`/`find`/`first`/`any`/`all`/`none` | 표준 API | 빈 컬렉션에서 각각이 무엇을 반환하거나 던지는지 예측할 수 있다 | 41 | — | A |
-| 44 | 집계·그룹핑 — `groupBy`/`partition`/`fold`/`reduce`/`sumOf` | 표준 API | `fold` 와 `reduce` 가 빈 입력에서 갈리는 지점을 설명할 수 있다 | 42 | — | A |
+| 44 | 집계·그룹핑 — `groupBy`/`partition`/`fold`/`reduce`/`sumOf` | 표준 API | `fold` 와 `reduce` 가 빈 입력에서 달라지는 지점을 설명할 수 있다 | 42 | — | A |
 | 45 | 정렬·부분 연산 — `sortedBy`/`take`/`drop`/`chunked`/`windowed` | 표준 API | `sort*` 가 제자리인지 새 리스트인지 이름으로 구분해 고를 수 있다 | 41 | [`../../../cs/algorithm/09-sliding-window/`](../../../cs/algorithm/09-sliding-window/) | A |
 | 46 | `Map` 조작 — `getOrPut`/`getOrElse`/`mapValues`/`filterKeys` | 표준 API | `null` 값과 "키 없음"이 겹칠 때 어느 함수가 맞는지 판단할 수 있다 | 41 | [`../../../cs/data-structure/05-hashmap/`](../../../cs/data-structure/05-hashmap/) | A |
 | 47 | `Sequence` — 지연 평가, 언제 `List` 보다 싼가 | 표준 API | 중간 컬렉션이 몇 개 생기는지 세고 `Sequence` 전환이 손해인 경우를 판단할 수 있다 | 42 | — | A |
-| 48 | 문자열 API — `split`/`trim*`/`pad*`/`Regex` | 표준 API | Java `String` API 와 갈리는 지점(확장 함수로 들어온 것들)을 설명할 수 있다 | 02 | [`../../../cs/algorithm/25-string-matching/`](../../../cs/algorithm/25-string-matching/) | B |
+| 48 | 문자열 API — `split`/`trim*`/`pad*`/`Regex` | 표준 API | Java `String` API 와 달라지는 지점(확장 함수로 들어온 것들)을 설명할 수 있다 | 02 | [`../../../cs/algorithm/25-string-matching/`](../../../cs/algorithm/25-string-matching/) | B |
 | 49 | `Result` 와 `runCatching` — 예외를 값으로 | 표준 API | 왜 `Result` 를 반환 타입으로 두는 것이 제한되는지 설명할 수 있다 | 34 | — | B |
 | 50 | `kotlin.time` — `Duration`·시간 측정 | 표준 API | 단위가 타입에 들어간 `Duration` 이 막는 실수를 설명할 수 있다 | 01 | — | C |
 | 51 | 계약 함수 — `require`/`check`/`error`/`TODO` | 표준 API | 어느 것이 어떤 예외를 던지고 어디에 써야 하는지(인자 검증 vs 상태 검증) 판단할 수 있다 | 34 | — | A |
@@ -89,7 +89,7 @@ Kotlin 공식 레퍼런스는 **타입 → 클래스·객체 → 함수·람다 
 | 19 `open`/`final` 기본값 | 09 상속과 오버라이딩 | 같은 JVM 디스패치 위에서 **기본값만 뒤집었다** — 무엇이 줄고 무엇이 불편해지는지 |
 | 22 `data class` · 26 `value class` | 14 `record` | 둘 다 "값을 값으로". record 는 **불변을 강제**하고 data class 는 **`var` 를 허용한다** — 방어선의 위치가 다르다 |
 | 23 `sealed` + `when` 완결성 | 15 `sealed` · 23 `switch` 패턴 매칭 | Java 는 21에서야 같은 자리에 도착했다. **Kotlin 이 먼저 한 것을 Java 가 어떻게 따라왔나** |
-| 40 읽기 전용 컬렉션 | 40 `List.of`·불변 팩토리 | "읽기 전용 **뷰**"(Kotlin)와 "진짜 불변 **객체**"(Java)의 차이 — 런타임 클래스를 보면 갈린다 |
+| 40 읽기 전용 컬렉션 | 40 `List.of`·불변 팩토리 | "읽기 전용 **뷰**"(Kotlin)와 "진짜 불변 **객체**"(Java)의 차이 — 런타임 클래스를 보면 달라진다 |
 | 34 검사 예외 없음 | 25 checked/unchecked 예외 | Kotlin 이 **없앤 것**이 Java 에서 무엇을 하고 있었는지 |
 | 13 확장 함수 | 11 `default` 메서드 | 둘 다 "남의 타입에 메서드 추가". 하나는 **정적 디스패치**, 하나는 **가상 디스패치** |
 | 14 scope function | 59~60 관용구 | Java 에 대응이 **없다**. 그래서 Kotlin 코드가 Java 개발자에게 낯설어지는 첫 지점 |
@@ -155,7 +155,7 @@ Kotlin 은 Java 와 달리 LTS 개념이 없고 **6개월 언어 릴리스 + 중
 | 23 `sealed interface` | Stable **1.5** | 1.4 이하는 `sealed class` 만 |
 | 24 data object | **1.9** | 이전에는 `object` 에 `toString` 수동 구현 |
 
-**버전에 갈리는 주제 = 9개**(02·06·07·16·23·24·26·29·38 · K2 영향은 04 스마트 캐스트에도 걸린다).
+**버전에 달라지는 주제 = 9개**(02·06·07·16·23·24·26·29·38 · K2 영향은 04 스마트 캐스트에도 걸린다).
 나머지 주제는 **2.0(K2) 이후 어느 버전에서도 같다.**
 3파일에는 **「kotlinc 2.4.20 · JRE 21.0.5 · `-jvm-target` 을 밝힌 실측」** 을 명시한다.
 ★ **못 잰 것도 적는다** — 예: `-language-version 1.9` 는 2.4.20 이 거부하므로 **K1 과의 비교는 이 환경에서 불가능**하다.

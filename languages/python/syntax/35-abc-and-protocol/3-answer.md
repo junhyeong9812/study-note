@@ -206,7 +206,7 @@ print("   RealSub 는 믹스인을 받나 :", RealSub().twice())
   ★★★ **동작 1이 보여 준 ABC 의 강제가 이 경로로 통째로 우회된다.**
   「ABC 를 쓰면 계약이 지켜진다」가 여기서 깨진다.
 * ★ **⑥ — `__subclasses__()` 에는 진짜 상속만 나온다**(`['RealSub']`).
-  **「누가 만족하나」를 묻는 창이 둘로 갈린다** — `isinstance` 는 등록을 보고 `__subclasses__()` 는 못 본다.
+  **「누가 만족하나」를 묻는 창이 둘로 나뉜다** — `isinstance` 는 등록을 보고 `__subclasses__()` 는 못 본다.
 
 ### 3. 막히는 것은 ④ 하나뿐 — `Explicit()` 는 만들어지고 `greet` 은 `None` 을 준다
 
@@ -444,13 +444,13 @@ print("   HasName.__protocol_attrs__ :", sorted(HasName.__protocol_attrs__))
 * **③ — 안 붙이면 `isinstance` 자체가 막힌다.**
   `Instance and class checks can only be used with @runtime_checkable protocols`.
   ★ **기본값**이 「**못 물어본다**」라는 것이 PEP 544 의 태도다.
-* ★★★ **④에서 둘이 갈린다.** `isinstance(Named(), HasName)` 는 **참**인데
+* ★★★ **④에서 둘이 달라진다.** `isinstance(Named(), HasName)` 는 **참**인데
   `issubclass(Named, HasName)` 는 `Protocols with non-method members don't support issubclass()` 로 막힌다.
   ★ **이유가 논리적이다** — 인스턴스는 **그 속성을 실제로 들고 있는지** 물어볼 수 있지만,
   클래스만 보고는 **인스턴스가 그 속성을 갖게 될지** 알 수 없다.
   ★ `__init__` 안에서 붙이는 속성은 **클래스 칸에 없기** 때문이다([29번](../29-classes-and-attribute-lookup/2-summary.md)의 두 칸).
 * ★ **⑤ — 프로토콜이 무엇을 보는지 자기가 들고 있다.** 다만 `__protocol_attrs__` 는
-  **3.12 에서 노출된 내부 이름**이라 흔들리는 칸이다.
+  **3.12 에서 노출된 내부 이름**이라 실행마다 달라지는 항목이다.
 
 ### 5. `Liar` 도 참이고, `__eq__` 만 정의한 클래스는 `Hashable` 에 거짓이다
 
@@ -804,7 +804,7 @@ print("   Protocol : ProtoBroken() 이 만들어졌다 ->", type(ProtoBroken()).
 | `__protocol_attrs__` 라는 **이름** | **CPython 구현** | 3.12 에서 노출 |
 | `Protocol` 하위의 `__abstractmethods__` 가 **비는 것** | **CPython 구현** | 문서가 이 경우를 안 적는다 |
 | 안 채운 메서드가 **`None` 을 돌려주는 것** | **CPython 구현** | 몸통의 `...` 이 그대로 도는 것이다 |
-| ABC 거부 문구의 **단수·복수** | **이 판의 관찰** | 3.12 에서 바뀐 꼴이다 |
+| ABC 거부 문구의 **단수·복수** | **이 버전의 관찰** | 3.12 에서 바뀐 꼴이다 |
 | ★★★ **타입 검사기가 잡아 주는 범위** | ★ **못 연 층** | **도구가 이 머신에 없다** |
 
 * ★★★ **못 연 층은 「안 돌려 본 것」이 아니라 「못 잰 것」(제3의 상태)으로 적는다.**
@@ -847,7 +847,7 @@ print("   Protocol : ProtoBroken() 이 만들어졌다 ->", type(ProtoBroken()).
 `runtime_checkable` 검사 중 **잡힌 경고는 0건**.
 ★ 「안 물어본 것」과 「물었는데 조용한 것」을 가르려고 **지점 수를 세어 적었다.**
 
-**구현 의존 항목** — 판이 오르면 다시 돌려야 하는 것.
+**구현 의존 항목** — 버전이 오르면 다시 돌려야 하는 것.
 
 | 항목 | 왜 |
 |---|---|
@@ -855,11 +855,11 @@ print("   Protocol : ProtoBroken() 이 만들어졌다 ->", type(ProtoBroken()).
 | `__protocol_attrs__` 라는 이름과 존재 | **3.12 에서 노출**됐다 |
 | `Protocol` 하위의 `__abstractmethods__` 가 비는 것 | 문서가 이 경우를 안 적는다 |
 | 안 채운 메서드가 `None` 을 주는 것 | 몸통의 `...` 이 그대로 도는 것이다 |
-| `runtime_checkable` 검사 중 **경고 0건** | 판이 오르면 붙을 수 있다 |
+| `runtime_checkable` 검사 중 **경고 0건** | 버전이 오르면 붙을 수 있다 |
 | 예외 **문구** 전부 | 종류는 명세, 문구는 아니다 |
 | ★★★ **이 머신에 검사기가 없는 것** | 머신의 상태다. **문서의 결론이 아니다** |
 
-★ **안 흔들리는 칸** — `isinstance`·`issubclass` 의 **참·거짓**,
+★ **달라지지 않는 항목** — `isinstance`·`issubclass` 의 **참·거짓**,
 `__mro__` 의 **순서**와 그 안에 무엇이 **있나 없나**,
 `sorted(__abstractmethods__)` 의 **내용**, 예외 **종류**, `(exit N)`.
 ★★ **이 주제가 못 연 창** — **타입 검사기.** 그래서 「검사기가 잡아 준다」는 문장이 한 줄도 없다.

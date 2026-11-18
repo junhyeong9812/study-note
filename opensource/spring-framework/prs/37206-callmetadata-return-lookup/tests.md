@@ -249,7 +249,7 @@ private void initializeSqlServerProcedureWithReturnValue() throws SQLException {
 리뷰·질의 과정에서 **임시 테스트를 붙여 돌려 보고 결과만 취한 뒤 파일을 원복한** 확인이 둘 있다.\
 커밋에는 없지만 판단의 근거이므로 기록해 둔다(원본: 작업 로그).
 
-> **probe(탐침 실행)** — 커밋에 남기지 않고 궁금한 것 하나만 확인하려고 임시로 돌려 보는 실행.\
+> **probe(probe 실행)** — 커밋에 남기지 않고 궁금한 것 하나만 확인하려고 임시로 돌려 보는 실행.\
 > 예: 인접 시나리오의 동작이 바뀌는지 보려고 테스트를 잠깐 붙였다가 결과만 적고 지운다.
 
 **probe 1 — `withReturnValue()` 없이 `RETURN_VALUE`를 선언한 경우.**\

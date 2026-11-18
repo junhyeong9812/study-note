@@ -74,7 +74,7 @@
 ### 9. 가상 스레드인데 처리량이 낮다
 
 - 의심 1: pinning(JDK 21~23). 블로킹 I/O를 감싼 `synchronized`(직접 코드나 드라이버·풀 라이브러리).
-  - 확인: `-Djdk.tracePinnedThreads=short`의 `reason:MONITOR` 스택, JFR `jdk.VirtualThreadPinned`(기본 켜짐, 20ms 문턱), 스레드 덤프에서 캐리어 `ForkJoinPool-1-worker-*` 전부가 `synchronized` 안 블로킹.
+  - 확인: `-Djdk.tracePinnedThreads=short`의 `reason:MONITOR` 스택, JFR `jdk.VirtualThreadPinned`(기본 켜짐, 20ms 임계값), 스레드 덤프에서 캐리어 `ForkJoinPool-1-worker-*` 전부가 `synchronized` 안 블로킹.
   - 대처: `ReentrantLock`으로 교체, 라이브러리 갱신, JDK 24+.
 - 의심 2: 하류 풀 고갈. 풀 대기 타임아웃 로그가 같이 늘면 이쪽이다 → 세마포어로 동시성 제한([reliability/39](../../reliability/39-async-io-gains-and-limits/2-summary.md)).
 - 의심 3: 작업이 사실 CPU 위주. CPU가 놀고 있다면 이 가설은 약하다.

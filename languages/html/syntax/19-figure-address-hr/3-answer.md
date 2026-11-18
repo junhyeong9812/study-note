@@ -142,7 +142,7 @@ $ google-chrome --headless --disable-gpu --no-sandbox --window-size=1000,800 --d
 **환경** — Google Chrome 151.0.7922.173 · Linux · headless · `--window-size=1000,800`. **엔진은 이것 하나다.**\
 ★★ **보조 기술 없음.** NVDA·VoiceOver·Orca 가 설치돼 있지 않다.
 
-**하네스** — [17번 주제](../17-table-structure/3-answer.md)의 `html17b-cdp.py` 를 그대로 쓴다. 이 주제는 **`page` 모드 + `window.__내부`** 로 CDP 역할·이름과 내부 덤프의 `nameFrom` 을 한 실행에 받고, **`ax`·`int` 모드**로 트리 원본을 찍는다. ★ 탐침 요소에는 전부 `id` 를 달았다 — 이 판은 `id` 없는 `generic` 을 트리에서 빼기 때문이다([13번 주제](../13-phrasing-semantics/2-summary.md) (2)).
+**하네스** — [17번 주제](../17-table-structure/3-answer.md)의 `html17b-cdp.py` 를 그대로 쓴다. 이 주제는 **`page` 모드 + `window.__내부`** 로 CDP 역할·이름과 내부 덤프의 `nameFrom` 을 한 실행에 받고, **`ax`·`int` 모드**로 트리 원본을 찍는다. ★ probe 요소에는 전부 `id` 를 달았다 — 이 버전은 `id` 없는 `generic` 을 트리에서 빼기 때문이다([13번 주제](../13-phrasing-semantics/2-summary.md) (2)).
 
 | 무엇을 | 몇 번 | 결과가 쓰인 곳 |
 |---|---|---|
@@ -152,7 +152,7 @@ $ google-chrome --headless --disable-gpu --no-sandbox --window-size=1000,800 --d
 
 **구현에 달린 항목**
 
-| 항목 | 이 판의 값 | 왜 다시 찍나 |
+| 항목 | 이 버전의 값 | 왜 다시 찍나 |
 |---|---|---|
 | `figcaption` 의 역할 이름 | **`Figcaption`** | HTML-AAM 은 `caption` — 구현 이름이다 |
 | `figure` 의 이름 | `figcaption` 에서 **안 온다** | 편집본과 같다 — 명세가 다시 바뀌면 따라 바뀔 수 있다 |
@@ -163,7 +163,7 @@ $ google-chrome --headless --disable-gpu --no-sandbox --window-size=1000,800 --d
 
 **못 잰 것**(「안 돌려 본 것」과 다르다) — ① **스크린리더의 캡션·연락처 읽기**(A8). ② **플랫폼 API 층의 캡션 관계**(IA2 의 `LABEL_FOR` 류) — CDP·내부 덤프는 그 위 층이다.
 
-**부적용인 창** — **창 ③·④·⑤·⑥.** 이 요소들은 글자·문서 모드·요청·렌더 차단 어느 것도 바꾸지 않는다 — **잴 것이 없다.**
+**해당 없는 창** — **창 ③·④·⑤·⑥.** 이 요소들은 글자·문서 모드·요청·렌더 차단 어느 것도 바꾸지 않는다 — **잴 것이 없다.**
 
 ## 용어 풀이
 

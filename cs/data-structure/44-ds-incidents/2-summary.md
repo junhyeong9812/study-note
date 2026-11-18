@@ -341,7 +341,7 @@ static final Map<OrderKey, Object> CACHE = new ConcurrentHashMap<>();
 
 - **현상**: 공격도 없는데 특정 고객 데이터의 배치만 수십 배 느리다.
 - **보이는 형태**: 프로파일 상위에 `HashMap$TreeNode.find`(재귀). 키 수가 두 배면 시간이 4배 이상(실험 A: 8,192 → 16,384에서 약 6배).
-- **원인**: 몇 필드만 더한 `hashCode`로 해시 값이 좁고, 키가 `Comparable`이 아니다. JEP 180의 개선은 `compareTo`로 키를 가를 수 있는 키를 전제로 한다.
+- **원인**: 몇 필드만 더한 `hashCode`로 해시 값이 좁고, 키가 `Comparable`이 아니다. JEP 180의 개선은 `compareTo`로 키를 구분할 수 있는 키를 전제로 한다.
 - **대처**: `record`나 `Objects.hash`로 `equals`에 쓰는 필드를 모두 섞는다. 충돌하는 서로 다른 키를 `compareTo`가 구별하게(0은 같은 키일 때만) `Comparable`을 구현한다. 테스트에서 키 집합의 서로 다른 `hashCode` 수를 확인한다.
 
 ### 3. 재현을 위해 해시 시드를 고정한 채 운영

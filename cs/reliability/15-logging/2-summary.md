@@ -235,7 +235,7 @@ static Runnable withMdc(Runnable task) {
 ```
 
 - 어느 쪽을 고르든 "버렸다"가 보이게 한다.
-  - Logback 1.5.18 `AsyncAppenderBase`는 버린 수를 세지 않는다. 문턱 아래 버림은 그냥 `return`이고, `neverBlock`의 `offer` 결과도 버린다(소스). Logback 단계의 유실 수가 필요하면 그 경로를 따로 계측한다(예: appender를 감싸 센다).
+  - Logback 1.5.18 `AsyncAppenderBase`는 버린 수를 세지 않는다. 임계값 아래 버림은 그냥 `return`이고, `neverBlock`의 `offer` 결과도 버린다(소스). Logback 단계의 유실 수가 필요하면 그 경로를 따로 계측한다(예: appender를 감싸 센다).
   - 수집기·에이전트의 드롭 카운터는 수집기 **이후**의 유실만 센다. 큐 남은 칸(`getRemainingCapacity()`)은 지금 얼마나 찼는지일 뿐 지난 유실 수가 아니다. 둘 다 "버릴 위험"의 신호로 함께 본다.
 
 ### 4. 진단 명령
@@ -275,7 +275,7 @@ df -h /var/lib/docker && du -sh /var/lib/docker/containers/*/*-json.log | sort -
 
 - 현상: 로그 수집기(또는 NFS 디스크)가 느려진 시각에 API p99가 같이 오른다. CPU는 한가하다.
 - 보이는 형태: 스레드 덤프에 `FileOutputStream.write`·소켓 쓰기에서 멈춘 요청 스레드가 많다. 위 실험의 sync처럼 호출마다 목적지 지연만큼 늘어난다.
-- 원인: 요청 스레드가 직접 I/O를 한다. 목적지의 꼬리 지연이 요청 경로에 들어온다.
+- 원인: 요청 스레드가 직접 I/O를 한다. 목적지의 테일 레이턴시가 요청 경로에 들어온다.
 - 대처: 비동기 appender로 떼어 내되 유실·멈춤 정책을 정한다. stdout으로 쓰고 전송은 수집기에 맡긴다(12-factor XI). 로그 양을 줄인다.
 
 ### 4. 비동기 큐 포화 → INFO가 조용히 사라지거나 WARN에서 수백 ms 멈춤

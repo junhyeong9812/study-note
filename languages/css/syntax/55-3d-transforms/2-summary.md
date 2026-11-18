@@ -103,7 +103,7 @@
 그림 해설 (한 단계씩):
 
 - ①과 ②의 **계산값이 완전히 같다.** 원근이 **부모에 있기 때문**이다 — 요소 자신의 `transform` 에는 흔적이 없다.\
-  ★ **계산값만 보면 ①과 ②를 구분할 수 없다.** 좌표를 재야 갈린다(77.13 대 87.48).
+  ★ **계산값만 보면 ①과 ②를 구분할 수 없다.** 좌표를 재야 달라진다(77.13 대 87.48).
 - ③은 **행렬에 원근 성분이 들어간다**(`0.00191511 = 1/400 × …`). 자기 상자 중심이 소실점이 된다.
 - ②와 ③의 **높이는 같은데**(90.39) **폭이 다르다**(87.48 대 78.17).\
   이 상자는 부모 안에서 **가로로만 치우쳐 있어서** 그렇다 — 부모 원근의 소실점은 부모 중앙이고, 자기 원근의 소실점은 자기 중앙이다.
@@ -155,7 +155,7 @@
   100% 100%       302px 122px       left=30.90 top= 2.73  138.92 x 101.06
 ```
 
-- **소실점 위치 하나로 폭이 44 에서 139 까지 갈린다** — 세 배 넘게 차이가 난다.
+- **소실점 위치 하나로 폭이 44 에서 139 까지 달라진다** — 세 배 넘게 차이가 난다.
 - 계산값은 `transform-origin` 처럼 **길이 둘**로 정규화된다.
 - `perspective-origin` 은 **`perspective` 를 준 요소(부모)에** 쓴다. 자식에 써 봐야 그 자식의 자손에게만 뜻이 있다.
 
@@ -262,7 +262,7 @@
   **계산값은 「무엇이 선언됐나」를 말하지 「무엇이 일어나나」를 말하지 않는다** — 이 주제의 대표 사례다.
 - **깨뜨리는 것들의 공통점**: 전부 **「안쪽을 한 장의 이미지로 합성해야 하는」 선언**이다.\
   `opacity`·`filter`·`mask`·`clip-path`·`mix-blend-mode`·`isolation`·`overflow` 가 그렇다 — [47번](../47-filter-and-backdrop-filter/2-summary.md)이 필터에서 같은 뿌리를 설명한다.
-- ★ **`opacity: 1` 과 `opacity: 0.99` 가 갈린다.** [22번](../22-stacking-context-and-z-index/2-summary.md)의 쌓임 맥락과 **같은 경계**다.
+- ★ **`opacity: 1` 과 `opacity: 0.99` 가 달라진다.** [22번](../22-stacking-context-and-z-index/2-summary.md)의 쌓임 맥락과 **같은 경계**다.
 - ★ **`will-change: transform` 은 안 깨뜨리는데 `will-change: opacity` 는 깨뜨린다.**\
   힌트를 준 속성이 평탄화를 일으키는 속성이면 **미리 그 효과가 적용된다**는 뜻이다.
 - ★ **`contain: paint` 는 안 깨뜨린다.** 자르기는 하는데 평탄화는 안 일어났다 — `overflow: hidden` 과 **결과가 다르다.**
@@ -449,12 +449,12 @@ transform: rotateY(45deg) perspective(400px);   /* 회전한 뒤에 원근이 �
 | `backface-visibility` 의 초기값이 `visible` 인 것 | **명세** |
 | **평탄화를 일으키는 조건이 있다**는 것 자체 | **명세**(css-transforms-2 — grouping property 류가 평탄화를 강제한다) |
 | **어느 선언이 그 목록에 드는지**(위 34벌 표) | ★ **이 브라우저에서 던져 본 결과다.** 명세의 열거와 한 줄씩 대조하지는 않았다 — `contain: paint` 와 `container-type` 이 특히 그렇다 |
-| `getComputedStyle().transformStyle` 이 **평탄화돼도 `preserve-3d`** 를 주는 것 | ★ **관찰**. 계산값과 사용값이 갈리는 자리다 |
+| `getComputedStyle().transformStyle` 이 **평탄화돼도 `preserve-3d`** 를 주는 것 | ★ **관찰**. 계산값과 사용값이 달라지는 자리다 |
 | 3D 공간에서 **`z-index` 가 z 위치를 못 이기는 것** | ★ **픽셀 관찰**. 명세의 3D 렌더링 맥락 정렬 규칙과 한 줄씩 대조하지는 않았다 |
 | `perspective` 가 **쌓임 맥락·포함 블록**을 만드는 것 | **명세** — 실측 표는 [22번](../22-stacking-context-and-z-index/2-summary.md)·[21번](../21-position-and-containing-block/2-summary.md) |
 | 좌표의 소수점(`96.47`·`53.20`) | ★ **한 판의 값**. 결론은 「기준값과 같냐 다르냐」에만 세웠다 |
 
-★ **흔들리는 칸 / 안 흔들리는 칸**
+★ **실행마다 달라지는 항목 / 달라지지 않는 항목**
 
 ```text
   안 흔들린다   깨졌나 안 깨졌나 (손자 폭이 기준값과 같은가)
@@ -484,10 +484,10 @@ transform: rotateY(45deg) perspective(400px);   /* 회전한 뒤에 원근이 �
 
 - 3D 함수는 **`perspective` 가 없으면 그냥 납작해진다** — 함수는 먹었는데 입체가 안 보인다.
 - **부모에 준 `perspective` 는 소실점이 하나**(부모 중앙)이고, **`perspective()` 는 요소마다 따로**다. 계산값으로는 ①과 ②가 구분되지 않는다.
-- `perspective-origin` 하나로 같은 회전의 폭이 **44px 에서 139px 까지** 갈렸다(실측).
+- `perspective-origin` 하나로 같은 회전의 폭이 **44px 에서 139px 까지** 달라졌다(실측).
 - **`transform-style: preserve-3d` 는 아주 쉽게 깨진다** — `overflow`(`visible` 아닌 전부) · `opacity` 1 미만 · `filter` · `backdrop-filter` · `clip-path` · `mask-image` · `mix-blend-mode` · `isolation` · `will-change: opacity|filter`.
 - ★★ **깨져도 `getComputedStyle().transformStyle` 은 `preserve-3d` 를 돌려준다** — 판정은 좌표나 픽셀로 한다.
-- **`contain: paint` 와 `will-change: transform` 은 안 깨뜨렸다**(실측) — `overflow: hidden`·`will-change: opacity` 와 갈린다.
+- **`contain: paint` 와 `will-change: transform` 은 안 깨뜨렸다**(실측) — `overflow: hidden`·`will-change: opacity` 와 달라진다.
 - 카드 뒤집기는 **`preserve-3d` 가 없으면 앞면만 계속 보인다**(실측).
 - **3D 공간에서는 `z-index` 가 z 위치를 못 이긴다** — 평탄화되는 순간 다시 `z-index` 가 이긴다.
 
@@ -495,7 +495,7 @@ transform: rotateY(45deg) perspective(400px);   /* 회전한 뒤에 원근이 �
 
 - [`../README.md`](../README.md) — CSS 문법·API 주제 목록(이 주제는 55번) · 「버전·지원 기준」의 Baseline 표
 - [54번 주제 — `transform` 2D](../54-transform-2d-and-origin/2-summary.md) — ★ **함수 순서·`transform-origin`·`%` 기준·인라인 제외·계산값 직렬화는 거기가 정본이다.** 여기는 **z 축이 생긴 뒤에 달라지는 것**만.
-- [22번 주제 — 쌓임 맥락과 `z-index`](../22-stacking-context-and-z-index/2-summary.md) — ★ **쌓임 맥락의 정본.** 여기는 「3D 공간에서는 `z-index` 가 진다」는 한 자리만. `opacity: 1` 과 `0.99` 가 갈리는 경계도 거기가 정본이다.
+- [22번 주제 — 쌓임 맥락과 `z-index`](../22-stacking-context-and-z-index/2-summary.md) — ★ **쌓임 맥락의 정본.** 여기는 「3D 공간에서는 `z-index` 가 진다」는 한 자리만. `opacity: 1` 과 `0.99` 가 달라지는 경계도 거기가 정본이다.
 - [21번 주제 — `position` 과 포함 블록](../21-position-and-containing-block/2-summary.md) — ★ **`perspective`·`will-change` 가 `fixed` 의 포함 블록을 가로채는 것의 정본.**
 - [47번 주제 — `filter`·`backdrop-filter`](../47-filter-and-backdrop-filter/2-summary.md) — ★ **「보정을 걸려면 안쪽을 한 장으로 눌러야 한다」는 뿌리가 거기 있다.** 평탄화 목록이 필터·마스크·혼합으로 가득한 이유가 같은 뿌리다.
 - [53번 주제 — `@keyframes` 와 `animation`](../53-keyframes-and-animation/2-summary.md) — 카드 뒤집기를 반복·왕복으로 만들 때

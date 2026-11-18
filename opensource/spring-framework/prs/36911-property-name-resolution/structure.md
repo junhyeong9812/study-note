@@ -91,7 +91,7 @@ Field field = ReflectionUtils.findField(declaringClass, name);
 ```
 
 이름이 빈 문자열이면 `getField()`가 `null`을 돌려주고, **예외 없이** 필드 애노테이션이 누락된다.\
-이 무음 경로가 잘못된 이름이 실피해로 이어지는 통로다.
+이 조용한 경로가 잘못된 이름이 실피해로 이어지는 통로다.
 
 한 가지 더, 이 PR이 도입한 `isPlainAccessor`는 `spring-beans`에 이미 있던 같은 이름 판별식의 핵심 신호를 옮겨온 것이다.\
 두 판별식을 나란히 두면 무엇을 가져오고 무엇을 뺐는지가 보인다.
@@ -188,7 +188,7 @@ return StringUtils.uncapitalize(this.readMethod.getName().substring(index));
 ```
 
 두 번째 시나리오는 `budget()`처럼 `get`을 **중간에** 품은 이름이다.\
-같은 경로를 타되 갈림길이 첫 분기에서 갈린다.
+같은 경로를 타되 갈림길이 첫 분기에서 달라진다.
 
 ```text
 Method budget()
@@ -299,7 +299,7 @@ isPlainAccessor(method)                            (Property.java:167-180)
    └─ NO  ─▶ return true    (record backing field, 데이터 클래스 필드)
 ```
 
-이름이 정해진 뒤의 소비 분기도 결함의 무음성을 설명하므로 함께 둔다.
+이름이 정해진 뒤의 소비 분기도 결함의 드러나지 않는 성질을 설명하므로 함께 둔다.
 
 ```text
 getField()                                          (Property.java:238-256)
@@ -356,7 +356,7 @@ spring-beans/…/beans/GenericTypeAwarePropertyDescriptor.java:195       getType
 
 갈래 A가 왜 `resolveName()`을 태웠는지는 `findGetterForProperty`의 구조가 설명한다.\
 이 메서드는 요청받은 프로퍼티 이름으로 `getXxx` -> `isXxx` -> **접두사 없는 `xxx`** 순으로 찾는데(`ReflectivePropertyAccessor.java:389-408`), 세 번째 폴백이 record·Kotlin data class 접근자를 잡아 준다.\
-즉 SpEL은 이미 정확한 이름을 손에 쥔 채 메서드를 찾아 놓고, 그 이름을 버리고 메서드 이름에서 다시 유도하게 만들고 있었다.
+즉 SpEL은 이미 정확한 이름을 손에 잡은 채 메서드를 찾아 놓고, 그 이름을 버리고 메서드 이름에서 다시 유도하게 만들고 있었다.
 
 ```java
 // ReflectivePropertyAccessor.java:396-402
@@ -420,7 +420,7 @@ PR 본문이 드는 예가 Kotlin의 `val isUrgent`인데, Kotlin은 `is`로 시
 > 예: Kotlin `val isUrgent`와 record 컴포넌트 `isUrgent`는 소스는 달라도 바이트코드에서는 "private final 필드 + 동명 무인자 메서드"로 똑같이 보인다.
 
 **포함 판정과 시작 판정의 차이가 언제 드러나는가.**\
-`indexOf(prefix) != -1`은 `startsWith(prefix)`보다 넓은 조건이고, 두 조건이 갈리는 입력은 "접두사를 품고 있지만 그것으로 시작하지는 않는 이름"이다.\
+`indexOf(prefix) != -1`은 `startsWith(prefix)`보다 넓은 조건이고, 두 조건이 달라지는 입력은 "접두사를 품고 있지만 그것으로 시작하지는 않는 이름"이다.\
 JavaBeans만 존재하던 시절에는 그런 입력이 애초에 들어올 수 없었으므로(읽기 메서드는 반드시 `get`/`is`로 시작) 두 조건이 관측상 동치였다.\
 gh-26029가 무접두사 접근자를 입력 집합에 추가하는 순간 동치가 깨졌는데, 코드는 그대로 남아 있었다 — 조건식이 틀린 게 아니라 **전제가 사라진** 유형의 결함이다.
 

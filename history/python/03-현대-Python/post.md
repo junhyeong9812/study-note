@@ -623,7 +623,7 @@ except* (TypeError, KeyError) as eg:
     print("타입/키 오류 처리:", eg.exceptions)
 ```
 
-위 코드의 예외 셋이 `except*` 둘에 어떻게 갈리는지를 그리면 이렇다.
+위 코드의 예외 셋이 `except*` 둘에 어떻게 달라지는지를 그리면 이렇다.
 
 ```text
 ExceptionGroup("동시 작업 실패")

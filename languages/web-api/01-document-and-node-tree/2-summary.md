@@ -2,11 +2,11 @@
 
 **근거로 쓸 칸을 미리 가른다.**
 
-| 안 흔들리는 칸 (근거로 쓴다) | 흔들리는 칸 (근거로 쓰지 않는다) |
+| 달라지지 않는 항목 (근거로 쓴다) | 실행마다 달라지는 항목 (근거로 쓰지 않는다) |
 |---|---|
 | `--dump-dom` 이 뱉은 트리 문자열 · 노드 개수 · `nodeType` 값 · `nodeName` · API 반환값(`null` 포함) · 예외 이름과 메시지 | Chrome 판 번호 · `performance.now()` 수치 · 스크린샷 안티에일리어싱 |
 
-이 주제의 블록에는 **흔들리는 칸이 하나도 없다** — 수치를 재는 자리가 없기 때문이다. 시간 수치는 [04번 주제](../04-textcontent-innerhtml-innertext/2-summary.md)에만 나온다.
+이 주제의 블록에는 **실행마다 달라지는 항목이 하나도 없다** — 수치를 재는 자리가 없기 때문이다. 시간 수치는 [04번 주제](../04-textcontent-innerhtml-innertext/2-summary.md)에만 나온다.
 
 ## 한눈에 — 쉽게 말하면
 
@@ -316,7 +316,7 @@ children[1]    nodeName=P
 
 ### (3) 탐색 쌍 — `Node` 판과 `Element` 판이 따로 있다
 
-**언제 쓰나** — 형제·부모를 따라 걸어갈 때. **쌍 중 어느 쪽을 쓰느냐로 결과가 갈린다.**
+**언제 쓰나** — 형제·부모를 따라 걸어갈 때. **쌍 중 어느 쪽을 쓰느냐로 결과가 달라진다.**
 
 ```html
 <!-- ex01b.html -->
@@ -399,7 +399,7 @@ frag 안 span.parentElement = null
 - 쌍은 여섯이다 — `firstChild`/`firstElementChild` · `lastChild`/`lastElementChild` · `nextSibling`/`nextElementSibling` · `previousSibling`/`previousElementSibling` · `childNodes`/`children` · `parentNode`/`parentElement`.
 - **부모 쌍만 성격이 다르다.** 「건너뛴다」가 아니라 「**부모가 요소가 아니면 `null`**」이다. 건너뛸 대상이 애초에 없다 — 부모는 하나뿐이니까.
 
-### (4) ★ 나무의 꼭대기에서 둘이 갈린다
+### (4) ★ 나무의 꼭대기에서 둘이 달라진다
 
 **언제 쓰나** — 조상을 타고 올라가는 반복문을 쓸 때. **여기서 무한 루프나 `null` 참조가 난다.**
 
@@ -505,7 +505,7 @@ node.children                       // Text·Comment 노드에는 없다(undefin
 
 ### 어디서 헷갈리나
 
-- **`nodeName` 의 대소문자**는 문서 종류에 달렸다. HTML 문서의 HTML 요소는 **대문자**(`P`)이고, SVG 요소나 XML 문서에서는 **원래 대소문자 그대로**다([04번 주제](../04-textcontent-innerhtml-innertext/2-summary.md)에 `SCRIPT,IMG,svg` 로 갈린 실측이 있다).
+- **`nodeName` 의 대소문자**는 문서 종류에 달렸다. HTML 문서의 HTML 요소는 **대문자**(`P`)이고, SVG 요소나 XML 문서에서는 **원래 대소문자 그대로**다([04번 주제](../04-textcontent-innerhtml-innertext/2-summary.md)에 `SCRIPT,IMG,svg` 로 달라진 실측이 있다).
 - **`tagName` 은 `Element` 에만 있고 `nodeName` 은 모든 노드에 있다.** 요소에서는 둘이 같은 값이다.
 - **「자식이 없다」를 `firstChild === null` 로 판정하면 공백에 걸린다.** 요소 기준이면 `firstElementChild === null` 이나 `childElementCount === 0` 이다.
 
@@ -556,7 +556,7 @@ HTML 문서의 HTML 요소는 **대문자**다. `n.nodeName === 'p'` 는 영원�
 | 소스의 줄바꿈·들여쓰기가 `Text` 노드가 되는 것 | **명세**(HTML 파싱 알고리즘). 트리 모양의 정본은 HTML 갈래다 |
 | 연속된 공백이 **노드 하나로** 묶이는 것 | **명세**(파서가 문자들을 모아 한 텍스트 노드로 삽입) |
 | `--dump-dom` 이 뱉는 **직렬화 형태**(속성 순서·빈 속성 `hidden=""`) | **명세**(HTML 직렬화 알고리즘) + **관찰**(Chrome 151) |
-| `document.implementation.createHTMLDocument` 가 만든 문서의 구조 | **명세**. 다만 위 출력의 세부는 이 판의 관찰이다 |
+| `document.implementation.createHTMLDocument` 가 만든 문서의 구조 | **명세**. 다만 위 출력의 세부는 이 버전의 관찰이다 |
 | **`--dump-dom` 이 로드 완료 시점을 잡는 것** | **관찰**(Chrome 151 headless). 명세와 무관한 도구 동작이다 |
 
 ## 언제 쓰고 언제 안 쓰나

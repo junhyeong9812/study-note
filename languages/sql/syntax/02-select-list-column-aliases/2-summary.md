@@ -223,7 +223,7 @@ ERROR 1055 (42000) at line 1: Expression #1 of SELECT list is not in GROUP BY cl
 
 ---
 
-### 4. `HAVING` — 두 엔진이 갈리는 유일한 칸
+### 4. `HAVING` — 두 엔진이 달라지는 유일한 칸
 
 **언제 쓰나** — 그룹 조건에 집계 별칭을 쓰고 싶을 때. 이 주제에서 이식성이 깨지는 자리다.
 
@@ -370,7 +370,7 @@ ERROR 1060 (42S21) at line 1: Duplicate column name 'id'
 
 #### 방언 — 중복 열 이름을 가진 파생 테이블 자체가 성립하나
 
-에러 메시지가 다른 것에는 이유가 있다. **바깥에서 `id` 를 안 골라도** 결과가 갈린다.
+에러 메시지가 다른 것에는 이유가 있다. **바깥에서 `id` 를 안 골라도** 결과가 달라진다.
 
 ```text
 ### SQL: SELECT * FROM (SELECT * FROM emp e JOIN dept d ON e.dept_id = d.id) t;
@@ -421,7 +421,7 @@ ERROR 1060 (42S21) at line 1: Duplicate column name 'id'
   -> 큰따옴표로 감싸면 PG 도 대소문자를 보존한다
 ```
 
-예약어를 별칭으로 쓸 때도 갈린다.
+예약어를 별칭으로 쓸 때도 달라진다.
 
 ```text
 ### SQL: SELECT id AS from FROM emp ORDER BY id LIMIT 1;
@@ -534,7 +534,7 @@ ORDER BY <식 | 별칭 | 서수>
 - **기존 열 이름과 같은 별칭은 붙이지 않는다.** 한 질의 안에서 같은 글자가 두 뜻이 된다.
 - **서수는 콘솔에서만.** 저장되는 질의에는 이름을 적는다.
 - **`SELECT *` 는 탐색할 때만.** 뷰·애플리케이션·`INSERT ... SELECT` 에는 열을 명시한다.
-- **이식할 질의는 `HAVING` 에 식을 적고, 별칭은 소문자로 쓴다.** 두 규칙만 지키면 이 주제에서 갈리는 자리가 없어진다.
+- **이식할 질의는 `HAVING` 에 식을 적고, 별칭은 소문자로 쓴다.** 두 규칙만 지키면 이 주제에서 달라지는 자리가 없어진다.
 
 ## 핵심 문장
 
@@ -587,6 +587,6 @@ ORDER BY <식 | 별칭 | 서수>
 
 **기준 소스** — [PostgreSQL 18 · SELECT](https://www.postgresql.org/docs/18/sql-select.html) · [MySQL 8.4 · SELECT Statement](https://dev.mysql.com/doc/refman/8.4/en/select.html)\
 **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-본문에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-**버전** — 별칭 규칙 자체는 두 엔진 모두 오래전부터 있다. 이 주제에서 버전에 갈리는 것은 없다.\
+본문에 실린 출력은 **전부 이 두 서버에 실제로 실행해서 받은 것**이다. 지어낸 출력은 없다.\
+**버전** — 별칭 규칙 자체는 두 엔진 모두 오래전부터 있다. 이 주제에서 버전에 달라지는 것은 없다.\
 **선행** — [01 논리적 질의 처리 순서](../01-logical-query-processing-order/). 이 주제는 01의 여덟 칸 중 **5번 칸 하나를 확대한 것**이다.

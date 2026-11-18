@@ -49,7 +49,7 @@
 
 - Martin(『Clean Code』, APOSD 12.6에 인용): 주석은 기껏해야 필요악이고, 코드로 의도를 표현하지 못한 실패를 보상하는 것이다.
 - Ousterhout(APOSD 12.6 "A different opinion: comments are failures"): 주석이 담는 정보는 코드와 종류가 달라 코드로 대신할 수 없다. 메서드를 쪼개 이름으로 주석을 대신하면 `isLeastRelevantMultipleOfNextLargerPrimeFactor` 같은 긴 이름이 생긴다.
-- 대담 요약(2024-09~2025-02): Ousterhout는 같은 코드에 5~10배 많은 주석을 쓸 것이라 했다. 둘은 공개 API에는 주석이 필요하다는 데 동의했다. 팀 내부 인터페이스에 주석이 필요한지에서 갈렸다(Martin은 필요가 적다고 봤다). 주석 전반의 가치 평가도 다르다. Ousterhout는 "빠진 주석"을, Martin은 "나쁜 주석"을 더 큰 비용으로 본다.
+- 대담 요약(2024-09~2025-02): Ousterhout는 같은 코드에 5~10배 많은 주석을 쓸 것이라 했다. 둘은 공개 API에는 주석이 필요하다는 데 동의했다. 팀 내부 인터페이스에 주석이 필요한지에서 달라졌다(Martin은 필요가 적다고 봤다). 주석 전반의 가치 평가도 다르다. Ousterhout는 "빠진 주석"을, Martin은 "나쁜 주석"을 더 큰 비용으로 본다.
 - 공통 지점: 구현 코드 안의 주석은 코드가 분명하지 않을 때만 필요하다.
 - Fowler·Beck(『Refactoring』 1판 3장 "Comments", Pearson 샘플 PDF): 주석은 나쁜 냄새가 아니라 좋은 냄새다. 다만 나쁜 코드를 덮는 탈취제(deodorant)로 쓰이는 일이 많다. 먼저 리팩터링으로 주석이 필요 없게 해 보고, "A comment is a good place to say why you did something."
 

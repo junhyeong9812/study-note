@@ -588,7 +588,7 @@ int main() {
 (exit 0)
 ```
 
-- ★★★ **잡히지 않으면 `~D` 가 한 줄도 없다** — `terminate called after throwing an instance of 'std::runtime_error'` · `134`. cppreference: 「잡히지 않은 예외에서 **되감기가 일어나는지는 구현 정의**」 — 이 판은 안 되감았다.
+- ★★★ **잡히지 않으면 `~D` 가 한 줄도 없다** — `terminate called after throwing an instance of 'std::runtime_error'` · `134`. cppreference: 「잡히지 않은 예외에서 **되감기가 일어나는지는 구현 정의**」 — 이 버전은 안 되감았다.
 - ★★ **잡으면** `~D inner` → `[catch] stop` → `[2]` → `~D main`.
 - ★★★ **Rust 와의 차이** — Rust 기본 전략은 **잡는 코드가 없어도 되감는다**(5번). C++ 은 **`catch` 가 없으면 구현에 맡긴다.**
 

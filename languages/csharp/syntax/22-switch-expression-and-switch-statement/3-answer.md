@@ -273,7 +273,7 @@ class Program {
 **왜 그런가**
 
 - ★★★ **`switch` 문은 완전성을 안 본다** — `-warn:9` 로도 조용하다. 안 맞은 `Square` 는 **아무 일 없이 지나간다**(Learn — 「제어가 빠져나간다」).
-- ★ [20번](../20-enum-and-flags/) 탐침 6 이 `enum` 에서 같은 것을 봤다.
+- ★ [20번](../20-enum-and-flags/) probe 6 이 `enum` 에서 같은 것을 봤다.
 
 ### 7. ★★★ `'_'` 는 **「이 컴파일 단위가 모르는 파생」** — `closed` 는 미리보기 + 특성 직접 정의로만 돌았다
 
@@ -357,12 +357,12 @@ j22b/Ex22b.java:6: error: the switch expression does not cover all possible inpu
 **왜 그런가**
 
 - ★★★ **`the switch expression does not cover all possible input values`**(`cc exit=1`) — `permits` 가 **닫힌 목록**이라 Java 는 누락을 **에러**로 막고, 다 적으면 `default` 가 필요 없다.
-- ★★ **Kotlin `when` — 에러**(`'when' expression must be exhaustive`, [Kotlin 23번](../../../kotlin/syntax/23-sealed-classes-and-when-exhaustiveness/)) · **Rust `match` — `E0004` 에러**([Rust 18번](../../../rust/syntax/18-match-and-exhaustiveness/)). 이 판에서 둘은 안 던졌다.
-- ★★ C# 에서는 **경고를 에러로 올리는 설정**(`-warnaserror:CS8509` 류)이 필요하다 — **이 판에서 그 플래그를 던지지는 않았다.**
+- ★★ **Kotlin `when` — 에러**(`'when' expression must be exhaustive`, [Kotlin 23번](../../../kotlin/syntax/23-sealed-classes-and-when-exhaustiveness/)) · **Rust `match` — `E0004` 에러**([Rust 18번](../../../rust/syntax/18-match-and-exhaustiveness/)). 이 버전에서 둘은 안 던졌다.
+- ★★ C# 에서는 **경고를 에러로 올리는 설정**(`-warnaserror:CS8509` 류)이 필요하다 — **이 버전에서 그 플래그를 던지지는 않았다.**
 
 ### 9. ★★ **`L2` 에 `CS8509`**(예시 `{ Length: 2 }`) — **실측을 근거로** 적는다
 
-- ★★ Learn 의 「목록 패턴은 경고를 안 낸다」와 **이 판의 Roslyn 이 다르다.** 1번 격자 줄 23 이 그 블록이다.
+- ★★ Learn 의 「목록 패턴은 경고를 안 낸다」와 **이 버전의 Roslyn 이 다르다.** 1번 격자 줄 23 이 그 블록이다.
 - ★ 문서는 **「무엇이 옳은가」** 를, 실행은 **「지금 무엇이 되나」** 를 말한다 — 이 문서는 **실측 + 「Learn 과 다름」** 을 함께 적었다.
 
 ### 10. ★★ **식**은 완전성을 경고하고 안 맞으면 예외 · **문**은 흘러내림만 막고 안 맞으면 지나간다
@@ -394,7 +394,7 @@ j22b/Ex22b.java:6: error: the switch expression does not cover all possible inpu
 | `Ex22.java` · `Ex22b.java` | javac 2회 · java 1회 | ★★★ 다 적으면 통과 · 빼면 **에러** |
 | `cs22b-form.cs` 형태 | csc 1회 · 실행 1회 | `A` · `ArgumentOutOfRangeException` · `3.14` · `낮음` |
 
-**구현 의존 항목** — 다음은 **이 판(.NET SDK 10.0.401 · 런타임 10.0.12 · javac 21.0.5)에서만** 그렇다.
+**구현 의존 항목** — 다음은 **이 버전(.NET SDK 10.0.401 · 런타임 10.0.12 · javac 21.0.5)에서만** 그렇다.
 
 - ★★★ **완전성 누락이 경고인 것** · **예시 패턴** · **목록 패턴에도 경고가 나는 것**(Learn 과 다름).
 - ★★★ **`closed` 의 동작 전부** — 미리보기이고, 특성을 흉내 냈다.
@@ -405,7 +405,7 @@ j22b/Ex22b.java:6: error: the switch expression does not cover all possible inpu
 
 **안 돌려 본 것 / 못 잰 것 / 잴 것이 없는 것**
 
-- **안 돌려 본 것** — ★★ **`-warnaserror:CS8509`** · ★ **`closed` 의 다른 어셈블리 규칙** · ★ **`switch` 문의 점프 표 IL** · ★ **Kotlin·Rust 를 이 판에서 직접**.
+- **안 돌려 본 것** — ★★ **`-warnaserror:CS8509`** · ★ **`closed` 의 다른 어셈블리 규칙** · ★ **`switch` 문의 점프 표 IL** · ★ **Kotlin·Rust 를 이 버전에서 직접**.
 - **못 잰 것** — 없다.
 - **잴 것이 없는 것** — ★ **④ 할당 바이트** — 완전성은 컴파일 시점의 판정이다.
 
@@ -422,5 +422,5 @@ j22b/Ex22b.java:6: error: the switch expression does not cover all possible inpu
 진단은 **`-preferreduilang:en-US`** 로 영어로 고정했다.\
 ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 손으로 옮긴 줄은 없다.\
 ★ 진단을 싣는 블록은 전부 **그 진단을 낸 소스를 같은 블록 안에** 다시 싣는다(`===== 소스: … =====`).
-**읽는 법** — **진단 문구, 특히 「For example」 뒤의 예시 패턴**은 흔들리는 칸이다.\
+**읽는 법** — **진단 문구, 특히 「For example」 뒤의 예시 패턴**은 실행마다 달라지는 항목이다.\
 근거로 쓰는 것은 **진단 코드와 `(행,열)` · `cc exit` · 「완전성 진단이 붙은 칸 N / M」 · 옵코드** 다.

@@ -17,7 +17,7 @@ javac 21.0.5
 | **언어 명세(ECMA-334)** | ★★★ **C# 언어가 약속한 것** | ★★★ 반복자 메서드를 부르면 **열거자 객체만** 돌아오고 본문은 **`MoveNext` 가** 돌린다 · `yield return` 에서 **멈추고** 다음 `MoveNext` 에서 **이어진다** · `Dispose` 가 **멈춘 자리의 `finally`** 를 돌린다 · `yield` 금지 자리 |
 | **컴파일러 구현(Roslyn)** | ★★★ 그것을 **어떻게 적나** | ★★★ 중첩 클래스 **`<Numbers>d__0`** · 필드 **`<>1__state`·`<>2__current`·`<>3__limit`·`<>l__initialThreadId`·`<i>5__2`** · `MoveNext` 의 **`switch`** · 상태 값 **`-2`/`0`/`1`/`-1`** · ★★ **첫 `GetEnumerator` 는 자기 자신을 돌려준다 · `Dispose` 뒤 상태를 `-2` 로 되돌려 재사용** |
 | **BCL(LINQ)** | 라이브러리 | ★★ `Select`·`Where`·`Take` 가 **게으른 반복자** — 사슬을 만들 때 로그 0 줄 |
-| **이 판의 관찰** | .NET 10.0.12 · linux-x64 · javac 21.0.5 | 할당 바이트 · 진단 문구 |
+| **이 버전의 관찰** | .NET 10.0.12 · linux-x64 · javac 21.0.5 | 할당 바이트 · 진단 문구 |
 
 ★★★ **이 주제의 층 구분이 급소다 —**\
 **「호출 시점이 아니라 열거 시점에 실행된다」는 명세**다. **상태 기계의 클래스 이름 · 필드 이름 · 상태 값 · `switch` 는 Roslyn 구현**이다 — 명세는 「멈췄다가 이어진다」만 말하고 **어떻게** 멈추는지는 말하지 않는다. (3)의 **「두 번 열거해도 객체가 하나」** 는 그 구현의 귀결이지 명세가 아니다.
@@ -41,7 +41,7 @@ javac 21.0.5
 | 덮으면 `finally` | ★★★ `break` · 예외 · `First()` 는 `finally` · **`Dispose` 안 부름은 안 돈다** — **7 / 10** | (4) |
 | 입구 검사가 늦다 | ★★★ `Doubled(null)` **호출 : 돌아옴** · 열거 : `ArgumentNullException` | (2) |
 
-★★★ **이 주제의 본체 그림 — 상태 기계.**
+★★★ **이 주제의 핵심 그림 — 상태 기계.**
 
 ```text
    소스                                          Roslyn 이 만든 것
@@ -83,7 +83,7 @@ javac 21.0.5
 
 ### (0) 이 주제가 쓰는 창
 
-★★★ **본체 창은 ③ 리플렉션 + ① IL 덤프다.**
+★★★ **핵심 창은 ③ 리플렉션 + ① IL 덤프다.**
 
 | 창 | 무엇을 보여 주나 | 이 주제에서 |
 |---|---|---|
@@ -92,7 +92,7 @@ javac 21.0.5
 | ★★★ **실행 로그** | ★★★ 「언제 도나」 — `본문:` 줄 · `finally` 줄 · `map(…)`/`filter(…)` 호출 순서 · 본문 실행 횟수 | (1)(2)(4)(6)(7) |
 | ★★ **② 진단 격자** | ★★ `yield` 금지 자리 여덟 코드 · `CS8022`(C# 1) · javac `not a statement` | (5) |
 | ★★ **④ 할당 바이트** | ★★ 부르기만 · 한 번 열거 · **두 번 열거가 같은 32000** — 2×2 | (8) |
-| **부적용인 창** | 없다 | — |
+| **해당 없는 창** | 없다 | — |
 
 ### (1) ★★★ 본체 — 부를 때는 0 줄, `MoveNext` 가 한 토막씩
 
@@ -371,7 +371,7 @@ class Program {
 - ★★★ **`Numbers` 의 IL 에 `for` 가 없다** — **`ldc.i4.s -2` · `newobj <Numbers>d__0::.ctor` · `stfld <>3__limit` · `ret`**. 호출은 **객체를 만들고 인자를 적는 것**이 전부다. 이것이 「호출 시점에 안 돈다」의 **IL 증명**이다.
 - ★★★ **상태 값** — `[1]` 만든 직후 **`-2`** · `[2]` 첫 `GetEnumerator` 뒤 **`0`** · `[4]`·`[5]` `MoveNext → True` 뒤 **`1`**(멈춤) · `[6]` `False` 뒤 **`-1`**(끝).
 - ★★★ **`[2]` 첫 `GetEnumerator` 는 `ReferenceEquals(seq, e) = True` — 자기 자신을 돌려준다** · **`[3]` 두 번째는 `False`** — 이미 쓰는 중이라 **새 객체**를 만든다(상태 `0`). `<>l__initialThreadId` 와 상태 `-2` 가 그 판단의 재료다(Roslyn 구현).
-- ★★ **`[7]` `Dispose` 뒤 상태가 `-2` · `[8]` 그 뒤 `GetEnumerator` 는 다시 `True`(같은 객체)** — **이 판의 Roslyn 은 다 쓴 객체를 되살려 쓴다.** (8)의 할당이 이것으로 설명된다.
+- ★★ **`[7]` `Dispose` 뒤 상태가 `-2` · `[8]` 그 뒤 `GetEnumerator` 는 다시 `True`(같은 객체)** — **이 버전의 Roslyn 은 다 쓴 객체를 되살려 쓴다.** (8)의 할당이 이것으로 설명된다.
 - ★★★ **`Three` 의 `MoveNext` — `switch (IL_001f, IL_003a, IL_0055, IL_0070)` 갈래 넷** — `yield` 셋 + 끝 하나. 갈래마다 **`state = -1`(실행 중) → `<>2__current` 에 값 → `state = N` → `return true`**. 본체 그림이 이 덤프를 그대로 읽은 것이다.
 - ★★ **`Numbers` 의 `MoveNext` 는 `switch` 가 아니라 `brfalse.s`/`beq.s`** — 상태가 **둘(0 · 1)** 뿐이라 Roslyn 이 비교 두 번으로 적었다. `for` 고리 자체는 `<i>5__2` 필드를 `ldfld`/`stfld` 하는 **보통 고리**다.
 
@@ -642,9 +642,9 @@ class Program {
 네 판에서 갈린 줄 0 / 3
 ```
 
-- ★★★ **네 판에서 갈린 줄 0 / 3 · 세 줄이 전부 32000** — **`[1]` 부르기만 해도** 본문은 0 줄이지만 **상태 기계 객체는 생긴다.**
+- ★★★ **네 버전에서 달라진 줄 0 / 3 · 세 줄이 전부 32000** — **`[1]` 부르기만 해도** 본문은 0 줄이지만 **상태 기계 객체는 생긴다.**
 - ★★★ **`[2]` 부르고 한 번 `foreach` 가 `[1]` 과 같다** — 첫 `GetEnumerator` 가 **자기 자신**을 돌려주므로((3) `[2]`) 열거자를 따로 안 만든다.
-- ★★★ **`[3]` 같은 결과를 두 번 `foreach` 해도 같다** — 첫 `foreach` 의 `Dispose` 가 상태를 `-2` 로 되돌려((3) `[7]`) **두 번째 `GetEnumerator` 가 같은 객체를 재사용**했다((3) `[8]`). ★ **이 판 Roslyn 의 구현**이다 — 명세는 「두 번째 열거에 새 객체를 쓰느냐」를 정하지 않는다.
+- ★★★ **`[3]` 같은 결과를 두 번 `foreach` 해도 같다** — 첫 `foreach` 의 `Dispose` 가 상태를 `-2` 로 되돌려((3) `[7]`) **두 번째 `GetEnumerator` 가 같은 객체를 재사용**했다((3) `[8]`). ★ **이 버전 Roslyn 의 구현**이다 — 명세는 「두 번째 열거에 새 객체를 쓰느냐」를 정하지 않는다.
 - ★ **시간은 안 쟀다.**
 
 ## 문법 — 형태와 규칙
@@ -713,7 +713,7 @@ Console.WriteLine($"{string.Join(",", Evens(8))} · {string.Join(",", UntilNegat
 | **클래스 `<M>d__N` · 필드 `<>1__state`·`<>2__current`·`<>3__x` · 상태 값 `-2/0/1/-1` · `switch`** | ★★★ **Roslyn 구현** | (3) |
 | **첫 `GetEnumerator` 가 자기 자신 · `Dispose` 뒤 `-2` 로 재사용** | ★★★ **Roslyn 구현** | (3)(8) |
 | **LINQ `Select`·`Where`·`Take` 가 게으르다** | ★★ **BCL 계약**(문서화된 지연 실행) | (6) |
-| **할당 바이트 값** | ★ **이 판의 관찰** | (8) |
+| **할당 바이트 값** | ★ **이 버전의 관찰** | (8) |
 
 ## 언제 쓰고 언제 안 쓰나
 
@@ -755,7 +755,7 @@ Console.WriteLine($"{string.Join(",", Evens(8))} · {string.Join(",", UntilNegat
 ## 더 들어가면
 
 - ★ **`IAsyncEnumerable<T>` · `await foreach`(C# 8)** — 비동기 반복자. 비동기 묶음에서.
-- ★ **`Reset()`** — 반복자의 `Reset` 은 `NotSupportedException` 을 던진다고 알려져 있다. **이 판에서 안 불렀다.**
+- ★ **`Reset()`** — 반복자의 `Reset` 은 `NotSupportedException` 을 던진다고 알려져 있다. **이 버전에서 안 불렀다.**
 - ★ **여러 스레드에서 같은 반복자 결과를 동시에 `GetEnumerator`** — `<>l__initialThreadId` 가 그 판단에 쓰인다((3)). **스레드 실험은 안 돌렸다.**
 - ★ **Dispose 뒤 상태를 `-2` 로 되돌리는 것이 언제부터의 Roslyn 인가** — 옛 컴파일러는 확인하지 않았다.
 
@@ -765,20 +765,20 @@ Console.WriteLine($"{string.Join(",", Evens(8))} · {string.Join(",", UntilNegat
 [Learn — `yield` 문](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/yield)(열어서 확인: 「**반복자를 부르면 바로 실행되지 않는다**」 · 「열거를 시작하면 **첫 `yield return` 까지** 실행되고 멈춘다 — 다음 반복마다 **멈춘 `yield return` 뒤에서** 이어진다」 ·\
 「`yield` 는 **`in`/`ref`/`out` 매개변수가 있는 메서드 · 람다와 익명 메서드 · `catch`·`finally` 블록 · `catch` 가 딸린 `try` 블록**에서 못 쓴다 — **`finally` 만 딸린 `try`** 에서는 된다」 ·\
 「`using` 으로 잡은 자원은 반복자가 끝나거나 **반복자 자체가 `Dispose` 될 때(호출자가 일찍 `break` 할 때 등)** 해제된다」) ·
-[Learn — C# 버전 이력](https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-version-history)(C# 2.0 「Iterators」 — ★ 이 판에서 `-langversion:1` 이 **`CS8022 … 'iterators' … 2 or greater`** 로 확인해 줬다 · (5)).
-**실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 맨 위 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
+[Learn — C# 버전 이력](https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-version-history)(C# 2.0 「Iterators」 — ★ 이 버전에서 `-langversion:1` 이 **`CS8022 … 'iterators' … 2 or greater`** 로 확인해 줬다 · (5)).
+**실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 맨 위 「이 버전」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
 ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. **대비는 실측이다** — **javac 21.0.5** 로 `yield return` 한 줄을 던졌다((5)).
 **버전** — `yield return`·`yield break` **C# 2** · 지역 함수 **C# 7**(인자 검사를 나누는 관용구 · (2)) · LINQ **C# 3**.
 **경계** — ★★★ **`foreach` 가 `MoveNext`/`Current`/`Dispose` 로 풀리는 것**은 [31번](../31-ienumerable-and-foreach/)이 정본이다 — 여기는 **그 셋을 컴파일러가 만들어 주는 쪽.**\
 ★★ **「지역 변수가 컴파일러가 만든 클래스의 필드가 된다」** 는 [28번](../28-lambdas-and-closure-capture/) (1)의 디스플레이 클래스와 **같은 수법**이다 — 여기서는 상태 기계로.\
 ★★★ **교차 갈래 대비는 인용한다** — [Python 17번](../../../python/syntax/17-generators-yield/) §1 「**호출해도 몸통이 안 돈다**」 · [JS 20번](../../../js/syntax/20-generators/) (1)(「본문은 안 돌지만 **매개변수 목록은 돈다**」)·(3)(`return()` 과 `finally` — **상태에 따라 다르다**) · [JS 19번](../../../js/syntax/19-iterable-protocol-and-for-of/)(소비자 17가지 중 `return()` 을 부르는 자리) · [Go 39번](../../../go/syntax/39-iter-and-custom-iterators/)(**push** 반복자) ·\
 게으름 로그 [JS 21번](../../../js/syntax/21-iterator-helpers/) · [Rust 36번](../../../rust/syntax/36-iterator-adapters-laziness-and-collect/) · [Python 44번](../../../python/syntax/44-itertools/) — 세 갈래가 같은 파이프라인으로 **`10 · 10` 대 `4 · 4`** 를 냈다. **C# LINQ 로 한 칸 더**((6)).
-★★★ **본체 창은 ③ 리플렉션 + ① IL 덤프다** — 「상태 기계」는 **컴파일러가 만든 클래스의 필드와 `MoveNext` 의 `switch`** 로만 보인다. 「언제 도나」는 **실행 로그**가 짝이다.
+★★★ **핵심 창은 ③ 리플렉션 + ① IL 덤프다** — 「상태 기계」는 **컴파일러가 만든 클래스의 필드와 `MoveNext` 의 `switch`** 로만 보인다. 「언제 도나」는 **실행 로그**가 짝이다.
 
-★★ **흔들리는 칸 / 안 흔들리는 칸**
+★★ **실행마다 달라지는 항목 / 달라지지 않는 항목**
 
-| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+| 실행마다 달라진다(근거로 쓰지 않는다) | 달라지지 않는다(근거로 쓴다) |
 |---|---|
 | 진단 **문구** · 진단 **순서**(배너에 `sort`) · IL **오프셋 폭** | ★★★ **진단 코드**(`CS1621`·`CS1622`·`CS1623`·`CS1624`·`CS1625`·`CS1626`·`CS1631`·`CS8022`) · **옵코드**(`newobj <Numbers>d__0` · `switch` · `stfld <>1__state`) |
 | ★ 컴파일러가 지은 **이름의 숫자**(`d__0` · `<i>5__2`) — Roslyn 구현 | ★★★ 이름의 **모양**(`<메서드>d__N` · `<>1__state` · `<>2__current` · `<>3__매개변수`) · **상태 값**(`-2` · `0` · `1` · `-1`) |
-| 증분의 절댓값 일부(규칙 24) | ★★★ **실행 로그의 줄 수와 순서** · **「finally 가 돈 소비자 N / M」** · 호출 수 **`4 · 4`** · **「네 판에서 갈린 줄 N / M」** |
+| 증분의 절댓값 일부(규칙 24) | ★★★ **실행 로그의 줄 수와 순서** · **「finally 가 돈 소비자 N / M」** · 호출 수 **`4 · 4`** · **「네 버전에서 달라진 줄 N / M」** |

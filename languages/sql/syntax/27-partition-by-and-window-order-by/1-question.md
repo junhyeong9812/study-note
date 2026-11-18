@@ -82,7 +82,7 @@ SELECT name, salary, ROW_NUMBER() OVER (ORDER BY salary) AS rn FROM emp8;
 
 - `cho`(salary `NULL`)의 `rn` 은 PostgreSQL 18.6 과 MySQL 8.4.10 에서 각각 얼마인가?
 
-### 8. `NULL` 위치 때문에 값까지 갈리는 자리 (연결)
+### 8. `NULL` 위치 때문에 값까지 달라지는 자리 (연결)
 
 - 6번 질의에서 `cho` 의 `running` 이 두 엔진에서 각각 무엇이 되고, 그 차이의 뿌리는 어느 규칙인가?
 

@@ -1,8 +1,8 @@
 # web-api/06 — 속성(attribute) 대 성질(property): `getAttribute`/`setAttribute` 와 IDL 프로퍼티의 반영 — 정답
 
-**★ 이 주제에는 흔들리는 칸이 없다.** 시간도 크기도 재지 않는다.
+**★ 이 주제에는 실행마다 달라지는 항목이 없다.** 시간도 크기도 재지 않는다.
 
-| 안 흔들리는 칸 | 흔들리는 칸 |
+| 달라지지 않는 항목 | 실행마다 달라지는 항목 |
 |---|---|
 | `getAttribute` 반환값 · 프로퍼티 값 · `null` 대 `""` · 직렬화 문자열 · 예외 이름 · 속성 개수·순서 | Chrome 판 번호뿐 |
 
@@ -18,7 +18,7 @@ Google Chrome 151.0.7922.173
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
 
-### 1. 같은 칸을 양쪽에서 써 보면 — 네 줄 중 마지막만 갈린다
+### 1. 같은 칸을 양쪽에서 써 보면 — 네 줄 중 마지막만 달라진다
 
 **출력**
 
@@ -36,7 +36,7 @@ removeAttribute('id')       null                    ""
 **왜 그런가**
 
 - `id` 는 **꼴 ①**(그대로 반영)이다. 명세가 `HTMLElement` 의 `id` 를 「`id` 콘텐츠 속성을 반영한다」고 못 박았고, 그 반영은 **양방향**이다. `setAttribute` 로 써도 프로퍼티가 따라오고 프로퍼티로 써도 속성이 따라온다.
-- **마지막 줄만 갈린다** — 속성을 지우면 `getAttribute` 는 **`null`**(「그 줄이 없다」)이고 `el.id` 는 **`""`**(「빈 칸」)이다. 글자열 반영의 기본값이 빈 문자열이기 때문이다.
+- **마지막 줄만 달라진다** — 속성을 지우면 `getAttribute` 는 **`null`**(「그 줄이 없다」)이고 `el.id` 는 **`""`**(「빈 칸」)이다. 글자열 반영의 기본값이 빈 문자열이기 때문이다.
 - 같은 꼴에 드는 것 — `title`·`lang`·`dir`·`hidden`·`slot`·`accessKey`(속성은 `accesskey`). **이름이 같고 뜻이 같은 것 대부분**이 여기다.
 - 이 꼴에서는 **어느 쪽을 써도 된다.** 다만 프로퍼티 쪽이 오타에 조용하므로(A8 참조) 짧은 이름은 프로퍼티, 임의 이름은 `setAttribute` 로 갈라 쓰는 편이 안전하다.
 
@@ -59,11 +59,11 @@ for / htmlFor               "f1"                    "f1"
 **왜 그런가**
 
 - **`el.class` 와 `label.for` 는 `undefined`** 다. 예외가 아니라 **정의된 적이 없는 프로퍼티**를 읽은 것이라 자바스크립트가 조용히 `undefined` 를 준다.
-- 이름이 갈린 이유는 **역사**다. `class` 와 `for` 는 초기 자바스크립트의 **예약어**였고, 그래서 IDL 쪽 이름을 `className`·`htmlFor` 로 정했다. 오늘의 자바스크립트는 프로퍼티 이름에 예약어를 허용하지만 **이름은 되돌릴 수 없다.**
-- **이 꼴은 둘뿐이다** — HTML 요소에서 콘텐츠 속성과 IDL 이름이 갈리는 것은 `class`→`className`, `for`→`htmlFor` 두 쌍이다. (`accesskey`→`accessKey` 처럼 **대소문자만 다른 것**은 다른 이야기다 — 여러 낱말 속성은 전부 카멜로 바뀐다.)
+- 이름이 달라진 이유는 **역사**다. `class` 와 `for` 는 초기 자바스크립트의 **예약어**였고, 그래서 IDL 쪽 이름을 `className`·`htmlFor` 로 정했다. 오늘의 자바스크립트는 프로퍼티 이름에 예약어를 허용하지만 **이름은 되돌릴 수 없다.**
+- **이 꼴은 둘뿐이다** — HTML 요소에서 콘텐츠 속성과 IDL 이름이 달라지는 것은 `class`→`className`, `for`→`htmlFor` 두 쌍이다. (`accesskey`→`accessKey` 처럼 **대소문자만 다른 것**은 다른 이야기다 — 여러 낱말 속성은 전부 카멜로 바뀐다.)
 - `className` 은 **문자열 한 덩어리**라 토큰을 더하고 빼려면 직접 자르게 된다. 그 일을 대신하는 것이 [07번 주제](../07-dataset-classlist-inline-style/2-summary.md)의 `classList` 다.
 
-### 3. 세 칸을 나란히 두면 — 세 번째 줄에서 갈린다
+### 3. 세 칸을 나란히 두면 — 세 번째 줄에서 달라진다
 
 **출력**
 
@@ -82,7 +82,7 @@ form.reset()                "C"                     "C"                     "C"
 **왜 그런가**
 
 - `value` **속성을 반영하는 성질은 `defaultValue`** 다. `el.value` 는 반영이 아니라 명세가 따로 정의한 **「값 모드」 상태**다.
-- **갈리는 줄은 `inp.value = 'B'`** 다. 그 순간 명세의 **dirty value flag** 가 서고, 그 뒤로는 `value` 속성을 아무리 고쳐도 `.value` 에 안 온다(네 번째 줄: 속성 `"C"`, `.value` `"B"`).
+- **달라지는 줄은 `inp.value = 'B'`** 다. 그 순간 명세의 **dirty value flag** 가 서고, 그 뒤로는 `value` 속성을 아무리 고쳐도 `.value` 에 안 온다(네 번째 줄: 속성 `"C"`, `.value` `"B"`).
 - **다시 잇는 방법은 `form.reset()`** 이다. 리셋 알고리즘이 `.value` 를 `defaultValue` 로 되돌리고 플래그를 지운다 — 마지막 줄에서 세 칸이 다시 `"C"` 로 모였다.
 - 두 번째 줄이 중요하다 — **아직 플래그가 안 섰을 때는 `setAttribute('value', …)` 가 화면까지 바꾼다.** 그래서 「가끔 되는 것처럼 보이는」 코드가 생긴다.
 
@@ -117,9 +117,9 @@ checked=true · 속성 제거    null                    true                   
 - **`ck.click()` 은 속성을 안 바꾼다** — 속성은 `""` 그대로이고 `.checked` 만 `false` 가 된다. 사용자가 마우스로 눌렀을 때도 같다.
 - **두 번째 줄로 체크는 안 켜진다.** `setAttribute('checked','checked')` 뒤에도 `.checked` 는 `false` 다. 플래그가 이미 섰기 때문이다.
 - **`checked="false"` 라고 쓰면 켜진다.** 불리언 속성은 **있느냐 없느냐만** 보고 값은 무시한다(정본 실측: HTML 갈래 목록([`html/syntax/README.md`](../../html/syntax/README.md))의 **02번** — `disabled="false"` 인 버튼이 `.disabled === true` 였다).
-- 마지막 줄이 반대 방향이다 — `checked = true` 로 켠 뒤 속성을 지우면 **`.checked` 는 `true`, `defaultChecked` 는 `false`** 로 완전히 갈린다.
+- 마지막 줄이 반대 방향이다 — `checked = true` 로 켠 뒤 속성을 지우면 **`.checked` 는 `true`, `defaultChecked` 는 `false`** 로 완전히 달라진다.
 
-### 5. 같은 `href` 를 두 창구로 — 읽기는 갈리고 쓰기는 안 갈린다
+### 5. 같은 `href` 를 두 창구로 — 읽기는 갈리고 쓰기는 안 달라진다
 
 **출력**
 
@@ -167,7 +167,7 @@ getAttribute('data-x')      null                    el.dataset.x = undefined
 
 ### 7. `value` 가 반영이 아닌 이유 — 사용자가 친 것을 마크업이 덮으면 안 되기 때문
 
-**출력** — A3 와 같은 실행에서 **갈리는 두 줄만** 잘라 냈다.
+**출력** — A3 와 같은 실행에서 **달라지는 두 줄만** 잘라 냈다.
 
 ```text
 $ google-chrome --headless --disable-gpu --no-sandbox --dump-dom wa06b-06-four.html | sed -n '/^--OUT$/,/^OUT--$/{//!p}' | sed -n '20,21p'
@@ -183,7 +183,7 @@ setAttribute('value','C')   "C"                     "B"                     "C"
 - 만약 양방향 반영이었다면 — 서버 렌더가 `value` 를 다시 내려보낼 때마다, 또는 스크립트가 기본값을 고칠 때마다 **입력칸이 리셋**된다. 그리고 반대로 **타이핑할 때마다 DOM 속성이 계속 바뀌어** `MutationObserver`·직렬화가 매 키 입력에 반응한다.
 - 같은 설계가 걸린 것 하나 더 — **`<select>` 의 `selected`** 다. `option.selected` 는 별도 상태이고 `option.defaultSelected` 가 `selected` 속성의 반영이다. (**이 문서는 `select` 를 돌려 보지 않았다** — 명세 구조가 같다는 것만 적는다.)
 
-### 8. 배선이 없거나 이상한 이름 — 세 갈래로 갈린다
+### 8. 배선이 없거나 이상한 이름 — 세 갈래로 나뉜다
 
 **출력**
 

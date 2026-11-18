@@ -380,7 +380,7 @@ ROLLBACK;
 > "Data-modifying statements in `WITH` are executed exactly once, and always to completion, **independently of whether the primary query reads all (or indeed any) of their output.**"\
 > — [PostgreSQL 18 · WITH Queries](https://www.postgresql.org/docs/18/queries-with.html)
 
-★ [**32 번의 최적화 장벽 이야기와 정확히 갈리는 자리다.**](../32-cte-with-clause/)\
+★ [**32 번의 최적화 장벽 이야기와 정확히 달라지는 자리다.**](../32-cte-with-clause/)\
 읽기 전용 CTE 는 **참조가 한 번이면 인라인되고 두 번이면 벽이 선다**(PG 12+ 규칙).\
 **변경 CTE 에는 그 규칙이 적용되지 않는다** — 인라인 후보 조건이 「side-effect-free」이기 때문이다.
 
@@ -590,7 +590,7 @@ WITH x AS (SELECT ...) DELETE FROM t WHERE id IN (SELECT id FROM x);   -- ★ �
 | 같은 행 두 번 | **PG 문서: 하나만, 어느 쪽인지 예측 불가** | ★ 실제로 어느 쪽이 이기나 |
 | CTE 조각의 실행 순서 | **PG 문서: unpredictable** | 실제 순서 |
 
-- ★ **6번의 「세 판 다 `u1` 이 이겼다」는 관찰이다.** 문서가 명시적으로 「예측할 수 없다」고 적었으므로\
+- ★ **6번의 「세 버전 다 `u1` 이 이겼다」는 관찰이다.** 문서가 명시적으로 「예측할 수 없다」고 적었으므로\
   **반복 실행이 같았다는 사실이 보장의 근거가 되지 않는다.**
 - ★ **이 편의 MySQL 쪽 근거는 `ERROR 1064` 세 개와 「읽기 CTE 는 된다」는 통과 하나**뿐이다.\
   그 밖의 모든 동작 설명은 **PG 출력과 PG 문서**에서 나왔다.

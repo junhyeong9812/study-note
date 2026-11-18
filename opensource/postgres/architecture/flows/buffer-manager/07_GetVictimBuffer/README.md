@@ -147,7 +147,7 @@ again:
 }
 ```
 
-옛 tag 를 지우는 보조 함수다. 배타 분할 lock 과 헤더 spinlock 을 둘 다 쥔 채 refcount 와 dirty 를 다시 본다.
+옛 tag 를 지우는 보조 함수다. 배타 분할 lock 과 헤더 spinlock 을 둘 다 잡은 채 refcount 와 dirty 를 다시 본다.
 
 `src/backend/storage/buffer` / `bufmgr.c` L2285-L2351 ([GitHub](https://github.com/postgres/postgres/blob/724edf9bde9d356724ad384a2e196edc3c9f80f7/src/backend/storage/buffer/bufmgr.c#L2285-L2351))
 

@@ -11,14 +11,14 @@ v18.19.1
 > **버전** — 원시·배열·객체·함수 타입은 TS 1.x, 튜플의 **나머지 요소**는 3.0, **이름표 튜플**은 4.0,
 > `as const` 는 3.4, `readonly` 배열 표기는 3.4 부터다.
 
-## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
+## 이 문서에서 실행마다 달라지는 항목과 달라지지 않는 항목
 
 | | 무엇 | 왜 |
 |---|---|---|
-| **안 흔들린다** | 에러 코드·문구·`(행,열)`·종료 코드·**`.d.ts` 전문** | 같은 입력·같은 옵션이면 같은 글자다. 10회 재실행에서 안 바뀌었다 |
-| **안 흔들린다** | `.d.ts` 안의 **프로퍼티 순서** | 선언 순서를 따른다 — 해시 순회가 아니다 |
-| **흔들린다** | 절대 경로 | 작업 디렉토리에서 **상대 경로로만** 던졌다 |
-| **흔들린다** | `--pretty` 가 켜졌을 때의 색·소스 발췌·요약 줄 | 기본값이 **`true`** 다. 모든 블록을 **`--pretty false`** 로 고정했다 |
+| **달라지지 않는다** | 에러 코드·문구·`(행,열)`·종료 코드·**`.d.ts` 전문** | 같은 입력·같은 옵션이면 같은 글자다. 10회 재실행에서 안 바뀌었다 |
+| **달라지지 않는다** | `.d.ts` 안의 **프로퍼티 순서** | 선언 순서를 따른다 — 해시 순회가 아니다 |
+| **실행마다 달라진다** | 절대 경로 | 작업 디렉토리에서 **상대 경로로만** 실행했다 |
+| **실행마다 달라진다** | `--pretty` 가 켜졌을 때의 색·소스 발췌·요약 줄 | 기본값이 **`true`** 다. 모든 블록을 **`--pretty false`** 로 고정했다 |
 
 > ★ **소스 펜스의 첫 줄 `// 파일명` 은 대조용 배너다** — 실파일에는 없다. **진단의 행 번호는 그 줄을 뺀 기준**이다.
 
@@ -90,7 +90,7 @@ v18.19.1
 
 ★ **앞의 둘이 이 주제의 값이다.** 「이게 무슨 타입이지」를 짐작하지 말고 **컴파일러에게 말하게 한다.**
 
-비용 — `.d.ts` 는 `--declaration --emitDeclarationOnly` 한 번. `null` 탐침은 컴파일 한 번.
+비용 — `.d.ts` 는 `--declaration --emitDeclarationOnly` 한 번. `null` probe는 컴파일 한 번.
 
 ### (1) ★★ 원시 타입 — 표기한 것과 추론된 것
 
@@ -218,7 +218,7 @@ ex.03c.ts(12,7): error TS2322: Type '[string]' is not assignable to type '[strin
 - `ro[0] = 9` 는 **`TS2542` — 인덱스 시그니처가 읽기만 허용한다**.
 - `const mutable: number[] = ro` 는 **`TS4104`** — readonly 를 가변 타입에 못 넣는다. ★ **반대 방향은 된다.**
 - `rt[0] = "b"`(readonly 튜플)는 **`TS2540` — 읽기 전용 프로퍼티**. 배열의 `TS2542` 와 **코드가 다르다**.
-- 튜플 길이가 안 맞으면 `TS2322` 인데 둘째 줄 문구가 갈린다 — 「allows only 2」와 「requires 2」.
+- 튜플 길이가 안 맞으면 `TS2322` 인데 둘째 줄 문구가 달라진다 — 「allows only 2」와 「requires 2」.
 - ★★ 즉 **한 낱말 `readonly` 가 자리마다 다른 진단**을 낸다. 「읽기 전용이면 에러」로 뭉뚱그리면 못 고친다.
 
 비용 — 검사 시각뿐이다. ★★ **런타임에는 아무것도 안 막는다** — 방출에서 `readonly` 가 사라진다([**01번 주제**](../01-what-ts-adds-and-erases/)).
@@ -463,10 +463,10 @@ ex.03g.ts(12,7): error TS2322: Type '(x: number) => string' is not assignable to
 
 - 다섯 줄이 각각 `number[]` · `readonly [1, 2, 3]` · `{ kind: string; r: number; }` · `{ readonly kind: "circle"; readonly r: 1; }` · `(x: number) => string` 을 **문구에 적어 준다**.
 - ★ `.d.ts` 와 **같은 답**이 나왔다 — 두 창이 서로를 검증한다.
-- ★★ 다만 **탐침에 한계가 있다** — `never` 는 `null` 에 **들어가므로 에러가 안 난다**. 그때는 `const x: never = v` 쪽으로 뒤집어 물어야 한다([**04번 주제**](../04-any-unknown-never-void/)).
-- ★ `.d.ts` 쪽 한계도 있다 — **`export` 가 붙은 것만** 나온다. 지역 변수는 탐침 쪽이 낫다.
+- ★★ 다만 **probe에 한계가 있다** — `never` 는 `null` 에 **들어가므로 에러가 안 난다**. 그때는 `const x: never = v` 쪽으로 뒤집어 물어야 한다([**04번 주제**](../04-any-unknown-never-void/)).
+- ★ `.d.ts` 쪽 한계도 있다 — **`export` 가 붙은 것만** 나온다. 지역 변수는 probe 쪽이 낫다.
 
-| | `.d.ts` 덤프 | `null` 탐침 |
+| | `.d.ts` 덤프 | `null` probe |
 |---|---|---|
 | 대상 | `export` 된 것만 | **아무 표현식이나** |
 | 형식 | 선언 전문 · 여러 줄 | 한 줄 문구 |
@@ -555,7 +555,7 @@ ex.03h.ts(6,10): error TS2339: Property 'click' does not exist on type '{}'.
 - ★★ **매개변수는 추론되지 않는다**(문맥적 타이핑이 걸린 자리 제외). `strict` 아래에서는 `TS7006` 이다.
 - ★ **`as const` 는 표현식 뒤에** 붙는다. 선언 표기(`: T`)와 자리가 다르다.
 
-**금지 사례** — 이 주제에서 던져 받은 것 여섯이다. 전문은 「동작 방식」의 블록에 있다.
+**금지 사례** — 이 주제에서 실행해 받은 것 여섯이다. 전문은 「동작 방식」의 블록에 있다.
 
 ```text
 1) readonly 배열에 push            ->  TS2339  Property 'push' does not exist …
@@ -571,7 +571,7 @@ ex.03h.ts(6,10): error TS2339: Property 'click' does not exist on type '{}'.
 - ★★★ **「`const` 니까 타입도 `number` 겠지」** — 아니다. `const n = 42` 의 타입은 **`42`** 다. `.d.ts` 의 `= 42` 가 근거다.
 - ★★★ **「`readonly` 면 런타임에도 못 바꾸겠지」** — 못 막는다. 방출에서 사라진다. 진짜로 얼리려면 `Object.freeze` 다.
 - ★★ **「`as const` 가 객체를 얼린다」** — 안 언다. **타입만** 바뀐다.
-- ★★ **「빈 배열은 알아서 잘 되겠지」** — 자리가 갈린다. 지역 `const evolving = []` 은 **진화하는 `any[]`** 지만,\
+- ★★ **「빈 배열은 알아서 잘 되겠지」** — 자리가 달라진다. 지역 `const evolving = []` 은 **진화하는 `any[]`** 지만,\
   `export const exported = []` 는 **`never[]`** 라 `push(1)` 조차 `TS2345` 다.
 - ★★ **`[number]` 를 「숫자 배열」로 읽는 것** — 그건 **길이 1 튜플**이다. 숫자 배열은 `number[]`.
 - ★ **「`readonly` 에러는 다 같은 것」** — 넷이다(`TS2339`·`TS2542`·`TS2540`·`TS4104`). 고치는 법이 각각 다르다.
@@ -590,9 +590,9 @@ ex.03h.ts(6,10): error TS2339: Property 'click' does not exist on type '{}'.
 | **언어 보장** | `as const` 는 **리터럴 고정 + 튜플화 + `readonly`** 를 재귀적으로 적용한다 | `.d.ts` 의 `readonly [1, 2, 3]` 과 중첩 결과 |
 | **언어 보장** | `readonly` 는 **검사 시각에만** 막는다 | 방출 전문에 `readonly` 가 없다([**01번 주제**](../01-what-ts-adds-and-erases/)) |
 | **설정에 달림** | `TS7006`(암시적 `any`) 과 `export const exported = []` 의 `never` | `--strict false` 로 내리면 **둘 다 사라진다**. 배너를 같이 읽어야 한다 |
-| **이 판(7.0.2)의 관찰** | `.d.ts` 가 `Array<number>`·`ReadonlyArray<number>` 표기를 **보존**하는 것 | 선언 방출기의 구현이다. 「같은 타입이다」만 성질로 읽는다 |
-| **이 판의 관찰** | 진단 문구의 **정확한 글자**(「Source has 3 element(s) but target allows only 2.」) | 문구는 판마다 바뀐다. 에러 **코드**가 더 오래 간다 |
-| **이 판의 관찰** | 지역 `const evolving = []` 이 **진화하는 `any[]`** 인 것 | 제어 흐름 기반 추론의 구현 범위에 달렸다 |
+| **이 버전(7.0.2)의 관찰** | `.d.ts` 가 `Array<number>`·`ReadonlyArray<number>` 표기를 **보존**하는 것 | 선언 방출기의 구현이다. 「같은 타입이다」만 성질로 읽는다 |
+| **이 버전의 관찰** | 진단 문구의 **정확한 글자**(「Source has 3 element(s) but target allows only 2.」) | 문구는 판마다 바뀐다. 에러 **코드**가 더 오래 간다 |
+| **이 버전의 관찰** | 지역 `const evolving = []` 이 **진화하는 `any[]`** 인 것 | 제어 흐름 기반 추론의 구현 범위에 달렸다 |
 
 ★ **「여러 번 돌려 같았다」는 보장이 아니다.** 이 절의 대부분이 **`strict` 기본값이 `true` 인 7.0** 에서의 결과다.
 
@@ -618,7 +618,7 @@ ex.03h.ts(6,10): error TS2339: Property 'click' does not exist on type '{}'.
 4. **`as const` 는 세 가지를 한꺼번에 한다** — 리터럴 고정 · 튜플화 · `readonly`, 그것도 재귀적으로.
 5. **`readonly` 는 검사 시각의 약속일 뿐이다** — 자리마다 다른 네 진단을 내지만 런타임은 막지 않는다.
 6. **매개변수는 추론되지 않는다** — 문맥적 타이핑이 걸린 자리만 예외다.
-7. **추론 결과는 `.d.ts` 나 `null` 탐침으로 글자로 볼 수 있다** — 짐작하지 않는다.
+7. **추론 결과는 `.d.ts` 나 `null` probe로 글자로 볼 수 있다** — 짐작하지 않는다.
 
 ## 관련 자료
 
@@ -664,7 +664,7 @@ ex.03h.ts(6,10): error TS2339: Property 'click' does not exist on type '{}'.
 - **`.d.ts` 는 이 갈래 내내 쓰는 도구다.** 뒤 주제에서도 「이게 무슨 타입이지」가 막힐 때마다 `--declaration --emitDeclarationOnly` 한 줄이면 답이 나온다.
 - **`satisfies`(4.9)는 이 주제의 다음 수다** — 표기는 추론을 **덮어쓰지만**, `satisfies` 는 검사만 하고 추론을 **살려 둔다**([목록의 **29번 주제**](../29-satisfies/)).
 - **`noUncheckedIndexedAccess`** 를 켜면 `arr[0]` 의 타입이 `number` 가 아니라 `number | undefined` 가 된다. 이 주제의 결과가 통째로 바뀌는 플래그다([목록의 **41번 주제**](../41-index-and-optional-property-strict-flags/)).
-- **`tsc --init` 이 권하는 기본값**에 `noUncheckedIndexedAccess` 와 `exactOptionalPropertyTypes` 가 **켜져 있다**(이 판에서 확인). 하지만 **명령줄에서 파일을 직접 주면 그 설정이 안 읽힌다** — 이 문서의 결과는 전부 그 상태다.
+- **`tsc --init` 이 권하는 기본값**에 `noUncheckedIndexedAccess` 와 `exactOptionalPropertyTypes` 가 **켜져 있다**(이 버전에서 확인). 하지만 **명령줄에서 파일을 직접 주면 그 설정이 안 읽힌다** — 이 문서의 결과는 전부 그 상태다.
 
 ## 실행 환경
 
@@ -672,5 +672,5 @@ ex.03h.ts(6,10): error TS2339: Property 'click' does not exist on type '{}'.
 [Handbook — Object Types](https://www.typescriptlang.org/docs/handbook/2/objects.html) ·
 [Handbook — Type Inference](https://www.typescriptlang.org/docs/handbook/type-inference.html) ·
 [TSConfig — `declaration`](https://www.typescriptlang.org/tsconfig/#declaration).
-핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·`.d.ts` 전문은 전부 이 판에서 직접 던져서 받은 것이다.
-**실행 검증** — 맨 위 판에서 실제로 돌려 얻었다.
+핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·`.d.ts` 전문은 전부 이 버전에서 직접 실행해서 받은 것이다.
+**실행 검증** — 맨 위 버전에서 실제로 돌려 얻었다.

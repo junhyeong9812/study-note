@@ -67,7 +67,7 @@ int[] nums = {3, 1, 4, 1, 5};
 - `Arrays.stream(nums).sum()` 은 무엇인가?
 - `Stream<Integer>` 에는 왜 `sum()` 이 없는가, 대신 무엇을 쓰는가?
 - `IntStream.of().sum()` 과 `IntStream.of().max()` 는 각각 무엇을 돌려주는가?
-- 두 답의 형태가 갈리는 이유는 무엇인가?
+- 두 답의 형태가 달라지는 이유는 무엇인가?
 - `boxed()` 는 내부에서 무엇을 부르는가, 그것이 어느 주제와 이어지는가?
 
 ### 6. `"abc".chars()` (예측)

@@ -111,7 +111,7 @@ average():     sum / count. 빈 버킷이면 NaN
 ```
 
 - **이미 접힌 구간의 값을 넣으면 안 된다.**\
-  넣으면 가는 버킷과 굵은 버킷이 어긋나서 같은 값이 두 번 세어지거나 요약이 두 갈래로 갈린다.
+  넣으면 가는 버킷과 굵은 버킷이 어긋나서 같은 값이 두 번 세어지거나 요약이 두 갈래로 나뉜다.
 - **버리는 것도 손실이라 버린 수를 센다(lateDrops).**\
   이 값이 0이 아니면 "보존 기간이 짧다"는 운영 신호다 — 조용히 버리지 않는다.
 
@@ -216,14 +216,14 @@ average():     sum / count. 빈 버킷이면 NaN
 
 ### 문제 — 이 챕터가 시키는 것
 - 초당 1000개씩 오는 값을 다 들고 있을 수 없으니, 최근 것은 가는 버킷으로 자세히·오래된 것은 굵은 버킷으로 접어 들고 있는 시계열 저장소를 만들라는 챕터다 — 접기는 되돌릴 수 없고, 경계 처리가 전부다.
-- 과제(README 「하는 방법」): ① `TimeSeriesTest.java` 를 따라 친다 ② `RawSeries` 의 TODO 1\~2(summarize/quantile) — **기준선. 정확한데 비싸다** ③ `RollingSeries` 의 TODO 3\~6(record/rollUp/summarize/bucketStart) — **경계가 전부다**.\
+- 과제(README 「하는 방법」): ① `TimeSeriesTest.java` 를 따라 친다 ② `RawSeries` 의 TODO 1\~2(summarize/quantile) — **베이스라인. 정확한데 비싸다** ③ `RollingSeries` 의 TODO 3\~6(record/rollUp/summarize/bucketStart) — **경계가 전부다**.\
   `./run.sh 17` 로 시작하면 18개 중 15개가 실패한다.
 - 별도 응용 문제(*Problems.java)는 없다.
 
 아래 서머리는 이 문제(README)를 분석·정리한 것이다.
 
 실제 시스템에 붙일 때의 순서: ① **무엇을 물을 것인가**를 먼저 적는다(평균? 최대? 99분위? 이 목록이 담을 통계를 정한다) → ② 담을 통계(합칠 수 있는 것만 — 분위수가 필요하면 원본 보존 기간을 따로) → ③ 해상도 계층과 보존 기간(1분/1시간, 각각 며칠) → ④ 기록 시각은 이벤트 발생 시각으로, 보존 기간은 늦게 오는 값보다 길게 → ⑤ 접기 작업이 도는지 감시.\
-①을 건너뛰고 접으면 나중에 필요한 질문에 답이 없고, 되돌릴 수 없다. 위 「문제」절의 TODO는 정확한 기준선(원본)과 접는 구현을 나란히 만든다.
+①을 건너뛰고 접으면 나중에 필요한 질문에 답이 없고, 되돌릴 수 없다. 위 「문제」절의 TODO는 정확한 베이스라인(원본)과 접는 구현을 나란히 만든다.
 
 ## 장애 시나리오와 대처
 
@@ -286,7 +286,7 @@ average():     sum / count. 빈 버킷이면 NaN
 - 선행 — [16-event-sourcing](../16-event-sourcing/2-summary.md): 전부 들고 있기. 여기서는 줄여 가며 들고 있기.
 - 후속 — [18-blockchain](../18-blockchain/2-summary.md): 접어서 버린 것을 못 되돌리는 데서, 아예 못 바꾸게 하는 쪽으로.
 - 재료 — [04-rate-limiter](../04-rate-limiter/2-summary.md): 반열린 경계와 `floorDiv`. [10-scheduler](../10-scheduler/2-summary.md): 접기 작업의 감시.
-- 재료 — [data-structure/13-segment-tree](../../data-structure/13-segment-tree/2-summary.md)(합칠 수 있는 구간 요약) · [data-structure/19-probabilistic-counting](../../data-structure/19-probabilistic-counting/2-summary.md)(근사 요약) · [data-structure/32-inverted-index](../../data-structure/32-inverted-index/2-summary.md)(전수 조사 기준선).
+- 재료 — [data-structure/13-segment-tree](../../data-structure/13-segment-tree/2-summary.md)(합칠 수 있는 구간 요약) · [data-structure/19-probabilistic-counting](../../data-structure/19-probabilistic-counting/2-summary.md)(근사 요약) · [data-structure/32-inverted-index](../../data-structure/32-inverted-index/2-summary.md)(전수 조사 베이스라인).
 - 곁 — [systems/timeseries-resolution-tiers](../../systems/timeseries-resolution-tiers/2-summary.md): 해상도 계층의 개념 정리(병합 검토 대상).
 - 영역 표 — [database/README.md](../../database/README.md) `44-timeseries-resolution-tiers`.
 - 근거 — Prometheus 문서(storage·recording rules) · RRDtool 문서(round-robin 저장).
@@ -295,11 +295,11 @@ average():     sum / count. 빈 버킷이면 NaN
 ### 관련 자료
 - 챕터 안내: `/home/jun/project/myway/ops-patterns/17-timeseries/README.md`
 - 요약 상자(TODO 없음): `.../src/main/java/com/ops/timeseries/Bucket.java` (add/mergeWith — 평균이 아니라 합·개수를 담는 이유)
-- 내 구현(TODO 껍데기): `.../src/main/java/com/ops/timeseries/RawSeries.java`(TODO 1\~2, 기준선), `RollingSeries.java`(TODO 3\~6, 경계가 전부)
+- 내 구현(TODO 껍데기): `.../src/main/java/com/ops/timeseries/RawSeries.java`(TODO 1\~2, 베이스라인), `RollingSeries.java`(TODO 3\~6, 경계가 전부)
 - 시계: `.../src/main/java/com/ops/timeseries/Ticker.java` (버킷이 넘어가는 순간을 손으로 감기 위한 추상화)
 - 정답 기준 소스: `/home/jun/project/myway/ops-patterns/17-timeseries/impl/RawSeries.java`, `impl/RollingSeries.java` (`bucketStart = Math.floorDiv(at, width) * width`)
 - 테스트: `.../src/test/java/com/ops/timeseries/TimeSeriesTest.java` (접어도 같은 답 / 무엇을 잃나 / 무엇을 얻나 / 경계와 뒤늦은 값), `FakeTicker.java`
-- 이웃 챕터: 04-rate-limiter(고정 창 = 같은 반열린 경계), 32-inverted-index(전수 조사 기준선), 19번 확률적 집계(분위수 근사), 다음 18-blockchain(못 되돌림 → 아예 못 바꾸게)
+- 이웃 챕터: 04-rate-limiter(고정 창 = 같은 반열린 경계), 32-inverted-index(전수 조사 베이스라인), 19번 확률적 집계(분위수 근사), 다음 18-blockchain(못 되돌림 → 아예 못 바꾸게)
 
 ### 용어 풀이
 - **시계열(time series)**: 시각과 함께 쌓이는 값의 나열.\

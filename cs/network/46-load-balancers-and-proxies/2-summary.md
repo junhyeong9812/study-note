@@ -284,7 +284,7 @@ static int[] populate(long[][] offSkip, int M) {
 
 - *능동 헬스체크*: LB가 백엔드에 검사용 요청을 주기적으로 보낸다.
 - *수동 헬스체크*: 실제 트래픽의 오류·타임아웃을 보고 판정한다. Envoy는 이것을 *outlier detection*(이상치 감지·축출)이라 부른다.
-- 연속 횟수 판정은 넣고 빼기가 흔들리는 것(플래핑)을 막는 히스테리시스다([reliability/33](../../reliability/33-hysteresis-and-flapping/2-summary.md)).
+- 연속 횟수 판정은 넣고 빼기가 실행마다 달라지는 것(플래핑)을 막는 히스테리시스다([reliability/33](../../reliability/33-hysteresis-and-flapping/2-summary.md)).
 
 제품별 기본값(문서로 확인한 것만):
 
@@ -692,7 +692,7 @@ static String clientIp(String socketPeer, List<String> xffHeaders, Predicate<Str
   - LB의 드레이닝 시간(ALB deregistration delay 기본 300초)을 가장 긴 정상 요청보다 길게, 배포 속도와 맞게 정한다.
   - nginx 설정 변경은 `nginx -s reload`로 한다. 옛 worker가 진행 중 요청을 마친다(실험 5 ①).
 
-### 5. 느려진 인스턴스 하나가 꼬리 지연을 끌어올린다
+### 5. 느려진 인스턴스 하나가 테일 레이턴시를 끌어올린다
 
 - **현상**: 오류는 없는데 p95·p99 지연만 오른다. 인스턴스 하나의 응답 시간만 높다.
 - **보이는 형태**
@@ -701,7 +701,7 @@ static String clientIp(String socketPeer, List<String> xffHeaders, Predicate<Str
 - **원인**: 처리 중 개수·지연을 보지 않는 분배(라운드로빈)가 느린 인스턴스에도 같은 몫을 준다.
 - **대처**
   - 동시 요청이 많은 서비스는 least_conn·P2C·지연 기반 분배를 쓴다(nginx `least_conn`·`random two least_conn`, ALB least outstanding requests, Envoy least request).
-  - 느림을 이상치로 빼는 장치를 둔다(Envoy outlier detection 등). 꼬리 지연 일반은 [reliability/34](../../reliability/34-tail-latency-and-stragglers/2-summary.md).
+  - 느림을 이상치로 빼는 장치를 둔다(Envoy outlier detection 등). 테일 레이턴시 일반은 [reliability/34](../../reliability/34-tail-latency-and-stragglers/2-summary.md).
   - 새 인스턴스 쏠림이 걱정되면 슬로우 스타트를 같이 둔다(제품마다 지원 조합이 다르다, §4).
 
 ## 핵심 문장

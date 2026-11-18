@@ -125,7 +125,7 @@ RFC 9293은 3-way handshake의 **주된 이유**를 "오래된 중복 SYN이 혼
 - `backlog`가 `somaxconn`보다 크면 조용히 `somaxconn`으로 깎인다. `somaxconn` 기본값은 리눅스 5.4부터 4096, 그 전에는 128이다(listen(2)).
 - 미완성 요청(SYN 큐)의 최대 길이는 `tcp_max_syn_backlog`로 정한다. SYN cookie가 켜져 있으면 논리적 상한이 없다(listen(2)).
   - `tcp_max_syn_backlog`의 기본값은 문서마다 설명이 다르다. tcp(7)은 메모리에 따라 128·256·1024라고 적고, 커널 문서(ip-sysctl)는 "메모리에 비례"라고만 적는다. 작성 환경(Linux 7.0)에서는 4096이었다(예시).
-  - 단, 현재 커널 코드에서 SYN cookie로 넘어가는 "SYN 큐 가득 참" 문턱은 `tcp_max_syn_backlog`가 아니라 listen 소켓의 min(backlog, somaxconn)이다. `tcp_max_syn_backlog`는 syncookies=0일 때 검증 안 된 상대의 SYN을 버리는 기준(3/4)에만 쓰인다(net/ipv4/tcp_input.c `tcp_conn_request`, `inet_csk_reqsk_queue_is_full`). 그래서 backlog가 작으면(Java 50) 작은 버스트에도 cookie 로그가 날 수 있다.
+  - 단, 현재 커널 코드에서 SYN cookie로 넘어가는 "SYN 큐 가득 참" 임계값은 `tcp_max_syn_backlog`가 아니라 listen 소켓의 min(backlog, somaxconn)이다. `tcp_max_syn_backlog`는 syncookies=0일 때 검증 안 된 상대의 SYN을 버리는 기준(3/4)에만 쓰인다(net/ipv4/tcp_input.c `tcp_conn_request`, `inet_csk_reqsk_queue_is_full`). 그래서 backlog가 작으면(Java 50) 작은 버스트에도 cookie 로그가 날 수 있다.
 - 라이브러리·서버의 기본 backlog가 제각각이다.
 
 | 무엇 | 기본 backlog | 근거 |

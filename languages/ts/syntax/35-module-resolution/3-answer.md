@@ -189,7 +189,7 @@ Error ERR_REQUIRE_ESM
 
 **왜 그런가**
 
-- ★★★ `nodenext` 는 **그 tsc 판이 아는 가장 새 node** 를 흉내 낸다. 5.9.3·7.0.2 의 `nodenext` 는 `node20` 과 같은 답(ESM 을 `require` 로 부를 수 있는 node)이고, 4.9.5 의 `nodenext` 는 `node16` 과 같은 답이다.
+- ★★★ `nodenext` 는 **그 tsc 버전이 아는 가장 새 node** 를 흉내 낸다. 5.9.3·7.0.2 의 `nodenext` 는 `node20` 과 같은 답(ESM 을 `require` 로 부를 수 있는 node)이고, 4.9.5 의 `nodenext` 는 `node16` 과 같은 답이다.
 - ★★★ 이 머신의 node 는 **v18** — `require("./util35.js")` 가 ESM 을 만나 `ERR_REQUIRE_ESM`. **`--module node18` 이었다면 tsc 가 `TS1479` 로 미리 막았다.**
 
 ### 6. ★★★ 7.0.2 **`exit 0`** · 방출물의 경로는 **`"@src/util35g.js"` 그대로** · node **`ERR_MODULE_NOT_FOUND`** · 5.9.3·4.9.5 **`(exit 0)`** · 파일을 직접 주면 7.0.2 **`TS5112`**, 5.9.3·4.9.5 **`TS2307`**
@@ -231,8 +231,8 @@ imp35g.ts(1,27): error TS2307: Cannot find module '@src/util35g.js' or its corre
 **왜 그런가**
 
 - ★★★ `paths` 는 **tsc 에게만 주는 별칭**이다 — 검사 때 `./src/util35g.ts` 로 풀고, 방출물의 지정자는 **그대로** 둔다. node 는 `@src` 를 모른다.
-- ★★ `baseUrl` 없는 `paths` 는 **옛 판에서도** 됐다. 7.0 이 뺀 것은 `baseUrl` 뿐이다.
-- ★★★ 7.0.2 는 **위쪽 디렉토리에 `tsconfig.json` 이 있는데** 파일을 직접 주면 `TS5112` 로 **검사를 거부한다.** 옛 두 판은 설정을 무시하고 파일만 검사해, `paths` 가 없으니 `TS2307`.
+- ★★ `baseUrl` 없는 `paths` 는 **옛 버전에서도** 됐다. 7.0 이 뺀 것은 `baseUrl` 뿐이다.
+- ★★★ 7.0.2 는 **위쪽 디렉토리에 `tsconfig.json` 이 있는데** 파일을 직접 주면 `TS5112` 로 **검사를 거부한다.** 옛 두 버전은 설정을 무시하고 파일만 검사해, `paths` 가 없으니 `TS2307`.
 
 ### 7. ★★★ tsc 가 **`.js` 를 떼고 `.ts` 로 바꿔** 찾기 때문 — 「`File name './util35.js' has a '.js' extension - stripping it.`」
 
@@ -247,12 +247,12 @@ imp35g.ts(1,27): error TS2307: Cannot find module '@src/util35g.js' or its corre
 ### 9. ★★★ **tsc 의 판**이다 — 호스트 node 와 맞추려면 **판을 박은 값**(`node18`·`node20`)을 고른다
 
 - ★★ 5번 — 같은 `nodenext` 가 4.9.5 `TS1479`, 7.0.2 `OK`. 바뀐 것은 **tsc** 뿐이다.
-- ★★★ tsc 는 **어느 node 에서 돌지 모른다.** 배포 환경이 v18 이면 `node18` 이 그 호스트의 규칙이다 — 이 판에서 `TS1479` 로 미리 막았다.
+- ★★★ tsc 는 **어느 node 에서 돌지 모른다.** 배포 환경이 v18 이면 `node18` 이 그 호스트의 규칙이다 — 이 버전에서 `TS1479` 로 미리 막았다.
 
 ### 10. ★★★ **기본 해석 방식이 `Node10` → `Bundler` 로 바뀐 것** — 진단이 없다 · `--traceResolution` 의 둘째 줄(「`Module resolution kind is not specified, using '…'`」)을 찍어 본다
 
 - ★★ 1번 마지막 세 줄이 그 방법이다 — 판마다 **`using '…'`** 이 다르다.
-- ★★ 사라진 값·옵션은 `TS5108`·`TS5102` 로 **시끄럽게** 알린다. 기본값 변화는 **조용하다** — 2번 격자에서 옛 기본(`node10`, 5.9.3)과 새 기본(`bundler`, 7.0.2)이 갈린 칸은 **`imp35e` 하나**(`TS2307` → `OK`)다. 칸이 하나뿐이라 더 눈에 안 띈다.
+- ★★ 사라진 값·옵션은 `TS5108`·`TS5102` 로 **시끄럽게** 알린다. 기본값 변화는 **조용하다** — 2번 격자에서 옛 기본(`node10`, 5.9.3)과 새 기본(`bundler`, 7.0.2)이 달라진 항목은 **`imp35e` 하나**(`TS2307` → `OK`)다. 칸이 하나뿐이라 더 눈에 안 띈다.
 
 ### 11. ★★ 02편 7절 「**`tsc` 에 파일을 직접 주면 `tsconfig.json` 을 무시한다**」 — 7.0.2 는 **`TS5112` 로 거부**한다 · 파이썬은 **실행기 하나 안에서 기준(`__package__`)이 달라서**, TS 는 **검사기와 실행기가 다른 규칙이라서** 어긋난다
 
@@ -272,9 +272,9 @@ imp35g.ts(1,27): error TS2307: Cannot find module '@src/util35g.js' or its corre
 | ★★★ CJS → ESM | `bash ts34b-cjs35.sh` · 방출 · `node run35c.cjs` | **3 / 4** · `ERR_REQUIRE_ESM` |
 | ★★ `paths` | `tsc -p` · `node run35g.mjs` · 옛 두 판 · 파일 직접 | `exit 0` · `ERR_MODULE_NOT_FOUND` · `(exit 0)` 둘 · `TS5112`/`TS2307` |
 
-**구현 의존 항목 — 판이 오르면 다시 돌릴 것**
+**구현 의존 항목 — 버전이 오르면 다시 돌릴 것**
 
-- ★★★ **`nodenext` 의 뜻**(5번) — tsc 판이 오르면 움직인다. **node 판이 오르면** node 칸이 바뀐다(v18 → 새 판에서 `require(esm)`).
+- ★★★ **`nodenext` 의 뜻**(5번) — tsc 버전이 오르면 움직인다. **node 버전이 오르면** node 칸이 바뀐다(v18 → 새 버전에서 `require(esm)`).
 - ★★ **기본 해석**(1번) · **`bundler`+`commonjs`** 가 7.0.2 에서 풀린 것.
 - ★★ **`TS5112`**(6번) — 7.0.2 에서 처음 본 코드다.
 - ★ `bundler` 추적의 「CJS mode」 문구(3번).
@@ -288,6 +288,6 @@ imp35g.ts(1,27): error TS2307: Cannot find module '@src/util35g.js' or its corre
 
 모든 진단·격자·추적·실행은 `tsc` **7.0.2** · `node` **v18.19.1** 에서 실제로 얻었다. 판 비교는 **5.9.3 · 4.9.5** 를 환경변수(`TSC_OLD`·`TSC_49`)로 받아 **읽기만** 했다.\
 블록은 전부 **캡처 스크립트가 파일로 받은 것**이고 손으로 옮겨 적지 않았다 — 배너의 `(… exit=N)` 도 스크립트가 찍은 값이다.\
-★★★ 이 주제의 **본체 창은 세 판 해석 격자와 해석 격자이고, 급소는 호스트 창(`node`)이다.**\
+★★★ 이 주제의 **핵심 창은 세 판 해석 격자와 해석 격자이고, 급소는 호스트 창(`node`)이다.**\
 ★ 소스 펜스 첫 줄 `// 파일명`·`# 파일명` 은 대조용 배너다 — **진단의 행 번호는 그 줄을 뺀 기준**이다.\
 ★★ 추적 블록의 `.` 은 `p35/src`, `..` 은 `p35` 다 — 배너의 `sed` 가 절대 경로의 앞부분을 바꿨다.

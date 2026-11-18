@@ -17,10 +17,10 @@
 
 쉬운 예: 병원 응급실의 분류(triage)다.\
 "배가 아프다"만으로 병명을 정하지 않는다. 어디가, 언제부터, 무엇을 먹고 나서인지를 먼저 묻는다.\
-같은 "배가 아프다"가 맹장·식중독·근육통으로 갈린다.
+같은 "배가 아프다"가 맹장·식중독·근육통으로 나뉜다.
 
 똑같은 구조다.\
-"화면이 하얗다"는 적어도 여섯 갈래로 갈린다.\
+"화면이 하얗다"는 적어도 여섯 갈래로 나뉜다.\
 렌더 차단 CSS·JS가 첫 페인트를 막았거나([02-2](../02-rendering-pipeline/2-summary.md) · [13-1](../13-critical-path-and-resource-loading/2-summary.md)), CSR 번들이 아직 안 돌았거나([10-3](../10-rendering-strategies/2-summary.md)), 배포 뒤 옛 청크를 못 받았거나([09-2](../09-js-modules-and-bundling/2-summary.md)), 초기화 중 `QuotaExceededError`로 멈췄거나([06-2](../06-browser-storage/2-summary.md)), 오프라인에서 서비스 워커가 HTML을 못 줬거나([07-3](../07-service-workers-and-offline/2-summary.md)), 글자만 폰트를 기다리느라 안 보이는 것이다([15-1](../15-web-font-loading/2-summary.md)).\
 같은 "하얗다"인데 고치는 곳이 HTML·번들·배포·저장소·서비스 워커·폰트로 다르다.
 
@@ -417,7 +417,7 @@ Failed to load resource: the server responded with a status of 404 (Not Found)
 | 번역 화면에 문법이 틀린 문장, 번역 파일에 "총 ", "개 상품" 같은 조각 키 | 앱(메시지 조립) | 문장을 코드에서 이어 붙임 | 카탈로그의 조각 키 | [12-1](../12-internationalization-and-localization/2-summary.md) |
 | "1 items", 러시아어 "21 товаров" | 앱(복수형) | `n === 1 ? 단수 : 복수`. 12 실험 5: ru 21=one, 22=few, pl 21=many | `Intl.PluralRules(locale).select(n)`과 화면 문구 대조 | [12-2](../12-internationalization-and-localization/2-summary.md) |
 | 독일 사용자의 `1.234,5`€가 1.23€로 결제, 에러 없음. 12 실험 4: `parseFloat("1.234,5") = 1.234` | 앱·서버(숫자 파싱) | `parseFloat`·서버 기본 로캘 파서 | 전송 형식이 로캘 무관인가 | [12-3](../12-internationalization-and-localization/2-summary.md) |
-| 자정 근처 주문만 날짜가 하루 어긋남. 12 실험 6: 같은 순간이 뉴욕 3/1, 서울 3/2 | 앱·서버(시간대) | 순간을 UTC 날짜로 자르거나 서버 시간대로 표시 | 저장된 값이 순간(UTC)+시간대인가 | [12-4](../12-internationalization-and-localization/2-summary.md) |
+| 자정 근처 주문만 날짜가 하루 불일치. 12 실험 6: 같은 순간이 뉴욕 3/1, 서울 3/2 | 앱·서버(시간대) | 순간을 UTC 날짜로 자르거나 서버 시간대로 표시 | 저장된 값이 순간(UTC)+시간대인가 | [12-4](../12-internationalization-and-localization/2-summary.md) |
 | 한 단어 이름·여러 단어 성·비라틴 이름 사용자가 가입 못 함, "영문만 입력" | 폼 검증·스키마 | 한 문화의 이름 구조를 규칙으로 박음 | 국가별 가입 이탈, 검증 정규식 | [12-5](../12-internationalization-and-localization/2-summary.md) |
 
 ### 15. 메모리가 계속 는다·탭이 재로드된다
@@ -446,7 +446,7 @@ Failed to load resource: the server responded with a status of 404 (Not Found)
 | 보이는 것 (메시지·지표·판) | 계층 | 흔한 원인 | 첫 진단 | leaf |
 |---|---|---|---|---|
 | React "Invalid hook call", 상태 공유 라이브러리 상태가 둘로 갈림, 번들 분석에 같은 패키지 두 경로·두 판 | 번들(의존 해석) | 중복 설치, 마이크로 프론트엔드별 사본 | `npm ls <패키지>`, 번들 분석 | [09-5](../09-js-modules-and-bundling/2-summary.md) |
-| 원격 위젯 자리에 오류, `TypeError: Cannot read properties of null (reading 'useState')`, `Minified React error #321`. 22 실험 ①: selfmount JS 388,968B vs shared 194,926B | 마이크로 프론트엔드 런타임 | 원격 번들이 자기 React를 품음 → 디스패처 어긋남 | 로드된 `react-dom` 사본 수 | [22-1](../22-islands-and-micro-frontends/2-summary.md) |
+| 원격 위젯 자리에 오류, `TypeError: Cannot read properties of null (reading 'useState')`, `Minified React error #321`. 22 실험 ①: selfmount JS 388,968B vs shared 194,926B | 마이크로 프론트엔드 런타임 | 원격 번들이 자기 React를 품음 → 디스패처 불일치 | 로드된 `react-dom` 사본 수 | [22-1](../22-islands-and-micro-frontends/2-summary.md) |
 | 메인에서 쓰던 유틸을 워커로 옮기자 워커 `error` 이벤트, 콘솔 `ReferenceError: document is not defined`(16 실험 출력). 함수·DOM 노드를 메시지에 넣으면 `DataCloneError` | 웹 워커 전역 | 워커 전역(`DedicatedWorkerGlobalScope`)에는 DOM이 없음 | 의존 라이브러리가 `window`·`document`를 참조하나 | [16-3](../16-long-tasks-and-web-workers/2-summary.md) |
 | 다른 팀 배포 뒤 우리 버튼 색·여백이 바뀜, 우리 코드 변경 없음. 22 실험 ②: 팀 A 버튼 `rgb(255, 0, 0)` | CSS 캐스케이드 | 같은 클래스·같은 명시도면(출처·`!important`·`@layer`도 같을 때) 나중 규칙이 이김 | Computed 패널에서 이긴 규칙의 스타일시트 | [22-2](../22-islands-and-micro-frontends/2-summary.md) |
 
@@ -515,7 +515,7 @@ addEventListener('visibilitychange', () => {
 });
 ```
 
-- `build`(배포 식별자)와 `sw.scriptVersion`을 함께 보내면 "옛 탭·옛 워커에서만"을 지표로 가를 수 있다(07-1·09-2). 이 필드 구성은 이 노트의 제안이다.
+- `build`(배포 식별자)와 `sw.scriptVersion`을 함께 보내면 "옛 탭·옛 워커에서만"을 지표로 구분할 수 있다(07-1·09-2). 이 필드 구성은 이 노트의 제안이다.
 
 ## 장애 시나리오와 대처
 
@@ -556,7 +556,7 @@ addEventListener('visibilitychange', () => {
 
 ## 핵심 문장
 
-- 증상 이름 하나에 원인이 여럿이다. "흰 화면"은 차단 자원·CSR·옛 청크·저장 예외·SW·폰트로 갈린다. 콘솔 원문·시각·대상이 그 갈림길이다.
+- 증상 이름 하나에 원인이 여럿이다. "흰 화면"은 차단 자원·CSR·옛 청크·저장 예외·SW·폰트로 나뉜다. 콘솔 원문·시각·대상이 그 갈림길이다.
 - 보이는 자리와 원인 자리가 다르다. CORS 에러는 콘솔에 보이지만, 단순 요청이면 요청은 이미 서버에 갔다(처리됐을 수 있다).
 - 프론트엔드 장애의 상당수는 예외 없이 진행된다. 클릭 무시·레이아웃 이동·옛 버전·교차 노출은 지표·트레이스·고객 문의로만 보인다.
 - 같은 결함이 신호 두 개로 잡힌다. 300ms 클릭 핸들러는 `longtask`와 Event Timing `processing`에 함께 찍혔다. 어느 조각이 큰지가 처방을 고른다.

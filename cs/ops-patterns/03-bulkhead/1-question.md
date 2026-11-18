@@ -8,7 +8,7 @@
 
 ### A. 문제 (구현 대상 TODO — `src/main/java/com/ops/bulkhead/`)
 
-1. SharedPool — 기준선 (TODO 1~4)
+1. SharedPool — 베이스라인 (TODO 1~4)
 
 ```java
 @Override

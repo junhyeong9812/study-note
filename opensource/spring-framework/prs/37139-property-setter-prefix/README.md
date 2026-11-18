@@ -88,17 +88,17 @@ uncapitalize("X")                      name = "x" 로 확정, 예외는 없다
 |---|---|---|
 | `setName(String)` | 0 | `name` (정상) |
 | `updateName(String)` | -1 | 예외 (정상 거부) |
-| `offsetX(String)` | 3 | `x` (엉뚱한 이름, 무음 통과) |
-| `upset(String)` | 2 | 빈 문자열 (무음 통과) |
+| `offsetX(String)` | 3 | `x` (엉뚱한 이름, 조용한 통과) |
+| `upset(String)` | 2 | 빈 문자열 (조용한 통과) |
 
 `offsetX`의 계산: o-f-f-**s-e-t**-X에서 `set`이 3번 위치, +3이면 6번, `substring(6)` = "X", uncapitalize로 "x".\
 예외 없이 조용히 성공하므로, 이 이름을 소비하는 쪽(`getField()`, `getName()` 비교)이 영문 모를 오동작을 한다.\
 read 분기의 indexOf 버그(#36911)와 같은 뿌리다.
 
-> **무음 실패(silent failure)** — 실패했는데 예외도 로그도 없이 조용히 넘어가, 결과가 틀린 채로 계속 진행되는 실패.\
+> **조용한 실패(silent failure)** — 실패했는데 예외도 로그도 없이 조용히 넘어가, 결과가 틀린 채로 계속 진행되는 실패.\
 > 예: `offsetX`가 이름 `"x"`로 통과하면, 그 카드를 쓰는 쪽이 필드를 못 찾아도 아무 에러가 나지 않는다.
 
-같은 네 입력을 수정 전/후로 나란히 놓으면 결과가 이렇게 갈린다.
+같은 네 입력을 수정 전/후로 나란히 놓으면 결과가 이렇게 달라진다.
 
 ```text
 수정 전 indexOf("set")                 수정 후 startsWith("set")
@@ -127,7 +127,7 @@ return StringUtils.uncapitalize(methodName.substring(3));
 ```
 
 동작이 바뀌는 집합은 정확히 "`set`을 포함하되 `set`으로 시작하지 않는 이름"이다.\
-`setName`(정상)과 `updateName`(원래도 거부)은 전후 동일하고, `offsetX`/`upset`은 무음 통과에서 생성 시점 예외로 바뀐다.
+`setName`(정상)과 `updateName`(원래도 거부)은 전후 동일하고, `offsetX`/`upset`은 조용한 통과에서 생성 시점 예외로 바뀐다.
 
 이름 전체를 세 구역으로 갈라 보면 바뀌는 구역이 가운데 하나뿐임이 보인다.
 

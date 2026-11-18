@@ -1,4 +1,4 @@
-# reliability/34-tail-latency-and-stragglers — 팬아웃의 꼬리 지연 증폭과 hedged·tied request — 정리 (힌트)
+# reliability/34-tail-latency-and-stragglers — 팬아웃의 테일 레이턴시 증폭과 hedged·tied request — 정리 (힌트)
 
 ## 해결하는 문제
 
@@ -13,7 +13,7 @@
 ```
 
 - *팬아웃(fan-out)*: 요청 하나를 여러 하위 서버로 펼쳐 보내는 것. 검색(샤드마다 질의), 피드 조립, 마이크로서비스 집계에서 흔하다.
-- *꼬리 지연(tail latency)*: 지연 분포의 높은 분위수(p99·p99.9) 쪽 값.
+- *테일 레이턴시(tail latency)*: 지연 분포의 높은 분위수(p99·p99.9) 쪽 값.
 - *straggler(낙오자)*: 여러 대에 나눈 일 중 유독 늦게 끝나는 한 대.
 
 쉬운 예: 단체 사진이다. 한 사람이 눈을 감을 확률이 1%여도, 100명이 찍으면 "아무도 눈을 안 감은" 사진은 약 37%뿐이다.

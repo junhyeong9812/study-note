@@ -52,7 +52,7 @@
 - *콜백(callback)*: 함수(또는 객체)를 넘겨 두면 받은 쪽이 나중에 부른다.
 - Johnson·Foote(1988)는 상속으로 맞추는 프레임워크를 *화이트박스*(상위 클래스 내부 관례를 알아야 쓴다), 정해진 인터페이스의 부품을 끼우는 프레임워크를 *블랙박스*라고 불렀다. 화이트박스에서는 인스턴스 상태가 프레임워크 메서드 전부에 암묵적으로 보이고, 블랙박스에서는 넘겨야 할 정보를 명시적으로 넘긴다.
 
-### 3. IoC 컨테이너 — 객체 생성까지 프레임워크가 쥔다
+### 3. IoC 컨테이너 — 객체 생성까지 프레임워크가 잡는다
 
 ```text
  컨테이너 기동
@@ -62,7 +62,7 @@
  내가 new로 만든 객체 → 위 단계를 하나도 안 거친다
 ```
 
-- 의존성 주입(DI)은 제어 역전의 한 형태다(객체 조립의 흐름을 컨테이너가 쥔다). Fowler는 IoC 컨테이너 유행 이후 일반 원리(IoC)와 그 구체적 형태(DI)가 혼동된다고 지적했다(bliki, 2005). DI 자체는 [25-dependency-injection-and-composition-root](../25-dependency-injection-and-composition-root/2-summary.md).
+- 의존성 주입(DI)은 제어 역전의 한 형태다(객체 조립의 흐름을 컨테이너가 잡는다). Fowler는 IoC 컨테이너 유행 이후 일반 원리(IoC)와 그 구체적 형태(DI)가 혼동된다고 지적했다(bliki, 2005). DI 자체는 [25-dependency-injection-and-composition-root](../25-dependency-injection-and-composition-root/2-summary.md).
 
 ### 실험 A~C: 누가 내 코드를 부르나 — 호출 스택으로 보기
 

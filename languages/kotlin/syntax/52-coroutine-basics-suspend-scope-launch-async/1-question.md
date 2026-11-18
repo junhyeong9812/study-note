@@ -75,7 +75,7 @@ print("exit %d" % run.returncode)
 print("blocked probes: %d / %d" % (blocked, len(probes)))
 ```
 
-- 각 탐침은 `ok` 인가 진단인가? 진단의 문구는 몇 종이고 각각 무엇인가? 마지막 줄의 `N / M` 은?
+- 각 probe는 `ok` 인가 진단인가? 진단의 문구는 몇 종이고 각각 무엇인가? 마지막 줄의 `N / M` 은?
 
 ### 3. ★★ 10만 개와 100개 (예측)
 
@@ -270,7 +270,7 @@ fun main() {
 
 선행은 [10번 주제](../10-lambdas-and-higher-order-functions/)(람다와 고차 함수)와 [34번 주제](../34-exceptions-nothing-and-try-expression/)(예외)다.
 
-이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5 · kotlinx-coroutines 1.11.0** 에서 실제로 던져 받은 것이다.
+이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5 · kotlinx-coroutines 1.11.0** 에서 실제로 실행해 받은 것이다.
 
 ## 복습 기록
 

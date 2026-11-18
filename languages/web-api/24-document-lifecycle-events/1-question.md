@@ -85,7 +85,7 @@ addEventListener("unload", () => 적기("unload"));
 
 ### 8. bfcache 에 못 들어가는 조건은 누가 정하나 (경계)
 
-- HTML 명세가 정하는 것과 Chrome 이 정하는 것을 갈라라. `no-store` 와 `Permissions-Policy: unload=()` 는 이 판에서 어땠나?
+- HTML 명세가 정하는 것과 Chrome 이 정하는 것을 갈라라. `no-store` 와 `Permissions-Policy: unload=()` 는 이 버전에서 어땠나?
 
 ### 9. 되살아난 페이지 (경계)
 

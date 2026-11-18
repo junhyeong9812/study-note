@@ -1,9 +1,9 @@
 # web-api/37 — `MutationObserver`: 관측 옵션 · 레코드 묶음 · 마이크로태스크 타이밍 — 정답
 
-| 안 흔들리는 칸 | 흔들리는 칸 · 못 잰 칸 |
+| 달라지지 않는 항목 | 실행마다 달라지는 항목 · 못 잰 항목 |
 |---|---|
 | 묶음 로그 · 옵션 격자 63칸 · `TypeError` · 가장자리 · 남의 노드 — 시간을 하나도 안 찍는다 | **못 잰 것** — 비용 · 렌더링과의 순서(40번) · 그림자 트리 |
-| 캡처를 세 판 돌려 **한 글자도 같았다** | |
+| 캡처를 세 번 돌려 **한 글자도 같았다** | |
 
 ```text
 $ google-chrome --version
@@ -93,7 +93,7 @@ observe(host, {attributeOldValue: true})	던지지 않음
 
 **왜 그런가**
 
-- **`childList` · `attributes` · `characterData` 중 하나는 참**이어야 한다 — 옵션 없음 · `{}` · `{subtree}` 셋 다 같은 문구로 던졌다. `subtree` 는 **범위**라서 혼자서는 무엇을 볼지 말하지 않는다.
+- **`childList` · `attributes` · `characterData` 중 하나는 참**이어야 한다 — 옵션 없음 · `{}` · `{subtree}` 셋 다 같은 문구로 실행했다. `subtree` 는 **범위**라서 혼자서는 무엇을 볼지 말하지 않는다.
 - **`{attributeOldValue: true}` 만** — 명세가 먼저 `attributes` 를 **참으로 채우고** 검사하므로 통과한다. **`attributes: false` 를 명시하면** 채우기가 안 일어나 둘째 검사에서 던진다.
 
 ### 5. (가) 2개 · 콜백 0번 · (나) 레코드 1개(`oldValue=같음`) · (다) 콜백 0번 · 0개

@@ -20,7 +20,7 @@ PointA a1 = new PointA(1, 2), a2 = new PointA(1, 2);
 - `a1.hashCode() == a2.hashCode()` 는 무엇인가?
 - `map.put(a1, "값")` 뒤의 `map.get(a2)` 는 무엇인가?
 - `List.of(a1).contains(a2)` 는 무엇인가?
-- 앞 두 줄과 마지막 줄의 답이 갈리는 이유는 무엇인가?
+- 앞 두 줄과 마지막 줄의 답이 달라지는 이유는 무엇인가?
 - `new HashSet<>(List.of(a1, a2)).size()` 는 무엇인가?
 
 ### 2. 계약의 조항을 세어 보라 (왜)
@@ -75,7 +75,7 @@ Id a = new Id(1), b = new Id(1);
 
 - `a.equals(b)` 는 무엇인가?
 - `Object bo = b; a.equals(bo)` 는 무엇인가?
-- 두 답이 갈리는 이유는 무엇인가?
+- 두 답이 달라지는 이유는 무엇인가?
 - 컬렉션에서는 어느 쪽이 불리는가?
 - 이 실수를 컴파일 에러로 바꾸는 방법은 무엇인가?
 

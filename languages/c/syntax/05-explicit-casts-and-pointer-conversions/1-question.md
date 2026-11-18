@@ -48,7 +48,7 @@ printf("%zu %zu %zu\n", sizeof(void *), sizeof(int), sizeof(intptr_t));
 ```
 
 - 두 비교는 각각 무엇을 찍는가?
-- 왜 갈리는가?
+- 왜 달라지는가?
 - `(int)p` 에는 **캐스트를 씌웠는데도** 경고가 남는다 — 플래그를 하나도 안 줘도 남는가?
 - `intptr_t` 는 어느 층인가 — **반드시 있는 타입인가?**
 
@@ -82,7 +82,7 @@ printf("%d %d\n", r, x);
 **`-O0`·`-O1`·`-O2`·`-O3`·`-Os` 다섯 수준을, 각각 `-fstrict-aliasing`(기본)과 `-fno-strict-aliasing` 으로 돌린다.**
 
 - 열 번의 실행에서 `r` 은 몇 종류의 값을 내는가 — 경계선은 어느 최적화 수준인가?
-- `x` 도 같이 갈리는가?
+- `x` 도 같이 달라지는가?
 - 어셈블리에서 두 빌드는 **몇 명령** 차이인가 — 무엇이 없어졌는가?
 - `-Wall -Wextra` 는 몇 건을 말하는가? `-Wstrict-aliasing` 은 **수준별로** 어떤가?
 - `-fsanitize=undefined` 와 `-fsanitize=address` 는 각각 무엇을 말하는가?

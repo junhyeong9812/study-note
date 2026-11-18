@@ -16,7 +16,7 @@ await fetch(B + "/cors?id=" + id, { method, headers: { "Content-Type": 종류, .
 ```
 
 - OPTIONS 가 먼저 오는 칸과 안 오는 칸을 갈라라. 안 오는 칸의 공통점은?
-- 페이지가 받은 `status` 만 보고 두 부류를 가를 수 있나?
+- 페이지가 받은 `status` 만 보고 두 부류를 구분할 수 있나?
 
 ### 2. 격자 밖의 여덟 칸 (예측)
 

@@ -146,7 +146,7 @@ long big(long a)              { return a + 0x12345678; }
 - 컨테이너도 결국 호스트 커널의 `execve`를 부른다. 컨테이너는 커널을 공유하므로 호스트 아키텍처와 맞는 코드만 돈다(Docker 문서: "you can't run a linux/amd64 container on an arm64 host (without using emulation)").
 - 셸의 126은 "찾았지만 실행 못 함"이라는 bash의 종료 코드다. 컨테이너의 255는 이 Docker 판에서 관찰한 값이다.
 
-### 5. 같은 ISA 안에서도 "확장"이 갈린다
+### 5. 같은 ISA 안에서도 "확장"이 달라진다
 
 ```text
   x86-64 기준선 ─▶ x86-64-v2 ─▶ x86-64-v3(AVX2 등) ─▶ x86-64-v4(AVX-512 등)

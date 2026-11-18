@@ -472,7 +472,7 @@ rangeSum(r1, c1, r2, c2) = A - B - C + D  (포함-배제)
 
 ## 적용 — 풀어나가는 법
 
-펜윅 트리 문제는 "합으로 바꿔 쓸 수 있는가"에서 갈린다.\
+펜윅 트리 문제는 "합으로 바꿔 쓸 수 있는가"에서 달라진다.\
 순서: ① 묻는 연산에 역연산이 있는지 확인한다 — 합·XOR이면 펜윅, min/max/GCD면 13번이다 → ② 갱신이 없으면 누적합 배열로 끝낸다 — 갱신이 있어야 펜윅이 값어치를 한다 → ③ "k번째"·"순위"는 값의 빈도표를 펜윅에 얹어 `findPrefixIndex`로 푼다 → ④ 2차원은 같은 규칙을 축마다 겹치고, 직사각형 합은 포함-배제로 만든다 → ⑤ 안쪽 인덱스가 1부터인지, 바깥 경계에 +1이 붙었는지 마지막에 다시 본다.\
 아래 과제 9개가 이 순서다 — `add`와 `prefixSum`이 핵심이고 나머지는 그 위에 얹힌다.
 
@@ -542,7 +542,7 @@ rangeSum(r1, c1, r2, c2) = A - B - C + D  (포함-배제)
 
 - 선행 — [13-segment-tree](../13-segment-tree/2-summary.md): 일반성(모노이드)의 값이 코드·메모리였고, 여기서 그 하나를 포기한다. [algorithm/10-prefix-sum](../../algorithm/10-prefix-sum/2-summary.md): 갱신이 없을 때의 답.
 - 기법 — [algorithm/29-bit-manipulation](../../algorithm/29-bit-manipulation/2-summary.md)(`i & -i`·2의 보수) · [algorithm/06-binary-search](../../algorithm/06-binary-search/2-summary.md)(`findPrefixIndex`의 트리 위 이진 탐색) · [algorithm/02-merge-sort](../../algorithm/02-merge-sort/2-summary.md)(역전 쌍 세기의 다른 길).
-- 대조 — [22-sparse-table](../22-sparse-table/2-summary.md): 갱신 없는 구간 최솟값을 O(1)에. 갱신·역연산 두 축으로 13·17·22가 갈린다.
+- 대조 — [22-sparse-table](../22-sparse-table/2-summary.md): 갱신 없는 구간 최솟값을 O(1)에. 갱신·역연산 두 축으로 13·17·22가 달라진다.
 - 후속 — [18-bitset](../18-bitset/2-summary.md): "구조를 계산으로 대신했다"에서 한 걸음 더 — 값 자체를 비트로 눕힌다.
 - 영역 표 — [data-structure/curriculum.md](../curriculum.md) `34-fenwick-tree` (선행 `33-segment-tree`).
 - 교재 — Fenwick, "A New Data Structure for Cumulative Frequency Tables", Software: Practice and Experience 24(3), 1994 · cp-algorithms "Fenwick Tree".

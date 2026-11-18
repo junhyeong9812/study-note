@@ -240,7 +240,7 @@ bad5.kt:15:5: error: 'when' expression must be exhaustive. Add the 'is Square' b
      점프 표를 배열로 만든다             정렬된 쌍 목록을 이진 탐색
 ```
 
-- ★ **같은 `Int` 주체인데 명령이 갈렸다.** 고른 것은 `when` 문법이 아니라 **가지 값들의 분포**다.
+- ★ **같은 `Int` 주체인데 명령이 달라졌다.** 고른 것은 `when` 문법이 아니라 **가지 값들의 분포**다.
 - 이것은 Java `switch` 가 오래전부터 하던 것과 **같은 선택**이다 — 정본은 [`../../../java/syntax/21-switch-statement-and-expression/`](../../../java/syntax/21-switch-statement-and-expression/).
 - ★ **`Long` 주체에서는 `switch` 명령이 아예 안 나온다.**
 
@@ -564,7 +564,7 @@ BootstrapMethods:
      가지 수에 비례하는 검사              JDK 21 의 SwitchBootstraps
 ```
 
-- ★★ **같은 소스가 타깃 하나 때문에 「`instanceof` 사슬」과 「`invokedynamic`」으로 갈린다.**\
+- ★★ **같은 소스가 타깃 하나 때문에 「`instanceof` 사슬」과 「`invokedynamic`」으로 나뉜다.**\
   경계는 정확히 **21** 이다 — 17·20 에서는 `invokedynamic` 이 **0개**, 21 에서 **1개**였다(세 타깃을 다 찍어 세었다).
 - ★ `java.lang.runtime.SwitchBootstraps.typeSwitch` 는 **Java 21 의 패턴 `switch` 가 쓰는 바로 그 부트스트랩**이다.\
   Kotlin 의 `when` 과 Java 의 패턴 `switch` 가 **같은 JVM 기계 위에서 만난다.**
@@ -955,9 +955,9 @@ val u = when (x) {
   `Nothing` 의 정본은 [목록의 **34번 주제**](../34-exceptions-nothing-and-try-expression/)다.
 - 타깃 21 의 `typeSwitch` 가 받는 세 번째 인자(`iconst_0`)는 **restart index** 다 —\
   guard 가 실패했을 때 그 다음 후보부터 다시 찾기 위한 자리다. 이 문서의 예제에는 guard 가 없어 0 으로 고정돼 있다.
-- **`-jvm-target` 을 바꾸면 `when` 말고도 갈리는 것이 있다** — [02번 주제](../02-string-templates-and-raw-strings/)의 문자열 보간이\
+- **`-jvm-target` 을 바꾸면 `when` 말고도 달라지는 것이 있다** — [02번 주제](../02-string-templates-and-raw-strings/)의 문자열 보간이\
   1.8 에서 `StringBuilder`, 그 위에서는 `invokedynamic` 이 되는 것이 같은 성격이다.\
-  **이 저장소의 Kotlin 문서는 전부 기본 타깃(1.8)을 정본으로 적고 갈리는 자리만 따로 표시한다.**
+  **이 저장소의 Kotlin 문서는 전부 기본 타깃(1.8)을 정본으로 적고 달라지는 자리만 따로 표시한다.**
 - 이 문서에서 **못 잰 것** — `-language-version 1.9` 이하는 kotlinc 2.4.20 이 거부한다\
   (`language version 1.9 is no longer supported; use version 2.0 or greater instead.`).\
   그래서 **K1 컴파일러의 `when` 바이트코드와는 비교하지 못했다.**

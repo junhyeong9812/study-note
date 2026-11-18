@@ -1,14 +1,14 @@
 # kotlin/syntax/49 — `Result` 와 `runCatching` — 예외를 값으로 — 정리 (힌트)
 
-★★★ **본체는 첫째 창이다** — 「**반환 타입 판별 격자 — `Result` 를 쓰는 자리 열 곳 × `-language-version` 2.0\~2.4 → 컴파일되나 · 진단**」. README 의 학습 목표는 「**왜 제한되는지**」인데, **이 판에서는 한 칸도 막히지 않는다.** 그래서 이 주제의 첫 결론은 「제한이 **지금은 없다**」이고, 「왜 있었나」는 **컴파일러에 남은 흔적**으로만 읽는다.
+★★★ **핵심은 첫째 창이다** — 「**반환 타입 판별 격자 — `Result` 를 쓰는 자리 열 곳 × `-language-version` 2.0\~2.4 → 컴파일되나 · 진단**」. README 의 학습 목표는 「**왜 제한되는지**」인데, **이 버전에서는 한 칸도 막히지 않는다.** 그래서 이 주제의 첫 결론은 「제한이 **지금은 없다**」이고, 「왜 있었나」는 **컴파일러에 남은 흔적**으로만 읽는다.
 
 ## 이 주제가 쓰는 세 층
 
 | 층 | 뜻 | 근거로 쓰는 것 |
 |---|---|---|
 | **언어 보장 / API 계약** | 서명·KDoc 이 약속한 것 | ★★★ `runCatching` KDoc 「**catching any [Throwable] exception**」 · `map` KDoc 「**rethrows any [Throwable] exception thrown by [transform]**」 · `mapCatching` 「**catches any [Throwable] exception thrown by [transform]**」 · `Result` 는 **`@JvmInline value class`**(선언) |
-| **구현(컴파일러·stdlib)** | 이 판이 실제로 하는 것 | ★★ 컴파일러 jar 의 **옛 진단 문구 두 개**와 **1.4·1.5 기능 게이트** · `Result` 를 받는 함수가 **이름이 안 뭉개진다**(`take(java.lang.Object)`) · `runCatching` 이 `try … catch (e: Throwable)` 한 덩어리 |
-| **이 판의 관찰** | kotlinc 2.4.20 에서 이번에 본 것 | 격자 값 · 진단 문구 · `javap` 의 이름 |
+| **구현(컴파일러·stdlib)** | 이 버전이 실제로 하는 것 | ★★ 컴파일러 jar 의 **옛 진단 문구 두 개**와 **1.4·1.5 기능 게이트** · `Result` 를 받는 함수가 **이름이 안 뭉개진다**(`take(java.lang.Object)`) · `runCatching` 이 `try … catch (e: Throwable)` 한 덩어리 |
+| **이 버전의 관찰** | kotlinc 2.4.20 에서 이번에 본 것 | 격자 값 · 진단 문구 · `javap` 의 이름 |
 
 ## 이 판
 
@@ -18,25 +18,25 @@ info: kotlinc-jvm 2.4.20 (JRE 21.0.5+11-LTS)
 (exit 0)
 ```
 
-## 흔들리는 칸 / 안 흔들리는 칸
+## 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| **흔들린다** | (이 주제에는 없다) | 해시코드·주소·시간을 찍지 않았다 · 스택 트레이스를 찍지 않았다 |
-| 안 흔들린다 | 판별 격자 11행 × 5판 · 막힌 칸 수 · 진단 문구 | 컴파일러 진단은 결정적이다 |
-| 안 흔들린다 | `javap` 출력 — 뭉개진 이름의 해시 글자(`-tmnojjU`)까지 | 같은 소스·같은 판이면 같다. ★ 해시 글자는 **판이 바뀌면 달라질 수 있는** 칸이라 **모양**(`이름-해시`)만 근거로 쓴다([26번 주제](../26-value-class-and-boxing/)와 같은 선언) |
-| 안 흔들린다 | 컴파일러 클래스의 `javap` 발췌(오프셋·상수 풀 번호째) · 종료 코드 | 같은 `kotlin-compiler.jar` 면 같다 |
+| **실행마다 달라진다** | (이 주제에는 없다) | 해시코드·주소·시간을 찍지 않았다 · 스택 트레이스를 찍지 않았다 |
+| 달라지지 않는다 | 판별 격자 11행 × 5판 · 막힌 항목 수 · 진단 문구 | 컴파일러 진단은 결정적이다 |
+| 달라지지 않는다 | `javap` 출력 — 뭉개진 이름의 해시 글자(`-tmnojjU`)까지 | 같은 소스·같은 판이면 같다. ★ 해시 글자는 **판이 바뀌면 달라질 수 있는** 칸이라 **모양**(`이름-해시`)만 근거로 쓴다([26번 주제](../26-value-class-and-boxing/)와 같은 선언) |
+| 달라지지 않는다 | 컴파일러 클래스의 `javap` 발췌(오프셋·상수 풀 번호째) · 종료 코드 | 같은 `kotlin-compiler.jar` 면 같다 |
 
 ★ 근거 — 캡처 스크립트를 처음부터 두 번 돌려 **블록 전체를 대조**했다(수치는 3-answer 의 「실행 검증」).
 
 ## 한눈에 — 쉽게 말하면
 
 **`Result` 는 「택배 상자」다 — 안에 물건(값)이 들었거나, 「배송 실패」 쪽지(예외)가 들었다.** 받은 사람은 상자를 **열어 봐야**(`fold`·`getOrElse`) 어느 쪽인지 안다. `runCatching { … }` 은 일을 시켜 보고 **무슨 일이 터지든** 상자에 담아 준다 — 사소한 실수(`Exception`)도, 「아직 안 만들었다」(`TODO()` 의 `NotImplementedError`)나 「있어서는 안 될 상태」(`AssertionError`) 같은 **`Error`** 도.
-★ 한때는 이 상자를 **함수의 반환값으로 내보내는 것**이 금지였다. 지금(1.5 이후)은 된다 — 이 판의 컴파일러에는 **그 금지 조항의 문구만** 남아 있다.
+★ 한때는 이 상자를 **함수의 반환값으로 내보내는 것**이 금지였다. 지금(1.5 이후)은 된다 — 이 버전의 컴파일러에는 **그 금지 조항의 문구만** 남아 있다.
 
 | 비유 | 실체 | 이 문서에서 |
 |---|---|---|
-| 상자를 반환값으로 내보내기 | `fun f(): Result<Int>` — 이 판에서 **된다** | (1) ★ |
+| 상자를 반환값으로 내보내기 | `fun f(): Result<Int>` — 이 버전에서 **된다** | (1) ★ |
 | 옛 금지 조항 문구 | 컴파일러 jar 의 `'kotlin.Result' cannot be used as a return type` · 게이트 `KOTLIN_1_5` | (2) ★ |
 | 상자는 포장만 있다 | `value class` — JVM 에서 **`Object`** 로 다닌다 | (3) |
 | 무엇이 터지든 담는다 | `runCatching` 은 **`Throwable` 전부** — `Error` 까지 | (4) ★ |
@@ -54,30 +54,30 @@ info: kotlinc-jvm 2.4.20 (JRE 21.0.5+11-LTS)
 
 ## 이 주제가 답하려는 질문
 
-1. `Result` 를 **반환 타입·프로퍼티·널 가능 타입·컬렉션 원소·인자**로 쓸 수 있나 — 이 판에서 막히는 자리가 있나, 있었다면 **어디에 흔적이 있나.**
+1. `Result` 를 **반환 타입·프로퍼티·널 가능 타입·컬렉션 원소·인자**로 쓸 수 있나 — 이 버전에서 막히는 자리가 있나, 있었다면 **어디에 흔적이 있나.**
 2. `Result` 는 JVM 에서 **무엇으로** 다니나 — `value class` 규칙대로인가.
 3. `runCatching` 은 **무엇까지** 잡나 — 그리고 상자 안에서 다시 터지면(`map`) 어떻게 되나.
 
 ## 동작 방식
 
-### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「부적용인 창」
+### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「해당 없는 창」
 
 | 창 | 무엇을 보여 주나 | 어디서 왔나 |
 |---|---|---|
-| ★★★ **판별 격자(컴파일 · `-language-version` × 자리)** | 컴파일되나 · 진단((1)) | ★ **본체 창** — 대조 칸 하나(`lateinit`)를 **일부러 막히게** 넣어 「격자가 막힘을 볼 수 있다」를 같은 블록에서 보인다 |
+| ★★★ **판별 격자(컴파일 · `-language-version` × 자리)** | 컴파일되나 · 진단((1)) | ★ **핵심 창** — 대조 칸 하나(`lateinit`)를 **일부러 막히게** 넣어 「격자가 막힘을 볼 수 있다」를 같은 블록에서 보인다 |
 | ★★★ **컴파일러 jar 의 `javap`** | 옛 제한의 **진단 문구**와 **기능 게이트 판**((2)) | ★ **제5의 상태** — 「1.4 에서 막혔나」를 **1.4 로 컴파일해서** 묻지 못해(1.9 부터 거부) **컴파일러가 남긴 표**로 물었다. 이 창은 **K1 계열 클래스**만 본다 — K2 가 같은 검사를 어디에 두는지는 **못 봤다** |
 | ★★ **`javap -p`** | `Result` 가 `Object` 로 다니나 · 이름이 뭉개지나((3)) | [26번 주제](../26-value-class-and-boxing/)와 같은 창 |
 | ★★ **잡기 격자(실행)** | 던진 것 × (`runCatching` · `catch (e: Exception)`)((4)) | — |
 | ★★ **stdlib 소스 jar 발췌** | `runCatching`·`map`·`mapCatching` 의 KDoc 계약((5)) | — |
 | **인용 — 다시 안 잰다** | 검사 예외 없음 · `@Throws` · `Nothing` | [34번 주제](../34-exceptions-nothing-and-try-expression/) |
 | **못 잰 것** | 1.4 이하의 실제 거부 · KEEP 의 설계 논거 | (1)(2) — 판이 없고, 문서를 열지 못했다 |
-| **부적용 — 실행 시간** | 「`Result` 가 예외보다 싸다」는 **재지 않았다** | — |
+| **해당 없음 — 실행 시간** | 「`Result` 가 예외보다 싸다」는 **재지 않았다** | — |
 
-### (1) ★★★ 반환 타입 판별 격자 — 이 판에서 막히는 자리
+### (1) ★★★ 반환 타입 판별 격자 — 이 버전에서 막히는 자리
 
 **언제 쓰나** — 「`Result` 를 반환하지 마라」는 옛 규칙을 코드 리뷰에서 만났을 때.
 
-방법 — `Result` 를 쓰는 자리 열 곳과 **대조 칸 하나**(`lateinit` — `value class` 타입에는 원래 금지)를 한 파일에 두고, 판마다 `kotlinc -language-version` 을 바꿔 컴파일한다. 줄마다 첫 진단을 읽고, 없으면 `ok`. 마지막 줄은 **대조 칸을 뺀** 막힌 칸을 센다.
+방법 — `Result` 를 쓰는 자리 열 곳과 **대조 칸 하나**(`lateinit` — `value class` 타입에는 원래 금지)를 한 파일에 두고, 판마다 `kotlinc -language-version` 을 바꿔 컴파일한다. 줄마다 첫 진단을 읽고, 없으면 `ok`. 마지막 줄은 **대조 칸을 뺀** 막힌 항목을 센다.
 
 ```kotlin
 // ret49.kt
@@ -165,9 +165,9 @@ blocked cells outside the control row: 0 / 50
 (exit 0)
 ```
 
-- ★★★ **막힌 칸은 50칸 중 0칸이다** — 반환 타입(`return`) · 프로퍼티(`property`) · `Result<Int>?` 반환 · `List<Result<Int>>` · 인자 · `?.` · `!!` · `?:` · 인터페이스의 추상 멤버 · `suspend` 반환 — **2.0 부터 2.4 까지 전부 컴파일된다.**
+- ★★★ **막힌 항목은 50칸 중 0칸이다** — 반환 타입(`return`) · 프로퍼티(`property`) · `Result<Int>?` 반환 · `List<Result<Int>>` · 인자 · `?.` · `!!` · `?:` · 인터페이스의 추상 멤버 · `suspend` 반환 — **2.0 부터 2.4 까지 전부 컴파일된다.**
 - ★★★ **대조 칸은 다섯 판 모두 막혔다** — `'lateinit' modifier is not allowed on properties of inline class types.` 그래서 **「0」은 격자가 눈이 먼 결과가 아니다**(규칙 22) — 같은 컴파일에서 막힘을 **본** 칸이 있다. 종료 코드가 판마다 `1` 인 것도 이 칸 하나 때문이다.
-- ★★ **2.0 아래는 이 판에서 잴 수 없다** — `language version 1.9 is no longer supported`. 제한이 **있던** 판(1.4 이하)을 직접 던져 보는 길은 막혀 있다 — 그래서 (2)로 창을 바꾼다.
+- ★★ **2.0 아래는 이 버전에서 잴 수 없다** — `language version 1.9 is no longer supported`. 제한이 **있던** 판(1.4 이하)을 직접 던져 보는 길은 막혀 있다 — 그래서 (2)로 창을 바꾼다.
 
 ### (2) ★★★ 제한의 흔적 — 컴파일러가 남긴 표
 
@@ -195,7 +195,7 @@ blocked cells outside the control row: 0 / 50
 
 - ★★★ **컴파일러 안에 옛 진단 문구가 둘 있다** — `'kotlin.Result' cannot be used as a return type` 과 `Expression of type ''kotlin.Result'' cannot be used as a left operand of ''{0}''`(자리 `{0}` 에 연산자가 들어간다). 앞쪽이 **반환 타입 제한**, 뒤쪽이 **`?.`·`?:` 같은 널 연산자의 왼쪽에 `Result` 를 두는 제한**이다.
 - ★★★ **두 제한을 푸는 기능이 판으로 적혀 있다** — `AllowNullOperatorsForResult` 는 **`KOTLIN_1_4`**, `AllowNullOperatorsForResultAndResultReturnTypeByDefault` 는 **`KOTLIN_1_5`**. 검사기 `ResultClassInReturnTypeChecker` 는 **뒤쪽 기능을 먼저 묻고**, 없을 때만 `RESULT_CLASS_IN_RETURN_TYPE` 을 낸다.
-- ★★ 그래서 이 판에서 읽을 수 있는 「왜 막혔었나」는 여기까지다 — **1.3 에 `Result` 가 들어올 때 반환 타입과 널 연산자 자리를 막아 두었고, 널 연산자는 1.4 부터, 반환 타입은 1.5 부터 기본으로 풀었다.** 막아 둔 **이유**(설계 논의)는 KEEP 문서에 있으나 **이 작업에서 열지 못했다.**
+- ★★ 그래서 이 버전에서 읽을 수 있는 「왜 막혔었나」는 여기까지다 — **1.3 에 `Result` 가 들어올 때 반환 타입과 널 연산자 자리를 막아 두었고, 널 연산자는 1.4 부터, 반환 타입은 1.5 부터 기본으로 풀었다.** 막아 둔 **이유**(설계 논의)는 KEEP 문서에 있으나 **이 작업에서 열지 못했다.**
 - ★ 이 세 클래스는 `org.jetbrains.kotlin.resolve`·`diagnostics` 아래의 **K1 계열**이다 — 2.4.20 의 기본 프런트엔드(K2)가 같은 검사를 따로 두는지는 **확인하지 않았다.** (1)의 격자가 보인 것은 **K2 가 2.0\~2.4 에서 막지 않는다**는 것뿐이다.
 
 ### (3) ★★ `Result` 는 JVM 에서 `Object` 로 다닌다 — 그런데 이름은 안 뭉개진다
@@ -266,7 +266,7 @@ public final class kotlin.Result<T> implements java.io.Serializable {
 ```
 
 - ★★★ **`make()` 의 반환 타입은 `java.lang.Object`**, 프로퍼티 `kept` 도 `Object` 필드와 `getKept(): Object` — `value class` 라 **알맹이(`value: Any?`)만** 다닌다. 성공이면 값 자체, 실패면 `Result.Failure` 객체다((5)).
-- ★★★ **`take(r: Result<Int>)` 는 `take(java.lang.Object)` — 이름이 뭉개지지 않았다.** 같은 파일의 사용자 `value class Id` 를 받는 `takeId` 는 **`takeId-tmnojjU(int)`** 로 뭉개졌다. [26번 주제](../26-value-class-and-boxing/) (1)의 규칙(「`value class` 를 받으면 이름이 뭉개진다」)에서 **`Result` 만 벗어난다** — 이 판의 관찰이고, 까닭은 **확인하지 않았다.**
+- ★★★ **`take(r: Result<Int>)` 는 `take(java.lang.Object)` — 이름이 뭉개지지 않았다.** 같은 파일의 사용자 `value class Id` 를 받는 `takeId` 는 **`takeId-tmnojjU(int)`** 로 뭉개졌다. [26번 주제](../26-value-class-and-boxing/) (1)의 규칙(「`value class` 를 받으면 이름이 뭉개진다」)에서 **`Result` 만 벗어난다** — 이 버전의 관찰이고, 까닭은 **확인하지 않았다.**
 - ★★ **`List<Result<Int>>` 에 넣을 때는 박싱된다** — `many()` 본문에 `Result."box-impl"` 이 있고, 서명에는 `List<kotlin.Result<java.lang.Integer>>` 가 그대로 남는다. 제네릭 자리에서는 **포장이 실제 객체**가 된다(26번 주제의 규칙 그대로).
 - ★ `kotlin.Result` 클래스 자체에는 `private final Object value` 하나와 `box-impl`·`unbox-impl` 이 있다 — 박싱될 때 쓰는 그 한 겹이다.
 
@@ -454,7 +454,7 @@ valid  [80, 22]
 
 **규칙 불릿**
 
-- **`Result` 는 반환 타입·프로퍼티·인자·컬렉션 원소 어디든 된다**(1.5+ — 이 판에서 50칸 전부)((1)(2)).
+- **`Result` 는 반환 타입·프로퍼티·인자·컬렉션 원소 어디든 된다**(1.5+ — 이 버전에서 50칸 전부)((1)(2)).
 - **`runCatching` 은 `Throwable` 전부를 잡는다** — `Error`(`TODO()`·`AssertionError`)까지((4)).
 - **`map`·`recover`·`fold` 의 람다에서 던지면 밖으로 샌다** — 담으려면 `mapCatching`·`recoverCatching`((5)).
 - **꺼내기** — `getOrThrow`(원래 예외를 던짐) · `getOrElse { }` · `getOrDefault(v)` · `getOrNull()` · `exceptionOrNull()`((5)).
@@ -462,24 +462,24 @@ valid  [80, 22]
 
 ## 어디서 틀리나
 
-1. ★★★ **「`Result` 는 반환 타입으로 못 쓴다」를 지금 규칙으로 안다.** 1.5 부터 된다 — 이 판에서는 50칸 중 0칸이 막혔다((1)(2)).
+1. ★★★ **「`Result` 는 반환 타입으로 못 쓴다」를 지금 규칙으로 안다.** 1.5 부터 된다 — 이 버전에서는 50칸 중 0칸이 막혔다((1)(2)).
 2. ★★★ **`runCatching` 을 `try { } catch (e: Exception)` 과 같은 것으로 본다.** `Error` 까지 잡는다 — `TODO()` 가 실패 값으로 조용히 흘러간다((4)).
 3. ★★ **`Result` 를 돌려주는 함수는 절대 안 던진다고 본다.** `map`·`recover`·`fold` 의 람다가 던지면 **밖으로 나온다**((5)).
 4. ★★ **`runCatching` 만 취소를 삼킨다고 본다.** JVM 의 `CancellationException` 은 `Exception` 이라 **`catch (e: Exception)` 도 삼킨다**((4)).
-5. ★ **`Result` 를 받는 함수 이름이 다른 `value class` 처럼 뭉개진다고 본다.** 이 판에서 `take(java.lang.Object)` — 안 뭉개졌다((3)).
+5. ★ **`Result` 를 받는 함수 이름이 다른 `value class` 처럼 뭉개진다고 본다.** 이 버전에서 `take(java.lang.Object)` — 안 뭉개졌다((3)).
 6. ★ **`Result` 가 에러의 타입을 말해 준다고 본다.** 실패는 언제나 `Throwable` 이다 — Rust `Result<T, E>` 의 `E` 가 없다(아래 대비).
 
 ## 구현 세부사항 대 언어 보장
 
 | 항목 | 어느 쪽인가 | 근거 |
 |---|---|---|
-| 1.5+ 에서 `Result` 를 반환 타입으로 쓸 수 있다 | ★★★ **언어 판의 규칙** — 이 판의 컴파일러가 게이트를 `KOTLIN_1_5` 로 적는다 | (1)(2) |
+| 1.5+ 에서 `Result` 를 반환 타입으로 쓸 수 있다 | ★★★ **언어 판의 규칙** — 이 버전의 컴파일러가 게이트를 `KOTLIN_1_5` 로 적는다 | (1)(2) |
 | 옛 진단 문구 · 검사기 클래스 이름 | ★ **컴파일러 구현** — K1 계열 클래스 | (2) |
 | `runCatching` 은 `Throwable` 전부 | ★★★ **API 계약(KDoc)** | (4)(5) |
 | `map` 은 람다 예외를 다시 던진다 · `mapCatching` 은 담는다 | ★★★ **API 계약(KDoc)** | (5) |
 | `Result` 가 `value class` | ★★ **API 계약(선언)** | (5) |
-| `Object` 로 다닌다 · `take(Object)` 가 안 뭉개진다 · `box-impl` | ★ **JVM 백엔드 구현** — 이 판의 관찰 | (3) |
-| `CancellationException` 이 `Exception` 의 자손 | ★ **플랫폼(JVM) 사실** — `java.util.concurrent` 의 클래스 · 이 판에서 `is Exception` 으로 확인 | (4) |
+| `Object` 로 다닌다 · `take(Object)` 가 안 뭉개진다 · `box-impl` | ★ **JVM 백엔드 구현** — 이 버전의 관찰 | (3) |
+| `CancellationException` 이 `Exception` 의 자손 | ★ **플랫폼(JVM) 사실** — `java.util.concurrent` 의 클래스 · 이 버전에서 `is Exception` 으로 확인 | (4) |
 | 「`Result` 가 예외보다 싸다」 | **재지 않았다** | — |
 
 ★★ **가장 조심할 자리** — README 의 학습 목표(「왜 제한되는지」)는 **1.5 이전의 전제**다. 지금 설명할 수 있어야 하는 것은 「**제한은 풀렸고, 남은 것은 `runCatching` 이 너무 많이 잡는다는 것**」이다.
@@ -497,11 +497,11 @@ valid  [80, 22]
 
 ## 핵심 문장
 
-1. **`Result` 를 반환 타입으로 두는 제한은 1.5 에서 풀렸다** — 이 판에서는 쓰는 자리 열 곳 × 다섯 판, **50칸 중 0칸**이 막혔다.
+1. **`Result` 를 반환 타입으로 두는 제한은 1.5 에서 풀렸다** — 이 버전에서는 쓰는 자리 열 곳 × 다섯 판, **50칸 중 0칸**이 막혔다.
 2. 그 제한의 흔적은 **컴파일러 안에** 있다 — 진단 문구 두 개와 게이트 `KOTLIN_1_4`(널 연산자) · `KOTLIN_1_5`(반환 타입).
 3. **`runCatching` 은 `Throwable` 전부를 잡는다** — `catch (e: Exception)` 이 놓치는 `Error` 둘(`TODO()`·`AssertionError`)까지.
 4. **`map` 안의 예외는 밖으로 샌다** — 담으려면 `mapCatching`.
-5. `Result` 는 JVM 에서 **`Object`** 로 다니고, 받는 함수의 이름은 **뭉개지지 않는다**(이 판의 관찰).
+5. `Result` 는 JVM 에서 **`Object`** 로 다니고, 받는 함수의 이름은 **뭉개지지 않는다**(이 버전의 관찰).
 
 ## 관련 자료
 
@@ -530,17 +530,17 @@ valid  [80, 22]
 ## 더 들어가면
 
 - **`Result` 가 이름 뭉개기에서 빠지는 까닭** — stdlib 쪽 표지인지 컴파일러의 특별 취급인지 **확인하지 않았다.** `javap -v` 로 메타데이터를 읽으면 단서가 있을 수 있다.
-- **K2 의 `Result` 검사** — `org.jetbrains.kotlin.fir` 아래에 같은 진단이 있는지 컴파일러 jar 를 더 뒤지면 알 수 있다. 이 판에서는 K1 계열 셋만 읽었다.
+- **K2 의 `Result` 검사** — `org.jetbrains.kotlin.fir` 아래에 같은 진단이 있는지 컴파일러 jar 를 더 뒤지면 알 수 있다. 이 버전에서는 K1 계열 셋만 읽었다.
 - **`recoverCatching`·`onSuccess`·`onFailure`** — 선언은 읽었고 돌리지 않았다.
 
 ## 실행 환경
 
-**기준 소스** — [Exceptions](https://kotlinlang.org/docs/exceptions.html) · [kotlin.Result API](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-result/) — 이 문서는 그 목록을 따르되, 문장은 인용하지 않고 **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 구현, 그리고 **이 판의 컴파일러 jar**(`kotlin-compiler.jar`)에 남은 진단 문구·언어 기능 표를 근거로 삼는다((2)(5)).
+**기준 소스** — [Exceptions](https://kotlinlang.org/docs/exceptions.html) · [kotlin.Result API](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-result/) — 이 문서는 그 목록을 따르되, 문장은 인용하지 않고 **이 버전의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 구현, 그리고 **이 버전의 컴파일러 jar**(`kotlin-compiler.jar`)에 남은 진단 문구·언어 기능 표를 근거로 삼는다((2)(5)).
 ★★ **KEEP 문서와 1.5 릴리스 노트는 이 작업에서 열지 못했다**(외부 네트워크를 쓰지 않았다) — 「왜 제한했었나」의 **설계 논거**는 이 문서에 없다. 대신 **컴파일러가 스스로 남긴 기록**을 읽었다((2)).
 **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java`·`javap` 에서 실제로 얻었다.\
 `kotlinc` 10회(격자 스크립트 안의 5회 포함 · 5회 모두 대조용 칸 하나 때문에 실패 — 그 실패가 결과다 · `-language-version 1.9` 거부 1회) · `java` 4회 · `javap` 5회(컴파일러 클래스 3 · 이 문서의 클래스 2) + stdlib `kotlin.Result` 1회 · stdlib 소스 jar 에서 발췌 3곳.\
-★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「막힌 칸 N / M」·「runCatching 만 잡은 행 N / M」은 스크립트·프로그램이 스스로 센 것**이다.
-**버전** — `Result`·`runCatching`·`map`·`mapCatching`·`recover`·`fold`·`getOrThrow` 는 stdlib 소스에 **`@SinceKotlin("1.3")`**((5)). ★★★ **「`Result` 를 반환 타입으로 못 쓴다」는 제한은 1.5 에서 풀렸다** — 이 판의 컴파일러가 그 기능을 **`LanguageVersion.KOTLIN_1_5`** 로 적어 두었다((2)). 그 전 판에서 막히는 것은 **이 판에서 잴 수 없다** — `-language-version 1.9` 부터 거부한다((1)).
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「막힌 항목 N / M」·「runCatching 만 잡은 행 N / M」은 스크립트·프로그램이 스스로 센 것**이다.
+**버전** — `Result`·`runCatching`·`map`·`mapCatching`·`recover`·`fold`·`getOrThrow` 는 stdlib 소스에 **`@SinceKotlin("1.3")`**((5)). ★★★ **「`Result` 를 반환 타입으로 못 쓴다」는 제한은 1.5 에서 풀렸다** — 이 버전의 컴파일러가 그 기능을 **`LanguageVersion.KOTLIN_1_5`** 로 적어 두었다((2)). 그 전 판에서 막히는 것은 **이 버전에서 잴 수 없다** — `-language-version 1.9` 부터 거부한다((1)).
 **경계** — ★★★ **검사 예외가 없다는 것**(그래서 `Result` 도 컴파일러가 강제하지 않는 관용구라는 것)은 [34번 주제](../34-exceptions-nothing-and-try-expression/)와 [`../../언어-특성/README.md`](../../언어-특성/README.md) §8 이 정본이다. `value class` 의 박싱·이름 뭉개기 규칙은 [26번 주제](../26-value-class-and-boxing/)가 정본이다 — 여기서는 **`Result` 가 그 규칙에서 벗어나는 한 자리**만 본다.\
 코루틴의 취소(`CancellationException`)가 **왜** 문제인지는 [목록의 **53번 주제**](../53-structured-concurrency-job-cancellation-exceptions/)(구조적 동시성)의 몫이다 — 여기서는 **`runCatching` 이 무엇을 잡는가**만 본다. `require`/`check`/`error`/`TODO` 가 던지는 것은 [목록의 **51번 주제**](../51-preconditions-require-check-error-todo/)다.\
 ★ **대비** — 오류를 **타입이** 말하는 Rust `Result<T, E>` 는 [Rust 22번](../../../rust/syntax/22-result-question-mark-and-from/), 오류를 **다중 반환 값**으로 돌려주는 Go 는 [Go 23번](../../../go/syntax/23-error-interface-and-errors-as-values/)이 정본이다.

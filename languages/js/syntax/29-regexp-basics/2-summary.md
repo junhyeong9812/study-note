@@ -127,7 +127,7 @@ go version go1.27.1 linux/amd64
 Python 3.12.3
 ```
 
-두 node 판 대조기의 집계 줄(이 배치의 모든 node 탐침) — 이 주제의 탐침(`js28b-29?-*.js`) 중 `DIFFERS` 는 `js28b-29f-flags.js` 하나다. 전문은 [3-answer.md](3-answer.md) 의 「실행 검증」에 있다.
+두 node 버전 대조기의 집계 줄(이 배치의 모든 node probe) — 이 주제의 probe(`js28b-29?-*.js`) 중 `DIFFERS` 는 `js28b-29f-flags.js` 하나다. 전문은 [3-answer.md](3-answer.md) 의 「실행 검증」에 있다.
 
 `identical 19  ·  differs 6  ·  total 25`
 
@@ -183,7 +183,7 @@ Python 3.12.3
 
 > 이 절이 본문이다. 그림을 먼저 두고 그 그림을 출력으로 읽는다.
 
-### (1) ★★★ `lastIndex` 로그 — 이 주제의 본체
+### (1) ★★★ `lastIndex` 로그 — 이 주제의 핵심
 
 **언제 쓰나** — `g` 정규식으로 `test`·`exec` 를 **여러 번** 부를 때. 일부러는 `while ((m = re.exec(s)))` 루프로 **모든 매치를 차례로** 꺼낼 때 쓰고, 실수로는 **검증 함수에서 `g` 정규식을 돌려쓸 때** 만난다.
 ★★★ 결과(`true`/`false`)만 찍으면 「왜 번갈아 나오나」가 안 보인다. 그래서 **호출 전과 후의 `lastIndex`** 를 한 줄에 찍었다.
@@ -367,7 +367,7 @@ console.log("cells where the g column differs from its pair without g: " + diffe
 cells where the g column differs from its pair without g: 9 / 21
 ```
 
-- ★★★ **마지막 줄이 `9 / 21`** — `g` 없는 열과 `g` 열을 짝지어(세 짝 × 일곱 행) 비교하니 21칸 중 9칸이 갈렸다.
+- ★★★ **마지막 줄이 `9 / 21`** — `g` 없는 열과 `g` 열을 짝지어(세 짝 × 일곱 행) 비교하니 21칸 중 9칸이 달라졌다.
 - ★★★ **`g` 없으면 길이 2(`[0]` 전체 + `[1]` 캡처), `g` 면 길이 3(매치 셋의 전체 글자)** 이다. **`[1]` 의 뜻이 바뀐다** — 앞은 **첫 캡처**, 뒤는 **두 번째 매치**.
 - ★★★ **`g` 면 `index`·`input`·`groups` 가 전부 `undefined`** 다 — 결과가 **평범한 배열**이라 그 프로퍼티가 없다. 명명 그룹 `(?<n>\d)` 을 써도 `g` 면 `groups` 를 잃는다.
 - ★★ **못 찾으면 `g` 유무와 상관없이 `null`** 이다(`/x/`·`/x/g` 열). `m.length` 를 바로 읽으면 `TypeError` 다 — 흔한 방어는 `(s.match(re) ?? [])`.
@@ -754,7 +754,7 @@ show("new RegExp(new Loud('a')).flags", () => new RegExp(new Loud("a")).flags);
 ```
 
 - ★★ **`[1]` 한 글자마다 켜지는 프로퍼티가 정확히 하나**다(`g` → `global` … `v` → `unicodeSets`). `d` 는 `hasIndices`, `y` 는 `sticky` — 글자와 이름이 안 닮은 둘을 외워 둔다.
-- ★★ **node 18 에는 `v` 가 없다** — 아래 블록의 `SyntaxError 「Invalid flags supplied to RegExp constructor 'v'」`. 나머지 줄은 두 판이 같다. `v` 의 뜻은 30번이 정본이다.
+- ★★ **node 18 에는 `v` 가 없다** — 아래 블록의 `SyntaxError 「Invalid flags supplied to RegExp constructor 'v'」`. 나머지 줄은 두 버전이 같다. `v` 의 뜻은 30번이 정본이다.
 - ★★ **`[2]` `flags` 는 늘 정해진 순서**로 다시 적힌다 — `'ymgi'` 로 만들어도, 리터럴 `/a/yigm` 도 **`"gimy"`**.
 - ★★★ **`[3]` 같은 글자 두 번 · 모르는 글자 · `u` 와 `v` 를 함께 · 대문자는 전부 `SyntaxError`** 다. 조용히 무시하는 일은 없다.
 - ★★ **`[4]` 네 플래그의 뜻** — `i` 대소문자 무시 · `m` 이면 `^`/`$` 가 **줄마다** · `s` 면 `.` 이 **줄바꿈까지** · `y` 는 **`lastIndex` 자리에 딱 붙어야** 찾는다(`/b/y.test('ab')` 는 0 번에 `b` 가 없어 `false`, `lastIndex = 1` 이면 `true`). `g` 는 앞으로 훑는다(`true`).
@@ -1036,12 +1036,12 @@ PY
 - ★★ `get flags` 가 `d g i m s u v y` 순서로 각 플래그 프로퍼티를 읽어 잇는 것 · 생성자가 잘못된 플래그 문자열에 `SyntaxError`.
 - 예외의 **종류**(`TypeError`·`SyntaxError`).
 
-### 엔진(V8) 구현 · 이 판의 관찰
+### 엔진(V8) 구현 · 이 버전의 관찰
 
 - 예외 **문구 전부** — `String.prototype.matchAll called with a non-global RegExp argument` · `Invalid flags supplied to RegExp constructor 'gg'` ·
   `Invalid regular expression: /(/: Unterminated group` · `Invalid regular expression: missing /`.
 - ★★ **패턴을 어떤 알고리즘으로 찾나** — V8 의 Irregexp(백트래킹 엔진)다. 명세는 결과(어떤 부분 문자열이 맞나)만 정한다. 30번과 [`cs/algorithm/25-string-matching/`](../../../../cs/algorithm/25-string-matching/2-summary.md)의 몫.
-- 두 node 판이 **`v` 한 줄만** 갈린 것 — 관찰이다.
+- 두 node 버전이 **`v` 한 줄만** 달라진 것 — 관찰이다.
 
 ### 파이썬 쪽 — 다른 언어의 보장
 
@@ -1069,7 +1069,7 @@ PY
 ## 핵심 문장
 
 1. ★★★ `g`·`y` 정규식은 **`lastIndex` 라는 상태를 객체에 들고** 있어서, 같은 입력을 같은 객체로 `test` 하면 **매치 개수만큼 참, 그다음 한 번 거짓**이 되풀이된다(`true false true false`).
-2. ★★★ `match` 는 `g` 가 없으면 **`exec` 의 상세 보고서**, 있으면 **글자 배열**이다 — 격자에서 **9 / 21 칸**이 갈렸고, 못 찾으면 둘 다 `null` 이다.
+2. ★★★ `match` 는 `g` 가 없으면 **`exec` 의 상세 보고서**, 있으면 **글자 배열**이다 — 격자에서 **9 / 21 칸**이 달라졌고, 못 찾으면 둘 다 `null` 이다.
 3. ★★★ `matchAll` 은 `g` 가 없으면 `TypeError` 이고, **복제본으로** 찾는 **한 번 소비 이터레이터**를 돌려준다 — 원래 정규식의 `lastIndex` 는 안 바뀐다.
 4. ★★★ 정규식 **리터럴은 평가마다 새 객체**다 — 함수 안의 리터럴은 상태가 안 새고, 모듈 수준의 `g` 정규식은 호출 사이로 샌다.
 5. ★★ `search` 는 `lastIndex` 를 무시하고 복원한다 · `new RegExp('\d')` 는 글자 `d` 다 · 파이썬 `re.match` 는 「앞에서만」이고 패턴 객체에 상태가 없다.
@@ -1106,7 +1106,7 @@ PY
 
 ## 실행 환경
 
-★★★ **이 주제의 본체는 ① 추상 연산에 로그 심기다.**
+★★★ **이 주제의 핵심은 ① 추상 연산에 로그 심기다.**
 `/a/g.test('a')` 를 **같은 입력에 네 번** 부르면 답이 `true` · `false` · `true` · `false` 로 번갈아 나온다. 입력도 정규식도 안 바꿨는데 답이 바뀐다 —
 그 이유는 **정규식 객체 안의 `lastIndex`** 다. 그래서 **호출 전과 후의 `lastIndex` 를 매번 찍는 로그**를 심었다(동작 (1)).
 ★★ 보조로 **② 전수 격자**(`match` 의 반환 모양 — `g` 유무 · 명명 그룹 · 실패 × 속성 일곱 — 동작 (2))와 **③ 브랜드 태그**(`matchAll` 이 돌려주는 것 — 동작 (3)), **④ 예외의 이름·문구**(동작 (3)·(6)·(7))를 쓴다.
@@ -1124,40 +1124,40 @@ PY
 **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
 ★★ **예외는 `try`/`catch` 로 받아 `e.constructor.name` 과 `e.message` 만** `이름 「메시지」` 꼴로 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
-★★ **이 주제의 node 탐침 일곱 개 중 두 판이 갈린 것은 하나**(`js28b-29f-flags.js`)이고, 갈린 줄은 **`v` 플래그(ES2024) 한 줄**이다.
-★ 파이썬 대비(동작 (8))는 `python3 - <<'PY'` 꼴의 셸 탐침이다. 예외는 같은 꼴로 받아 트레이스백이 없다.
+★★ **이 주제의 node probe 일곱 개 중 두 버전이 달라진 것은 하나**(`js28b-29f-flags.js`)이고, 달라진 줄은 **`v` 플래그(ES2024) 한 줄**이다.
+★ 파이썬 대비(동작 (8))는 `python3 - <<'PY'` 꼴의 셸 probe다. 예외는 같은 꼴로 받아 트레이스백이 없다.
 
 **버전** — 판별 블록이 세 판(node 18 · node 20 · Chrome 151)에 같은 스크립트를 던진다.
 
 | 무엇 | 판 | 이 머신에서 |
 |---|---|---|
-| 리터럴 · `test` · `exec` · `match` · `replace` · `search` · 플래그 `g` `i` `m` | ES5 이하 | 세 판 다 있다 |
-| ★ 리터럴이 **평가마다 새 객체** | **ES5** 부터(ES3 은 리터럴 하나에 객체 하나였다) | 세 판 다 그렇다(동작 (5)) |
-| 플래그 `u` · `y` · `flags` 접근자 | **ES2015** | 세 판 다 있다 |
-| 플래그 `s` · 명명 그룹 `(?<n>…)` | **ES2018** | 세 판 다 있다 |
-| `matchAll` | **ES2020** | 세 판 다 있다 |
-| `replaceAll` | **ES2021** | 세 판 다 있다(28번) |
-| 플래그 `d`(`hasIndices`) | **ES2022** | 세 판 다 있다 |
-| 플래그 `v`(`unicodeSets`) | **ES2024** | ★ **node 18 에 없다** — 동작 (6)의 한 줄이 갈린다(뜻은 30번) |
+| 리터럴 · `test` · `exec` · `match` · `replace` · `search` · 플래그 `g` `i` `m` | ES5 이하 | 세 버전 다 있다 |
+| ★ 리터럴이 **평가마다 새 객체** | **ES5** 부터(ES3 은 리터럴 하나에 객체 하나였다) | 세 버전 다 그렇다(동작 (5)) |
+| 플래그 `u` · `y` · `flags` 접근자 | **ES2015** | 세 버전 다 있다 |
+| 플래그 `s` · 명명 그룹 `(?<n>…)` | **ES2018** | 세 버전 다 있다 |
+| `matchAll` | **ES2020** | 세 버전 다 있다 |
+| `replaceAll` | **ES2021** | 세 버전 다 있다(28번) |
+| 플래그 `d`(`hasIndices`) | **ES2022** | 세 버전 다 있다 |
+| 플래그 `v`(`unicodeSets`) | **ES2024** | ★ **node 18 에 없다** — 동작 (6)의 한 줄이 달라진다(뜻은 30번) |
 
-**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+**★★★ 이 주제가 쓰는 창 — 그리고 해당 없는 창**
 
 | 창 | 이 주제에서 무엇을 보나 |
 |---|---|
-| ★★★ **① 추상 연산에 로그 심기**(본체) | 호출마다 **전과 후의 `lastIndex`**(동작 (1)) · `replace` 콜백이 받는 **인자의 개수와 순서**(동작 (4)) · `RegExp.prototype.exec` 을 감싸 **`matchAll` 이 언제 · 어느 객체로** 찾나(동작 (3)) |
-| ★★ **② 전수 격자** | `match` 의 여섯 경우 × 속성 일곱 — `g` 짝과 **갈린 칸을 스크립트가 센다**(동작 (2)) |
+| ★★★ **① 추상 연산에 로그 심기**(핵심) | 호출마다 **전과 후의 `lastIndex`**(동작 (1)) · `replace` 콜백이 받는 **인자의 개수와 순서**(동작 (4)) · `RegExp.prototype.exec` 을 감싸 **`matchAll` 이 언제 · 어느 객체로** 찾나(동작 (3)) |
+| ★★ **② 전수 격자** | `match` 의 여섯 경우 × 속성 일곱 — `g` 짝과 **달라진 항목을 스크립트가 센다**(동작 (2)) |
 | ★★ **③ 브랜드 태그** | `matchAll` 이 돌려준 것에 `Object.prototype.toString.call` 이 **`[object RegExp String Iterator]`** — 배열이 아니다(동작 (3)) |
 | ★★ **④ 예외의 `constructor.name` + `message`** | `g` 없는 `matchAll` 의 `TypeError` · 잘못된 플래그의 `SyntaxError` · 잘못된 패턴이 **리터럴이면 파싱 때** 나는 `SyntaxError`(동작 (6)·(7)) |
-| ★ **⑤ 두 판 대조기** | 이 주제의 node 탐침 중 **하나만** `DIFFERS` 이고, 그 차이는 **`v` 플래그의 유무** 한 줄이다 |
-| ★ **부적용 — 진단의 `(행,열)`**(18-C) | 리터럴의 조기 오류는 **「언제 났나」**(파싱 때, 죽은 코드 안에서도)가 요점이지 열이 요점이 아니다. `new Function` 으로 던져 **종류·문구·통과 여부**만 본다 |
+| ★ **⑤ 두 판 대조기** | 이 주제의 node probe 중 **하나만** `DIFFERS` 이고, 그 차이는 **`v` 플래그의 유무** 한 줄이다 |
+| ★ **해당 없음 — 진단의 `(행,열)`**(18-C) | 리터럴의 조기 오류는 **「언제 났나」**(파싱 때, 죽은 코드 안에서도)가 요점이지 열이 요점이 아니다. `new Function` 으로 던져 **종류·문구·통과 여부**만 본다 |
 | ★ **안 쟀다 — 성능** | 「리터럴을 함수 밖으로 빼면 빠르다」·「`test` 가 `match` 보다 빠르다」를 **한 줄도 쓰지 않는다.** 시간을 한 번도 안 쟀다 — 센 것은 **호출 횟수**뿐이다(동작 (3)의 `exec` 네 번) |
 
-**★ 흔들리는 칸 / 안 흔들리는 칸**
+**★ 실행마다 달라지는 항목 / 달라지지 않는 항목**
 
-| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+| 실행마다 달라진다(근거로 쓰지 않는다) | 달라지지 않는다(근거로 쓴다) |
 |---|---|
 | 예외 **문구** — V8 의 글자다(`String.prototype.matchAll called with a non-global RegExp argument` · `Invalid flags supplied to RegExp constructor 'gg'` · `Invalid regular expression: missing /`). **종류**(`TypeError`·`SyntaxError`)만 명세가 정한다 | ★★★ **`lastIndex` 의 값과 `test` 의 참/거짓 순서** · 격자의 칸과 「**N / M**」 · 콜백 인자의 **개수와 순서** · `exec` 호출 로그 · `flags` 의 **글자 순서** |
-| 대조기 블록의 **다른 주제 줄**(같은 배치가 한 대조기를 공유한다) | ★★ **이 주제의 탐침에는 재실행에서 흔들린 칸이 하나도 없다**(재대조 동일) |
+| 대조기 블록의 **다른 주제 줄**(같은 배치가 한 대조기를 공유한다) | ★★ **이 주제의 probe에는 재실행에서 달라진 항목이 하나도 없다**(재대조 동일) |
 
 **선행** — [28 — `String` 메서드와 템플릿 리터럴](../28-string-methods-and-template-literals/2-summary.md)(★★★ 직접 선행 — **치환 문자열의 `$` 표기**와 `split` 이 `lastIndex` 를 안 쓰는 것은 거기서 쟀다) ·
 [19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md)(★★ 소비자가 **`return()` 을 부르는 자리**) ·

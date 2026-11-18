@@ -41,7 +41,7 @@ Stream.of("a", "b", "c").peek(print).findFirst();
 - `Stream.empty().allMatch(i -> false)` 는 무엇인가?
 - 그 답을 뭐라고 부르는가?
 - `Stream.empty().reduce(0, Integer::sum)` 과 `Stream.empty().reduce(Integer::sum)` 의 반환 타입과 값은 각각 무엇인가?
-- `IntStream.empty()` 의 `sum()` 과 `max()` 가 갈리는 이유는 무엇인가?
+- `IntStream.empty()` 의 `sum()` 과 `max()` 가 달라지는 이유는 무엇인가?
 
 ### 4. 최종 연산이 있는데도 중간 연산이 안 돈다 (예측)
 

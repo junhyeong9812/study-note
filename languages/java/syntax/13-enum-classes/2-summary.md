@@ -404,7 +404,7 @@ javap -v -p Ex$Plain  — flags 줄 그대로
 > 예: `op.apply(3,4)` 한 줄이 `op` 가 `PLUS` 면 덧셈, `TIMES` 면 곱셈으로 간다 — 부르는 쪽 코드는 그대로다.\
 > 개념 자체는 [`../../../../cs/foundations/oop-basics/`](../../../../cs/foundations/oop-basics/) 가 정본이고, **여기는 enum 이 그것을 어떻게 강제하나**만 다룬다.
 
-### (5) `switch` 의 특별 대우 — 컴파일 전략이 파일 경계에서 갈린다
+### (5) `switch` 의 특별 대우 — 컴파일 전략이 파일 경계에서 달라진다
 
 **언제 쓰나** — `switch (day) { case SAT: ... }` 에서 상수 이름을 **한정 없이** 쓸 수 있는 이유가 궁금할 때. 그리고 상수 순서를 바꿔도 괜찮은지 판단할 때.
 
@@ -415,7 +415,7 @@ JLS §14.11.1 이 case 상수를 이렇게 정한다.
 `enum` 은 여기서 **이름을 그대로 쓸 수 있는 유일한 참조 타입**이다.\
 컴파일러가 selector 의 타입을 알고 있으므로 `Day.` 를 붙일 필요가 없다.
 
-그런데 **그 한 줄이 어떤 바이트코드가 되는지는 컴파일 단위에 따라 갈린다.**
+그런데 **그 한 줄이 어떤 바이트코드가 되는지는 컴파일 단위에 따라 달라진다.**
 
 ```text
 같은 .java 파일 (13-d)                 다른 .java 파일 (13-e)
@@ -567,7 +567,7 @@ EnumSet<Day> 의 내부 (상수 일곱: MON TUE WED THU FRI SAT SUN)
 - 이 프로그램은 `java.util` 내부 필드를 리플렉션으로 읽으므로 실행에 **`--add-opens java.base/java.util=ALL-UNNAMED`** 가 필요하다.\
   붙이지 않으면 모듈 접근이 막힌다 — 즉 **보통 코드에서는 이 필드를 볼 수 없다.** 여기서는 그림을 눈으로 보여 주려고만 열었다.
 
-구현 선택은 상수 개수로 갈린다.
+구현 선택은 상수 개수로 나뉜다.
 
 ```text
 java/util/EnumSet.java — noneOf 의 분기 (JDK 21.0.5 src.zip)
@@ -876,7 +876,7 @@ Exception in thread "main" java.lang.NullPointerException: Cannot invoke "Ex$Day
 - 21 부터는 `case null` 을 쓸 수 있다(§14.11.1 의 `SwitchLabel: case null [, default]`). 정본은 [**23번 주제**](../23-switch-pattern-matching/).
 - 방어: 21 미만이면 `switch` 앞에서 `null` 을 걸러 낸다.
 
-### 6. `case Day.SAT:` — 한정 이름은 버전에 따라 갈린다
+### 6. `case Day.SAT:` — 한정 이름은 버전에 따라 달라진다
 
 ```java
 // Ex.java (13-err4)
@@ -962,7 +962,7 @@ valueOf(name())    = PLUS
 | `ordinal()` 이 **선언에서의 위치**(0부터) | **언어 보장** | `Enum.ordinal()` javadoc "its position in its enum declaration" |
 | 생성자의 실제 descriptor 가 `(String, int, ...)` | 구현 세부 | **JLS §8.9.2 가 명시적으로 "not specified as implicitly declared"** 라고 못박는다 |
 | enum 상수의 인스턴스가 **하나뿐**이고 `==` 로 비교해도 된다 | **언어 보장** | JLS §8.9 + §8.9.1 |
-| 상수 본문이 **익명 하위 클래스**이고 enum 이 `sealed`/`final` 로 갈린다 | **언어 보장** | JLS §8.9 · §8.9.1 |
+| 상수 본문이 **익명 하위 클래스**이고 enum 이 `sealed`/`final` 로 나뉜다 | **언어 보장** | JLS §8.9 · §8.9.1 |
 | `Ex$Op$1` 이라는 **클래스 이름**, `PermittedSubclasses` 에 적힌 **순서** | 구현 세부 | 이름 규칙은 컴파일러의 것이다 |
 | `switch` 가 상수 이름을 **한정 없이** 받는다 (21+ 는 한정도 허용) | **언어 보장** | JLS §14.11.1 + `--release` 별 실행 결과 |
 | `$SwitchMap$Day` 합성 클래스, `lookupswitch`, `NoSuchFieldError` 예외 테이블 | 구현 세부 | javac 의 컴파일 전략이다. **다른 컴파일러는 다르게 해도 된다** |
@@ -1008,7 +1008,7 @@ valueOf(name())    = PLUS
   **여기는 그 규칙이 enum 싱글턴이 되는 부분만** 쓴다
 - [`../12-nested-classes/`](../12-nested-classes/) — **익명 클래스 일반이 정본.** 여기는 **상수별 본문이 그 익명 클래스로 컴파일된다는 사실과 그 결과**(클래스 파일 증가·바깥에서 안 보이는 메서드)만
 - [`../15-sealed-classes/`](../15-sealed-classes/) — **`sealed`/`permits` 가 정본.** 여기는 **상수 본문이 있는 enum 에 `PermittedSubclasses` 가 붙더라는 관측**까지
-- [`../14-records/`](../14-records/) — 같은 "javac 가 멤버를 만들어 주는" 갈래. **고정된 인스턴스 집합은 enum, 값 묶음은 record** 로 갈린다
+- [`../14-records/`](../14-records/) — 같은 "javac 가 멤버를 만들어 주는" 갈래. **고정된 인스턴스 집합은 enum, 값 묶음은 record** 로 나뉜다
 - [**11번 주제**](../11-interfaces-default-methods/)(인터페이스 — `default`/`static`/`private` 메서드) — **인터페이스 규칙이 정본.** 여기는 **enum 이 상속은 못 하고 구현은 된다**는 경계만. 동적 디스패치는 [**09번 주제**](../09-inheritance-overriding/)(상속과 오버라이딩) 가 정본이고, 상수별 본문의 호출이 그 규칙을 그대로 탄다
 - [`../27-equals-hashcode-contract/`](../27-equals-hashcode-contract/) — `equals`/`hashCode` 계약이 정본. **enum 은 `Enum.equals` 가 `final` 이라 계약을 깰 수가 없다**는 것이 이 주제 쪽 결론
 - [`../../../../cs/data-structure/05-hashmap/`](../../../../cs/data-structure/05-hashmap/) — **해시 자료구조의 원리가 정본**(버킷·충돌·리사이즈). 여기는 **`EnumMap` 이 해시를 아예 안 쓴다는 사실과 그 결과**(순회 순서 보장·`null` 키 금지·크기가 상수 수에 비례)만 다룬다.\

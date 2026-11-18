@@ -17,7 +17,7 @@
 자바의 `equals`/`hashCode` 계약은 두 문장으로 요약된다. `a.equals(b)`면
 `a.hashCode() == b.hashCode()`여야 하고(역은 요구되지 않는다), "논리적으로 같다"의
 기준은 그 객체의 **의미 있는 상태 전체**여야 한다. 문제는 두 번째 문장이 클래스마다
-해석이 갈린다는 점이다. 어떤 필드가 "의미 있는 상태"인지는 자바가 정해 주지 않는다.
+해석이 달라진다는 점이다. 어떤 필드가 "의미 있는 상태"인지는 자바가 정해 주지 않는다.
 
 집계 빌더에는 그 해석이 코드에 이미 적혀 있다. 빌더는 좌표 노드에서 데이터 노드로
 `StreamOutput`에 실려 건너가고 데이터 노드가 `StreamInput` 생성자로 복원한다. 즉
@@ -135,7 +135,7 @@ public BytesReference cacheKey(CheckedBiConsumer<ShardSearchRequest, StreamOutpu
 정의를 믿고 쓰는 상위 계층이 언제 늘어날지는 아무도 보장하지 않는다. 업스트림
 메인테이너가 세 건을 모두 `>bug`로 라벨링하고 엿새 만에 머지한 것도 그 판단으로 읽힌다.
 
-## 6. 고치는 법 - 방향에 따라 비용이 갈린다
+## 6. 고치는 법 - 방향에 따라 비용이 달라진다
 
 정방향은 누락 필드를 equals와 hashCode 양쪽에 더하면 끝난다. 비교 형태는 필드 타입이
 정한다. primitive는 `==`(`size == that.size`, `roughEstimateDurationMillis == other.roughEstimateDurationMillis`),
@@ -162,7 +162,7 @@ hashCode에도 넣는다** - 그러지 않으면 계약이 실제로 강제하�
 | #151156 | `AutoDateHistogramAggregationBuilder.RoundingInfo` | `roughEstimateDurationMillis`·`unitAbbreviation` | 정방향 | 다섯 중 셋만 비교했다 |
 | #151796 | `VariableWidthHistogramAggregationBuilder` | `shardSize`·`initialBuffer` | 역방향 | 전파 경로 세 곳을 다 빠뜨렸다 |
 
-원인 유형이 넷으로 갈린다는 점이 이 표의 요점이다. **"필드를 안 넣었다"만이 원인이
+원인 유형이 넷으로 나뉜다는 점이 이 표의 요점이다. **"필드를 안 넣었다"만이 원인이
 아니다.** 이름이 비슷한 죽은 필드를 대신 비교하거나(#151154 missingMap), 상속으로
 받은 부모 equals가 자식 필드를 모르거나(#151154 multiValueMode) 하는 경우는 클래스
 하나만 봐서는 안 보이고, 부모·자식과 실제 직렬화 목록을 같이 놓아야 보인다. 그래서

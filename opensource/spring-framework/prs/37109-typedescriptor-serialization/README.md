@@ -350,7 +350,7 @@ private void readObject(ObjectInputStream inputStream) throws IOException, Class
 이 시점 선택 덕분에 gh-33948이 얻은 성능 이득은 **직렬화하지 않는 모든 경로에서 그대로 유지된다**.\
 애너테이션 조회가 늘어나는 것은 실제로 직렬화하는 순간뿐이다.
 
-> **무음 실패(silent failure)** — 실패했는데 예외도 로그도 없이 지나가, 결과만 틀린 채 계속 진행되는 실패.\
+> **조용한 실패(silent failure)** — 실패했는데 예외도 로그도 없이 지나가, 결과만 틀린 채 계속 진행되는 실패.\
 > 예: 조회를 강제하지 않으면 애너테이션이 빠진 디스크립터가 아무 에러 없이 복원된다.
 
 `readObject()`는 **`EMPTY` 싱글톤 정체성을 되살리기 위해** 존재한다.\

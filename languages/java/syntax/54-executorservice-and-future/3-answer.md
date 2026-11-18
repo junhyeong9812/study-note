@@ -400,7 +400,7 @@ submit(task)                               execute(task)
 
 - **`thenApply` 에는 전용 스레드가 없다.**\
   이미 끝나 있으면 **붙이는 스레드**(30/30회 `main`), 아직 돌고 있으면 **완료시킨 스레드**(30/30회 `pool-`).
-- **흔들리지 않았다** — 30회 × 3회 실행에서 전부 같았다.\
+- **달라지지 않았다** — 30회 × 3회 실행에서 전부 같았다.\
   ★ 그래도 **보장은 아니다.** javadoc 이 이렇게 적는다.
 
   > Actions supplied for dependent completions of *non-async* methods may be performed by the thread that

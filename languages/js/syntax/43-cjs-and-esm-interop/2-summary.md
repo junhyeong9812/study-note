@@ -1,4 +1,4 @@
-# js/syntax/43 — CJS 와 ESM 상호운용: 「CommonJS 는 명세 밖의 node 규약이다 — 누가 누구를 부르나, 파일이 무엇으로 읽히나, 값이 복사되나를 node 판이 정한다」 — 정리 (힌트)
+# js/syntax/43 — CJS 와 ESM 상호운용: 「CommonJS 는 명세 밖의 node 규약이다 — 누가 누구를 부르나, 파일이 무엇으로 읽히나, 값이 복사되나를 node 버전이 정한다」 — 정리 (힌트)
 
 ```text
 ===== ./js40b-versions.sh (exit=0) =====
@@ -82,7 +82,7 @@ Google Chrome 151.0.7922.173
 「**라이브러리를 ESM 전용으로 바꾸자 CommonJS 사용자에게 `ERR_REQUIRE_ESM`**」,
 「**`import { foo } from 'cjs-lib'` 이 `Named export 'foo' not found`**」,
 「**`.js` 를 `.mjs` 처럼 쓰다 `import './util'` 이 `ERR_MODULE_NOT_FOUND`**」,
-「**같은 패키지를 `import` 와 `require` 로 부르자 상태가 둘로 갈렸다**」가 그것이다(동작 (1)·(5)·(6)).
+「**같은 패키지를 `import` 와 `require` 로 부르자 상태가 둘로 나뉘었다**」가 그것이다(동작 (1)·(5)·(6)).
 
 > **CommonJS** — `require()` 로 가져오고 `module.exports`(또는 `exports.x`)로 내보내는 **node 의 모듈 규약**. ECMA-262 에는 없다.\
 > 예: `const { a } = require("./lib.cjs");` · `module.exports = { a };`
@@ -214,8 +214,8 @@ rows where node18 and node20 differ: 2 / 16
 ```
 
 - ★★★ **마지막 줄 — `rows where node18 and node20 differ: 2 / 16`**, 막힌 행은 **node 20 이 `7 / 16`, node 18 이 `8 / 16`** 이다.
-  갈린 둘은 **`require('./lib.mjs')`** — node 18 **`ERR_REQUIRE_ESM`**, node 20 **`ok esm-a · esm-default`** — 와 **최상위 `await` 가 든 `require('./lib.mjs')`** — node 18 **`ERR_REQUIRE_ESM`**, node 20 **`ERR_REQUIRE_ASYNC_MODULE`**(여전히 막히지만 **이유가 바뀌었다**)다.
-- ★★★ **`import()` 는 두 판 다 됐다** — CommonJS 에서 ESM 을 쓰는 **판을 안 타는** 길이다. 대신 결과가 **프라미스**다(42번 동작 (5)).
+  달라진 둘은 **`require('./lib.mjs')`** — node 18 **`ERR_REQUIRE_ESM`**, node 20 **`ok esm-a · esm-default`** — 와 **최상위 `await` 가 든 `require('./lib.mjs')`** — node 18 **`ERR_REQUIRE_ESM`**, node 20 **`ERR_REQUIRE_ASYNC_MODULE`**(여전히 막히지만 **이유가 바뀌었다**)다.
+- ★★★ **`import()` 는 두 버전 다 됐다** — CommonJS 에서 ESM 을 쓰는 **판을 안 타는** 길이다. 대신 결과가 **프라미스**다(42번 동작 (5)).
 - ★★★ **ESM 에서 CommonJS 의 이름 있는 가져오기 — 다섯 행 중 둘만 됐다.** `exports.a = …` 와 `const a = …; module.exports = { a }`(단축 속성)는 **됐고**, `module.exports = { a: "…" }`(값이 문자열인 속성) · `module.exports = obj`(변수) · `exports["a" + ""]`(계산된 이름)는 **`SyntaxError`**. **기본 가져오기**(`import d`)는 **늘 된다** — `{"a":"cjs-a"}`, 곧 `module.exports` 다.
   ★ **`{ a: "…" }` 가 막힌 것**은 예상 밖이었다 — lexer 는 CommonJS 를 **실행하지 않고 훑기만** 하므로 **어떤 모양을 알아보나**는 lexer 의 규칙이다. node 문서가 적는 것은 「정적 분석으로 정한다」까지다.
 - ★★ **ESM 안의 `require` 는 `ReferenceError`**, **`createRequire(import.meta.url)` 로 만든 `require` 는 된다.**
@@ -331,8 +331,8 @@ rows (of 9) where node18 and node20 differ: 1
 ```
 
 - ★★★ **확장자가 `type` 을 이긴다** — `.mjs` 는 `type` 이 무엇이든 **ES module**, `.cjs` 는 **CommonJS** 다. `type` 이 가르는 것은 **`.js` 뿐**이다.
-- ★★★ **판이 갈린 칸은 하나**(`rows (of 9) … differ: 1`) — **`type` 없는 `.js` 에 `export {};`** 가 들면 **node 20 은 `ES module` 로 돌렸고, node 18 은 `SyntaxError`** 였다(막힌 칸 node 20 `4 / 18` · node 18 `5 / 18`). node 문서의 「**Syntax detection — v20.19.0 에서 기본으로 켜짐**」이다.
-- ★★ **같은 `plain` 파일은 `type` 없는 `.js` 에서 두 판 다 `CommonJS`** — 감지는 **ES 모듈 문법이 있을 때만** 모듈로 바꾼다. 「`type` 이 없으면 `.js` 는 CommonJS」가 기본값인 것은 그대로다.
+- ★★★ **판이 달라진 항목은 하나**(`rows (of 9) … differ: 1`) — **`type` 없는 `.js` 에 `export {};`** 가 들면 **node 20 은 `ES module` 로 돌렸고, node 18 은 `SyntaxError`** 였다(막힌 항목 node 20 `4 / 18` · node 18 `5 / 18`). node 문서의 「**Syntax detection — v20.19.0 에서 기본으로 켜짐**」이다.
+- ★★ **같은 `plain` 파일은 `type` 없는 `.js` 에서 두 버전 다 `CommonJS`** — 감지는 **ES 모듈 문법이 있을 때만** 모듈로 바꾼다. 「`type` 이 없으면 `.js` 는 CommonJS」가 기본값인 것은 그대로다.
 - ★ **CommonJS 로 정해진 파일의 `export` 는 `SyntaxError 「Unexpected token 'export'」`** — CommonJS 는 **스크립트 문법**으로 파싱된다(35번의 「스크립트」 쪽).
 
 ### (3) ★★★ CommonJS 의 복사 · ESM 이 CommonJS 를 가져올 때 — 42번과 한 쌍
@@ -390,7 +390,7 @@ after inc()  m.n = 1 · named n = 0 · ns.n = 0 · ns.default === m true
 
 - ★★★ **CommonJS — `m.n = 1 · destructured n = 0`.** 객체 `m` 은 **같은 `exports`** 라 새 값을 보지만, 구조 분해한 `n` 은 **그 순간의 값**이다.
 - ★★★ **ESM 이 CommonJS 를 가져오면 — `m.n = 1 · named n = 0 · ns.n = 0`.** 기본 가져오기 `m` 은 `module.exports` 객체라 새 값을 보지만, **이름 있는 가져오기 `n` 은 `0` 에 멈췄다** — node 문서의 「**라이브 갱신은 감지하지 않는다**」다. `ns.default === m true`.
-- ★★ **42번과 한 쌍** — **ESM → ESM 은 바인딩**(`0 → 1 → 2`), **CommonJS 는 어느 쪽에서 봐도 값**(객체의 속성을 매번 읽을 때만 새 값)이다. 같은 `import { n }` 글자가 **상대가 ESM 이냐 CommonJS 냐**로 뜻이 갈린다.
+- ★★ **42번과 한 쌍** — **ESM → ESM 은 바인딩**(`0 → 1 → 2`), **CommonJS 는 어느 쪽에서 봐도 값**(객체의 속성을 매번 읽을 때만 새 값)이다. 같은 `import { n }` 글자가 **상대가 ESM 이냐 CommonJS 냐**로 뜻이 달라진다.
 
 ### (4) ★★ ESM 에 없는 CommonJS 비품 — `require` · `__dirname` · 그리고 `import.meta`
 
@@ -629,7 +629,7 @@ after two bump() through import: import side count = 2 · require side count = 0
 ```
 
 - ★★★ **`#counter` 한 글자가 `import` 로는 `counter43f.mjs`, `require` 로는 `counter43f.cjs`** 가 됐고 — **두 본문이 다 돌았고**, `bump()` 두 번 뒤 **`import side count = 2 · require side count = 0`** 이다. 같은 「패키지」가 **두 벌의 상태**를 가졌다.
-- ★★ 연혁 문서가 「상처」로 적은 **dual package hazard** 의 모양이 이것이다 — 두 node 판이 같았다. **실제 `node_modules` 패키지로는 돌리지 않았다**(브리핑의 금지).
+- ★★ 연혁 문서가 「상처」로 적은 **dual package hazard** 의 모양이 이것이다 — 두 node 버전이 같았다. **실제 `node_modules` 패키지로는 돌리지 않았다**(브리핑의 금지).
 
 ### (7) ★ 같은 파일, 다른 이벤트 루프 순서 — 36번 인용
 
@@ -639,7 +639,7 @@ after two bump() through import: import side count = 2 · require side count = 0
 
 ★ 이 절은 **형태 표**다 — 모든 동작 주장은 위 동작 절의 캡처 블록에서만 한다. **전부 node 의 규칙이다.**
 
-| 형태 | 하는 일 | node 판 | 어디서 봤나 |
+| 형태 | 하는 일 | node 버전 | 어디서 봤나 |
 |---|---|---|---|
 | `require("./x.cjs")` · `module.exports = …` · `exports.a = …` | CommonJS — 그 줄에서 평가 · 값을 돌려준다 | 전부 | 동작 (1)·(3) |
 | `require("./x.mjs")` | ESM 의 **이름공간 객체**를 동기로 · TLA 면 `ERR_REQUIRE_ASYNC_MODULE` | **v20.19.0 부터 플래그 없이** | 동작 (1) |
@@ -658,7 +658,7 @@ after two bump() through import: import side count = 2 · require side count = 0
 
 ### (1) ★★★ 「CommonJS 에서는 ESM 을 `require` 못 한다」로 외운다
 
-**node 판이 정한다** — node 18 은 `ERR_REQUIRE_ESM`, **node 20.19 는 됐다.** 단 **최상위 `await` 가 있으면 node 20 에서도** `ERR_REQUIRE_ASYNC_MODULE`(동작 (1)).
+**node 버전이 정한다** — node 18 은 `ERR_REQUIRE_ESM`, **node 20.19 는 됐다.** 단 **최상위 `await` 가 있으면 node 20 에서도** `ERR_REQUIRE_ASYNC_MODULE`(동작 (1)).
 
 ### (2) ★★★ CommonJS 라이브러리의 이름을 `import { … }` 로 가져오면 다 된다고 믿는다
 
@@ -672,7 +672,7 @@ after two bump() through import: import side count = 2 · require side count = 0
 
 **확장자가 이긴다** — `.cjs` 는 `type` 이 무엇이든 CommonJS, `.mjs` 는 ES module(동작 (2)).
 
-### (5) ★★ `type` 없는 `.js` 는 어느 판에서나 CommonJS 라 믿는다
+### (5) ★★ `type` 없는 `.js` 는 어느 버전에서나 CommonJS 라 믿는다
 
 **node 20.19 는 ES 모듈 문법이 있으면 ES 모듈로 돌렸다** — node 18 은 `SyntaxError`(동작 (2)). 같은 파일이 **판에 따라** 다르게 읽힌다.
 
@@ -692,17 +692,17 @@ after two bump() through import: import side count = 2 · require side count = 0
 
 ### 언어(ECMA-262)
 
-- ★★ `import`/`export`·`import()`·`import.meta` 의 **문법과 연결 규칙**(42번). **CommonJS 는 없다.** `import.meta` 의 **속성**은 호스트가 채운다 — 두 node 판의 키 목록이 달랐다(동작 (4)).
+- ★★ `import`/`export`·`import()`·`import.meta` 의 **문법과 연결 규칙**(42번). **CommonJS 는 없다.** `import.meta` 의 **속성**은 호스트가 채운다 — 두 node 버전의 키 목록이 달랐다(동작 (4)).
 
 ### ★★★ Node 호스트 — 이 주제의 거의 전부
 
 - ★★★ **모듈 판정** — 확장자 > `"type"` > (v20.19.0+) `type` 없는 `.js` 의 문법 감지(동작 (2)).
 - ★★★ **상호운용** — `require(esm)` 은 v20.19.0 부터 플래그 없이 · TLA 면 `ERR_REQUIRE_ASYNC_MODULE` · `import cjs` 의 이름은 **cjs-module-lexer** 가 고르고 **라이브가 아니다**(동작 (1)·(3)).
 - ★★ **해석** — ESM 은 확장자·디렉토리 색인을 **안 채워 준다**, CommonJS 의 `require` 는 채워 준다(동작 (1)).
-- ★★ **`import.meta.dirname`·`filename`** — v20.11.0. **`import.meta.resolve`** — 두 판 다 `function`.
+- ★★ **`import.meta.dirname`·`filename`** — v20.11.0. **`import.meta.resolve`** — 두 버전 다 `function`.
 - ★ **문구** — `Named export … not found` 는 고치는 법까지 내주고, 잡히지 않은 `ReferenceError` 에는 `in ES module scope, you can use import instead` 가 붙었다.
 
-### 이 판의 관찰
+### 이 버전의 관찰
 
 - ★★ **lexer 가 `module.exports = { a: "…" }` 를 못 찾았다** — 두 판 같았다. lexer 의 규칙은 node 문서에 적혀 있지 않다(「정적 분석으로」까지).
 - ★ 22 계열 node 는 이 머신에 없어 **돌리지 않았다.**
@@ -717,23 +717,23 @@ after two bump() through import: import side count = 2 · require side count = 0
 ## 언제 쓰고 언제 안 쓰나
 
 - **ESM 에서 CommonJS 라이브러리** — **기본 가져오기**(`import pkg from …`)가 판·lexer 를 안 탄다.
-- **CommonJS 에서 ESM 라이브러리** — 여러 node 판을 받아야 하면 **`import()`**. node 20.19+ 만이면 `require(esm)` 도 된다(TLA 없을 때).
+- **CommonJS 에서 ESM 라이브러리** — 여러 node 버전을 받아야 하면 **`import()`**. node 20.19+ 만이면 `require(esm)` 도 된다(TLA 없을 때).
 - **새 파일의 형식** — 판을 가리지 않게 하려면 **`.mjs`/`.cjs` 로 확장자에 박는다**(감지·`type` 에 기대지 않는다).
 - **파일 위치** — `fileURLToPath(import.meta.url)` 가 판을 안 탄다. node 20.11+ 만이면 `import.meta.dirname`.
 - ★ **안 쓰는 자리** — 확장자 없는 ESM 지정자 · `import`/`require` 로 같은 상태 패키지를 섞기 · lexer 가 못 찾을 모양에 이름 있는 가져오기.
 
 ## 핵심 문장
 
-1. ★★★ **CommonJS 는 명세 밖의 node 규약**이고, 상호운용 규칙은 **node 판이 정한다** — 16행 격자에서 **두 판이 갈린 행 `2 / 16`**(`require(esm)` 두 행), 막힌 행 node 20 `7 / 16` · node 18 `8 / 16`.
+1. ★★★ **CommonJS 는 명세 밖의 node 규약**이고, 상호운용 규칙은 **node 버전이 정한다** — 16행 격자에서 **두 버전이 달라진 행 `2 / 16`**(`require(esm)` 두 행), 막힌 행 node 20 `7 / 16` · node 18 `8 / 16`.
 2. ★★★ ESM → CommonJS 는 **기본 가져오기가 늘 되고**, 이름 있는 가져오기는 **lexer 가 찾은 모양만** — 다섯 모양 중 둘. 그리고 그 이름은 **평가 끝의 값 복사**다(`named n = 0` · `m.n = 1`).
-3. ★★★ 파일의 형식은 **확장자 > `"type"` > 문법 감지** — 18칸에서 판이 갈린 것은 **`type` 없는 `.js` + `export {}`** 한 칸(node 20 ES module · node 18 `SyntaxError`).
+3. ★★★ 파일의 형식은 **확장자 > `"type"` > 문법 감지** — 18칸에서 판이 달라진 것은 **`type` 없는 `.js` + `export {}`** 한 칸(node 20 ES module · node 18 `SyntaxError`).
 4. ★★★ ESM 의 상대 지정자는 **확장자까지** — `import './lib'` 은 `ERR_MODULE_NOT_FOUND`(힌트 없음), `require('./lib')` 는 된다.
 5. ★★ ESM 에는 `require`·`__dirname` 이 **없다** — `import.meta.dirname` 은 node 20.11+ · 같은 지정자가 조건으로 두 파일이 되면 **상태가 둘**이다 · 같은 파일의 `nextTick` 순서도 형식이 바꾼다(36번).
 
 ## 관련 자료
 
 - [Node.js v20 — Modules: CommonJS](https://nodejs.org/docs/latest-v20.x/api/modules.html) · [ECMAScript modules](https://nodejs.org/docs/latest-v20.x/api/esm.html) · [Packages](https://nodejs.org/docs/latest-v20.x/api/packages.html)
-- [`history/js/03-Node-런타임.md`](../../../../history/js/03-Node-런타임.md) — README 가 가리키는 정본. ★ **경계**: 그쪽은 **CommonJS 가 Node 의 규약이 된 연혁**(한 문단)까지. [`history/js/05-빌드-생태계.md`](../../../../history/js/05-빌드-생태계.md) — 「1.2 CommonJS」·「1.4 ESM」 이 **공존의 상처**(`.mjs` · `"type"` · dual package hazard)를 연혁으로 적는다. 여기는 **그 상처가 지금 두 판의 어느 칸에 나나**부터.
+- [`history/js/03-Node-런타임.md`](../../../../history/js/03-Node-런타임.md) — README 가 가리키는 정본. ★ **경계**: 그쪽은 **CommonJS 가 Node 의 규약이 된 연혁**(한 문단)까지. [`history/js/05-빌드-생태계.md`](../../../../history/js/05-빌드-생태계.md) — 「1.2 CommonJS」·「1.4 ESM」 이 **공존의 상처**(`.mjs` · `"type"` · dual package hazard)를 연혁으로 적는다. 여기는 **그 상처가 지금 두 버전의 어느 칸에 나나**부터.
 - [42 — ESM 모듈](../42-esm-modules/2-summary.md) — 라이브 바인딩 · 연결과 평가. [36](../36-event-loop-and-microtasks/2-summary.md) — `nextTick` 4위 대 9위. [39](../39-async-await/2-summary.md) · [35](../35-strict-mode/2-summary.md).
 - [Python 42 — 모듈·패키지·import](../../../python/syntax/42-modules-packages-and-import/2-summary.md) — CommonJS 순환의 `f>g>undefined` + 경고(7절).
 
@@ -748,7 +748,7 @@ after two bump() through import: import side count = 2 · require side count = 0
 - **`createRequire`** — ESM 안에서 `require` 함수를 만드는 node API.
 - **`import.meta.dirname`** — 모듈 파일이 있는 디렉토리의 경로(node v20.11.0).
 - **조건부 내보내기/가져오기** — `package.json` 의 `"exports"`/`"imports"` 에서 `"import"`·`"require"` 조건으로 다른 파일을 고르는 것.
-- **dual package hazard** — 같은 패키지가 `import` 와 `require` 로 **두 벌 적재되어** 상태가 갈리는 위험(연혁 문서의 말).
+- **dual package hazard** — 같은 패키지가 `import` 와 `require` 로 **두 벌 적재되어** 상태가 달라지는 위험(연혁 문서의 말).
 
 ## 더 들어가면
 
@@ -758,8 +758,8 @@ after two bump() through import: import side count = 2 · require side count = 0
 
 ## 실행 환경
 
-★★★ **이 주제의 본체는 ② 전수 격자다** — 격자가 둘이다. ① **상호운용 격자 16행**(CJS → CJS · CJS → ESM · ESM → CJS · 확장자 없는 지정자 · 디렉토리)의 「**막힌 행 N / 16**」과 「**node 18 과 node 20 이 갈린 행 N / 16**」(동작 (1)) · ② **`"type"` 필드 × 확장자 × 내용 18칸**의 「**막힌 칸 N / 18**」(동작 (2)). 둘 다 스크립트가 마지막 줄로 찍는다.
-★★ 보조로 **① 로그 심기**(CommonJS 의 복사 대 ESM 의 라이브 — 동작 (3) · 한 지정자가 두 파일로 갈리는 것 — 동작 (6))와 **④ 예외의 이름 + 문구**(`ERR_REQUIRE_ESM` · `ERR_MODULE_NOT_FOUND` · `Named export 'a' not found` — 동작 (5))를 쓴다.
+★★★ **이 주제의 핵심은 ② 전수 격자다** — 격자가 둘이다. ① **상호운용 격자 16행**(CJS → CJS · CJS → ESM · ESM → CJS · 확장자 없는 지정자 · 디렉토리)의 「**막힌 행 N / 16**」과 「**node 18 과 node 20 이 달라진 행 N / 16**」(동작 (1)) · ② **`"type"` 필드 × 확장자 × 내용 18칸**의 「**막힌 항목 N / 18**」(동작 (2)). 둘 다 스크립트가 마지막 줄로 찍는다.
+★★ 보조로 **① 로그 심기**(CommonJS 의 복사 대 ESM 의 라이브 — 동작 (3) · 한 지정자가 두 파일로 나뉘는 것 — 동작 (6))와 **④ 예외의 이름 + 문구**(`ERR_REQUIRE_ESM` · `ERR_MODULE_NOT_FOUND` · `Named export 'a' not found` — 동작 (5))를 쓴다.
 
 **기준 소스** — 열어서 확인한 것만.
 - [Node.js v20 — Modules: CommonJS · 「Loading ECMAScript modules using `require()`」](https://nodejs.org/docs/latest-v20.x/api/modules.html) — 이력 「**v20.17.0 추가** · **v20.19.0 에서 `--experimental-require-module` 플래그 없이** · v20.19.0 부터 **실험 경고를 기본으로 안 낸다**」 · 「**이름공간 객체를 돌려준다**」 · 「최상위 `await` 가 있으면 **`ERR_REQUIRE_ASYNC_MODULE`**」
@@ -771,7 +771,7 @@ after two bump() through import: import side count = 2 · require side count = 0
 **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다. `cd <디렉토리> && node20 <파일>` 꼴 배너는 **그 디렉토리 안에서 상대 경로로** 던졌다. 격자는 **칸마다 새 디렉토리 · 새 프로세스**다.
 ★★ **node 의 에러 문구에는 절대 경로가 박힌다** — 그 블록은 스크립트 안에서 **`sed "s#$PWD#<dir>#g"`** 로 지웠다.
-★ **Chrome 은 이 주제에 부적용이다** — 브라우저에는 CommonJS 도 `"type"` 필드도 없다(판별 블록의 `host require … no`).
+★ **Chrome 은 이 주제에 해당 없음이다** — 브라우저에는 CommonJS 도 `"type"` 필드도 없다(판별 블록의 `host require … no`).
 ★★★ **성능은 재지 않았다** — 「`require` 가 빠르다/느리다」를 **쓰지 않는다.**
 
 **버전 — 층이 넷이다**
@@ -783,24 +783,24 @@ after two bump() through import: import side count = 2 · require side count = 0
 | ★★★ **Node 호스트 — 상호운용** | `require(esm)` | **v20.19.0 에서 플래그 없이**(문서) | ★★★ **node 18 `ERR_REQUIRE_ESM`, node 20 은 됐다**(동작 (1)) |
 | Node 호스트 — `import.meta` 속성 | `dirname`·`filename` | **v20.11.0**(문서) | node 18 `undefined`, node 20 `string`(동작 (4)) |
 
-★★ **README 43행은 판을 적지 않는다.** 위 node 판은 **v20 문서의 이력**에서 뗐고, 판별은 **두 판 격자**로 했다. 브리핑의 「node 20.19 에서 `require(esm)` 이 풀렸다」는 **v20 문서 이력과 일치**했다(22 계열은 이 머신에 없어 **돌리지 않았다**).
+★★ **README 43행은 판을 적지 않는다.** 위 node 버전은 **v20 문서의 이력**에서 뗐고, 판별은 **두 판 격자**로 했다. 브리핑의 「node 20.19 에서 `require(esm)` 이 풀렸다」는 **v20 문서 이력과 일치**했다(22 계열은 이 머신에 없어 **돌리지 않았다**).
 
-**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+**★★★ 이 주제가 쓰는 창 — 그리고 해당 없는 창**
 
 | 창 | 이 주제에서 무엇을 보나 |
 |---|---|
-| ★★★ **② 전수 격자**(본체) | 상호운용 16행 「`blocked rows N / 16`」 · 「`differ N / 16`」(동작 (1)) · `type` × 확장자 × 내용 18칸 「`blocked cells N / 18`」(동작 (2)) |
+| ★★★ **② 전수 격자**(핵심) | 상호운용 16행 「`blocked rows N / 16`」 · 「`differ N / 16`」(동작 (1)) · `type` × 확장자 × 내용 18칸 「`blocked cells N / 18`」(동작 (2)) |
 | ★★ **① 로그 심기** | CommonJS 의 값 복사 · ESM 의 이름 있는 가져오기가 **CommonJS 를 가져올 때는 복사**가 되는 것(동작 (3)) · 한 지정자가 두 파일로 갈려 **상태가 둘**이 되는 것(동작 (6)) |
 | ★★ **④ 예외의 이름 + 문구** | `Error [ERR_…]` 의 코드 · `SyntaxError: Named export …` 전문(동작 (5)) |
-| ★ **부적용 — ③ 브랜드 태그** | `require(esm)` 이 돌려준 것이 이름공간 객체인지는 `[Symbol.toStringTag]` 대신 **node 문서 문장 + 키 목록**으로 봤다 — 이 주제는 객체의 종류보다 **「막혔나」** 가 본체다 |
-| ★ **부적용 — Chrome** | 브라우저에는 CommonJS 가 없다 |
+| ★ **해당 없음 — ③ 브랜드 태그** | `require(esm)` 이 돌려준 것이 이름공간 객체인지는 `[Symbol.toStringTag]` 대신 **node 문서 문장 + 키 목록**으로 봤다 — 이 주제는 객체의 종류보다 **「막혔나」** 가 본체다 |
+| ★ **해당 없음 — Chrome** | 브라우저에는 CommonJS 가 없다 |
 
-**★ 흔들리는 칸 / 안 흔들리는 칸**
+**★ 실행마다 달라지는 항목 / 달라지지 않는 항목**
 
-| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+| 실행마다 달라진다(근거로 쓰지 않는다) | 달라지지 않는다(근거로 쓴다) |
 |---|---|
 | 판별 블록의 판 문자열 · 에러 문구의 **절대 경로**(블록 안에서 `<dir>` 로 지웠다) | ★★★ 격자의 모든 칸 · 에러 **코드**(`ERR_…`) · 종료 코드 · 로그 값 |
-| ★ **이 주제의 탐침에는 재실행에서 흔들린 칸이 없다**(재대조 동일) | ★★★ **두 node 판 사이의 차이는 흔들림이 아니라 판의 차이**다 — 그것이 이 주제의 절반이다 |
+| ★ **이 주제의 probe에는 재실행에서 달라진 항목이 없다**(재대조 동일) | ★★★ **두 node 버전 사이의 차이는 실행 간 차이가 아니라 판의 차이**다 — 그것이 이 주제의 절반이다 |
 
 **선행** — [42 — ESM 모듈](../42-esm-modules/2-summary.md)(직접 선행 — ★★★ **라이브 바인딩 `0 → 1 → 2` 대 CommonJS `0`** 이 거기 동작 (1)에 있다 · 이 문서는 그 **CommonJS 쪽**을 넓힌다) ·
 [36 — 이벤트 루프](../36-event-loop-and-microtasks/2-summary.md)(★★★ **CJS 대 ESM 의 첫 증거** — 같은 파일에서 `nextTick` 이 **CommonJS 에서 4위, ES 모듈에서 9위** · 「`nextTick` 은 마이크로태스크보다 먼저」는 **CommonJS 에서만** 참이었다) ·
@@ -808,4 +808,4 @@ after two bump() through import: import side count = 2 · require side count = 0
 [35 — 엄격 모드](../35-strict-mode/2-summary.md)(모듈은 늘 엄격 — **같은 파일을 `.mjs` 와 CommonJS 로** 돌려 증명했다).
 
 ★★ **경계 — 연혁** — README 는 이 주제의 정본을 [`history/js/03-Node-런타임.md`](../../../../history/js/03-Node-런타임.md) 로 적는다. ★★ **그 문서에는 상호운용 절이 없다** — CommonJS 는 **「1. Node.js의 탄생 (2009)」 의 「핵심 아이디어: 이벤트 루프와 논블로킹 I/O」** 안에서 한 문단(「**후일 ES Modules `import`/`export` 와 공존하게 된다**」)과 용어 한 줄로만 나온다.
-상호운용의 연혁은 [`history/js/05-빌드-생태계.md`](../../../../history/js/05-빌드-생태계.md) 의 **「1.2 CommonJS — 서버의 동기 모듈 (2009)」** 과 **「1.4 ESM — ES2015 표준의 수렴점 (2015)」** 이 더 가깝다 — 뒤 절이 「**CommonJS 와 ESM 은 한동안 어색하게 공존했고(`.mjs` 확장자, `"type": "module"`, dual package hazard 같은 상처가 그 흔적이다)**」라고 적는다. **그쪽은 그 상처의 연혁까지**, 여기는 **그 상처가 지금 두 node 판에서 어느 칸에 나나**부터다(동작 (1)·(2)·(6)). 두 문서 모두 고치지 않았다.
+상호운용의 연혁은 [`history/js/05-빌드-생태계.md`](../../../../history/js/05-빌드-생태계.md) 의 **「1.2 CommonJS — 서버의 동기 모듈 (2009)」** 과 **「1.4 ESM — ES2015 표준의 수렴점 (2015)」** 이 더 가깝다 — 뒤 절이 「**CommonJS 와 ESM 은 한동안 어색하게 공존했고(`.mjs` 확장자, `"type": "module"`, dual package hazard 같은 상처가 그 흔적이다)**」라고 적는다. **그쪽은 그 상처의 연혁까지**, 여기는 **그 상처가 지금 두 node 버전에서 어느 칸에 나나**부터다(동작 (1)·(2)·(6)). 두 문서 모두 고치지 않았다.

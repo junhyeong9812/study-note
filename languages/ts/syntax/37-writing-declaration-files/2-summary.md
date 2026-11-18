@@ -7,23 +7,23 @@ v18.19.1
 Python 3.12.3
 ```
 
-> ★★★ **본체 창 선언 — 이 주제의 본체는 3창(`.d.ts` 를 믿고 컴파일한 방출물 + `node`)이고, 둘째 기둥은 5창(`.d.ts` 방출)이다.**
-> 앞 배치들에서 **부적용**이던 5창이 여기서 처음 **본체의 한쪽**이 된다 — 손으로 쓴 `.d.ts` 와 `--declaration` 이 뽑은 `.d.ts` 를 견준다(5절).
+> ★★★ **핵심 창 선언 — 이 주제의 핵심은 3창(`.d.ts` 를 믿고 컴파일한 방출물 + `node`)이고, 둘째 기둥은 5창(`.d.ts` 방출)이다.**
+> 앞 배치들에서 **해당 없음**이던 5창이 여기서 처음 **본체의 한쪽**이 된다 — 손으로 쓴 `.d.ts` 와 `--declaration` 이 뽑은 `.d.ts` 를 견준다(5절).
 > ★★★ **37 은 33 에서 온다.** [**33번 주제**](../33-declaration-merging/)가 「**보강은 타입만 만든다** — 방출물은 `export {};` 한 줄, node 에서 `TypeError`」 · 「보이는 범위는 **함께 컴파일한 파일**」 · 「`export {}` 가 없으면 **전역 스크립트**라 파일끼리 합쳐진다」를 **이미 쟀다** — 인용한다.
 > 여기는 그 「타입은 있는데 값은 없다」가 **`.d.ts` 한 장 전체**로 커진 자리다 — `.d.ts` 는 **JS 에 대한 주장**이고, tsc 는 그 주장을 **검사하지 않는다.**
 > ★ [**34번 주제**](../34-namespace-place/) 4절이 `skipLibCheck` 가 옛 `.d.ts` 의 `TS1540` 을 숨기는 것을 쟀다 — 6절이 그 창을 넓힌다.
 > ★ 소스 펜스 첫 줄 `// 파일명` 은 대조용 배너다 — 실파일에는 없다. **진단의 행 번호는 그 줄을 뺀 기준**이다.
 > ★★ 표 안의 `\|` 는 이스케이프이고 **뜻은 `|` 다.**
 
-## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
+## 이 문서에서 실행마다 달라지는 항목과 달라지지 않는 항목
 
 | | 무엇 | 왜 |
 |---|---|---|
-| **안 흔들린다** | 에러 코드(`TS####`)·`(행,열)` · 탐침이 말하는 타입 | 같은 입력·같은 옵션·**같은 파일 순서**면 같은 글자다 |
+| **달라지지 않는다** | 에러 코드(`TS####`)·`(행,열)` · probe가 말하는 타입 | 같은 입력·같은 옵션·**같은 파일 순서**면 같은 글자다 |
 | **★ 순서에 매인다** | 6절 — `skipLibCheck` 에서 **충돌한 전역 선언의 타입** | ★★★ **명령줄의 파일 순서**가 답을 바꿨다 — 결론 자체다 |
-| **판에 매인다** | ★★ 5절 — `--declaration` 이 쓴 **프로퍼티 순서** | 7.0.2 와 5.9.3·4.9.5 가 **갈렸다** — 결론 자체다 |
+| **판에 매인다** | ★★ 5절 — `--declaration` 이 쓴 **프로퍼티 순서** | 7.0.2 와 5.9.3·4.9.5 가 **달라졌다** — 결론 자체다 |
 | **판에 매인다** | 종료 코드 — ★ 7.0.2 에서 **`.d.ts` 만** 던진 `--noEmit` 이 `exit 2`(4절) | 진단 코드로 가른다 |
-| **안 흔들린다** | 방출된 `.js` 와 `node` 출력 | 예외는 **타입과 메시지만** 찍었다 · `TS7016` 의 절대 경로는 배너의 `sed` 로 `.` 로 바꿨다 |
+| **달라지지 않는다** | 방출된 `.js` 와 `node` 출력 | 예외는 **타입과 메시지만** 찍었다 · `TS7016` 의 절대 경로는 배너의 `sed` 로 `.` 로 바꿨다 |
 | **안 잰 것** | `skipLibCheck` 가 줄이는 검사 **시간** | **재지 않았다** — 이 플래그를 켜는 흔한 까닭이지만 이 문서는 **숨기는 것**만 봤다 |
 
 ## 한눈에 — 쉽게 말하면
@@ -66,11 +66,11 @@ Python 3.12.3
 
 | 창 | 무엇을 보여 주나 | 성질 | 이 주제에서 |
 |---|---|---|---|
-| ★★★ **3창 — `.d.ts` 를 믿고 방출한 `.js` + `node`** | 선언이 **약속한 것**과 JS 가 **가진 것**의 차이 | 실행 결과 | **본체**(2·3절) |
+| ★★★ **3창 — `.d.ts` 를 믿고 방출한 `.js` + `node`** | 선언이 **약속한 것**과 JS 가 **가진 것**의 차이 | 실행 결과 | **핵심**(2·3절) |
 | ★★★ **5창 — `.d.ts` 방출(`--declaration`)** | 컴파일러가 **쓴** 선언 · 세 판 대조 | 방출물 · `diff` | **둘째 기둥**(5절) |
 | ★★ **「함께 컴파일한 파일」 대조** | 같은 소비자를 **동반 `.d.ts` 를 바꿔** 세 번 · 파일 **순서를 바꿔** 두 번 | 진단 대조 | 3·4·6절 |
-| ★★ **2창 — `null` 탐침** | `skipLibCheck` 아래에서 **어느 타입이 이겼나** | 계산된 것 | 6절 |
-| ★ **부적용 — 4창(종료 코드 격자)** | 한계를 칠 것이 이 주제에 없다 | — | — |
+| ★★ **2창 — `null` probe** | `skipLibCheck` 아래에서 **어느 타입이 이겼나** | 계산된 것 | 6절 |
+| ★ **해당 없음 — 4창(종료 코드 격자)** | 한계를 칠 것이 이 주제에 없다 | — | — |
 
 비용 — 파일 스물넷의 검사·방출·`node`(정답 파일 「실행 검증」 표) + 세 판 선언 방출.
 
@@ -250,7 +250,7 @@ usemod37.ts(1,13): error TS2304: Cannot find name 'BUILD_ID'.
 
 - ★★★ **`useglob37.ts` — 진단 0줄.** import 한 줄 없이 `track`·`APP_VERSION` 이 보였다. `glob37.d.ts` 에는 `export` 가 없다 — **전역 스크립트**라 그 선언이 **컴파일 전체의 전역**에 놓인다.
 - ★★★ **`usemod37.ts(1,13) TS2304`**(「Cannot find name 'BUILD_ID'.」) — `mod37.d.ts` 는 `export` 가 있어 **모듈**이다. 그 선언은 **import 해야만** 보인다. 같은 컴파일에 들어 있어도 안 보인다.
-- ★★ 33편 5절의 `set33a`/`set33c` 와 **같은 기제**다 — 거기서는 `.ts` 의 `interface` 가, 여기서는 `.d.ts` 의 `declare` 가 **`export` 유무로** 전역과 파일로 갈렸다.
+- ★★ 33편 5절의 `set33a`/`set33c` 와 **같은 기제**다 — 거기서는 `.ts` 의 `interface` 가, 여기서는 `.d.ts` 의 `declare` 가 **`export` 유무로** 전역과 파일로 나뉘었다.
 
 ```text
 ===== tsc --pretty false -t es2022 --strict --outDir e37g useglob37.ts glob37.d.ts (tsc exit=0) =====
@@ -368,7 +368,7 @@ rel37.d.ts(1,16): error TS2436: Ambient module declaration cannot specify relati
 ```
 
 - ★★ **`declare module "./rel37.mjs"`**(상대 경로) → **`TS2436`**(「Ambient module declaration cannot specify relative module name.」). 앰비언트 모듈 선언은 **패키지 이름·와일드카드**용이다 — 상대 경로의 파일에는 **옆에 같은 이름의 `.d.ts`** 를 둔다(1절).
-- ★★ **종료 코드가 `2`** — `--noEmit` 인데. 02편은 「`--noEmit` 은 0 또는 1」이라 적었다. 같은 판에서 한 번 더 갈라 봤다:
+- ★★ **종료 코드가 `2`** — `--noEmit` 인데. 02편은 「`--noEmit` 은 0 또는 1」이라 적었다. 같은 버전에서 한 번 더 갈라 봤다:
 
 ```text
 ===== tsc --pretty false --noEmit -t es2022 --strict --module nodenext broken37.d.mts ; 이어서 같은 플래그로 usebroken37.mts (sh exit=0) =====
@@ -487,8 +487,8 @@ export declare class Counter {
 - ★★ **`export const LIMIT = 10`** → `export declare const LIMIT = 10;` — `const` 의 리터럴은 **값째** 남는다(타입은 `10`). `let current = LIMIT` 은 **`number`** 로 넓어졌다([**11번 주제**](../11-literal-types-and-as-const/)의 넓히기).
 - ★★ **`pick` 의 두 갈래에 `s?: undefined`·`n?: undefined` 가 붙었다** — 소스에 없는 프로퍼티다. 객체 리터럴 유니온을 **서로 맞춰** 적었다.
 - ★★ **클래스** — `private count = 0` 은 **`private count;`**(타입 없이 이름만), `#hidden` 은 **`#private;`** 한 줄로 **뭉개졌다.** 모듈 지역 `secret` 은 **없다.**
-- ★★★ **판 대조 — 7.0.2 와 5.9.3·4.9.5 가 갈렸다.** `diff` 가 **둘째 갈래의 `n?: undefined` 자리**만 가리킨다 — 7.0.2 는 `kind` **앞**, 옛 두 판은 `s` **뒤**. 내용은 같고 **순서만** 다르다.
-  **선언 방출의 글자는 판에 매인다** — `.d.ts` 를 저장소에 커밋해 두고 `diff` 로 보는 흐름이라면 tsc 판을 올릴 때 **의미 없는 변경**이 생긴다.
+- ★★★ **판 대조 — 7.0.2 와 5.9.3·4.9.5 가 달라졌다.** `diff` 가 **둘째 갈래의 `n?: undefined` 자리**만 가리킨다 — 7.0.2 는 `kind` **앞**, 옛 두 버전은 `s` **뒤**. 내용은 같고 **순서만** 다르다.
+  **선언 방출의 글자는 판에 매인다** — `.d.ts` 를 저장소에 커밋해 두고 `diff` 로 보는 흐름이라면 tsc 버전을 올릴 때 **의미 없는 변경**이 생긴다.
 
 ```text
   손으로 쓴 .d.ts (2절 liar37)            뽑은 .d.ts (calc37)
@@ -529,8 +529,8 @@ usebroken37.mts(3,7): error TS2322: Type 'number' is not assignable to type 'nul
 
 그림 해설 — 한 단계에 한 문장.
 
-- ★★ 그냥 — **`broken37.d.mts(1,33) TS2304`**(「Cannot find name 'Confg'.」 — `Config` 의 오타) + 탐침 `p2` 의 `TS2322`(`number`).
-- ★★★ **탐침 `p1: null = load()` 에는 진단이 없다** — 반환 타입 `Confg` 가 **풀리지 않아** 소비자 쪽에서는 **아무 타입이나 되는 것처럼** 굴었다. 소비자가 받는 신호는 **`.d.mts` 쪽의 `TS2304` 하나뿐**이다.
+- ★★ 그냥 — **`broken37.d.mts(1,33) TS2304`**(「Cannot find name 'Confg'.」 — `Config` 의 오타) + probe `p2` 의 `TS2322`(`number`).
+- ★★★ **probe `p1: null = load()` 에는 진단이 없다** — 반환 타입 `Confg` 가 **풀리지 않아** 소비자 쪽에서는 **아무 타입이나 되는 것처럼** 굴었다. 소비자가 받는 신호는 **`.d.mts` 쪽의 `TS2304` 하나뿐**이다.
 - ★★★ **`--skipLibCheck`** — 그 `TS2304` 가 **사라졌다.** 남은 것은 `p2` 의 `TS2322` 하나. 이제 `load()` 의 반환이 **망가졌다는 신호가 어디에도 없다.**
 
 ```ts
@@ -565,9 +565,9 @@ usedup37.ts(1,7): error TS2322: Type 'number' is not assignable to type 'null'.
 
 그림 해설 — 한 단계에 한 문장.
 
-- ★★ 그냥 — **`dup37b.d.ts(1,13) TS2403`**(「Subsequent variable declarations must have the same type. Variable 'APP_MODE' must be of type 'string', but here has type 'number'.」) — 전역 `.d.ts` 둘이 **같은 이름을 다른 타입**으로 선언했다(3절의 충돌). 탐침은 **`string`**.
-- ★★★ **`--skipLibCheck`** — `TS2403` 이 **사라지고** 탐침은 여전히 **`string`**.
-- ★★★ **`--skipLibCheck` + 파일 순서만 바꿔서**(`dup37b.d.ts dup37a.d.ts`) — 탐침이 **`number`** 가 됐다. **먼저 나온 선언이 이긴다** — 그리고 그 사실을 알려 주던 진단은 **꺼져 있다.**
+- ★★ 그냥 — **`dup37b.d.ts(1,13) TS2403`**(「Subsequent variable declarations must have the same type. Variable 'APP_MODE' must be of type 'string', but here has type 'number'.」) — 전역 `.d.ts` 둘이 **같은 이름을 다른 타입**으로 선언했다(3절의 충돌). probe는 **`string`**.
+- ★★★ **`--skipLibCheck`** — `TS2403` 이 **사라지고** probe는 여전히 **`string`**.
+- ★★★ **`--skipLibCheck` + 파일 순서만 바꿔서**(`dup37b.d.ts dup37a.d.ts`) — probe가 **`number`** 가 됐다. **먼저 나온 선언이 이긴다** — 그리고 그 사실을 알려 주던 진단은 **꺼져 있다.**
   「어느 `.d.ts` 가 먼저 컴파일 목록에 드나」는 `tsconfig.json` 의 `include`·`types`·의존성 설치 순서가 정한다 — **소스 한 글자 안 바꾸고 타입이 바뀔 수 있다.**
 - ★ 34편 4절 — 같은 플래그가 옛 `.d.ts` 의 **`TS1540`** 도 숨겼다. `skipLibCheck` 는 **`.d.ts` 의 진단 전부**를 끈다.
 
@@ -595,7 +595,7 @@ usedup37.ts(1,7): error TS2322: Type 'number' is not assignable to type 'null'.
   tsc --declaration --emitDeclarationOnly    TS 소스에서 .d.ts 를 뽑는다                (5절)
 ```
 
-**금지 사례** — 이 주제에서 던져 받은 것이다.
+**금지 사례** — 이 주제에서 실행해 받은 것이다.
 
 | 쓴 꼴 | 진단 | 어느 절 |
 |---|---|---|
@@ -632,12 +632,12 @@ usedup37.ts(1,7): error TS2322: Type 'number' is not assignable to type 'null'.
 | **언어 보장(핸드북)** | 전역 변수는 `declare var/const/let`, 전역 함수는 `declare function`, 점 표기는 `declare namespace` | Declaration Reference |
 | **컴파일러 동작** | `.d.ts` 는 **검사 입력**이고 JS 와 대조하지 않는다 · `.d.ts` 는 **방출하지 않는다** | 2절 — 방출물에 소비자만 |
 | **컴파일러 동작** | `export` 유무가 선언 파일을 전역/모듈로 가른다 | 3절 · 33편 5절 |
-| **★ 이 판(7.0.2)의 관찰** | 풀리지 않는 반환 타입(`Confg`)을 받은 소비자 탐침에 **진단 없음** | 6절 `p1` |
-| **★ 이 판의 관찰** | `skipLibCheck` 에서 충돌한 전역의 타입이 **파일 순서**로 정해진다 | 6절 — 두 순서를 던졌다 |
+| **★ 이 버전(7.0.2)의 관찰** | 풀리지 않는 반환 타입(`Confg`)을 받은 소비자 probe에 **진단 없음** | 6절 `p1` |
+| **★ 이 버전의 관찰** | `skipLibCheck` 에서 충돌한 전역의 타입이 **파일 순서**로 정해진다 | 6절 — 두 순서를 던졌다 |
 | **★ 판 격자** | `--declaration` 의 **프로퍼티 순서**가 7.0.2 와 5.9.3·4.9.5 에서 다르다 | 5절 `diff` |
-| **★ 이 판의 관찰** | `.d.ts` 만 던진 `--noEmit` 이 `exit 2` — `.mts` 가 들면 `exit 1` | 4절 — 02편의 「0 또는 1」과 어긋난다 |
+| **★ 이 버전의 관찰** | `.d.ts` 만 던진 `--noEmit` 이 `exit 2` — `.mts` 가 들면 `exit 1` | 4절 — 02편의 「0 또는 1」과 어긋난다 |
 | **호스트(node v18)** | 없는 export 는 ESM 링크 단계 `SyntaxError` · 없는 전역은 `ReferenceError` | 2·3절 |
-| **★ 부적용 — 4창(종료 코드 격자)** | 한계를 칠 것이 없다 | — |
+| **★ 해당 없음 — 4창(종료 코드 격자)** | 한계를 칠 것이 없다 | — |
 | **안 잰 것** | `skipLibCheck` 의 검사 시간 절약 · 없는 패키지를 node 가 부르는 결과 | **재지 않았다** · `node_modules` 를 만들지 않았다 |
 
 ## 언제 쓰고 언제 안 쓰나
@@ -645,7 +645,7 @@ usedup37.ts(1,7): error TS2322: Type 'number' is not assignable to type 'null'.
 | 쓴다 | 안 쓴다 |
 |---|---|
 | ★★ **손으로 쓴 `.d.ts`** — 소스가 **JS 뿐**이고 바꿀 수 없을 때 · **JS 와 같이 고칠** 사람이 있을 때 | JS 와 따로 노는 `.d.ts` — 2절의 두 거짓말 |
-| ★★★ **`--declaration`** — 소스가 TS 면 **뽑는다**. 소스와 어긋날 수 없다 | 뽑은 `.d.ts` 의 **글자**에 기대는 비교 — 판이 오르면 순서가 바뀐다(5절) |
+| ★★★ **`--declaration`** — 소스가 TS 면 **뽑는다**. 소스와 어긋날 수 없다 | 뽑은 `.d.ts` 의 **글자**에 기대는 비교 — 버전이 오르면 순서가 바뀐다(5절) |
 | ★★ **전역 `.d.ts`(export 없음)** — `<script>` 로 싣는 라이브러리 · 빌드 도구가 주입하는 상수 | 모듈 라이브러리를 전역으로 적기 — 값이 어디서 오는지 타입이 모른다(3절) |
 | ★ **`declare module "x" { 시그니처 }`** — 타입 없는 패키지 | **줄임 선언 `declare module "x";`** — 임시로만, 검사가 사라진다(4절) |
 | **`skipLibCheck`** — 의존성의 `.d.ts` 오류로 빌드가 막힐 때(대가를 알고) | ★★★ **자기가 쓴 `.d.ts`** 가 있는 프로젝트에서 끄지 않고 두기 — 그 파일의 오류가 **안 보인다**(6절). 가끔 끄고 한 번 던져 본다 |
@@ -654,7 +654,7 @@ usedup37.ts(1,7): error TS2322: Type 'number' is not assignable to type 'null'.
 
 1. **`.d.ts` 는 JS 에 대한 주장이고, tsc 는 그 주장을 검사하지 않고 믿는다** — 틀린 반환 타입은 `1+2+31` 같은 **조용히 틀린 값**을, 없는 이름은 링크 단계 `SyntaxError` 를 낳는다.
 2. **`export` 한 줄이 선언 파일을 전역과 모듈로 가른다** — 전역은 import 없이 보이지만 **값을 누가 싣는지 모른다**(`ReferenceError`).
-3. **`--declaration` 은 적힌 타입은 옮기고 안 적힌 자리를 추론으로 채운다** — 그 글자는 판에 매인다(7.0.2 와 옛 두 판의 프로퍼티 순서).
+3. **`--declaration` 은 적힌 타입은 옮기고 안 적힌 자리를 추론으로 채운다** — 그 글자는 판에 매인다(7.0.2 와 옛 두 버전의 프로퍼티 순서).
 4. **`skipLibCheck` 는 `.d.ts` 의 진단을 전부 끈다** — 오타는 조용한 `any` 로, 충돌은 **파일 순서가 정하는 타입**으로 남는다.
 
 ## 관련 자료
@@ -705,6 +705,6 @@ usedup37.ts(1,7): error TS2322: Type 'number' is not assignable to type 'null'.
 
 **기준 소스** — [Handbook — Declaration Reference](https://www.typescriptlang.org/docs/handbook/declaration-files/by-example.html)(전역 변수는 `declare var`·`declare const`·`declare let` · 전역 함수는 `declare function` · 점 표기로 묶을 때는 `declare namespace`) ·
 [Handbook — Modules Reference](https://www.typescriptlang.org/docs/handbook/modules/reference.html)(`exports` 의 `types` 조건 — 35편).
-위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·방출물·출력은 **전부 직접 던져 받은 것**이다. 핸드북 예제를 옮기지 않았다.
+위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·방출물·출력은 **전부 직접 실행해 받은 것**이다. 핸드북 예제를 옮기지 않았다.
 ★ 핸드북의 해당 쪽은 「전역 선언 파일과 모듈 선언 파일의 구분」을 **따로 싣지 않는다**(다른 장 — 라이브러리 구조 — 으로 넘긴다). 그 구분은 이 문서가 **던져서** 세웠다(3절).
-**실행 검증** — 본판은 맨 위 블록이다. ★ 5절의 판 비교에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 5.9.3 · 4.9.5** 를 **읽기만** 해서 썼다 — 환경변수 **`TSC_OLD`·`TSC_49`**.
+**실행 검증** — 본판은 맨 위 블록이다. ★ 5절의 버전 비교에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 5.9.3 · 4.9.5** 를 **읽기만** 해서 썼다 — 환경변수 **`TSC_OLD`·`TSC_49`**.

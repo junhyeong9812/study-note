@@ -121,7 +121,7 @@ document.styleSheets.length = 1
 
 - ★★ **`<p>안</p>` 이 덤프에 있다.** 직렬화 알고리즘이 `<template>` 만 특별히 **`content` 를 대신 직렬화**하기 때문이다.
 - **표 밖의 `<td>` 는 태그가 버려지고 글자만 남았다**(`표 밖의 td`) — `<template>` 안도 **파서의 삽입 모드**를 그대로 받는다([03번 주제](../03-parser-and-error-recovery/2-summary.md)).
-- **표 안의 `<template>` 에서는 `<tr><td>` 가 살아남았다** — 같은 태그가 **어디 있느냐로 갈린다.**
+- **표 안의 `<template>` 에서는 `<tr><td>` 가 살아남았다** — 같은 태그가 **어디 있느냐로 나뉜다.**
 - ★★★ **A1 의 `querySelectorAll` 과 여기 덤프가 어긋난다.** 창 ①은 **직렬화된 글자**를 보여 주고, `querySelectorAll` 은 **문서 트리**를 본다. **둘은 같은 것이 아니다.**
 
 ### 3. 된다 · `<template>` 이 사라진다 · 그런데 그림자는 덤프에 없다
@@ -347,7 +347,7 @@ slot name="없는칸"       기본 내용 <p> 높이 = 0 보다 큼 (그려졌�
 - **`slot` 속성이 없는 `<p>` 가 이름 없는 칸에** 들어갔다.
 - **아무도 안 채운 `없는칸` 만 기본 내용**이 나왔다.
 - ★★★ **`slot="오타"` 의 `assignedSlot` 이 `null`** 이다 — 어느 칸에도 안 들어가고 **화면에서 사라진다.** **예외도 경고도 없다.**
-- ★★ **`textContent` 에는 「슬롯 이름이 틀린 것」이 들어 있는데 `innerText` 에는 없다.** 창 ③(렌더 대 트리)이 여기서 갈린다.
+- ★★ **`textContent` 에는 「슬롯 이름이 틀린 것」이 들어 있는데 `innerText` 에는 없다.** 창 ③(렌더 대 트리)이 여기서 달라진다.
 - ★★★ **그런데 `innerText` 에는 기본 내용도 없다.** Chrome 151 의 `innerText` 는 **그림자 안을 안 본다.** 그래서 「진짜 그려졌나」는 **상자 높이로 따로 쟀고**, 아무도 안 채운 칸만 **`0 보다 큼`** 이었다.
 - ★ **한 관찰로 두 질문에 답하지 않는다** — 「할당됐나」는 `assignedNodes()` 가, 「그려졌나」는 **좌표**가 답한다.
 
@@ -408,7 +408,7 @@ customElements.get('plain-tag')  = 없음
 
 **왜 그런가**
 
-- ★★★ **셋이 다 같지 않다.** 대시가 있는 `my-clock`·`plain-tag` 는 **`HTMLElement`**, 대시가 없는 `nodash` 는 **`HTMLUnknownElement`** 다. **정의가 없어도 이름 모양만으로** 갈린다 — 「나중에 정의될 수 있는 이름」을 파서가 미리 대우해 준다.
+- ★★★ **셋이 다 같지 않다.** 대시가 있는 `my-clock`·`plain-tag` 는 **`HTMLElement`**, 대시가 없는 `nodash` 는 **`HTMLUnknownElement`** 다. **정의가 없어도 이름 모양만으로** 달라진다 — 「나중에 정의될 수 있는 이름」을 파서가 미리 대우해 준다.
 - **`define` 하는 순간 `constructor` → `connectedCallback` 순서로** 이미 있던 요소가 업그레이드된다.
 - **`define` 후 `#먼저` 의 클래스가 `시계`** 로 바뀌었다.
 - ★ **`constructor` 안의 `this.id` 는 업그레이드 때는 `먼저` 로 보이는데, `createElement` 로 새로 만들 때는 빈 문자열**이다 — 그때는 **속성이 아직 안 붙었기** 때문이다. 두 경로의 **시점이 다르다.**
@@ -441,7 +441,7 @@ customElements.get('plain-tag')  = 없음
 
 **왜 그런가**
 
-- **조건 한 문장** — **`assignedNodes()` 가 비어 있는 칸에서만** 기본 내용이 그려진다.
+- **조건 한 문장** — **`assignedNodes()` 가 비어 있는 항목에서만** 기본 내용이 그려진다.
 - ★★★ **이름 없는 칸이 잘 안 나오는 이유** — 호스트 안의 **줄바꿈·들여쓰기가 텍스트 노드**이고, 그것이 **이름 없는 칸에 할당**되기 때문이다. demo 의 `assignedNodes = [#text, #text]` 가 그 실측이다. **공백 텍스트 노드**는 [04번 주제](../04-whitespace-and-character-references/2-summary.md)가 정본이다.
 - ★★ **`innerText` 로는 확인할 수 없다.** Chrome 151 의 `innerText` 가 그림자 안을 안 보기 때문이다(A5). **좌표**(`Range.getBoundingClientRect`)로 재야 한다.
 
@@ -517,7 +517,7 @@ window.addEventListener("load", function () {
 });
 ```
 
-**이미지** — 1×1 투명 GIF 한 장(`html09b-dot.gif`, 43바이트)을 `?out`·`?in` 두 질의로 나눠 썼다. **같은 파일인데 요청 로그에서 갈린다.**
+**이미지** — 1×1 투명 GIF 한 장(`html09b-dot.gif`, 43바이트)을 `?out`·`?in` 두 질의로 나눠 썼다. **같은 파일인데 요청 로그에서 달라진다.**
 
 **본문에 안 실린 실험 파일** — 없다. A1\~A6 이 소스를 전부 싣고 있다.
 
@@ -629,7 +629,7 @@ shadowrootmode="zzz" 로 바꾸면
 
 **구현에 달린 항목**
 
-| 항목 | 이 판의 값 | 왜 다시 찍나 |
+| 항목 | 이 버전의 값 | 왜 다시 찍나 |
 |---|---|---|
 | `outerHTML` 이 `<template>` 은 직렬화하고 **섀도는 안 하는 것** | (2)·(3) | Blink 의 직렬화다. 다만 **섀도 쪽은 명세도 그렇게 정한다** |
 | `innerText` 가 **그림자 안을 안 보는 것** | (5) | `innerText` 는 명세가 헐거운 자리다 |
@@ -637,11 +637,11 @@ shadowrootmode="zzz" 로 바꾸면
 | 기본 내용의 **픽셀 폭** | `0px` 대 `63px` | 글꼴에 달렸다 — **0 이냐 아니냐**만 근거로 쓴다 |
 | 선언적 Shadow DOM 자체 | 동작함 | **이 묶음에서 가장 새 표면**이다. 판이 낮으면 안 될 수 있다 |
 
-**안 돌려 본 것** — ① **Firefox·Safari 재현**(엔진이 없다). **선언적 Shadow DOM 은 특히 이식성을 주장할 수 없다.** ② **`template.content` 를 복제해 붙이는 것** — web-api 05번의 표면이라 안 던졌다. ③ **`attachShadow` 로 만든 그림자** — web-api 12번의 표면이다. ④ **`::part`·`::slotted` 같은 섀도 선택자** — CSS·web-api 쪽이다. ⑤ **슬롯이 접근성 트리에서 어떻게 평탄화되나** — 11·12 에서 쓴 접근성 트리 도구를 **여기에는 적용하지 않았다**(다음 배치의 자리). ⑥ **`attributeChangedCallback`·`observedAttributes`** — web-api 13번이다. ⑦ **`<template>` 안에 선언적 Shadow DOM 을 중첩한 경우.**
+**안 돌려 본 것** — ① **Firefox·Safari 재현**(엔진이 없다). **선언적 Shadow DOM 은 특히 이식성을 주장할 수 없다.** ② **`template.content` 를 복제해 붙이는 것** — web-api 05번의 표면이라 실행하지 않았다. ③ **`attachShadow` 로 만든 그림자** — web-api 12번의 표면이다. ④ **`::part`·`::slotted` 같은 섀도 선택자** — CSS·web-api 쪽이다. ⑤ **슬롯이 접근성 트리에서 어떻게 평탄화되나** — 11·12 에서 쓴 접근성 트리 도구를 **여기에는 적용하지 않았다**(다음 배치의 자리). ⑥ **`attributeChangedCallback`·`observedAttributes`** — web-api 13번이다. ⑦ **`<template>` 안에 선언적 Shadow DOM 을 중첩한 경우.**
 
 **못 잰 것**(「안 돌려 본 것」과 다르다) — **`--dump-dom` 으로 섀도 트리 안을 보는 것.** 도구가 `outerHTML` 을 쓰고 `outerHTML` 이 섀도를 직렬화하지 않으므로 **측정 방법 자체가 없다**(A3). 쪼개서 잰 조각은 **① `shadowRoot` 가 있다 ② `shadowRoot.innerHTML` 로 안을 읽을 수 있다 ③ `shadowrootserializable` 을 붙이면 `getHTML` 로 뽑힌다** 셋이다. 같은 이유로 **`innerText` 로 섀도 안의 글자를 읽는 것**도 못 잰 것이고, 대신 **좌표**로 갈랐다(A5·A9).
 
-**부적용인 창** — **창 ④(`compatMode`).** `<template>`·섀도·커스텀 요소는 문서 모드를 안 바꾸므로 **잴 것이 없다**(「재 봤더니 같았다」가 아니다). ★ 반대로 **창 ③(`innerText` 대 `textContent`)은 이 주제에서 새 뜻을 얻었다** — 슬롯이 **트리와 렌더를 갈라 놓는** 대표 사례다(A5).
+**해당 없는 창** — **창 ④(`compatMode`).** `<template>`·섀도·커스텀 요소는 문서 모드를 안 바꾸므로 **잴 것이 없다**(「재 봤더니 같았다」가 아니다). ★ 반대로 **창 ③(`innerText` 대 `textContent`)은 이 주제에서 새 뜻을 얻었다** — 슬롯이 **트리와 렌더를 갈라 놓는** 대표 사례다(A5).
 
 ## 용어 풀이
 

@@ -2,7 +2,7 @@
 
 ## 한눈에 — 쉽게 말하면
 
-**둘 다 「어디를 보이게 할지」를 정하는 도구인데, 가위와 스텐실로 갈린다.**
+**둘 다 「어디를 보이게 할지」를 정하는 도구인데, 가위와 스텐실로 나뉜다.**
 
 비유 대응은 문서 끝까지 이것 하나로 고정한다.
 
@@ -40,7 +40,7 @@
 
 1. `clip-path` 가 `overflow: hidden` 과 **정확히 무엇이 다른가** — 모양 말고도 다른 것이 있는가.
 2. `clip-path` 가 **쌓임 맥락과 포함 블록을 건드리는가** — 던져서 확인해야 하는 항목이다.
-3. **알파 마스크와 휘도 마스크**는 같은 이미지에서 어떻게 갈리는가.
+3. **알파 마스크와 휘도 마스크**는 같은 이미지에서 어떻게 달라지는가.
 4. `-webkit-mask-` 접두사가 **아직 필요한가** — 그리고 지금 그것을 쓰면 무슨 일이 일어나는가.
 
 ## 동작 방식
@@ -198,7 +198,7 @@
 
 ### (5) ★ `clip-path` 가 쌓임 맥락·포함 블록을 건드리나 — **던져서 확인**
 
-**언제 쓰나** — 추측하면 안 되는 자리다. [47번](../47-filter-and-backdrop-filter/2-summary.md)의 `filter` 와 결과가 **갈린다.**
+**언제 쓰나** — 추측하면 안 되는 자리다. [47번](../47-filter-and-backdrop-filter/2-summary.md)의 `filter` 와 결과가 **달라진다.**
 
 ```text
   실험 1 — 쌓임 맥락
@@ -226,7 +226,7 @@
 - ★ **`clip-path` 는 쌓임 맥락은 만들지만 포함 블록은 안 가로챈다.** `filter` 와 다르다 — **추측했으면 틀렸을 자리다.**
 - 쌓임 맥락을 만든다는 것은 [48번](../48-blend-modes-and-isolation/2-summary.md)의 **격리**도 만든다는 뜻이다.
 
-*(Chrome 151 headless 실측 — 두 실험 모두 두 판을 한 문서에 두고 픽셀과 `offsetParent` 를 읽은 값이다.)*
+*(Chrome 151 headless 실측 — 두 실험 모두 두 버전을 한 문서에 두고 픽셀과 `offsetParent` 를 읽은 값이다.)*
 
 ### (6) `mask` 의 축 — 배경 속성과 같은 모양
 
@@ -345,7 +345,7 @@
 - 실측 픽셀: 양 끝 `(243,245,253)`·`(245,247,253)`(거의 배경), 가운데 `(41,88,218)`(거의 원색).
 - 값은 `add`(기본)·`subtract`·`intersect`·`exclude` 넷이다.
 
-*(Chrome 151 headless 실측 — 한 문서에서 다섯 판을 렌더해 다섯 좌표씩 읽었다.)*
+*(Chrome 151 headless 실측 — 한 문서에서 다섯 버전을 렌더해 다섯 좌표씩 읽었다.)*
 
 ### (10) ★ `-webkit-mask-` 접두사는 아직 필요한가 — **던진 결과**
 
@@ -500,14 +500,14 @@
 
 - `clip-path` 는 **전부 아니면 전무**, `mask` 는 **0\~100% 연속**이다. 페이드는 마스크로만 된다.
 - `clip-path` 는 **자기 배경·테두리·그림자까지** 자르고, `overflow: hidden` 은 **자손만** 자른다.
-- `clip-path` 는 **쌓임 맥락을 만들지만 포함 블록은 안 가로챈다** — `filter` 와 갈리는 자리다.
+- `clip-path` 는 **쌓임 맥락을 만들지만 포함 블록은 안 가로챈다** — `filter` 와 달라지는 자리다.
 - 마스크의 기본은 **알파**다. `linear-gradient(#000, #fff)` 는 **아무 일도 안 한다.**
 - Chrome 151 에서 `-webkit-mask-*` 는 **별칭**이다. 둘 다 쓰면 나중 것이 이긴다 — 무접두사만 쓴다.
 
 ## 관련 자료
 
 - [46번 — 테두리·`border-radius`·`outline`·`box-shadow`](../46-borders-radius-outline-shadow/2-summary.md) — **그쪽은 모서리 넷을 깎는 것까지, 여기는 그것을 임의 도형으로 일반화한 것부터.** `border-radius` 가 이미 「배경을 자르는 것」이고 `inset(… round …)` 가 그 문법을 그대로 재사용한다.
-- [47번 — `filter` 와 `backdrop-filter`](../47-filter-and-backdrop-filter/2-summary.md) — **그쪽은 색을 바꾸는 것, 여기는 보일 자리를 정하는 것.** 포함 블록 부작용이 **갈리는 자리**이기도 하다.
+- [47번 — `filter` 와 `backdrop-filter`](../47-filter-and-backdrop-filter/2-summary.md) — **그쪽은 색을 바꾸는 것, 여기는 보일 자리를 정하는 것.** 포함 블록 부작용이 **달라지는 자리**이기도 하다.
 - [48번 — 혼합 모드와 `isolation`](../48-blend-modes-and-isolation/2-summary.md) — **그쪽은 색을 합치는 규칙, 여기(`mask-composite`)는 알파를 합치는 규칙.**
 - [15번 — 박스 모델](../15-box-model-and-box-sizing/2-summary.md) — `<geometry-box>` 가 가리키는 네 상자의 정본.
 - [17번 — 블록 서식 맥락](../17-block-formatting-context/2-summary.md) — `overflow: hidden` 이 BFC 를 만드는 것. `clip-path` 는 안 만든다.
@@ -520,7 +520,7 @@
 - **도형 함수(basic shape)** — `inset()`·`circle()`·`ellipse()`·`polygon()`·`path()`. `path()` 만 곡선이 되고 좌표가 px 고정이다.
 - **`<geometry-box>`** — 도형의 기준이 되는 상자. `border-box`(기본)·`padding-box`·`content-box`·`margin-box` 와 SVG 용 셋.
 - **알파(alpha)** — 픽셀의 불투명도. 0 이면 완전 투명.\
-  예: `transparent` 는 알파 0 이고 `#fff` 는 알파 1 이다 — 둘 다 색은 다르지만 마스크에서는 이 값이 갈린다.
+  예: `transparent` 는 알파 0 이고 `#fff` 는 알파 1 이다 — 둘 다 색은 다르지만 마스크에서는 이 값이 달라진다.
 - **휘도(luminance)** — 픽셀의 밝기. `mask-mode: luminance` 가 읽는 값이고 검정이 0, 흰색이 최대다.
 - **`mask-mode`** — 마스크 이미지의 알파를 읽을지 휘도를 읽을지. 기본 `match-source` 는 **이미지면 알파**, SVG `<mask>` 참조면 휘도다.
 - **`mask-composite`** — 마스크 레이어 여럿을 합치는 규칙. `add`(기본)·`subtract`·`intersect`·`exclude`.

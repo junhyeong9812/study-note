@@ -123,7 +123,7 @@ srs   = rng.sample(pop, 3_000)
 - **다중 비교·과적합**: 후보가 데이터 점보다 압도적으로 많으면, 독감과 무관하게 계절만 공유한 후보가 학습 기간에 잘 맞는다([11](../11-multiple-comparisons/2-summary.md) · [22-3](../22-multiple-and-logistic-regression/2-summary.md)). "winter detector"는 계절이 독감과 검색량을 둘 다 움직인 교란의 모양이다([12-2](../12-correlation-vs-causation/2-summary.md), 해석).
 - **대리 지표의 관계 변화**: 검색량은 독감의 대리 지표다. 검색 서비스(추천 검색어 등)가 바뀌면 대리와 목표의 관계가 바뀐다([16-1](../16-metrics-design/2-summary.md)의 굿하트와 결은 다르지만 "대리가 목표에서 떨어져 나감"은 같은 모양, 해석). 입력의 의미가 조용히 바뀐 것은 [18-4](../18-data-cleaning-and-quality/2-summary.md) 스키마 드리프트와도 닮았다(해석).
 - **오차의 패턴**: 오차가 자기상관·계절성을 가지면 모형이 쓸 수 있는 정보를 버린 것이다([13-3](../13-linear-regression/2-summary.md) 잔차 패턴, [23](../23-time-series-basics/2-summary.md)).
-- **단순 기준선**: 늦게 오지만 정확한 원천(CDC)을 그대로 쓰는 기준선보다 나은지 확인하지 않으면 복잡한 모형의 가치를 알 수 없다(해석).
+- **단순 베이스라인**: 늦게 오지만 정확한 원천(CDC)을 그대로 쓰는 베이스라인보다 나은지 확인하지 않으면 복잡한 모형의 가치를 알 수 없다(해석).
 
 #### 실험: 계절만 따라가는 검색어가 뽑히는 모형 (`gft_overfit.py`)
 
@@ -148,14 +148,14 @@ lag2 = [truth[max(0, t - 2)] for t in range(T)]   # 2주 늦게 도착하는 공
 ```
 
 - 관찰
-  - 고른 45개에 진짜 독감 검색어는 하나도 없었다. 학습 기간에는 r = 0.960, MAE 0.208로 2주 지연 기준선(0.304)보다 나았다.
+  - 고른 45개에 진짜 독감 검색어는 하나도 없었다. 학습 기간에는 r = 0.960, MAE 0.208로 2주 지연 베이스라인(0.304)보다 나았다.
   - 시험 1: 여름 정점 주에 진실 3.70, 모형 0.85. 계절 검색어는 여름에 움직이지 않으니 계절 밖 유행을 놓쳤다("winter detector"의 모양).
-  - 시험 2: MAE는 기준선과 비슷했지만(0.307 vs 0.310) 오차의 부호가 한쪽으로 쏠렸다. 모형은 52주 중 43주를 과대 추정했고 평균 오차 +0.251, 기준선은 22주·평균 오차 거의 0이다. MAE 하나만 보면 이 체계적 과대를 놓친다.
+  - 시험 2: MAE는 베이스라인과 비슷했지만(0.307 vs 0.310) 오차의 부호가 한쪽으로 쏠렸다. 모형은 52주 중 43주를 과대 추정했고 평균 오차 +0.251, 베이스라인은 22주·평균 오차 거의 0이다. MAE 하나만 보면 이 체계적 과대를 놓친다.
 - 한계(모형): 입력 분포·파라미터는 이 노트가 정했다. 실제 GFT의 MAE(0.486)·과대 주 수(100/108)와 수치를 비교하는 실험이 아니다. "많은 후보에서 상관으로 고르면 계절 같은 공통 원인을 공유한 후보가 뽑히고, 측정 도구가 바뀌면 오차가 한쪽으로 쏠린다"는 **모양**만 보인다.
 
 #### 막았을 장치 (해석)
 
-- 학습에 쓰지 않은 기간으로 평가하고(시간 분할), 단순 기준선(지연 원천 자료·같은 주 작년 값)과 함께 보고한다([22-3](../22-multiple-and-logistic-regression/2-summary.md) · [22-5](../22-multiple-and-logistic-regression/2-summary.md) · [23](../23-time-series-basics/2-summary.md)).
+- 학습에 쓰지 않은 기간으로 평가하고(시간 분할), 단순 베이스라인(지연 원천 자료·같은 주 작년 값)과 함께 보고한다([22-3](../22-multiple-and-logistic-regression/2-summary.md) · [22-5](../22-multiple-and-logistic-regression/2-summary.md) · [23](../23-time-series-basics/2-summary.md)).
 - 오차의 부호·자기상관을 감시한다. 과대 추정이 몇 주 연속이면 재보정한다([13-3](../13-linear-regression/2-summary.md)). Lazer 외의 그림에서는 GFT·지연 CDC·GFT의 지연 오차·52주 계절 변수를 함께 넣은 결합 모형이 MAE 0.232로 가장 나았다.
 - 입력 데이터를 만드는 시스템의 변경(검색 UI·추천 기능) 시점을 기록하고, 그 전후로 관계가 유지되는지 본다([24](../24-reproducible-analysis/2-summary.md) · [16](../16-metrics-design/2-summary.md)).
 - 선택에 쓴 후보 수를 기록하고, 후보가 데이터 점보다 많으면 과적합을 기본 가정으로 둔다([11](../11-multiple-comparisons/2-summary.md)).
@@ -278,7 +278,7 @@ country_mean      = Σ 나라 평균 / 나라 수              # 나라 동일 �
 
 - **추세가 덜 가파르게 보였다**: 빠진 건이 최근 날짜에 몰렸다(처음 네 칸 2,458 → 마지막 세 칸 11,968). 보고일 기준 일일 숫자로 주간 증가율을 보던 분석은 그 기간의 증가를 실제보다 작게 봤을 것이다(해석 — PHE 발표문은 보고된 일일 총계를 같이 싣지 않아 증가율을 다시 계산하지 않았다).
   - 같은 모양: 관측 끝 근처 칸이 덜 찬 코호트 표([17-3](../17-sql-for-analysis/2-summary.md)). 최근 숫자가 작은 것이 실제 감소인지 "아직 안 들어온 것"인지 구분해야 한다.
-- **복구 때 머리 숫자가 튀었다**: 밀린 건이 한꺼번에 보고일로 들어오면 보고일 시계열에 급등이 생긴다. 검체 날짜(이벤트 시각)로 다시 붙이면 지난 며칠이 조금씩 늘어난다. 이 급등을 기준선 학습에 넣으면 다음 이상 탐지가 둔해진다([23-4](../23-time-series-basics/2-summary.md), 해석).
+- **복구 때 머리 숫자가 튀었다**: 밀린 건이 한꺼번에 보고일로 들어오면 보고일 시계열에 급등이 생긴다. 검체 날짜(이벤트 시각)로 다시 붙이면 지난 며칠이 조금씩 늘어난다. 이 급등을 베이스라인 학습에 넣으면 다음 이상 탐지가 둔해진다([23-4](../23-time-series-basics/2-summary.md), 해석).
 - **수준은 틀리고 구성은 덜 틀렸다**: 발표문은 빠진 건이 지역에 비례해 퍼져 있었다고 적었다. 그렇다면 지역 간 비율 비교는 덜 흔들리고 전국 총량(수준)이 틀렸다는 뜻이다(해석). 판단이 상대 비교에 기댔는지 절대 수준에 기댔는지에 따라 영향이 다르다.
 - **조용한 절단**: 한도를 넘은 파일에서 결과가 빠졌다. 적재 과정이 실패로 표시됐는지는 공개 자료에 없다. 빠진 건수 자체는 원천 건수와 대조해야 보이는 모양이다([18-3](../18-data-cleaning-and-quality/2-summary.md)). 파이프라인 쪽 모형 실험(XLS 행 한도 · `xls_cap.py`)은 [data-engineering/17](../../data-engineering/17-de-incidents/2-summary.md) 사건 1에 있다.
 
@@ -286,7 +286,7 @@ country_mean      = Σ 나라 평균 / 나라 수              # 나라 동일 �
 
 - 원천 대조: 검사 기관이 센 양성 건수와 집계된 건수를 날마다 맞춘다([18-3](../18-data-cleaning-and-quality/2-summary.md) · [27](../27-da-symptom-index/2-summary.md) 2절).
 - 날짜 축 명시: 보고일·검체 날짜를 둘 다 두고, 분석·추세 판단은 검체 날짜로 한다. 최근 며칠은 "아직 덜 찼음"으로 표시한다([17-3](../17-sql-for-analysis/2-summary.md) · [27](../27-da-symptom-index/2-summary.md) 6절).
-- 복구 표시: 밀린 건이 들어온 날은 대시보드에 주석을 달고, 기준선 학습에서 뺀다([23-4](../23-time-series-basics/2-summary.md)).
+- 복구 표시: 밀린 건이 들어온 날은 대시보드에 주석을 달고, 베이스라인 학습에서 뺀다([23-4](../23-time-series-basics/2-summary.md)).
 - leaf: [18-3](../18-data-cleaning-and-quality/2-summary.md) · [17-3](../17-sql-for-analysis/2-summary.md) · [23-4](../23-time-series-basics/2-summary.md) · [06-5](../06-exploratory-data-analysis/2-summary.md)(요약만 보면 지나치는 이상)
 
 ### 네 사건을 나란히 (해석)
@@ -294,7 +294,7 @@ country_mean      = Σ 나라 평균 / 나라 수              # 나라 동일 �
 | 사건 | 깨진 원리 | 틀린 숫자 | 무엇과 대조해 드러났나 | 막았을 장치 | leaf |
 |---|---|---|---|---|---|
 | Literary Digest 1936 | 표집 틀·무응답 편향 — n은 편향을 줄이지 않음 | 승자 예측이 반대(2차 출처: Landon 57.08% 예측, Roosevelt 60.8% 득표 `[?]`). 선거인단 523 : 8 | 실제 선거 결과, 1937 Gallup 조사(Squire) | 확률 표집, 응답자 구성 점검, 외부 기준 대조 | [02-1](../02-sampling-and-bias/2-summary.md) · [08-4](../08-confidence-intervals/2-summary.md) |
-| Google Flu Trends | 다중 비교·과적합, 계절 교란, 측정 도구 변화 | 2011-08 ~ 2013-09에 108주 중 100주 과대, 2013-02 Nature 보도로 CDC 추정의 두 배 넘게 | CDC 감시 통계, 지연 CDC 기준선 | 시간 분할 평가, 단순 기준선, 오차 부호·자기상관 감시, 입력 변경 기록 | [22-3](../22-multiple-and-logistic-regression/2-summary.md) · [11-1](../11-multiple-comparisons/2-summary.md) · [13-3](../13-linear-regression/2-summary.md) |
+| Google Flu Trends | 다중 비교·과적합, 계절 교란, 측정 도구 변화 | 2011-08 ~ 2013-09에 108주 중 100주 과대, 2013-02 Nature 보도로 CDC 추정의 두 배 넘게 | CDC 감시 통계, 지연 CDC 베이스라인 | 시간 분할 평가, 단순 베이스라인, 오차 부호·자기상관 감시, 입력 변경 기록 | [22-3](../22-multiple-and-logistic-regression/2-summary.md) · [11-1](../11-multiple-comparisons/2-summary.md) · [13-3](../13-linear-regression/2-summary.md) |
 | Reinhart–Rogoff | 수식 범위 누락, 선택적 제외, 가중 정의 | 90% 이상 구간 평균 2.2%가 −0.1%로 | 작업 스프레드시트로 다시 계산(HAP) | 행 수 대조, 가중 명시, 민감도 표, 재현 자료 | [18-3](../18-data-cleaning-and-quality/2-summary.md) · [16-3](../16-metrics-design/2-summary.md) · [24-4](../24-reproducible-analysis/2-summary.md) |
 | PHE 2020-10 | 조용한 절단, 날짜 축(보고일 vs 검체 날짜) | 15,841건 누락, 그중 11,968건이 마지막 3일 | 발견 경위는 발표문에 없음("identified overnight") | 원천 대조, 날짜 축 명시, 복구일 표시 | [18-3](../18-data-cleaning-and-quality/2-summary.md) · [17-3](../17-sql-for-analysis/2-summary.md) · [23-4](../23-time-series-basics/2-summary.md) |
 
@@ -307,7 +307,7 @@ country_mean      = Σ 나라 평균 / 나라 수              # 나라 동일 �
 - **상관 순 상위 k 선택**: 후보를 점수로 정렬해 앞 k개를 고른다. 후보가 많을수록 우연히 높은 점수가 뽑힌다 — 사건 2([11](../11-multiple-comparisons/2-summary.md) · [data-structure/07-heap](../../data-structure/07-heap/2-summary.md)).
 - **최소제곱 단순 회귀**: `statistics.linear_regression` — 사건 2 실험([13](../13-linear-regression/2-summary.md)).
 - **가중 평균**: 나라-연도 가중 vs 나라 동일 가중 — 사건 3([16](../16-metrics-design/2-summary.md)).
-- **지연 기준선·이동 평균**: 늦게 오지만 정확한 원천을 그대로 쓰는 예측 — 사건 2·4([23](../23-time-series-basics/2-summary.md)).
+- **지연 베이스라인·이동 평균**: 늦게 오지만 정확한 원천을 그대로 쓰는 예측 — 사건 2·4([23](../23-time-series-basics/2-summary.md)).
 - **행 수·합계 대조(control total)**: 사건 3·4([18](../18-data-cleaning-and-quality/2-summary.md) · [data-engineering/10](../../data-engineering/10-data-quality-and-data-observability/2-summary.md)).
 
 ## 적용 — 풀어나가는 법
@@ -362,7 +362,7 @@ country_mean      = Σ 나라 평균 / 나라 수              # 나라 동일 �
 - **현상**: 검색·클릭 지표로 다음 주 수요를 예측하는 모형이 출시 후 몇 주 연속 높게 예측한다. 재고가 쌓인다.
 - **보이는 형태**: 학습 기간 R²는 높았다. 운영 오차의 부호가 몇 주째 같은 쪽이고, 앱 검색 UI 개편 날짜와 오차가 커진 날짜가 겹친다.
 - **원인**: 수많은 후보 지표 중 학습 기간에 상관이 높은 것을 골랐다(과적합). 입력을 만드는 UI가 바뀌어 지표와 수요의 관계가 바뀌었다([22-3](../22-multiple-and-logistic-regression/2-summary.md) · [16-1](../16-metrics-design/2-summary.md)).
-- **대처**: 시간 분할로 평가하고, "지난주 실제 값" 같은 단순 기준선과 함께 보고한다. 오차 부호가 연속되면 재보정 경보를 낸다. 입력 시스템 변경 일지를 모형 감시에 붙인다.
+- **대처**: 시간 분할로 평가하고, "지난주 실제 값" 같은 단순 베이스라인과 함께 보고한다. 오차 부호가 연속되면 재보정 경보를 낸다. 입력 시스템 변경 일지를 모형 감시에 붙인다.
 
 ### 3. 수식 범위·가중이 조용히 틀린다 — Reinhart–Rogoff형
 
@@ -376,7 +376,7 @@ country_mean      = Σ 나라 평균 / 나라 수              # 나라 동일 �
 - **현상**: 일일 가입자 대시보드가 이번 주 평평해 "성장 둔화"로 보고됐다. 다음 주 월요일 가입자가 평소의 세 배로 뛴다.
 - **보이는 형태**: 처리 날짜 기준 숫자다. 이벤트 날짜로 다시 집계하면 지난주가 꾸준히 늘었다. 수집 파일 몇 개가 한도에 걸려 늦게 처리됐다(예시).
 - **원인**: 누락이 최근 날짜에 몰렸고, 복구분이 처리 날짜 하루로 들어왔다. 분석은 날짜 축을 확인하지 않았다([17-3](../17-sql-for-analysis/2-summary.md) · [18-3](../18-data-cleaning-and-quality/2-summary.md)).
-- **대처**: 추세 판단은 이벤트 날짜로 한다. 최근 며칠은 미완으로 표시한다. 원천 건수와 날마다 대조하고, 복구분이 들어온 날은 주석을 달고 기준선 학습에서 뺀다([23-4](../23-time-series-basics/2-summary.md)).
+- **대처**: 추세 판단은 이벤트 날짜로 한다. 최근 며칠은 미완으로 표시한다. 원천 건수와 날마다 대조하고, 복구분이 들어온 날은 주석을 달고 베이스라인 학습에서 뺀다([23-4](../23-time-series-basics/2-summary.md)).
 
 ### 5. 남이 재현하려 할 때 재료가 없다
 
@@ -407,5 +407,5 @@ country_mean      = Σ 나라 평균 / 나라 수              # 나라 동일 �
 - 2차 출처: Wikipedia "The Literary Digest"(2026-05-30 판) — 1936 여론조사의 발송 수·응답 수·예측 득표율·실제 득표율·Gallup 예측(Freedman 외 2007 pp. 335–336 인용). 원문 미확인 `[?]`
 - 실험 목록
   - `digest_sim.py` — 호스트 Python 3.12.3 표준 라이브러리, `random.Random(1936)`, 합성 모집단 100만 명: 틀 편향만 / 틀 + 무응답 / 단순 무작위 3,000의 추정과 구간
-  - `gft_overfit.py` — 호스트 Python 3.12.3 표준 라이브러리, `random.Random(2013)`, 합성 5시즌 × 후보 5,000개: 상관 상위 45개 선택 회귀 vs 2주 지연 기준선, 계절 밖 유행·검색량 +40%
+  - `gft_overfit.py` — 호스트 Python 3.12.3 표준 라이브러리, `random.Random(2013)`, 합성 5시즌 × 후보 5,000개: 상관 상위 45개 선택 회귀 vs 2주 지연 베이스라인, 계절 밖 유행·검색량 +40%
   - `rr_table2.py` — 호스트 Python 3.12.3, HAP Table 2 공개 수치로 나라-연도 가중·나라 동일 가중·범위 오류·연도 제외 조합의 평균 재계산(결정적)

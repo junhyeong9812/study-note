@@ -8,7 +8,7 @@
 
 ### A. 문제 (DirectPublisher · OutboxPublisher · OutboxRelay 의 TODO)
 
-1. TODO 1 — DirectPublisher.placeOrder (기준선: 읽으면 맞는 것 같다)
+1. TODO 1 — DirectPublisher.placeOrder (베이스라인: 읽으면 맞는 것 같다)
 
 ```java
 // TODO 1: 저장하고 발행한다. 이벤트 id 는 "evt-" 에 주문 id 를 붙인다.

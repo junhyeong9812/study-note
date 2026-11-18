@@ -294,7 +294,7 @@ SELECT 1 AS q UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
 -- (2) 재귀 CTE — 길이가 가변이면 이쪽. [목록의 **33번 주제**](../33-recursive-cte/)가 정본이다
 ```
 
-`VALUES` 리스트로 만들려 하면 **행 생성자 문법까지 갈린다** — PG 는 `(1),(2)`, MySQL 은 `ROW(1),ROW(2)` 다([10번](../10-from-clause-aliases-derived-tables/)).
+`VALUES` 리스트로 만들려 하면 **행 생성자 문법까지 달라진다** — PG 는 `(1),(2)`, MySQL 은 `ROW(1),ROW(2)` 다([10번](../10-from-clause-aliases-derived-tables/)).
 
 ---
 

@@ -55,7 +55,7 @@ years = {d[:4] for d in rec.date} if isinstance(rec.date, list) else {rec.date[:
 ```
 무엇이 깨졌나: 값의 "모양"(하위 타입·빈 문자열·str/list)에 따라 같은 연산의 의미가 바뀌는데 검사는 한 가지 모양만 가정했다.\
 같은 구조: 콤마 구분 문자열과 리스트를 `!=`로 비교해 항상 True → 문자열은 split 후 set 비교.\
-같은 구조: 대문자 해시가 truthy 검사만 통과 → 외부 도구 출력(소문자)과 비교 어긋남 → `^[0-9a-f]{40}$` 강제 + `not isinstance(x, bool)`.\
+같은 구조: 대문자 해시가 truthy 검사만 통과 → 외부 도구 출력(소문자)과 비교 불일치 → `^[0-9a-f]{40}$` 강제 + `not isinstance(x, bool)`.\
 같은 구조: 값 없는 클래스 본문 애노테이션 `x: int`는 `__annotations__`에만 기록되고 클래스 속성을 만들지 않는다(`hasattr(Cls, "x")`는 False) — 클래스 속성이 필요하면 값을 대입하고, 클래스 변수임은 `x: ClassVar[int] = 0`처럼 표시한다(`ClassVar` 자체는 dataclass·타입 검사기용 표시일 뿐 값 없이는 역시 속성을 만들지 않는다).\
 같은 구조: `if not self.collection:` → `if self.collection is None:` — 라이브러리 버전 변화에서 진리값 판정이 버그가 되어 명시적 None 비교로 교체(원문은 수정 사실만 기록).
 

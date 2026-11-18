@@ -24,11 +24,11 @@ jun-bank는 카드사+뱅킹 시스템을 만드는 학습·포트폴리오 프�
 
 S1은 요청을 받되 아무것도 실행하지 않는 단계다. HTTP 골격([pr-07](../../../../infra/docs/devlog/pr-07-http-skeleton.md))이 미들웨어 체인의 자리를 만들고, 게이트 1(HMAC 서명·requestId 멱등 — [pr-08](../../../../infra/docs/devlog/pr-08-hmac-gate1.md))과 게이트 2(OIDC claim 행렬 — [pr-10](../../../../infra/docs/devlog/pr-10-oidc-gate2.md))가 그 자리를 채우며, 모드 조회의 fail-closed([pr-12](../../../../infra/docs/devlog/pr-12-mode-failclosed.md))가 "모르면 승인 쪽으로 닫는다"를 세웠다.
 
-이 단계에서 이 프로젝트의 검증 문화가 굳었다. 듀얼 리뷰(codex와 Opus 두 도구)가 세 번 실결함을 잡았는데 — 빈 requestId의 선점 붕괴, malformed nbf의 무음 통과, 단조 version의 fail-open — 전부 codex가 Opus의 누락을 보완했고 전부 "닫혀야 할 것이 열리는" 방향이었다. 리뷰어를 늘리는 것만으로는 부족하고 다른 방법(특히 실제로 실행해 보는 것)이 필요하다는 교훈이 여기서 나왔다.
+이 단계에서 이 프로젝트의 검증 문화가 굳었다. 듀얼 리뷰(codex와 Opus 두 도구)가 세 번 실결함을 잡았는데 — 빈 requestId의 선점 붕괴, malformed nbf의 조용한 통과, 단조 version의 fail-open — 전부 codex가 Opus의 누락을 보완했고 전부 "닫혀야 할 것이 열리는" 방향이었다. 리뷰어를 늘리는 것만으로는 부족하고 다른 방법(특히 실제로 실행해 보는 것)이 필요하다는 교훈이 여기서 나왔다.
 
 ### S2 — 실행: 부작용이 들어오다
 
-S2는 실제로 배포하는 단계다. 배포 창 락 배선([pr-16](../../../../infra/docs/devlog/pr-16-window-lock.md))에서 그 교훈이 극적으로 확인됐다 — 같은 락 코드를 Opus는 "clean"으로, codex는 실 MySQL 익스플로잇으로 High 3건 실증으로, 정반대로 판정했다. 논증과 실행이 갈린 자리다.
+S2는 실제로 배포하는 단계다. 배포 창 락 배선([pr-16](../../../../infra/docs/devlog/pr-16-window-lock.md))에서 그 교훈이 극적으로 확인됐다 — 같은 락 코드를 Opus는 "clean"으로, codex는 실 MySQL 익스플로잇으로 High 3건 실증으로, 정반대로 판정했다. 논증과 실행이 달라진 자리다.
 
 이후 HTTP→오케스트레이션 배선([pr-18](../../../../infra/docs/devlog/pr-18-http-orchestration.md)), 실 dispatch([pr-22](../../../../infra/docs/devlog/pr-22-local-dispatch.md)), JWKS 실검증([pr-24](../../../../infra/docs/devlog/pr-24-jwks.md))을 거쳐 첫 실배포에 도달했는데, 거기서 false-UNKNOWN 사건([pr-25](../../../../infra/docs/devlog/pr-25-false-unknown.md))이 터졌다 — "통합에서 처음 실행되는 명령은 단위 테스트가 못 잡는다"는 것을 실증한 사건이다. 그다음 블루-그린 전환([pr-27](../../../../infra/docs/devlog/pr-27-blue-green.md)), repo별 allowlist([pr-29](../../../../infra/docs/devlog/pr-29-oidc-allowlist.md)), Outcome·identity 결박([pr-30](../../../../infra/docs/devlog/pr-30-outcome-identity.md))을 지나, 마지막으로 compose 동봉 실행 결박([pr-31](../../../../infra/docs/devlog/pr-31-compose-embed.md))이 S2를 완주시켰다.
 

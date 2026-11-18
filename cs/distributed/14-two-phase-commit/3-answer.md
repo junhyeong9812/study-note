@@ -37,7 +37,7 @@
 ### 4. prepare 뒤 코디네이터가 죽었을 때 (실험 결과)
 
 - (a) `SELECT`: 막히지 않는다. MVCC로 이체 전 값(900)을 읽었다.
-- (b) 같은 행 `UPDATE`: 3.113초 뒤 `ERROR: canceling statement due to lock timeout`. prepared 트랜잭션이 행 락을 쥐고 있다. `pg_locks`의 그 트랜잭션 항목은 pid가 비어 있었다.
+- (b) 같은 행 `UPDATE`: 3.113초 뒤 `ERROR: canceling statement due to lock timeout`. prepared 트랜잭션이 행 락을 잡고 있다. `pg_locks`의 그 트랜잭션 항목은 pid가 비어 있었다.
 - (c) 재시작 뒤: `pg_prepared_xacts`에 `tx-2`가 그대로 남았고, 같은 행 쓰기도 다시 lock timeout이었다. prepared 상태는 크래시·재시작을 견딘다.
 - 근거: 실험(전용 PostgreSQL 17.11 2대 + Java 21, 2026-10-01).
 

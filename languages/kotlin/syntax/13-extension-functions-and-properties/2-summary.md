@@ -210,7 +210,7 @@ E same object?           : true
      asAnimal: Animal  ──▶ speakExt() ─▶ Animal(ext)   ← 변수 타입을 본다 ★
 ```
 
-**같은 객체인데 멤버는 둘 다 `Dog`, 확장은 변수 타입대로 갈린다.** 이것이 대비의 전부다.
+**같은 객체인데 멤버는 둘 다 `Dog`, 확장은 변수 타입대로 나뉜다.** 이것이 대비의 전부다.
 
 바이트코드가 이유를 말한다. 같은 네 호출을 `println` 없이 따로 적어 찍었다.
 
@@ -512,7 +512,7 @@ public class Printer {
   `Printer` 인스턴스가 곧 디스패치 수신자이고, 확장 수신자만 파라미터로 들어갔다.
 - ★★ **`invokevirtual` 한 줄에 두 성질이 같이 들어 있다.** `aload_0`(디스패치 수신자)은 실행할 때 클래스를 다시 찾으므로 **가상**,\
   그런데 **디스크립터 `(LAnimal;)` 은 이미 박혀 있어서** 확장 수신자는 **정적**이다.\
-  `R`/`S` 가 갈리는 것과 둘 다 `Animal` 인 것이 **한 명령어에서 동시에 일어난다.**
+  `R`/`S` 가 달라지는 것과 둘 다 `Animal` 인 것이 **한 명령어에서 동시에 일어난다.**
 - ★ 그래서 **「확장은 오버라이드할 수 없다」는 문장은 최상위 확장에만 맞다.** 클래스 멤버로 선언한 확장은\
   `open`/`override` 가 **붙고 실제로 가상 디스패치된다** — 단 **확장 수신자 쪽은 여전히 정적**이다.\
   최상위 확장에서 `open`/`override` 를 못 쓰는 이유는 (9)에서 에러로 확인한다.
@@ -629,7 +629,7 @@ public final class NulKt {
                                                           → 들어오는 순간 터진다
 ```
 
-- ★★ **null 가능성은 디스크립터에 없다.** 갈리는 것은 **`Intrinsics.checkNotNullParameter` 를 심었느냐**뿐이다.\
+- ★★ **null 가능성은 디스크립터에 없다.** 달라지는 것은 **`Intrinsics.checkNotNullParameter` 를 심었느냐**뿐이다.\
   수신자가 그냥 파라미터이기 때문에 **파라미터의 null 규칙이 그대로 적용된 것**이다((1)).
 - 멤버 함수였다면 애초에 불가능하다 — **null 에 대고 `invokevirtual` 을 하면 `NullPointerException`** 이다.\
   확장이니까 **`this` 가 null 인 채로 몸통에 들어올 수 있다.**
@@ -1039,7 +1039,7 @@ fun List<String>.describe() = "s"
   `Intrinsics.checkNotNullParameter` 에 넘어가는 이름 **`<this>`** 가 그 증거다.
 - ★★ **정적 디스패치** — 같은 객체라도 **변수의 선언 타입**이 무엇을 부를지 정한다(`C Dog(ext)` 대 `D Animal(ext)`).\
   멤버는 정반대로 **둘 다 `Dog(member)`** 다.
-- 그 차이는 **`invokestatic` 과 `invokevirtual`** 로 갈린다. `invokestatic` 은 **실행할 때 다시 찾지 않는다.**
+- 그 차이는 **`invokestatic` 과 `invokevirtual`** 로 나뉜다. `invokestatic` 은 **실행할 때 다시 찾지 않는다.**
 - ★ **멤버가 이긴다 — 상속해 온 멤버도 이긴다.** `Derived` 확장이 `Base` 멤버에게 졌다(`Q Base.member`).\
   에러가 아니라 **경고**이고, 시그니처가 다르면 확장은 산다(`H extension(x)`).
 - ★★ **클래스 안에 선언한 확장은 수신자가 둘**이다 — **디스패치 수신자는 가상, 확장 수신자는 정적**(`R Printer/Animal` 대 `S LoudPrinter/Animal`).\
@@ -1187,7 +1187,7 @@ V ext on Any vs String, literal String  : String
 `kotlinc` 14회 · `javac` 1회 · `java` 8회 · `javap` 8회. 컴파일 실패 시나리오 5벌 · 경고 시나리오 3벌.
 ⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 **기본값 1.8**(`major version: 52`)이다 —\
 그래서 문자열 보간이 `StringBuilder` 로 보인다([02번 주제](../02-string-templates-and-raw-strings/)).
-**버전** — 확장 함수·확장 프로퍼티·`@JvmName` 은 전부 **1.0**. 이 문서에 버전으로 갈리는 항목은 없다.
+**버전** — 확장 함수·확장 프로퍼티·`@JvmName` 은 전부 **1.0**. 이 문서에 버전으로 나뉘는 항목은 없다.
 **경계** — ★ **「정적 디스패치라는 천장」이 무엇을 뜻하는지, 왜 그 대가를 치르고도 쓰는지는\
 [`../../언어-특성/README.md`](../../언어-특성/README.md) §7 이 정본이다.** 여기는 **선언 문법 · 해소 순서 · 멤버와 충돌할 때의 규칙**만 다룬다.\
 수신자 지정 람다(`A.() -> Unit`)와 DSL 은 [목록의 **37번 주제**](../37-lambdas-with-receiver-and-type-safe-builders/), `infix` 확장은 [09번 주제](../09-varargs-spread-local-and-infix-functions/),\

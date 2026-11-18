@@ -39,7 +39,7 @@ TTL=2  -> R2에서 TTL 0 -> R2가 11/0 반환    "2: R2"
 TTL=3  -> 목적지 도착 -> 목적지가 3/3 반환   "3: 목적지, 종료"
 ```
 
-- 리눅스 traceroute(8) 기본은 UDP 포트 33434부터 올려 가며 보낸다. TTL마다 3탐침, 최대 30홉이다.
+- 리눅스 traceroute(8) 기본은 UDP 포트 33434부터 올려 가며 보낸다. TTL마다 3probe, 최대 30홉이다.
 - 도착 신호는 방식마다 다르다. UDP는 ICMP port unreachable, `-I`는 Echo Reply, `-T`는 SYN-ACK 또는 RST다.
 
 ### 5. 연결 중 ICMP 3/1

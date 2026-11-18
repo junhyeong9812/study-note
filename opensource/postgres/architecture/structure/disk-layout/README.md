@@ -2,7 +2,7 @@
 
 상위: [PostgreSQL 아키텍처 지도](../../README.md)
 
-PostgreSQL 클러스터 하나는 **데이터 디렉터리(PGDATA) 하나**에 통째로 들어 있다. 테이블과 인덱스는 `base/<DB oid>/<relfilenode>` 파일이고, 모든 DB 가 함께 쓰는 공유 카탈로그는 `global/`, WAL 은 `pg_wal/`, 트랜잭션의 커밋 여부는 `pg_xact/` 에 있다. 릴레이션 하나는 fork 마다 파일이 따로 있다. 본체(main)는 접미사가 없고, 빈 공간 지도는 `_fsm`, 가시성 지도는 `_vm`, unlogged 릴레이션의 초기 이미지는 `_init` 이 붙는다. fork 하나가 1GB(`RELSEG_SIZE` 131072 블록)를 넘으면 `.1`, `.2` 로 이어지는 세그먼트 파일로 갈린다. 그래서 "릴레이션의 블록 N" 은 나눗셈 두 번으로 파일과 오프셋이 정해진다. 클러스터 전체의 상태(마지막 체크포인트 위치, 정상 종료 여부, 빌드 상수)는 `global/pg_control` 파일 하나가 들고 있다. 파일 안 8KB 페이지의 내부는 [페이지와 튜플 레이아웃](../page-tuple-layout/README.md)이, 이 파일을 읽고 쓰는 길은 [버퍼 관리](../../flows/buffer-manager/README.md)가, `pg_control` 을 갱신하는 길은 [체크포인트](../../flows/checkpoint/README.md)가 다룬다.
+PostgreSQL 클러스터 하나는 **데이터 디렉터리(PGDATA) 하나**에 통째로 들어 있다. 테이블과 인덱스는 `base/<DB oid>/<relfilenode>` 파일이고, 모든 DB 가 함께 쓰는 공유 카탈로그는 `global/`, WAL 은 `pg_wal/`, 트랜잭션의 커밋 여부는 `pg_xact/` 에 있다. 릴레이션 하나는 fork 마다 파일이 따로 있다. 본체(main)는 접미사가 없고, 빈 공간 지도는 `_fsm`, 가시성 지도는 `_vm`, unlogged 릴레이션의 초기 이미지는 `_init` 이 붙는다. fork 하나가 1GB(`RELSEG_SIZE` 131072 블록)를 넘으면 `.1`, `.2` 로 이어지는 세그먼트 파일로 나뉜다. 그래서 "릴레이션의 블록 N" 은 나눗셈 두 번으로 파일과 오프셋이 정해진다. 클러스터 전체의 상태(마지막 체크포인트 위치, 정상 종료 여부, 빌드 상수)는 `global/pg_control` 파일 하나가 들고 있다. 파일 안 8KB 페이지의 내부는 [페이지와 튜플 레이아웃](../page-tuple-layout/README.md)이, 이 파일을 읽고 쓰는 길은 [버퍼 관리](../../flows/buffer-manager/README.md)가, `pg_control` 을 갱신하는 길은 [체크포인트](../../flows/checkpoint/README.md)가 다룬다.
 
 기준 태그: `REL_18_6` [`724edf9bde`](https://github.com/postgres/postgres/tree/724edf9bde9d356724ad384a2e196edc3c9f80f7). 모든 줄 번호는 이 태그 기준이다. 이 편은 `src/common`, `src/bin` 아래 파일도 인용하므로 경로를 `src/` 부터 적고, `src/backend/` 아래 파일만 그 뒤부터 적는다.
 

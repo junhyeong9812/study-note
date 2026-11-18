@@ -16,7 +16,7 @@
 | 갈래별 결과를 다시 합치는 사람 | 결합자(combiner) |
 | 갈래를 나눌 수 없는 더미 | `Stream.iterate`·`BufferedReader.lines` |
 
-- 쪼개려면 **더미를 반으로 가를 수 있어야** 한다.\
+- 쪼개려면 **더미를 반으로 구분할 수 있어야** 한다.\
   배열은 "여기서 자르자" 한 번이면 되고, 연결 리스트는 **처음부터 세어 가야** 한다.
 - 작업자를 붙이는 데도 비용이 든다.\
   **물건이 100개면 나누고 합치는 값이 일하는 값보다 크다.**
@@ -387,7 +387,7 @@ reduce(100, Integer::sum)   에서  [1..10]
   `.unordered()` 를 주면 0.81s 로 줄지만 **여전히 순차보다 느리다.**
 - **`forEachOrdered` 는 병렬의 이득을 전부 반납한다** — 125ms 로 순차(117ms)와 거의 같다.
 - 반대로 **`skip` 은 병렬이 압도적이다**(421us 대 23,193us). `SIZED` 소스라 건너뛸 자리를 계산으로 찾기 때문이다.
-- `findFirst` 와 `findAny` 도 갈린다.
+- `findFirst` 와 `findAny` 도 달라진다.
 
 **실행 결과** (`Ex.java` — 49-g, 0~999 중 `i % 7 == 3`, 5회)
 
@@ -477,7 +477,7 @@ CONCURRENT 가 아닌 수집기 (toMap·groupingBy)   CONCURRENT 수집기 (grou
 
 - **어느 키가 겹쳤다고 나오는지가 실행마다 다르다.** 값도 다르다.
 - 그리고 예외가 **한 번 더 감싸져 있다**(`IllegalStateException: java.lang.IllegalStateException: ...`).\
-  조각 안에서 난 예외(accumulator)인지 합치다 난 예외(merger)인지에 따라 갈린다.\
+  조각 안에서 난 예외(accumulator)인지 합치다 난 예외(merger)인지에 따라 달라진다.\
   17·25 에서도 **같은 코드가 실행마다 감싸지기도 하고 안 감싸지기도 했다.**
 - 즉 **순차에서 나던 진단 가능한 메시지가 병렬에서는 진단이 안 된다.**
 
@@ -608,7 +608,7 @@ list.stream().reduce("", (a, b) -> a + b.charAt(0)); // 타입이 달라 컴파�
 
 ### 10. 측정값을 단언한다
 
-- 이 문서의 수치도 **JMH 가 아니고, 이 머신(24코어) 것이고, 실행마다 흔들린다.**
+- 이 문서의 수치도 **JMH 가 아니고, 이 머신(24코어) 것이고, 실행마다 달라진다.**
 - 두 번 돌렸더니 `5.10 → 3.92`, `15.51 → 34.07` 로 바뀌었다.
 - 방어: **"몇 배"를 말할 때는 어느 머신·어느 방법인지 같이 적는다.** 안 적을 거면 말하지 않는다.
 
@@ -629,7 +629,7 @@ list.stream().reduce("", (a, b) -> a + b.charAt(0)); // 타입이 달라 컴파�
 | 전용 `ForkJoinPool.submit` 안에서 그 풀이 쓰임 | **보장 아님** | javadoc 에 그런 계약이 없다 |
 | `Spliterator` 의 `estimateSize`·분할 결과 | **보장 아님** | `Spliterator` javadoc 이 추정치라고 적는다 |
 
-**세 JDK 실측 — 한 곳에서 갈렸다**
+**세 JDK 실측 — 한 곳에서 달라졌다**
 
 크기를 모르는 소스(`Stream.iterate`·`BufferedReader.lines`)를 `trySplit` 했을 때\
 **잘라 낸 쪽의 `estimateSize` 가 버전마다 달랐다.**
@@ -665,13 +665,13 @@ list.stream().reduce("", (a, b) -> a + b.charAt(0)); // 타입이 달라 컴파�
 
 판단 규칙 세 줄.
 
-- **소스가 반으로 갈리는가**를 먼저 본다. 안 갈리면 나머지는 볼 필요도 없다.
+- **소스가 반으로 나뉘는가**를 먼저 본다. 안 갈리면 나머지는 볼 필요도 없다.
 - **원소 수 × 원소당 비용**이 판단 기준이다. 원소 수만 보지 않는다.
 - **측정하지 않았으면 `.parallel()` 을 붙이지 않는다.** 이 문서의 수치도 이 머신 것이다.
 
 ## 핵심 문장
 
-- 병렬의 이득은 **소스의 분할 가능성**이 정한다 — `SIZED`·`SUBSIZED` 가 붙은 배열·`ArrayList` 는 반으로 갈리고, `Stream.iterate`·`LinkedList` 는 안 갈린다(실측 0.28·0.64배).
+- 병렬의 이득은 **소스의 분할 가능성**이 정한다 — `SIZED`·`SUBSIZED` 가 붙은 배열·`ArrayList` 는 반으로 갈리고, `Stream.iterate`·`LinkedList` 는 안 달라진다(실측 0.28·0.64배).
 - **판단 기준은 원소 수가 아니라 원소 수 × 원소당 비용**이다 — 2000개여도 원소당 일이 무거우면 6.58배가 났고, 10만 개여도 가벼우면 손해였다.
 - **공용 ForkJoinPool 은 JVM 에 하나뿐**이다 — 풀이 붐빌 때 같은 작업이 154ms 에서 402ms 가 됐다.
 - **`forEach` 로 `ArrayList` 에 담으면 깨진다** — 10만 건이 6,762건이 되고 `null` 이 섞이고 10회 중 4회는 예외가 났다. 순차에서는 완벽히 동작한다.
@@ -685,8 +685,8 @@ list.stream().reduce("", (a, b) -> a + b.charAt(0)); // 타입이 달라 컴파�
 - [`../48-collectors-grouping/`](../48-collectors-grouping/) — `groupingBy` 대 `groupingByConcurrent` 의 결과 모양
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) — JIT·GC·메모리 모델. 그쪽은 **런타임이 무엇을 하나**까지, 여기는 **API 를 언제 쓰나**부터
 - [`../../../../cs/foundations/process-thread/`](../../../../cs/foundations/process-thread/) — 스레드·경쟁 조건의 개념은 거기가 정본. 그쪽은 **왜 경쟁이 나나**까지, 여기는 **스트림에서 어떻게 드러나나**부터
-- [`../../../../cs/data-structure/01-dynamic-array/`](../../../../cs/data-structure/01-dynamic-array/) — `ArrayList` 가 배열이라 반으로 갈리는 이유
-- [`../../../../cs/data-structure/02-linked-list/`](../../../../cs/data-structure/02-linked-list/) — `LinkedList` 가 안 갈리는 이유
+- [`../../../../cs/data-structure/01-dynamic-array/`](../../../../cs/data-structure/01-dynamic-array/) — `ArrayList` 가 배열이라 반으로 나뉘는 이유
+- [`../../../../cs/data-structure/02-linked-list/`](../../../../cs/data-structure/02-linked-list/) — `LinkedList` 가 안 달라지는 이유
 - [`../README.md`](../README.md) — Java 문법·API 주제 목록(이 주제는 49번)
 - [**54번 주제**](../54-executorservice-and-future/)(`ExecutorService`) — 서버에서 병렬 스트림 대신 쓸 것
 - [**55번 주제**](../55-atomics-and-concurrent-collections/)(원자 변수·동시 컬렉션) — `LongAdder`·`ConcurrentHashMap`
@@ -722,7 +722,7 @@ list.stream().reduce("", (a, b) -> a + b.charAt(0)); // 타입이 달라 컴파�
   ```
 
   조각 수 자체는 실제 병렬 실행에서 쓰는 숫자가 아니다(실행은 병렬도를 보고 멈춘다).\
-  다만 **`HashSet` 이 균등하게 안 갈린다**는 것과 **`LinkedList` 가 결국 원소 단위까지 간다**는 것을 보여 준다.
+  다만 **`HashSet` 이 균등하게 안 달라진다**는 것과 **`LinkedList` 가 결국 원소 단위까지 간다**는 것을 보여 준다.
 - **`Collectors.toConcurrentMap`** 이 `toMap` 의 `CONCURRENT` 판이다.\
   javadoc 이 `toMap` 의 `@implNote` 에서 직접 가리킨다 — "If it is not required that results are inserted into the `Map` in encounter order, using `toConcurrentMap` may offer better parallel performance."
 - **`LongAdder`(55번 주제)는 병렬 누적의 정석이다.**\
@@ -739,9 +739,9 @@ list.stream().reduce("", (a, b) -> a + b.charAt(0)); // 타입이 달라 컴파�
 **기준 소스** — [`java.util.stream` 패키지 javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/stream/package-summary.html) · [`Collectors` javadoc](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/stream/Collectors.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/util/stream/package-info.java`·`Collectors.java`(`lib/src.zip`)
 **실행 검증** — 이 문서의 모든 출력·에러·수치는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
 측정 머신: **CPU 24코어**(`availableProcessors` = 24, 공용 풀 병렬도 23).\
-분할 특성과 수집기 특성은 **17.0.13 · 25.0.1** 에서도 돌렸다 — **한 곳에서 갈렸다**(본문 「구현 세부사항 대 언어 보장」).
+분할 특성과 수집기 특성은 **17.0.13 · 25.0.1** 에서도 돌렸다 — **한 곳에서 달라졌다**(본문 「구현 세부사항 대 언어 보장」).
 ⚠️ **측정 방법** — JMH 가 아니다. 워밍업 5회 뒤 9회 측정의 **중앙값**이다.\
-같은 프로그램을 두 번 돌리면 배수가 3.9~5.1 배처럼 흔들린다. **배수의 자릿수만 읽는다.**
+같은 프로그램을 두 번 돌리면 배수가 3.9~5.1 배처럼 실행마다 달라진다. **배수의 자릿수만 읽는다.**
 **버전** — `parallel()`·`parallelStream()` 은 **Java 8**. 17·21·25 동작 동일.
 **범위** — 스레드·JIT·GC 의 **런타임 내부**는 [`../../언어-특성/README.md`](../../언어-특성/README.md) 와 [`../../../../cs/foundations/process-thread/`](../../../../cs/foundations/process-thread/) 가 정본이다.\
 그쪽은 **OS 스레드와 JVM 이 무엇을 하나**까지, 여기는 **이 API 를 언제 쓰면 이득인가**부터다.\

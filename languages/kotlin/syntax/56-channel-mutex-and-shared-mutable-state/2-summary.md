@@ -1,6 +1,6 @@
 # kotlin/syntax/56 — `Channel`·`Mutex` — 공유 가변 상태 다루기 — 정리 (힌트)
 
-★★★ **본체는 첫째 창이다** — 「**공유 상태 격자 — 카운터 `plain++` 을 코루틴 1000개 × 100번 × 방법 여섯 × `Dispatchers.Default` × 20판 → 한 판이라도 잃었나**」. 둘째 본체는 **중단점 진단 격자**(`synchronized` 안에서 무엇을 부르면 컴파일이 막히나)다. 「쓰면 안 되는 이유」는 **컴파일러 진단 + 스레드 상태 로그 + 소유 로그** 세 창으로 말한다 — 느리다·빠르다는 재지 않았다.
+★★★ **핵심은 첫째 창이다** — 「**공유 상태 격자 — 카운터 `plain++` 을 코루틴 1000개 × 100번 × 방법 여섯 × `Dispatchers.Default` × 20판 → 한 판이라도 잃었나**」. 둘째 본체는 **중단점 진단 격자**(`synchronized` 안에서 무엇을 부르면 컴파일이 막히나)다. 「쓰면 안 되는 이유」는 **컴파일러 진단 + 스레드 상태 로그 + 소유 로그** 세 창으로 말한다 — 느리다·빠르다는 재지 않았다.
 
 ## 이 주제가 쓰는 세 층
 
@@ -8,7 +8,7 @@
 |---|---|---|
 | **언어(컴파일러 진단)** | kotlinc 가 거부하는 것 | ★★★ **`synchronized { }` 와 `kotlin.concurrent.withLock { }` 안의 중단점은 컴파일 에러** — 「`the 'delay' suspension point is inside a critical section.`」 · 검사기가 그 두 함수를 **이름으로** 알아본다(`javap`) |
 | **라이브러리 계약(kotlinx-coroutines)** | 라이브러리 KDoc 이 약속한 것 | `Mutex` 는 「`non-reentrant`」·「`fair`」 · `Channel` 용량 상수(`RENDEZVOUS = 0` · `CONFLATED = -1` · `BUFFERED = -2` · `UNLIMITED = Int.MAX_VALUE`)와 그 동작 · 기본 버퍼 64 — ★ **언어가 아니다** |
-| **이 판의 관찰** | 이 머신·이 판에서 이번에 본 것 | 격자의 참/거짓 · 스레드 상태(`BLOCKED`·`WAITING`) · 로그 순서 · 예외 메시지 |
+| **이 버전의 관찰** | 이 머신·이 버전에서 이번에 본 것 | 격자의 참/거짓 · 스레드 상태(`BLOCKED`·`WAITING`) · 로그 순서 · 예외 메시지 |
 
 ## 이 판
 
@@ -28,16 +28,16 @@ Implementation-Version: 1.11.0
 (exit 0)
 ```
 
-## 흔들리는 칸 / 안 흔들리는 칸
+## 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| **흔들린다 — 칸으로 안 만들었다** | ★★ 보호 없음 칸의 **최종 값 · 잃은 판 수** | 판마다 다르다 — 그래서 격자는 **「한 판이라도 기대값 아래였나」** 불리언만 찍는다 |
+| **실행마다 달라진다 — 칸으로 안 만들었다** | ★★ 보호 없음 칸의 **최종 값 · 잃은 판 수** | 판마다 다르다 — 그래서 격자는 **「한 판이라도 기대값 아래였나」** 불리언만 찍는다 |
 | ★ **머신에 매인다** | 보호 없음 칸이 `true` 인 것 자체 | ★★ **관찰이다** — 24코어 머신에서 20판 중 한 판이라도 잃었다는 것. 세 판 되풀이(해시 1가지)에서 같았지만 **잃지 않는 머신이 있어도 「안전하다」가 되지 않는다**(규칙 3) |
-| 안 흔들린다 | 보호 다섯 칸의 `false` · `1 / 6` | 보호가 맞으면 **판마다 정확히** 100000 이다 |
-| 안 흔들린다 | ★ 스레드 상태 로그(`block56`) | 50ms 간격으로 걸음을 뗐다 — 쥐는 쪽이 300ms 를 쥐므로 **여유가 100ms 이상**. 세 판 되풀이에서 해시 1가지 |
-| 안 흔들린다 | 소유 로그 · 재진입 로그 · 채널 격자 · 닫기 로그 | **단일 스레드**(`runBlocking` · 단일 스레드 풀) 위에서 `yield()`·`delay` 로 걸음을 맞췄다 |
-| 안 흔들린다 | 진단 격자 · 진단 전문 · 검사기 `javap` · 소스 발췌 · C# 진단 | 같은 판이면 같다 |
+| 달라지지 않는다 | 보호 다섯 칸의 `false` · `1 / 6` | 보호가 맞으면 **판마다 정확히** 100000 이다 |
+| 달라지지 않는다 | ★ 스레드 상태 로그(`block56`) | 50ms 간격으로 걸음을 뗐다 — 쥐는 쪽이 300ms 를 쥐므로 **여유가 100ms 이상**. 세 판 되풀이에서 해시 1가지 |
+| 달라지지 않는다 | 소유 로그 · 재진입 로그 · 채널 격자 · 닫기 로그 | **단일 스레드**(`runBlocking` · 단일 스레드 풀) 위에서 `yield()`·`delay` 로 걸음을 맞췄다 |
+| 달라지지 않는다 | 진단 격자 · 진단 전문 · 검사기 `javap` · 소스 발췌 · C# 진단 | 같은 판이면 같다 |
 | ★ **판에 매인다** | 라이브러리 **1.11.0** 의 동작 전부 · 예외 메시지 문구 | 판이 바뀌면 다시 돌려라 |
 
 ★ 근거 — 캡처 스크립트를 처음부터 두 번 돌려 **블록 전체를 대조**했다(수치는 3-answer 의 「실행 검증」).
@@ -74,11 +74,11 @@ Implementation-Version: 1.11.0
 
 ## 동작 방식
 
-### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「부적용인 창」
+### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「해당 없는 창」
 
 | 창 | 무엇을 보여 주나 | 어디서 왔나 |
 |---|---|---|
-| ★★★ **공유 상태 격자(실행)** | 방법 여섯 × 20판 → 한 판이라도 잃었나((1)) | ★ **본체 창** |
+| ★★★ **공유 상태 격자(실행)** | 방법 여섯 × 20판 → 한 판이라도 잃었나((1)) | ★ **핵심 창** |
 | ★★★ **중단점 진단 격자(컴파일)** | `synchronized` 류 안에서 부른 것 여덟 가지 → 막히나((2)) | ★ **둘째 본체** — 언어 층 |
 | ★★ **컴파일러 jar `javap`** | 검사기가 **무엇을 알아보나** — 함수 이름 두 개((2)) | kt46b 의 컴파일러 jar 창과 같은 방식 |
 | ★★ **스레드 상태 로그** | 기다리는 동안 풀 스레드가 `BLOCKED` 인가 `WAITING` 인가((3)) | — |
@@ -86,9 +86,9 @@ Implementation-Version: 1.11.0
 | ★ **재진입 로그** | `synchronized` 안의 `synchronized` · `Mutex` 안의 `Mutex`((5)) | — |
 | ★★ **채널 용량 격자** | 용량 일곱 가지 → 받기 전에 끝난 보내기 수 · 받은 것((6)) | — |
 | ★ **라이브러리 소스 jar 발췌** | `Mutex` KDoc · 용량 상수((5)(6)) | — |
-| ★ **교차 갈래 — C# `csc`** | `lock` 안의 `await` 를 C# 은 어떻게 막나((2)) | C# 갈래에 이 주제 폴더가 없어 **직접 던졌다** |
+| ★ **교차 갈래 — C# `csc`** | `lock` 안의 `await` 를 C# 은 어떻게 막나((2)) | C# 갈래에 이 주제 폴더가 없어 **직접 실행했다** |
 | ★ **제5의 상태 — 창을 바꿔 물었다** | 「교착했나」를 교착 감지기가 아니라 **`withTimeout(500)` 이 끝났나**로 물었다((5)) | 이 창은 「500ms 안에 안 풀렸다」만 본다 — **영원히 안 풀리는지**는 KDoc 이 말한다 |
-| **부적용 — 실행 시간** | ★★★ 「`Mutex` 가 `synchronized` 보다 느리다/빠르다」는 **재지 않았다** — 이 문서의 비교는 **값을 잃었나 · 스레드가 막혔나**뿐이다 | — |
+| **해당 없음 — 실행 시간** | ★★★ 「`Mutex` 가 `synchronized` 보다 느리다/빠르다」는 **재지 않았다** — 이 문서의 비교는 **값을 잃었나 · 스레드가 막혔나**뿐이다 | — |
 
 ### (1) ★★★ 공유 상태 격자 — 무엇이 값을 잃나
 
@@ -278,9 +278,9 @@ suspend fun c4() { jlock.withJLock { delay(1) } }                          // Re
 (exit 1)
 ```
 
-- ★★★ **막힌 탐침 4 / 8 · 진단은 한 종이다** — 「`the 'delay' suspension point is inside a critical section.`」. 이름 자리에 **부른 함수가 그대로** 들어간다(`'yield'`·`'step'`). **직접 만든 `suspend fun step()` 도 막힌다** — 라이브러리 함수만의 특별 대우가 아니라 **중단점이면 전부**다.
+- ★★★ **막힌 probe 4 / 8 · 진단은 한 종이다** — 「`the 'delay' suspension point is inside a critical section.`」. 이름 자리에 **부른 함수가 그대로** 들어간다(`'yield'`·`'step'`). **직접 만든 `suspend fun step()` 도 막힌다** — 라이브러리 함수만의 특별 대우가 아니라 **중단점이면 전부**다.
 - ★★★ **`kotlin.concurrent.withLock`(`ReentrantLock`)도 막힌다** — `synchronized` 만이 아니다. 그런데 **같은 자물쇠를 `lock()` … `unlock()` 으로 풀어 쓰면 통과한다**(`lock()+delay+unlock()` · `ok`). 컴파일러가 보는 것은 **자물쇠가 아니라 함수 이름**이다 — 아래 `javap`.
-- ★★ **`Mutex.withLock { delay }` 는 된다** — 기다림이 **중단**이라 자물쇠를 쥔 채 스레드를 놓아도 되는 자물쇠다((3)).
+- ★★ **`Mutex.withLock { delay }` 는 된다** — 기다림이 **중단**이라 자물쇠를 잡은 채 스레드를 놓아도 되는 자물쇠다((3)).
 - ★★ **`synchronized` 안의 `launch { delay }` 는 된다** — `launch` 의 람다는 **따로 도는 새 코루틴**이라 그 중단점은 자물쇠 밖이다. **`synchronized` 안의 `Thread.sleep` 도 된다** — 중단점이 아니라 **스레드를 재우는 일반 호출**이다. 둘 다 컴파일러가 **말하지 않는** 자리다.
 
 ```text
@@ -295,7 +295,7 @@ public final class org.jetbrains.kotlin.fir.analysis.jvm.checkers.expression.Fir
 (exit 0)
 ```
 
-- ★★★ **검사기 이름이 `SuspensionPointInsideMutexLockChecker` 이고, 상수 풀에 `kotlin` + `synchronized` · `kotlin.concurrent` + `withLock` 네 문자열이 있다** — 패키지와 함수 이름의 짝 둘을 알아보는 검사다. 그래서 `lock()`/`unlock()` 을 직접 부르는 코드는 **검사 대상이 아니다.** ★ 이것은 **이 판 컴파일러의 구현**이다 — 「이름 두 개만 본다」를 언어 명세로 읽지 마라.
+- ★★★ **검사기 이름이 `SuspensionPointInsideMutexLockChecker` 이고, 상수 풀에 `kotlin` + `synchronized` · `kotlin.concurrent` + `withLock` 네 문자열이 있다** — 패키지와 함수 이름의 짝 둘을 알아보는 검사다. 그래서 `lock()`/`unlock()` 을 직접 부르는 코드는 **검사 대상이 아니다.** ★ 이것은 **이 버전 컴파일러의 구현**이다 — 「이름 두 개만 본다」를 언어 명세로 읽지 마라.
 
 **C# 은 같은 자리를 어떻게 막나**
 
@@ -333,7 +333,7 @@ lock56.cs(11,13): error CS1996: Cannot await in the body of a lock statement
 
 **언제 쓰나** — 자물쇠 안이 **길 때**(I/O·긴 계산) 무엇이 같이 멈추는지 가늠할 때.
 
-방법 — **스레드 두 개짜리 풀**에서 첫째가 자물쇠를 잡고 300ms 쥔다(`synchronized` 판은 `Thread.sleep` · `Mutex` 판은 `delay`). 50ms 뒤 둘째가 같은 자물쇠를 기다리고, 다시 50ms 뒤 **자물쇠와 무관한** 셋째를 띄운다. 150ms 쯤에 풀 스레드 둘의 상태를 찍는다.
+방법 — **스레드 두 개짜리 풀**에서 첫째가 자물쇠를 잡고 300ms 잡는다(`synchronized` 판은 `Thread.sleep` · `Mutex` 판은 `delay`). 50ms 뒤 둘째가 같은 자물쇠를 기다리고, 다시 50ms 뒤 **자물쇠와 무관한** 셋째를 띄운다. 150ms 쯤에 풀 스레드 둘의 상태를 찍는다.
 
 ```kotlin
 // block56.kt
@@ -488,7 +488,7 @@ caught: java.lang.IllegalMonitorStateException
 (exit 0)
 ```
 
-- ★★★ **구간 1 — `ReentrantLock` 이 코루틴 둘을 동시에 들였다**(`inside now = [x, y]` · `holdCount = 2`). 스레드 하나(`thread-A`)에서 도는 두 코루틴은 자물쇠가 보기에 **같은 주인**이다 — 재진입으로 받아 준다. **상호 배제가 깨졌는데 예외도 경고도 없다.** (2)에서 `lock()`/`unlock()` 을 풀어 쓴 탐침이 **통과한 것**이 바로 이 코드다.
+- ★★★ **구간 1 — `ReentrantLock` 이 코루틴 둘을 동시에 들였다**(`inside now = [x, y]` · `holdCount = 2`). 스레드 하나(`thread-A`)에서 도는 두 코루틴은 자물쇠가 보기에 **같은 주인**이다 — 재진입으로 받아 준다. **상호 배제가 깨졌는데 예외도 경고도 없다.** (2)에서 `lock()`/`unlock()` 을 풀어 쓴 probe가 **통과한 것**이 바로 이 코드다.
 - ★★★ **구간 2 — `Mutex` 는 같은 스레드여도 하나만 들인다**(`[x]` 뒤 `[y]`) — 주인이 **스레드가 아니다.**
 - ★★★ **구간 3 — 한 스레드에서 잡고 다른 스레드로 옮겨 풀면 `java.lang.IllegalMonitorStateException`** — `withContext(other)` 가 코루틴을 `thread-B` 로 옮겼고, `thread-B` 는 그 자물쇠의 주인이 아니다. `Default` 처럼 스레드가 여럿인 디스패처에서는 **`delay` 뒤에 다른 스레드에서 이어지는 것이 보통**이다 — 이 구간은 그것을 결정적으로 만든 판이다.
 - ★★ 그래서 컴파일러가 막는 이유는 「느려서」가 아니라 「**의미가 깨져서**」이다 — 스레드를 주인으로 삼는 자물쇠와, 스레드를 갈아타는 코루틴은 **한 구간 안에서 섞이면 안 된다.** 컴파일러는 그 섞임을 `synchronized`·`withLock` 두 이름에서만 잡는다((2)).
@@ -808,7 +808,7 @@ counter = 100
 | 항목 | 어느 쪽인가 | 근거 |
 |---|---|---|
 | `synchronized`·`withLock` 안의 중단점이 에러 | ★★★ **언어(컴파일러 진단)** | (2) |
-| 검사기가 **두 함수 이름**을 알아본다 · `lock()`/`unlock()` 은 안 본다 | ★ **이 판 컴파일러의 구현**(`javap`) | (2) |
+| 검사기가 **두 함수 이름**을 알아본다 · `lock()`/`unlock()` 은 안 본다 | ★ **이 버전 컴파일러의 구현**(`javap`) | (2) |
 | `synchronized`·`ReentrantLock` 의 주인이 스레드 · 재진입 | ★★ **JVM·JDK 의 계약** — Kotlin 이 아니다 | (4)(5) |
 | `Mutex` 재진입 불가 · 공정 · `owner` 가 디버깅용 | ★★ **라이브러리 계약(KDoc)** | (5) |
 | `Channel` 용량 상수와 동작 · 기본 64 | ★★ **라이브러리 계약(KDoc)** — 64 는 JVM 시스템 속성으로 바뀐다 | (6) |
@@ -860,7 +860,7 @@ counter = 100
 
 > **중단점(suspension point)** — `suspend` 함수를 부르는 자리. 코루틴이 거기서 멈췄다가 **다른 스레드에서** 이어질 수 있다.
 
-> **재진입(reentrant)** — 자물쇠를 쥔 주인이 같은 자물쇠를 **다시 잡을 수 있는** 성질. `synchronized`·`ReentrantLock` 은 되고 `Mutex` 는 안 된다.
+> **재진입(reentrant)** — 자물쇠를 잡은 주인이 같은 자물쇠를 **다시 잡을 수 있는** 성질. `synchronized`·`ReentrantLock` 은 되고 `Mutex` 는 안 된다.
 
 > **`BLOCKED` / `WAITING`** — JVM 스레드 상태. 모니터(`synchronized`) 앞에서 기다리면 `BLOCKED`, 풀에서 일감을 기다리며 놀면 `WAITING`((3)에서 본 두 상태).
 
@@ -876,7 +876,7 @@ counter = 100
 
 - **`Semaphore`**(`kotlinx.coroutines.sync`) — 한 번에 N 개까지. `Mutex` 의 일반화다 — 돌리지 않았다.
 - **`select`** — 채널 여럿 중 먼저 되는 것 하나. 이 문서는 **다루지 않았다.**
-- **`produce { }`·`actor { }` 빌더** — 채널 생산자·액터를 한 줄로 만든다. 이 판에서 **선언의 표지(실험적 등)를 확인하지 않았다** — 그래서 (문법)의 형태는 `Channel` + `launch` 로만 썼다.
+- **`produce { }`·`actor { }` 빌더** — 채널 생산자·액터를 한 줄로 만든다. 이 버전에서 **선언의 표지(실험적 등)를 확인하지 않았다** — 그래서 (문법)의 형태는 `Channel` + `launch` 로만 썼다.
 - **성능 비교** — `Mutex`·`synchronized`·`AtomicInteger`·액터의 처리량은 **JMH 판 격자**가 있어야 말할 수 있다(규칙 24). 이 문서는 재지 않았다.
 - **`-Dkotlinx.coroutines.channels.defaultBuffer`** — `BUFFERED` 의 64 를 바꾸는 JVM 속성((6) 발췌 마지막 줄의 `DEFAULT_BUFFER_PROPERTY_NAME`). 바꿔 돌리지 않았다.
 
@@ -886,7 +886,7 @@ counter = 100
 **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java`·`javap` 에서 실제로 얻었다.\
 `kotlinc` 9회(진단 격자 스크립트 안의 1회 포함) · `java` 7회 + 격자와 스레드 상태 로그를 세 판씩 되풀이한 6회 · `javap` 1회(검사기) · 라이브러리 소스 jar 발췌 2곳 · C# `csc` 1회(.NET SDK 10.0.401).\
 ★★★ **라이브러리 판 — `kotlinx-coroutines-core-jvm` 1.11.0**(이 머신의 gradle 캐시에 있던 판 중 가장 새 것 · 매니페스트 `Implementation-Version: 1.11.0`). `Mutex`·`Channel`·`withTimeout`·`limitedParallelism` 은 **이 라이브러리의 것**이다 — 언어가 아니다.\
-★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「잃은 칸 N / M」·「막힌 탐침 N / M」은 프로그램이 스스로 센 것**이다.
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「잃은 칸 N / M」·「막힌 probe N / M」은 프로그램이 스스로 센 것**이다.
 **버전** — `synchronized` 안의 중단점을 막는 진단이 **어느 판부터인지는 확인하지 못했다**(옛 컴파일러 판이 이 머신에 없다). `Mutex`·`Channel` 도 **1.11.0 한 판에서만** 쟀다.
 **경계** — ★★★ 「코루틴은 스레드가 아니라 컴파일러 변환이다」라는 **논지**는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §6 이 정본이다. `suspend` 함수를 **어디서 부를 수 있나**는 [52번 주제](../52-coroutine-basics-suspend-scope-launch-async/), 취소·예외가 부모와 형제로 번지는 규칙은 [53번 주제](../53-structured-concurrency-job-cancellation-exceptions/), 디스패처와 `limitedParallelism` 자체는 [54번 주제](../54-coroutine-context-dispatchers-and-withcontext/)가 정본이다 — 여기서는 **공유 상태를 지키는 수단의 선택**만 본다.\
 스레드 쪽 원리 — **`int++` 이 왜 깨지나 · `synchronized` 의 재진입**은 [Java 33번](../../../java/syntax/33-synchronized-and-volatile/)이, **`AtomicInteger`** 는 [Java 55번](../../../java/syntax/55-atomics-and-concurrent-collections/)이, **`synchronized` 가 가상 스레드를 캐리어에 묶는 것(JDK 21)** 은 [Java 56번](../../../java/syntax/56-virtual-threads/)이 정본이다. **Go 의 채널과 뮤텍스**는 [Go 29번](../../../go/syntax/29-channels-buffering-direction-close-range-and-nil/)·[Go 32번](../../../go/syntax/32-sync-mutex-rwmutex-waitgroup-once/)이 쟀다.

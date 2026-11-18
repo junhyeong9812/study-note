@@ -16,7 +16,7 @@ javac 21.0.5
 |---|---|---|
 | **언어 명세(ECMA-334)** | C# 언어가 약속한 것 | ★★★ **`switch` 문의 흘러내림 금지**(`CS0163`) · 팔은 **글 순서** · 가려진 팔은 **에러** · 안 맞으면 **예외** · ★ **닫힌 계층이 없다**(C# 14 까지) |
 | **컴파일러(Roslyn)** | 완전성을 **어떻게 판정하고 무엇을 경고하나** | ★★★ **완전성 누락이 경고**(`CS8509`·`CS8655`)인 것 · 예시 패턴을 고르는 것 · **안 맞는 팔을 IL 로 끼워 넣는 것** |
-| **이 판의 관찰** | .NET 10.0.12 · linux-x64 · javac 21.0.5 | 격자의 칸 수 · 진단 문구 · 미리보기 `closed` 의 동작 |
+| **이 버전의 관찰** | .NET 10.0.12 · linux-x64 · javac 21.0.5 | 격자의 칸 수 · 진단 문구 · 미리보기 `closed` 의 동작 |
 
 ★★★ **이 주제에서 가장 중요한 칸 — 완전성 누락은 C# 에서 「경고」다.**\
 Java `switch` 식((3))·Kotlin `when`·Rust `match` 는 **에러**다. C# 이 경고인 까닭은 [20번](../20-enum-and-flags/)이 보인 **「이름 없는 enum 값」** 과 이 문서 (3)의 **「닫힌 계층이 없다」** 에 있다 — **컴파일러가 「이것이 전부」라고 말할 근거가 늘 부족하다.**
@@ -40,7 +40,7 @@ Java `switch` 식((3))·Kotlin `when`·Rust `match` 는 **에러**다. C# 이 �
 | 옆 칸으로 흘러가지 마라 | ★★★ **`CS0163`**(흘러내림) · **`CS8070`**(마지막 구역에서 빠져나감) | (4) |
 | 위 칸이 가린다 | ★★★ **`CS8510`**(식) · **`CS8120`**(문) — **에러** | (5) |
 
-★★★ **이 주제의 본체 그림 — 완전성은 「값 공간을 덮었나」다.**
+★★★ **이 주제의 핵심 그림 — 완전성은 「값 공간을 덮었나」다.**
 
 ```text
    입력 타입의 값 공간                          팔이 덮은 것                       남은 것 → 진단
@@ -70,16 +70,16 @@ Java `switch` 식((3))·Kotlin `when`·Rust `match` 는 **에러**다. C# 이 �
 
 ### (0) 이 주제가 쓰는 창
 
-★★★ **본체 창은 ② 진단 격자다** — 「완전한가」는 **컴파일러가 대답하는 질문**이라 진단의 유무로만 답이 나온다.
+★★★ **핵심 창은 ② 진단 격자다** — 「완전한가」는 **컴파일러가 대답하는 질문**이라 진단의 유무로만 답이 나온다.
 
 | 창 | 무엇을 보여 주나 | 이 주제에서 |
 |---|---|---|
 | ★★★ **② 진단 격자** | ★★★ **완전성 격자 18칸 × `-nullable` 두 벌** — 스크립트가 **「진단이 붙은 칸 N / M」** 을 센다 · `CS0163`·`CS8070`·`CS8510`·`CS8120` | (1)(3)(4)(5) |
 | ★★ **① IL 덤프** | ★★ **불완전한 식에만 끼워지는 `ThrowSwitchExpressionException` 팔** — 완전한 `bool` 식에는 없다 | (2) |
 | ★ **③ 리플렉션** | ★ 미리보기 `closed` 클래스가 **`IsAbstract=True`** 가 되고 **`IsClosedTypeAttribute`** 를 다는 것 | (3) |
-| ④ **할당 바이트** | ★ **부적용** — 이 주제의 질문은 **컴파일 시점의 판정**이다. 실패 팔의 `box` 는 **던질 때만** 돈다. 재지 않은 게 아니라 **물을 것이 없다**(18-B) | — |
+| ④ **할당 바이트** | ★ **해당 없음** — 이 주제의 질문은 **컴파일 시점의 판정**이다. 실패 팔의 `box` 는 **던질 때만** 돈다. 재지 않은 게 아니라 **물을 것이 없다**(18-B) | — |
 
-- ★★ **[20번](../20-enum-and-flags/)이 이미 잰 것** — `enum` 에서 **이름 하나를 빠뜨리면 `CS8509`, 이름을 다 적어도 `CS8524`**(이름 없는 값), **둘 다 경고**, 실행하면 **`SwitchExpressionException`**, **`switch` 문은 완전성을 안 본다**(그 문서의 탐침 6). 이 문서는 그것을 **다시 재지 않는다.**
+- ★★ **[20번](../20-enum-and-flags/)이 이미 잰 것** — `enum` 에서 **이름 하나를 빠뜨리면 `CS8509`, 이름을 다 적어도 `CS8524`**(이름 없는 값), **둘 다 경고**, 실행하면 **`SwitchExpressionException`**, **`switch` 문은 완전성을 안 본다**(그 문서의 probe 6). 이 문서는 그것을 **다시 재지 않는다.**
 
 ### (1) ★★★ 완전성 격자 — `enum` 밖 18칸
 
@@ -145,8 +145,8 @@ cs22b-grid.cs(23,35): warning CS8509: The switch expression does not handle all 
 - ★★★ **값 공간을 다 덮으면 조용하다** — `bool` 두 칸(줄 6) · `int` 의 `< 0`/`0`/`> 0`(줄 8) · **`byte` 의 `<= 127`/`>= 128`(줄 11)** · 튜플 네 칸(줄 20) · 목록 `[]`/`[_]`/`[_, _, ..]`(줄 22).\
   ★★ **컴파일러가 정수 범위를 실제로 계산한다** — `byte` 는 0\~255 라 두 범위로 끝나고, `int` 는 `>= 0` 만으로는 **음수가 남는다**(줄 10 예시 `'-1'`).
 - ★★★ **`double` 은 `< 0`/`>= 0` 으로 안 끝난다**(줄 12 예시 `'double.NaN'`) — NaN 은 **어느 비교도 거짓**이다.
-- ★★ **`char` 범위 하나**(줄 13) 예시가 `'\0'` — 컴파일러는 **빠진 값 중 하나**를 보여 준다. 어느 것을 고르는지는 흔들리는 칸이다.
-- ★★★ **줄 23 — 목록 패턴 `[]`/`[_]` 만 적으면 `CS8509`(예시 `{ Length: 2 }`)** — ★★ **Learn 의 「목록 패턴은 경고를 안 낸다」와 다르다**(이 판 실측). 문서보다 컴파일러가 최신이다.
+- ★★ **`char` 범위 하나**(줄 13) 예시가 `'\0'` — 컴파일러는 **빠진 값 중 하나**를 보여 준다. 어느 것을 고르는지는 실행마다 달라지는 항목이다.
+- ★★★ **줄 23 — 목록 패턴 `[]`/`[_]` 만 적으면 `CS8509`(예시 `{ Length: 2 }`)** — ★★ **Learn 의 「목록 패턴은 경고를 안 낸다」와 다르다**(이 버전 실측). 문서보다 컴파일러가 최신이다.
 - ★★★ **`null` 칸은 `-nullable` 에 달렸다** — `string?`(줄 17)·`int?`(줄 19)가 **`enable` 에서만 `CS8655`**. `disable` 에서는 null 이 **안 세어진다**(줄 17 에는 `?` 표기에 대한 `CS8632` 만 남는다).\
   ★ 줄 18(`string`, `?` 없음)은 **둘 다 조용** — 널 불가 타입이라 null 을 요구하지 않는다([06번](../06-nullable-reference-types/)의 「분석이지 런타임 타입이 아니다」와 같은 자리 — **실행 때 null 이 오면 예외다**).
 
@@ -232,7 +232,7 @@ cs22b-il.cs(4,41): warning CS8509: The switch expression does not handle all pos
 
 - ★★★ **`Full`(`bool` 두 팔)의 IL 에는 예외 경로가 없다** — `brtrue` 로 가르고 끝난다.
 - ★★★ **`Part`(`1`·`2` 만)에는 `ldarg.0` · `box System.Int32` · `call <PrivateImplementationDetails>::ThrowSwitchExpressionException`** 가 **끼워져 있다** — 소스에 없는 **보이지 않는 `_ => throw` 팔**이다.
-- ★★ **예외 메시지에 안 맞은 값이 실린다**(`Unmatched value was 3.`) — 그래서 값을 **`box`** 한다. **던질 때만** 도는 경로라 평소 할당은 없다(④ 부적용).
+- ★★ **예외 메시지에 안 맞은 값이 실린다**(`Unmatched value was 3.`) — 그래서 값을 **`box`** 한다. **던질 때만** 도는 경로라 평소 할당은 없다(④ 해당 없음).
 - ★ 경고 `CS8509`(예시 `'0'`)는 **빌드를 막지 않았다**(`cc exit=0`).
 
 ```text
@@ -257,7 +257,7 @@ cs22b-il.cs(4,41): warning CS8509: The switch expression does not handle all pos
 - ★★ **줄 15 — `null` 팔까지 달면 예시가 `'not null'`** 로 바뀐다 — 「null 은 덮였고, null 아닌 **모르는 파생**이 남았다」는 뜻이다.
 - ★★ **줄 16 — 기반 타입 팔 `Shape => 4` 를 달면 조용하다.** `_` 대신 **「그 밖의 `Shape`」** 를 적는 것이다(null 은 여전히 안 맞는다 — 매개변수가 **널 불가 `Shape`** 라 null 을 요구받지 않을 뿐이다).
 
-**그런데 C# 15 에 `closed` 가 온다** — Learn 은 「**C# 15 부터** `closed` 클래스는 직접 파생을 다 다루면 완전하다」고 적었다. 이 판의 컴파일러에게 던졌다.
+**그런데 C# 15 에 `closed` 가 온다** — Learn 은 「**C# 15 부터** `closed` 클래스는 직접 파생을 다 다루면 완전하다」고 적었다. 이 버전의 컴파일러에게 던졌다.
 
 ```text
 ===== 소스: cs22b-closed0.cs =====
@@ -292,7 +292,7 @@ cs22b-closed.cs(8,35): warning CS8509: The switch expression does not handle all
 - ★★★ **`-langversion:preview` 로도 `CS0656`** — **Roslyn(SDK 10.0.401)은 기능을 아는데 .NET 10 BCL 에 특성이 없다.**
 - ★★★ **특성을 직접 정의하면 돌았다** — `All`(파생 둘을 다 적음)은 **진단 없음**, `Some`(하나 빠짐)은 **`CS8509`(예시 `'Square'`)** — **예시가 `'_'` 가 아니라 빠진 파생의 이름이다.**
 - ★★ **리플렉션 — `typeof(Shape).IsAbstract` 가 `True`** — Learn 의 「`closed` 는 **암시적으로 `abstract`**」 그대로다.
-- ★★★ **결론 — 「C# 에는 닫힌 계층이 없다」는 C# 14 까지 참이고, 이 판에서는 미리보기로만 열린다.** 특성을 흉내 내 돌린 것은 **실험**이지 쓸 수 있는 기능이 아니다(판이 오르면 동작이 바뀔 수 있다 — 흔들리는 칸).
+- ★★★ **결론 — 「C# 에는 닫힌 계층이 없다」는 C# 14 까지 참이고, 이 버전에서는 미리보기로만 열린다.** 특성을 흉내 내 돌린 것은 **실험**이지 쓸 수 있는 기능이 아니다(버전이 오르면 동작이 바뀔 수 있다 — 실행마다 달라지는 항목).
 
 ```text
 ===== 소스: Ex22.java =====
@@ -330,7 +330,7 @@ j22b/Ex22b.java:6: error: the switch expression does not cover all possible inpu
 
 - ★★★ **Java 21 — `sealed interface Shape permits Circle, Square` 에 두 `case` 만 적으면 `default` 없이 컴파일되고 돈다.** `permits` 가 **닫힌 목록**이라서다.
 - ★★★ **하나를 빼면 `error: the switch expression does not cover all possible input values`** — **에러**다(`cc exit=1`). C# 의 `CS8509` 는 **경고**(`cc exit=0`).
-- ★ Kotlin `when` 도 `sealed` 에 대해 **에러**(`'when' expression must be exhaustive`, [Kotlin 23번](../../../kotlin/syntax/23-sealed-classes-and-when-exhaustiveness/) 실측) · Rust `match` 도 **에러**(`E0004`, [Rust 18번](../../../rust/syntax/18-match-and-exhaustiveness/) 실측) — **이 판에서 둘은 안 던졌다.**
+- ★ Kotlin `when` 도 `sealed` 에 대해 **에러**(`'when' expression must be exhaustive`, [Kotlin 23번](../../../kotlin/syntax/23-sealed-classes-and-when-exhaustiveness/) 실측) · Rust `match` 도 **에러**(`E0004`, [Rust 18번](../../../rust/syntax/18-match-and-exhaustiveness/) 실측) — **이 버전에서 둘은 안 던졌다.**
 
 ```text
                    계층이 닫혀 있나              하나를 빠뜨리면                  다 적으면
@@ -432,7 +432,7 @@ class Program {
 ```
 
 - ★★★ **`switch` 문은 완전성을 안 본다** — `Circle` 만 다뤘는데 **`-warn:9` 로도 진단 0줄**(`cc exit=0`), `Square` 는 **초기값 그대로** 지나간다. Learn — 「안 맞고 `default` 가 없으면 **제어가 빠져나간다**」.\
-  ★ [20번](../20-enum-and-flags/) 탐침 6(`enum`)과 **같은 결론이 타입 계층에서도** 나왔다.
+  ★ [20번](../20-enum-and-flags/) probe 6(`enum`)과 **같은 결론이 타입 계층에서도** 나왔다.
 
 ```text
                      흘러내림                  완전성                         안 맞으면
@@ -549,7 +549,7 @@ ArgumentOutOfRangeException
 4. ★★★ **「C# `switch` 문은 C 처럼 흘러내린다」** — **`CS0163`**. `goto case` 로 적어야 한다((4)).
 5. ★★ **「`>= 0` 과 `< 0` 이면 `double` 은 끝이다」** — **NaN** 이 남는다((1)).
 6. ★★ **「nullable 을 꺼도 null 은 검사된다」** — **`CS8655` 는 `enable` 에서만**((1)). 꺼 두면 null 이 **런타임 예외로** 새어 나온다.
-7. ★★ **「목록 패턴은 완전성 경고가 없다」**(Learn) — **이 판은 `CS8509` 를 냈다**((1) 줄 23).
+7. ★★ **「목록 패턴은 완전성 경고가 없다」**(Learn) — **이 버전은 `CS8509` 를 냈다**((1) 줄 23).
 8. ★★ **「`when` 가드 팔도 뒤를 가린다」** — **가드 팔은 가리지 않는다**((5)).
 9. ★ **「마지막 `default:` 는 `break` 가 없어도 된다」** — **`CS8070`**((4)).
 
@@ -565,13 +565,13 @@ ArgumentOutOfRangeException
 | **예시 패턴을 무엇으로 고르나** | ★ **Roslyn 구현** | (1) |
 | **목록 패턴에도 완전성 경고** | ★ **Roslyn 구현**(Learn 과 다름) | (1) 줄 23 |
 | **null 완전성이 nullable 문맥에 달린 것** | ★★ **컴파일러 분석**([06번](../06-nullable-reference-types/)) | (1) 줄 17·19 |
-| **닫힌 계층(`closed`)** | ★★ **C# 15 미리보기** — 이 판에서는 BCL 특성이 없다 | (3) |
+| **닫힌 계층(`closed`)** | ★★ **C# 15 미리보기** — 이 버전에서는 BCL 특성이 없다 | (3) |
 
 ## 언제 쓰고 언제 안 쓰나
 
 - ★★★ **값을 고르면 `switch` 식** — 완전성 경고가 붙고, 빠진 자리가 **예외로** 드러난다.
 - ★★★ **타입 계층의 `switch` 식에는 `_ => throw new …`** — 모르는 파생이 **조용히 새지 않게**((3)). C# 15 의 `closed` 가 정식이 되면 **다시 판단**하라.
-- ★★ **`CS8509` 를 경고로 두지 말고 에러로 올리는 것**을 고려하라 — `-warnaserror:CS8509`(★ **이 판에서 이 플래그를 던지지는 않았다**). Java·Kotlin·Rust 가 에러로 하는 일을 C# 은 **설정으로** 한다.
+- ★★ **`CS8509` 를 경고로 두지 말고 에러로 올리는 것**을 고려하라 — `-warnaserror:CS8509`(★ **이 버전에서 이 플래그를 던지지는 않았다**). Java·Kotlin·Rust 가 에러로 하는 일을 C# 은 **설정으로** 한다.
 - ★★ **`switch` 문은 부작용을 고를 때만** — 완전성을 안 봐 주니 **`default:` 를 직접** 달아라.
 - ★ **nullable 을 켜라** — 안 켜면 null 칸이 격자에서 사라진다((1)).
 
@@ -579,7 +579,7 @@ ArgumentOutOfRangeException
 
 1. ★★★ **C# `switch` 식의 완전성 누락은 경고다** — 격자 18칸 중 11칸(`enable`)이 **전부 경고**였고 빌드는 됐다((1)).
 2. ★★★ **불완전한 식에는 컴파일러가 `ThrowSwitchExpressionException` 팔을 끼운다** — 조용한 기본값은 없다((2)).
-3. ★★★ **C# 14 에는 닫힌 계층이 없다** — `sealed` 파생을 다 적어도 `CS8509`. Java `sealed` 는 에러까지 가고, C# 15 `closed` 는 이 판에서 미리보기다((3)).
+3. ★★★ **C# 14 에는 닫힌 계층이 없다** — `sealed` 파생을 다 적어도 `CS8509`. Java `sealed` 는 에러까지 가고, C# 15 `closed` 는 이 버전에서 미리보기다((3)).
 4. ★★★ **`switch` 문은 흘러내림을 막고(`CS0163`) 완전성은 안 본다** — 흘러가려면 `goto case`((4)).
 5. ★★ **가려진 팔은 에러(`CS8510`·`CS8120`)** — 단 `when` 가드 팔은 아무것도 가리지 않는다((5)).
 
@@ -605,9 +605,9 @@ ArgumentOutOfRangeException
 
 ## 더 들어가면
 
-- ★ **`-warnaserror:CS8509`·`.editorconfig` 로 경고를 에러로** — **이 판에서 안 던졌다.**
-- ★ **`closed` 의 다른 어셈블리 규칙** — Learn 은 「직접 파생이 `internal` 이면 다른 어셈블리의 `switch` 는 완전하지 않다」고 적었다. **이 판에서 안 던졌다**(미리보기 · 특성을 흉내 낸 판이라 판이 오르면 다시).
-- ★ **`switch` 문의 IL(점프 표 `switch` 옵코드)** — 조밀한 정수 case 는 `switch` 옵코드로, 성긴 case 는 비교 사슬로 풀린다고 알려져 있으나 **이 판에서 찍지 않았다.**
+- ★ **`-warnaserror:CS8509`·`.editorconfig` 로 경고를 에러로** — **이 버전에서 안 던졌다.**
+- ★ **`closed` 의 다른 어셈블리 규칙** — Learn 은 「직접 파생이 `internal` 이면 다른 어셈블리의 `switch` 는 완전하지 않다」고 적었다. **이 버전에서 실행하지 않았다**(미리보기 · 특성을 흉내 낸 판이라 버전이 오르면 다시).
+- ★ **`switch` 문의 IL(점프 표 `switch` 옵코드)** — 조밀한 정수 case 는 `switch` 옵코드로, 성긴 case 는 비교 사슬로 풀린다고 알려져 있으나 **이 버전에서 찍지 않았다.**
 
 ## 실행 환경
 
@@ -617,20 +617,20 @@ ArgumentOutOfRangeException
 [Learn — 선택문](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/selection-statements)(열어서 확인: 「**한 구역에서 다음 구역으로 흘러 내려갈 수 없다**」 · 「흉내 내려면 `goto`」 ·\
 「레이블 여럿을 한 구역에 달 수 있다」 · 「어느 case 도 안 맞고 `default` 가 없으면 **제어가 `switch` 문을 빠져나간다**」) ·\
 [Learn — 패턴 · Closed hierarchy patterns](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/patterns)(열어서 확인: 「**C# 15 부터** `closed` 클래스를 받는 `switch` 식은 **직접 파생을 다 다루면 완전하다**」)
-**실행 검증** — 이 문서의 모든 출력·진단·IL 은 맨 위 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
+**실행 검증** — 이 문서의 모든 출력·진단·IL 은 맨 위 「이 버전」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
 ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
 ★★★ **진단 언어를 영어로 고정했다**(`DOTNET_CLI_UI_LANGUAGE=en` + `-preferreduilang:en-US`). **대비는 실측이다** — **javac 21.0.5** 로 `sealed` 인터페이스의 `switch` 를 던졌다((3)).
-**버전** — `switch` 문 **C# 1.0**(패턴 `case` 는 **C# 7**) · **`switch` 식 C# 8** · 관계·`and`/`or` 팔 **C# 9** · 목록 팔 **C# 11** · ★★ **`closed` 클래스는 C# 15 미리보기**((3) — 이 판에서는 `-langversion:preview` + 특성 직접 정의로만 돌았다).
+**버전** — `switch` 문 **C# 1.0**(패턴 `case` 는 **C# 7**) · **`switch` 식 C# 8** · 관계·`and`/`or` 팔 **C# 9** · 목록 팔 **C# 11** · ★★ **`closed` 클래스는 C# 15 미리보기**((3) — 이 버전에서는 `-langversion:preview` + 특성 직접 정의로만 돌았다).
 **경계** — ★★★ **`enum` 에서의 완전성**(`CS8509`·`CS8524` · 이름을 다 적어도 경고 · 실행하면 `SwitchExpressionException` · `switch` 문은 완전성을 안 본다)은 [20번](../20-enum-and-flags/) (4)(7)이 **이미 쟀다** — 여기서는 **인용만** 하고 **`enum` 밖**(`bool`·정수 범위·`double`·타입 계층·`null`·튜플·목록)으로 간다.\
 ★ **패턴 하나가 IL 로 무엇이 되나**는 [21번](../21-pattern-matching-type-property-relational-list/)이 정본이다. 여기는 **팔 여럿의 집합** — 완전성과 도달 불가.
 ★★★ **대비** — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **21번**([`21-switch-statement-and-expression/`](../../../java/syntax/21-switch-statement-and-expression/))·**15번**([`15-sealed-classes/`](../../../java/syntax/15-sealed-classes/)) ·\
 Kotlin 갈래 목록([`kotlin/syntax/README.md`](../../../kotlin/syntax/README.md))의 **23번**([`23-sealed-classes-and-when-exhaustiveness/`](../../../kotlin/syntax/23-sealed-classes-and-when-exhaustiveness/)) ·\
-Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **18번**([`18-match-and-exhaustiveness/`](../../../rust/syntax/18-match-and-exhaustiveness/)) — ★ Kotlin·Rust 는 **각 갈래의 실측을 인용**한다(이 판에서 던지지 않았다).
+Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **18번**([`18-match-and-exhaustiveness/`](../../../rust/syntax/18-match-and-exhaustiveness/)) — ★ Kotlin·Rust 는 **각 갈래의 실측을 인용**한다(이 버전에서 던지지 않았다).
 
-★★ **흔들리는 칸 / 안 흔들리는 칸**
+★★ **실행마다 달라지는 항목 / 달라지지 않는 항목**
 
-| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+| 실행마다 달라진다(근거로 쓰지 않는다) | 달라지지 않는다(근거로 쓴다) |
 |---|---|
 | 진단 **문구** — 특히 「For example, the pattern '…'」 속의 **예시 패턴**(컴파일러가 하나를 골라 보여 준다) | ★★★ **진단 코드**(`CS8509`·`CS8655`·`CS8510`·`CS8120`·`CS0163`·`CS8070`·`CS0161`·`CS8652`·`CS0656`)와 **`(행,열)`** |
 | **IL 오프셋 폭** | ★★★ **옵코드와 부른 멤버**(`box` · `ThrowSwitchExpressionException`) — **완전하면 그 팔이 없다는 것** |
-| ★ 미리보기 기능의 **동작 전부**((3) `closed`) — 판이 오르면 바뀔 수 있다 | ★★★ **「완전성 진단이 붙은 칸 N / M」**(스크립트가 센 마지막 줄) · `cc exit` |
+| ★ 미리보기 기능의 **동작 전부**((3) `closed`) — 버전이 오르면 바뀔 수 있다 | ★★★ **「완전성 진단이 붙은 칸 N / M」**(스크립트가 센 마지막 줄) · `cc exit` |

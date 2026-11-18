@@ -371,7 +371,7 @@ CSS 는 문법 표면이 단순하므로 여기서는 **형태보다 헷갈리�
 - **논리 속성**을 쓰면 `width`/`height` 대신 `inline-size`/`block-size` 가 된다.\
   `box-sizing` 은 그대로 적용되고, 글쓰기 방향이 바뀌면 **어느 축이 `inline-size` 인지**만 따라 돈다. 정본은 [목록의 **32번 주제**](../32-logical-properties-and-writing-mode/).
 - `outline` 은 **네 겹 어디에도 속하지 않는다** — 레이아웃 공간을 전혀 차지하지 않고 상자 위에 그려진다.\
-  포커스 링을 `border` 로 만들면 상자 치수가 흔들리는 이유가 이것이다. 정본은 [목록의 **46번 주제**](../46-borders-radius-outline-shadow/).
+  포커스 링을 `border` 로 만들면 상자 치수가 실행마다 달라지는 이유가 이것이다. 정본은 [목록의 **46번 주제**](../46-borders-radius-outline-shadow/).
 
 ## 실행 환경
 

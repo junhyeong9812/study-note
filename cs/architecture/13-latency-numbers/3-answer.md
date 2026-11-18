@@ -5,7 +5,7 @@
 ### 1. 자릿수와 출처 성격
 
 - 개별 값은 하드웨어 세대·클록·부하에 따라 바뀐다. 이 호스트에서도 클록이 낮은 상태라 L1이 표의 10배쯤으로 나왔다. 반면 "왕복 한 번 ≫ 메모리 접근 ≫ 캐시 접근" 같은 자릿수 관계는 오래 간다.
-- 표는 1차 측정이 아니라 2차 정리다. 원형은 Norvig의 "Teach Yourself Programming in Ten Years" 표이고, jboner gist가 "~2012", "By Jeff Dean", "Originally by Peter Norvig"로 정리했다. 두 판의 줄도 서로 다르다.
+- 표는 1차 측정이 아니라 2차 정리다. 원형은 Norvig의 "Teach Yourself Programming in Ten Years" 표이고, jboner gist가 "~2012", "By Jeff Dean", "Originally by Peter Norvig"로 정리했다. 두 버전의 줄도 서로 다르다.
 
 ### 2. 비율
 

@@ -2,7 +2,7 @@
 
 상위: [커밋](../README.md)
 
-**커밋을 내구성 있게 기록하는 곳이다.** XID 가 있으면 critical section 에 들어가 체크포인트를 붙잡아 두고(`DELAY_CHKPT_START`), [07] 로 commit 레코드를 WAL 에 넣는다. 그다음 `synchronous_commit` 과 상황에 따라 길이 둘로 갈린다. 동기면 `XLogFlush` 로 레코드를 디스크에 내린 뒤 [08] 로 pg_xact 를 COMMITTED 로 바꾸고, 비동기면 flush 를 walwriter 에 맡기고 pg_xact 에 "이 LSN 까지 flush 되기 전에는 CLOG 페이지를 디스크에 쓰지 말라"는 표시를 함께 남긴다. 마지막으로 동기 복제면 [09] 에서 standby 를 기다린다. 이 시점에도 이 트랜잭션은 ProcArray 에 남아 있고 잠금도 쥐고 있다(L1553-L1554 주석).
+**커밋을 내구성 있게 기록하는 곳이다.** XID 가 있으면 critical section 에 들어가 체크포인트를 붙잡아 두고(`DELAY_CHKPT_START`), [07] 로 commit 레코드를 WAL 에 넣는다. 그다음 `synchronous_commit` 과 상황에 따라 길이 둘로 나뉜다. 동기면 `XLogFlush` 로 레코드를 디스크에 내린 뒤 [08] 로 pg_xact 를 COMMITTED 로 바꾸고, 비동기면 flush 를 walwriter 에 맡기고 pg_xact 에 "이 LSN 까지 flush 되기 전에는 CLOG 페이지를 디스크에 쓰지 말라"는 표시를 함께 남긴다. 마지막으로 동기 복제면 [09] 에서 standby 를 기다린다. 이 시점에도 이 트랜잭션은 ProcArray 에 남아 있고 잠금도 잡고 있다(L1553-L1554 주석).
 
 ## 위치
 

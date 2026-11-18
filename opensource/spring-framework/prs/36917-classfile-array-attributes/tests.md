@@ -29,7 +29,7 @@ void parsesNonEmptyPrimitiveArrayAttributes() throws Exception {
 }
 ```
 
-여덟 줄이 수정 전 코드에서 어떻게 갈리는지 나란히 놓으면, 한 메서드 안에 red와 가드가 섞여 있는 모양이 보인다.
+여덟 줄이 수정 전 코드에서 어떻게 달라지는지 나란히 놓으면, 한 메서드 안에 red와 가드가 섞여 있는 모양이 보인다.
 
 ```text
 수정 전 결과                              수정 후 결과

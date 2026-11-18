@@ -72,7 +72,7 @@
 ### 8. 임시 파일로 디스크가 참
 
 - 평소에 찾기
-  - `log_temp_files = 0`(또는 크기 문턱): 임시 파일을 지울 때 `LOG: temporary file: path "base/pgsql_tmp/…", size …`를 남긴다. 기본은 -1(끔).
+  - `log_temp_files = 0`(또는 크기 임계값): 임시 파일을 지울 때 `LOG: temporary file: path "base/pgsql_tmp/…", size …`를 남긴다. 기본은 -1(끔).
   - `pg_stat_database.temp_files`, `temp_bytes`: DB별 누적.
   - `EXPLAIN (ANALYZE, BUFFERS)`의 `temp read/written`.
 - 안전장치: `temp_file_limit`(기본 -1 = 무제한). 한 프로세스의 임시 파일 총량이 넘으면 그 트랜잭션을 취소한다.

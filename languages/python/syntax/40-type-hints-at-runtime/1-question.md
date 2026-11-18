@@ -112,7 +112,7 @@ print("③ typing.get_type_hints(f)")
 print("   ", typing.get_type_hints(f))
 ```
 
-### 3. ★★★ 탐침 열 개를 두 모드로 (예측)
+### 3. ★★★ probe 열 개를 두 모드로 (예측)
 
 ```text
 각 칸에 값의 repr 또는 예외 종류를 적는다. 마지막 줄의 N / M 도 적는다.

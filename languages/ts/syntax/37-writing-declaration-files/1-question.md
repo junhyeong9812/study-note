@@ -207,7 +207,7 @@ done
 exit 0
 ```
 
-- 7.0.2 가 쓴 `calc37.d.mts` 에 `secret`·`Up`·`double`·`pick`·`Counter` 는 각각 어떻게 적히는가? 옛 두 판과 견주면?
+- 7.0.2 가 쓴 `calc37.d.mts` 에 `secret`·`Up`·`double`·`pick`·`Counter` 는 각각 어떻게 적히는가? 옛 두 버전과 견주면?
 
 ### 6. `skipLibCheck` 를 켜고 끄면 (예측)
 
@@ -240,8 +240,8 @@ const probe: null = APP_MODE;
 export {};
 ```
 
-- `usebroken37.mts` — `--skipLibCheck` 없이 · 있이 각각 무엇이 남는가? 탐침 `p1` 에는 진단이 나는가?
-- `usedup37.ts` — 플래그 없이 `dup37a dup37b` 순서 · `--skipLibCheck` 로 같은 순서 · `--skipLibCheck` 로 **뒤바꾼** 순서 — 탐침의 타입은 각각?
+- `usebroken37.mts` — `--skipLibCheck` 없이 · 있이 각각 무엇이 남는가? probe `p1` 에는 진단이 나는가?
+- `usedup37.ts` — 플래그 없이 `dup37a dup37b` 순서 · `--skipLibCheck` 로 같은 순서 · `--skipLibCheck` 로 **뒤바꾼** 순서 — probe의 타입은 각각?
 
 ### 7. 두 거짓말의 결말 (왜)
 

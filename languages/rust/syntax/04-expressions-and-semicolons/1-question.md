@@ -150,7 +150,7 @@ let x = (let y = 5);
 
 ## 실행 환경
 
-★ 답을 모르겠으면 **던져 보라.** `rustc --edition 2021 ex.rs -o /tmp/ex && /tmp/ex`.
+★ 답을 모르겠으면 **실행해 보라.** `rustc --edition 2021 ex.rs -o /tmp/ex && /tmp/ex`.
 타입만 궁금하면 `let _: () = 식;` 을 넣어 **컴파일러에게 물어본다**(8번).
 
 ## 복습 기록

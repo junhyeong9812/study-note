@@ -214,7 +214,7 @@ EXPLAIN ANALYZE SELECT …;
   - 읽기 전용 화면은 구체화 뷰·조회용 테이블로 미리 조인해 둔다.
   - 참고: 로컬 재현(예시, PostgreSQL 17.11)에서 1,000행 테이블 14개 사슬 조인의 계획 시간은 약 1~2ms였다. 조인 수만으로 계획이 폭발하지는 않는다. 비용은 주로 실행 시 행 수와 추정 오차에서 온다.
 
-### 3. 반정규화한 캐시 열이 원본과 어긋남
+### 3. 반정규화한 캐시 열이 원본과 불일치
 
 - **현상**: 게시글의 `comment_count`가 실제 댓글 수와 다르다.
 - **보이는 형태**: 에러 없음. `SELECT p.id FROM post p WHERE p.comment_count <> (SELECT count(*) FROM comment c WHERE c.post_id = p.id)`에 행이 나온다.

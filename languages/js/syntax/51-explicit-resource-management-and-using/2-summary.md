@@ -16,7 +16,7 @@ Google Chrome 151.0.7922.173
 > | ★★★ **호스트(node)** | node 18·20 의 `Symbol.dispose` 는 **`Symbol.for("nodejs.dispose")`** — 전역 레지스트리에 등록된 **node 의 심볼**이다(명세의 well-known symbol 은 등록되지 않는다 — Chrome 은 `Symbol.keyFor` 가 `undefined`) | 동작 (1)의 `#` 두 줄 |
 > | ★★ **도구(tsc)** | `--target es2022` 에서 `using` 을 **헬퍼 두 개**로 낮춘다 · 없는 `SuppressedError` 를 **`name` 만 바꾼 `Error`** 로 흉내 낸다 | 동작 (8) |
 
-> **★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+> **★★★ 이 주제가 쓰는 창 — 그리고 해당 없는 창**
 >
 > | 창 | 이 주제에서 무엇을 보나 |
 > |---|---|
@@ -24,14 +24,14 @@ Google Chrome 151.0.7922.173
 > | ★★★ **① 로그 심기** | 만들 때 · 치울 때 한 줄씩 — 역순 · 떠나는 길 · `for...of` · `null` · 선언 때 읽는 메서드(동작 (3)) · `await using` 과 마이크로태스크 틱(동작 (6)) |
 > | ★★ **④ 예외의 이름 + 문구** | 선언 자리의 `SyntaxError` 문구(동작 (2)) · `SuppressedError` 의 `.error`/`.suppressed` 중첩(동작 (4)) · `DisposableStack` 의 `ReferenceError`(동작 (5)) |
 > | ★★★ **「못 잰 것」 이 아니라 「창을 바꿔 물었다」**(제5의 상태) | node 18·20 에서 **`using` 자체는 잴 수 없다**(문법이 없어 `SyntaxError` 로 끝난다). 같은 질문(「역순인가 · 두 오류가 다 남나」)을 **손으로 쓴 `try`/`finally`**(동작 (7)) 와 **tsc 가 낮춘 코드**(동작 (8))로 다시 물었다. ★ **바꾼 창이 못 보는 것** — 둘 다 **엔진의 `using` 이 아니다**: 손 코드는 내가 쓴 순서를, tsc 헬퍼는 **tsc 가 쓴 순서**를 보일 뿐이고, 헬퍼의 `SuppressedError` 는 **진짜 생성자가 아니다**(node 에서 `constructor Error`) |
-> | ★ **부적용 — 양** | 해제에 드는 시간·바이트는 이 기능이 말하는 것이 아니다 — 재지 않았다 |
-> | ★ **부적용 — GC** | `using` 은 **GC 와 무관**하다 — 블록 끝이라는 **문법상의 순간**에 부른다. 「언제 치워지나」 가 명세 밖이던 47번과 정반대 자리다 |
+> | ★ **해당 없음 — 양** | 해제에 드는 시간·바이트는 이 기능이 말하는 것이 아니다 — 재지 않았다 |
+> | ★ **해당 없음 — GC** | `using` 은 **GC 와 무관**하다 — 블록 끝이라는 **문법상의 순간**에 부른다. 「언제 치워지나」 가 명세 밖이던 47번과 정반대 자리다 |
 
-> **★ 흔들리는 칸 / 안 흔들리는 칸**
+> **★ 실행마다 달라지는 항목 / 달라지지 않는 항목**
 >
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+> | 실행마다 달라진다(근거로 쓰지 않는다) | 달라지지 않는다(근거로 쓴다) |
 > |---|---|
-> | 판별 블록의 판 문자열 · tsc 판 문자열 · **tsc 가 쓴 헬퍼 코드의 모양**(판이 오르면 바뀔 수 있다 — 한 판의 관찰) · 오류 **문구**(엔진·판마다 다르다 — node 18 과 20 이 이미 다르다) | ★★★ 격자의 **모든 칸**과 마지막 줄 · 해제 로그의 **순서** · `SuppressedError` 의 **중첩 모양** · 틱 순서 — **재대조 동일**(실행마다 바뀌는 칸이 없다) |
+> | 판별 블록의 판 문자열 · tsc 버전 문자열 · **tsc 가 쓴 헬퍼 코드의 모양**(버전이 오르면 바뀔 수 있다 — 한 판의 관찰) · 오류 **문구**(엔진·판마다 다르다 — node 18 과 20 이 이미 다르다) | ★★★ 격자의 **모든 칸**과 마지막 줄 · 해제 로그의 **순서** · `SuppressedError` 의 **중첩 모양** · 틱 순서 — **재대조 동일**(실행마다 바뀌는 칸이 없다) |
 
 > **선행** — [32 — 오류 처리와 `Error`](../32-error-handling-and-error/2-summary.md)(직접 선행 — ★★★ **이미 쟀다**: `finally` 에서 정리 중 던진 예외가 **원래 예외를 흔적 없이 지운다**(거기 동작 (2)의 `[4]` · 「어디서 틀리나 (2)」) · `try` 3 × `finally` 3 격자. 그 편은 「`using`·`SuppressedError` 는 51번의 몫」 이라고 경계를 그었다 — 이 문서가 그 자리다. ★ 이 문서의 동작 (7) `[2]` 는 32번의 그 결과를 **다시 재지 않고** 한 줄로 되짚는다) ·
 > [20 — 제너레이터](../20-generators/2-summary.md)(★★ `return()` 은 「반드시 닫는다」가 아니라 **「멈춘 자리에서 `return` 을 일으킨다」** — 거기 동작 (3)) · [40 — 비동기 이터레이션](../40-async-iteration-and-for-await/2-summary.md)(`break`·`return`·`throw` 셋 다 `return()` 을 부르고 `for await` 는 그것을 **기다린다**) · [47 — `WeakRef`·`FinalizationRegistry`](../47-weakref-and-finalizationregistry/2-summary.md)(★★ 정리를 GC 콜백에 맡기면 **「언제」 가 명세 밖**이었다 — 그 편이 결정적 대안으로 이 주제를 가리켰다) · [22 — `Symbol`](../22-symbol-and-well-known-symbols/2-summary.md)(well-known symbol · `Symbol.for` 레지스트리).
@@ -260,9 +260,9 @@ supported cells: 11 / 21
    supported cells         2        2        7        = 11 / 21
 ```
 
-- ★★★ **`supported cells: 11 / 21`** — Chrome 151 이 **7 / 7**, node 18·20 이 각각 **2 / 7** 이다. 두 node 판이 **한 칸도 안 갈렸다.**
+- ★★★ **`supported cells: 11 / 21`** — Chrome 151 이 **7 / 7**, node 18·20 이 각각 **2 / 7** 이다. 두 node 버전이 **한 칸도 달라지지 않았다.**
 - ★★★ **node 의 두 「yes」 는 명세의 심볼이 아니다** — `String(Symbol.dispose)` 가 **`Symbol(nodejs.dispose)`**, `Symbol.keyFor(Symbol.dispose)` 가 **`nodejs.dispose`** — 전역 레지스트리(`Symbol.for`)에 등록된 심볼이다. Chrome 은 `Symbol(Symbol.dispose)` · `undefined` — 명세의 well-known symbol 은 **등록되지 않은** 심볼이다(22번). ★ 그래서 이 격자의 `Symbol.dispose yes` 는 「**그 이름의 심볼 속성이 있다**」 까지만 뜻한다 — 층은 **호스트**다.
-- ★★ **「`Symbol.dispose` 가 있으니 `using` 도 되겠지」 가 틀리는 자리가 여기다** — 이름표는 있는데 관리인(문법)이 없다. 기능 검사를 **심볼로 하면 node 에서 거짓 양성**이 난다 — 문법은 **파싱으로** 물어야 한다(이 탐침의 `syntax(…)`).
+- ★★ **「`Symbol.dispose` 가 있으니 `using` 도 되겠지」 가 틀리는 자리가 여기다** — 이름표는 있는데 관리인(문법)이 없다. 기능 검사를 **심볼로 하면 node 에서 거짓 양성**이 난다 — 문법은 **파싱으로** 물어야 한다(이 probe의 `syntax(…)`).
 
 ### (2) ★★ 선언이 설 수 있는 자리 — 열다섯 자리 × 두 목표
 
@@ -395,9 +395,9 @@ console.log("  module top level parsed · " + log.join(" · "));
 ```
 
 - ★★★ **스크립트 최상위는 안 되고 모듈 최상위는 된다** — `script top level  using x = R51;` 이 `Unexpected identifier 'x'`, 모듈은 `module top level parsed` 뒤 **모듈 평가가 끝날 때** `dispose top` 이 찍혔다. 명세 16.1.1 이 `ScriptBody` 에만 「**ContainsUsing 이면 Syntax Error**」 를 둔다.
-- ★★★ **`case 1: using x = …` 는 안 되고 `case 1: { using x = …; }` 는 된다** — 명세 14.12.1. `case` 절들은 **한 블록을 나눠 쓰므로** 어느 `case` 로 들어왔느냐에 따라 선언이 실행됐는지가 갈린다 — 그 자리에서 장부를 막은 것으로 읽힌다(이 문장은 해석이다 · [52 — `switch`·라벨·흐름 제어](../52-switch-labels-and-control-flow/2-summary.md) 「`switch` 블록 하나가 스코프 하나」 와 같은 뿌리).
+- ★★★ **`case 1: using x = …` 는 안 되고 `case 1: { using x = …; }` 는 된다** — 명세 14.12.1. `case` 절들은 **한 블록을 나눠 쓰므로** 어느 `case` 로 들어왔느냐에 따라 선언이 실행됐는지가 달라진다 — 그 자리에서 장부를 막은 것으로 읽힌다(이 문장은 해석이다 · [52 — `switch`·라벨·흐름 제어](../52-switch-labels-and-control-flow/2-summary.md) 「`switch` 블록 하나가 스코프 하나」 와 같은 뿌리).
 - ★★ **문구는 원인을 말하지 않을 때가 있다** — 스크립트 최상위와 `case` 절 둘 다 **`Unexpected identifier 'x'`** 라서 「`using` 을 모르는 엔진」 과 **글자가 같다**(node 20 의 첫 줄과 비교). 근거는 문구가 아니라 **같은 텍스트가 한 칸 옮기면 `parsed` 가 된다**는 대조다(규칙 27).
-- ★★ **`let using = 1` 은 여전히 된다**(세 판 다) — `using` 은 **예약어가 아니다.** 그래서 `using x` 는 `using` 뒤에 **줄바꿈 없이 식별자**가 올 때만 선언으로 읽힌다(명세 `[no LineTerminator here]`) · `using { a }` 는 선언 문법에 패턴이 없어 `Unexpected token '{'`(node 20 · 18 도 같은 글자).
+- ★★ **`let using = 1` 은 여전히 된다**(세 버전 다) — `using` 은 **예약어가 아니다.** 그래서 `using x` 는 `using` 뒤에 **줄바꿈 없이 식별자**가 올 때만 선언으로 읽힌다(명세 `[no LineTerminator here]`) · `using { a }` 는 선언 문법에 패턴이 없어 `Unexpected token '{'`(node 20 · 18 도 같은 글자).
 - ★ **`await using x` 를 async 밖에 쓰면** 세 판 모두 `await is only valid in async functions and the top level bodies of modules` — `using` 을 몰라도 **`await` 쪽에서 먼저** 걸린다.
 
 ### (3) ★★★ 해제 순서 — 로그를 심은 열 갈래
@@ -765,7 +765,7 @@ const part = async (title, f) => {
 ### (7) ★★ `using` 이 없는 판에서 — 손으로 쓴 `try`/`finally`
 
 **언제 쓰나** — node 18·20 처럼 문법이 없는 곳에서 같은 보장을 흉내 낼 때.
-★ 이 창은 **제5의 상태**다 — node 에서 `using` 을 못 재니, 같은 질문을 **손 코드**로 다시 물었다(맨 위 부분 창 표). 세 판에서 돌렸다.
+★ 이 창은 **제5의 상태**다 — node 에서 `using` 을 못 재니, 같은 질문을 **손 코드**로 다시 물었다(맨 위 부분 창 표). 세 버전에서 돌렸다.
 
 ```js
 // js48b-51g-by-hand.js
@@ -1079,7 +1079,7 @@ node 에는 전역 `SuppressedError` 가 **없고**(동작 (8)의 `[3] typeof Su
 
 ### 도구(tsc 7.0.2)
 
-- ★★ `--target es2022` 에서 헬퍼 두 개로 낮춘다 · `SuppressedError` 를 흉내 낸다 · `Symbol.dispose` 가 없으면 `TypeError("Symbol.dispose is not defined.")`. ★ **헬퍼 코드의 모양은 이 판의 관찰**이다.
+- ★★ `--target es2022` 에서 헬퍼 두 개로 낮춘다 · `SuppressedError` 를 흉내 낸다 · `Symbol.dispose` 가 없으면 `TypeError("Symbol.dispose is not defined.")`. ★ **헬퍼 코드의 모양은 이 버전의 관찰**이다.
 
 ### 그래서 이렇게 적으면 틀린다
 
@@ -1123,7 +1123,7 @@ node 에는 전역 `SuppressedError` 가 **없고**(동작 (8)의 `[3] typeof Su
 - **disposable resource stack(장부)** — 명세가 블록의 환경 레코드마다 두는 목록. `using` 이 선언될 때 적고, 블록이 끝날 때 거꾸로 읽는다.
 - **`Symbol.for` 레지스트리** — 문자열 키로 심볼을 나눠 쓰는 전역 목록. `Symbol.keyFor(s)` 가 그 키를 돌려준다(등록 안 된 심볼이면 `undefined`).
 - **간접 `eval`** — `(0, eval)(text)` 처럼 부른 `eval` — 텍스트를 **전역 스크립트**로 파싱한다.
-- **낮춰 쓰기(down-leveling)** — 새 문법을 옛 판에서 도는 코드로 바꿔 방출하는 것(tsc 의 `target`).
+- **낮춰 쓰기(down-leveling)** — 새 문법을 옛 버전에서 도는 코드로 바꿔 방출하는 것(tsc 의 `target`).
 
 ## 더 들어가면
 
@@ -1133,7 +1133,7 @@ node 에는 전역 `SuppressedError` 가 **없고**(동작 (8)의 `[3] typeof Su
 
 ## 실행 환경
 
-★★★ **이 주제의 본체는 ② 지원 판별 격자다** — 판 셋(node 18 · node 20 · Chrome 151) × 기능 일곱(`using` 문법 · `await using` 문법 · `Symbol.dispose` · `Symbol.asyncDispose` · `DisposableStack` · `AsyncDisposableStack` · `SuppressedError`) = **21칸**을 스크립트가 채우고 **「supported cells: N / M」** 을 마지막 줄로 찍는다(동작 (1)). 「이 코드가 이 런타임에서 도나」 가 이 주제의 첫 질문이기 때문이다.
+★★★ **이 주제의 핵심은 ② 지원 판별 격자다** — 판 셋(node 18 · node 20 · Chrome 151) × 기능 일곱(`using` 문법 · `await using` 문법 · `Symbol.dispose` · `Symbol.asyncDispose` · `DisposableStack` · `AsyncDisposableStack` · `SuppressedError`) = **21칸**을 스크립트가 채우고 **「supported cells: N / M」** 을 마지막 줄로 찍는다(동작 (1)). 「이 코드가 이 런타임에서 도나」 가 이 주제의 첫 질문이기 때문이다.
 ★★ 보조로 **① 로그 심기**(해제 순서 — 만들 때와 치울 때 한 줄씩 · 동작 (3)·(6)) · **④ 예외의 이름 + 문구**(`SyntaxError` 가 **선언이 설 수 없는 자리**를 가르는 것 · `SuppressedError` 의 모양 · 동작 (2)·(4))를 쓴다.
 ★★★ **node 에는 문법이 없으므로 「node 에서 `using` 이 어떻게 도나」 는 그 창으로는 못 잰다** — 같은 질문을 **다른 창 둘**로 다시 물었다(제5의 상태 — 맨 위 창 표): **손으로 쓴 `try`/`finally`**(동작 (7)) 와 **tsc 7.0.2 가 낮춰 쓴 코드**(동작 (8)).
 
@@ -1146,7 +1146,7 @@ node 에는 전역 `SuppressedError` 가 **없고**(동작 (8)의 `[3] typeof Su
 - ★ **판 표기** — README 는 이 기능을 **ES2027** 로 적는다. 이 문서가 읽은 사본의 표제도 2027 초안이고, 같은 배치가 받아 둔 TC39 finished proposals 표의 이 행도 **2027** 이다. ★ **확정판 번호는 확인하지 않았다**(외부 네트워크를 쓰지 않았다).
 
 **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
-배너의 `node20` 은 v20.19.6, `node18` 은 v18.19.1(판별 블록). Chrome 은 `./js48b-browser.sh`(헤드리스 Chrome 151 · 소스는 맨 위) 로 돌렸다 — 페이지는 **고전 스크립트**로 탐침을 싣고, `.mjs` 만 `--http` 로 **모듈**로 싣는다. tsc 는 **7.0.2**.
+배너의 `node20` 은 v20.19.6, `node18` 은 v18.19.1(판별 블록). Chrome 은 `./js48b-browser.sh`(헤드리스 Chrome 151 · 소스는 맨 위) 로 돌렸다 — 페이지는 **고전 스크립트**로 probe를 싣고, `.mjs` 만 `--http` 로 **모듈**로 싣는다. tsc 는 **7.0.2**.
 ★★★ **성능·메모리는 재지 않았다.** 「`using` 이 `try`/`finally` 보다 느리다/빠르다」 는 이 문서에 없다.
 
 **버전** — `using`·`await using`·`DisposableStack`·`SuppressedError` 는 README 표기 **ES2027** · **Chrome 151 에만 전부 있다** · node 18·20 에는 **문법이 없다**(동작 (1)).

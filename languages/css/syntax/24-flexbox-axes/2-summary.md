@@ -141,7 +141,7 @@ flex-direction: row                     flex-direction: column
 | `align-content` | **교차축** | **줄**들을 (`flex-wrap` 이 `wrap` 일 때만 — 줄이 하나여도 먹는다. 26번) |
 
 - `justify-content` 는 **묶음**을 움직이고 `align-items` 는 **개별 아이템**을 움직인다.\
-  이름이 `content`(내용 전체) 대 `items`(각 아이템)로 갈리는 것이 그 차이를 그대로 적은 것이다.
+  이름이 `content`(내용 전체) 대 `items`(각 아이템)로 나뉘는 것이 그 차이를 그대로 적은 것이다.
 
 ### (4) 같은 선언, `flex-direction` 만 바꾸면 90도 돈다
 
@@ -398,7 +398,7 @@ flex-wrap: nowrap  -> 항목 y = 0    (계산값은 똑같이 center 인데 아�
 
 `nowrap` 이면 **줄이라는 개념 자체가 없어서** `align-content` 가 볼 것이 없다.
 `wrap` 이면 **줄이 하나여도 「줄」이 있으므로** 그 줄을 교차축에서 옮긴다.
-실무에서는 `wrap` 을 켜 놓고 줄이 하나로 끝나는 경우가 흔하므로 **이 구분이 실제로 갈린다.**
+실무에서는 `wrap` 을 켜 놓고 줄이 하나로 끝나는 경우가 흔하므로 **이 구분이 실제로 나뉜다.**
 정본은 [목록의 **26번 주제**](../26-flex-wrap-gap-order/).
 
 ### 6. `height` 를 안 줬는데 세로 가운데가 안 된다
@@ -423,7 +423,7 @@ flex-wrap: nowrap  -> 항목 y = 0    (계산값은 똑같이 center 인데 아�
 | ★ 아이템의 `W41`·`W32`·`H40` 같은 치수 | ★ **관찰일 뿐이다.** `system-ui` 가 이 머신에서 어느 글꼴로 풀리느냐에 달렸다 — 글꼴이 다르면 padding 바깥의 글자 폭이 달라진다 |
 | `align-content: center` 의 계산값이 `nowrap` 에서도 `center` 로 남는 것 | **명세**(계산값은 지정한 키워드 그대로). 실측도 그랬다 — **버려진 게 아니라 할 일이 없었던 것** |
 
-★★ **「계산값 단계 이후에서 갈리는」 자리가 이 주제에 둘 있다.** 세 창(`cssRules` · `querySelectorAll` · `getComputedStyle`)이 **전부 정상인데 결과만 다르다.**
+★★ **「계산값 단계 이후에서 달라지는」 자리가 이 주제에 둘 있다.** 세 창(`cssRules` · `querySelectorAll` · `getComputedStyle`)이 **전부 정상인데 결과만 다르다.**
 
 - `justify-self: end` 를 flex 아이템에 주면 **계산값은 `end` 로 멀쩡히 남는데** 아이템의 `left` 는 한 픽셀도 안 움직인다(실측: 준 판과 안 준 판이 똑같이 50).
 - `align-content: center` 를 `flex-wrap: nowrap` 컨테이너에 주면 **계산값은 `center` 인데** 아이템 `y` 는 0 이다(`wrap` 으로 바꾸면 같은 계산값으로 90 이 된다).
@@ -462,7 +462,7 @@ flex-wrap: nowrap  -> 항목 y = 0    (계산값은 똑같이 center 인데 아�
 - [`../README.md`](../README.md) — CSS 문법·API 주제 목록(이 주제는 24번) · 「버전·지원 기준」의 Baseline 표
 - [목록의 **25번 주제**](../25-flex-shorthand-and-sizing/)(`flex` 단축 — `grow`/`shrink`/`basis`) — **아이템의 크기가 정해지는 규칙**은 거기. 이 문서는 크기가 정해진 뒤의 배치만 다룬다
 - [목록의 **26번 주제**](../26-flex-wrap-gap-order/)(줄바꿈·`gap`·`order`) — `flex-wrap`·`align-content`·`order` 의 정본
-- [목록의 **16번 주제**](../16-display-inner-outer/)(`display` 의 내부/외부 값) — `flex` 와 `inline-flex` 가 갈리는 자리
+- [목록의 **16번 주제**](../16-display-inner-outer/)(`display` 의 내부/외부 값) — `flex` 와 `inline-flex` 가 달라지는 자리
 - 목록의 [**27**](../27-grid-track-sizing/)~[**29**](../29-grid-template-areas/)번 주제(Grid) — 두 축을 동시에 다뤄야 할 때. `justify-self` 는 거기 있다
 - [목록의 **32번 주제**](../32-logical-properties-and-writing-mode/)(논리 속성과 글쓰기 방향) — `row` 가 왜 "가로"가 아닌지의 정본
 - [`history/web/03-HTML-CSS-진화.md`](../../../../history/web/03-HTML-CSS-진화.md) — **1차원 레이아웃이 언제 왜 들어왔나는 거기.** 여기는 오늘의 규칙만

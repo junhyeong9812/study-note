@@ -349,7 +349,7 @@ Arrays.asList 에 removeIf(아무것도 안 걸림) : OK
 - `Arrays.asList(1, 3).removeIf(짝수)` → **`OK`** (지울 것이 없다)
 - `List.of(1, 3).removeIf(짝수)` → **`UnsupportedOperationException`** (지울 것이 없어도)
 
-**둘째와 셋째가 갈리는 이유**
+**둘째와 셋째가 달라지는 이유**
 
 ```text
   Arrays.asList                          List.of
@@ -517,7 +517,7 @@ unmodifiableList(unmodifiableList) == 원본 : true
 
 **javac 13회 · java 15회**(40-c 의 3회 실행 포함).
 
-**버전별로 갈린 것**
+**버전별로 달라진 것**
 
 ```text
 40-a · 40-b · 40-d : 세 버전 출력이 한 글자도 같다
@@ -528,7 +528,7 @@ unmodifiableList(unmodifiableList) == 원본 : true
 ```
 
 - ★ **이 주제에서는 「세 버전 비교」가 답을 못 주는 축이 있다.**\
-  `Set.of` 의 순서는 **버전이 아니라 JVM 실행마다** 흔들린다.\
+  `Set.of` 의 순서는 **버전이 아니라 JVM 실행마다** 실행마다 달라진다.\
   버전만 바꿔 가며 돌렸다면 "세 번 다 같았다"는 **잘못된 안심**을 얻었을 수도 있었다.
 
 **구현 의존 항목** (버전이 오르면 다시 돌려야 하는 것)

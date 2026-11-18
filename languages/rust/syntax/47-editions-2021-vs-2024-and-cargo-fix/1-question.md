@@ -368,7 +368,7 @@ fn main() {
 
 - 4번의 diff 를 1번 격자의 행들과 견주면, 이 패키지에 있던 에디션 차이 중 diff 에 **없는** 것이 있나? 있다면 판을 올린 뒤 무엇이 달라졌나? cargo 문서가 `cargo fix --edition` 뒤에 하라는 단계는 무엇인가?
 
-### 9. ★★ 이미 잰 칸들 (연결)
+### 9. ★★ 이미 잰 항목들 (연결)
 
 - 1번 격자의 행 중 다른 편이 **깊게** 잰 것이 있다 — [42번](../42-refcell-cell-interior-mutability/) · [32번](../32-impl-trait-argument-return-position-and-2024-capture/) · [37번](../37-intoiterator-three-forms-iter-iter-mut-into-iter/) · [20번](../20-if-let-while-let-let-else-and-let-chains/) · [07번](../07-const-static-and-const-fn/) · [11번](../11-borrow-checker-rejections/) 은 각각 어느 행인가?
 

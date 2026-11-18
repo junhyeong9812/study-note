@@ -241,7 +241,7 @@ x | {'c': 3}                   | 'dict'                 | 'OrderedDict'
 * ★★★ **`OrderedDict` 끼리의 `==` 는 순서를 본다**(`False`) — 한쪽이 `dict` 면 안 본다(`True`).
 * ★★ `dict` 에는 **`move_to_end` 가 없고**(`AttributeError`), **`popitem` 이 인자를 안 받는다**(`TypeError`).
 * ★ `|` 는 **왼쪽 타입을 따른다** — `dict | {...}` 는 `dict`, `OrderedDict | {...}` 는 `OrderedDict`.
-* ★ **안 갈린 넷** — `list(x)`·`reversed`·인자 없는 `popitem()`·(`dict` 와의) `==`. 3.7·3.8 에서 `dict` 가 따라잡은 자리다.
+* ★ **안 달라진 넷** — `list(x)`·`reversed`·인자 없는 `popitem()`·(`dict` 와의) `==`. 3.7·3.8 에서 `dict` 가 따라잡은 자리다.
 
 ### 5. 쓰기는 `user` 에만 · 첫 `del` 은 `defaults` 를 드러내고 둘째 `del` 은 `KeyError` · 나중에 넣은 것도 보인다
 
@@ -351,7 +351,7 @@ except TypeError as exc:
 
 **왜 그런가**
 
-* ★★★ `most_common` 의 동률 순서는 **문서 보장**이다 — *"Elements with equal counts are ordered in the order first encountered"*. 이 판에서 그렇게 나온 것은 그 보장의 **관찰**일 뿐 근거가 아니다.
+* ★★★ `most_common` 의 동률 순서는 **문서 보장**이다 — *"Elements with equal counts are ordered in the order first encountered"*. 이 버전에서 그렇게 나온 것은 그 보장의 **관찰**일 뿐 근거가 아니다.
 * ★★★ `deque` 에 대해 이 문서가 **말할 수 있는 것** — 문서의 복잡도 문장(**양끝 O(1) · 가운데 인덱스 O(n)**)과, `maxlen`·`insert`·슬라이스의 **동작**(실행).
   **말할 수 없는 것** — 「`list` 보다 빠르다」. **시간을 한 번도 재지 않았고**, 복잡도가 같은 자리(예: 끝에 붙이기)에서 어느 쪽이 빠른지는 복잡도로 답이 안 나온다.
 
@@ -385,14 +385,14 @@ except TypeError as exc:
 | `dict` 대 `OrderedDict` | `python3 - <e43_ordered.py` | 3 | **4 / 8** |
 | `ChainMap` · `deque` | `python3 - <e43_chainmap.py` · `<e43_deque.py` | 3씩 | 첫 매핑에만 · 반대편을 민다 |
 
-**구현 의존 항목** — 판이 오르면 다시 돌려야 하는 것.
+**구현 의존 항목** — 버전이 오르면 다시 돌려야 하는 것.
 
 | 항목 | 왜 |
 |---|---|
 | 예외 **문구** | 구현이다 |
 
-★ **안 흔들리는 칸** — 격자 칸 · **「5 / 8」·「4 / 8」** · `len` 전→후 · factory 호출 수 · `(exit N)`.
-★★ **이 주제가 한 번도 안 잰 것** — **시간·메모리**(부적용). 복잡도는 전부 문서 문장이다.
+★ **달라지지 않는 항목** — 격자 칸 · **「5 / 8」·「4 / 8」** · `len` 전→후 · factory 호출 수 · `(exit N)`.
+★★ **이 주제가 한 번도 안 잰 것** — **시간·메모리**(해당 없음). 복잡도는 전부 문서 문장이다.
 
 ## 실행 환경
 

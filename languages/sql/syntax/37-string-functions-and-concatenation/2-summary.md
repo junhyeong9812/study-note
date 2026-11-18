@@ -2,7 +2,7 @@
 
 ## 한눈에 — 쉽게 말하면
 
-**문자열 연산에서 두 엔진이 갈리는 자리는 셋이다.**
+**문자열 연산에서 두 엔진이 달라지는 자리는 셋이다.**
 
 ```text
 (1) || 이 무엇인가
@@ -307,7 +307,7 @@ PG 의 LENGTH   -> 5   (CHAR_LENGTH 와 같다)
 MySQL 의 LENGTH -> 9  (OCTET_LENGTH 와 같다)
 ```
 
-그림 해설 — **`CHAR_LENGTH` 와 `OCTET_LENGTH` 는 두 엔진에서 같다.** 갈리는 것은 `LENGTH` 라는 **이름 하나**다.\
+그림 해설 — **`CHAR_LENGTH` 와 `OCTET_LENGTH` 는 두 엔진에서 같다.** 달라지는 것은 `LENGTH` 라는 **이름 하나**다.\
 대가 — `WHERE LENGTH(name) <= 10` 이 한글 이름에서 **세 배 엄격**해진다. MySQL 에서 한글 세 글자가 9 로 세어진다.
 
 **처방은 `LENGTH` 를 아예 안 쓰는 것이다.**
@@ -341,7 +341,7 @@ MySQL 의 LENGTH -> 9  (OCTET_LENGTH 와 같다)
 
 인코딩 자체(한글이 왜 3바이트인가)는 [`foundations/data-representation`](../../../../cs/foundations/data-representation/)이 정본이다.
 
-### 4. 잘라내기 — `SUBSTRING` 의 경계가 갈린다
+### 4. 잘라내기 — `SUBSTRING` 의 경계가 달라진다
 
 **언제 쓰나** — 코드값에서 앞 몇 자리를 뽑을 때.
 
@@ -363,7 +363,7 @@ MySQL 의 LENGTH -> 9  (OCTET_LENGTH 와 같다)
 +------+------+
 ```
 
-**경계를 벗어나면 갈린다.**
+**경계를 벗어나면 달라진다.**
 
 ```text
 ### SQL: SELECT SUBSTRING('abcdef', 0, 3) AS zero_start, SUBSTRING('abcdef', -2) AS neg;
@@ -392,11 +392,11 @@ SUBSTRING('abcdef', -2)          PG                      MySQL
                                  전부 포함 -> 'abcdef'    -> 'ef'
 ```
 
-그림 해설 — **두 엔진 다 「1부터 센다」는 같다.** 갈리는 것은 **범위 밖 인덱스의 해석**이다.\
+그림 해설 — **두 엔진 다 「1부터 센다」는 같다.** 달라지는 것은 **범위 밖 인덱스의 해석**이다.\
 대가 — 오프셋을 계산해서 넣는 코드(`SUBSTRING(s, pos - 1, n)`)는 `pos = 1` 일 때 **조용히 다른 답**을 낸다.\
 처방은 `GREATEST(pos, 1)` 로 **1 미만을 막는 것**이다.
 
-### 5. 갈리지 않는 것들 — 여기까지 외우면 과잉이다
+### 5. 달라지지 않는 것들 — 여기까지 외우면 과잉이다
 
 **언제 쓰나** — 「문자열 함수는 전부 방언이다」라는 인상을 교정할 때.
 
@@ -464,7 +464,7 @@ SUBSTRING('abcdef', -2)          PG                      MySQL
 +---+
 ```
 
-**`TRIM`·`REPLACE`·`UPPER`/`LOWER`·`LPAD`/`RPAD`·`REPEAT`·`REVERSE`·`POSITION` 은 한 자리도 안 갈렸다.**\
+**`TRIM`·`REPLACE`·`UPPER`/`LOWER`·`LPAD`/`RPAD`·`REPEAT`·`REVERSE`·`POSITION` 은 한 자리도 달라지지 않았다.**\
 방언 경계는 **`||`·`CONCAT` 의 `NULL`·`LENGTH`·`SUBSTRING` 의 범위 밖** 넷에 몰려 있다.
 
 ### 6. 이 주제가 넘겨주는 것 — 대소문자는 함수가 아니라 collation 이 정한다
@@ -595,8 +595,8 @@ SUBSTRING(s, p, n)          -- 양쪽 공통. 단 p < 1 의 해석이 갈린다
 - **`CONCAT` 의 `NULL` 처리는 두 엔진이 반대다** — PG 는 건너뛰고 MySQL 은 전체를 `NULL` 로 만든다.
 - **`CONCAT_WS` 만 양쪽에서 같다** — 둘 다 `NULL` 을 건너뛴다.
 - **`LENGTH` 는 PG 에서 글자, MySQL 에서 바이트**다. `CHAR_LENGTH`·`OCTET_LENGTH` 는 공통이다.
-- `SUBSTRING` 은 **1부터 세는 것이 같고, 1 미만 인덱스의 해석이 갈린다.**
-- `TRIM`·`REPLACE`·`UPPER`·`LPAD`·`REPEAT`·`REVERSE`·`POSITION` 은 **한 자리도 안 갈린다.**
+- `SUBSTRING` 은 **1부터 세는 것이 같고, 1 미만 인덱스의 해석이 달라진다.**
+- `TRIM`·`REPLACE`·`UPPER`·`LPAD`·`REPEAT`·`REVERSE`·`POSITION` 은 **한 자리도 안 달라진다.**
 - `'abc' = 'ABC'` 의 답은 **문자열 함수가 아니라 collation** 이 정한다(39번).
 
 ## 관련 자료

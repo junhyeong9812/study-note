@@ -26,7 +26,7 @@
 
 ### 3. 덤프 + DDL = 전체 대기열
 
-- `pg_dump`는 테이블마다 `ACCESS SHARE` 락을 잡고 끝까지 쥔다.
+- `pg_dump`는 테이블마다 `ACCESS SHARE` 락을 잡고 끝까지 잡는다.
 - `ALTER TABLE`은 `ACCESS EXCLUSIVE`가 필요하다. `ACCESS SHARE`와 충돌하므로 **대기**한다.
 - 이후의 `SELECT`(`ACCESS SHARE`)는 덤프와는 충돌하지 않지만, 앞에서 기다리는 `ACCESS EXCLUSIVE` **뒤에 줄을 선다.**
 - 로컬 재현(PostgreSQL 17.11): `pg_blocking_pids`가 `SELECT` → `{ALTER}`, `ALTER` → `{덤프}`로 이어졌다. 덤프가 끝날 때까지 그 테이블의 모든 요청이 멈춘다.

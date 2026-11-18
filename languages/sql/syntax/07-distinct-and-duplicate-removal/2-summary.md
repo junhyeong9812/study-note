@@ -275,7 +275,7 @@ PG COUNT(DISTINCT (a, b)) = 4
    -> 네 조합이 전부 서로 다르다
 ```
 
-대가 — **같은 의도를 적었는데 답이 2와 4로 갈린다.** 이식할 때 이 차이를 모르면 지표가 조용히 바뀐다.\
+대가 — **같은 의도를 적었는데 답이 2와 4로 나뉜다.** 이식할 때 이 차이를 모르면 지표가 조용히 바뀐다.\
 양쪽에서 같게 하려면 **`NULL` 을 먼저 없애거나**(`COALESCE`) **부분질의로 접은 뒤 센다** — `SELECT COUNT(*) FROM (SELECT DISTINCT a, b FROM t) x`.
 
 ---
@@ -305,7 +305,7 @@ ERROR 3065 (HY000) at line 1: Expression #1 of ORDER BY clause is not in SELECT 
 
 #### 방언 — 「목록에 있어야 한다」의 엄격도
 
-식으로 감싸면 갈린다.
+식으로 감싸면 달라진다.
 
 ```text
 ### SQL: SELECT DISTINCT dept_id FROM emp ORDER BY dept_id * 1;
@@ -542,7 +542,7 @@ SUM(DISTINCT <열>) · AVG(DISTINCT <열>)
 - [PostgreSQL 18 · SELECT](https://www.postgresql.org/docs/18/sql-select.html) — `DISTINCT` 와 `DISTINCT ON` 이 같은 페이지에 있다.
 - [MySQL 8.4 · DISTINCT Optimization](https://dev.mysql.com/doc/refman/8.4/en/distinct-optimization.html)
 - [01 논리적 질의 처리 순서](../01-logical-query-processing-order/) — **경계: 그쪽은 `DISTINCT` 가 6번 칸이라는 것까지, 여기는 그래서 무엇을 기준으로 지우나부터.**
-- [04 NULL 의 3값 논리](../04-null-three-valued-logic/) — **경계: 그쪽은 `NULL` 이 묶기에서 하나가 된다는 사실까지, 여기는 그 규칙이 `COUNT(DISTINCT)` 에서 또 갈리는 것부터.**
+- [04 NULL 의 3값 논리](../04-null-three-valued-logic/) — **경계: 그쪽은 `NULL` 이 묶기에서 하나가 된다는 사실까지, 여기는 그 규칙이 `COUNT(DISTINCT)` 에서 또 달라지는 것부터.**
 - [05 NULL 비교](../05-null-comparison-is-distinct-from/) — PG 의 `IS NOT DISTINCT FROM` 이 **이 주제의 묶기 기준을 비교 연산자로 꺼내 쓴 것**이다.
 - [08 ORDER BY](../08-order-by-null-position-stability/) — `DISTINCT ON` 의 대표 행을 `ORDER BY` 가 정한다. `NULL` 위치가 거기서 사고를 만든다.
 - [`data-structure/19-probabilistic-counting`](../../../../cs/data-structure/19-probabilistic-counting/) — **경계: 근사 계수(HLL 류)는 거기, 여기는 정확 계수의 문법과 `NULL` 처리.**
@@ -577,12 +577,12 @@ SUM(DISTINCT <열>) · AVG(DISTINCT <열>)
 
 - **`DISTINCT` 는 「비용이 드는 정정」이다.** 중복이 나오는 자리를 고치는 대신 결과에서 지우는 것이라, 엔진은 **결과 전체를 모아 정렬하거나 해시**해야 한다. 스트리밍으로 흘려보낼 수 없다는 뜻이고, 그래서 큰 결과에서는 여기가 병목이 된다.
 - **`UNION` 이 조용히 `DISTINCT` 를 한다.** `UNION ALL` 과 달리 `UNION` 은 중복을 지운다 — [16번](../16-full-outer-join/)에서 MySQL 의 `FULL OUTER JOIN` 우회를 `UNION` 으로 짜면 값이 같은 행이 접혀 결과가 줄어드는 사고가 그것이다. 집합 연산의 정본은 [목록의 **34번 주제**](../34-set-operations-union-intersect-except/)다.
-- **`COUNT(DISTINCT)` 두 판의 답이 2와 4로 갈린 것**은 문법 차이가 아니라 **「`NULL` 이 든 조합을 셀 것인가」라는 설계 판단의 차이**다. 두 엔진 중 어느 쪽이 옳다기보다, 지표를 정의할 때 그 질문에 먼저 답해야 한다는 신호로 읽는 편이 낫다.
+- **`COUNT(DISTINCT)` 두 버전의 답이 2와 4로 달라진 것**은 문법 차이가 아니라 **「`NULL` 이 든 조합을 셀 것인가」라는 설계 판단의 차이**다. 두 엔진 중 어느 쪽이 옳다기보다, 지표를 정의할 때 그 질문에 먼저 답해야 한다는 신호로 읽는 편이 낫다.
 
 ## 실행 환경
 
 **기준 소스** — [PostgreSQL 18 · SELECT · DISTINCT Clause](https://www.postgresql.org/docs/18/sql-select.html) · [MySQL 8.4 · DISTINCT Optimization](https://dev.mysql.com/doc/refman/8.4/en/distinct-optimization.html)\
 **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-본문에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+본문에 실린 출력은 **전부 이 두 서버에 실제로 실행해서 받은 것**이다. 지어낸 출력은 없다.\
 **버전** — `DISTINCT` 자체는 두 엔진 모두 오래전부터 있다. `DISTINCT ON` 은 PG 전용이고 MySQL 에는 문법이 없다.\
 **선행** — [01 논리적 질의 처리 순서](../01-logical-query-processing-order/)(`DISTINCT` 가 6번 칸) · [04 NULL 의 3값 논리](../04-null-three-valued-logic/)(`NULL` 을 하나로 묶는 예외).

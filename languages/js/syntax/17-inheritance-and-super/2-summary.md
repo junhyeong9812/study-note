@@ -1,7 +1,7 @@
 # js/syntax/17 — 상속과 `super`: 「`super` 는 정의된 자리를 기억하고, `this` 는 부른 자리를 따른다」 — 정리 (힌트)
 
 `identical 22  ·  differs 1  ·  total 23`
-> ★ 갈린 한 블록은 [19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md)의 것이다. 이 주제의 블록은 **전부 identical** 이다.
+> ★ 달라진 한 블록은 [19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md)의 것이다. 이 주제의 블록은 **전부 identical** 이다.
 >
 > **선행** — [16 — `class` 문법](../16-class-syntax/2-summary.md) · [15 — 프로토타입 체인](../15-prototype-chain/2-summary.md) · [07 — `this` 바인딩 네 규칙](../07-this-binding-four-rules/2-summary.md).
 > ★★★ **15번의 결론을 그대로 받아 쓴다** — 「**탐색은 체인을 타고, 값은 수신자에 떨어진다**」 · 「**체인 위 setter 의 `this` 는 수신자**」.
@@ -334,7 +334,7 @@ new Legacy()  (returns an object, not the string)   -> object
 - ★★ **`[2]` — 안 부르면 끝날 때 같은 `ReferenceError`** 다(`constructor() {}`). 문구 뒷부분 「`or returning from derived constructor`」가 이 경우다.
   ★ **객체를 반환하면 `super()` 없이도 된다** — 결과는 `{"replaced":true}` 이고 **이 클래스의 인스턴스가 아니다**(`false`).
 - ★★ **원시값 반환은 파생에서만 `TypeError`** 다 — `Derived constructors may only return object or undefined`. **`super(1)` 뒤여도** 같다.
-  ★ **기반 클래스는 원시 반환을 조용히 무시한다** — `this.a = 1; return 7` 의 결과가 `{"a":1}` 이다. **같은 문장이 상속 유무로 갈린다.**
+  ★ **기반 클래스는 원시 반환을 조용히 무시한다** — `this.a = 1; return 7` 의 결과가 `{"a":1}` 이다. **같은 문장이 상속 유무로 나뉜다.**
 - ★★ **`[3]` — 두 번 부르면 `ReferenceError`** 다 — `Super constructor may only be called once`.
   ★ 부모 생성자는 **두 번째에도 돈다**고 봐야 할지, 막히기 전에 멈추는지는 이 블록이 **묻지 않았다.**
 - ★ **`[4]` — 암묵 생성자는 인자를 전부 넘긴다**(`new Implicit(42).v` 가 `42`). 명세의 NOTE 가
@@ -775,7 +775,7 @@ tag / size / get('k')                               [object Map] / 1 / 1
   ★ 고치는 법 둘 — 생성자에서 `this.name = ...`(own 이 된다 — own 키에 `name` 이 보인다) 또는 **프로토타입에 `name`**(`ProtoNamed`).
   ★ `cause` 옵션(ES2022)은 `super(m, opts)` 로 넘기면 own `cause` 가 된다 — `e2.cause === e1` 이 `true`.
 - ★★ **`e.stack` 은 ECMA-262 에 없다** — V8(호스트/엔진)의 것이다. 그래서 `stack first line` 줄들과 own 키 목록의 `stack` 은 **엔진 칸**이다.
-  ★ 이 판에서는 `name` 을 `super()` 뒤에 대입했는데도 `stack` 첫 줄이 `NamedError: bad input` 이다 — **이유는 명세 밖이라 적지 않는다.**
+  ★ 이 버전에서는 `name` 을 `super()` 뒤에 대입했는데도 `stack` 첫 줄이 `NamedError: bad input` 이다 — **이유는 명세 밖이라 적지 않는다.**
 - ★★ **옛 방식 `Error.call(this, m)` 은 `message` 를 잃는다** — `e3.message` 가 `""`(빈 문자열), 브랜드 `[object Object]`, own `stack` 도 없다.
   ★ `Error.call(this)` 는 `this` 를 채우지 않는다 — 출력이 그렇게 답한다.
 - ★ **`[5]` — `extends Map` 도 같다.** 브랜드 `[object Map]` · `size` `1` — `Map` 생성자가 만들었다.
@@ -794,7 +794,7 @@ Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.m
 | 다이아몬드 | 부모가 한 번만 돈다 — 모두가 `super()` 를 부를 때 | **생기지 않는다** |
 
 ★★★ **「`super` 는 부모가 아니다」는 파이썬에서만 맞다.** JS 의 `super` 는 **정의 자리의 부모**이고, 누가 부르든 형제로 새지 않는다.
-★ 그래서 이 주제에서 **MRO 창은 부적용**이다 — 계산할 줄이 없다.
+★ 그래서 이 주제에서 **MRO 창은 해당 없음**이다 — 계산할 줄이 없다.
 
 ## 문법 — 형태와 규칙
 
@@ -893,7 +893,7 @@ Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.m
 - **`extends Array` 인스턴스가 이그조틱 배열이고 브랜드가 `[object Array]` 인 것** · **`map`/`filter`/`slice` 가 `Symbol.species` 를 따르는 것.**
 - **`Error.prototype.name` 이 `"Error"` 이고 하위 클래스가 그것을 빌려 보는 것** · **`cause` 옵션이 own `cause` 가 되는 것**(ES2022).
 
-### 엔진(V8) 구현 · 이 판의 관찰
+### 엔진(V8) 구현 · 이 버전의 관찰
 
 - **예외 문구 전부** — `Must call super constructor in derived class before accessing 'this' or returning from derived constructor` ·
   `Super constructor may only be called once` · `Derived constructors may only return object or undefined` ·
@@ -901,7 +901,7 @@ Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.m
   `'super' keyword unexpected here`. **종류만 명세가 정한다.**
 - ★★ **`Super constructor null of N` 의 `null`** — 사슬이 실제로 가리키는 것은 `Function.prototype` 이다(`[5]` 둘째 줄). 문구는 소스를 옮긴 것이다.
 - ★★ **`#label` 문구의 「class did not declare it」** — 선언은 했고 설치 전이다. 문구가 원인을 틀리게 말한다.
-- **두 판(18·20)이 이 주제에서 한 글자도 안 갈렸다** — 같은 V8 계열이기 때문이지 보장이 아니다.
+- **두 판(18·20)이 이 주제에서 한 글자도 달라지지 않았다** — 같은 V8 계열이기 때문이지 보장이 아니다.
 
 ### 호스트가 정하는 것 — ECMA-262 밖
 
@@ -979,7 +979,7 @@ Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.m
 
 ## 실행 환경
 
-★★★ **이 주제의 본체는 ① 추상 연산에 로그 심기다.**
+★★★ **이 주제의 핵심은 ① 추상 연산에 로그 심기다.**
 `super.who()` 의 **값**은 `Animal.who` 라고만 답한다 — 그 값이 **누구의 윗집에서 왔는지, 누구를 수신자로 넘겼는지**는 한 글자도 말하지 않는다.
 그래서 부모 칸을 `Proxy` 로 감싸 트랩 로그를 찍었다 — `guest.m()` 은 **윗집 관계가 전혀 없는** 부모 칸에 `get(who)` 를 묻고, 수신자로 **`guest`** 를 넘긴다.
 부모 생성자 안에서 자식 메서드가 **무엇을 보나**도 같은 창이다 — 생성 순서를 **번호 붙은 로그**로 찍었다(동작 (4)).
@@ -1007,27 +1007,27 @@ Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.m
 | 공개/`#private` 필드 · `#x in obj` · `Object.hasOwn` · `Error` 의 `cause` 옵션 | **ES2022** |
 | `__proto__:` 리터럴(동작 (3)의 객체 리터럴 예) | **Annex B**([13번](../13-object-literals-and-properties/2-summary.md)이 정본) |
 
-**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+**★★★ 이 주제가 쓰는 창 — 그리고 해당 없는 창**
 
 | 창 | 이 주제에서 무엇을 보나 |
 |---|---|
-| ★★★ **① 추상 연산에 로그 심기**(본체) | 부모 칸의 `get` 트랩이 `super.who()` 의 **질문 상대와 수신자**를 찍는다 · 부모 생성자 안의 가상 호출을 **번호 붙은 생성 로그**로 찍는다 |
+| ★★★ **① 추상 연산에 로그 심기**(핵심) | 부모 칸의 `get` 트랩이 `super.who()` 의 **질문 상대와 수신자**를 찍는다 · 부모 생성자 안의 가상 호출을 **번호 붙은 생성 로그**로 찍는다 |
 | ★★★ **③ 브랜드 태그** `Object.prototype.toString.call` | **내장 상속의 판정 창이다.** `class extends Array` 는 `[object Array]`, 옛 방식은 `[object Object]` — 그런데 옛 방식도 `instanceof Array` 는 `true` 다. **`instanceof` 가 속는 자리에서 브랜드만 바른 답을 한다** |
 | ★★ **④ 예외의 `constructor.name` + `message`** | `ReferenceError` 두 문구(`super()` 전 `this` · 두 번 호출) · `TypeError` 넷(원시 반환 · `extends null` · `#private` 미설치 · 추상 클래스 흉내) · `SyntaxError` 한 문구(`super` 를 못 쓰는 자리) |
 | ★ **② 전수 격자** | 작게만 쓴다 — `super()` 를 **전에 / 안 / 두 번** 부르는 것과 **무엇을 반환하나** 의 칸을 한 블록에 모았다 |
-| ★ **⑤ 두 판 대조기** | 이 주제의 블록은 **두 판에서 전부 identical** 이다 |
+| ★ **⑤ 두 판 대조기** | 이 주제의 블록은 **두 버전에서 전부 identical** 이다 |
 | ★★ **창을 바꿔 물었다**(제5의 상태) | 부모 생성자 안에서 자식의 `#label` 을 읽으면 **값 창이 `TypeError` 로 닫힌다.** 그래서 [16번](../16-class-syntax/2-summary.md)의 브랜드 검사 `#label in this` 로 바꿔 물었다 — `false`, 즉 「`undefined` 인 칸」이 아니라 「**칸이 아직 없다**」 |
-| ★ **부적용 — 진단의 `(행,열)`**(18-C) | `SyntaxError` 는 두 줄 있지만 묻는 것이 「**어디에 묶이나**」가 아니라 「**컴파일되나**」다. `compiles` 와 `SyntaxError` 한 단어로 답이 나서 **가를 열이 없다** |
-| ★ **부적용 — 파이썬 MRO 창** | JS 는 **단일 상속**이다. 조상을 한 줄로 세울 일이 없어 `__mro__` 에 해당하는 물건이 **없다** — 잴 것이 없다(동작 (6)) |
+| ★ **해당 없음 — 진단의 `(행,열)`**(18-C) | `SyntaxError` 는 두 줄 있지만 묻는 것이 「**어디에 묶이나**」가 아니라 「**컴파일되나**」다. `compiles` 와 `SyntaxError` 한 단어로 답이 나서 **가를 열이 없다** |
+| ★ **해당 없음 — 파이썬 MRO 창** | JS 는 **단일 상속**이다. 조상을 한 줄로 세울 일이 없어 `__mro__` 에 해당하는 물건이 **없다** — 잴 것이 없다(동작 (6)) |
 | ★ **안 쟀다 — 성능** | 「`super` 호출은 느리다」·「내장 상속은 느리다」 같은 말을 **한 줄도 쓰지 않는다** |
 | ★ **안 돌렸다 — 브라우저** | 이 배치는 Node 두 판만 돌렸다 |
 | ★ **안 돌렸다 — 두 번 컴파일**(엄격/비엄격) | 클래스 몸통은 **언제나 엄격**이라(16번) 클래스 쪽에는 비엄격 판이 없다. 객체 리터럴 메서드의 `super` 는 비엄격 파일에서만 돌렸다 |
 
-**★ 흔들리는 칸 / 안 흔들리는 칸**
+**★ 실행마다 달라지는 항목 / 달라지지 않는 항목**
 
-| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+| 실행마다 달라진다(근거로 쓰지 않는다) | 달라지지 않는다(근거로 쓴다) |
 |---|---|
-| 예외 **문구**(V8 — 판이 오르면 바뀐다) | ★★★ **예외의 종류** · 트랩 로그의 **질문 상대와 수신자** |
+| 예외 **문구**(V8 — 버전이 오르면 바뀐다) | ★★★ **예외의 종류** · 트랩 로그의 **질문 상대와 수신자** |
 | ★★ `e.stack` 의 **존재와 첫 줄** — **ECMA-262 에 없다** | ★★★ **생성 로그의 순서** · 체인을 글자로 찍은 줄 |
 | `own keys of e2` 에 `stack` 이 끼는 것(엔진) | ★★ **브랜드 태그** `[object Array]` · `[object Error]` · `[object Map]` |
 

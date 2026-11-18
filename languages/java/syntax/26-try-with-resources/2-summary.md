@@ -605,7 +605,7 @@ Ex.java:6: error: variable r used as a try-with-resources resource neither final
 | 자원을 메서드 밖에서 받아 왔다 | **닫지 않는다.** 준 쪽이 닫는다 — 이 문법을 쓰면 안 되는 자리다 |
 | `System.in` 을 감싼 `Scanner` | 닫지 않는다. 닫으면 표준 입력이 닫힌다 |
 | 컬렉션 기반 `Stream` | 닫을 필요 없다(javadoc 이 그렇게 적는다) |
-| `Files.lines`·`Files.walk` 가 준 `Stream` | **닫는다.** 파일 핸들을 쥐고 있다 |
+| `Files.lines`·`Files.walk` 가 준 `Stream` | **닫는다.** 파일 핸들을 잡고 있다 |
 | 락(`ReentrantLock`) | 이 문법을 못 쓴다 — `try { lock.lock(); ... } finally { lock.unlock(); }` |
 | 자원을 여럿 여는데 순서가 중요하다 | **한 `try` 에 세미콜론으로 나열한다.** 역순 close 를 언어가 보장한다 |
 

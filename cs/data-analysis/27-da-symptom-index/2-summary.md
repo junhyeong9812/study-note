@@ -1,4 +1,4 @@
-# data-analysis/27-da-symptom-index — 증상 사전: 실험 비율 틀어짐(SRM)·합계가 안 맞음·너무 좋은 결과·부분군 반전·날짜 경계 어긋남·백분위 병합 오류 → 보이는 형태·원인 후보(통계 원리)·확인 방법·leaf — 정리 (힌트)
+# data-analysis/27-da-symptom-index — 증상 사전: 실험 비율 틀어짐(SRM)·합계가 안 맞음·너무 좋은 결과·부분군 반전·날짜 경계 불일치·백분위 병합 오류 → 보이는 형태·원인 후보(통계 원리)·확인 방법·leaf — 정리 (힌트)
 
 ## 해결하는 문제
 
@@ -123,8 +123,8 @@ fwer = 1 - (1 - alpha) ** m                                          # (6) m개 
 ```
 
 - 관찰
-  - (1) 같은 50.8 : 49.2도 총 10만 명이면 p ≈ 4×10⁻⁷, 총 1,000명이면 p = 0.61이다. "몇 %p 어긋나면 SRM"이라는 고정 문턱은 없다. 비율과 표본 크기를 함께 넣어 검정한다([15](../15-ab-pitfalls-srm-peeking/2-summary.md) 실험과 같은 값).
-  - (2) 1.95배는 "정수배 근처"로, 8.1%·14.2% 부족은 "부족"으로 갈렸다. 모양은 후보만 고른다. 18-5(연결 실패)와 18-1(0 채움)은 같은 "부족"으로 나와 이 규칙만으로는 갈리지 않는다. 확인 계산(미연결 비율, 0 비율)이 따로 필요하다.
+  - (1) 같은 50.8 : 49.2도 총 10만 명이면 p ≈ 4×10⁻⁷, 총 1,000명이면 p = 0.61이다. "몇 %p 어긋나면 SRM"이라는 고정 임계값은 없다. 비율과 표본 크기를 함께 넣어 검정한다([15](../15-ab-pitfalls-srm-peeking/2-summary.md) 실험과 같은 값).
+  - (2) 1.95배는 "정수배 근처"로, 8.1%·14.2% 부족은 "부족"으로 나뉘었다. 모양은 후보만 고른다. 18-5(연결 실패)와 18-1(0 채움)은 같은 "부족"으로 나와 이 규칙만으로는 달라지지 않는다. 확인 계산(미연결 비율, 0 비율)이 따로 필요하다.
   - (3) 전체 차이는 −2.51%p인데 두 층 모두 +이고, 층 크기로 표준화하면 +0.51%p다. 12번 노트의 출력(−2.50%p)과 끝자리가 다른 것은 이 계산이 반올림된 전환율(3.53% 등)에서 다시 계산했기 때문이다.
   - (4) p99의 평균(325ms)은 합친 분포의 p99(255ms)와 다르다. 이 합성 데이터에서는 평균이 더 컸다. 아래 SQL 실험처럼 데이터에 따라 더 작을 수도 있다. 방향이 정해져 있지 않다는 점이 요점이다.
   - (5) 총 24건은 같고 날짜별 건수만 다르다. "며칠 합계는 같은데 날짜별만 다름"이 시간대 문제의 표지다.
@@ -240,7 +240,7 @@ SELECT (SELECT round(avg(p)::numeric, 1) FROM (SELECT percentile_cont(0.99) WITH
 | 1차 지표는 변화 없음. 지표 20개 중 "평균 세션 수"만 p = 0.03, 리포트 제목이 그 지표 | 효과가 없어도 20개면 하나 이상 유의할 확률 약 64%(독립 가정, 실험 63%) | 사전 등록된 1차 지표 확인, Bonferroni(0.05/20 = 0.0025)·BH(0-2절 (6)) | [11-1](../11-multiple-comparisons/2-summary.md) |
 | 전체 효과 없음 → "iOS 신규 30대에서 +8%". 유의한 칸이 표본이 작은 칸에 몰림 | 쪼갠 칸 하나하나가 검정이다. 데이터를 보고 유의한 칸을 골랐다(실험 C의 89%) | 쪼갠 칸 총수를 m으로 보정, 찾은 세그먼트만 대상으로 새 실험 | [11-2](../11-multiple-comparisons/2-summary.md) |
 | 실험 대부분이 2~5일 만에 "유의"로 끝남. 종료일이 p값이 처음 0.05 아래로 내려간 날과 겹침 | 매일 보고 유의한 날 멈춤 — A/A로 같은 규칙을 20일 돌리면 약 23~24%가 "유의" | 종료 규칙·계획 표본 대조, 일별 p값 궤적 | [15-2](../15-ab-pitfalls-srm-peeking/2-summary.md) |
-| 지난 분기 "유의한 승리"의 효과 합으로 예측한 매출보다 실제가 훨씬 작음 | 검정력이 낮으면 우연히 크게 나온 추정만 문턱을 넘는다 — 유의한 실험만의 평균 효과가 진짜의 2.4배, 일부는 부호까지 틀림(26건) | 승리 실험의 재실험(holdout), 설계 검정력 | [10-3](../10-power-and-sample-size/2-summary.md) |
+| 지난 분기 "유의한 승리"의 효과 합으로 예측한 매출보다 실제가 훨씬 작음 | 검정력이 낮으면 우연히 크게 나온 추정만 임계값을 넘는다 — 유의한 실험만의 평균 효과가 진짜의 2.4배, 일부는 부호까지 틀림(26건) | 승리 실험의 재실험(holdout), 설계 검정력 | [10-3](../10-power-and-sample-size/2-summary.md) |
 | 사용자로 배정한 실험을 세션 단위로 분석해 "유의". 구간이 유난히 좁고 A/A에서도 약 13%가 유의 | 같은 사용자의 세션은 독립이 아니다 — 서로 닮으면(양의 상관) 분산 과소 | 정기 A/A의 거짓 양성률, 분석 단위 = 배정 단위인지 | [14-1](../14-ab-testing-design/2-summary.md) |
 | CTR 실험이 거의 매번 유의. A/A 거짓 양성률 27.2% | 사용자로 배정하고 노출을 독립 표본으로 셌다 | 사용자 단위로 접기, 델타 방법·사용자 부트스트랩 | [16-4](../16-metrics-design/2-summary.md) |
 | 페이지뷰 단위 분할표로 p = 0.001, 재실험에서 재현 안 됨. 표의 합계가 사용자 수의 몇 배 | 같은 사용자의 이벤트는 독립이 아니다 — 효과가 없어도 17.3%가 유의(명목 5%) | 표 합계 vs 사용자 수, 사용자 단위로 집계해 재검정 | [20-2](../20-categorical-inference/2-summary.md) |
@@ -291,7 +291,7 @@ SELECT (SELECT round(avg(p)::numeric, 1) FROM (SELECT percentile_cont(0.99) WITH
 | "캐시 미스가 많은 노드가 느리다(r ≈ 0.6)" → 캐시 증설, 지연 그대로 | 트래픽이 미스와 지연을 둘 다 늘렸다(교란). 트래픽을 고정하면 0.635 → 편상관 0.021 | 교란 후보로 층화·편상관, 한 노드만 바꾸는 실험 | [12-2](../12-correlation-vs-causation/2-summary.md) |
 
 - 하지 말 것: "부분군이 언제나 정답"으로 외운다. 층 변수가 매개면 층별 차이가 0으로 나와 효과를 지운다(5절 [12-5](../12-correlation-vs-causation/2-summary.md)). 어느 쪽이 맞는지는 숫자가 아니라 인과 화살표가 정한다([12](../12-correlation-vs-causation/2-summary.md) 4절).
-- 실사건: 부채가 많은 나라의 성장률 평균에서 "나라마다 같은 가중"과 "나라-연도마다 같은 가중"이 −0.1%와 2.2%로 갈린 Reinhart–Rogoff 재현([28 사건 3](../28-da-incidents/2-summary.md)). 구성(어느 나라가 몇 해 들어갔나)이 평균을 움직인 모양이다.
+- 실사건: 부채가 많은 나라의 성장률 평균에서 "나라마다 같은 가중"과 "나라-연도마다 같은 가중"이 −0.1%와 2.2%로 달라진 Reinhart–Rogoff 재현([28 사건 3](../28-da-incidents/2-summary.md)). 구성(어느 나라가 몇 해 들어갔나)이 평균을 움직인 모양이다.
 
 ### 5. 효과가 안 보인다 · "효과 없음"으로 결론 냈다
 
@@ -344,12 +344,12 @@ SELECT (SELECT round(avg(p)::numeric, 1) FROM (SELECT percentile_cont(0.99) WITH
 |---|---|---|---|
 | 서비스 p99 패널이 사용자 체감·부하 테스트와 맞지 않음. 트래픽 적은 인스턴스 하나가 느려지면 패널 p99가 몇 배(진짜 155ms인데 723ms) | 백분위는 순위에서 나오는 값이라 평균·가중 평균으로 합칠 수 없다 | 쿼리가 `avg(quantile)`인지, `sum by (le)` 후 `histogram_quantile`인지. 0-2절 (4) | [05-1](../05-percentiles-and-latency-distributions/2-summary.md) |
 | 분기 SLO 보고서의 p99가 어떤 원자료로도 재현 안 됨. 쿼리가 `avg(http_server_requests_seconds{quantile="0.99"})` | summary는 앱 안에서 미리 계산한 분위수라 합칠 수 없다 | 메트릭 유형(summary/histogram) 확인 | [05-5](../05-percentiles-and-latency-distributions/2-summary.md) |
-| p99가 계단처럼 움직이거나 배포 전후 차이가 안 보임. 고정 경계 12칸에서 p99 198ms(진짜 155ms, +27.5%) | 분위수가 넓은 버킷에 떨어지면 버킷 안을 직선 보간한다 | 버킷 경계 목록 vs 실제 분포, SLO 문턱 근처 경계 | [05-2](../05-percentiles-and-latency-distributions/2-summary.md) |
+| p99가 계단처럼 움직이거나 배포 전후 차이가 안 보임. 고정 경계 12칸에서 p99 198ms(진짜 155ms, +27.5%) | 분위수가 넓은 버킷에 떨어지면 버킷 안을 직선 보간한다 | 버킷 경계 목록 vs 실제 분포, SLO 임계값 근처 경계 | [05-2](../05-percentiles-and-latency-distributions/2-summary.md) |
 | 분석가의 Python 리포트와 SQL 대시보드의 p90·p99가 다름. 작은 그룹에서 95 vs 115.5 vs 279.5 | nearest-rank, 선형 보간(`percentile_cont`·`inclusive`), `exclusive`(Python 기본)가 서로 다른 정의 | 같은 정의로 다시 계산(Python `method='inclusive'` ↔ PostgreSQL `percentile_cont`) | [05-3](../05-percentiles-and-latency-distributions/2-summary.md) |
 | 데이터팀(Python) Q1 16.5ms, 백엔드팀(PostgreSQL) 17.75ms. "어느 쪽이 버그냐"로 하루를 씀 | Python `statistics.quantiles` 기본 `'exclusive'` vs `percentile_cont` | 지표 명세의 분위수 정의 | [04-3](../04-descriptive-statistics/2-summary.md) |
 | 같은 다섯 값의 p90이 `percentile_cont` 616, `percentile_disc` 1000 | 연속(보간) vs 이산(실제 값 중 하나) | 함수·방법을 명세에 적기 | [17-5](../17-sql-for-analysis/2-summary.md) |
 | 노트북의 p90 65.0과 DB 대시보드의 p90 28.6이 두 배 넘게 다름 | Python `quantiles` 기본 `exclusive`와 `percentile_cont`(inclusive와 같은 값) | 방법 인자 명시, 버전·방법을 실행 기록에 | [24-5](../24-reproducible-analysis/2-summary.md) |
-| 새벽마다 p99 알람이 울렸다 꺼짐. 표본 100건짜리 p99가 101~340ms를 오감 | 높은 분위수는 꼬리에 표본이 몇 개 없으면 크게 흔들린다 | 창의 표본 수, 최소 표본 조건, "X ms 초과 비율" 알람 | [05-4](../05-percentiles-and-latency-distributions/2-summary.md) |
+| 새벽마다 p99 알람이 울렸다 꺼짐. 표본 100건짜리 p99가 101~340ms를 오감 | 높은 분위수는 꼬리에 표본이 몇 개 없으면 크게 달라진다 | 창의 표본 수, 최소 표본 조건, "X ms 초과 비율" 알람 | [05-4](../05-percentiles-and-latency-distributions/2-summary.md) |
 
 - 운영 쪽 지연 원인(풀 고갈·큐잉·팬아웃 꼬리)은 [reliability/52](../../reliability/52-reliability-symptom-index/2-summary.md). 백분위 정의의 차이는 분위 근처에 값이 촘촘하면 데이터가 클수록 작아지고 작은 그룹에서 커진다. 분위가 값이 크게 뛰는 자리(동률·이산 값)에 걸리면 표본이 커도 남는다(예: 0이 9,900개·1이 100개인 1만 건의 p99는 `inclusive` 0.01, `exclusive` 0.99 — 10배로 늘려도 같다)(해석·계산 — [04-3](../04-descriptive-statistics/2-summary.md) · [05-3](../05-percentiles-and-latency-distributions/2-summary.md)).
 
@@ -415,11 +415,11 @@ SELECT (SELECT round(avg(p)::numeric, 1) FROM (SELECT percentile_cont(0.99) WITH
 | 매주 월요일 아침 "주문 급증", 토요일 "주문 급감" 경보. 전일 대비 경보 12회 중 월요일 6회 | 계절성 무시 — 요일 계수 차이(일 → 월 +47%)가 이상으로 보였다 | 경보의 요일 분포, 같은 요일·여러 주 기준(12회 → 5회) | [23-1](../23-time-series-basics/2-summary.md) |
 | 결제 성공률이 첫날 이미 30% 낮은데 7일 이동평균은 3일 동안 임계 위 | 뒤쪽 창 평활은 늦다. 7-MA의 평균 나이는 3일이고 이 실험에서 3일 늦었다(실제 지연은 급락 폭·임계·잡음에 따라 다르다) | 탐지 요구 시간과 창 길이·EWMA α | [23-2](../23-time-series-basics/2-summary.md) |
 | 탐지는 빠르지만 하루 걸러 경보. 계절 조정 원값 규칙의 정상 구간 오경보 2회(평활판 0회) | 하루치 잡음(7%)이 임계 근처까지 간다 | 지속 조건·히스테리시스, 과거 데이터로 지연-오경보 교환 정량화 | [23-3](../23-time-series-basics/2-summary.md) |
-| 장애로 0이 찍힌 다음 주의 반토막 사고에 경보 없음. 기준선 밴드가 넓어져 있음 | 이상으로 판정한 값까지 기준선 학습에 넣었다 | 기준선 계산에 들어간 날짜 목록 | [23-4](../23-time-series-basics/2-summary.md) |
+| 장애로 0이 찍힌 다음 주의 반토막 사고에 경보 없음. 베이스라인 밴드가 넓어져 있음 | 이상으로 판정한 값까지 베이스라인 학습에 넣었다 | 베이스라인 계산에 들어간 날짜 목록 | [23-4](../23-time-series-basics/2-summary.md) |
 | 성장기에 주말 경보가 점점 늘어남. 요일 차이(절대값)가 수준과 함께 커짐 | 승법 계절을 가법(절대 차이)으로 조정 | 요일 차이가 수준에 비례하는지, 비율·로그로 조정 | [23-5](../23-time-series-basics/2-summary.md) |
 | 서비스 500개 × 지표 3개 "3σ 경보" — 정상 상태에서도 평가마다 몇 개씩 울림 | 독립·정규 가정에서도 3σ 양쪽 꼬리 약 0.0027 × 1500 ≈ 4.0개(실제 꼬리가 무거우면 더) | 평가 한 번의 기대 경보 수 계산, 증상 기반 경보·지속 조건 | [11-4](../11-multiple-comparisons/2-summary.md) |
 
-- 표본이 적은 창의 p99 알람은 7절 [05-4](../05-percentiles-and-latency-distributions/2-summary.md). 파이프라인 볼륨 경보의 기준선 오염은 [data-engineering/10](../../data-engineering/10-data-quality-and-data-observability/2-summary.md).
+- 표본이 적은 창의 p99 알람은 7절 [05-4](../05-percentiles-and-latency-distributions/2-summary.md). 파이프라인 볼륨 경보의 베이스라인 오염은 [data-engineering/10](../../data-engineering/10-data-quality-and-data-observability/2-summary.md).
 
 ### 13. 다시 돌리면 숫자가 바뀐다
 
@@ -449,8 +449,8 @@ SELECT (SELECT round(avg(p)::numeric, 1) FROM (SELECT percentile_cont(0.99) WITH
 - **해시 기반 결정적 배정**: 배정 일치율·해시 섞임 점검(1절)([14](../14-ab-testing-design/2-summary.md) · [algorithm/12-hash-functions](../../algorithm/12-hash-functions/2-summary.md) · [domain-modeling/advanced/27-ab-assign](../../domain-modeling/advanced/27-ab-assign/2-summary.md)).
 - **가중 평균·표준화**: 합÷합 vs 평균의 평균(2절), 층 크기로 표준화한 차이(4절)([16](../16-metrics-design/2-summary.md) · [12](../12-correlation-vs-causation/2-summary.md)).
 - **히스토그램 버킷 병합**: 백분위는 원자료나 버킷을 합친 뒤 계산한다(7절)([05](../05-percentiles-and-latency-distributions/2-summary.md) · [data-structure/19-probabilistic-counting](../../data-structure/19-probabilistic-counting/2-summary.md)).
-- **정렬 기반 다중 비교 보정(BH)**: p값을 정렬해 순위 k의 문턱 `k/m × α`와 비교(3절)([11](../11-multiple-comparisons/2-summary.md) · [algorithm/09-sorting-in-practice](../../algorithm/09-sorting-in-practice/2-summary.md)).
-- **이동 창·EWMA**: 기준선과 탐지 지연(12절)([23](../23-time-series-basics/2-summary.md) · [data-structure/25-ring-buffer](../../data-structure/25-ring-buffer/2-summary.md)).
+- **정렬 기반 다중 비교 보정(BH)**: p값을 정렬해 순위 k의 임계값 `k/m × α`와 비교(3절)([11](../11-multiple-comparisons/2-summary.md) · [algorithm/09-sorting-in-practice](../../algorithm/09-sorting-in-practice/2-summary.md)).
+- **이동 창·EWMA**: 베이스라인과 탐지 지연(12절)([23](../23-time-series-basics/2-summary.md) · [data-structure/25-ring-buffer](../../data-structure/25-ring-buffer/2-summary.md)).
 - **인과 DAG 경로 판정**: 층·통제 변수가 교란·매개·충돌 중 무엇인가(4·5절)([25](../25-causal-inference-basics/2-summary.md) · [data-structure/08-graph](../../data-structure/08-graph/2-summary.md)).
 
 ## 적용 — 풀어나가는 법
@@ -468,7 +468,7 @@ SELECT (SELECT round(avg(p)::numeric, 1) FROM (SELECT percentile_cont(0.99) WITH
   ⑧ 모양을 봤나         히스토그램·산점도·잔차 그림                               → 8절·11절
 ```
 
-- ①과 ②를 먼저 두는 이유: 둘이 깨지면 그 뒤의 숫자(효과 크기·구간·p값)가 전제부터 흔들린다. SRM은 효과 크기를, 단위 불일치는 구간·p값을 주로 흔든다. ③~⑧은 원인 후보를 좁히는 순서다.
+- ①과 ②를 먼저 두는 이유: 둘이 깨지면 그 뒤의 숫자(효과 크기·구간·p값)가 전제부터 실행마다 달라진다. SRM은 효과 크기를, 단위 불일치는 구간·p값을 주로 흔든다. ③~⑧은 원인 후보를 좁히는 순서다.
 - 각 단계는 후보를 고를 뿐이다. 원인을 고친 뒤에는 leaf의 확인 방법으로 같은 계산을 다시 돌려 숫자가 돌아왔는지 본다.
 
 ### 2. 실험 리포트를 받았을 때 (A/B 판독 순서)

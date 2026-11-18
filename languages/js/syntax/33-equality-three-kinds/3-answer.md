@@ -8,7 +8,7 @@
   근거 — [23번](../23-map-set-and-weak-collections/2-summary.md) 동작 (1)의 격자(`NaN, NaN` 행 · `0, -0` 행).
 - ★★★ **`Set` 과 `includes`**(각 `0 / 8`) — 셋이 SameValueZero 한 가족이다. 격자 전체의 집계는 `9 / 56`.
 - ★★ [26번](../26-array-search-flatten-and-create/2-summary.md) 동작 (2) — `[0].indexOf(-0)` 은 **`0`**, `[-0].includes(0)` 은 **`true`**. 배열은 **`-0` 을 그대로** 담는다(`Object.is([-0].at(0), -0)` 이 `true`).
-- ★★ [02번](../02-coercion-and-loose-equality/2-summary.md) 동작 (3) — **정확히 두 칸**, 대각선 위의 `0`/`-0` 과 `NaN`/`NaN` — 서로 **반대 방향**으로 갈린다.
+- ★★ [02번](../02-coercion-and-loose-equality/2-summary.md) 동작 (3) — **정확히 두 칸**, 대각선 위의 `0`/`-0` 과 `NaN`/`NaN` — 서로 **반대 방향**으로 나뉜다.
 
 ### 2. `switch` 와 `findIndex(x => x === b)` 는 **`===`**, 재정의는 **`Object.is`** — node 20 에는 `groupBy` 가 없어 `3 / 3` ★★★
 
@@ -123,7 +123,7 @@ new columns whose signature equals a reference column: 4 / 4
 
 - ★★★ `CaseClauseIsSelected` 는 `case` 식을 평가해 **`IsStrictlyEqual(input, clauseSelector)`** 를 돌려준다 — 2번의 `switch` 서명이 그 실측이다.
 - ★★★ `ValidateAndApplyPropertyDescriptor` 는 쓰기 불가·설정 불가 데이터 프로퍼티에서 **`SameValue(Desc.[[Value]], current.[[Value]])`** 를 돌려준다. NOTE — 「**SameValue returns true for NaN values which may be distinguishable by other means**」 — 비트가 다른 `NaN` 도 같다고 보고 **기존 프로퍼티를 그대로 둔다.** 4번 `[3]` 의 `0/0` 이 `ok` 인 이유다.
-- ★ `OrdinaryHasInstance` 는 프로토타입 **객체**를 `SameValue` 로 견준다 — 객체끼리는 `===` 와 답이 같아서 **갈라 볼 방법이 없다.** 잴 것이 없어 행을 두지 않았다(부적용).
+- ★ `OrdinaryHasInstance` 는 프로토타입 **객체**를 `SameValue` 로 견준다 — 객체끼리는 `===` 와 답이 같아서 **갈라 볼 방법이 없다.** 잴 것이 없어 행을 두지 않았다(해당 없음).
 
 ### 7. **`Map`·`Set`·`Map.groupBy` 는 `+0`**, 배열·`Float64Array` 는 **`-0`**, `Int32Array` 는 **`+0`**, 객체 키는 **`"0"`** ★★★
 
@@ -131,9 +131,9 @@ new columns whose signature equals a reference column: 4 / 4
 - ★★ **`CanonicalizeKeyedCollectionKey`** — 「key 가 `-0` 이면 `+0`」. `Map.prototype.set` · `Set.prototype.add` · `GroupBy`(컬렉션 판)가 부른다.
 - ★ **`+0`** — 23번 동작 (8)의 `log ["+0"]`. 접기가 **콜백을 부르기 전에** 일어난다.
 
-### 8. 문자열 `includes` 는 **부적용 행** · UI 라이브러리의 비교는 **언어 밖** · `switch` 는 **52번** · 파이썬 대비는 **23번 동작 (9)** ★★
+### 8. 문자열 `includes` 는 **해당 없음 행** · UI 라이브러리의 비교는 **언어 밖** · `switch` 는 **52번** · 파이썬 대비는 **23번 동작 (9)** ★★
 
-- ★★ `String.prototype.includes` — 동등성이 아니라 부분 문자열 검색이라 정본 표에 **부적용**으로 올렸다(4번 `[2]`).
+- ★★ `String.prototype.includes` — 동등성이 아니라 부분 문자열 검색이라 정본 표에 **해당 없음**으로 올렸다(4번 `[2]`).
 - ★★ **안 들어간다** — 이 표는 **ECMA-262 가 정한 자리**만 담는다. 라이브러리가 무엇을 쓰는지는 그 라이브러리의 문서가 정한다.
 - ★ [목록의 **52번 주제**](../52-switch-labels-and-control-flow/)(`switch`·라벨·흐름 제어 세부).
 - ★ [23번](../23-map-set-and-weak-collections/2-summary.md) 동작 (9) — 파이썬은 **정체(`is`) 먼저, 그다음 `==`** 라 `nan` 두 개가 두 칸이 된다.
@@ -146,9 +146,9 @@ new columns whose signature equals a reference column: 4 / 4
 | `js32b-33-h-equality-core.js` + `js32b-33b-new-places.web.js` | ★★★ `Map.groupBy` 의 서명 · 저장 키 · 「`4 / 4`」 | **Chrome 151 만** |
 | `js32b-33c-typed-and-string.js` | ★★ TypedArray · 문자열 `includes` · 재정의 `TypeError` | node20 1벌 + node18 대조 1벌 |
 | (인용) 02 · 23 · 26 편의 블록 | 정본 표의 인용 10행 | 그 편의 「실행 검증」 |
-| `js32b-vdiff.sh` · `js32b-versions.sh` | 두 판이 갈린 탐침 수 · 판별 기능 표 | 1벌씩 |
+| `js32b-vdiff.sh` · `js32b-versions.sh` | 두 버전이 달라진 probe 수 · 판별 기능 표 | 1벌씩 |
 
-두 node 판 대조기(이 배치 전체의 node 탐침). `DIFFERS` 가 한 줄도 없다.
+두 node 버전 대조기(이 배치 전체의 node probe). `DIFFERS` 가 한 줄도 없다.
 
 ```sh
 # js32b-vdiff.sh
@@ -193,7 +193,7 @@ js32b-35b-directive.js                   identical
 identical 12  ·  differs 0  ·  total 12
 ```
 
-**구현 의존 항목 — 판이 오르면 다시 돌릴 것**
+**구현 의존 항목 — 버전이 오르면 다시 돌릴 것**
 
 - ★★ **`Map.groupBy`** — node 가 ES2024 를 받으면 2번의 `groupBy` 열이 채워질 것이다(`4 / 4` 가 기대값이지만 **돌려서 확인한다**).
 - ★ 재정의 실패 **문구** — V8 의 것이다.
@@ -202,7 +202,7 @@ identical 12  ·  differs 0  ·  total 12
 
 이 파일의 새 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Google Chrome 151.0.7922.173**(3번의 `.web.js`) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
 블록은 **전부 캡처 파일에서 조립**했다. ★★ **1번의 답은 앞 편의 블록**이 근거다 — 링크의 동작 번호를 연다.
-★★ **이 주제에서 두 node 판이 갈린 탐침은 없다**(대조기의 `identical`).
+★★ **이 주제에서 두 node 버전이 달라진 probe는 없다**(대조기의 `identical`).
 
 **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
 `js32b-33-h-equality-core.js` + `js32b-33a-new-places.js`(2번) · `js32b-33-h-equality-core.js` + `js32b-33b-new-places.web.js`(3번 · 7번) · `js32b-33c-typed-and-string.js`(4번 · 6번 · 7번).

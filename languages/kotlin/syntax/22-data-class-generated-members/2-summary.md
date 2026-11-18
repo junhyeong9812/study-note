@@ -1,8 +1,8 @@
 # kotlin/syntax/22 — `data class`: 무엇이 생성되고 무엇이 안 되나 — 정리 (힌트)
 
-★ **흔들리는 칸 / 안 흔들리는 칸** — 제출 전 재대조에서 「고칠 것」과 「설계상 다른 것」을 가르는 선언이다.
+★ **실행마다 달라지는 항목 / 달라지지 않는 항목** — 제출 전 재대조에서 「고칠 것」과 「설계상 다른 것」을 가르는 선언이다.
 
-| 흔들린다 | 안 흔들린다 |
+| 실행마다 달라진다 | 달라지지 않는다 |
 |---|---|
 | 기본 `toString()` 의 `Plain@1b6d3586` 꼴 **해시코드 숫자** | 컴파일 에러의 **문구·`파일:줄:칸`·캐럿 줄** |
 | `hashCode()` 의 **값 자체**(컴포넌트가 `Any.hashCode` 로 떨어질 때) | `javap` 출력 **전체**(필드 목록·메서드 목록·시그니처) |
@@ -304,7 +304,7 @@ B Coord(y=20, x=10)
 - ★ 막는 법 — 구조 분해 대신 **이름으로 읽는다**(`c.x`·`c.y`). 셋 이상이면 거의 항상 이쪽이 맞다.
 - ★ Kotlin 2.3.20 에 **이름 기반 구조 분해**가 실험 기능으로 들어와 있지만 아직 Experimental 이라 이 목록에서 뺐다(Kotlin README 의 「뺀 것」 표).
 
-### (5) ★ `data object` — 1.9 에서 들어온 것을 이 판에서 직접 확인했다
+### (5) ★ `data object` — 1.9 에서 들어온 것을 이 버전에서 직접 확인했다
 
 **언제 쓰나** — `sealed` 계층에 「데이터 없는 변형」을 넣을 때([23번 주제](../23-sealed-classes-and-when-exhaustiveness/)).
 
@@ -431,7 +431,7 @@ fun component1(): Int
 - 「`primary constructor of data class must only have property ('val' / 'var') parameters.`」 — 괄호에 적혀도 **`val`/`var` 가 없으면 프로퍼티가 아니라 생성자 인자**일 뿐이라 명세서에 못 오른다.
 - `componentN` 을 손으로 쓰면 「`conflicting overloads:`」가 **선언 자리와 함수 자리 두 곳에** 뜬다.
 
-### (7) ★ `equals`/`hashCode` 는 컴포넌트에 **위임**한다 — 그래서 컴포넌트가 흔들리면 같이 흔들린다
+### (7) ★ `equals`/`hashCode` 는 컴포넌트에 **위임**한다 — 그래서 컴포넌트가 흔들리면 같이 실행마다 달라진다
 
 **언제 쓰나** — `data class` 안에 평범한 클래스를 넣었을 때.
 
@@ -527,7 +527,7 @@ Z true Book(isbn=978-1, stock=0) 0 978-1 3 OutOfPrint
 6. ★ **「`data class` 는 상속을 못 한다」로 외운다.** 남을 상속하는 것은 된다((6)) — 막히는 방향을 정확히 기억해야 한다.
 7. ★ **컴포넌트에 평범한 클래스를 넣고 깊은 비교를 기대한다**((7)). 컴포넌트 쪽 `equals` 가 없으면 참조 비교로 떨어진다.
 8. ★ **`data class` 가 검증도 해 줄 거라 믿는다.** 아무것도 안 해 준다 — 검증은 `init { }` 에 직접 쓴다([15번 주제](../15-class-declaration-constructors-and-init/)).
-9. ★ **`data` 를 붙이면 불변이 된다고 믿는다.** `var` 파라미터도 허용되므로 **가변 `data class` 가 정상 문법**이다. Java `record` 와 갈리는 지점이다.
+9. ★ **`data` 를 붙이면 불변이 된다고 믿는다.** `var` 파라미터도 허용되므로 **가변 `data class` 가 정상 문법**이다. Java `record` 와 달라지는 지점이다.
 
 ## 구현 세부사항 대 언어 보장
 
@@ -616,7 +616,7 @@ Z true Book(isbn=978-1, stock=0) 0 978-1 3 OutOfPrint
 `kotlinc` 7회(컴파일 실패 1벌) · `java` 6회 · `javap` 2회.\
 ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다.
 ⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 전부 **기본값 1.8**(`major version: 52`)이다.
-**버전** — `data class` 는 **1.0**, `data object` 는 **1.9** 다. 뒤의 것은 이 판에서 직접 던져 확인했다((5)).
+**버전** — `data class` 는 **1.0**, `data object` 는 **1.9** 다. 뒤의 것은 이 버전에서 직접 던져 확인했다((5)).
 **경계** — 프로퍼티의 backing field·`const` 는 [16번 주제](../16-properties-backing-field-lateinit-const/)가 정본이고, 상속 기본값은 [19번 주제](../19-inheritance-open-final-override/)가 정본이다.\
 `componentN` 규약 자체를 파고드는 것은 [목록의 **30번 주제**](../30-destructuring-declarations-and-componentn/), `==`/`===` 와 `equals` 규약은 [목록의 **32번 주제**](../32-equality-and-equals-contract/), 박싱이 사라지는 `value class` 는 [목록의 **26번 주제**](../26-value-class-and-boxing/)다.\
 Java 쪽 짝은 [`../../../java/syntax/14-records/`](../../../java/syntax/14-records/) — **같은 목적에 방어선을 다른 곳에 둔 것**이 이 주제의 대비 축이다.

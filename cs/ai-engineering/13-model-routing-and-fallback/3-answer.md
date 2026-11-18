@@ -68,4 +68,4 @@
 
 - 잘못: 내 한도 초과(429)를 제공자 장애로 세었다. 트래픽이 몰려 429가 늘자 실패율 임계를 넘어 회로가 열렸다.
 - 결과: 멀쩡한 주 모델을 끊고, 형식이 다를 수 있는 폴백으로 전부 보냈다(폴백 쪽 한도도 함께 찰 수 있다).
-- 대처: 429를 서킷 실패 집계에서 빼거나 별도 지표로 다룬다. 단 429도 종류가 갈린다. 일시 한도는 클라이언트 쪽 한도 조절·`retry-after` 준수로, 지출 한도 429(Anthropic은 `retry-after` 없음 + `enforced_spend_limit_reached`)는 재시도 없이 경보로 처리한다([11](../11-llm-api-client-contract/2-summary.md)). 400·거부도 세지 않는다.
+- 대처: 429를 서킷 실패 집계에서 빼거나 별도 지표로 다룬다. 단 429도 종류가 달라진다. 일시 한도는 클라이언트 쪽 한도 조절·`retry-after` 준수로, 지출 한도 429(Anthropic은 `retry-after` 없음 + `enforced_spend_limit_reached`)는 재시도 없이 경보로 처리한다([11](../11-llm-api-client-contract/2-summary.md)). 400·거부도 세지 않는다.

@@ -1,6 +1,6 @@
 # web-api/22 — 입력 이벤트의 순서: `keydown`→`beforeinput`→`input`→`change` 와 IME 조합 — 정리 (힌트)
 
-**이 판의 Chrome**
+**이 버전의 Chrome**
 
 ```text
 $ google-chrome --version
@@ -8,30 +8,30 @@ Google Chrome 151.0.7922.173
 (exit 0)
 ```
 
-### 흔들리는 칸 / 안 흔들리는 칸
+### 실행마다 달라지는 항목 / 달라지지 않는 항목
 
-**★ 이 편에는 흔들리는 칸이 없었다** — 세는 것이 전부 **순서와 값**이다.
+**★ 이 편에는 실행마다 달라지는 항목이 없었다** — 세는 것이 전부 **순서와 값**이다.
 
 | | 칸 | 왜 |
 |---|---|---|
-| **안 흔들린다** | 다섯 시간선 · 12칸 격자 · 막기 네 칸 · Enter 처리기 네 칸 | 캡처 세 판이 **한 글자도 같았다** |
+| **달라지지 않는다** | 다섯 시간선 · 12칸 격자 · 막기 네 칸 · Enter 처리기 네 칸 | 캡처 세 번이 **한 글자도 같았다** |
 | ★★ **못 잰다** | **실제 입력기**(IBus·Windows IME·macOS)의 조합 이벤트 순서 · 조합 중 `keydown` 의 `key`/`keyCode` | CDP 는 **입력기 아래 층을 건너뛰고** 조합을 흉내 낸다. **안 돌려 본 것이 아니라 이 도구로는 원리상 못 잰다** |
-| **흔들린다** | Chrome 판 번호 | 판이 오르면 바뀐다 |
+| **실행마다 달라진다** | Chrome 판 번호 | 버전이 오르면 바뀐다 |
 
 - 재대조에서 정규화하는 칸은 없다. **위 표에 없는 차이는 전부 고칠 것**이다.
 
-### 이 주제가 쓰는 창 / 부적용인 창
+### 이 주제가 쓰는 창 / 해당 없는 창
 
 | 창 | 이 주제에서 | 무엇을 답하나 |
 |---|---|---|
-| 창 ① `--dump-dom` 트리 | **부적용** | 입력 값은 속성이 아니라 프로퍼티다 |
+| 창 ① `--dump-dom` 트리 | **해당 없음** | 입력 값은 속성이 아니라 프로퍼티다 |
 | 창 ② 노드 프로브 | ★ **쓴다** | 이벤트마다 **그때의 `value`**(시간선의 마지막 열) |
 | 창 ③ 같은 것을 두 번 읽기 | ★ **쓴다** | `beforeinput` 과 `input` 에서 `value` 를 **두 번** 읽어 「바꾸기 전 / 뒤」를 가른다 |
-| **창 ④ 디스패치 계수기 → 한 번 타이핑의 시간선** | ★★★ **본체** | 어느 이벤트가 어느 순서로 · `key`·`keyCode`·`isComposing`·`inputType`·`data` |
+| **창 ④ 디스패치 계수기 → 한 번 타이핑의 시간선** | ★★★ **핵심** | 어느 이벤트가 어느 순서로 · `key`·`keyCode`·`isComposing`·`inputType`·`data` |
 | **진짜 키 입력(CDP)** | ★ **쓴다 — 입력 쪽** | 글자 · Backspace · Enter · Ctrl+C/V |
 | ★★ **CDP 의 조합 흉내** | ★ **쓴다 — 단 제5의 상태** | 실제 입력기 대신 **CDP 가 만든 조합**으로 물었다 |
 
-- ★★★ **제5의 상태 — 「조합 중에 무엇이 오나」를 진짜 입력기가 아니라 CDP 의 흉내로 물었다.** ★ **바꾼 창이 못 보는 것** — ① CDP 의 조합 호출은 **키 이벤트를 하나도 만들지 않는다**((4) — 키 이벤트는 따로 넣어야 한다). ② 그래서 **조합 중 `keydown` 의 `key`·`keyCode` 는 이 편이 넣은 값이 그대로 보일 뿐**이다 — `"Process"`/`229` 를 **Chrome 이 만든 것인지 이 편이 넣은 것인지 가를 수 없다**((6)). ③ 실제 입력기가 조합을 **언제 확정하고 몇 번 갱신하는지**도 CDP 가 정한 것이다.
+- ★★★ **제5의 상태 — 「조합 중에 무엇이 오나」를 진짜 입력기가 아니라 CDP 의 흉내로 물었다.** ★ **바꾼 창이 못 보는 것** — ① CDP 의 조합 호출은 **키 이벤트를 하나도 만들지 않는다**((4) — 키 이벤트는 따로 넣어야 한다). ② 그래서 **조합 중 `keydown` 의 `key`·`keyCode` 는 이 편이 넣은 값이 그대로 보일 뿐**이다 — `"Process"`/`229` 를 **Chrome 이 만든 것인지 이 편이 넣은 것인지 구분할 수 없다**((6)). ③ 실제 입력기가 조합을 **언제 확정하고 몇 번 갱신하는지**도 CDP 가 정한 것이다.
 
 ### 도구가 못 보는 것
 
@@ -81,7 +81,7 @@ Google Chrome 151.0.7922.173
 
 **언제 쓰나** — 「`keydown` 에서 값을 읽었는데 방금 친 글자가 없다」·「`change` 가 왜 한 박자 늦지?」일 때.
 
-**던진 것** — `<input>` 에 이벤트 열두 가지를 달고, 판마다 값을 정해 포커스를 준 뒤 **진짜 키**를 누르고 뗀다. 각 줄의 마지막 열은 **그 리스너 안에서 읽은 `value`** 다. 아래 (2)\~(4)의 블록도 같은 실행에서 잘라 낸 것이다.
+**실행한 것** — `<input>` 에 이벤트 열두 가지를 달고, 판마다 값을 정해 포커스를 준 뒤 **진짜 키**를 누르고 뗀다. 각 줄의 마지막 열은 **그 리스너 안에서 읽은 `value`** 다. 아래 (2)\~(4)의 블록도 같은 실행에서 잘라 낸 것이다.
 
 ```html
 <!-- wa20b-22-type.html -->
@@ -197,7 +197,7 @@ $ python3 wa20b-cdp.py page wa20b-22-type.html | sed -n '19,32p'
 
 - ★★ **Enter 는 `beforeinput`(`insertLineBreak`)까지만 오고 `input` 이 없다** — 한 줄짜리 `<input>` 에는 줄바꿈이 **들어가지 않는다.**
 - ★★ **`change` 가 Enter 에서 왔다**(10번째 줄) — 값이 `"abc"` 로 바뀐 뒤 Enter 가 **확정**으로 읽혔다. **그 뒤 떠날 때(12번째 줄 `blur`)는 `change` 가 또 오지 않았다** — 이미 확정됐다.
-- HTML 은 「`change` 는 값이 **확정될 때**, 그런 동작이 없으면 **포커스를 잃을 때**」로만 적는다 — **Enter 가 확정이라는 것은 이 판의 관찰**이다.
+- HTML 은 「`change` 는 값이 **확정될 때**, 그런 동작이 없으면 **포커스를 잃을 때**」로만 적는다 — **Enter 가 확정이라는 것은 이 버전의 관찰**이다.
 
 ```text
    change 는 「확정」 때 한 번
@@ -230,7 +230,7 @@ $ python3 wa20b-cdp.py page wa20b-22-type.html | sed -n '34,41p'
 
 **언제 쓰나** — 「한글을 치는데 `input` 이 글자마다 여러 번 온다」·「검색창 자동완성이 자모 단위로 튄다」일 때.
 
-**던진 것** — 같은 `<input>` 에 CDP 의 `imeSetComposition` 을 **ㅎ · 하 · 한** 세 번, 그다음 `insertText('한')` 으로 확정했다. ★★ **키 이벤트는 하나도 넣지 않았다** — 조합 호출이 무엇을 만드는지만 본다.
+**실행한 것** — 같은 `<input>` 에 CDP 의 `imeSetComposition` 을 **ㅎ · 하 · 한** 세 번, 그다음 `insertText('한')` 으로 확정했다. ★★ **키 이벤트는 하나도 넣지 않았다** — 조합 호출이 무엇을 만드는지만 본다.
 
 ```text
 $ python3 wa20b-cdp.py page wa20b-22-type.html | sed -n '43,61p'
@@ -260,7 +260,7 @@ $ python3 wa20b-cdp.py page wa20b-22-type.html | sed -n '43,61p'
 - ★★ **`input` 이 네 번 왔고, 그때마다 `value` 가 `"ㅎ"` → `"하"` → `"한"` → `"한"`** 이다. **조합 중의 `value` 는 확정 전의 중간 글자**다 — 이것을 서버에 보내거나 검색어로 쓰면 **「ㅎ」·「하」로 검색**하게 된다.
 - **`isComposing` 이 `true`**, **`inputType` 이 `insertCompositionText`** — 조합 중인 입력임을 이 둘이 말한다.
 - ★ **확정(`insertText`) 때도 `insertCompositionText` 가 한 번 더 오고 그다음 `compositionend`** 다.
-- ★★ **이 판에서 CDP 흉내의 순서는 `compositionupdate` → `beforeinput` → `input`** 이다. UI Events 3.6.6 의 표는 **`beforeinput` → `compositionupdate` → `input`** 으로 적는다 — **흉내에서 본 순서가 명세 표와 다르다.** 실제 입력기에서 어느 쪽인지는 **못 쟀다.**
+- ★★ **이 버전에서 CDP 흉내의 순서는 `compositionupdate` → `beforeinput` → `input`** 이다. UI Events 3.6.6 의 표는 **`beforeinput` → `compositionupdate` → `input`** 으로 적는다 — **흉내에서 본 순서가 명세 표와 다르다.** 실제 입력기에서 어느 쪽인지는 **못 쟀다.**
 - **`change` 는 떠날 때 한 번** — `"한"` 으로.
 
 ```text
@@ -370,7 +370,7 @@ Ctrl+V      insertFromPaste / input 옴 / "ab붙일글"     insertFromPaste / in
 ```
 
 - **글자 · Backspace · 붙여넣기는 세 칸이 같다.**
-- ★★ **Enter 만 갈린다(2 / 8)** — `<input>` 은 `insertLineBreak` 인데 **`input` 이 없고**, `<textarea>` 는 같은 `insertLineBreak` 로 **`"\n"` 이 들어가고**, `contenteditable` 은 **`insertParagraph`** 로 **`<div><br></div>`** 가 생긴다.
+- ★★ **Enter 만 달라진다(2 / 8)** — `<input>` 은 `insertLineBreak` 인데 **`input` 이 없고**, `<textarea>` 는 같은 `insertLineBreak` 로 **`"\n"` 이 들어가고**, `contenteditable` 은 **`insertParagraph`** 로 **`<div><br></div>`** 가 생긴다.
 - ★ Input Events 의 표도 **편집 호스트마다** `data`·`getTargetRanges()` 가 다르다고 적는다 — `contenteditable` 은 `data` 대신 **범위**로 말한다.
 
 ```text
@@ -480,7 +480,7 @@ $ python3 wa20b-cdp.py page wa20b-22-block.html | sed -n '18,22p'
 ```
 
 - ★★★ **조합 중의 `beforeinput` 은 `cancelable: false`** 다. `preventDefault()` 를 불러도 **`defaultPrevented: false`**, **`input` 이 세 번 오고 값은 `"한"`** 이다. **막히지 않았다.**
-- ★★ **명세가 그렇게 정한다** — Input Events Level 2 의 표에서 `insertCompositionText` 는 **「beforeinput cancelable: No」** 다. UI Events 3.6.6 도 「대부분의 입력기는 조합 중 갱신의 취소를 지원하지 않는다」고 적는다. **이 판(CDP 흉내)도 그랬다.**
+- ★★ **명세가 그렇게 정한다** — Input Events Level 2 의 표에서 `insertCompositionText` 는 **「beforeinput cancelable: No」** 다. UI Events 3.6.6 도 「대부분의 입력기는 조합 중 갱신의 취소를 지원하지 않는다」고 적는다. **이 버전(CDP 흉내)도 그랬다.**
 - ★ 그래서 **「`beforeinput` 에서 막으면 된다」는 조합 중에는 거짓**이다 — 조합이 끝난 뒤(`compositionend`) 값을 **고쳐 쓰는** 쪽으로 가야 한다.
 
 ```text
@@ -496,7 +496,7 @@ $ python3 wa20b-cdp.py page wa20b-22-block.html | sed -n '18,22p'
 
 **언제 쓰나** — 「한글로 치고 Enter 를 누르면 두 번 보내진다」·「마지막 글자가 빠진 채 보내진다」일 때.
 
-**던진 것** — `keydown` 처리기 둘. **A 는 `e.key === 'Enter'` 만** 보고, **B 는 `e.isComposing || e.keyCode === 229` 를 먼저 거른다.** 폼의 `submit` 은 막고 센다. ★★ **②·③ 의 조합과 그 사이의 키는 전부 CDP 가 넣은 흉내**다.
+**실행한 것** — `keydown` 처리기 둘. **A 는 `e.key === 'Enter'` 만** 보고, **B 는 `e.isComposing || e.keyCode === 229` 를 먼저 거른다.** 폼의 `submit` 은 막고 센다. ★★ **②·③ 의 조합과 그 사이의 키는 전부 CDP 가 넣은 흉내**다.
 
 ```html
 <!-- wa20b-22-enter.html -->
@@ -680,13 +680,13 @@ $ python3 wa20b-cdp.py page wa20b-22-enter.html | sed -n '19,23p'
 
 | 이 문서의 서술 | 누가 보장하나 |
 |---|---|
-| `keydown` → `beforeinput` → `input` → `keyup` 순서 · `beforeinput` 에서 값이 아직 그대로인 것 | **명세**(UI Events · Input Events) · 이 판도 그랬다((1)) |
-| 조합 중 `beforeinput` 이 **취소 불가**인 것 | ★ **명세**(Input Events Level 2 의 `inputType` 표 — `insertCompositionText` 는 cancelable No) · 이 판(CDP 흉내)도 `false` 였다((6)) |
-| 조합 중 키 이벤트에 **`isComposing: true`** | **명세**(UI Events 3.6.5 — MUST) · 이 판은 **흉내 안에서** 그 값을 붙였다((7)) |
+| `keydown` → `beforeinput` → `input` → `keyup` 순서 · `beforeinput` 에서 값이 아직 그대로인 것 | **명세**(UI Events · Input Events) · 이 버전도 그랬다((1)) |
+| 조합 중 `beforeinput` 이 **취소 불가**인 것 | ★ **명세**(Input Events Level 2 의 `inputType` 표 — `insertCompositionText` 는 cancelable No) · 이 버전(CDP 흉내)도 `false` 였다((6)) |
+| 조합 중 키 이벤트에 **`isComposing: true`** | **명세**(UI Events 3.6.5 — MUST) · 이 버전은 **흉내 안에서** 그 값을 붙였다((7)) |
 | 조합 중 `keydown` 의 `keyCode` 가 **229** | ★ **UI Events 7.3.1(비규범 절)의 모형** — **플랫폼 층의 일**이다. ★★ **이 편은 못 쟀다**(넣은 값이 그대로 보인다) |
-| `compositionupdate` 와 `beforeinput` 의 **선후** | ★ **명세 표와 이 판의 흉내가 다르다**((4)) — 실제 입력기는 **못 쟀다** |
+| `compositionupdate` 와 `beforeinput` 의 **선후** | ★ **명세 표와 이 버전의 흉내가 다르다**((4)) — 실제 입력기는 **못 쟀다** |
 | `change` 가 **떠날 때** 오는 것 | **명세**(HTML — 확정이 없으면 포커스를 잃을 때) |
-| `change` 가 **Enter 에서도** 오는 것 | ★ **이 판의 관찰** — HTML 은 「확정될 때」로만 적는다 |
+| `change` 가 **Enter 에서도** 오는 것 | ★ **이 버전의 관찰** — HTML 은 「확정될 때」로만 적는다 |
 | `textInput` 이벤트 | ★ **구현.** Chrome 의 옛 비표준 이벤트다 |
 | `keypress` | ★ UI Events 가 **옛(Legacy) 이벤트**로 묶는다 |
 | CDP 의 조합 흉내가 **키 이벤트를 안 만드는** 것 | ★ **도구의 성질**(CDP — experimental · 「emulates」) |
@@ -705,7 +705,7 @@ $ python3 wa20b-cdp.py page wa20b-22-enter.html | sed -n '19,23p'
 ## 핵심 문장
 
 1. **값은 `beforeinput` 과 `input` 사이에서 바뀐다** — `keydown` 에서는 방금 친 글자가 없다.
-2. **`change` 는 확정 때 한 번**이다 — 떠날 때, 이 판에서는 Enter 에서도.
+2. **`change` 는 확정 때 한 번**이다 — 떠날 때, 이 버전에서는 Enter 에서도.
 3. **조합 중의 `input` 은 중간 글자를 지나간다** — `isComposing` 으로 거르고 `compositionend` 에서 처리한다.
 4. **조합 중 `beforeinput` 은 명세상 취소할 수 없다** — 막기가 아니라 고쳐 쓰기로 간다.
 5. **조합 중 Enter 는 `isComposing: true` 로 온다** — `e.key` 만 보는 처리기가 거기서 오작동한다.
@@ -716,7 +716,7 @@ $ python3 wa20b-cdp.py page wa20b-22-enter.html | sed -n '19,23p'
 - [`../README.md`](../README.md) — 웹 플랫폼 API 주제 목록(이 주제는 22번)
 - [17번 주제](../17-stoppropagation-vs-preventdefault/2-summary.md) — 키보드 Space/Enter 가 `click` 을 만드는 것 · Enter 의 암묵 제출. **여기의 `keydown` 뒤에 그쪽이 선다**
 - [16번 주제](../16-event-propagation-phases/2-summary.md) — 순서 로그를 읽는 법
-- [19번 주제](../19-passive-and-scroll/2-summary.md) — 진짜 입력과 합성 입력이 갈린 칸들(같은 하네스)
+- [19번 주제](../19-passive-and-scroll/2-summary.md) — 진짜 입력과 합성 입력이 달라진 항목들(같은 하네스)
 - [20번 주제](../20-listener-lifetime/2-summary.md) — 하네스 전문(키·조합 단계)
 - [23번 주제](../23-pointer-events/2-summary.md) — 같은 「입력」 묶음의 포인터 쪽
 - HTML 갈래 목록([`html/syntax/README.md`](../../html/syntax/README.md))의 **22번** — `<input>` 텍스트 계열 타입 지도(마크업 쪽 정본 · 아직 폴더 없음)
@@ -731,7 +731,7 @@ $ python3 wa20b-cdp.py page wa20b-22-enter.html | sed -n '19,23p'
 - **`isComposing`** — 이 키·입력 이벤트가 조합 중에 났나.
 - **`keyCode` 229** — 입력기가 키를 처리 중일 때 옛 모형이 붙이는 값. 이 편은 **실제 값을 못 쟀다.**
 - **CDP 의 조합 흉내** — `Input.imeSetComposition`·`Input.insertText`. 입력기 없이 조합 결과를 렌더러에 넣는다. 키 이벤트는 안 만든다.
-- **한 번 타이핑의 시간선** — 이벤트를 한 줄씩, 그때의 `value` 와 함께 적은 것. 이 편의 본체.
+- **한 번 타이핑의 시간선** — 이벤트를 한 줄씩, 그때의 `value` 와 함께 적은 것. 이 편의 핵심.
 
 ## 더 들어가면
 
@@ -741,7 +741,7 @@ $ python3 wa20b-cdp.py page wa20b-22-enter.html | sed -n '19,23p'
 
 ## 실행 환경
 
-★★★ **이 편의 본체는 창 ④ 를 늘린 「한 번 타이핑의 시간선」이다** — 진짜 키 입력 한 번이 부르는 이벤트를 **한 줄씩, 그때의 `value` 와 함께** 적는다. 이벤트가 **값을 바꾸기 전인가 뒤인가**가 이 시간선에서만 보인다.\
+★★★ **이 편의 핵심은 창 ④ 를 늘린 「한 번 타이핑의 시간선」이다** — 진짜 키 입력 한 번이 부르는 이벤트를 **한 줄씩, 그때의 `value` 와 함께** 적는다. 이벤트가 **값을 바꾸기 전인가 뒤인가**가 이 시간선에서만 보인다.\
 ★★★ **IME 조합은 CDP 의 흉내다 — 진짜 입력기가 아니다.** `Input.imeSetComposition`·`Input.insertText` 는 CDP 문서 스스로 **experimental** 이고 「IME 를 **흉내 낸다**(emulates)」고 적는다. 이 편이 조합에 대해 적는 것은 전부 **「CDP 가 조합을 흉내 냈을 때 Chrome 151 이 낸 이벤트」** 이고, **실제 한글·일본어 입력기가 같은 순서를 내는지는 못 쟀다**(맨 위 「도구가 못 보는 것」).\
 **기준 소스** — [W3C UI Events](https://w3c.github.io/uievents/) 의 「3.6.5 Key Events During Composition」·「3.6.6 Input Events During Composition」·「7.3.1 How to determine keyCode for keydown and keyup events」(비규범 절 — 입력기가 처리 중이면 **229**) · [W3C Input Events Level 2](https://w3c.github.io/input-events/) 의 `inputType` 표(`insertCompositionText` 는 **「beforeinput cancelable: No」**) · [HTML Living Standard — The input element](https://html.spec.whatwg.org/multipage/input.html) 의 「Common event behaviors」 절(「`change` 는 값이 **확정될 때**, 그게 말이 안 되면 **포커스를 잃을 때**」) · CDP 는 [devtools-protocol 의 `browser_protocol.json`](https://github.com/ChromeDevTools/devtools-protocol/blob/master/json/browser_protocol.json) 의 `Input` 도메인. 열어서 확인한 것만 적었다(기준일 2026-09-26).\
 **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. **키는 CDP `Input.dispatchKeyEvent` 로 넣은 진짜 입력**(렌더러가 사용자 키처럼 처리한다), 붙여넣기는 같은 키에 **편집 명령 `copy`·`paste`** 를 실은 것, **조합은 CDP 의 흉내**다. 하네스는 [20번 주제](../20-listener-lifetime/2-summary.md)의 (1)에 있다.\

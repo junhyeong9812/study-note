@@ -362,7 +362,7 @@ F topLevel === topLevel: true
 G invoke(10)          : 11 11
 ```
 
-★ **`A`\~`G` 의 값은 세 판이 같고, `C`·`D` 의 16진수만 판마다 다르다.**\
+★ **`A`\~`G` 의 값은 세 버전이 같고, `C`·`D` 의 16진수만 판마다 다르다.**\
 **이름의 숫자는 관찰이지 보장이 아니다** — 런타임이 만드는 숨은 클래스라 주소가 그때그때 붙는다.
 
 ```kotlin
@@ -406,7 +406,7 @@ J captures loop var, 3 rounds   : false
 그림 해설:
 
 - ★★ **개수를 정하는 것은 "같은 글자인가" 가 아니라 "같은 `invokedynamic` 자리인가" 다.**\
-  (2) 의 `makeTwice` 가 `InvokeDynamic #2` 와 `#3` 으로 **둘로 갈린 것**이 그 근거다.
+  (2) 의 `makeTwice` 가 `InvokeDynamic #2` 와 `#3` 으로 **둘로 달라진 것**이 그 근거다.
 - **캡처가 없으면 한 자리가 한 객체만 만든다**(`A`·`I` 가 `true`). `LambdaMetafactory` 가 만든 `CallSite` 가 **같은 인스턴스를 계속 돌려준다**.
 - **캡처가 있으면 매번 새 객체다**(`B`·`J` 가 `false`). 캡처한 값이 인자로 들어가니 **같은 것을 돌려줄 수가 없다**.
 - ★ `J` 가 `false` 인 것은 Java 의 "루프 변수 캡처" 함정과 같은 뿌리다 — **바퀴마다 `i` 가 다르니 봉투도 달라야 한다**.
@@ -689,7 +689,7 @@ Z SAM class            : SamKt$$Lambda/0x00007c5760001ac0
 - ★ **그래서 박싱을 피하는 길은 둘이다** — ① 시그니처가 원시 타입인 **SAM·`fun interface`**,\
   ② 객체 자체를 안 만드는 **`inline`**([11번 주제](../11-inline-functions/)).\
   **Kotlin 의 함수 타입만 쓰면 두 길 다 안 탄다.**
-- SAM 변환·`fun interface` **전체**는 [목록의 **36번 주제**](../36-function-types-fun-interface-and-sam-conversion/)가 정본이다. 여기는 **박싱이 갈리는 자리**만 다뤘다.
+- SAM 변환·`fun interface` **전체**는 [목록의 **36번 주제**](../36-function-types-fun-interface-and-sam-conversion/)가 정본이다. 여기는 **박싱이 달라지는 자리**만 다뤘다.
 
 비용 — 객체 1개(자리당), 포장 0개.
 
@@ -1073,12 +1073,12 @@ fun interface KInt { fun apply(x: Int): Int }
 - [13번 주제](../13-extension-functions-and-properties/) — 수신자가 첫 파라미터가 되는 것의 정본
 - [03번 주제](../03-null-safe-types/) — `Intrinsics.checkNotNullParameter` 의 정본
 - [`../../../java/syntax/29-lambda-expressions/`](../../../java/syntax/29-lambda-expressions/) — **Java 쪽 람다 정본.** `effectively final` 규칙이 거기 있다
-- [`../../../java/syntax/30-method-references/`](../../../java/syntax/30-method-references/) — Java 쪽 `::` 정본. **Java 는 참조도 indy 다** — Kotlin 이 클래스를 만드는 것과 갈린다
+- [`../../../java/syntax/30-method-references/`](../../../java/syntax/30-method-references/) — Java 쪽 `::` 정본. **Java 는 참조도 indy 다** — Kotlin 이 클래스를 만드는 것과 달라진다
 - [`../../../java/syntax/31-functional-interfaces/`](../../../java/syntax/31-functional-interfaces/) — **박싱 대비의 정본.**\
   Java 는 원시 타입 전용 인터페이스를 43개 만들어 풀었고, Kotlin 은 `FunctionN` 하나로 두고 `inline` 으로 풀었다
 - [`../../../java/syntax/19-type-erasure/`](../../../java/syntax/19-type-erasure/) — `invoke(Object)Object` 가 왜 그 모양인지
 - [목록의 **14번 주제**](../14-scope-functions/)(scope function) — `let`/`run`/`apply` 가 **전부 `inline` 고차 함수**다
-- [목록의 **36번 주제**](../36-function-types-fun-interface-and-sam-conversion/)(함수 타입·`fun interface`·SAM 변환) — **SAM 전체의 정본.** 여기는 박싱이 갈리는 자리만
+- [목록의 **36번 주제**](../36-function-types-fun-interface-and-sam-conversion/)(함수 타입·`fun interface`·SAM 변환) — **SAM 전체의 정본.** 여기는 박싱이 달라지는 자리만
 - [목록의 **37번 주제**](../37-lambdas-with-receiver-and-type-safe-builders/)(리시버 지정 람다와 DSL) — `A.() -> Unit` 의 정본
 - [목록의 **28번 주제**](../28-generics-variance-in-out-star-where/)(선언 지점 변성) — `? super Integer` 가 보이는 이유
 - [목록의 **47번 주제**](../47-sequences-lazy-evaluation/)(`Sequence`) — 지연 평가에서 람다가 어떻게 쌓이나
@@ -1131,7 +1131,7 @@ fun interface KInt { fun apply(x: Int): Int }
 **기준 소스** — [Lambdas and higher-order functions](https://kotlinlang.org/docs/lambdas.html) · [Function types](https://kotlinlang.org/docs/lambdas.html#function-types) · [Reflection — callable references](https://kotlinlang.org/docs/reflection.html#callable-references) · [SAM conversions](https://kotlinlang.org/docs/java-interop.html#sam-conversions) · [kotlin.Function API](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-function/).
 **실행 검증** — 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
 `kotlinc` 13회 · `javac` 2회 · `java` 8회 · `javap` 9회. 컴파일 실패 시나리오 5벌.\
-★ **런타임 클래스 이름이 실행마다 바뀌는 항목이 있어 `ex.kt` 는 세 판을 돌려 대조했다**((4) 참고).
+★ **런타임 클래스 이름이 실행마다 바뀌는 항목이 있어 `ex.kt` 는 세 버전을 돌려 대조했다**((4) 참고).
 ⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 **기본값 1.8**(`major version: 52`)이다 —\
 그래서 문자열 보간이 `StringBuilder` 로 보인다([02번 주제](../02-string-templates-and-raw-strings/)).\
 **람다가 `invokedynamic` 이 되는 것도 타깃에 걸린 선택이다** — 「언어가 그렇게 약속한다」가 아니다.

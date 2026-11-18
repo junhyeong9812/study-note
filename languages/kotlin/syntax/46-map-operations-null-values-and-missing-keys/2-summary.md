@@ -1,14 +1,14 @@
 # kotlin/syntax/46 — `Map` 조작 — `getOrPut`/`getOrElse`/`mapValues`/`filterKeys` — 정리 (힌트)
 
-★★★ **본체는 첫째 창이다** — 「**null 대 키 없음 격자 — 함수 13개 × 맵 상태 셋(키 없음 · 키가 있고 값이 `null` · 값이 있음) → 돌려준 값 · 맵이 바뀌었나 · 람다 호출 수**」. 두 상태는 `m["k"]` 로 보면 **둘 다 `null`** 이다. 함수마다 둘을 가르는지는 **맵을 셋 다 만들어 넣어 봐야** 보인다.
+★★★ **핵심은 첫째 창이다** — 「**null 대 키 없음 격자 — 함수 13개 × 맵 상태 셋(키 없음 · 키가 있고 값이 `null` · 값이 있음) → 돌려준 값 · 맵이 바뀌었나 · 람다 호출 수**」. 두 상태는 `m["k"]` 로 보면 **둘 다 `null`** 이다. 함수마다 둘을 가르는지는 **맵을 셋 다 만들어 넣어 봐야** 보인다.
 
 ## 이 주제가 쓰는 세 층
 
 | 층 | 뜻 | 근거로 쓰는 것 |
 |---|---|---|
 | **언어 보장 / API 계약** | 서명·KDoc 이 약속한 것 | ★★★ `getOrPut` KDoc 「``is not in this map or is mapped to a `null` ``… is put into the map」 · `getOrElse` KDoc 「``present and not `null` ``」 · `getOrDefault` KDoc 「**if such a key is not present**」 · `withDefault` KDoc 「**obtained with [Map.getValue]**」 · `ConcurrentMap.getOrPut` KDoc 「**may be invoked even if the key is already in the map**」 |
-| **구현(stdlib)** | 이 판의 stdlib 가 실제로 하는 것 | `getOrPut` 이 `get` → `== null` → `put` 세 줄 · `getOrImplicitDefault` 가 **`getOrElseIfMissing`** 을 부른다 · `filterKeys` 가 **새 `LinkedHashMap`** 에 담는다 · 예외 문장 `Key b is missing in the map.` |
-| **이 판의 관찰** | kotlinc 2.4.20 에서 이번에 본 것 | 어느 오버로드가 붙었나(`javap` 의 `putIfAbsent` 대 `put`) · 격자 값 |
+| **구현(stdlib)** | 이 버전의 stdlib 가 실제로 하는 것 | `getOrPut` 이 `get` → `== null` → `put` 세 줄 · `getOrImplicitDefault` 가 **`getOrElseIfMissing`** 을 부른다 · `filterKeys` 가 **새 `LinkedHashMap`** 에 담는다 · 예외 문장 `Key b is missing in the map.` |
+| **이 버전의 관찰** | kotlinc 2.4.20 에서 이번에 본 것 | 어느 오버로드가 붙었나(`javap` 의 `putIfAbsent` 대 `put`) · 격자 값 |
 
 ## 이 판
 
@@ -18,14 +18,14 @@ info: kotlinc-jvm 2.4.20 (JRE 21.0.5+11-LTS)
 (exit 0)
 ```
 
-## 흔들리는 칸 / 안 흔들리는 칸
+## 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| **흔들린다** | (이 주제에는 없다) | 해시코드·주소·시간을 찍지 않았다 · 동시성 경쟁은 **재지 않았다**((5)) |
-| 안 흔들린다 | 격자 13행 × 3열 · 결과가 같은 행 수 · 람다 호출 수 | 단일 스레드 · 맵은 칸마다 새로 만든다 |
-| 안 흔들린다 | 맵 출력 순서(`{a=100, b=2, c=3}`) | `mutableMapOf`·`mapOf` 는 `LinkedHashMap` 이라 **넣은 순서**다(구현 — [42번 주제](../42-transformations-map-flatmap-associate-zip/) (2)) |
-| 안 흔들린다 | stdlib 소스 발췌 · `javap` 의 명령 이름과 상수 풀 번호 · 종료 코드 | jar·컴파일러가 같으면 같다 |
+| **실행마다 달라진다** | (이 주제에는 없다) | 해시코드·주소·시간을 찍지 않았다 · 동시성 경쟁은 **재지 않았다**((5)) |
+| 달라지지 않는다 | 격자 13행 × 3열 · 결과가 같은 행 수 · 람다 호출 수 | 단일 스레드 · 맵은 칸마다 새로 만든다 |
+| 달라지지 않는다 | 맵 출력 순서(`{a=100, b=2, c=3}`) | `mutableMapOf`·`mapOf` 는 `LinkedHashMap` 이라 **넣은 순서**다(구현 — [42번 주제](../42-transformations-map-flatmap-associate-zip/) (2)) |
+| 달라지지 않는다 | stdlib 소스 발췌 · `javap` 의 명령 이름과 상수 풀 번호 · 종료 코드 | jar·컴파일러가 같으면 같다 |
 
 ★ 근거 — 캡처 스크립트를 처음부터 두 번 돌려 **블록 전체를 대조**했다(수치는 3-answer 의 「실행 검증」).
 
@@ -61,17 +61,17 @@ info: kotlinc-jvm 2.4.20 (JRE 21.0.5+11-LTS)
 
 ## 동작 방식
 
-### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「부적용인 창」
+### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「해당 없는 창」
 
 | 창 | 무엇을 보여 주나 | 어디서 왔나 |
 |---|---|---|
-| ★★★ **null 대 키 없음 격자(실행)** | 함수 × 세 상태 → 값 · 호출 뒤 맵 · 람다 호출 수((1)) | ★ **본체 창** |
+| ★★★ **null 대 키 없음 격자(실행)** | 함수 × 세 상태 → 값 · 호출 뒤 맵 · 람다 호출 수((1)) | ★ **핵심 창** |
 | ★★ **람다 호출 로그** | `getOrPut` 이 `null` 을 넣은 키에서 **몇 번 다시 계산하나**((2)) | — |
 | ★★ **stdlib 소스 jar 발췌** | 그 동작이 **KDoc 계약**인가, 구현 한 줄인가((2)(3)(4)(5)) | [41번 주제](../41-collection-creation-and-copying/) (2)와 같은 창 |
 | ★★ **`javap -c`** | `ConcurrentHashMap` 에 붙은 `getOrPut` 이 **`putIfAbsent`** 를 부르나 **`put`** 을 부르나((5)) | — |
 | **인용 — 다시 안 잰다** | `mapValues` 결과가 `LinkedHashMap` · Java `Map` 다섯 메서드의 격자 | [42번 주제](../42-transformations-map-flatmap-associate-zip/) (2) · [Java 41번](../../../java/syntax/41-map-api-merge-compute/) (1) |
 | ★ **제5의 상태 — 창을 바꿔 물었다** | 「`ConcurrentHashMap.getOrPut` 이 경쟁에서 안전한가」를 **동시 실행**으로 묻지 않고 **바이트코드 + KDoc** 으로 물었다 | (5) — 이 창은 **어느 호출이 붙었나**만 보고 **경쟁 중 몇 번 불리나**는 못 본다 |
-| **부적용 — 실행 시간·할당** | 「`getOrPut` 이 `get`+`put` 보다 싸다」는 **재지 않았다** | — |
+| **해당 없음 — 실행 시간·할당** | 「`getOrPut` 이 `get`+`put` 보다 싸다」는 **재지 않았다** | — |
 
 ### (1) ★★★ null 대 키 없음 격자
 
@@ -301,7 +301,7 @@ internal fun <K, V> Map<K, V>.getOrImplicitDefault(key: K): V {
 ```
 
 - ★★★ **「`getValue` 에만」은 KDoc 계약이다** — `withDefault` 의 KDoc 이 「`a value is obtained with [Map.getValue] function`」라고 **범위를 적는다.** `getValue` 는 `getOrImplicitDefault` 로 가고, 감싼 맵(`MapWithDefault`)이면 기본값 함수를, 아니면 예외를 부른다.
-- ★★ **이 판의 `getOrImplicitDefault` 는 `getOrElseIfMissing` 을 부른다** — 그래서 **`{k=null}` 의 `getValue` 는 던지지도 기본값을 주지도 않고 `null`** 이다((1)). 이것은 **구현 관찰**이다 — `getValue` 의 KDoc 은 「`if there is no such key`」만 말한다.
+- ★★ **이 버전의 `getOrImplicitDefault` 는 `getOrElseIfMissing` 을 부른다** — 그래서 **`{k=null}` 의 `getValue` 는 던지지도 기본값을 주지도 않고 `null`** 이다((1)). 이것은 **구현 관찰**이다 — `getValue` 의 KDoc 은 「`if there is no such key`」만 말한다.
 
 ### (4) ★ `filterKeys`·`filterValues` 는 새 맵 — 그리고 2.4 의 새 이름
 
@@ -395,7 +395,7 @@ public inline fun <K, V> ConcurrentMap<K, V>.getOrPut(key: K, defaultValue: () -
 
 - ★★★ **`ConcurrentMap.getOrPut` 의 약속은 「원자적」이 아니다** — 「`This method guarantees not to put the value into the map if the key is already there, but the [defaultValue] function may be invoked even if the key is already in the map.`」. **넣기는 한 번**(`putIfAbsent`)이지만 **람다는 여러 스레드에서 여러 번 불릴 수 있다.** 람다에 부작용이 있으면 그 부작용은 여러 번 일어난다.
 - ★★ `MutableMap` 판의 KDoc 은 더 약하다 — 「`not guaranteed to be atomic`」((2) 발췌). `get` 과 `put` 사이에 다른 스레드가 끼면 **덮어쓴다.**
-- ★ **경쟁 중 람다가 실제로 몇 번 불리는지는 재지 않았다** — 판마다 흔들리는 칸이라 한 판의 결과로 말할 수 없다(18-B 의 「못 잰 것」). 람다를 **정확히 한 번** 부르려면 JDK 의 `computeIfAbsent` 쪽이다([Java 41번](../../../java/syntax/41-map-api-merge-compute/)).
+- ★ **경쟁 중 람다가 실제로 몇 번 불리는지는 재지 않았다** — 판마다 달라지는 항목이라 한 판의 결과로 말할 수 없다(18-B 의 「못 잰 것」). 람다를 **정확히 한 번** 부르려면 JDK 의 `computeIfAbsent` 쪽이다([Java 41번](../../../java/syntax/41-map-api-merge-compute/)).
 
 ## 문법 — 형태와 규칙
 
@@ -469,7 +469,7 @@ missing  0
 | `ConcurrentMap.getOrPut` — 넣기는 한 번, 람다는 여러 번일 수 있다 | ★★ **API 계약(KDoc)** | (5) |
 | `{k=null}` 의 `getValue` 가 `null` | ★ **stdlib 구현**(`getOrImplicitDefault` → `getOrElseIfMissing`) — KDoc 은 이 칸을 적지 않는다 | (1)(3) |
 | `filterKeys` 결과가 `LinkedHashMap` · 예외 문장 `Key b is missing in the map.` | ★ **stdlib 구현** | (3)(4) |
-| 어느 `getOrPut` 오버로드가 붙나 | **언어 규칙(오버로드 해소 — 더 구체적인 수신자)** + 이 판의 바이트코드 관찰 | (5) |
+| 어느 `getOrPut` 오버로드가 붙나 | **언어 규칙(오버로드 해소 — 더 구체적인 수신자)** + 이 버전의 바이트코드 관찰 | (5) |
 | `…IfNull`/`…IfMissing` 넷 | **2.4 실험 API** — 이름·존재가 바뀔 수 있다 | (4) |
 
 ★★ **가장 조심할 자리** — `getOrPut` 의 재삽입은 **버그가 아니라 약속**이다. 그래서 「언젠가 고쳐지겠지」가 아니고, 2.4 는 고치는 대신 **새 이름을 옆에 세웠다.**
@@ -523,16 +523,16 @@ missing  0
 
 - **`ConcurrentMap.getOrPutIfNull`/`…IfMissing`** — `MapsJVM.kt` 에 있고 `computeIfAbsent`·`putIfAbsent` 를 쓴다(소스를 읽었고 **돌리지 않았다**).
 - **위임 프로퍼티 `val name: String by map`** — `withDefault` 의 원래 자리다. [17번 주제](../17-delegated-properties/)가 `Map` 위임을 다룬다(이 문서는 돌리지 않았다).
-- **경쟁 중 람다 호출 수** — 여러 스레드로 N판을 돌려 「몇 판 중 몇 판에서 2번 이상」을 세면 성질로 말할 수 있다. 이 판은 **재지 않았다.**
+- **경쟁 중 람다 호출 수** — 여러 스레드로 N판을 돌려 「몇 판 중 몇 판에서 2번 이상」을 세면 성질로 말할 수 있다. 이 버전은 **재지 않았다.**
 
 ## 실행 환경
 
-**기준 소스** — [Map-specific operations](https://kotlinlang.org/docs/map-operations.html)(키·값으로 꺼내기 `get`·`getValue`·`getOrElse`·`getOrDefault` · 거르기 `filterKeys`·`filterValues` · 쓰기) — 이 문서는 그 페이지의 **목록**을 따르되, 문장은 인용하지 않고 **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 구현을 근거로 삼는다((2)(3)(4)(5)).
+**기준 소스** — [Map-specific operations](https://kotlinlang.org/docs/map-operations.html)(키·값으로 꺼내기 `get`·`getValue`·`getOrElse`·`getOrDefault` · 거르기 `filterKeys`·`filterValues` · 쓰기) — 이 문서는 그 페이지의 **목록**을 따르되, 문장은 인용하지 않고 **이 버전의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 구현을 근거로 삼는다((2)(3)(4)(5)).
 **실행 검증** — 이 문서의 모든 출력·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java`·`javap` 에서 실제로 얻었다.\
 `kotlinc` 4회 · `java` 4회 · `javap` 1회 · stdlib 소스 jar 에서 발췌 10곳.\
 ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「결과가 같은 행 N / M」은 격자 프로그램이 스스로 센 것**이다.
-**버전** — `getOrPut`·`getOrElse`·`filterKeys`·`filterValues`·`mapValues` 는 **1.0** — 이 판의 소스에서 선언 위에 `@SinceKotlin` 이 **없다**. `getValue` 는 **`@SinceKotlin("1.1")`**((3)) · `Map.getOrDefault` 는 **`@SinceKotlin("1.1")` + `@PlatformDependent`**(JDK 8 의 `Map.getOrDefault` 를 그대로 드러낸 것 — (2)).\
-★★★ **`getOrElseIfNull`·`getOrElseIfMissing`·`getOrPutIfNull`·`getOrPutIfMissing` 넷은 `@SinceKotlin("2.4")` + `@ExperimentalStdlibApi`**((4)) — 이 판에서 처음 들어온 **옵트인 API** 다. 격자는 `@file:OptIn(ExperimentalStdlibApi::class)` 로 불렀다.
+**버전** — `getOrPut`·`getOrElse`·`filterKeys`·`filterValues`·`mapValues` 는 **1.0** — 이 버전의 소스에서 선언 위에 `@SinceKotlin` 이 **없다**. `getValue` 는 **`@SinceKotlin("1.1")`**((3)) · `Map.getOrDefault` 는 **`@SinceKotlin("1.1")` + `@PlatformDependent`**(JDK 8 의 `Map.getOrDefault` 를 그대로 드러낸 것 — (2)).\
+★★★ **`getOrElseIfNull`·`getOrElseIfMissing`·`getOrPutIfNull`·`getOrPutIfMissing` 넷은 `@SinceKotlin("2.4")` + `@ExperimentalStdlibApi`**((4)) — 이 버전에서 처음 들어온 **옵트인 API** 다. 격자는 `@file:OptIn(ExperimentalStdlibApi::class)` 로 불렀다.
 **경계** — ★★★ **해시 테이블의 원리**(버킷·충돌·재해시)는 [`cs/data-structure/05-hashmap/`](../../../../cs/data-structure/05-hashmap/) 이 정본이다 — 여기는 **stdlib 함수가 「키 없음」과 「값이 `null`」을 어떻게 다루나**만 본다.\
 **Java 쪽 같은 격자**(`get`·`getOrDefault`·`putIfAbsent`·`computeIfAbsent`·`merge` × 세 상태)는 [Java 41번](../../../java/syntax/41-map-api-merge-compute/)이 이미 쟀다 — 여기서는 `getOrDefault` 한 행만 겹친다.\
 `mapValues` 결과가 `LinkedHashMap` 이고 `Map.map` 이 `List` 라는 것은 [42번 주제](../42-transformations-map-flatmap-associate-zip/) (1)(2)가 쟀다 — 다시 재지 않는다. 결과가 **복사인가 창인가**는 [41번 주제](../41-collection-creation-and-copying/)가 정본이다.

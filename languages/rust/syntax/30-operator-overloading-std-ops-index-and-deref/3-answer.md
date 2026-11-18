@@ -736,7 +736,7 @@ deref 호출 횟수    3
 - ★ **벗기는 단계는 두 번** — `&Tracked<String>` → `&String` → `&str`. **첫 번째만 `Tracked` 의 `deref`**, 두 번째는 **`String` 의 `Deref`**(→ `str`)라
   이 계수기에 안 잡혔다. 그래서 합이 **3** 이다(4 가 아니다).
 - **비싼 일을 하면 안 되는 이유** — 호출이 **소스에 글자로 안 보이고**, 한 줄에서도 여러 번 불릴 수 있다. std 의 `Deref` 문서가 「**컴파일러가 조용히 끼운다**」고 경고한다.
-  ★ 「몇 번 부르나」는 **언어가 정하지 않는다** — 3 은 **이 판의 관찰**이다.
+  ★ 「몇 번 부르나」는 **언어가 정하지 않는다** — 3 은 **이 버전의 관찰**이다.
 
 ### 10. ★★ 안쪽 타입의 메서드와 부딪히지 않으려고
 
@@ -793,7 +793,7 @@ For more information about this error, try `rustc --explain E0599`.
 
 | 무엇을 | 어떻게 | 몇 번 | 결과 |
 |---|---|---|---|
-| 이 문서·서머리의 **모든 블록** | `capture.sh` 가 `rustc --edition 2021 <파일>.rs` 로 컴파일하고 실행 | 배치 내내 + **제출 전 전수 재실행** | `normalize-shaky.py` — **흔들린 칸 0 · 고칠 것 0** |
+| 이 문서·서머리의 **모든 블록** | `capture.sh` 가 `rustc --edition 2021 <파일>.rs` 로 컴파일하고 실행 | 배치 내내 + **제출 전 전수 재실행** | `normalize-shaky.py` — **달라진 항목 0 · 고칠 것 0** |
 | ★★★ **`a + b` 가 `a` 를 옮기는 것** | `r30_move` | 1 | **E0382** + `calling this operator moves the left-hand side` |
 | `Copy` · `+=` · `Neg` | `r30_copy` | 1 | `a` 가 남는다 · `+=` 는 `&mut self` |
 | ★★ **참조 판과 조합** | `r30_ref` · `r30_mixed` · `r30_mixed_help` · `r30_int_combos` | 4 | 참조 판은 둘 다 산다 · 섞으면 **E0308/E0369** · `help:` 대로 하면 **E0369** · 정수는 네 조합 `3 3 3 3` |
@@ -804,18 +804,18 @@ For more information about this error, try `rustc --explain E0599`.
 | ★★★ **`Deref` 상속 흉내** | `r30_deref_inherit` · `r30_deref_trait_run` · `r30_deref_trait` | 3 | `Dog(멍)` · **`나는 Animal(멍)`** · 메서드·구체 자리는 됨 · 경계는 **E0277** |
 | `Rc` 연관 함수 | `r30_rc_assoc` | 1 | **E0599** `associated function, not a method` |
 | ★ **C++ `operator+` 대비** | `r30_opplus` × g++·clang++ | 2 | `a + b`·`std::move(a) + b` 뒤에도 `a.size=2` |
-| **안 던진 것** — Kotlin `operator fun` | 형제 목록 인용만 했다(폴더 없음) | 0 | ★ 인용으로 표시했다 |
+| **실행하지 않은 것** — Kotlin `operator fun` | 형제 목록 인용만 했다(폴더 없음) | 0 | ★ 인용으로 표시했다 |
 | 외부 크레이트 | **쓰지 않음** | 0 | std 만 |
 
 **구현 의존 항목**(버전·환경이 바뀌면 **다시 찍어야 하는** 것).
 
 | 항목 | 왜 |
 |---|---|
-| `deref` 가 **3 번** 불린 것 | ★ 언어는 「끼운다」까지만 정한다. 호출 수는 **이 판의 관찰** |
+| `deref` 가 **3 번** 불린 것 | ★ 언어는 「끼운다」까지만 정한다. 호출 수는 **이 버전의 관찰** |
 | `help:` 의 처방(`*&c + b`·`clone`) | ★ 진단 품질에 달렸다. 틀린 처방이 **고쳐질 수 있다** |
 | 결함이 E0308·E0369·E0277 중 **무엇으로 나오나** | ★ 추론이 어디까지 타입을 정했느냐에 달렸다(3번·4번 답) |
 | `std::ops` 파일 목록의 **불안정 트레이트** | ★ `rust-docs` 판마다 바뀐다 |
-| 진단의 `/rustc/ded5c06cf…/arith.rs:92:12`·`:77:1` | ★ **이 판의 커밋 해시와 줄 번호** |
+| 진단의 `/rustc/ded5c06cf…/arith.rs:92:12`·`:77:1` | ★ **이 버전의 커밋 해시와 줄 번호** |
 | `` and 57 others `` 의 수 | ★ std 구성에 달렸다 |
 
 ★ **다시 찍는 법** — `capture.sh <새 디렉토리>` 를 그대로 돌리고 `normalize-shaky.py <원본> <새 디렉토리>` 로 견준다.

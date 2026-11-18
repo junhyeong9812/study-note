@@ -27,7 +27,7 @@ React 렌더링 모델, 상태 수명, CSS 캐스케이드에서 나오는 패�
 - [separation-structure-vs-style](separation-structure-vs-style/) — 렌더러는 구조만, 표시는 CSS가 맡아야 한다(관심사 분리).
 - [stale-render-state](stale-render-state/) — 핸들러·클로저는 생성 시점 렌더의 state 스냅샷을 본다 — 같은 틱의 연속 이벤트·async 콜백은 가변 ref로 최신 값을 읽어야 한다.
 - [theming-token-reach](theming-token-reach/) — CSS 변수 테마는 우리 DOM 캐스케이드에만 닿는다 — canvas·JS 위젯·네이티브 컨트롤은 각자 API로 주입하고, 한 시각 단위의 색은 모두 같은 토큰에서 파생한다.
-- [tree-position-semantics](tree-position-semantics/) — React는 DOM이 아니라 컴포넌트 트리 위치로 인스턴스 동일성·Context 공급·합성 이벤트 전파를 결정한다(포털 포함) — DOM 기반 판정과의 어긋남을 명시 처리한다.
+- [tree-position-semantics](tree-position-semantics/) — React는 DOM이 아니라 컴포넌트 트리 위치로 인스턴스 동일성·Context 공급·합성 이벤트 전파를 결정한다(포털 포함) — DOM 기반 판정과의 불일치를 명시 처리한다.
 - [xss-escape-then-assemble](xss-escape-then-assemble/) — 신뢰 불가 텍스트를 HTML·스크립트 위치에 삽입하면 XSS가 된다 — 전체를 이스케이프(또는 데이터 채널·sanitizer)한 뒤 필요한 마커만 조립한다.
 
 > 이 폴더의 메타 태그: `resource-bounding`(2) · `least-privilege`(1) · `race-condition`(1) · `test-reliability`(1) · `single-source-of-truth`(1) — 태그별 전체 목록은 [issue 태그 역인덱스](../../README.md#태그-역인덱스).

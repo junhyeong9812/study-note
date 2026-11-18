@@ -219,11 +219,11 @@ ps -L -o pid,lwp,stat,wchan:20,comm -p <pid>      # S + futex_do_wait
 - **원인**: 재시도·콜백 경로에서 `release()`가 두 번 불렸다. Java `Semaphore`와 POSIX `sem_post`는 초깃값 상한을 검사하지 않는다(5절 로컬 재현: 2 → 4).
 - **대처**: 반납을 한 곳(`finally`)으로 모은다. 한 번만 반납하도록 호출 단위 플래그를 두거나, 반납 여부를 검사하는 래퍼를 쓴다([ops-patterns/03-bulkhead](../../ops-patterns/03-bulkhead/2-summary.md)).
 
-### 3. 락을 쥔 채 개수 세마포어를 기다림 → 교착
+### 3. 락을 잡은 채 개수 세마포어를 기다림 → 교착
 
 - **현상**: 생산자와 소비자가 모두 멈춘다. CPU는 0%다.
 - **보이는 형태**: 소비자는 `full`에서, 생산자는 `mutex`에서 기다린다(C라면 둘 다 `S` + `futex_do_wait`). Java라면 스레드 덤프에 둘 다 `Semaphore$...Sync`에서 `WAITING (parking)`이고 교착 탐지 메시지는 없다.
-- **원인**: `sem_wait(&mutex)` 뒤에 `sem_wait(&full)`을 불렀다. 소비자가 `mutex`를 쥔 채 잠들어 생산자가 `mutex`를 못 잡는다(OSTEP 그림 31.11).
+- **원인**: `sem_wait(&mutex)` 뒤에 `sem_wait(&full)`을 불렀다. 소비자가 `mutex`를 잡은 채 잠들어 생산자가 `mutex`를 못 잡는다(OSTEP 그림 31.11).
 - **대처**: 개수 대기는 락 밖에서 먼저 하고, 락은 버퍼 조작만 감싼다(OSTEP 그림 31.12). 세마포어 교착은 JVM이 탐지하지 않으므로 코드 리뷰와 시간 제한 대기로 막는다.
 
 ### 4. 이름 있는 세마포어가 크래시 뒤에도 남음 → 재시작해도 멈춤

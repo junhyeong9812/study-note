@@ -225,7 +225,7 @@ static void log_flush_low(log_t &log) {
 }
 ```
 
-커밋 쪽에서 이 스레드를 기다리는 방식이 설정값으로 갈린다.
+커밋 쪽에서 이 스레드를 기다리는 방식이 설정값으로 나뉜다.
 
 `storage` / `innobase` / `trx` / `trx0trx.cc` L1724-L1750 ([GitHub](https://github.com/mysql/mysql-server/blob/008e09c2834b98143a8c067d4d225c90953050cf/storage/innobase/trx/trx0trx.cc#L1724-L1750))
 

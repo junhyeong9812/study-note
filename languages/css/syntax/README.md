@@ -8,7 +8,7 @@ CSS 는 문법 언어가 아니다. 문법 표면은 「선택자 { 속성: 값 
 
 그 위에 **박스·레이아웃**(`15`\~`32`)이 선다. 이 갈래가 가장 두꺼운 것은 CSS 의 실제 면적이 여기에 있기 때문이다 — `display` 가 무엇을 만들고, 서식 문맥이 무엇을 가두고, flex 와 grid 가 남는 공간을 어떻게 나누는가. **반응형·단위**(`33`\~`41`)는 그 상자의 치수를 조건에 따라 바꾸는 층이고, **시각 효과**(`42`\~`51`)는 상자가 정해진 뒤 그 위에 칠해지는 층이다.
 
-마지막 **애니메이션**(`52`\~`60`)을 크게 잡았다. 여기서 갈리는 것은 문법이 아니라 **어느 속성을 건드리면 레이아웃부터 다시 돌고, 어느 속성은 합성 단계만으로 끝나는가**이며, 이것을 모르면 「동작은 하는데 끊긴다」는 증상 앞에서 할 수 있는 게 없다. `transform`·`opacity` 와 `width`·`top` 의 차이, `will-change` 가 사는 비용, 스크롤 연동 애니메이션과 뷰 전환이 왜 선언적으로 들어왔는지가 이 갈래의 뼈대다.
+마지막 **애니메이션**(`52`\~`60`)을 크게 잡았다. 여기서 달라지는 것은 문법이 아니라 **어느 속성을 건드리면 레이아웃부터 다시 돌고, 어느 속성은 합성 단계만으로 끝나는가**이며, 이것을 모르면 「동작은 하는데 끊긴다」는 증상 앞에서 할 수 있는 게 없다. `transform`·`opacity` 와 `width`·`top` 의 차이, `will-change` 가 사는 비용, 스크롤 연동 애니메이션과 뷰 전환이 왜 선언적으로 들어왔는지가 이 갈래의 뼈대다.
 
 **「언제 들어왔나」는 여기가 아니다.** Flexbox 가 2012\~2017 에 어떻게 표준화됐는지, CSS3 가 왜 버전을 버리고 모듈로 쪼개졌는지, 컨테이너 쿼리가 왜 반응형의 다음 단계로 불리는지는 [`history/web/03-HTML-CSS-진화.md`](../../../history/web/03-HTML-CSS-진화.md) 의 몫이다. 이 목록은 **어떻게 쓰고 무엇을 못 하나**만 다룬다.
 
@@ -24,8 +24,8 @@ CSS 는 문법 언어가 아니다. 문법 표면은 「선택자 { 속성: 값 
 | 06 | [`@scope` — 스코프 루트·하한과 근접성(proximity)](06-scope/) | 계산 모델 | 스코프가 캐스케이드의 어느 자리에 끼어드는지, 하한(`to`)이 무엇을 잘라내는지 판단할 수 있다 | 05 | — | 도움 | C |
 | 07 | [CSS 구문과 오류 복구 — 선언·at-rule·모르는 것을 버리는 규칙](07-syntax-and-error-recovery/) | 계산 모델 | 모르는 속성·값 하나가 선언 하나만 버려지는지 규칙 전체가 버려지는지 예측하고, 이것이 점진적 향상의 토대임을 설명할 수 있다 | — | [`../../../cs/foundations/compiler-pipeline/`](../../../cs/foundations/compiler-pipeline/) (렉서·파서 일반론) | 불필요 | C |
 | 08 | [기본 선택자·조합자·속성 선택자](08-basic-selectors-and-combinators/) | 선택자 | 자손/자식/인접형제/일반형제를 구분하고 `^=`·`$=`·`*=`·`i` 플래그로 속성 매칭을 설계할 수 있다 | 02 | — | 도움 | A |
-| 09 | [구조적 의사 클래스 — `:nth-child(An+B of S)` 계열](09-structural-pseudo-classes/) | 선택자 | `nth-child` 와 `nth-of-type` 이 갈리는 지점과 `of S` 가 세는 대상을 바꾸는 것을 예측할 수 있다 | 08 | — | 필수 | A |
-| 10 | [상태·폼 의사 클래스 — `:hover`/`:focus-visible`/`:checked`/`:user-invalid`](10-state-and-form-pseudo-classes/) | 선택자 | `:focus` 와 `:focus-visible` 이 갈리는 입력 방식, `:invalid` 와 `:user-invalid` 가 갈리는 시점을 판단할 수 있다 | 08 | — | 필수 | A |
+| 09 | [구조적 의사 클래스 — `:nth-child(An+B of S)` 계열](09-structural-pseudo-classes/) | 선택자 | `nth-child` 와 `nth-of-type` 이 달라지는 지점과 `of S` 가 세는 대상을 바꾸는 것을 예측할 수 있다 | 08 | — | 필수 | A |
+| 10 | [상태·폼 의사 클래스 — `:hover`/`:focus-visible`/`:checked`/`:user-invalid`](10-state-and-form-pseudo-classes/) | 선택자 | `:focus` 와 `:focus-visible` 이 달라지는 입력 방식, `:invalid` 와 `:user-invalid` 가 달라지는 시점을 판단할 수 있다 | 08 | — | 필수 | A |
 | 11 | [`:is()`·`:where()`·`:not()` 와 명시도](11-is-where-not/) | 선택자 | 같은 목록을 `:is()` 로 쌌을 때와 `:where()` 로 쌌을 때 명시도가 어떻게 달라지는지 계산할 수 있다 | 02, 08 | — | 도움 | A |
 | 12 | [`:has()` — 관계 선택자와 그 한계](12-has-relational-selector/) | 선택자 | 「자식을 가진 부모」를 선택하는 형태를 쓰고, `:has()` 안에 또 `:has()` 를 못 쓰는 제약과 명시도 기여를 설명할 수 있다 | 11 | — | 필수 | A |
 | 13 | [의사 요소와 생성 콘텐츠 — `::before`/`::after`·`content`·`::marker`·카운터](13-pseudo-elements-and-generated-content/) | 선택자 | 생성 콘텐츠가 어느 상자에 들어가고 접근성 트리에 어떻게 보이는지, `counter()` 로 번호를 만드는 형태를 설계할 수 있다 | 08 | — | 필수 | A |
@@ -42,7 +42,7 @@ CSS 는 문법 언어가 아니다. 문법 표면은 「선택자 { 속성: 값 
 | 24 | [Flexbox — 주축·교차축과 정렬(`justify-*`/`align-*`)](24-flexbox-axes/) | 박스·레이아웃 | `flex-direction` 을 바꿨을 때 `justify-content` 가 가리키는 방향이 뒤집히는 것을 예측할 수 있다 | 16 | [`../../../history/web/03-HTML-CSS-진화.md`](../../../history/web/03-HTML-CSS-진화.md) (1차원 레이아웃의 등장) | 필수 | A |
 | 25 | [`flex` 단축의 세 값 — `grow`/`shrink`/`basis` 와 크기 해결](25-flex-shorthand-and-sizing/) | 박스·레이아웃 | `flex: 1` 이 무엇으로 펼쳐지는지, `min-width: auto` 때문에 아이템이 안 줄어드는 사고를 설명할 수 있다 | 24 | — | 필수 | A |
 | 26 | [flex 줄바꿈·`gap`·`order`](26-flex-wrap-gap-order/) | 박스·레이아웃 | `flex-wrap` 이 켜졌을 때 `align-content` 가 새로 의미를 갖는 것과 `order` 가 접근성에서 만드는 문제를 판단할 수 있다 | 25 | — | 필수 | A |
-| 27 | [Grid 트랙 정의 — `fr`·`minmax()`·`repeat()`·`auto-fill`/`auto-fit`](27-grid-track-sizing/) | 박스·레이아웃 | `fr` 이 나누는 것이 「남는 공간」임을 설명하고 `auto-fill` 과 `auto-fit` 이 빈 트랙에서 갈리는 것을 예측할 수 있다 | 16 | [`../../../history/web/03-HTML-CSS-진화.md`](../../../history/web/03-HTML-CSS-진화.md) (2차원 레이아웃의 등장) | 필수 | A |
+| 27 | [Grid 트랙 정의 — `fr`·`minmax()`·`repeat()`·`auto-fill`/`auto-fit`](27-grid-track-sizing/) | 박스·레이아웃 | `fr` 이 나누는 것이 「남는 공간」임을 설명하고 `auto-fill` 과 `auto-fit` 이 빈 트랙에서 달라지는 것을 예측할 수 있다 | 16 | [`../../../history/web/03-HTML-CSS-진화.md`](../../../history/web/03-HTML-CSS-진화.md) (2차원 레이아웃의 등장) | 필수 | A |
 | 28 | [Grid 배치 — 라인 번호·`span`·자동 배치 알고리즘·`grid-auto-flow`](28-grid-placement/) | 박스·레이아웃 | 명시 배치와 자동 배치가 섞였을 때 커서가 어디로 가는지, `dense` 가 무엇을 바꾸는지 추적할 수 있다 | 27 | — | 필수 | A |
 | 29 | [Grid 영역 — `grid-template-areas`·이름 붙은 라인](29-grid-template-areas/) | 박스·레이아웃 | 영역 이름으로 레이아웃을 그리고 이름 붙은 라인이 자동으로 생기는 `-start`/`-end` 를 활용할 수 있다 | 28 | — | 필수 | A |
 | 30 | [`subgrid` — 부모 트랙을 자식이 물려받기](30-subgrid/) | 박스·레이아웃 | 카드 내부 줄을 카드끼리 맞추는 문제를 subgrid 로 풀고 중첩 grid 로는 왜 안 되는지 설명할 수 있다 | 29 | — | 필수 | C |
@@ -61,16 +61,16 @@ CSS 는 문법 언어가 아니다. 문법 표면은 「선택자 { 속성: 값 
 | 43 | [`color-mix()` 와 상대 색 구문](43-color-mix-and-relative-color/) | 시각 효과 | 기준색 하나에서 팔레트를 파생시키는 형태를 짜고 보간 색 공간이 결과를 바꾸는 것을 예측할 수 있다 | 42 | — | 필수 | B |
 | 44 | [배경과 대체 요소 맞춤 — 다중 배경·`background-clip`/`origin`/`size`·`object-fit`](44-backgrounds-and-object-fit/) | 시각 효과 | 배경 레이어가 쌓이는 순서와 `cover`/`contain` 이 자르는 축, `object-fit` 이 `img` 에서 하는 같은 일을 설명할 수 있다 | 15 | — | 필수 | A |
 | 45 | [그라디언트와 보간 색 공간 — linear/radial/conic·`in oklch`](45-gradients-and-interpolation/) | 시각 효과 | 두 색 사이에 회색 띠가 생기는 이유와 보간 공간 지정으로 그것을 없애는 방법을 판단할 수 있다 | 42 | — | 필수 | B |
-| 46 | [테두리·`border-radius`·`outline`·그림자](46-borders-radius-outline-shadow/) | 시각 효과 | `outline` 이 레이아웃을 차지하지 않는다는 것, `box-shadow` 와 `filter: drop-shadow` 가 갈리는 지점을 설명할 수 있다 | 15 | — | 필수 | A |
+| 46 | [테두리·`border-radius`·`outline`·그림자](46-borders-radius-outline-shadow/) | 시각 효과 | `outline` 이 레이아웃을 차지하지 않는다는 것, `box-shadow` 와 `filter: drop-shadow` 가 달라지는 지점을 설명할 수 있다 | 15 | — | 필수 | A |
 | 47 | [`filter` 와 `backdrop-filter`](47-filter-and-backdrop-filter/) | 시각 효과 | 필터가 쌓임 맥락과 포함 블록을 만드는 부작용, `backdrop-filter` 가 무엇을 읽어서 흐리는지 예측할 수 있다 | 22 | — | 필수 | B |
 | 48 | [혼합 모드와 `isolation` — `mix-blend-mode`/`background-blend-mode`](48-blend-modes-and-isolation/) | 시각 효과 | 혼합이 어느 배경과 섞이는지 추적하고 `isolation` 으로 그 범위를 끊을 수 있다 | 47 | — | 필수 | C |
-| 49 | [`clip-path` 와 `mask`](49-clip-path-and-mask/) | 시각 효과 | 잘라내기와 마스킹이 갈리는 지점, 도형 함수·참조 마스크로 모양을 만드는 형태를 설계할 수 있다 | 47 | — | 필수 | C |
+| 49 | [`clip-path` 와 `mask`](49-clip-path-and-mask/) | 시각 효과 | 잘라내기와 마스킹이 달라지는 지점, 도형 함수·참조 마스크로 모양을 만드는 형태를 설계할 수 있다 | 47 | — | 필수 | C |
 | 50 | [글꼴과 웹폰트 — `font` 단축·`@font-face`·`font-display`·가변 폰트](50-fonts-and-webfonts/) | 시각 효과 | FOIT 와 FOUT 를 `font-display` 값으로 골라 바꾸는 것과 폰트 폴백이 글자마다 따로 일어나는 것을 설명할 수 있다 | 19 | — | 필수 | A |
 | 51 | [텍스트 줄바꿈·서식·장식 — `text-wrap`·`white-space`·`overflow-wrap`/`word-break`·`hyphens`·`text-decoration`](51-text-wrapping-and-decoration/) | 시각 효과 | 긴 URL 이 상자를 뚫는 문제를 어떤 속성으로 막는지 고르고 `text-wrap: balance` 가 적용되는 조건을 판단할 수 있다 | 19 | — | 필수 | A |
 | 52 | [`transition` — 전환 가능한 속성·타이밍 함수·지연·`transition-behavior`](52-transition/) | 애니메이션 | 어떤 속성이 보간 가능한지(`auto` 로는 왜 안 되는지) 판정하고 `cubic-bezier`/`steps`/`linear()` 를 골라 쓸 수 있다 | 04 | — | 필수 | A |
 | 53 | [`@keyframes` 와 `animation` — 단축·`fill-mode`·`direction`·`iteration`·`play-state`](53-keyframes-and-animation/) | 애니메이션 | 끝난 뒤 원래 값으로 돌아가는 현상을 `fill-mode` 로 설명하고 여러 애니메이션이 같은 속성을 건드릴 때의 우선을 예측할 수 있다 | 52 | — | 필수 | A |
 | 54 | [`transform` 2D·`transform-origin`·개별 변환 속성(`translate`/`rotate`/`scale`)](54-transform-2d-and-origin/) | 애니메이션 | 변환 함수의 곱 순서가 결과를 바꾸는 것과 개별 속성이 그 순서를 고정하는 것을 설명할 수 있다 | 21 | — | 필수 | A |
-| 55 | [3D 변환 — `perspective`·`transform-style`·`backface-visibility`](55-3d-transforms/) | 애니메이션 | 원근을 부모에 주는 것과 자식에 주는 것이 갈리는 이유, 평탄화가 3D 를 무너뜨리는 자리를 예측할 수 있다 | 54 | — | 필수 | B |
+| 55 | [3D 변환 — `perspective`·`transform-style`·`backface-visibility`](55-3d-transforms/) | 애니메이션 | 원근을 부모에 주는 것과 자식에 주는 것이 달라지는 이유, 평탄화가 3D 를 무너뜨리는 자리를 예측할 수 있다 | 54 | — | 필수 | B |
 | 56 | [렌더링 파이프라인과 `will-change` — 무엇이 합성만으로 도는가 (+`contain`·`content-visibility`)](56-rendering-pipeline-and-will-change/) | 애니메이션 | 어떤 속성을 애니메이션하면 레이아웃→페인트→합성이 다 돌고 어떤 것은 합성만 도는지 분류하고, `will-change`·`contain` 의 비용을 판단할 수 있다 | 54 | [`../../../history/web/04-브라우저-엔진.md`](../../../history/web/04-브라우저-엔진.md) (엔진 구조) | 필수 | A |
 | 57 | [`@starting-style` 과 진입·퇴장 전환 — `display`/`overlay` 를 전환에 태우기](57-starting-style-and-entry-exit-transitions/) | 애니메이션 | `display: none` 에서 나타나는 요소가 왜 전환되지 않았는지, 무엇이 그것을 가능하게 했는지 설명할 수 있다 | 52 | — | 필수 | C |
 | 58 | [스크롤 연동 애니메이션 — `animation-timeline`·`scroll()`/`view()`·`timeline-scope`](58-scroll-driven-animations/) | 애니메이션 | 시간 대신 스크롤 진행을 타임라인으로 삼는 형태를 짜고, 스크롤 이벤트로 하던 방식과 비용이 왜 다른지 판단할 수 있다 | 53 | — | 필수 | B |
@@ -96,7 +96,7 @@ CSS 는 문법 언어가 아니다. 문법 표면은 「선택자 { 속성: 값 
 | 38 미디어 쿼리 · 40 컨테이너 쿼리 | [`history/web/03-HTML-CSS-진화.md`](../../../history/web/03-HTML-CSS-진화.md) §2.4·2.8 — 반응형 웹의 등장과 그 다음 단계 | 「왜 필요해졌나」는 거기. 여기는 **범위 구문·컨테인먼트 요구·컨테이너 자신은 질의 대상이 아니라는 규칙** |
 | 56 렌더링 파이프라인 | [`history/web/04-브라우저-엔진.md`](../../../history/web/04-브라우저-엔진.md) — 렌더링 엔진 계보와 엔진 전쟁 | 엔진의 역사·계보는 거기. 여기는 **레이아웃/페인트/합성 세 단계에 어떤 속성이 붙는가**라는 실무 판정 |
 | 07 CSS 구문·오류 복구 | [`foundations/compiler-pipeline/`](../../../cs/foundations/compiler-pipeline/) — 렉서·파서·AST 일반론 | 파싱 일반론은 거기. 여기는 **CSS 파서가 모르는 것을 만났을 때 선언 하나만 버리는가 규칙 전체를 버리는가**라는 CSS 고유 규칙 |
-| 32 논리 속성·글쓰기 방향 | [`foundations/data-representation/`](../../../cs/foundations/data-representation/) — 유니코드·문자 인코딩 | 문자 표현은 거기. 여기는 **물리 축(`left`)과 논리 축(`inline-start`)이 갈리는 CSS 규칙** |
+| 32 논리 속성·글쓰기 방향 | [`foundations/data-representation/`](../../../cs/foundations/data-representation/) — 유니코드·문자 인코딩 | 문자 표현은 거기. 여기는 **물리 축(`left`)과 논리 축(`inline-start`)이 달라지는 CSS 규칙** |
 | 60 모션 접근성 | [`cs/engineering/development-standards/quality-standards/`](../../../cs/engineering/development-standards/quality-standards/) — ISO 25010 의 포용성(inclusivity) 항목 | 품질 모델의 어휘는 거기. 여기는 **`prefers-reduced-motion` 이라는 구체 표면과 대체 모션 설계** |
 | 전반 | [`../../js/syntax/README.md`](../../js/syntax/README.md) | CSSOM·`getComputedStyle`·Web Animations API·`element.animate()` 는 **JS 쪽 표면**이다. 이 목록은 선언적 CSS 만 다루고, 계산값 확인은 검증 도구로만 쓴다 |
 | 전반 | [`../../html/syntax/README.md`](../../html/syntax/README.md) | 스타일시트를 **연결하는 마크업**(`<link>`·`<style>`)은 HTML 09. 여기는 연결된 뒤의 이야기다 |

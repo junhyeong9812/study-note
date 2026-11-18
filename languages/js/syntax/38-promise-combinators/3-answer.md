@@ -165,16 +165,16 @@ rejected with RangeError 「guard: stopped at next #100000」
 
 - ★★★ `Promise.all` 은 이터러블을 **호출 안에서 동기로** 끝까지 읽는다 — 가드가 10만 번째에서 던질 때까지 **호출이 돌아오지 않았다.** 가드가 없으면 **영영** 안 돌아온다.
 - ★★ 읽다가 난 예외는 **던지지 않고 거부**로 바꾼다(명세의 `IfAbruptRejectPromise`) — `rejected with RangeError 「guard: …」`.
-- ★★ [19번](../19-iterable-protocol-and-for-of/2-summary.md) 동작 (1)의 `[4]` — 호출 직후 로그가 이미 **`next#4 done`** 까지 차 있었다. 19번이 「돌려 보지 않았다」로 남긴 끝없는 경우를 이 탐침이 **가드 안에서** 돌렸다.
+- ★★ [19번](../19-iterable-protocol-and-for-of/2-summary.md) 동작 (1)의 `[4]` — 호출 직후 로그가 이미 **`next#4 done`** 까지 차 있었다. 19번이 「돌려 보지 않았다」로 남긴 끝없는 경우를 이 probe가 **가드 안에서** 돌렸다.
 - ★ [26번](../26-array-search-flatten-and-create/2-summary.md) 동작 (7)의 `[2]` — `Array.fromAsync` 는 **`next 0 | settle 0 | next 1 | …`**(하나씩), `Promise.all([...gen()])` 은 **`next 0 | next 1 | next 2 | settle …`**(다 꺼낸 뒤).
 
 ### 8. JS `race` 는 **먼저 넘긴 것**(가짓수 1), Go `select` 는 **무작위**(가짓수 2) — 둘 다 **명세**가 정한다 ★★
 
 - ★★ JS 는 잡이 **등록 순서대로** 돈다는 ECMA-262 의 규칙에서, Go 는 「준비된 가지 중 **균등 무작위**」라는 Go 명세의 규칙에서 나온다([Go 30](../../../go/syntax/30-select-default-and-timeouts/2-summary.md) 동작 (1)).
 
-### 9. `allSettled` **ES2020** · `any` **ES2021** · `withResolvers` **ES2024** · `try` **ES2025** — 두 node 판에는 **뒤의 둘이 없다** ★★
+### 9. `allSettled` **ES2020** · `any` **ES2021** · `withResolvers` **ES2024** · `try` **ES2025** — 두 node 버전에는 **뒤의 둘이 없다** ★★
 
-- ★★ finished proposals 표와 README 가 같다. 판별 블록에서 두 node 판이 `ES2024`·`ES2025` 줄에 `no`.
+- ★★ finished proposals 표와 README 가 같다. 판별 블록에서 두 node 버전이 `ES2024`·`ES2025` 줄에 `no`.
 - ★ **`AggregateError`** — `errors` 는 **입력 순서대로** 이유를 든다. 정본은 [32번](../32-error-handling-and-error/2-summary.md) 동작 (5).
 
 ## 실행 검증
@@ -186,9 +186,9 @@ rejected with RangeError 「guard: stopped at next #100000」
 | `js36b-38-h-race-ready.js` + `js36b-38d-race-ready.sh` | ★★ 가짓수 `1`·`1` | node20 순서마다 200판 |
 | `js36b-38c-resolvers-try.web.js` | ★★ `withResolvers` · `try` | Chrome 151 1벌 |
 | `js36b-38e-endless.js` | ★★ 끝없는 이터러블 — `100000` 번 뒤에 거부로 돌아온다 | node20 1벌 + node18 대조 + Chrome(대조기) |
-| `js36b-versions.sh` · `js36b-vdiff.sh` | 판별 기능 표 · 갈린 탐침 수 | 1벌씩 |
+| `js36b-versions.sh` · `js36b-vdiff.sh` | 판별 기능 표 · 달라진 probe 수 | 1벌씩 |
 
-두 node 판 · Chrome 대조기(이 묶음 전체의 node 탐침). `DIFFERS` 가 한 줄도 없다.
+두 node 버전 · Chrome 대조기(이 묶음 전체의 node probe). `DIFFERS` 가 한 줄도 없다.
 
 ```sh
 # js36b-vdiff.sh
@@ -235,7 +235,7 @@ js36b-39g-generator-runner.js        node18/node20 identical  node20/Chrome iden
 node18 vs node20: identical 13 · differs 0   ·   node20 vs Chrome 151: identical 12 · differs 0 · node only 1
 ```
 
-**구현 의존 항목 — 판이 오르면 다시 돌릴 것**
+**구현 의존 항목 — 버전이 오르면 다시 돌릴 것**
 
 - ★★ **node 22 이상** — `withResolvers`·`try` 가 들어오면 4번을 node 로도 돌린다(이 머신에 없다).
 - ★ `AggregateError` 의 문구 `All promises were rejected` — V8 의 글자다.
@@ -244,7 +244,7 @@ node18 vs node20: identical 13 · differs 0   ·   node20 vs Chrome 151: identic
 
 이 파일의 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Chrome 151**(헤드리스) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
 블록은 **전부 캡처 파일에서 조립**했다.
-★★ **이 주제에서 두 node 판이 갈린 탐침은 없다**(대조기의 `identical`).
+★★ **이 주제에서 두 node 버전이 달라진 probe는 없다**(대조기의 `identical`).
 
 **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
 `js36b-38a-combinator-grid.js`(1번 · 5번) · `js36b-38b-no-cancel.js`(2번 · 6번) · `js36b-38-h-race-ready.js` + `js36b-38d-race-ready.sh`(3번 · 8번) · `js36b-38c-resolvers-try.web.js`(4번) · `js36b-38e-endless.js`(7번).

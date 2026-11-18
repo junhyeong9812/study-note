@@ -63,8 +63,8 @@
   - main arena: 프로그램 브레이크 아래 영역이다. 모자라면 `brk`로 늘린다. `brk`가 실패하면 `mmap`으로 대신 받는다(malloc/malloc.c `sysmalloc`).
   - 스레드용 arena: `mmap`으로 만든 heap에서 잘라 준다. `brk`와 무관하다(아래 적용 1).
 - **128KiB 이상**이고 free list로 채울 수 없는 요청은 `mmap`으로 따로 받는다(mallopt(3) `M_MMAP_THRESHOLD`, 기본 128*1024).
-- 이 문턱은 기본 상태에서 **동적**이다. 문턱보다 큰(최대 64비트에서 32MiB) mmap 블록을 free하면 문턱이 그 크기로 올라간다(mallopt(3)).
-  - `M_TRIM_THRESHOLD`·`M_TOP_PAD`·`M_MMAP_THRESHOLD`·`M_MMAP_MAX` 중 하나라도 설정하면 동적 조정이 꺼져 문턱이 고정된다. 같은 이름의 `MALLOC_*_` 환경 변수로 설정해도 같다(mallopt(3) Note, malloc.c `no_dyn_threshold`).
+- 이 임계값은 기본 상태에서 **동적**이다. 임계값보다 큰(최대 64비트에서 32MiB) mmap 블록을 free하면 임계값이 그 크기로 올라간다(mallopt(3)).
+  - `M_TRIM_THRESHOLD`·`M_TOP_PAD`·`M_MMAP_THRESHOLD`·`M_MMAP_MAX` 중 하나라도 설정하면 동적 조정이 꺼져 임계값이 고정된다. 같은 이름의 `MALLOC_*_` 환경 변수로 설정해도 같다(mallopt(3) Note, malloc.c `no_dyn_threshold`).
 - `brk`나 `mmap`으로 받은 것은 **가상 주소 예약**이다. 물리 페이지는 처음 건드릴 때 페이지 폴트로 붙는다(10번 페이징).
 
   - *프로그램 브레이크(program break)*: 데이터 세그먼트의 끝 주소다. `brk`/`sbrk`로 이 끝을 밀어 올리거나 내려 힙 크기를 바꾼다.
@@ -145,7 +145,7 @@ RSS가 안 줄어드는 이유는 외부 단편화의 사용자 공간 판이다
   +------+------+------+------+------+------+------+     브레이크를 못 내린다
 ```
 
-- glibc는 힙 **꼭대기**의 연속 빈 공간이 `M_TRIM_THRESHOLD`(기본 128KiB)를 넘을 때만 `brk`를 내린다(mallopt(3)). 동적 mmap 문턱이 올라가면 trim 문턱도 그 2배로 함께 올라간다(같은 문서, 동적 조정이 켜진 기본 상태에서만).
+- glibc는 힙 **꼭대기**의 연속 빈 공간이 `M_TRIM_THRESHOLD`(기본 128KiB)를 넘을 때만 `brk`를 내린다(mallopt(3)). 동적 mmap 임계값이 올라가면 trim 임계값도 그 2배로 함께 올라간다(같은 문서, 동적 조정이 켜진 기본 상태에서만).
 - `malloc_trim()`은 glibc 2.8부터 모든 arena의 **페이지 전체가 빈** 청크까지 `madvise`로 돌려준다(malloc_trim(3)).
 - 페이지마다 살아 있는 청크가 하나라도 있으면 그 페이지는 못 돌려준다.
 
@@ -299,7 +299,7 @@ freed by thread T0 here: ...  exit=1
 - **원인**
   - 해제된 청크가 살아 있는 청크 사이사이에 흩어져 페이지를 통째로 비우지 못한다(외부 단편화).
   - brk 힙은 꼭대기에서만 줄어든다. 꼭대기에 오래 사는 청크가 하나 있으면 아래가 비어도 못 줄인다.
-  - 스레드가 많아 arena가 CPU×8개까지 늘었고, arena마다 여유 공간을 쥐고 있다.
+  - 스레드가 많아 arena가 CPU×8개까지 늘었고, arena마다 여유 공간을 잡고 있다.
 - **대처**
   - `MALLOC_ARENA_MAX`를 2~4 정도로 줄여 본다(값은 예시 — 측정하며 정한다).
   - 긴 수명 객체와 짧은 수명 객체를 다른 풀·arena로 나눈다. 원고 §11의 "다이나믹 힙"이 이 발상이다.
@@ -336,7 +336,7 @@ freed by thread T0 here: ...  exit=1
 ## 핵심 문장
 
 - 커널은 페이지 단위로만 준다. `malloc`은 그 위에서 작은 조각을 잘라 주고 돌려받는 사용자 공간 할당자다.
-- glibc는 작은 요청은 arena 힙(main arena는 `brk`, 스레드용 arena는 `mmap`한 heap)에서, 128KiB 이상(기본 상태에서 동적 문턱)은 `mmap`으로 따로 받는다. mmap 블록은 `free`하면 바로 반납된다.
+- glibc는 작은 요청은 arena 힙(main arena는 `brk`, 스레드용 arena는 `mmap`한 heap)에서, 128KiB 이상(기본 상태에서 동적 임계값)은 `mmap`으로 따로 받는다. mmap 블록은 `free`하면 바로 반납된다.
 - 해제는 free list에 돌려놓는 것이지 커널에 돌려주는 것이 아니다. brk 힙은 꼭대기에서만 줄고, 페이지마다 산 청크가 섞이면 `malloc_trim`도 못 돌려준다.
 - 커널 안에는 buddy(2^order 페이지, XOR로 짝 찾기)와 slab(같은 크기 객체 캐시)이 한 층 더 있다.
 - double free는 glibc가 알아채면 `SIGABRT`(134)로 죽는다. 알아채지 못한 손상은 조용히 지나가 나중에 엉뚱한 곳에서 터진다. ASan으로 잡는다.
@@ -357,7 +357,7 @@ freed by thread T0 here: ...  exit=1
   - OSTEP 14 "Interlude: Memory API", 17 "Free-Space Management"(분할·병합, best/worst/first/next fit, segregated list, slab, buddy) <https://pages.cs.wisc.edu/~remzi/OSTEP/vm-freespace.pdf>
   - CS:APP 3판 9.9 "Dynamic Memory Allocation"
 - man
-  - malloc(3) — 기본 128KiB 문턱, arena, `free(NULL)` <https://man7.org/linux/man-pages/man3/malloc.3.html>
+  - malloc(3) — 기본 128KiB 임계값, arena, `free(NULL)` <https://man7.org/linux/man-pages/man3/malloc.3.html>
   - mallopt(3) — `M_MMAP_THRESHOLD`(128*1024, 동적, 상한 `4*1024*1024*sizeof(long)`), `M_TRIM_THRESHOLD`, `M_TOP_PAD`, `M_MXFAST`, `M_ARENA_MAX`, `M_PERTURB`, `M_CHECK_ACTION` <https://man7.org/linux/man-pages/man3/mallopt.3.html>
   - malloc_trim(3) — glibc 2.8부터 모든 arena의 빈 페이지 반납 <https://man7.org/linux/man-pages/man3/malloc_trim.3.html>
   - proc_buddyinfo(5) — order별 빈 블록 수 <https://man7.org/linux/man-pages/man5/proc_buddyinfo.5.html>

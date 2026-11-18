@@ -21,7 +21,7 @@
 
 똑같은 구조다.\
 데이터 파이프라인의 장애는 크래시로 보이지 않는다. **잡은 초록인데 숫자가 틀린** 모양으로 보인다([README](../README.md) 머리 문단).\
-그래서 에러 메시지 대신 **어긋남의 모양**(0, 정수배, 일정 비율, 특정 값에서 평평, 날짜 경계, 과거만)이 첫 단서다.
+그래서 에러 메시지 대신 **불일치의 모양**(0, 정수배, 일정 비율, 특정 값에서 평평, 날짜 경계, 과거만)이 첫 단서다.
 
 실무 예:
 - 재무팀이 "대시보드가 결제 DB와 12만 원 다르다"고 한다. 오케스트레이터는 전부 초록이다. 로그에는 에러가 없다.
@@ -68,11 +68,11 @@
   ④ 변경 이력   상류 스키마 버전, 변환 코드 배포, 백필·재처리 실행, 차원 갱신 시각
 ```
 
-- ①이 없으면 2·3절을 가를 수 없다. "적다"와 "2배"는 처방이 반대다.
-- ③이 없으면 4·5절을 가를 수 없다. 날짜 경계에서만 어긋나는 숫자는 대부분 시각 축 문제다([06-1](../06-event-data-modeling/2-summary.md) · [06-5](../06-event-data-modeling/2-summary.md)).
+- ①이 없으면 2·3절을 구분할 수 없다. "적다"와 "2배"는 처방이 반대다.
+- ③이 없으면 4·5절을 구분할 수 없다. 날짜 경계에서만 어긋나는 숫자는 대부분 시각 축 문제다([06-1](../06-event-data-modeling/2-summary.md) · [06-5](../06-event-data-modeling/2-summary.md)).
 - ④는 "언제부터"를 준다. 숫자가 바뀐 날과 배포·백필 날이 겹치면 원인 후보가 크게 준다([11-2](../11-data-lineage/2-summary.md)).
 
-### 0-2. 어긋남의 모양으로 먼저 가른다
+### 0-2. 불일치의 모양으로 먼저 가른다
 
 ```text
   적재본 / 원천 (같은 파티션)
@@ -89,7 +89,7 @@
 
 #### 실험: 파티션 대조 결과를 모양으로 분류한다 (`Reconcile.java`)
 
-원천과 적재본의 파티션별 (행 수, 합계)를 받아 위 그림의 규칙으로 모양을 붙였다. 데이터는 합성이고, 분류 규칙은 이 노트가 만든 모형이다(어떤 도구의 기능이 아니다). 각 줄은 leaf 실험이나 사건의 어긋남을 흉내 냈다.
+원천과 적재본의 파티션별 (행 수, 합계)를 받아 위 그림의 규칙으로 모양을 붙였다. 데이터는 합성이고, 분류 규칙은 이 노트가 만든 모형이다(어떤 도구의 기능이 아니다). 각 줄은 leaf 실험이나 사건의 불일치를 흉내 냈다.
 
 ```java
 static String shape(Part p, Map<Long, Integer> dstCountFreq) {
@@ -119,9 +119,9 @@ ds     src_rows dst_rows   src_sum    dst_sum  shape
 10-08     1000     1000    250000     227273  VALUE       -> 행 수 같고 값만 다름: 의미·규칙 변경 (09-5, 08-2)
 ```
 
-- 관찰: 행 수와 합계 두 숫자만으로 여덟 파티션이 일곱 모양으로 갈렸다. 10-05·10-06은 원천이 80,000 → 90,000으로 늘었는데 적재본이 둘 다 65,535에서 멈췄다. "늘어나는 입력 + 같은 값에서 평평한 출력"은 한도의 표지다.
+- 관찰: 행 수와 합계 두 숫자만으로 여덟 파티션이 일곱 모양으로 나뉘었다. 10-05·10-06은 원천이 80,000 → 90,000으로 늘었는데 적재본이 둘 다 65,535에서 멈췄다. "늘어나는 입력 + 같은 값에서 평평한 출력"은 한도의 표지다.
 - 한계(모형): 규칙은 **후보**를 고를 뿐 원인을 확정하지 않는다. 예를 들어 정수배는 append 재실행([08-1](../08-idempotent-pipelines-and-backfill/2-summary.md))일 수도, 이력 테이블 조인의 곱([13-3](../13-data-vault/2-summary.md))일 수도 있다. grain 혼합([03-1](../03-dimensional-modeling/2-summary.md))은 행 수가 정확한 배수가 아닐 수 있어 이 규칙에 안 걸릴 수 있다. 03번 실험 데이터라면 상세 1,200행 + 합계 줄 600행 = 1,800행(1.5배)이고 합계는 2배라, 이 규칙으로는 `EXTRA 600`이 된다(계산 — 이 실험에 넣어 돌린 것은 아니다). 다음 절의 확인 방법으로 좁힌다.
-- 정수배 규칙 앞의 `p.srcRows > 0`은 원천 0행 · 적재본 양수인 파티션에서 `%`가 0으로 나누지 않게 막는다(Java 정수 나눗셈은 `ArithmeticException`). 그런 파티션은 `EXTRA`로 간다. 이 조건이 없던 판에 원천 0행 · 적재 5행 파티션을 넣어 돌리면 `/ by zero`로 멈췄고, 넣은 판은 `EXTRA 5`를 냈다(재실행, 같은 환경). 위 여덟 줄의 출력은 두 판이 같다.
+- 정수배 규칙 앞의 `p.srcRows > 0`은 원천 0행 · 적재본 양수인 파티션에서 `%`가 0으로 나누지 않게 막는다(Java 정수 나눗셈은 `ArithmeticException`). 그런 파티션은 `EXTRA`로 간다. 이 조건이 없던 판에 원천 0행 · 적재 5행 파티션을 넣어 돌리면 `/ by zero`로 멈췄고, 넣은 판은 `EXTRA 5`를 냈다(재실행, 같은 환경). 위 여덟 줄의 출력은 두 버전이 같다.
 - 10-08의 227,273은 250,000 ÷ 1.1의 반올림(부가세 10% 포함 → 제외, 예시)이다. 행 수가 같아 행 수 검사로는 안 보이고 합계·분포 검사로만 보인다([09-5](../09-data-contracts-and-schema-registry/2-summary.md)).
 
 ### 1. 잡은 성공했는데 0행·일부만 실렸다
@@ -139,7 +139,7 @@ ds     src_rows dst_rows   src_sum    dst_sum  shape
 | 보이는 형태 (숫자·지표·로그) | 원인 후보 | 확인 방법 | leaf |
 |---|---|---|---|
 | 감사 테이블 `rows_loaded = 0`, 적재 로그 `INSERT 0 0`, 잡 `exit=0`. 데이터 기준 신선도(`now() - max(event_time)`) 2일 이상 | 상류 내보내기가 빈 파일을 만들었다. 경로·파티션 이름이 바뀌어 아무것도 못 읽었다. SQL은 0행을 오류로 보지 않는다 | 입력 파일 목록·크기, 적재 행 수 이력, `max(event_time)` | [10-1](../10-data-quality-and-data-observability/2-summary.md) |
-| 0행 사고 직후부터 볼륨 경보가 며칠 조용하다. 감시 밴드 폭이 갑자기 넓어졌다(10번 실험 ±6,377 → ±13,813) | 이상으로 판정한 값까지 평균·분산 갱신에 넣었다 | 기준선 계산에 들어간 날짜 목록, 사고일 제외 표시 유무 | [10-5](../10-data-quality-and-data-observability/2-summary.md) |
+| 0행 사고 직후부터 볼륨 경보가 며칠 조용하다. 감시 밴드 폭이 갑자기 넓어졌다(10번 실험 ±6,377 → ±13,813) | 이상으로 판정한 값까지 평균·분산 갱신에 넣었다 | 베이스라인 계산에 들어간 날짜 목록, 사고일 제외 표시 유무 | [10-5](../10-data-quality-and-data-observability/2-summary.md) |
 | 잡 실행 시각과 겹치는 짧은 0·빈칸(08번 실험 6b: 덮어쓰는 중 읽기 0건) | DELETE와 INSERT가 각각 자동 커밋됐다. INSERT가 실패하면 파티션이 빈 채로 남는다 | 잡 SQL의 트랜잭션 경계, 잡 실패 이력과 빈 파티션 대조 | [08-5](../08-idempotent-pipelines-and-backfill/2-summary.md) |
 | 파일·배치별 적재 행 수가 특정 값(예: 65,535)에서 반복된다. 원천 행 수는 계속 는다 | 중간 형식·버퍼·API 페이지의 행 한도에서 조용히 잘렸다 | 파일별 원천 행 수 vs 적재 행 수, 적재 행 수의 최빈값 | [17 사건 1](../17-de-incidents/2-summary.md) |
 
@@ -210,7 +210,7 @@ ds     src_rows dst_rows   src_sum    dst_sum  shape
 | 같은 회의에서 활성 사용자가 505·183·580(15번 실험 같은 로그로 118~580). 각 팀 SQL은 맞다 | 도메인을 넘나드는 다의어("활성")의 전역 정의 부재 | 지표 정의(식·기간·소유 도메인) 대조 | [15-2](../15-data-mesh-and-data-products/2-summary.md) |
 | CRM과 주문 DB의 고객 등급이 다르다. 양쪽 다 직접 수정 화면 | 같은 사실에 쓰기 경로가 둘(원천 미정) | 사실(컬럼)별 원천 역할표, 양방향 동기화 잡 유무 | [01-1](../01-system-of-record-and-derived-data/2-summary.md) |
 | 목록 화면 금액 ≠ 상세 화면(01번 실험 `mismatched 50, diff_sum 25000`). 새 기능 경로에서만 | 비정규화 사본의 갱신 경로 누락 | 원천 vs 사본 `EXCEPT`, 쓰기 경로별 사본 갱신 여부 | [01-3](../01-system-of-record-and-derived-data/2-summary.md) |
-| 대시보드 합계 ≠ 운영 DB | 변환 실패 행 무음 스킵(3절과 같은 원인) | 일자별 행 수·합계 대조 | [02-3](../02-oltp-olap-and-warehouse/2-summary.md) |
+| 대시보드 합계 ≠ 운영 DB | 변환 실패 행 조용한 스킵(3절과 같은 원인) | 일자별 행 수·합계 대조 | [02-3](../02-oltp-olap-and-warehouse/2-summary.md) |
 | "어제 매출"이 실은 그제 숫자. 대시보드는 "최근 업데이트: 방금" | 신선도를 잡 실행 시각으로 표시 | `max(event_time)`과 표시 시각 비교 | [10-2](../10-data-quality-and-data-observability/2-summary.md) |
 | 매출이 하루 사이 약 10% 하락, 주문 수는 그대로 | 스키마는 같고 의미만 변경(부가세 포함 → 제외, 예시) | 주문당 평균 금액 분포, 계약의 "의미" 칸 변경 이력 | [09-5](../09-data-contracts-and-schema-registry/2-summary.md) |
 
@@ -222,7 +222,7 @@ ds     src_rows dst_rows   src_sum    dst_sum  shape
 |---|---|---|---|
 | 지역별 대시보드가 특정 날부터 "(NULL)" 하나로. 잡 성공, 에러 없음. `region` NULL 비율 0% → 100% | 상류가 필드 이름 변경(`region` → `region_code`). JSON 경로 접근은 없는 키를 NULL로 | 원천 키 집합 diff(새 키 등장), 날짜별 NULL 비율 | [09-1](../09-data-contracts-and-schema-registry/2-summary.md) |
 | 주문 상태 "기타"가 0% → 33% | enum 새 값 + `CASE … ELSE '기타'` | 허용값 검사, 상태별 고유값 목록 diff | [09-2](../09-data-contracts-and-schema-registry/2-summary.md) |
-| 합계·주문 수는 그대로인데 세그먼트별 "알 수 없음"이 커짐(10번 실험 customer_id NULL 0% → 40%) | 필드 이름 변경·조인 키 형식 변경·수집 SDK 버그 등(실험은 원인까지 보이지 않음) | 컬럼별 NULL 비율을 같은 요일 기준선과, 계보로 상류 추적 | [10-3](../10-data-quality-and-data-observability/2-summary.md) |
+| 합계·주문 수는 그대로인데 세그먼트별 "알 수 없음"이 커짐(10번 실험 customer_id NULL 0% → 40%) | 필드 이름 변경·조인 키 형식 변경·수집 SDK 버그 등(실험은 원인까지 보이지 않음) | 컬럼별 NULL 비율을 같은 요일 베이스라인과, 계보로 상류 추적 | [10-3](../10-data-quality-and-data-observability/2-summary.md) |
 | 상류가 컬럼을 지운 지 사흘 뒤 지역별 대시보드가 빔. 하류 일부는 오류, 일부는 NULL로 성공 | 변경 전에 하류 목록을 볼 수 없었다(컬럼 수준 계보 없음) | 컬럼 수준 계보의 하류 BFS(INDIRECT 간선 포함) | [11-1](../11-data-lineage/2-summary.md) |
 | 카테고리 매출에 "Unknown"(`-1`) 몫이 커짐 | 차원 적재가 팩트보다 늦음(늦게 온 차원) | `-1` 행 수 지표, 차원·팩트 적재 시각 | [03-3](../03-dimensional-modeling/2-summary.md) |
 
@@ -329,7 +329,7 @@ ds     src_rows dst_rows   src_sum    dst_sum  shape
 - **집합 차·반조인(anti-join)**: 원천과 사본의 키 대조(`EXCEPT`, `NOT EXISTS`). 누락은 원천 − 사본, 잔존은 사본 − 원천이다. `EXCEPT`는 중복 행을 없애므로 같은 키가 사본에 두 번 있어도 차집합은 비어 있다. 중복은 키별 `count(*) > 1`이나 `EXCEPT ALL`로 본다([01](../01-system-of-record-and-derived-data/2-summary.md) 자료구조 절, [05](../05-change-data-capture/2-summary.md) 적용 §4, [12](../12-data-retention-and-erasure/2-summary.md)).
 - **해시 집계**: 파티션별 `count(*)`·`sum()` 대조, 그룹별 `HAVING count(*) > 1` 중복 검사.
 - **구간 겹침 검사**: SCD Type 2 유효 기간의 `tstzrange … && …`와 `lead()` 이웃 대조([04](../04-slowly-changing-dimensions/2-summary.md), 구간 비교 — [data-structure/30-interval-tree](../../data-structure/30-interval-tree/2-summary.md), 커리큘럼 번호 42).
-- **이동 평균·EWMA**: 볼륨 기준선과 밴드([10](../10-data-quality-and-data-observability/2-summary.md)).
+- **이동 평균·EWMA**: 볼륨 베이스라인과 밴드([10](../10-data-quality-and-data-observability/2-summary.md)).
 - **그래프 BFS**: 계보 DAG의 하류(영향 범위)·상류(원인 후보) 순회([11](../11-data-lineage/2-summary.md), [data-structure/08-graph](../../data-structure/08-graph/2-summary.md) · [algorithm/11-bfs](../../algorithm/11-bfs/2-summary.md)).
 - **LSN 차이**: `pg_wal_lsn_diff(pg_current_wal_lsn(), restart_lsn)`는 두 WAL 위치 사이의 바이트 거리다. 슬롯이 붙든 WAL 양의 추정치로 쓴다. 실제 `pg_wal` 디렉터리 크기는 세그먼트 단위로 남고 다른 보존 사유(`wal_keep_size`·아카이브 실패 등)도 더해지므로 `pg_ls_waldir()` 합계로 따로 잰다([05](../05-change-data-capture/2-summary.md)).
 
@@ -436,7 +436,7 @@ FROM pg_replication_slots;
 
 ## 핵심 문장
 
-- 데이터 파이프라인의 장애는 크래시가 아니라 **초록인데 틀린 숫자**로 보인다. 첫 단서는 에러 메시지가 아니라 원천 대조의 어긋남 모양이다.
+- 데이터 파이프라인의 장애는 크래시가 아니라 **초록인데 틀린 숫자**로 보인다. 첫 단서는 에러 메시지가 아니라 원천 대조의 불일치 모양이다.
 - 0은 빈 입력, 정수배는 중복 적재·조인 곱, 약간 적음은 필터·조인 누락·늦은 데이터, 같은 값에서 평평함은 고정 한도의 후보다. 모양은 후보를 고를 뿐이고, 확정은 leaf의 확인 쿼리로 한다.
 - 과거 숫자가 바뀌면 총합이 같은지부터 본다. 분포만 바뀌면 차원 덮어쓰기, 총합이 바뀌면 규칙·시각 축이 후보다.
 - 대시보드마다 숫자가 다르면 정의·시각 축·원천 중 무엇이 다른지를 먼저 찾는다. 원천이 둘이면 어느 쪽이 맞는지 판정할 규칙이 없다.
@@ -452,4 +452,4 @@ FROM pg_replication_slots;
 - 데이터 분석 쪽(품질 검사·표본): [data-analysis/18-data-cleaning-and-quality](../../data-analysis/18-data-cleaning-and-quality/2-summary.md) · [data-analysis/02-sampling-and-bias](../../data-analysis/02-sampling-and-bias/2-summary.md)
 - 근거: 각 표의 수치는 해당 leaf의 실험·장애 시나리오에서 옮겼다(leaf 표기 `NN-k`). 도구 동작(PostgreSQL 17 슬롯 뷰, Kafka 보존, Confluent 호환성 모드, Iceberg 유지보수)의 1차 출처는 각 leaf의 「관련 주제·근거」에 있다.
 - 실험 목록
-  - `Reconcile.java` — eclipse-temurin:21-jdk(OpenJDK 21.0.12), docker `--rm --pull never --network none --cpus=2 -u`, 합성 파티션 8개: 행 수·합계 두 숫자로 어긋남 모양(OK·MULTIPLE·ZERO·MISSING·PLATEAU·EXTRA·VALUE) 분류
+  - `Reconcile.java` — eclipse-temurin:21-jdk(OpenJDK 21.0.12), docker `--rm --pull never --network none --cpus=2 -u`, 합성 파티션 8개: 행 수·합계 두 숫자로 불일치 모양(OK·MULTIPLE·ZERO·MISSING·PLATEAU·EXTRA·VALUE) 분류

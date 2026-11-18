@@ -239,10 +239,10 @@ methods that returned with zero write traps: 9 / 17
 
 ### 7. 트랩이 `receiver`(= Proxy)를 `Reflect.set` 에 넘겨서 — 쓰기 하나가 `[[Set]]` 뒤 `[[DefineOwnProperty]]` 로 다시 Proxy 에 온다 ★★
 
-- ★★ 평범한 쓰기(`OrdinarySet`)는 결국 **「receiver 에 데이터 프로퍼티를 정의」** 로 끝난다. 탐침의 `set` 트랩은 받은 `r`(= Proxy)을 그대로 `Reflect.set(t, k, v, r)` 에 넘기므로
+- ★★ 평범한 쓰기(`OrdinarySet`)는 결국 **「receiver 에 데이터 프로퍼티를 정의」** 로 끝난다. probe의 `set` 트랩은 받은 `r`(= Proxy)을 그대로 `Reflect.set(t, k, v, r)` 에 넘기므로
   그 정의가 **Proxy 의 `[[DefineOwnProperty]]`** 가 되어 `defineProperty` 트랩이 한 번 더 불린다. 그래서 1번 격자의 두 열이 **행마다 같다.**
 - ★ **셀 때는 한 열(`set`)만 보면 된다.** 이 문서는 둘 다 싣고 **합**으로 0 을 판정했다 — 어느 쪽으로 세도 결론이 같다.
-- ★ `receiver` 를 안 넘기면(`Reflect.set(t, k, v)`) 정의는 **대상 `t`** 에 일어나 `defineProperty` 트랩이 안 불릴 것이다 — ★ **이 판에서 돌려 보지 않았다.** 트랩 계약은 [목록의 **45번 주제**](../45-proxy/)다.
+- ★ `receiver` 를 안 넘기면(`Reflect.set(t, k, v)`) 정의는 **대상 `t`** 에 일어나 `defineProperty` 트랩이 안 불릴 것이다 — ★ **이 버전에서 돌려 보지 않았다.** 트랩 계약은 [목록의 **45번 주제**](../45-proxy/)다.
 
 ### 8. `map` 은 하위 클래스, `toSorted` 는 늘 `Array` — 복사 메서드는 species 를 안 읽는다 ★★★
 
@@ -252,11 +252,11 @@ methods that returned with zero write traps: 9 / 17
 - ★★ 그래서 [17번](../17-inheritance-and-super/2-summary.md)의 `class Stack extends Array` 는 `map`·`filter`·`slice` 결과가 `Stack` 인데, **`toSorted` 결과는 평범한 `Array`** 라 `Stack` 의 메서드(`top()`)가 **없다.**
 - ★ 이 배치는 species 를 다시 재지 않았다 — 22번 출력의 인용이다.
 
-### 9. Change Array by Copy 는 **2023** — README 의 「ES2024」와 다르다 · 갈린 탐침 넷, 이유는 한 종류 ★★
+### 9. Change Array by Copy 는 **2023** — README 의 「ES2024」와 다르다 · 달라진 probe 넷, 이유는 한 종류 ★★
 
 - ★★★ **finished proposals 표의 Change Array by Copy 줄이 `2023`** 이다. 목록 [README](../README.md) 25번 행은 「ES2024 `toSorted`·`toReversed`·`toSpliced`·`with`」라 적었다 — **목록 쪽 표기가 다르다**(이 편은 README 를 고치지 않는다).
   [22번](../22-symbol-and-well-known-symbols/2-summary.md) 「실행 환경」 표도 이 넷을 **ES2023** 으로 적었다.
-- ★★ **갈린 탐침은 넷**(`25a` · `25b` · `25c` · `25f`), **이유는 한 종류** — 복사 메서드가 v18 에 **없다**(`TypeError 「… is not a function」`). 비교·인덱스·`reduce` 처럼 v18 에도 있는 기능에서는 **한 줄도 안 갈렸다.**
+- ★★ **달라진 probe는 넷**(`25a` · `25b` · `25c` · `25f`), **이유는 한 종류** — 복사 메서드가 v18 에 **없다**(`TypeError 「… is not a function」`). 비교·인덱스·`reduce` 처럼 v18 에도 있는 기능에서는 **한 줄도 달라지지 않았다.**
 - ★★★ **node 18 의 1번 격자에서 `toSorted` · `toReversed` · `toSpliced` · `with` 네 행이 「쓰기 0」인 채 던졌다.** 격자가 **「던진 행」을 따로 세서** `methods that threw: 4 / 17` 로 갈라냈고, 쓰기 0 집계는 `5 / 17` 로 줄었다.
   ★ **던진 행을 따로 안 세면** 「없는 메서드」가 「원본을 안 바꾼 메서드」로 세어진다 — 그래서 격자에 `threw` 칸을 둔다(그 전 판의 출력은 캡처로 남기지 않았으므로 싣지 않는다).
 
@@ -551,7 +551,7 @@ js24b-27g-merge-order.js                     identical
 identical 26  ·  differs 4  ·  total 30
 ```
 
-- ★ 대조기의 다른 줄은 **같은 배치의 다른 주제 탐침**이다(한 대조기를 공유한다).
+- ★ 대조기의 다른 줄은 **같은 배치의 다른 주제 probe**이다(한 대조기를 공유한다).
 - ★ 근거로 쓰는 것 — **되나/안 되나(판 경계)와 예외 종류.** 근거로 안 쓰는 것 — 문구(`[3,(intermediate value),1].toSorted is not a function` 처럼 **소스 모양이 박힌다**).
 
 ### 10. 새로 만드는 것은 **배열 한 겹**뿐 — 원소 객체는 공유, 원본 쓰기는 콜백에서 온다 ★★
@@ -606,16 +606,16 @@ identical 26  ·  differs 4  ·  total 30
 
 | 소스 | 무엇을 고정하나 | 몇 번 · 어디서 |
 |---|---|---|
-| `js24b-25a-trap-grid.js` | ★★★ 메서드 17 × 쓰기 트랩 세 열 · 「던짐 N / M」·「쓰기 0 N / M」 | node20 1벌 + **node18 판도 싣는다**(갈린 블록) |
+| `js24b-25a-trap-grid.js` | ★★★ 메서드 17 × 쓰기 트랩 세 열 · 「던짐 N / M」·「쓰기 0 N / M」 | node20 1벌 + **node18 판도 싣는다**(달라진 블록) |
 | `js24b-25b-pairs.js` | ★★★ 짝 넷의 반환값·`===`·원본 · 사슬 · 한 겹 복사 · 구멍 | node20 1벌 + **node18 판도 싣는다** |
 | `js24b-25c-index-range.js` | ★★★ 인덱스 8 × (`with` · 대입) · `at` 과의 대응 | node20 1벌 + **node18 판도 싣는다** |
 | `js24b-25d-reduce.js` | ★★★ 초기값 유무 · 빈 배열 · 구멍 · `reduceRight` | node20 1벌 + node18 대조 1벌(동일) |
 | `js24b-25e-map-parseint.js` | ★★ 콜백 인자 · 기수 · 대안 둘 | node20 1벌 + node18 대조 1벌(동일) |
 | `js24b-25f-comparator-throws.js` | ★★★ 비교가 던질 때 원본 · 비교 함수 검사 | node20 1벌 + **node18 판도 싣는다** |
 | `js24b-25g-shapes.js` | ★ `slice` 인덱스 · `concat` 펼치기 · 새 배열 | node20 1벌 + node18 대조 1벌(동일) |
-| `js24b-vdiff.sh` · `js24b-versions.sh` | 두 판이 갈린 탐침 수 · 출력이 **어느 판에서 나왔나** + 판별 기능 표(Chrome 포함) | 1벌씩 |
+| `js24b-vdiff.sh` · `js24b-versions.sh` | 두 버전이 달라진 probe 수 · 출력이 **어느 버전에서 나왔나** + 판별 기능 표(Chrome 포함) | 1벌씩 |
 
-판별 블록이 Chrome 을 돌린 페이지 — 탐침 파일 이름을 주소의 `?` 뒤에 붙여 연다. `console.log` 를 가로채 줄이 늘 때마다 `<pre>` 를 다시 쓰고, `--dump-dom` 이 그것을 내보낸다.
+판별 블록이 Chrome 을 돌린 페이지 — probe 파일 이름을 주소의 `?` 뒤에 붙여 연다. `console.log` 를 가로채 줄이 늘 때마다 `<pre>` 를 다시 쓰고, `--dump-dom` 이 그것을 내보낸다.
 
 ```html
 <!-- js24b-page.html -->
@@ -648,14 +648,14 @@ document.write('<script src="' + location.search.slice(1) + '"><\/script>');
 **비변형 메서드의 쓰기 0 · `sort` 의 정렬-뒤-되쓰기 · `with` 의 범위 조건 · `reduce` 의 `TypeError` 조건 · 복사 메서드의 구멍 채우기와 `ArrayCreate` · `map` 의 콜백 인자는 구현 의존이 아니다.**
 어느 엔진에서도 같아야 한다.
 
-**안 돌려 본 것 / 못 잰 것 / 부적용인 창**
+**안 돌려 본 것 / 못 잰 것 / 해당 없는 창**
 
 - **안 돌려 본 것** — `TypedArray` 의 복사 메서드 · `receiver` 를 안 넘긴 트랩(7번) · 되쓰기 도중 `Set` 이 던지는 `sort`(동결 배열) · 파이썬 쪽 재실행(10번 문서 인용) · species 재측정(22번 인용).
-- ★ **Chrome 에서 탐침은 안 돌렸다** — 이 주제의 기능은 전부 node 20 에 있다(판별 블록). Chrome 은 판별 블록에서만 돌았다.
+- ★ **Chrome 에서 probe는 안 돌렸다** — 이 주제의 기능은 전부 node 20 에 있다(판별 블록). Chrome 은 판별 블록에서만 돌았다.
 - ★★★ **안 쟀다** — **성능 전부.** 「`toSorted` 는 복사라서 느리다」를 **한 줄도 쓰지 않았다.**
-- ★★ **부적용인 창** — **③ 브랜드 태그**(결과 클래스는 22번 인용) · **진단의 `(행,열)`**(`SyntaxError` 가 없다).
+- ★★ **해당 없는 창** — **③ 브랜드 태그**(결과 클래스는 22번 인용) · **진단의 `(행,열)`**(`SyntaxError` 가 없다).
 
-**판이 올랐을 때 다시 돌려야 하는 것**
+**버전이 올랐을 때 다시 돌려야 하는 것**
 
 - ★★ **비교 함수 호출 횟수**(6번 `[0]`·`[2]`) — 정렬 알고리즘이 바뀌면 움직인다. 움직여도 명세 위반이 아니다. **원본 그대로라는 결론은 안 움직여야 한다.**
 - ★ **예외 문구 전부.**
@@ -666,7 +666,7 @@ document.write('<script src="' + location.search.slice(1) + '"><\/script>');
 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮긴 출력이 하나도 없다).
 
 ★★ **예외는 `e.constructor.name` 과 `e.message` 로만 찍었다** — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
-★★★ **이 주제는 두 판이 갈린 블록을 넷 갖고 있다**(`25a` · `25b` · `25c` · `25f`) — 9번 답에 v18 판을 싣는다. 넷 다 **복사 메서드가 v18 에 없어서**다.
+★★★ **이 주제는 두 버전이 달라진 블록을 넷 갖고 있다**(`25a` · `25b` · `25c` · `25f`) — 9번 답에 v18 판을 싣는다. 넷 다 **복사 메서드가 v18 에 없어서**다.
 
 **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다(12번의 소스는 [2-summary.md](2-summary.md) 동작 (9)에 있다).
 `js24b-25a-trap-grid.js`(1번 · 7번 · 9번) · `js24b-25b-pairs.js`(2번 · 10번) · `js24b-25c-index-range.js`(3번) · `js24b-25d-reduce.js`(4번) ·

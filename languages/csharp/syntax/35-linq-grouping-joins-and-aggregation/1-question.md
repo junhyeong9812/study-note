@@ -225,7 +225,7 @@ Console.WriteLine(string.Join(" ", byParity));
 ★★★ 이 주제의 질문은 「**`GroupBy` 는 묶는 방법이고 `ToLookup` 은 묶어 놓은 것이다 · 시작값이 없는 집계는 빈 입력에서 설 곳이 없다**」 한 줄로 거의 다 풀린다. **원본을 몇 번 읽나 · 비었을 때 무엇이 나오나**를 세라.
 **환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
 Roslyn `csc` 를 직접 부른다 · `-langversion:latest` · `-preferreduilang:en-US`.
-★★★ **본체 창은 ⑤ 실행 로그 + ② 빈 입력 결과 격자다.**
+★★★ **핵심 창은 ⑤ 실행 로그 + ② 빈 입력 결과 격자다.**
 선행 — [33번](../33-linq-method-syntax-and-deferred-execution/)(즉시와 지연 · `GroupBy` 칸).
 
 ## 복습 기록

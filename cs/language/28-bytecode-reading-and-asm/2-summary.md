@@ -79,7 +79,7 @@
 - ASM developer guide: core 패키지는 다른 패키지에 의존하지 않고 단독으로 쓸 수 있다. tree 패키지는 core 위의 DOM 같은 층이고, core로 하기 너무 복잡한 변환에 쓴다.
 - 스캔에는 이벤트 API가 맞다. 필요한 이벤트만 받고 나머지는 버리면 된다.
 
-### 4. 리플렉션과 갈리는 지점 — 로드, 초기화, 이름만 남은 Class 속성
+### 4. 리플렉션과 달라지는 지점 — 로드, 초기화, 이름만 남은 Class 속성
 
 ```text
                        리플렉션                          ASM
@@ -165,7 +165,7 @@ handler() 실패: java.lang.TypeNotPresentException: Type dep.OrderHandler not p
 
 ### 실험 2: ASM 판과 클래스 파일 버전
 
-같은 소스를 `javac --release 24`(major 68)와 `--release 25`(major 69)로 컴파일하고 ASM 두 판으로 읽었다.
+같은 소스를 `javac --release 24`(major 68)와 `--release 25`(major 69)로 컴파일하고 ASM 두 버전으로 읽었다.
 
 (실험, JDK 25.0.1 temurin, 2026-10-20)
 

@@ -819,7 +819,7 @@ For more information about this error, try `rustc --explain E0004`.
   앞으로 생길 변형까지 포함하므로 **이름을 댈 수가 없다.**
 - 결정적인 줄은 ``= note: `Level` is marked as non-exhaustive, so a wildcard `_` is necessary to match exhaustively`` 다.
 - ★★ **같은 `lib.rs` 의 `Plain`(표시 없는 쪽)은 크레이트가 달라도 에러가 안 난다.**
-  위 출력에서 `plain` 함수는 아무 진단도 안 받았다 — 갈리는 것은 **크레이트 경계와 표시가 겹칠 때뿐**이다.
+  위 출력에서 `plain` 함수는 아무 진단도 안 받았다 — 달라지는 것은 **크레이트 경계와 표시가 겹칠 때뿐**이다.
 
 **고친 판.**
 
@@ -963,7 +963,7 @@ For more information about this error, try `rustc --explain E0308`.
 - **`..` 는 여러 칸을 건너뛰고 `_` 는 한 칸**이다. `Msg::Text(..)` 와 `Msg::Text(_)` 는
   칸이 하나뿐이라 같지만, 칸이 셋이면 `..` 는 셋을 한 번에 건너뛴다.
 - ★ **가드가 붙은 팔은 완전성 계산에 안 들어간다.** 그 증거(`match arms with guards don't count
-  towards exhaustivity`)는 [목록의 **19번 주제**](../19-pattern-syntax-guards-bindings-and-match-ergonomics/)에서 던져서 받는다.
+  towards exhaustivity`)는 [목록의 **19번 주제**](../19-pattern-syntax-guards-bindings-and-match-ergonomics/)에서 실행해서 받는다.
 
 ### 10. 다른 갈래로 접기
 
@@ -1000,7 +1000,7 @@ For more information about this error, try `rustc --explain E0308`.
 
 | 항목 | 왜 |
 |---|---|
-| `bindings_with_variant_name` 이 **deny** 인 것 | lint 수준은 rustc 판의 정책이다 |
+| `bindings_with_variant_name` 이 **deny** 인 것 | lint 수준은 rustc 버전의 정책이다 |
 | 진단이 빈 구간을 `128_u8..=u8::MAX` 로 **압축해 적는 것** | 진단 품질은 보장이 아니다 |
 | `help:` 가 주는 고친 코드의 모양 | 같은 이유 |
 | 경고 **개수**(5번 답의 다섯) | lint 구성이 바뀌면 달라진다 |

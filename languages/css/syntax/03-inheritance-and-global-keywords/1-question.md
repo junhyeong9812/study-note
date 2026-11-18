@@ -40,7 +40,7 @@
 - 이 넷 중 **브라우저 기본 스타일**로 돌아가는 것은 어느 것인가?
 - `revert` 와 `revert-layer` 의 **단위**는 각각 무엇인가?
 
-### 4. `revert` 와 `initial` 이 갈리는 자리 (예측)
+### 4. `revert` 와 `initial` 이 달라지는 자리 (예측)
 
 ```html
 <div id="d1">A</div><div id="d2">B</div>
@@ -89,7 +89,7 @@
 - `.t` 의 `border-top-color` 는 무엇인가?
 - `border-color` 는 상속되지 않는 속성인데 `inherit` 이 유효한 이유는 무엇인가?
 - 같은 자리에 `unset` 을 쓰면 무엇이 되는가? `initial` 이면?
-- 이 셋의 결과가 갈리는 이유를 `currentColor` 로 설명할 수 있는가?
+- 이 셋의 결과가 달라지는 이유를 `currentColor` 로 설명할 수 있는가?
 
 ### 7. `revert-layer` 는 무엇을 지우는가 (예측)
 

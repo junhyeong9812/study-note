@@ -86,7 +86,7 @@
 
 ### 실험: HLC와 commit wait 시뮬레이션
 
-- 코드: `Hlc.java`. 시계를 실제로 조작하지 않았다. "실제 시각 + 노드별 어긋남"을 물리 시계로 쓰는 결정적 시뮬레이션이다(단위: 1·2절은 ms, 3절은 µs).
+- 코드: `Hlc.java`. 시계를 실제로 조작하지 않았다. "실제 시각 + 노드별 불일치"을 물리 시계로 쓰는 결정적 시뮬레이션이다(단위: 1·2절은 ms, 3절은 µs).
 
 ```java
 Ts receive(long real, Ts m) {                   // Figure 5: receive event
@@ -130,17 +130,17 @@ X send pt=15000 (15000,0) → Y recv pt=5001 (15000,1)  (Y의 l−pt = 9999ms)
 
 - 출력 1은 앞 4줄만 실었다(`...`). 나머지 8줄도 같은 모양이다.
 - 관찰
-  - 1·2: 물리 시각으로는 인과 쌍의 약 절반이 역전됐다. HLC는 0이다. l은 가장 앞선 노드의 물리 시각을 따라가고(최대 l−pt 66ms), 노드 간 어긋남 폭(100ms)을 넘지 않았다.
+  - 1·2: 물리 시각으로는 인과 쌍의 약 절반이 역전됐다. HLC는 0이다. l은 가장 앞선 노드의 물리 시각을 따라가고(최대 l−pt 66ms), 노드 간 불일치 폭(100ms)을 넘지 않았다.
   - 2b: 시계가 10초 앞선 노드의 메시지 하나로 Y의 l이 15000에 묶였다. 이후 약 10초 동안 Y의 l은 물리 시각과 멀고 c만 오른다. ε 가정이 깨지면 HLC의 물리 성분은 "지금"을 뜻하지 않는다.
   - 3: 시계 오차가 광고한 ε 안이면 commit wait로 위반 0이다. 끄면 약 47%가 위반이다. 오차가 ε을 넘으면 commit wait를 해도 8~17%가 위반된다. 평균 대기는 2ε(8001µs, 14001µs)이었다.
-- 해석: 실험 3의 위반 비율은 이 시뮬레이션의 분포(균등 어긋남, T2가 0~0.5ms 뒤 시작)에 따른 값이다. 실제 비율이 아니라 "가정이 깨지면 0이 아니다"를 보이는 용도다.
+- 해석: 실험 3의 위반 비율은 이 시뮬레이션의 분포(균등 불일치, T2가 0~0.5ms 뒤 시작)에 따른 값이다. 실제 비율이 아니라 "가정이 깨지면 0이 아니다"를 보이는 용도다.
 
 ### 4. CockroachDB — HLC로 같은 문제를 다르게
 
 - 노드는 요청에 자기 HLC 타임스탬프를 싣고, 받는 노드는 그것으로 자기 HLC를 올린다(Transaction Layer 문서).
 - 최대 시계 오프셋 `--max-offset` 기본 500ms(v26.3 `cockroach start` 문서).
   - 노드가 클러스터 절반 이상과의 차이가 이 값의 80%를 넘었다고 감지하면 스스로 종료한다.
-  - 이 범위 밖의 어긋남은 "인과 관계가 있는 트랜잭션 사이의 단일 키 선형화"를 깨뜨릴 수 있다고 문서가 적는다. SERIALIZABLE 직렬성 자체는 시계와 무관하게 유지된다.
+  - 이 범위 밖의 불일치는 "인과 관계가 있는 트랜잭션 사이의 단일 키 선형화"를 깨뜨릴 수 있다고 문서가 적는다. SERIALIZABLE 직렬성 자체는 시계와 무관하게 유지된다.
 - 읽기가 자기 시각보다 약간 미래(불확실성 구간 안)의 쓰기를 만나면 트랜잭션 타임스탬프를 그 값 너머로 올린다(`ReadWithinUncertaintyIntervalError`, [database/55](../../database/55-distributed-databases/2-summary.md)). SERIALIZABLE에서는 앞서 읽은 값을 *refresh*로 다시 확인해, 통과하면 그대로 계속하고 실패하면 올린 타임스탬프로 재시도한다(Transaction Layer 문서 Read refreshing). Spanner가 "커밋 쪽에서 기다리는" 비용을 CockroachDB는 주로 "읽기 타임스탬프 조정·재시도"로 낸다.
   - *refresh*: 원래 타임스탬프와 올린 타임스탬프 사이에 내가 읽은 키에 새 쓰기가 없었는지 검사하는 것.
 - 비차단 트랜잭션(non-blocking range)은 쓰기 타임스탬프를 미래로 잡고, HLC가 그 시각을 지날 때까지 기다리는 "commit-wait"를 한다(문서).
@@ -217,7 +217,7 @@ chronyc sources -v          # 시각 소스와 상태
 - **보이는 형태**: 두 트랜잭션의 커밋 타임스탬프 순서가 실제 순서와 반대. 시계 오프셋 지표가 설정 상한(ε, max-offset)을 넘은 구간과 겹친다. 실험 3의 `±7000µs / 4000µs → 8432/100000`.
 - **원인**: commit wait·불확실성 구간은 "실제 오차 ≤ 상한"을 가정한다. 그 가정이 깨지면 기다려도 순서가 보장되지 않는다.
 - **대처**
-  - 시계 오프셋을 상한보다 낮은 문턱으로 감시하고, 넘는 노드를 빼낸다. CockroachDB는 80%에서 스스로 종료한다. Spanner는 주파수 이상이 큰 기계를 축출한다(논문 §3).
+  - 시계 오프셋을 상한보다 낮은 임계값으로 감시하고, 넘는 노드를 빼낸다. CockroachDB는 80%에서 스스로 종료한다. Spanner는 주파수 이상이 큰 기계를 축출한다(논문 §3).
   - 상한을 키우면 안전해지지만 commit wait·읽기 재시작이 늘어난다(CockroachDB `--max-offset` 문서).
 
 ### 2. 앞선 시계 하나가 HLC를 미래로 끌고 감
@@ -277,4 +277,4 @@ chronyc sources -v          # 시각 소스와 상태
   - CockroachDB Transaction Layer — HLC, Max clock offset enforcement(80%), non-blocking transactions의 commit-wait <https://www.cockroachlabs.com/docs/stable/architecture/transaction-layer>
   - CockroachDB Operational FAQs — 시계 비동기 시 동작, vMotion·`server.clock.forward_jump_check_enabled`·`--clock-device`, 윤초 smearing 소스 혼용 금지 <https://www.cockroachlabs.com/docs/stable/operational-faqs>
 - 실험 목록
-  - `Hlc.java` — Figure 5 HLC 핑퐁(A +40ms), 5노드 무작위 2만 메시지(±50ms), 10초 앞선 노드의 전파, TrueTime commit wait 몬테카를로(각 10만 회, 실제 어긋남·ε·대기 조합). eclipse-temurin 21 JDK 컨테이너, 시계 조작 없는 시뮬레이션.
+  - `Hlc.java` — Figure 5 HLC 핑퐁(A +40ms), 5노드 무작위 2만 메시지(±50ms), 10초 앞선 노드의 전파, TrueTime commit wait 몬테카를로(각 10만 회, 실제 불일치·ε·대기 조합). eclipse-temurin 21 JDK 컨테이너, 시계 조작 없는 시뮬레이션.

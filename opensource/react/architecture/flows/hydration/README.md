@@ -44,9 +44,9 @@
 ```
 
 1. [커서](01_cursor/README.md) — 들어가기와 집기. 경계를 만나면 fiber 를 하나 더 만든다.
-2. [어긋남](02_mismatch/README.md) — 그 긴 에러 메시지가 만들어지는 자리와 센티널 다섯.
+2. [불일치](02_mismatch/README.md) — 그 긴 에러 메시지가 만들어지는 자리와 센티널 다섯.
 3. [빠져나오기](03_pop/README.md) — 남은 노드 검사와 커서 전진, 되감기용 포크.
-4. [DEV 어긋남 트리](04_devDiff/README.md) — 메시지 끝에 붙는 diff.
+4. [DEV 불일치 트리](04_devDiff/README.md) — 메시지 끝에 붙는 diff.
 
 ```text
  ★★★ 센티널이 다섯이다 (이 지도가 "셋" 이라 적었던 것을 고친다)
@@ -153,6 +153,6 @@
 ## 하위 메서드
 
 - [01 커서](01_cursor/README.md)
-- [02 어긋남](02_mismatch/README.md)
+- [02 불일치](02_mismatch/README.md)
 - [03 빠져나오기](03_pop/README.md)
-- [04 DEV 어긋남 트리](04_devDiff/README.md)
+- [04 DEV 불일치 트리](04_devDiff/README.md)

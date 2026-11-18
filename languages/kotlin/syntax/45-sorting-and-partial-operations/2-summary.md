@@ -1,14 +1,14 @@
 # kotlin/syntax/45 — 정렬·부분 연산 — `sortedBy`/`take`/`drop`/`chunked`/`windowed` — 정리 (힌트)
 
-★★★ **본체는 첫째 창이다** — 「**제자리 대 새 리스트 격자 — 정렬 9연산 × (`MutableList` · `List` · `Array`) → 컴파일되나 · 반환 타입 · 원본이 바뀌나**」. 제자리인지는 **이름의 꼴**(`sort` 대 `sorted`)로 갈리는데, 그 규칙이 **정말 예외가 없는지**는 스물일곱 칸을 다 던져 봐야 안다.
+★★★ **핵심은 첫째 창이다** — 「**제자리 대 새 리스트 격자 — 정렬 9연산 × (`MutableList` · `List` · `Array`) → 컴파일되나 · 반환 타입 · 원본이 바뀌나**」. 제자리인지는 **이름의 꼴**(`sort` 대 `sorted`)로 나뉘는데, 그 규칙이 **정말 예외가 없는지**는 스물일곱 칸을 다 던져 봐야 안다.
 
 ## 이 주제가 쓰는 세 층
 
 | 층 | 뜻 | 근거로 쓰는 것 |
 |---|---|---|
 | **언어 보장 / API 계약** | 서명·KDoc 이 약속한 것 | ★★★ **반환 타입**(서명) — 제자리 연산은 **`Unit`**, 새 리스트 연산은 **`List<T>`** · 제자리 연산은 **`MutableList`·`Array` 에만** 있다 · ★★★ `sortedBy`·`sortBy` KDoc 「**The sort is _stable_**」 · `take` KDoc `@throws IllegalArgumentException if [n] is negative` |
-| **구현(stdlib)** | 이 판의 stdlib 가 실제로 하는 것 | ★★ `sorted()` 결과가 **`java.util.Arrays$ArrayList`**(배열에 정렬 후 `asList()`) · `chunked(n)` 이 **`windowed(n, n, partialWindows = true)`** 한 줄 · 예외 **문장**(`Requested element count -1 is less than zero.` · `Both size 0 and step 1 must be greater than zero.`) |
-| **이 판의 관찰** | kotlinc 2.4.20 에서 이번에 본 것 | 진단 문구 · `Random(7)` 이 만든 순열 |
+| **구현(stdlib)** | 이 버전의 stdlib 가 실제로 하는 것 | ★★ `sorted()` 결과가 **`java.util.Arrays$ArrayList`**(배열에 정렬 후 `asList()`) · `chunked(n)` 이 **`windowed(n, n, partialWindows = true)`** 한 줄 · 예외 **문장**(`Requested element count -1 is less than zero.` · `Both size 0 and step 1 must be greater than zero.`) |
+| **이 버전의 관찰** | kotlinc 2.4.20 에서 이번에 본 것 | 진단 문구 · `Random(7)` 이 만든 순열 |
 
 ## 이 판
 
@@ -18,14 +18,14 @@ info: kotlinc-jvm 2.4.20 (JRE 21.0.5+11-LTS)
 (exit 0)
 ```
 
-## 흔들리는 칸 / 안 흔들리는 칸
+## 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| **흔들린다** | (이 주제에는 없다) | ★ `shuffle`·`shuffled` 는 **`Random(7)`** 로 씨앗을 고정했다 — 칸마다 새 `Random(7)` |
-| 안 흔들린다 | 격자 27행 · 제자리 칸 수 | 컴파일러 진단과 실행 출력이 결정적이다 |
-| 안 흔들린다 | ★ `Random(7)` 이 만든 순열(`[1, 3, 2]`) | **이 판의 `kotlin.random` 구현**에서 결정적 — 판이 오르면 바뀔 수 있다(아래 「구현 세부사항」) |
-| 안 흔들린다 | 경계 출력(`take`·`windowed`) · 예외 문장 · stdlib 발췌 · 종료 코드 | 결정적이다 |
+| **실행마다 달라진다** | (이 주제에는 없다) | ★ `shuffle`·`shuffled` 는 **`Random(7)`** 로 씨앗을 고정했다 — 칸마다 새 `Random(7)` |
+| 달라지지 않는다 | 격자 27행 · 제자리 칸 수 | 컴파일러 진단과 실행 출력이 결정적이다 |
+| 달라지지 않는다 | ★ `Random(7)` 이 만든 순열(`[1, 3, 2]`) | **이 버전의 `kotlin.random` 구현**에서 결정적 — 버전이 오르면 바뀔 수 있다(아래 「구현 세부사항」) |
+| 달라지지 않는다 | 경계 출력(`take`·`windowed`) · 예외 문장 · stdlib 발췌 · 종료 코드 | 결정적이다 |
 
 ★ 근거 — 캡처 스크립트를 처음부터 두 번 돌려 **블록 전체를 대조**했다(수치는 3-answer 의 「실행 검증」).
 
@@ -61,23 +61,23 @@ info: kotlinc-jvm 2.4.20 (JRE 21.0.5+11-LTS)
 
 ## 이 주제가 답하려는 질문
 
-1. 정렬 연산은 **원본을 고치나, 새 리스트를 주나** — 이름으로 가를 수 있나, 예외는 없나.
+1. 정렬 연산은 **원본을 고치나, 새 리스트를 주나** — 이름으로 구분할 수 있나, 예외는 없나.
 2. `sortedBy` 는 **같은 키의 원래 순서**를 지키나 — 그것은 약속인가.
 3. `take`·`drop`·`chunked`·`windowed` 는 **경계(음수·너무 큰 수·끝의 반쪽)** 에서 무엇을 하나.
 
 ## 동작 방식
 
-### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「부적용인 창」
+### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「해당 없는 창」
 
 | 창 | 무엇을 보여 주나 | 어디서 왔나 |
 |---|---|---|
-| ★★★ **제자리 격자(서명 진단 + 실행)** | 9연산 × 3받는 쪽 → 컴파일되나 · 반환 타입 · 원본 변화((1)) | ★ **본체 창** — [42번 주제](../42-transformations-map-flatmap-associate-zip/) (1)의 「의도적 타입 불일치」 창 + 실행 창 |
+| ★★★ **제자리 격자(서명 진단 + 실행)** | 9연산 × 3받는 쪽 → 컴파일되나 · 반환 타입 · 원본 변화((1)) | ★ **핵심 창** — [42번 주제](../42-transformations-map-flatmap-associate-zip/) (1)의 「의도적 타입 불일치」 창 + 실행 창 |
 | ★★ **안정성 관찰 + KDoc** | 같은 키의 순서 · 「The sort is _stable_」((2)) | — |
 | ★★ **stdlib 소스 jar 발췌** | `sorted()` 의 구현 · `chunked` 가 `windowed` 인 것 · 예외 문장의 출처((2)(3)(4)) | [41번 주제](../41-collection-creation-and-copying/) (2)와 같은 창 |
-| ★ **경계 탐침** | `take(-1)`·`take(100)`·`windowed(0)`·`partialWindows`((3)(4)) | — |
+| ★ **경계 probe** | `take(-1)`·`take(100)`·`windowed(0)`·`partialWindows`((3)(4)) | — |
 | **인용 — 다시 안 잰다** | `sorted` 가 새 리스트(`=== false` 가 아니라 **원본 불변**으로 쟀다) · `List.sort()` 컴파일 에러 전문 | [40번 주제](../40-read-only-collections-and-runtime-types/) (2)(4) |
 | **인용 — 다른 갈래** | 슬라이딩 윈도우 **알고리즘** · JS `toSorted` 대 `sort` · Python `sort` 대 `sorted` 와 안정성 | [`algorithm/09`](../../../../cs/algorithm/09-sliding-window/) · [JS 25번](../../../js/syntax/25-array-non-mutating-and-copy-methods/) · [Python 10번](../../../python/syntax/10-list-methods-and-sort-key/) |
-| **부적용 — 실행 시간·할당** | ★★★ 「`sortBy` 가 `sortedBy` 보다 싸다」·「제자리가 빠르다」는 **재지 않았다** — 이 문서는 **원본이 바뀌느냐**만 본다 | — |
+| **해당 없음 — 실행 시간·할당** | ★★★ 「`sortBy` 가 `sortedBy` 보다 싸다」·「제자리가 빠르다」는 **재지 않았다** — 이 문서는 **원본이 바뀌느냐**만 본다 | — |
 
 ### (1) ★★★ 제자리 대 새 리스트 격자
 
@@ -587,9 +587,9 @@ pairs    [1, -1, 1]
 | `sorted()` 결과가 `Arrays$ArrayList` | ★★ **stdlib 구현** | (2) |
 | `chunked` = `windowed(n, n, true)` | ★ **stdlib 구현**(한 줄 위임) — 결과가 같은 것은 관찰 | (4) |
 | 예외 **문장** 전부 · `size != step` 으로 문장 고르기 | ★ **stdlib 구현** | (3)(4) |
-| `Random(7)` 이 만드는 순열 | ★ **`kotlin.random` 구현** — 씨앗이 같으면 같은 순서는 **이 판의 관찰**. 판을 넘는 보장은 확인하지 않았다 | (1) |
+| `Random(7)` 이 만드는 순열 | ★ **`kotlin.random` 구현** — 씨앗이 같으면 같은 순서는 **이 버전의 관찰**. 판을 넘는 보장은 확인하지 않았다 | (1) |
 
-★★ **가장 조심할 자리** — 「이름으로 가른다」는 **이 판의 27칸에서 예외가 없었다**는 관찰이지, 새 확장 함수가 그 관례를 지킨다는 보장은 아니다. **반환 타입이 `Unit` 인가**를 보는 쪽이 서명으로 확인되는 근거다.
+★★ **가장 조심할 자리** — 「이름으로 가른다」는 **이 버전의 27칸에서 예외가 없었다**는 관찰이지, 새 확장 함수가 그 관례를 지킨다는 보장은 아니다. **반환 타입이 `Unit` 인가**를 보는 쪽이 서명으로 확인되는 근거다.
 
 ## 언제 쓰고 언제 안 쓰나
 
@@ -645,10 +645,10 @@ pairs    [1, -1, 1]
 
 ## 실행 환경
 
-**기준 소스** — [Ordering](https://kotlinlang.org/docs/collection-ordering.html)(`sorted`·`sortedBy`·`reversed`·`shuffled`) · [List-specific operations — Sort](https://kotlinlang.org/docs/list-operations.html)(제자리 `sort`·`sortBy`·`reverse`·`shuffle`) · [Retrieve collection parts](https://kotlinlang.org/docs/collection-parts.html)(`take`·`drop`·`chunked`·`windowed`·`zipWithNext`) — 이 문서는 그 페이지들의 **목록**을 따르되, 문장은 인용하지 않고 **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 구현을 근거로 삼는다((2)(3)(4)).
+**기준 소스** — [Ordering](https://kotlinlang.org/docs/collection-ordering.html)(`sorted`·`sortedBy`·`reversed`·`shuffled`) · [List-specific operations — Sort](https://kotlinlang.org/docs/list-operations.html)(제자리 `sort`·`sortBy`·`reverse`·`shuffle`) · [Retrieve collection parts](https://kotlinlang.org/docs/collection-parts.html)(`take`·`drop`·`chunked`·`windowed`·`zipWithNext`) — 이 문서는 그 페이지들의 **목록**을 따르되, 문장은 인용하지 않고 **이 버전의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 구현을 근거로 삼는다((2)(3)(4)).
 **실행 검증** — 이 문서의 모든 출력·에러는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java` 에서 실제로 얻었다.\
-`kotlinc` 6회(컴파일 실패 2벌 — 같은 서명 탐침을 격자 스크립트 안과 밖에서, 실패가 결과다) · `java` 3회 + 격자 스크립트 안에서 1회 · stdlib 소스 jar 에서 3곳.\
+`kotlinc` 6회(컴파일 실패 2벌 — 같은 서명 probe를 격자 스크립트 안과 밖에서, 실패가 결과다) · `java` 3회 + 격자 스크립트 안에서 1회 · stdlib 소스 jar 에서 3곳.\
 ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「제자리 칸 N / M」은 스크립트가 스스로 센 것**이다.
-**버전** — `sort`·`sorted`·`sortBy`·`sortedBy`·`reverse`·`reversed`·`take`·`drop`·`takeLast`·`takeWhile` 은 **1.0** — 이 판의 소스에서 선언 위에 `@SinceKotlin` 이 **없다**(확인만 했고 발췌하지 않았다). `chunked`·`windowed` 는 **1.2**, `shuffle(random)`·`shuffled(random)` 은 **1.3** — 소스의 `@SinceKotlin` 을 읽었고 **발췌하지 않았다**.
+**버전** — `sort`·`sorted`·`sortBy`·`sortedBy`·`reverse`·`reversed`·`take`·`drop`·`takeLast`·`takeWhile` 은 **1.0** — 이 버전의 소스에서 선언 위에 `@SinceKotlin` 이 **없다**(확인만 했고 발췌하지 않았다). `chunked`·`windowed` 는 **1.2**, `shuffle(random)`·`shuffled(random)` 은 **1.3** — 소스의 `@SinceKotlin` 을 읽었고 **발췌하지 않았다**.
 **경계** — ★★★ **슬라이딩 윈도우 알고리즘은 [`cs/algorithm/09-sliding-window/`](../../../../cs/algorithm/09-sliding-window/) 가 정본이다** — 창을 밀며 합을 갱신하는 기법·시간 복잡도는 거기다. 여기는 **「stdlib 가 그 패턴을 이미 함수로 갖고 있다는 것과 그 경계 동작」** 뿐이다.\
 **`sorted()`·`reversed()` 가 새 리스트**이고 **`sort()` 는 `MutableList` 에만 있어 `List` 에서 컴파일 에러**라는 것은 [40번 주제](../40-read-only-collections-and-runtime-types/) (2)(4)가 이미 쟀다 — 여기서는 그 한 쌍을 **아홉 연산 × 세 받는 쪽**으로 넓힌다.

@@ -15,7 +15,7 @@ g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
 |---|---|---|
 | **언어 명세(ECMA-334)** | C# 언어가 약속한 것 | ★★★ **초기화 순서**((1)) · `base()` 가 암묵인 것 · `this()` 연쇄 규칙 · `required`·`readonly` 검사 |
 | **런타임·BCL 구현** | CoreCLR·Roslyn 이 그렇게 하는 것 | ★★ **숨은 필드 이름**(`<name>P`·`<Auto>k__BackingField`) · IL · `GetUninitializedObject` 가 생성자를 건너뛰는 것 |
-| **이 판의 관찰** | .NET 10.0.12 · linux-x64 에서 이번에 본 것 | 진단 문구 · 스택 트레이스의 프레임 이름 · `run exit=134` |
+| **이 버전의 관찰** | .NET 10.0.12 · linux-x64 에서 이번에 본 것 | 진단 문구 · 스택 트레이스의 프레임 이름 · `run exit=134` |
 
 ★★★ **이 주제는 첫 칸이 가장 두껍다** — [11번](../11-collection-initializers-and-collection-expressions/)과 정반대다.\
 **초기화 순서는 명세가 정해 둔 것**이고, 그래서 대비표(1)가 「구현이 그렇다」가 아니라 **「언어가 그렇게 정했다」가 된다**.
@@ -78,14 +78,14 @@ g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
 | ★★ **컴파일 진단** | 기본 생성자가 사라진 것 · `this()` 재귀 · `required`·`readonly` | (3)·(8) |
 | ★★ **예외 전문** | ★★★ **생성자에서 가상 메서드를 부르면 실제로 터지는 자리** | (4) |
 | **IL** | 기본 생성자가 만든 숨은 필드 · `Greet()` 가 무엇을 읽나 | (6) |
-| ★ **할당 바이트** | ★★ **부적용** — 아래 | — |
+| ★ **할당 바이트** | ★★ **해당 없음** — 아래 | — |
 
 - ★★★ **중심 창은 실행 출력이다.** 초기화 순서는 **논쟁거리가 아니라 로그**다 —\
   (1)이 **번호를 매겨 전수로 찍고**, 같은 모양의 C++ 프로그램을 옆에 둔다.
 - ★★★ **네 번째 창은 예외 전문이다.** (4)의 「생성자에서 가상 메서드」는 **값만 찍으면 「좀 이상하네」에서 끝난다** —\
   **실제로 `NullReferenceException` 을 터뜨려** 스택 프레임(`at Child.Describe()` → `at Parent..ctor()`)을 보여야\
   **「누가 누구를 불렀나」가 증명된다.**
-- ★★ **「부적용인 창」 — 할당 바이트.** [03번](../03-boxing-and-unboxing/)·[11번](../11-collection-initializers-and-collection-expressions/)이 중심으로 쓴 그 창이 여기엔 **잴 것이 없다.**\
+- ★★ **「해당 없는 창」 — 할당 바이트.** [03번](../03-boxing-and-unboxing/)·[11번](../11-collection-initializers-and-collection-expressions/)이 중심으로 쓴 그 창이 여기엔 **잴 것이 없다.**\
   필드 초기자를 쓰든 생성자 본문에서 대입하든 **같은 객체 하나**가 만들어진다 — **순서만 다르고 크기도 개수도 같다.**\
   ★ **기본 생성자(C# 12)도 마찬가지다** — (6)에서 **필드 하나짜리 클래스**가 되는 것을 리플렉션으로 확인했고,\
   손으로 쓴 판과 **필드 개수가 같다.** **「재 봤더니 같았다」가 아니라 「잴 것이 없다」다.**
@@ -166,7 +166,7 @@ Derived d; 를 만든다
 - ★★★ **파생의 초기자가 C++ 에서는 3번째, C# 에서는 1번째다.** **정확히 맞바뀐다.**\
   ★ 찍힌 번호가 그 증거다 — C++ 은 `tag = 3`, C# 은 `Tag = 1` 이다.
 - ★★★ **나머지 셋의 상대 순서는 같다** — 기반의 초기자 → 기반의 본문 → 파생의 본문.\
-  **갈리는 것은 「파생의 초기자가 어디로 가느냐」 하나**다.
+  **달라지는 것은 「파생의 초기자가 어디로 가느냐」 하나**다.
 - ★★ **이유는 각 언어가 지키려는 것이 다르기 때문**이다.\
   C++ 은 「**기반이 완성된 뒤에 파생을 짓는다**」를 지키고,\
   C# 은 「**내 필드 초기자는 내 생성자 본문보다 먼저, 그리고 남의 코드가 돌기 전에**」를 지킨다.\
@@ -263,7 +263,7 @@ cs12b-implicit.cs(7,55): error CS0768: Constructor 'C1.C1(int)' cannot call itse
   `class HasCtor { public HasCtor(int x) … }` 에 `new HasCtor()` 를 쓰면 **`CS7036`** 이다.\
   ★ **`class NoCtor { public int X = 0; }` 은 그대로 `new NoCtor()` 가 된다** — 생성자를 안 적었기 때문이다.
 - ★★ **`this()` 연쇄가 순환하면 `CS0768` 로 막힌다.** **컴파일 시간에 잡힌다** —\
-  C++ 의 위임 재귀(`A() : A() {}`)가 **UB 인 것과 갈리는 자리**다([13번](../../../cpp/syntax/13-constructors-member-init-list-and-delegating/) (4)).
+  C++ 의 위임 재귀(`A() : A() {}`)가 **UB 인 것과 달라지는 자리**다([13번](../../../cpp/syntax/13-constructors-member-init-list-and-delegating/) (4)).
 
 **비용** — 0.
 
@@ -666,7 +666,7 @@ cs12b-diag.cs(9,1): error CS0191: A readonly field cannot be assigned to (except
 
 **비용** — 0.
 
-### (9) 경고를 누가 보나 — 탐침 여섯
+### (9) 경고를 누가 보나 — probe 여섯
 
 「경고가 안 났다」를 산문으로 적으면 **안 물어본 것과 물었는데 조용한 것이 구분되지 않는다.**\
 그래서 **생성자 주변의 함정 여섯**을 한 파일에 심고 **`-warn:9`**(최고 경고 수준)로 물었다.
@@ -709,10 +709,10 @@ public class P4 {
 | 생성자 본문이 채우는 필드 | ★★★ **0** | 그 시점에 **null** |
 | `Describe()` 가 그 필드를 읽는다 | ★★★ **0** | ★★★ **`NullReferenceException`**((4)) |
 | `readonly` 배열의 내용 변경 | ★★★ **0** | `readonly` 는 **참조만** 고정한다 |
-| 초기화 순서에 기댄 계산(`B = A + 1`) | ★★★ **0** | 이 판에서는 맞다 — 순서를 바꾸면 깨진다 |
+| 초기화 순서에 기댄 계산(`B = A + 1`) | ★★★ **0** | 이 버전에서는 맞다 — 순서를 바꾸면 깨진다 |
 | `this()` 연쇄 | ★★★ **0** | 정상(순환이면 `CS0768`) |
 
-- ★★★ **탐침 여섯 중 답한 것 0 · 침묵한 것 6이다.** **`-warn:9` 에서도 `cc exit=0` 에 진단 0줄**이다.
+- ★★★ **probe 여섯 중 답한 것 0 · 침묵한 것 6이다.** **`-warn:9` 에서도 `cc exit=0` 에 진단 0줄**이다.
 - ★★★ **이 주제에서 컴파일러가 보는 것은 「형태」뿐이다**((8)의 넷) — **「순서 때문에 생기는 사고」는 한 건도 안 본다.**\
   그 자리를 메우는 것이 **(1)의 로그**와 **(4)의 예외 전문**이다.
 - ★★ **`readonly` 가 참조만 고정하는 것**도 0건이다 — (8)의 `CS0191` 은 **재대입**만 잡는다.
@@ -838,7 +838,7 @@ cs12b-diag.cs(9,1): error CS0191: A readonly field cannot be assigned to (except
 
 - ★ **다섯 에러가 이 주제의 규칙 넷에 대응한다** — **암묵 `base()`**(`CS7036`) · **`this()` 순환**(`CS0768`) ·\
   **`required`**(`CS9035`) · **`readonly`**(`CS0191`).
-- ★★ **`CS0768` 이 C++ 와 갈리는 자리다** — C++ 의 위임 재귀는 **UB** 인데 C# 은 **컴파일에서 막는다**.
+- ★★ **`CS0768` 이 C++ 와 달라지는 자리다** — C++ 의 위임 재귀는 **UB** 인데 C# 은 **컴파일에서 막는다**.
 
 ## 어디서 틀리나
 
@@ -876,8 +876,8 @@ cs12b-diag.cs(9,1): error CS0191: A readonly field cannot be assigned to (except
 | 층 | 이 주제에서 해당하는 것 | 어떻게 확인했나 | **도구가 못 보는 것** |
 |---|---|---|---|
 | **언어 명세(ECMA-334)** | ★★★ **초기화 순서 넷**((1)) · **`base()` 암묵 호출**((3)) · **`this()` 위임에서 필드 초기자 1회**((2)) · **생성자를 적으면 기본 생성자가 사라지는 것**((8)) · **가상 호출이 파생으로 가는 것**((4)) · `readonly`·`required` 의 검사 자리((7)(8)) | 로그 순서 · 진단 코드 + `cc exit` | ★★★ **「그 순서 때문에 생기는 사고」는 한 건도 안 본다**((9)) |
-| **런타임·BCL 구현** | ★★ **숨은 필드 이름**(`<name>P`·`<Auto>k__BackingField`) · **`base` 에만 넘기면 필드가 안 생기는 것**((6)) · `GetUninitializedObject` 가 생성자를 건너뛰는 것((7)) · IL 이 손으로 쓴 판과 같은 것((6)) | 리플렉션 출력 · IL 덤프 | ★★ **이름 형식은 Roslyn 이 정한다** — 판이 오르면 바뀔 수 있다 |
-| **이 판의 관찰** | 진단 문구 · 스택 트레이스 프레임 이름(`at Parent..ctor()`) · `run exit=134` | 예외 전문 | ★ **`-debug` 를 주면 줄 번호가 붙어 트레이스가 달라진다** |
+| **런타임·BCL 구현** | ★★ **숨은 필드 이름**(`<name>P`·`<Auto>k__BackingField`) · **`base` 에만 넘기면 필드가 안 생기는 것**((6)) · `GetUninitializedObject` 가 생성자를 건너뛰는 것((7)) · IL 이 손으로 쓴 판과 같은 것((6)) | 리플렉션 출력 · IL 덤프 | ★★ **이름 형식은 Roslyn 이 정한다** — 버전이 오르면 바뀔 수 있다 |
+| **이 버전의 관찰** | 진단 문구 · 스택 트레이스 프레임 이름(`at Parent..ctor()`) · `run exit=134` | 예외 전문 | ★ **`-debug` 를 주면 줄 번호가 붙어 트레이스가 달라진다** |
 
 ### 「도구가 못 보는 것」을 층마다
 
@@ -898,7 +898,7 @@ cs12b-diag.cs(9,1): error CS0191: A readonly field cannot be assigned to (except
 
 ### ★ 진단이 0줄인 것도 블록으로 받았다
 
-(9)가 그 자리다. **탐침 여섯 중 답한 것 0 · 침묵한 것 6**이고 **`cc exit=0`** 이다.\
+(9)가 그 자리다. **probe 여섯 중 답한 것 0 · 침묵한 것 6**이고 **`cc exit=0`** 이다.\
 그 침묵을 메우는 것이 (1)의 번호 매긴 로그와 (4)의 스택 트레이스다.
 
 ## 언제 쓰고 언제 안 쓰나
@@ -991,14 +991,14 @@ cs12b-diag.cs(9,1): error CS0191: A readonly field cannot be assigned to (except
 [Learn — `required` 한정자](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/required) ·
 [Learn — `readonly`](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/readonly) ·
 [.NET API — `RuntimeHelpers.GetUninitializedObject`](https://learn.microsoft.com/en-us/dotnet/api/system.runtime.compilerservices.runtimehelpers.getuninitializedobject)
-**실행 검증** — 이 문서의 모든 출력·진단·IL 은 맨 위 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-25).\
+**실행 검증** — 이 문서의 모든 출력·진단·IL 은 맨 위 「이 버전」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-25).\
 ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
 ★ 소스 펜스의 배너도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.\
 ★★★ **진단 언어를 영어로 고정했다**(`DOTNET_CLI_UI_LANGUAGE=en` + `-preferreduilang:en-US`).\
-**던진 형태** — MSBuild 를 안 쓰고 Roslyn `csc` 를 직접 부른다(설정은 [11번](../11-collection-initializers-and-collection-expressions/) 「실행 환경」과 같다).\
+**실행한 형태** — MSBuild 를 안 쓰고 Roslyn `csc` 를 직접 부른다(설정은 [11번](../11-collection-initializers-and-collection-expressions/) 「실행 환경」과 같다).\
 **`-debug` 를 안 줬다** — 그래서 (4)의 스택 트레이스에 **절대 경로도 줄 번호도 안 박힌다.**
 **버전** — 클래스·필드·생성자·`this`/`base` 는 **C# 1.0부터**. **`init` 은 C# 9**, **`required` 는 C# 11**,\
-**기본 생성자(primary constructor)가 클래스에까지 온 것은 C# 12부터**다. `-langversion:latest` 로 던졌다.
+**기본 생성자(primary constructor)가 클래스에까지 온 것은 C# 12부터**다. `-langversion:latest` 로 실행했다.
 **경계** — **상속과 `virtual`/`override` 의 설계 판**은 [목록의 **16번**](../16-inheritance-virtual-override-abstract-sealed-new/), **속성(property)의 전모**는 **13번**,\
 **접근 한정자**는 **15번**, **`record`** 는 **18번**, **`IDisposable`/`using`** 은 **37번 주제**가 정본이다.\
 여기서는 「**객체가 만들어질 때 무엇이 어떤 순서로 도는가**」만 센다.\
@@ -1007,9 +1007,9 @@ cs12b-diag.cs(9,1): error CS0191: A readonly field cannot be assigned to (except
 (1)에서 **초기화 순서를 두 언어에서 나란히 찍어** 대비표를 만들고, (4)에서 **생성자 속 가상 호출**을 다시 나란히 놓는다.\
 ★ **결정적 파괴 쪽 대비**는 C++ 갈래의 **14번**([`14-destructors-and-deterministic-destruction/`](../../../cpp/syntax/14-destructors-and-deterministic-destruction/))과 [01번](../01-value-types-and-reference-types/)이 맡는다.
 
-★★ **흔들리는 칸 / 안 흔들리는 칸**
+★★ **실행마다 달라지는 항목 / 달라지지 않는 항목**
 
-| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+| 실행마다 달라진다(근거로 쓰지 않는다) | 달라지지 않는다(근거로 쓴다) |
 |---|---|
 | 객체 주소 · `GetHashCode()` · 실행 시간 | ★★★ **로그가 찍힌 순서와 번호** — 이 주제의 답 자체다 |
 | 진단 문구가 판마다 다듬일 수 있다는 것 | ★★ **진단 코드**(`CS7036`·`CS0768`·`CS9035`·`CS0191`·`CS0649`)와 **`(행,열)`** |

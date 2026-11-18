@@ -556,7 +556,7 @@ OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sha
 |---|---|---|
 | `warn0.kt` · `warn2.kt` | 「의미 없다」 경고 · **`noinline` 뿐이어도 경고가 나는 것** | `kotlinc` (경고 1건 · 2건 · `exit 0`) |
 | `noinl.kt` / `inl.kt` | `inline` 한 낱말 차이 — 객체·박싱·합성 메서드가 사라지는 것 | `kotlinc` 2회 → `javap -c -p` 2회 |
-| `noinl.kt` / `inl.kt` (타깃 21) | 결론이 `-jvm-target` 에 안 흔들리는 것 | `kotlinc -jvm-target 21` → `javap` → `diff` |
+| `noinl.kt` / `inl.kt` (타깃 21) | 결론이 `-jvm-target` 에 달라지지 않는 것 | `kotlinc -jvm-target 21` → `javap` → `diff` |
 | `api.kt` + `UsePlain.java` | 인라인 함수 본체가 남아 **Java 가 부르는 것** · `reified` 만 `ACC_SYNTHETIC` | `kotlinc` → `javap -v -p` → `javac` → `java` |
 | `nlr.kt` | `A`·`B`·`C` · **`areturn` 두 개 대 하나** · `Function1` 0회 | `kotlinc` → `java` → `javap -c -p` |
 | `bad0.kt` | 비인라인 람다의 맨 `return` 이 거부되는 것 | `kotlinc` (컴파일 실패가 결과) |
@@ -576,7 +576,7 @@ OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sha
 반면 **「비지역 `return` 이 된다/안 된다」·「`noinline` 이 있어야 값으로 다룬다」·「`crossinline` 이 필요한 자리」·
 「nullable 인라인 파라미터 금지」·「재귀 금지」·「공개 API 가시성 제약」** 은 **언어 규칙**이라 타깃과 무관하다.
 
-**★ 던져 봤더니 예상과 달랐던 것 — 세 건**
+**★ 실행해 봤더니 예상과 달랐던 것 — 세 건**
 
 1. ★★ **「`inline` 은 호출 비용을 줄이는 것」이 틀렸다.** 컴파일러가 직접
    `expected performance impact from inlining is insignificant.` 라고 말한다.

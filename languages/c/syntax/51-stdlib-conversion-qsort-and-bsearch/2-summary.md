@@ -1,6 +1,6 @@
 # c/syntax/51 — `<stdlib.h>` 변환 · `qsort` · `bsearch`: 「**`atoi` 에는 실패를 말할 자리가 없다 — `strtol` 의 `endptr` 와 `errno` 가 그 자리다**」 — 정리 (힌트)
 
-★★★ **본체는 둘째 창 — 실행 출력의 변환 격자다.** 입력 열 개를 `atoi` 와 `strtol`(+`endptr`+`errno`)에 넣고, 칸마다 **값 · 소비한 글자 수 · `errno` · 남은 글자 수**를 찍어 **스크립트가 「`strtol` 이 알린 것」을 분류**한다.
+★★★ **핵심은 둘째 창 — 실행 출력의 변환 격자다.** 입력 열 개를 `atoi` 와 `strtol`(+`endptr`+`errno`)에 넣고, 칸마다 **값 · 소비한 글자 수 · `errno` · 남은 글자 수**를 찍어 **스크립트가 「`strtol` 이 알린 것」을 분류**한다.
 ★★★ 그 격자에서 **`strtol` 이 성공이 아니라고 알린 입력 6 / 10** — `atoi` 는 그 여섯을 **성공과 가를 수단이 없다**(다섯은 평범한 값을 돌려주고, 하나는 UB 다).
 
 ## 이 주제가 쓰는 창
@@ -8,10 +8,10 @@
 | 창 | 이 주제에서 | 상태 |
 |---|---|---|
 | ① 컴파일 진단 | gcc `-Wcast-function-type` 은 **포인터 매개변수끼리는 봐준다** · clang 은 **`-Wcast-function-type` 을 따로 줘야** 둘 다 잡는다((4)) | 씀 |
-| ★★★ ② **실행 출력(변환 격자)** | ★ **본체** — `atoi` 값 · `strtol` 의 값/`endptr`/`errno` | 씀 |
+| ★★★ ② **실행 출력(변환 격자)** | ★ **핵심** — `atoi` 값 · `strtol` 의 값/`endptr`/`errno` | 씀 |
 | ③ sanitizer | ★★ **틀린 비교자 둘 중 UBSan 이 말한 것은 한 줄**, 그것도 `implicit-conversion` 을 켰을 때만 · `-fsanitize=function` 은 **`qsort` 안의 호출을 못 본다** | 씀 |
 | ④ 링크 심볼 | ★★ `-std=c17` 은 `strtol` · `-std=c2x` 는 **`__isoc23_strtol`** 로 링크된다((2)) | 씀 |
-| 시간 측정 | — | 부적용(성능 주제가 아니다 — `qsort` 속도는 재지 않았다) |
+| 시간 측정 | — | 해당 없음(성능 주제가 아니다 — `qsort` 속도는 재지 않았다) |
 | ★ 제5의 상태 | 「`qsort` 는 안정 정렬인가」는 **보통 실행으로는 늘 「그렇다」로 보인다** — **주소 공간 한도(`ulimit -v`)** 로 glibc 의 임시 버퍼 할당을 실패시켜 **다른 경로**를 태워 물었다((5)) | 창을 바꿔 답함 |
 
 ★ **바꾼 창(`ulimit -v`)이 못 보는 것** — glibc `qsort` 의 **어느 경로가 무슨 알고리즘인지**는 말하지 않는다. 보이는 것은 **「같은 키 사이 순서가 뒤집혔나」** 라는 결과뿐이다.
@@ -33,13 +33,13 @@ Ubuntu clang version 18.1.3 (1ubuntu1)
 ldd (Ubuntu GLIBC 2.39-0ubuntu8.9) 2.39
 ```
 
-## 흔들리는 칸 / 안 흔들리는 칸
+## 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| **흔들린다** | 없음 | 이 편은 리포트에 PID·주소가 찍히는 블록이 없다(UBSan 리포트는 `파일:줄:칸` 뿐) |
-| 안 흔들린다 | ★★★ **변환 격자 · 진법 격자** · 비교자 격자 · 경고 | 같은 판 · 같은 플래그면 같다 |
-| 안 흔들린다(선언) | ★★ **`ulimit -v 15000` 칸의 `580403`** | 이 판 · 이 한도에서 재현됐다. ★ **한도 값은 판을 탄다** — 다섯 값을 따로 찍었다((5)의 둘째 블록) |
+| **실행마다 달라진다** | 없음 | 이 편은 리포트에 PID·주소가 찍히는 블록이 없다(UBSan 리포트는 `파일:줄:칸` 뿐) |
+| 달라지지 않는다 | ★★★ **변환 격자 · 진법 격자** · 비교자 격자 · 경고 | 같은 판 · 같은 플래그면 같다 |
+| 달라지지 않는다(선언) | ★★ **`ulimit -v 15000` 칸의 `580403`** | 이 버전 · 이 한도에서 재현됐다. ★ **한도 값은 판을 탄다** — 다섯 값을 따로 찍었다((5)의 둘째 블록) |
 
 ★★ **정규화 규칙은 기본 넷뿐**이다(이 편에서는 지울 것이 없다).
 
@@ -73,8 +73,8 @@ ldd (Ubuntu GLIBC 2.39-0ubuntu8.9) 2.39
    int 하나.                  -> 위 넷을 가를 방법이 없다
 ```
 
-- ★★★ **이 주제의 본체는 「표준」 칸과 「UB」 칸의 경계**다 — `strtol` 의 `endptr`·`ERANGE` · `qsort`/`bsearch` 의 인자 규칙이 **표준**이고, **`atoi` 의 넘침 · 일관되지 않은 비교자 · 정렬 안 된 `bsearch`** 가 **UB** 다.
-- ★★ **「구현」 칸** — glibc `qsort` 의 안정성 · 이 판의 `strtol` 이 `-std` 에 따라 **다른 함수로 링크되는 것**.
+- ★★★ **이 주제의 핵심은 「표준」 칸과 「UB」 칸의 경계**다 — `strtol` 의 `endptr`·`ERANGE` · `qsort`/`bsearch` 의 인자 규칙이 **표준**이고, **`atoi` 의 넘침 · 일관되지 않은 비교자 · 정렬 안 된 `bsearch`** 가 **UB** 다.
+- ★★ **「구현」 칸** — glibc `qsort` 의 안정성 · 이 버전의 `strtol` 이 `-std` 에 따라 **다른 함수로 링크되는 것**.
 
 > **`strtol(s, &end, base)`** — `s` 의 앞 공백을 건너뛰고 **주어(숫자 모양)** 를 `long` 으로 읽는다. 읽고 난 자리를 `*end` 에 남긴다. 넘치면 `LONG_MAX`/`LONG_MIN` + `errno = ERANGE`.\
 > 예: `errno = 0; long v = strtol(s, &end, 10);`.
@@ -94,7 +94,7 @@ ldd (Ubuntu GLIBC 2.39-0ubuntu8.9) 2.39
 
 ### (1) ★★★ 변환 격자 — 입력 열 × `atoi` · `strtol`
 
-**언제 쓰나** — 설정 파일 · 명령행 인자 · 네트워크 입력의 숫자를 읽을 때. ★★★ **이 편의 본체**다.
+**언제 쓰나** — 설정 파일 · 명령행 인자 · 네트워크 입력의 숫자를 읽을 때. ★★★ **이 편의 핵심**다.
 
 ```c
 /* s51a.c */
@@ -199,9 +199,9 @@ x2x:
                  U __isoc23_strtol@GLIBC_2.38
 ```
 
-- ★★★ **스무 칸 중 넷이 갈렸다** — 전부 **`0b`/`0B` 접두 × base 0·2** 다. `-std=c17` 은 `0` 을 읽고 `b` 에서 멈추고(`0/1`), `-std=c2x` 는 `0b101` 을 **5** 로 읽는다. C23 이 base 2 에 `0b` 접두를 허용했기 때문이다(표준 문장).
+- ★★★ **스무 칸 중 넷이 달라졌다** — 전부 **`0b`/`0B` 접두 × base 0·2** 다. `-std=c17` 은 `0` 을 읽고 `b` 에서 멈추고(`0/1`), `-std=c2x` 는 `0b101` 을 **5** 로 읽는다. C23 이 base 2 에 `0b` 접두를 허용했기 때문이다(표준 문장).
 - ★★★ **소스는 한 글자도 같은데 링크된 심볼이 다르다** — `x17` 은 `strtol@GLIBC_2.2.5`, `x2x` 는 **`__isoc23_strtol@GLIBC_2.38`**. glibc 헤더가 `-std` 를 보고 `strtol` 을 **다른 함수로 바꿔 끼웠다.** 같은 머신에서도 **컴파일 옵션이 런타임 동작을 고른다.**
-- ★★ **`"0b101"` 을 base 16 으로 읽으면 `45313`**(`0xb101`) — 두 판 다 같다. `b` 가 16진 숫자이기 때문이다. **`0x` 는 base 16 의 접두지만 `0b` 는 base 16 의 접두가 아니다.**
+- ★★ **`"0b101"` 을 base 16 으로 읽으면 `45313`**(`0xb101`) — 두 버전 다 같다. `b` 가 16진 숫자이기 때문이다. **`0x` 는 base 16 의 접두지만 `0b` 는 base 16 의 접두가 아니다.**
 - ★★ **`"08"` 을 base 0 으로 읽으면 `0`, 소비 1** — `0` 으로 시작하면 8진이고 `8` 은 8진 숫자가 아니라 거기서 멈춘다. **`errno` 는 0** 이다 — `endptr` 을 안 보면 **「08 → 0」이 성공으로 지나간다.**
 - ★ **`"010"` 은 base 0 에서 8** — 8진이다. 사람이 쓴 설정값을 base 0 으로 읽으면 **앞의 0 하나가 값을 바꾼다.**
 
@@ -363,7 +363,7 @@ s51d.c:13:17: warning: cast from 'int (*)(int, int)' to 'Cmp' (aka 'int (*)(cons
 - ★★★ **gcc 는 `by_int` 캐스트에 경고하지 않는다** — `-Wcast-function-type` 은 **포인터 매개변수끼리는 서로 맞는 것으로 친다**(`int` ↔ `const void *` 인 `by_two` 만 짚었다). `qsort` 에 가장 흔한 실수가 **정확히 그 봐주는 자리**다.
 - ★★ **clang 은 `-Wall -Wextra` 에서 0 건**, `-Wcast-function-type` 을 **따로** 주면 **`-Wcast-function-type-strict`** 이름으로 둘 다 짚는다.
 - ★★★ **`clang -fsanitize=function` 은 침묵하고 `1 2 3`** — 캐스트된 포인터로 부르는 곳은 **glibc 의 `qsort` 안**이고, 그 코드는 sanitizer 로 컴파일되지 않았다. [35번 형제](../35-function-pointers-and-callback-tables/) (5)절에서 같은 sanitizer 가 잡은 것은 **호출이 내 소스에 있었기 때문**이다.
-- ★★ **여전히 UB 다** — 호환되지 않는 타입으로 함수를 부르는 것. x86-64 에서 `const int *` 와 `const void *` 가 같은 레지스터로 전달돼 **이 판에서는 맞게 정렬됐을 뿐**이다.
+- ★★ **여전히 UB 다** — 호환되지 않는 타입으로 함수를 부르는 것. x86-64 에서 `const int *` 와 `const void *` 가 같은 레지스터로 전달돼 **이 버전에서는 맞게 정렬됐을 뿐**이다.
 
 비용 — **비교자는 처음부터 `const void *` 둘을 받게 쓰고 안에서 바꾼다.** 캐스트가 필요 없어야 정상이다.
 
@@ -424,7 +424,7 @@ ulimit -v 18000  | n=1000000  key order breaks=0  seq inversions among equal key
 ulimit -v 20000  | n=1000000  key order breaks=0  seq inversions among equal keys=0
 ```
 
-- ★★★ **보통 실행 세 줄은 뒤집힘 0** — 이 판의 glibc `qsort` 는 **이 크기들에서 안정적으로 보였다.** 백만 개까지 그랬다.
+- ★★★ **보통 실행 세 줄은 뒤집힘 0** — 이 버전의 glibc `qsort` 는 **이 크기들에서 안정적으로 보였다.** 백만 개까지 그랬다.
 - ★★★ **`ulimit -v 15000` 에서 백만 개만 `580403`** — 같은 바이너리 · 같은 입력 · 같은 비교자다. **정렬은 맞고(`key order breaks=0`) 같은 키 사이 순서만 뒤집혔다.** glibc 가 **임시 버퍼를 못 잡자 다른 경로**로 정렬한 것이다(버퍼가 작은 10 · 1000 은 한도 아래에서도 0). 한도를 다섯 값으로 바꿔 보면 **너무 낮으면 배열 자체를 못 잡고(`malloc NULL`) · 중간은 뒤집히고 · 넉넉하면 0** 이다(둘째 블록).
 - ★★ **표준은 안정성을 약속하지 않는다** — 오히려 「**같다고 비교되는 두 원소의 순서는 미명시**」다. 「보통 실행에서 안정적」은 **이 glibc 의, 메모리가 넉넉할 때의 관찰**이다.
 - ★ 안정 정렬이 필요하면 **키에 원래 위치를 더해 비교**한다(`seq` 를 두 번째 키로).
@@ -468,7 +468,7 @@ sorted    1:hit  2:hit  3:hit  4:hit  5:hit
 ```
 
 - ★★ **`as-is` 는 다섯 중 셋을 못 찾았다** — 1 · 4 는 `hit`, 2 · 3 · 5 는 `NULL`. 배열 안에 **분명히 있는데** `NULL` 이다. `sorted` 는 다섯 다 `hit`.
-- ★★★ **이것은 「못 찾음」이 아니라 UB 의 한 모습이다** — 표준은 배열이 「키보다 작은 것 · 같은 것 · 큰 것 **순서로 이뤄져야 한다(shall)**」고 적고, 그 「shall」은 제약 밖이라 **어기면 UB** 다. 이 판에서 `NULL` 이 나온 것은 **glibc 의 이분 탐색이 그렇게 걸었을 뿐**이다.
+- ★★★ **이것은 「못 찾음」이 아니라 UB 의 한 모습이다** — 표준은 배열이 「키보다 작은 것 · 같은 것 · 큰 것 **순서로 이뤄져야 한다(shall)**」고 적고, 그 「shall」은 제약 밖이라 **어기면 UB** 다. 이 버전에서 `NULL` 이 나온 것은 **glibc 의 이분 탐색이 그렇게 걸었을 뿐**이다.
 
 ## 문법 — 형태와 규칙
 
@@ -535,7 +535,7 @@ int main(int argc, char **argv) {
 
 ### 3. ★★ 「같은 소스면 같은 `strtol` 이다」
 
-**`-std` 가 링크 심볼을 바꾼다** — `0b101` 이 0 과 5 로 갈렸다((2)).
+**`-std` 가 링크 심볼을 바꾼다** — `0b101` 이 0 과 5 로 나뉘었다((2)).
 
 ### 4. ★★★ 「UBSan 이 조용하니 비교자는 맞다」
 
@@ -561,7 +561,7 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 |---|---|---|---|
 | ★★★ **표준** | 어느 구현에서도 같다 | `strtol` 의 공백·주어·나머지 분해 · `endptr` · `LONG_MAX`+`ERANGE` · 「변환 없음 → 0, `end = s`」 · C23 `0b` · `qsort`/`bsearch` 의 인자 규칙 | 변환 격자 · 진법 격자 |
 | ★★ **구현 정의** | 문서화 의무 | 범위 밖 정수 변환의 값(C17) · `atoi` 가 오류 때 `errno` 를 세우나 | `by_wide` 의 `-2147483648` |
-| ★★ **glibc·컴파일러 구현** | 이 판이 한 것 | ★★ **`-std=c2x` → `__isoc23_strtol`** · `qsort` 의 경로(메모리가 넉넉하면 안정) · `bsearch` 의 걸음 · gcc `-Wcast-function-type` 의 포인터 관용 · clang `-strict` | `nm -u` · `ulimit` 격자 · 경고 블록 |
+| ★★ **glibc·컴파일러 구현** | 이 버전이 한 것 | ★★ **`-std=c2x` → `__isoc23_strtol`** · `qsort` 의 경로(메모리가 넉넉하면 안정) · `bsearch` 의 걸음 · gcc `-Wcast-function-type` 의 포인터 관용 · clang `-strict` | `nm -u` · `ulimit` 격자 · 경고 블록 |
 | **미명시** | 몇 가지 중 하나 | ★★ **같다고 비교되는 원소의 순서**(표준 — 「their order in the resulting sorted array is unspecified」) · `bsearch` 가 같은 원소 여럿 중 무엇을 주나 | `580403` · `by_diff` 의 제자리 |
 | ★★★ **UB** | 아무 일이나 | ★★★ **`atoi` 넘침** · 일관되지 않은 비교자 · 서명이 다른 비교자 호출 · 정렬 안 된 `bsearch` · `a - b` 넘침 | 싣지 않음 · `by_wide` · `(Cmp)by_int` · `as-is` 줄 |
 
@@ -588,9 +588,9 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 
 ## 핵심 문장
 
-1. ★★★ **`atoi` 는 실패를 말할 자리가 없다 — 이 판에서 `strtol` 이 알린 실패 여섯 중 `atoi` 가 가를 수 있는 것은 0 이다.**
+1. ★★★ **`atoi` 는 실패를 말할 자리가 없다 — 이 버전에서 `strtol` 이 알린 실패 여섯 중 `atoi` 가 구분할 수 있는 것은 0 이다.**
 2. ★★★ **`strtol` 의 실패 신호는 셋이다 — `end == s`, `*end != '\0'`, `errno == ERANGE`. `errno` 만 보면 둘을 놓친다.**
-3. ★★ **`-std=c2x` 는 `strtol` 을 다른 함수로 링크한다 — 소스가 같아도 `0b101` 이 0 과 5 로 갈린다.**
+3. ★★ **`-std=c2x` 는 `strtol` 을 다른 함수로 링크한다 — 소스가 같아도 `0b101` 이 0 과 5 로 나뉜다.**
 4. ★★★ **비교자는 부호만 — 뺄셈 · 좁히기는 어떤 창도 못 보는 틀린 순서를 만든다.**
 5. ★★ **`qsort` 의 안정성과 정렬 안 된 `bsearch` 는 표준이 약속하지 않는다 — 메모리 한도 하나로 안정성이 사라졌다.**
 
@@ -627,9 +627,9 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 
 **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects)(C23 대응 초안 [**N3220**](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf) — 수 변환 함수 머리의 「**atof, atoi, atol, and atoll are not required to affect the value of … errno on an error. If the value of the result cannot be represented, the behavior is undefined.**」, `atoi` 의 「**Except for the behavior on error, they are equivalent to … (int)strtol(nptr, nullptr, 10)**」, `strtol` 의 세 부분 분해(공백 · 주어 · 나머지) · 「**no conversion … the value of nptr is stored in the object pointed to by endptr**」 · 「**LONG_MAX … and the value of the macro ERANGE is stored in errno**」 · 「**If the value of base is 2, the characters 0b or 0B may optionally precede**」, 검색·정렬 공통 절의 「**for qsort they shall define a total ordering**」, `qsort` 의 「**If two elements compare as equal, their order in the resulting sorted array is unspecified.**」, `bsearch` 의 「**The array shall consist of: all the elements that compare less than, … equal to, and … greater than the key object, in that order**」, 규범 절의 「**If a "shall" … requirement that appears outside of a constraint … is violated, the behavior is undefined**」를 **본문에서 직접 찾아 읽었다**)
 ★ **표준 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **값 · `errno` · 소비한 글자 수 · 경고 · sanitizer 리포트 · 링크 심볼은 전부 실행으로** 접지했다.
-**실행 검증** — 이 문서의 모든 출력·진단은 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`, 캡처 셸은 `LC_ALL=C`.\
+**실행 검증** — 이 문서의 모든 출력·진단은 「이 버전」 절의 버전에서 실제로 돌려 **파일로 캡처한 것**이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`, 캡처 셸은 `LC_ALL=C`.\
 ★★ **블록은 전부 캡처 파일에서 조립했다.** 이 편의 **그림 4 · 덤프(캡처 블록) 15**.
-**버전** — `atoi`·`strtol`·`qsort`·`bsearch` 는 **C89 부터**, `strtoll` 은 **C99 부터**. ★★ **C23** 이 `strtol` 에 **`0b` 접두**(base 0 · 2)를 더했다 — 이 판의 glibc 는 `-std=c2x` 에서만 그 판으로 링크한다((2)).
+**버전** — `atoi`·`strtol`·`qsort`·`bsearch` 는 **C89 부터**, `strtoll` 은 **C99 부터**. ★★ **C23** 이 `strtol` 에 **`0b` 접두**(base 0 · 2)를 더했다 — 이 버전의 glibc 는 `-std=c2x` 에서만 그 판으로 링크한다((2)).
 ★★★ **경계** — **퀵 정렬 · 이분 탐색의 원리와 복잡도**는 [`algorithm/03-quick-sort/`](../../../../cs/algorithm/03-quick-sort/) · [`algorithm/06-binary-search/`](../../../../cs/algorithm/06-binary-search/)가 정본이다. 여기는 **표준 API 의 계약**만 본다.\
 ★★ **`return a - b` 비교자의 넘침 · 서명이 다른 함수 포인터 호출의 일반형**은 [35번 형제](../35-function-pointers-and-callback-tables/) (4)·(5)절이 정본이다(이 편은 **다시 재지 않고** 인용한다). **`errno` 관례**는 [목록의 **46번 주제**](../46-errno-and-error-return-conventions/)다.
 선행 — [35번 형제](../35-function-pointers-and-callback-tables/) · [목록의 **46번 주제**](../46-errno-and-error-return-conventions/).

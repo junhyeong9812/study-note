@@ -66,7 +66,7 @@ Objects.requireNonNullElseGet(null, Ex::make); // (C)
 - 이 현상의 원인은 `Objects` 의 구현인가, 자바의 일반 규칙인가?
 - 같은 현상을 보이는 다른 API 는 무엇인가?
 
-### 6. ★ NPE 메시지는 무엇에 갈리는가 (경계)
+### 6. ★ NPE 메시지는 무엇에 달라지는가 (경계)
 
 ```java
 String s = null;
@@ -109,7 +109,7 @@ new TreeSet<>(Arrays.asList("a", null));
 - `HashMap` 에서 "키가 없다"와 "값이 `null` 이다"를 어떻게 구분하는가?
 - `TreeSet` 이 `null` 을 거부하는 이유는 어느 주제와 이어지는가?
 
-### 9. 스트림 수집기의 `null` 정책은 어떻게 갈리는가 (예측)
+### 9. 스트림 수집기의 `null` 정책은 어떻게 달라지는가 (예측)
 
 ```java
 rows.stream().collect(Collectors.toMap(Row::key, Row::value));   // value 에 null 이 있다
@@ -121,7 +121,7 @@ List.copyOf(dirty);
 
 - 다섯 중 NPE 가 나는 것은 무엇인가?
 - `groupingBy` 의 NPE 메시지는 무엇인가?
-- `toList()` 계열이 갈리는 기준은 무엇인가?
+- `toList()` 계열이 달라지는 기준은 무엇인가?
 
 ### 10. 반환값을 `null` 로 줄 때와 `Optional` 로 줄 때 (예측)
 

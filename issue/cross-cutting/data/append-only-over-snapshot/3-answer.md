@@ -38,7 +38,7 @@ UPDATE daily_close SET closing = (SELECT current_value FROM entity WHERE id = ?)
 INSERT INTO movement(entity_id, attributed_day, delta) VALUES (?, ?, ?);
 SELECT SUM(delta) FROM movement WHERE entity_id = ? AND attributed_day <= :D;
 ```
-무엇이 깨졌나: 배치 스냅샷(다음 날 섞임) → 단일 필드(하루 어긋남) → 행 + 현재값 복사(늦은 과거 이벤트 역순 귀속)로 같은 자리가 세 번 깨졌다.
+무엇이 깨졌나: 배치 스냅샷(다음 날 섞임) → 단일 필드(하루 불일치) → 행 + 현재값 복사(늦은 과거 이벤트 역순 귀속)로 같은 자리가 세 번 깨졌다.
 
 ### 변형 B — 전량 재전송 원천의 append-only 스테이징
 

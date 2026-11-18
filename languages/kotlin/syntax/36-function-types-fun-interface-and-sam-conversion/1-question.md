@@ -164,7 +164,7 @@ diff = sum(1 for g in grid[1:] for f in FUNS if g[f] != grid[0][f])
 print(f"cells that differ from {dirs[0]}: {diff} / {len(FUNS) * (len(dirs) - 1)}")
 ```
 
-- 3번을 `-Xlambdas=class` · `-Xsam-conversions=class` · 둘 다로 각각 컴파일하면, 기본과 견줘 **12칸 중 몇 칸**이 갈리는가? 어느 플래그가 어느 함수를 움직이는가?
+- 3번을 `-Xlambdas=class` · `-Xsam-conversions=class` · 둘 다로 각각 컴파일하면, 기본과 견줘 **12칸 중 몇 칸**이 달라지는가? 어느 플래그가 어느 함수를 움직이는가?
 
 ### 5. ★ `fun interface` 로 선언할 수 없는 것 (예측)
 
@@ -191,7 +191,7 @@ fun suspendType(f: suspend (Int) -> Int) {}
 
 ### 7. Kotlin 인터페이스에 람다를 넘기는 규칙의 주인 (왜)
 
-- 1번의 `k` 일곱 줄과 2번 `JCall` 의 `A` 줄을 견주면 결과가 어떻게 갈리는가? 그 차이는 **누가** 정한 규칙인가?
+- 1번의 `k` 일곱 줄과 2번 `JCall` 의 `A` 줄을 견주면 결과가 어떻게 달라지는가? 그 차이는 **누가** 정한 규칙인가?
 
 ### 8. 인자 자리가 아닌 곳의 SAM 변환 (경계)
 
@@ -207,7 +207,7 @@ fun suspendType(f: suspend (Int) -> Int) {}
 
 ### 11. 「기본값이 `indy`」라는 말의 범위 (경계)
 
-- `-X` 도움말은 `-Xlambdas` 의 기본값이 「언어 판 2.0+ 이면 `indy`, 아니면 `class`」라고 적는다. 이 판에서 그 「아니면」을 **직접 확인할 수 있는가**?
+- `-X` 도움말은 `-Xlambdas` 의 기본값이 「언어 판 2.0+ 이면 `indy`, 아니면 `class`」라고 적는다. 이 버전에서 그 「아니면」을 **직접 확인할 수 있는가**?
 
 ### 12. Java 의 함수형 인터페이스와 견주면 (연결)
 
@@ -218,7 +218,7 @@ fun suspendType(f: suspend (Int) -> Int) {}
 선행은 [10번 주제](../10-lambdas-and-higher-order-functions/)다 — 함수 타입이 `FunctionN` 이라는 것, 람다가 `invokedynamic` 이 되는 것, SAM 변환이 **박싱을 없애는 자리**를 거기서 봤다. [31번 주제](../31-operator-overloading-infix-and-invoke/)의 `invoke` 규약도 이어진다.
 
 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
-이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5** 에서 실제로 던져 받은 것이다.
+이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5** 에서 실제로 실행해 받은 것이다.
 
 ## 복습 기록
 

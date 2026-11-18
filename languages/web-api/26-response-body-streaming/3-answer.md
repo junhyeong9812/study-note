@@ -1,9 +1,9 @@
 # web-api/26 — 응답 본문과 스트리밍: `json()`/`text()`/`blob()` 은 한 번만·`body` 와 `ReadableStream` — 정답
 
-| 안 흔들리는 칸 | 흔들리는 칸 · 못 잰 칸 |
+| 달라지지 않는 항목 | 실행마다 달라지는 항목 · 못 잰 항목 |
 |---|---|
 | 예외 전문 · 청크 대조 · `text()` 정착 · 쪼개진 한글 | **고쳤다** — 청크 대조의 첫 줄·끝 줄(청크를 전부 `/go` 뒤로 미뤘다) |
-| 캡처를 세 판 돌려 **한 글자도 같았다** | **못 잰 것** — `clone()` 의 메모리 · 속도 · 큰 청크의 쪼개짐 |
+| 캡처를 세 번 돌려 **한 글자도 같았다** | **못 잰 것** — `clone()` 의 메모리 · 속도 · 큰 청크의 쪼개짐 |
 
 ```text
 $ google-chrome --version
@@ -45,7 +45,7 @@ A GET /status?code=200  → 200 응답을 끝까지 보냈다
 **왜 그런가**
 
 - **한 번 읽은 뒤** — `json()`·`text()`·`arrayBuffer()` 는 **`TypeError 「… body stream already read」`**, `clone()` 은 **`TypeError 「… Response body is already used」`**.
-- **reader 를 쥔 동안** — `text()` 는 **`TypeError 「… body stream is locked」`**. 그때 `bodyUsed` 는 아직 `false` 다.
+- **reader 를 잡은 동안** — `text()` 는 **`TypeError 「… body stream is locked」`**. 그때 `bodyUsed` 는 아직 `false` 다.
 - **읽기 전에 `clone()`** 하면 두 쪽 다 읽힌다. **`releaseLock()` 뒤**에는 `text()` 가 전부 읽는다.
 - Fetch 명세 — **disturbed 또는 locked 면 unusable → 소비는 `TypeError` 로 거부, `clone()` 은 `TypeError` 를 던진다.** 문구는 Chrome 의 것이다.
 
@@ -124,13 +124,13 @@ A   청크 3개와 끝 표시까지 썼다
 - Fetch 의 **clone a body 는 본문 스트림을 `tee` 한다.** Streams 의 `tee()` 는 **「두 소비자가 다른 속도로」** 읽게 하고, 배압은 **「두 갈래가 모두 안 읽힐 때에만」** 원본에 간다 — 한쪽을 읽는 동안 원본은 흐르고 **안 읽힌 쪽 큐에 쌓인다.**
 - **본 것** — 동작 방식 (4)에서 을이 갑이 다 읽을 때까지 안 읽혔는데 **조각이 전부 남아 있었다.** **안 잰 것** — 그 메모리 크기.
 
-### 6. reader 를 쥔 채 — `bodyUsed=false` · `locked=true`
+### 6. reader 를 잡은 채 — `bodyUsed=false` · `locked=true`
 
 - `getReader()` 만 한 상태다. **`text()` 는 `TypeError 「body stream is locked」`**(문항 1의 「다」줄).
 
 ### 7. 헤더까지 — 본문은 0 바이트
 
-- 정착한 순간 서버는 **청크를 하나도 안 보냈다**(0 / 5). 서버는 **페이지가 `/go` 를 줘야** 첫 청크를 쓰므로, 정착 때 본문이 와 있을 수가 **없다** — 시간이 아니라 순서로 묶어서 흔들리지 않는다.
+- 정착한 순간 서버는 **청크를 하나도 안 보냈다**(0 / 5). 서버는 **페이지가 `/go` 를 줘야** 첫 청크를 쓰므로, 정착 때 본문이 와 있을 수가 **없다** — 시간이 아니라 순서로 묶어서 달라지지 않는다.
 
 ### 8. 다른 주제와 잇기
 
@@ -166,7 +166,7 @@ python3 wa24b-net.py page wa24b-26-decode.html
 |---|---|---|
 | 예외 문구 셋 | `already read` · `is locked` · `already used` | 명세는 `TypeError` 만 정한다 |
 | 한 `read()` 가 주는 크기 | 서버 청크 하나 | 묶어 주는 단위는 구현이다 |
-| `TextDecoderStream` 의 빈 조각 | 안 냄 | 이 판의 관찰 |
+| `TextDecoderStream` 의 빈 조각 | 안 냄 | 이 버전의 관찰 |
 
 **안 돌려 본 것** — ① Firefox·Safari(엔진이 없다). ② BYOB reader · 요청 본문 스트림. ③ 압축(`Content-Encoding`)된 청크.
 

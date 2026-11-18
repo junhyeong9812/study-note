@@ -140,7 +140,7 @@ docker run --rm --cpus=<C> --memory=<M> eclipse-temurin:21-jdk \
 - G1 튜닝 가이드 8장 "Observing Full Garbage Collections": Full GC 앞에는 대개 `(Evacuation Failure)`가 있다. 원인은 회수가 할당을 못 따라가는 것이고, 흔히("Often") 동시 마킹이 공간 회수 단계를 제때 시작하지 못한 것이다. 위 로그처럼 `Prepare Mixed`·`Mixed`가 이미 시작된 뒤에도 실패할 수 있다 — 이때는 회수 속도가 모자란 것이다. 처방은 힙 늘리기, 동시 마킹 스레드 늘리기, 마킹을 더 일찍(`G1ReservePercent`↑ 또는 `-XX:-G1UseAdaptiveIHOP` + `InitiatingHeapOccupancyPercent`), humongous 줄이기다.
 - 관찰
   - 힙을 1GiB로 늘리자 evacuation failure와 Full GC가 0이 됐다. 대신 Young 한 번이 더 길어졌다(평균 25~27ms). 젊은 세대가 커져 한 번에 더 많이 수집한다는 해석이다. 판정 재실행(`-Xlog:gc+heap`, 각 1회)에서 GC 직전 Eden 영역 수 중앙값이 512MB 228개 vs 1GiB 568개였다(복사한 산 객체 양은 재지 않았다).
-  - 일시정지 목표 20ms는 Young 평균을 줄였지만 evacuation failure를 없애지 못했다. 한 번은 Full GC 0회, 다른 한 번은 2회로 갈렸다. 목표는 공간 부족을 고치지 못한다.
+  - 일시정지 목표 20ms는 Young 평균을 줄였지만 evacuation failure를 없애지 못했다. 한 번은 Full GC 0회, 다른 한 번은 2회로 나뉘었다. 목표는 공간 부족을 고치지 못한다.
 
 ### 실험 3: humongous 할당 (Java 21)
 
@@ -232,7 +232,7 @@ java -XX:MaxRAMPercentage=70 -XX:+PrintFlagsFinal -version | grep -E " MaxHeapSi
 - **현상**: 큰 JSON 응답·파일 업로드를 처리할 때 GC가 잦아지고, 가끔 힙이 남아 있는데도 Full GC가 난다.
 - **보이는 형태**: GC 원인 `G1 Humongous Allocation`, `Humongous regions: X->Y`의 Y가 Old 영역 수에 비해 크다(실험 3: 600KB 배열 → GC 35~37회가 이 원인).
 - **원인**: 영역 절반 이상 객체는 연속 영역을 통째로 차지하고, 할당마다 마킹 시작 검사를 한다. 연속 영역을 못 찾으면 공간이 남아도 Full GC가 날 수 있다(G1 튜닝 가이드 "Humongous Object Fragmentation").
-- **대처**: `-XX:G1HeapRegionSize`를 키워 humongous 문턱을 올린다. 큰 버퍼를 요청마다 새로 만들지 않고 재사용하거나 스트리밍한다([12](../12-object-layout-and-allocation-reduction/2-summary.md)).
+- **대처**: `-XX:G1HeapRegionSize`를 키워 humongous 임계값을 올린다. 큰 버퍼를 요청마다 새로 만들지 않고 재사용하거나 스트리밍한다([12](../12-object-layout-and-allocation-reduction/2-summary.md)).
 
 ### 5. 작은 컨테이너에서 Serial로 돌고 있었다
 

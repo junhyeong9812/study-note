@@ -10,7 +10,7 @@
 
 ## 실제 코드
 
-조회 단계다. hit 이면 분할 lock 을 쥔 채 pin 하고 바로 놓는다.
+조회 단계다. hit 이면 분할 lock 을 잡은 채 pin 하고 바로 놓는다.
 
 `src/backend/storage/buffer` / `bufmgr.c` L2008-L2066 ([GitHub](https://github.com/postgres/postgres/blob/724edf9bde9d356724ad384a2e196edc3c9f80f7/src/backend/storage/buffer/bufmgr.c#L2008-L2066))
 

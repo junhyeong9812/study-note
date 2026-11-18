@@ -38,7 +38,7 @@ Khorikov 『Unit Testing PPP』 4장 "The four pillars of a good unit test"(장 
 | 빠른 피드백(fast feedback) | 얼마나 빨리 도나 | 덜 자주 돌리게 된다 |
 | 유지보수성(maintainability) | 읽고 고치기 쉬운가, 준비(의존 설정)가 쉬운가 | 테스트 자체가 부채가 된다 |
 
-- Khorikov 블로그(2020-02-11) 원문 정의(이 글은 책에서 "거짓 양성"을 **리팩터링이 일으킨 실패**로 한정했고, 외부 의존 때문에 흔들리는 실패(flaky)는 유지보수성 기둥으로 분류했다고 밝힌다)
+- Khorikov 블로그(2020-02-11) 원문 정의(이 글은 책에서 "거짓 양성"을 **리팩터링이 일으킨 실패**로 한정했고, 외부 의존 때문에 실행마다 달라지는 실패(flaky)는 유지보수성 기둥으로 분류했다고 밝힌다)
   - *거짓 양성(false positive)*: "a false alarm, aka false failure". 리팩터링 뒤 실패하는 경우다.
   - 회귀 방지 = "Lack of false negatives, aka lack of false passes".
   - 리팩터링 내성 = "the degree to which a test can sustain a refactoring of the underlying application code without turning red".
@@ -203,7 +203,7 @@ B4 C  경계에서_할인이_적용된다() ✘
 
 - **2×2 혼동 행렬.** 테스트 결과(빨강/초록) × 실제(버그 있음/없음). 거짓 양성은 리팩터링 내성, 거짓 음성은 회귀 방지 기둥에 대응한다.
 - **곱셈 가치 모델.** 가치 = 회귀 방지 × 리팩터링 내성 × 빠른 피드백 × 유지보수성. 합이 아니라 곱이라서 한 축이 0이면 다른 축이 아무리 높아도 0이다(2차 출처 요약).
-- **공개 API = 테스트가 의존하는 인터페이스.** 테스트도 코드의 클라이언트다. 테스트가 의존하는 표면이 좁고 안정적일수록 내부 변경에 덜 흔들린다([software-design/02](../../software-design/02-modularity-coupling-cohesion/2-summary.md)의 결합도와 같은 이야기).
+- **공개 API = 테스트가 의존하는 인터페이스.** 테스트도 코드의 클라이언트다. 테스트가 의존하는 표면이 좁고 안정적일수록 내부 변경에 덜 실행마다 달라진다([software-design/02](../../software-design/02-modularity-coupling-cohesion/2-summary.md)의 결합도와 같은 이야기).
 - **Fake = 인메모리 맵.** 실험의 `FakeOrderRepository`는 `HashMap<String, Order>`다([03](../03-test-doubles/2-summary.md)).
 
 ## 적용 — 풀어나가는 법

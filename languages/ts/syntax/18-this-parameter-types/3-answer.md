@@ -57,13 +57,13 @@ ex.18a.ts(26,7): error TS2322: Type '(this: Rect) => number' is not assignable t
 | 17 | `rect.area()` | `number` — 정상 호출은 통과한다 |
 | 19 | ★★★ `const detached = rect.area;` | **진단 없음** — 대입은 조용하다 |
 | 20 | ★★★ `detached();` | **`TS2684`** — 「The 'this' context of type 'void' …」 |
-| 25 | 탐침 — `areaOf` 자체 | `(this: Rect, scale: number) => number` |
-| 26 | 탐침 — `rect.area` 자체 | `(this: Rect) => number` |
+| 25 | probe — `areaOf` 자체 | `(this: Rect, scale: number) => number` |
+| 26 | probe — `rect.area` 자체 | `(this: Rect) => number` |
 
 - ★★★ 19행에 진단이 **없다**는 것이 이 문항의 전부다. `const detached = rect.area;` 는 **합법적인 JS** 이고,\
   그 뒤에 `detached.call(rect)` 로 제대로 부를 수도 있다. 그래서 TS 는 **가장 늦은 시점(호출)** 에만 막는다.
 - ★★ 20행의 문구가 「of type **'void'**」다. **점 왼쪽이 아예 없는 호출**을 컴파일러가 `void` 로 읽은 것이다.
-- ★★★ 25·26행의 탐침이 보여 주듯 **타입 층에서는 `this` 가 매개변수 목록 안에 그대로 보인다.**\
+- ★★★ 25·26행의 probe가 보여 주듯 **타입 층에서는 `this` 가 매개변수 목록 안에 그대로 보인다.**\
   그런데 **인자 개수에는 안 센다** — 그 증거는 2번의 방출물이다.
 - ★ 이 자리가 [JS 갈래의 `this` 바인딩 네 규칙](../../../js/syntax/07-this-binding-four-rules/)이 「런타임에 `undefined`」로 보여 준 그 자리다.\
   **JS 는 터질 때까지 모르고, TS 는 부르기 전에 안다.**
@@ -149,7 +149,7 @@ console.log("4) bind 한 뒤         :", bound(10));
 - ★★★ 세 번째 줄이 결정적이다. `as unknown as` 로 **타입만 벗겨** 부르니 `TypeError` 다.\
   방출물이 `"use strict"` 라 `this` 가 `undefined` 이고 `undefined.w` 를 읽다 터졌다.\
   **`this` 매개변수는 런타임 보호를 하나도 안 한다** — 컴파일 타임에만 있는 것이다.
-- ★ 예외의 **메시지 본문은 안 실었다**(판마다 바뀐다). `constructor.name` 만 찍어 **흔들리지 않는 칸**으로 만들었다.
+- ★ 예외의 **메시지 본문은 안 실었다**(판마다 바뀐다). `constructor.name` 만 찍어 **달라지지 않는 항목**으로 만들었다.
 
 ### 3. ★★ **`strictBindCallApply`** — 켠 판 **6건**, 끈 판 **0건**
 
@@ -338,7 +338,7 @@ ex.18e.ts(26,7): error TS2322: Type '(scale: number) => number' is not assignabl
 
 **왜 그런가**
 
-| 줄 | 탐침 | 답 |
+| 줄 | probe | 답 |
 |---|---|---|
 | 23 | `ThisParameterType<typeof area>` | **`Rect`** |
 | 24 | ★★★ `ThisParameterType<typeof plain>` | **`unknown`** — `void` 가 아니다 |
@@ -349,7 +349,7 @@ ex.18e.ts(26,7): error TS2322: Type '(scale: number) => number' is not assignabl
   「`this` 가 없다」를 `void` 로 답할 것 같지만 아니다.
 - ★★ 25행과 26행의 글자가 같다는 것은 **`bind` 의 결과 타입이 곧 `OmitThisParameter`** 라는 뜻이다.\
   그래서 `this` 가 걸린 함수를 감싸는 도우미를 쓸 때 이 둘을 바꿔 쓸 수 있다.
-- ★ 오버로드된 함수에 씌우면 어느 시그니처가 잡히는지는 **안 던졌다.**
+- ★ 오버로드된 함수에 씌우면 어느 시그니처가 잡히는지는 **실행하지 않았다.**
 
 ### 6. ★★★ `.d.ts` 에는 **남고** `.js` 에는 **없다** — 같은 소스, 반대 답
 
@@ -429,9 +429,9 @@ export const method = {
 - ★★ `interface Handler` 의 `onTick(this: void, n: number): void;` 와 객체 리터럴 메서드의 `read(this: { v: number })` 도\
   `.d.ts` 에 **적은 그대로** 실리고 `.js` 에서는 사라진다.
 - ★★★ 그런데 `.d.ts` 는 **계산하지 않는다.** `rectOnly` 가 `ThisParameterType<typeof area>` 라고 **적은 그대로** 남았다 —\
-  5번의 탐침은 같은 것을 **`Rect`** 라고 답했다. **둘이 다르면 탐침 쪽이 계산된 것**이다.
+  5번의 probe는 같은 것을 **`Rect`** 라고 답했다. **둘이 다르면 probe 쪽이 계산된 것**이다.
 - ★ `bound` 만 계산돼 있다 — `(scale: number) => number`. **이름이 안 붙은 자리는 펴서 적는다.**
-- ★★ 그래서 이 배치의 판정은 「**추론 결과를 볼 때는 탐침, 여러 줄을 한 번에 훑을 때는 `.d.ts`**」다.
+- ★★ 그래서 이 배치의 판정은 「**추론 결과를 볼 때는 probe, 여러 줄을 한 번에 훑을 때는 `.d.ts`**」다.
 
 ### 7. ★★ 대입은 **합법적인 JS** 이기 때문이다
 
@@ -494,11 +494,11 @@ export const method = {
 |---|---|
 | **언어 보장** | `this` 매개변수는 **인자가 아니다** · 검사 지점은 **호출식** · 화살표에는 **못 단다**(`TS2730`) · `this: void` 계약 · `.d.ts` 에는 **남는다** |
 | **설정에 달린 것** | ★★★ `strictBindCallApply` — 켠 판 **6건** · 끈 판 **0건**(3번). `strict` 에 딸려 켜진다 |
-| **이 판(7.0.2)의 관찰** | 진단 **문구** 전문 — 코드가 더 오래 간다 · `bind` 가 **`TS2769`** 로 보고되는 것 · `apply` 가 **`TS2322`** 인 것 · `.d.ts` 의 들여쓰기 4칸 · `ThisParameterType` 이 **`unknown`** 을 주는 것 |
+| **이 버전(7.0.2)의 관찰** | 진단 **문구** 전문 — 코드가 더 오래 간다 · `bind` 가 **`TS2769`** 로 보고되는 것 · `apply` 가 **`TS2322`** 인 것 · `.d.ts` 의 들여쓰기 4칸 · `ThisParameterType` 이 **`unknown`** 을 주는 것 |
 | **런타임(JS·node 18)의 사실** | 떼어내 부르면 `this` 가 **`undefined`** · 예외 **메시지 본문**은 판에 매여 안 실었다 |
 
 - ★★★ 「**진단 0줄」이 결론인 블록이 둘**이다(2번의 `tsc` · 3번의 끈 판). 둘 다 **명령과 종료 코드까지** 캡처했다.
-- ★★ 이 주제의 창 넷이 **같은 사실을 네 방향에서** 말한다 — 진단·탐침·`.d.ts`·방출 `.js`.\
+- ★★ 이 주제의 창 넷이 **같은 사실을 네 방향에서** 말한다 — 진단·probe·`.d.ts`·방출 `.js`.\
   그중 **`.js` 만이 「런타임에 없다」를 증명**한다. 나머지 셋은 전부 타입 층의 이야기다.
 
 ## 실행 검증
@@ -514,7 +514,7 @@ export const method = {
 | 유틸리티 둘 | `--noEmit ex.18e.ts` | exit 1 · **4건** · ★ `ThisParameterType<typeof plain>` = **`unknown`** |
 | 두 방출물 | `--declaration --outDir ex.18f.ts` | ★ **exit 0** · `.d.ts` 에 `this` **있음** · `.js` 에 **없음** |
 
-**구현 의존 항목 — 판이 오르면 다시 돌릴 것**
+**구현 의존 항목 — 버전이 오르면 다시 돌릴 것**
 
 - ★★ 진단 **문구** 전문 — `TS2684`·`TS2730`·`TS2345`·`TS2741`·`TS2769`·`TS2322` 라는 **코드**가 더 오래 간다.
 - ★★ `bind` 가 `TS2769`(오버로드)로, `apply` 가 `TS2322` 로 보고되는 **분류 방식**.
@@ -524,9 +524,9 @@ export const method = {
 
 **안 돌려 본 것**
 
-- **다형 `this` 타입**(`: this` 반환) — **안 던졌다.** [목록의 **32번 주제**](../32-class-type-aspects/).
-- **오버로드에 `this` 칸을 다는 것** · `ThisParameterType` 이 어느 시그니처를 잡는지 — **안 던졌다.**
-- **`noImplicitThis`** 단독으로 끈 판 — **안 던졌다.** 이 배치는 `--strict` 묶음으로만 던졌다.
+- **다형 `this` 타입**(`: this` 반환) — **실행하지 않았다.** [목록의 **32번 주제**](../32-class-type-aspects/).
+- **오버로드에 `this` 칸을 다는 것** · `ThisParameterType` 이 어느 시그니처를 잡는지 — **실행하지 않았다.**
+- **`noImplicitThis`** 단독으로 끈 판 — **실행하지 않았다.** 이 배치는 `--strict` 묶음으로만 실행했다.
 - **`this` 매개변수가 검사 시간에 주는 영향** — **재지 않았고 수치를 적지 않았다.**
 
 ## 실행 환경
@@ -534,6 +534,6 @@ export const method = {
 모든 진단·방출 전문·`.d.ts` 전문·실행 출력은 `tsc` **7.0.2** 와 `node` **v18.19.1** 에서 실제로 얻었다.\
 블록은 전부 **캡처 스크립트가 파일로 받은 것**이고 손으로 옮겨 적지 않았다 — 배너의 `(tsc exit=N)` 도 스크립트가 찍은 값이다.\
 ★★★ 2번의 `tsc` 와 3번의 끈 판은 **진단이 0줄인 것이 결론**이다. 그 블록도 **명령과 종료 코드까지** 캡처했다.\
-★★★ `const probe: null = …` 은 **탐침**이다 — 일부러 틀린 주석을 달아 컴파일러가 타입을 말하게 한다.\
+★★★ `const probe: null = …` 은 **probe**이다 — 일부러 틀린 주석을 달아 컴파일러가 타입을 말하게 한다.\
 ★ 소스 펜스 첫 줄 `// 파일명` 은 대조용 배너다 — **진단의 행 번호는 그 줄을 뺀 기준**이다.\
 ★★ 표 안의 `\|` 는 이스케이프다 — **뜻은 `|` 다.**

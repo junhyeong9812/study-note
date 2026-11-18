@@ -42,7 +42,7 @@ ConditionalsBoundaryMutator,discountedPrice,8,SURVIVED
 
 - Killed % = 6 / 14 = 43%. 분모에 실행 안 된 변이(NO_COVERAGE 6개)를 포함한다.
 - Test strength = 6 / (14 − 6) = 75%. killed / (killed + survived), NO_COVERAGE 제외(PIT maven 문서 `testStrengthThreshold` 정의).
-- 다른 이유: Test strength는 "실행된 곳에서 단언이 얼마나 날카로운가"만 본다. 실행 범위가 좁으면 둘이 갈린다.
+- 다른 이유: Test strength는 "실행된 곳에서 단언이 얼마나 날카로운가"만 본다. 실행 범위가 좁으면 둘이 달라진다.
 - Jia–Harman의 MS = 죽인 수 / (전체 − 등가 변이체 수). PIT는 생성한 변이체가 등가인지 판정해 분모에서 빼지 않으므로 분모가 다르다(로깅 줄처럼 일부는 처음부터 변이하지 않는다).
 
 ### 6. abs의 경계 변이

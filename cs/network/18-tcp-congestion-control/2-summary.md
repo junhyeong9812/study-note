@@ -39,7 +39,7 @@ RFC 9293은 slow start, 혼잡 회피, RTO 지수 백오프 구현을 필수로 
 ```
 
 - *cwnd(congestion window)*: ACK를 받기 전에 망에 내보낼 수 있는 양의 송신 측 상한이다(RFC 5681 §3.1).
-- *ssthresh(slow start threshold)*: slow start와 혼잡 회피를 가르는 문턱이다.
+- *ssthresh(slow start threshold)*: slow start와 혼잡 회피를 가르는 임계값이다.
 - *SMSS*: 송신자가 보낼 수 있는 최대 세그먼트 크기다.
 - cwnd는 헤더에 실리지 않는다. 송신자 커널 안에만 있다. 그래서 `ss -ti`로 봐야 한다.
 

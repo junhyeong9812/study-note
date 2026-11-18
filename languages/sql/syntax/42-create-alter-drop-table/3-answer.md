@@ -30,7 +30,7 @@ CREATE TABLE
 **왜 그런가**
 
 `IF NOT EXISTS` 는 **두 엔진 다 지원한다.** 「미지원」을 단정하기 전에 던져 본 결과다.\
-갈리는 것은 **건너뛴 사실을 어떻게 알리느냐**다.
+달라지는 것은 **건너뛴 사실을 어떻게 알리느냐**다.
 
 ```text
 PG     : NOTICE 를 표준 출력 경로로 항상 찍는다
@@ -615,6 +615,6 @@ ROLLBACK;                                   DROP TABLE IF EXISTS t42_x;
 ## 실행 환경
 
 근거는 **실행 결과**다 — 본문의 출력·에러·경고는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+2026-09-21 에 실제로 실행해 받은 것이다. 지어낸 출력은 없다.\
 이 편이 만든 표(`t42_a`·`t42_b`·`t42_c`·`t42_tx`·뷰 `v42_a`)는 **전부 지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
 문서 근거는 [PG 18 CREATE TABLE](https://www.postgresql.org/docs/18/sql-createtable.html) · [PG 18 ALTER TABLE](https://www.postgresql.org/docs/18/sql-altertable.html) · [MySQL 8.4 ALTER TABLE](https://dev.mysql.com/doc/refman/8.4/en/alter-table.html) · [MySQL 8.4 Online DDL Operations](https://dev.mysql.com/doc/refman/8.4/en/innodb-online-ddl-operations.html).

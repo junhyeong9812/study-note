@@ -320,7 +320,7 @@ public void destroyExpired() {
 ## 관련 주제·근거
 
 - 원본(기초): [engineering/development-standards/legal-standards](../../engineering/development-standards/legal-standards/2-summary.md) — 개인정보 생명주기·안전성 확보조치·정보주체 권리·유출 통지와 신고·관련 법령 · 조문 부록 [provisions.md](../../engineering/development-standards/legal-standards/provisions.md)(수집 2026-08-24) · 네 축 개요 [development-standards/README](../../engineering/development-standards/README.md)·[index](../../engineering/development-standards/index.md)
-- 선행: [14-quality-standards](../14-quality-standards/2-summary.md) — 기준 → 자동 검사(게이트·기준선) 구조
+- 선행: [14-quality-standards](../14-quality-standards/2-summary.md) — 기준 → 자동 검사(게이트·베이스라인) 구조
 - 후속·연결
   - [15-security-standards](../15-security-standards/2-summary.md) — 같은 의존성 목록으로 SCA, 안전성 확보조치와 보안 기준의 겹침
   - [16-operational-standards](../16-operational-standards/2-summary.md) — 로그 표준의 개인정보 금지 필드, 접속기록 보관

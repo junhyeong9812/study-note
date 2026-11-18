@@ -102,7 +102,7 @@ console.log("n() returned", new B().n());
 
 ### 3. 평가와 적용 (예측)
 
-- 아래를 두 판으로 방출해 돌리면 `evaluate`·`apply` 줄은 어떤 순서로 나오는가?
+- 아래를 두 버전으로 방출해 돌리면 `evaluate`·`apply` 줄은 어떤 순서로 나오는가?
 
 ```ts
 // ord47.ts

@@ -116,7 +116,7 @@ copy                     36ms  ( 0.007ms/행)  들어간 행 5000
 
 - 배치가 크면 왕복당 처리량은 늘지만, **모으는 대기 시간이 각 요청의 지연에 더해진다.** 도착이 드물면 시간 트리거까지 기다리게 된다.
 - 배치가 너무 크면 다른 비용이 생긴다
-  - 한 트랜잭션이 오래 걸려 락을 오래 쥔다(→ [database/34](../../database/34-large-backfill-and-batch-dml/2-summary.md) 「청크 = 짧은 트랜잭션 여러 개」).
+  - 한 트랜잭션이 오래 걸려 락을 오래 잡는다(→ [database/34](../../database/34-large-backfill-and-batch-dml/2-summary.md) 「청크 = 짧은 트랜잭션 여러 개」).
   - 메시지 크기 한도에 걸린다: MySQL 8.4 문서 "Packet Too Large" — 서버 `max_allowed_packet` 기본 64MB(mysql 클라이언트 기본 16MB)를 넘는 패킷이면 `ER_NET_PACKET_TOO_LARGE`를 내고 연결을 닫는다. pgjdbc 문서는 확장 쿼리 프로토콜에서 한 문장의 바인드 파라미터가 65535개로 제한된다고 적는다.
   - Redis 문서: 파이프라인으로 보내는 동안 서버는 응답을 메모리에 쌓아야 하므로, 아주 많은 명령은 예컨대 1만 개씩 끊어 보내라고 권한다.
 

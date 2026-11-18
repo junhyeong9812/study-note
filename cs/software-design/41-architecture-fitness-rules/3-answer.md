@@ -76,7 +76,7 @@ exit=1
 
 ### 8. 새 위반이 통과한 CI
 
-- 동결 저장소가 VCS에 있는지, CI에서 `freeze.store.default.allowStoreCreation=true`로 매번 새로 만들어지지 않는지 확인한다. 매 빌드가 첫 실행이 되면 현재 위반이 전부 기준선이 된다.
+- 동결 저장소가 VCS에 있는지, CI에서 `freeze.store.default.allowStoreCreation=true`로 매번 새로 만들어지지 않는지 확인한다. 매 빌드가 첫 실행이 되면 현재 위반이 전부 베이스라인이 된다.
 - `freeze.refreeze=true`가 켜져 있지 않은지도 본다.
 - 그 밖에 위반이 상수 인라인처럼 바이트코드에 안 남는 종류인지(5번) 확인한다.
 

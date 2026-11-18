@@ -181,7 +181,7 @@ int main(void) {
 
 **환경** — gcc 13.3.0 · clang 18.1.3 · glibc 2.39 · x86-64 Linux · `-fsanitize=address`.
 
-★★★ **본체 창은 둘째 창 — 실행 결과의 경계 조건 격자**다. 널 종단은 **`memchr(d, 0, sizeof d)`** 로 판정하고 문자열을 찍지 않는다(널이 없으면 찍는 것 자체가 미정의다).
+★★★ **핵심 창은 둘째 창 — 실행 결과의 경계 조건 격자**다. 널 종단은 **`memchr(d, 0, sizeof d)`** 로 판정하고 문자열을 찍지 않는다(널이 없으면 찍는 것 자체가 미정의다).
 ★★ **`strncpy` 의 세 경우를 바이트로 찍은 것**(`61 62 00 00 00` · `61 62 63 64 65` · 잘림)과 **널 없는 배열에 `strlen`** 은 [20번 형제](../20-null-terminated-strings-and-string-literals/)가 이미 보였다 — 여기는 **여섯 함수를 한 격자**에 세운다.
 선행 — [20번 형제](../20-null-terminated-strings-and-string-literals/).
 

@@ -617,7 +617,7 @@ ZonedDateTime.parse("2026-03-08T16:30+09:00[Asia/Seoul]") : 2026-03-08T16:30+09:
 
 이 주제의 가장 중요한 표다. **같은 코드가 JDK 판에 따라 다른 답을 냈다.**
 
-### tzdb 판이 갈렸다
+### tzdb 판이 달라졌다
 
 **실행 결과** (`Ex.java` — 51-c)
 
@@ -666,7 +666,7 @@ zone 개수    : 603                 zone 개수    : 603               zone 개
 
 - **시간대 규칙은 JDK 에 번들된 데이터다.** 코드가 아니라 데이터가 답을 정한다.
 - 17 과 21 은 **2024a** 로 같았고, 25 만 **2025b** 였다. 지역 개수도 603 대 604.
-- 늘어난 지역 하나는 두 판의 ID 목록을 diff 해서 확인했다 — **`America/Coyhaique`** 하나뿐이었다.
+- 늘어난 지역 하나는 두 버전의 ID 목록을 diff 해서 확인했다 — **`America/Coyhaique`** 하나뿐이었다.
 - `America/Asuncion` 은 **ID 가 그대로인데 규칙이 통째로 달라졌다.** 이쪽이 더 위험하다. 예외도 경고도 없이 답만 바뀐다.
 
 **그래서 이렇게 읽는다.**
@@ -680,7 +680,7 @@ zone 개수    : 603                 zone 개수    : 603               zone 개
 | `Instant` 의 하루 = 86,400초 | **보장** | `Instant.plus` javadoc |
 | **특정 지역의 특정 날짜 오프셋** | **보장 아님 — tzdata 판에 달렸다** | 위 실측 |
 | `ZoneId.of("America/Coyhaique")` 가 되는 것 | **보장 아님** | 17·21 에서는 던진다 |
-| `nextTransition` 이 `null` 인 것 | **보장 아님** | 같은 지역이 판에 따라 갈렸다 |
+| `nextTransition` 이 `null` 인 것 | **보장 아님** | 같은 지역이 판에 따라 달라졌다 |
 | 예외 **메시지** 문구 | **보장 아님** | javadoc 이 규정하지 않는다 |
 | `Clock.systemUTC()` 의 **나노 자릿수** | **보장 아님** | 아래 |
 
@@ -697,7 +697,7 @@ zone 개수    : 603                 zone 개수    : 603               zone 개
 - Java 8 의 `Instant.now()` 는 **밀리초 단위**였다. JDK 9 에서 소스가 바뀌었다.
 - 그러니 `Instant.now()` 를 DB 에 넣고 다시 읽어 `equals` 로 비교하면 **정밀도가 깎여 실패**할 수 있다. `truncatedTo(ChronoUnit.MICROS)` 로 맞추는 것이 안전하다.
 
-**세 판에서 같았던 것**
+**세 버전에서 같았던 것**
 
 - 51-a·51-b·51-d 는 **tzdb 줄 하나를 빼고 출력이 전부 같았다.**
 - 갭·중복·예외 타입·예외 메시지가 모두 같았다. **하지만 그것은 관찰이지 보장이 아니다** — 바로 위 `America/Asuncion` 이 반례다.
@@ -725,11 +725,11 @@ zone 개수    : 603                 zone 개수    : 603               zone 개
 
 ## 핵심 문장
 
-- 세 타입은 능력이 아니라 **무엇이 빠졌는지**로 갈린다 — `Instant` 는 지역이 없고, `LocalDateTime` 은 시간대가 없고, `ZonedDateTime` 은 둘 다 있다.
+- 세 타입은 능력이 아니라 **무엇이 빠졌는지**로 나뉜다 — `Instant` 는 지역이 없고, `LocalDateTime` 은 시간대가 없고, `ZonedDateTime` 은 둘 다 있다.
 - **`LocalDateTime` 은 순간이 아니다.** 같은 값이 지역마다 다른 순간이고, 실측에서 네 지역이 최대 13시간 벌어졌다.
 - 존재하지 않는 시각은 **예외가 아니라 조정**이다 — `atZone` 이 갭 길이만큼 앞으로 민다. 거부하려면 `ofStrict` 를 써야 한다.
 - 중복 구간의 "01:30"은 **두 순간**이다. `withEarlierOffsetAtOverlap`/`withLaterOffsetAtOverlap` 로 골라야 한다.
-- **시간대 규칙은 JDK 에 번들된 데이터다.** 17·21 은 tzdb 2024a, 25 는 2025b 였고, `America/Asuncion` 의 2026년 전이가 **있다/없다**로 갈렸다.
+- **시간대 규칙은 JDK 에 번들된 데이터다.** 17·21 은 tzdb 2024a, 25 는 2025b 였고, `America/Asuncion` 의 2026년 전이가 **있다/없다**로 나뉘었다.
 
 ## 관련 자료
 
@@ -738,7 +738,7 @@ zone 개수    : 603                 zone 개수    : 603               zone 개
 - [`../../../../history/java/java-8.md`](../../../../history/java/java-8.md) — `java.time` 이 **왜 들어왔나**(JSR 310·Joda-Time·`Calendar` 의 문제). 도입 맥락은 거기
 - [`../README.md`](../README.md) — Java 문법·API 주제 목록(이 주제는 51번)
 - [**53번 주제**](../53-bigdecimal/)(`BigDecimal`) — 같은 「정밀도」 계열. 그쪽은 **`double` 의 값이 틀리는 자리**, 여기는 **시각의 값이 틀리는 자리**
-- [**27번 주제**](../27-equals-hashcode-contract/)(`equals` 계약) — `ZonedDateTime.equals` 와 `isEqual` 이 갈리는 이유가 그 계약이다
+- [**27번 주제**](../27-equals-hashcode-contract/)(`equals` 계약) — `ZonedDateTime.equals` 와 `isEqual` 이 달라지는 이유가 그 계약이다
 - [**25번 주제**](../25-exceptions/)(예외) — `DateTimeException` 은 unchecked 다. 어디서 막을지는 거기가 정본
 - [**59번 주제**](../59-immutable-objects/)(불변 객체) — `java.time` 전체가 그 설계의 본보기다
 
@@ -781,7 +781,7 @@ zone 개수    : 603                 zone 개수    : 603               zone 개
 **선행** — 없다. 다만 간격·형식(`Duration`·`Period`·`DateTimeFormatter`)은 [`../52-duration-period-formatter/`](../52-duration-period-formatter/) 가 이어받는다.
 **기준 소스** — Temurin **JDK 21.0.5** 표준 라이브러리 소스 `java.base/java/time/Instant.java`·`LocalDate.java`·`LocalDateTime.java`·`ZonedDateTime.java`·`Clock.java`·`zone/ZoneRules.java`(`lib/src.zip`) · [`java.time` 패키지 javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/package-summary.html) · [`ZonedDateTime` javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/ZonedDateTime.html)
 **실행 검증** — 이 문서의 모든 출력은 실제로 돌려 얻은 것이다. 프로그램 다섯(51-a~51-e)을 **17.0.13 · 21.0.5 · 25.0.1** 에서 각각 돌렸다.\
-★ **세 판의 출력이 전부 같지는 않았다.** `ZoneRulesProvider` 의 tzdb 판이 다르고, 그 때문에 **같은 코드가 다른 답**을 냈다(본문 「구현 세부사항 대 언어 보장」이 정본).
+★ **세 버전의 출력이 전부 같지는 않았다.** `ZoneRulesProvider` 의 tzdb 판이 다르고, 그 때문에 **같은 코드가 다른 답**을 냈다(본문 「구현 세부사항 대 언어 보장」이 정본).
 **버전** — `Instant`·`LocalDate`·`LocalDateTime`·`ZonedDateTime`·`Clock` 전부 `src.zip` 의 **`@since 1.8`**.
 **측정 조건** — 이 머신의 기본 시간대는 `Asia/Seoul`, 기본 `Locale` 은 `ko_KR`, `file.encoding` 은 `UTF-8` 이다. 시간대에 의존하는 출력은 그 사실이 붙어 있다.
 **범위** — 시계열 데이터를 **버킷으로 접어 저장·조회하는 패턴**은 [`../../../../cs/ops-patterns/17-timeseries/`](../../../../cs/ops-patterns/17-timeseries/) 가 정본이다.\

@@ -6,7 +6,7 @@ HTML 은 태그 목록이 아니다. 명세 자신이 태그를 「종류」로 
 
 둘째 **시맨틱** 은 「무엇으로 감쌀 것인가」다. 여기서 중요한 것은 요소 이름의 사전적 뜻이 아니라 **그 요소가 무료로 주는 것** — 암묵 역할·키보드 동작·접근 가능한 이름이다. 그래서 시맨틱과 **접근성**(다섯째 축)은 사실상 한 몸이고, 이 목록은 접근성을 「나중에 얹는 것」이 아니라 **네이티브 시맨틱이 이미 준 것을 어떻게 깨뜨리지 않느냐**의 문제로 세웠다. ARIA 갈래의 핵심 주제(`42`)가 「ARIA 를 **언제 쓰지 말아야 하나**」인 것이 그 때문이다.
 
-셋째 **폼** 을 가장 두껍게(13주제) 잡았다. HTML 명세에서 폼(4.10절)이 가장 큰 절인 것과 같은 이유다 — 입력 타입마다 파싱·검증·모바일 키보드·접근성이 전부 다르고, 실무에서 마크업이 가장 많이 틀리는 자리이기도 하다. 넷째 **미디어·임베드** 는 반응형 이미지와 샌드박싱처럼 **마크업만으로 성능·보안이 갈리는** 표면이다. 여섯째 **메타·SEO** 는 눈에 안 보이지만 문서의 해석을 바꾸는 `<head>` 의 층이다.
+셋째 **폼** 을 가장 두껍게(13주제) 잡았다. HTML 명세에서 폼(4.10절)이 가장 큰 절인 것과 같은 이유다 — 입력 타입마다 파싱·검증·모바일 키보드·접근성이 전부 다르고, 실무에서 마크업이 가장 많이 틀리는 자리이기도 하다. 넷째 **미디어·임베드** 는 반응형 이미지와 샌드박싱처럼 **마크업만으로 성능·보안이 달라지는** 표면이다. 여섯째 **메타·SEO** 는 눈에 안 보이지만 문서의 해석을 바꾸는 `<head>` 의 층이다.
 
 **경계 두 개를 분명히 한다.**
 - **아래로**: 「언제 들어왔나」는 [`history/web/01-웹-탄생-HTML.md`](../../../history/web/01-웹-탄생-HTML.md)·[`03-HTML-CSS-진화.md`](../../../history/web/03-HTML-CSS-진화.md)(XHTML 의 좌초, WHATWG 의 반란, HTML5) 의 몫이다. 여기는 **어떻게 쓰고 무엇을 못 하나**만이다.
@@ -31,7 +31,7 @@ HTML 은 태그 목록이 아니다. 명세 자신이 태그를 「종류」로 
 | 13 | 구절 시맨틱 — `strong`/`em`/`b`/`i`/`mark`/`small`/`code`/`kbd`/`samp`/`abbr` | 시맨틱 | 같은 굵게·기울임으로 보이는 두 요소 중 어느 쪽을 쓸지 「의미가 있나 없나」로 판정할 수 있다 | 05 | — | 필수 | A |
 | 14 | 인용·편집·시각 — `blockquote`/`q`/`cite`·`ins`/`del`·`time` | 시맨틱 | `cite` 가 저작물 제목이지 사람 이름이 아니라는 것과 `time datetime` 의 기계 판독 형식을 쓸 수 있다 | 13 | — | 도움 | B |
 | 15 | 목록 — `ul`/`ol`(`start`·`reversed`·`value`)/`dl` | 시맨틱 | 세 목록이 각각 무엇을 주장하는지와 `dl` 의 여러 `dt`/`dd` 묶음 규칙을 설명할 수 있다 | 05 | — | 필수 | A |
-| 16 | 링크 — `href` 의 형태·`target`·`rel`(`noopener`/`noreferrer`/`nofollow`)·`download` | 시맨틱 | `target="_blank"` 가 왜 `rel="noopener"` 를 요구했고 지금은 왜 기본인지, 링크와 버튼이 갈리는 기준을 판단할 수 있다 | 07 | [`../../../history/web/02-HTTP-진화.md`](../../../history/web/02-HTTP-진화.md) (URL·요청 모델) | 도움 | A |
+| 16 | 링크 — `href` 의 형태·`target`·`rel`(`noopener`/`noreferrer`/`nofollow`)·`download` | 시맨틱 | `target="_blank"` 가 왜 `rel="noopener"` 를 요구했고 지금은 왜 기본인지, 링크와 버튼이 달라지는 기준을 판단할 수 있다 | 07 | [`../../../history/web/02-HTTP-진화.md`](../../../history/web/02-HTTP-진화.md) (URL·요청 모델) | 도움 | A |
 | 17 | 표 구조 — `table`/`thead`/`tbody`/`tfoot`/`caption`/`colgroup` | 시맨틱 | 파서가 `tbody` 를 자동으로 끼워 넣는 것과 `caption` 이 표의 접근 가능한 이름이 되는 것을 설명할 수 있다 | 03, 05 | — | 필수 | A |
 | 18 | 표 헤더 연결 — `th`·`scope`·`headers`/`id`·`rowspan`/`colspan` | 시맨틱 | 복합 헤더 표에서 각 셀이 어느 헤더에 묶이는지 `scope` 와 `headers` 로 설계하고, 레이아웃용 표를 배제할 수 있다 | 17 | — | 도움 | A |
 | 19 | `figure`/`figcaption`·`address`·`hr`·`details` 밖의 잡다한 구조 | 시맨틱 | 캡션이 그림에 묶인다는 것과 `address` 가 「연락처」지 「주소」가 아니라는 좁은 의미를 판단할 수 있다 | 11 | — | 도움 | B |
@@ -45,10 +45,10 @@ HTML 은 태그 목록이 아니다. 명세 자신이 태그를 「종류」로 
 | 27 | `fieldset`/`legend` 와 그룹 비활성화 | 폼 | 라디오 그룹의 접근 가능한 이름을 `legend` 로 주는 형태와 `fieldset[disabled]` 가 자손 전체에 퍼지는 것을 설명할 수 있다 | 25 | — | 필수 | B |
 | 28 | 검증 속성 — `required`/`pattern`/`min`/`max`/`step`/`minlength`/`maxlength` | 폼 | 각 속성이 어느 타입에서만 의미를 갖는지와 `step` 이 `min` 을 기준으로 눈금을 만드는 것을 예측할 수 있다 | 23 | — | 필수 | A |
 | 29 | 제약 검증 — 유효성 상태·`novalidate`·`:valid`/`:user-invalid` 의 관계 | 폼 | 마크업이 만든 유효성 상태를 CSS 가 읽는 경로와, 클라이언트 검증이 **서버 검증을 대체하지 못한다**는 경계를 판단할 수 있다 | 28 | [`../../css/syntax/README.md`](../../css/syntax/README.md) 10 (폼 의사 클래스) · JS 쪽 `checkValidity()`/`setCustomValidity()` 는 이 목록 밖 | 도움 | B |
-| 30 | 폼 상태·입력 보조 속성 — `disabled`/`readonly`/`autofocus`/`autocomplete`/`inputmode` | 폼 | `disabled` 와 `readonly` 가 제출·포커스·검증에서 갈리는 세 지점과 `autocomplete` 토큰이 왜 접근성 항목인지 설명할 수 있다 | 24 | — | 필수 | A |
+| 30 | 폼 상태·입력 보조 속성 — `disabled`/`readonly`/`autofocus`/`autocomplete`/`inputmode` | 폼 | `disabled` 와 `readonly` 가 제출·포커스·검증에서 달라지는 세 지점과 `autocomplete` 토큰이 왜 접근성 항목인지 설명할 수 있다 | 24 | — | 필수 | A |
 | 31 | 파일 업로드 — `accept`/`multiple`/`capture` 와 `enctype=multipart/form-data` | 폼 | `accept` 가 필터일 뿐 보장이 아니라는 것과 파일 제출에 `multipart` 가 필요한 이유를 설명할 수 있다 | 21, 24 | — | 필수 | B |
 | 32 | `button` 의 `type` 과 폼 소유권 — `form` 속성·`formaction`/`formmethod` | 폼 | 폼 안 `<button>` 의 기본 타입이 `submit` 이라 생기는 사고와, 폼 밖 컨트롤을 `form` 속성으로 묶는 법을 설명할 수 있다 | 21 | — | 도움 | B |
-| 33 | `output`·`progress`·`meter` | 폼 | 세 요소의 의미가 갈리는 지점(계산 결과 / 진행 / 범위 내 측정값)과 암묵 라이브 영역 성질을 판단할 수 있다 | 25 | — | 필수 | C |
+| 33 | `output`·`progress`·`meter` | 폼 | 세 요소의 의미가 달라지는 지점(계산 결과 / 진행 / 범위 내 측정값)과 암묵 라이브 영역 성질을 판단할 수 있다 | 25 | — | 필수 | C |
 | 34 | `img` — `alt`·`width`/`height`·`loading`/`decoding`/`fetchpriority` | 미디어·임베드 | `width`/`height` 를 적는 것이 오늘 하는 일(레이아웃 시프트 예약)과 `loading=lazy` 를 쓰면 안 되는 이미지를 판단할 수 있다 | 05 | [`../../css/syntax/README.md`](../../css/syntax/README.md) 31·44 (`aspect-ratio`·`object-fit`) | 필수 | A |
 | 35 | 반응형 이미지 — `srcset`/`sizes` 의 두 서술자(`w`·`x`) | 미디어·임베드 | `sizes` 가 무엇을 브라우저에 알려 주는지와 `w` 서술자와 `x` 서술자를 언제 나눠 쓰는지 설계할 수 있다 | 34 | — | 필수 | A |
 | 36 | `picture` — 아트 디렉션과 포맷 대체 | 미디어·임베드 | `srcset` 만으로 안 되고 `picture` 가 필요한 두 경우(다른 자르기 / 다른 포맷)를 판별할 수 있다 | 35 | — | 필수 | B |
@@ -62,7 +62,7 @@ HTML 은 태그 목록이 아니다. 명세 자신이 태그를 「종류」로 
 | 44 | `alt` 판단 — 정보·장식·기능 이미지 세 갈래 | 접근성 | 임의의 이미지를 받아 `alt` 에 무엇을 쓸지(또는 빈 문자열로 둘지) 그 이미지가 하는 일로 판정할 수 있다 | 34, 43 | — | 도움 | A |
 | 45 | 포커스 — `tabindex` 값의 의미·포커스 순서·`inert` | 접근성 | `tabindex="0"`·`-1`·양수가 각각 무엇을 하는지와 양수를 쓰면 안 되는 이유, `inert` 로 화면 뒤를 통째로 빼는 법을 설명할 수 있다 | 41 | — | 필수 | A |
 | 46 | 라이브 영역과 상태 전달 — `aria-live`/`aria-expanded`/`aria-current`/`aria-describedby` | 접근성 | 화면에서만 보이는 상태 변화를 보조 기술에 전달하는 형태를 설계하고 `assertive` 남용의 대가를 판단할 수 있다 | 43 | — | 불필요 | B |
-| 47 | `dialog` — 모달·비모달·포커스 트랩·`::backdrop`·닫기 동작 | 접근성 | `open` 속성으로 연 것과 모달로 연 것이 포커스·최상위 레이어에서 갈리는 것을 설명할 수 있다 (여는 동작 자체는 JS 표면) | 45 | [`../../css/syntax/README.md`](../../css/syntax/README.md) 22 (최상위 레이어·쌓임) | 필수 | A |
+| 47 | `dialog` — 모달·비모달·포커스 트랩·`::backdrop`·닫기 동작 | 접근성 | `open` 속성으로 연 것과 모달로 연 것이 포커스·최상위 레이어에서 달라지는 것을 설명할 수 있다 (여는 동작 자체는 JS 표면) | 45 | [`../../css/syntax/README.md`](../../css/syntax/README.md) 22 (최상위 레이어·쌓임) | 필수 | A |
 | 48 | `details`/`summary` 와 `popover` 속성 | 접근성 | 스크립트 없이 여닫는 두 표면의 차이(콘텐츠 공개 / 떠 있는 레이어)와 `popover` 의 가벼운 닫기(light dismiss)를 판단할 수 있다 | 47 | — | 필수 | B |
 | 49 | 그 밖의 접근성 표면 — 건너뛰기 링크·`accesskey`·`hidden="until-found"`·`aria-hidden` 의 경계 | 접근성 | 시각적으로 숨기는 것과 접근성 트리에서 빼는 것이 다른 일임을 구분하고 네 수단을 골라 쓸 수 있다 | 45, 46 | — | 도움 | C |
 | 50 | `meta` 계열 — `charset`·`viewport`·`description`·`robots`·`theme-color` | 메타·SEO | `charset` 이 왜 문서 맨 앞 1024바이트 안에 있어야 하는지와 `viewport` 없이는 모바일에서 무슨 일이 일어나는지 설명할 수 있다 | 01 | [`../../css/syntax/README.md`](../../css/syntax/README.md) 38 (미디어 쿼리가 작동하려면) | 필수 | A |
@@ -171,7 +171,7 @@ HTML 에는 버전이 없다. WHATWG **Living Standard** 단일 기준이고, �
 
 ## 실행 환경
 
-★ 첫 네 편이 이 갈래의 **형식을 굳혔다** — 「흔들리는 칸 / 안 흔들리는 칸」 표 · **창 넷**(`--dump-dom` → 노드 프로브 → `innerText` 대 `textContent` → `compatMode`) · 캡처 조립기로 만든 블록. 뒤따르는 주제는 [01번](01-document-skeleton/2-summary.md)의 「이 갈래의 창」 절을 먼저 읽고 그 형식을 잇는다.\
+★ 첫 네 편이 이 갈래의 **형식을 굳혔다** — 「실행마다 달라지는 항목 / 달라지지 않는 항목」 표 · **창 넷**(`--dump-dom` → 노드 프로브 → `innerText` 대 `textContent` → `compatMode`) · 캡처 조립기로 만든 블록. 뒤따르는 주제는 [01번](01-document-skeleton/2-summary.md)의 「이 갈래의 창」 절을 먼저 읽고 그 형식을 잇는다.\
 ★★ **창은 그 뒤로 셋이 늘었다** — **창 ⑤ 서버 요청 로그**([08번](08-script-loading/2-summary.md)) · **창 ⑥ `renderBlockingStatus`**([09번](09-stylesheets-and-resource-hints/2-summary.md)) · **창 ⑦ 접근성 트리**([11번](11-sectioning-and-landmarks/2-summary.md) — CDP `Accessibility.getFullAXTree`). ★★★ 아래 「막히는 것」의 **접근성 트리 항목은 2026-09-26 에 풀렸다** — 헤드리스 Chrome 에 CDP 로 붙으면 **역할·접근 가능한 이름·제목 레벨을 그대로 덤프**할 수 있다. 다만 **스크린리더가 그것을 뭐라고 읽는지는 여전히 못 본다**(트리는 보조 기술의 **입력**이지 출력이 아니다).
 기준 소스: [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) (단일 기준 — 「HTML5」라는 버전은 더 이상 기준이 아니다) · [콘텐츠 카테고리 절](https://html.spec.whatwg.org/multipage/dom.html#kinds-of-content) · [WHATWG DOM Standard](https://dom.spec.whatwg.org/) (접근성·트리 규칙의 뿌리) · [WAI-ARIA 1.2](https://www.w3.org/TR/wai-aria-1.2/)·[ARIA in HTML](https://www.w3.org/TR/html-aria/) (접근성 갈래) · [MDN HTML 레퍼런스](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference) (표면 확인용) · 지원 상태는 [Web Platform Status(`webstatus.dev`)](https://webstatus.dev/) 의 Baseline 데이터를 API 로 조회해 확인했다.
 실행 검증: **가능**. 이 머신에 **Google Chrome 151.0.7922.173** 과 **Mozilla Firefox 155.0.1** 이 설치돼 있다. `google-chrome --headless --dump-dom` 으로 **파서가 만든 실제 DOM 트리**를, `--screenshot` 으로 렌더 결과를 뽑는 것을 실제로 돌려 확인했다. 파싱·오류 복구(`03`)와 콘텐츠 모델(`05`)은 `--dump-dom` 으로 눈에 보이게 검증할 수 있다. **막히는 것**: 스크린리더(NVDA·VoiceOver)가 없어 **접근성 트리가 실제로 어떻게 읽히는지는 실행 확인이 불가**하다 — Chrome 의 접근성 트리 덤프까지만 쓰고, 「스크린리더가 이렇게 읽는다」는 서술은 명세·ARIA 문서로만 접지하고 「미실행」으로 표기한다. WebKit(Safari)도 없다.\

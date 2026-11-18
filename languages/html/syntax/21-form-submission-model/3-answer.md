@@ -67,12 +67,12 @@ $ python3 html21b-form.py 시도 html21b-21-grid.html | sed -n '37,48p'
 
 **왜 그런가**
 
-- ★★★ **GET 셋은 `질의 있음 · 본문 없음 · Content-Type 없음`** 이고 셋이 **한 글자도 같다** — `enctype` 을 무시했다(갈린 칸 0 / 4 · 0 / 4). **POST 셋은 `질의 없음 · 본문 있음`** 이고 본문 모양과 `Content-Type` 이 `enctype` 대로 갈렸다.
+- ★★★ **GET 셋은 `질의 있음 · 본문 없음 · Content-Type 없음`** 이고 셋이 **한 글자도 같다** — `enctype` 을 무시했다(달라진 항목 0 / 4 · 0 / 4). **POST 셋은 `질의 없음 · 본문 있음`** 이고 본문 모양과 `Content-Type` 이 `enctype` 대로 나뉘었다.
 - ★★★ **`text/plain` 의 본문은 `q=한 글\r\ns=a&b=c+d\r\n`** — 인코딩이 없다. `s` 는 `a&b=c+d` **그대로**다. urlencoded 에서는 `s=a%26b%3Dc%2Bd` 였다.
 - **`method=put` 은 GET**(무효 기본값), **`action` 없음은 `POST /html21b-21-grid.html`**(폼 문서의 URL).
-- 본문에 실린 시도 **4 / 8**, 기준과 갈린 칸 **16 / 28**.
+- 본문에 실린 시도 **4 / 8**, 기준과 달라진 항목 **16 / 28**.
 
-### 2. 서버가 받은 시도 9 / 16 — `submit()` 만 검증을 건너뛰고, Enter 는 단추와 칸 수로 갈린다
+### 2. 서버가 받은 시도 9 / 16 — `submit()` 만 검증을 건너뛰고, Enter 는 단추와 칸 수로 나뉜다
 
 **출력**
 
@@ -198,7 +198,7 @@ $ python3 html21b-form.py 시도 html21b-21-trigger.html | sed -n '40,75p'
 - ★★ **`라` 의 질의는 `q=1&c=on`** — 체크박스는 암묵 제출을 막는 칸이 아니라 Enter 가 보냈고, 체크된 체크박스(`value` 없음)는 `on` 으로 실렸다([24번](../24-input-types-choice-special/3-answer.md)).
 - ★★ **`다`(칸 둘 · 단추 없음) · `마`(`disabled` 단추) · `바` 의 클릭** 셋은 요청 0. **`바` 의 Enter · `사` 의 클릭**은 제출했다.
 
-### 3. 덮기는 메서드·경로를 바꾼다 — 그런데 단추가 메서드를 바꾼 두 칸에서 본문 모양이 명세와 갈렸다
+### 3. 덮기는 메서드·경로를 바꾼다 — 그런데 단추가 메서드를 바꾼 두 칸에서 본문 모양이 명세와 달라졌다
 
 **출력**
 
@@ -258,8 +258,8 @@ $ python3 html21b-form.py 시도 html21b-21-override.html | sed -n '31,$p'
 **왜 그런가**
 
 - ★★★ **`#덮음` → `POST /r2` urlencoded · `#입력덮음` → `POST /r3` urlencoded · `requestSubmit(#덮음)` → `POST /r2`** — 명세의 「요소의 method 는 **`formmethod` 가 있으면 그 상태**」 그대로다.
-- ★★★ **`겟폼 · formmethod=post formenctype=text/plain` 의 본문은 `q=%ED%95%9C+%EA%B8%80`** — `Content-Type: text/plain` 인데 **urlencoded 모양**이다. 명세의 제출 알고리즘은 「**제출자 요소의** enctype」으로 `text/plain` 칸을 골라 「text/plain 인코딩 알고리즘」(= `q=한 글\r\n`)을 돌리라고 한다 — **갈렸다.**
-- ★★★ **`포스트폼 · formmethod=""` 는 `GET /r` 인데 질의가 `q=%C3%AD%E2%80%A2%C5%93%20%C3%AA%C2%B8%E2%82%AC`** — 서버가 디코딩하면 `「í•œ ê¸€」`. GET 이면 명세는 **urlencoded 직렬화기**(`q=%ED%95%9C+%EA%B8%80`)다 — **갈렸다.** `formmethod=""` 가 GET 이 된 것 자체는 명세(무효 기본값 GET)대로다.
+- ★★★ **`겟폼 · formmethod=post formenctype=text/plain` 의 본문은 `q=%ED%95%9C+%EA%B8%80`** — `Content-Type: text/plain` 인데 **urlencoded 모양**이다. 명세의 제출 알고리즘은 「**제출자 요소의** enctype」으로 `text/plain` 칸을 골라 「text/plain 인코딩 알고리즘」(= `q=한 글\r\n`)을 돌리라고 한다 — **달라졌다.**
+- ★★★ **`포스트폼 · formmethod=""` 는 `GET /r` 인데 질의가 `q=%C3%AD%E2%80%A2%C5%93%20%C3%AA%C2%B8%E2%82%AC`** — 서버가 디코딩하면 `「í•œ ê¸€」`. GET 이면 명세는 **urlencoded 직렬화기**(`q=%ED%95%9C+%EA%B8%80`)다 — **달라졌다.** `formmethod=""` 가 GET 이 된 것 자체는 명세(무효 기본값 GET)대로다.
 - ★ 두 갈림은 **「단추가 메서드를 바꾼」 자리에서만** 났다. 폼 자체가 정한 조합은 (1) 의 여섯 칸도 `포스트폼 · 폼의 설정` 도 명세와 같았다.
 
 ### 4. `form` 속성이 트리를 이기고, 표 안의 빈 `form` 도 제출되며, 안쪽 `form` 은 사라진다
@@ -378,7 +378,7 @@ RootWebArea    이름='21 폼의 역할'
 
 ### 7. GET 은 「Mutate action URL」 — urlencoded 직렬화기뿐이다
 
-- 명세의 표에서 `http`/`https` + GET 은 **「Mutate action URL」** 이고, 그 단계는 「항목 목록을 이름·값 쌍으로 바꾸고 **`application/x-www-form-urlencoded` 직렬화기**를 돌려 **질의로 둔다**」가 전부다. `enctype` 을 읽는 줄이 **없다.** 「Submit as entity body」(POST) 쪽만 `enctype` 으로 갈린다.
+- 명세의 표에서 `http`/`https` + GET 은 **「Mutate action URL」** 이고, 그 단계는 「항목 목록을 이름·값 쌍으로 바꾸고 **`application/x-www-form-urlencoded` 직렬화기**를 돌려 **질의로 둔다**」가 전부다. `enctype` 을 읽는 줄이 **없다.** 「Submit as entity body」(POST) 쪽만 `enctype` 으로 나뉜다.
 - 그래서 **파일은 안 간다** — (1) 에서 GET · multipart 의 질의가 urlencoded 와 같았다. 파일 칸은 urlencoded 에서 **파일 이름**만 남는다([24번](../24-input-types-choice-special/3-answer.md)의 빈 파일 칸이 `f1=` 였다).
 
 ### 8. `submit()` 은 「`submit()` 에서 온 것이 아니면」 덩어리 전체를 건너뛴다 — `requestSubmit()` 을 쓴다
@@ -394,7 +394,7 @@ RootWebArea    이름='21 폼의 역할'
 
 ### 10. 갈림은 (3) 의 두 줄 — 판별은 「DOM 조작 작업 원천」 문장과 `beforeunload` 관찰 위에 섰다
 
-- ★★★ **Chrome 이 명세와 갈린 자리** — (3) 의 ① 폼 GET + 단추 `formmethod=post formenctype=text/plain` → 본문이 urlencoded 모양, ② 폼 POST·`text/plain` + 단추 `formmethod=""` → GET 질의의 한글이 깨지고 공백이 `%20`. 갈린 문장은 제출 알고리즘의 「**제출자 요소의** method / enctype 을 쓴다」와 「text/plain 인코딩 알고리즘」·「Mutate action URL = urlencoded 직렬화기」다.
+- ★★★ **Chrome 이 명세와 달라진 자리** — (3) 의 ① 폼 GET + 단추 `formmethod=post formenctype=text/plain` → 본문이 urlencoded 모양, ② 폼 POST·`text/plain` + 단추 `formmethod=""` → GET 질의의 한글이 깨지고 공백이 `%20`. 달라진 문장은 제출 알고리즘의 「**제출자 요소의** method / enctype 을 쓴다」와 「text/plain 인코딩 알고리즘」·「Mutate action URL = urlencoded 직렬화기」다.
 - **판별 근거** — 명세의 「plan to navigate」 — 「폼 요소에 대해 **DOM 조작 작업 원천**에 요소 작업을 넣는다」. 하네스가 같은 원천에 `details` 의 `toggle` 작업을 뒤에 넣으면, 그 작업이 돌 때 **먼저 들어간 이동 작업은 이미 돌았다.** ★ **관찰인 것** — ① Chrome 이 폼 제출 작업과 `toggle` 작업을 **같은 줄에 순서대로** 넣는다는 것, ② 그 이동 작업 안에서 **`beforeunload` 가 난다**는 것. 그 전제가 틀려 **「안 갔다」로 적은 뒤 요청이 뒤늦게 오면** 다음 시도가 페이지를 열 때 잡히게 짰고, (2) 의 격자 끝줄이 **`뒤늦게 온 요청 = 0`** 이다(16시도 중 7시도가 「안 갔다」).
 - **`invalid` 창이 못 보는 것** — **검증이 돌았는데 통과한** 경우. 그래서 무효 폼을 따로 뒀다(제5의 상태 — 「검증이 돌았나」를 `invalid` 로 물었다).
 
@@ -416,7 +416,7 @@ RootWebArea    이름='21 폼의 역할'
 ★ **서버는 하네스 프로세스 안의 스레드 하나(A)** 다. 포트는 0 으로 열어 **운영체제가 고르고**, 로그에는 서버 이름만 적는다. 파일은 이 주제의 소스 폴더에서 내주고, `/r` 로 시작하는 경로는 받은 것을 적은 뒤 「받음」 한 장을 돌려준다.
 
 **하네스 — 16번 판의 서버와 17번 판의 CDP 연결을 이었다.**
-① [16번 주제](../16-links/3-answer.md)의 `html13b-link.py` 에서 **「프로세스 안의 서버」** 를 가져와 **POST 본문·질의·`Content-Type`** 을 적게 넓혔다. ★ **multipart 는 경계로 갈라 필드 목록만** 적는다(경계 문자열이 실행마다 바뀌므로 흔들리는 칸을 아예 안 만든다). ★ **필드 값은 디코딩해 「」 안에**, 인코딩된 원문은 「질의」·「본문」 줄에 둔다.
+① [16번 주제](../16-links/3-answer.md)의 `html13b-link.py` 에서 **「프로세스 안의 서버」** 를 가져와 **POST 본문·질의·`Content-Type`** 을 적게 넓혔다. ★ **multipart 는 경계로 갈라 필드 목록만** 적는다(경계 문자열이 실행마다 바뀌므로 실행마다 달라지는 항목을 아예 안 만든다). ★ **필드 값은 디코딩해 「」 안에**, 인코딩된 원문은 「질의」·「본문」 줄에 둔다.
 ② [17번 주제](../17-table-structure/3-answer.md)의 `html17b-cdp.py`(포트 0 + `DevToolsActivePort` · `loadEventFired` · `page` 모드 · 창 ⑦)에서 **폼에 안 쓰는 부품**(픽셀·글꼴·하이픈·내부 덤프)을 걷어 내고, **환경 변수를 넘기는 자리**를 하나 더했다(23번의 로케일).
 ③ ★★ **「제출이 났나」를 시간 상수 없이 가른다** — 처음에는 CDP 의 `Page.frameRequestedNavigation` 이 **동작 명령의 응답보다 먼저 오는지**로 가르려 했다. `requestSubmit()` 을 `Runtime.evaluate` 로 부른 판은 먼저 왔지만, **진짜 마우스 클릭 판은 응답 뒤에 왔다** — 그대로 썼으면 여덟 시도 **전부 「안 받았다」** 로 적혔다(탐색 판, 캡처로 남기지 않았다). 그래서 명세의 「DOM 조작 작업 원천」 문장에 기대 **같은 원천의 `toggle` 작업을 울타리로** 세웠다(A10).
 ④ ★ **CDP 의 진짜 입력** — 클릭은 `Input.dispatchMouseEvent`, Enter 는 `Input.dispatchKeyEvent`(`keyDown` 에 `text: "\r"`), 글자 입력은 `Input.insertText`.
@@ -1184,12 +1184,12 @@ src_py   cdp-py          html21b-cdp.py
 src_sh   capture-sh      ../capture.sh
 ```
 
-**흔들림 확인** — 이 배치의 캡처를 **세 번** 돌렸다(원본 · 재대조 두 판). 제출 격자·트리거 격자·덮기 블록 모두 **세 판이 한 글자도 같았다**(재대조 결과는 아래 표와 22\~24번의 「실행 검증」). 서버 포트·multipart 경계는 **출력에 안 나오므로** 정규화 규칙이 필요 없었다.
+**재현성 확인** — 이 배치의 캡처를 **세 번** 돌렸다(원본 · 재대조 두 판). 제출 격자·트리거 격자·덮기 블록 모두 **세 버전이 한 글자도 같았다**(재대조 결과는 아래 표와 22\~24번의 「실행 검증」). 서버 포트·multipart 경계는 **출력에 안 나오므로** 정규화 규칙이 필요 없었다.
 
 | 무엇을 | 몇 번 | 결과가 쓰인 곳 |
 |---|---|---|
 | **`method` × `enctype` 여섯 칸 + `put`·`action` 없음** | 3 | 동작 방식 (1) · A1 |
-| **제출 트리거 열여섯 시도 × `submit`·`invalid`·서버** + 갈린 칸 집계 | 3 | 동작 방식 (2) · A2 · A9 |
+| **제출 트리거 열여섯 시도 × `submit`·`invalid`·서버** + 달라진 항목 집계 | 3 | 동작 방식 (2) · A2 · A9 |
 | **단추 덮기 일곱 시도** | 3 | 동작 방식 (3) · A3 · A10 |
 | **폼 소유(`input.form`)와 세 단추의 제출** | 3 | 동작 방식 (4) · A4 |
 | **검증 있음 / `novalidate` / `curl`** | 3 | 동작 방식 (5) · A5 |
@@ -1197,18 +1197,18 @@ src_sh   capture-sh      ../capture.sh
 
 **구현에 달린 항목**
 
-| 항목 | 이 판의 값 | 왜 다시 찍나 |
+| 항목 | 이 버전의 값 | 왜 다시 찍나 |
 |---|---|---|
-| 폼 GET + 단추 POST·`text/plain` 의 본문 | **urlencoded 모양** | 명세와 갈린다 — 고쳐지면 바뀐다 |
-| 폼 POST·`text/plain` + `formmethod=""` 의 질의 | **깨진 글자 · `%20`** | 명세와 갈린다 |
-| 폼 제출 작업이 `toggle` 과 같은 줄에서 순서대로 돈다 | 그렇다 — `뒤늦게 온 요청 = 0` | **하네스 판별의 전제** — 판이 오르면 제일 먼저 확인 |
+| 폼 GET + 단추 POST·`text/plain` 의 본문 | **urlencoded 모양** | 명세와 달라진다 — 고쳐지면 바뀐다 |
+| 폼 POST·`text/plain` + `formmethod=""` 의 질의 | **깨진 글자 · `%20`** | 명세와 달라진다 |
+| 폼 제출 작업이 `toggle` 과 같은 줄에서 순서대로 돈다 | 그렇다 — `뒤늦게 온 요청 = 0` | **하네스 판별의 전제** — 버전이 오르면 제일 먼저 확인 |
 | 이름 없는 `form` 의 CDP 역할 | `form` | 플랫폼 층과 다를 수 있다 |
 
 **안 돌려 본 것** — ① **`method="dialog"`**(목록의 **47번 주제**). ② **`mailto:`·`data:` 로의 제출** — 명세 표에 칸이 있지만 던지지 않았다. ③ **`accept-charset`·`target`·`formtarget`·`rel`**. ④ **한 조작 안의 이중 제출**(「계획된 이동」을 지우고 다시 넣는 것).
 
 **못 잰 것** — ① **이름 없는 `form` 의 플랫폼 층 노출**(A11). ② **검증 실패 풍선 말** — 헤드리스에는 그 UI 가 없다. ③ **다른 엔진의 (3)** — 비교할 엔진이 없다.
 
-**부적용인 창** — **창 ①(`--dump-dom`) · ③ · ④ · ⑥.** ①이 볼 파서 쪽은 05·17번이 이미 찍었고, 나머지는 제출과 무관하다 — **잴 것이 없다.**
+**해당 없는 창** — **창 ①(`--dump-dom`) · ③ · ④ · ⑥.** ①이 볼 파서 쪽은 05·17번이 이미 찍었고, 나머지는 제출과 무관하다 — **잴 것이 없다.**
 
 ## 용어 풀이
 

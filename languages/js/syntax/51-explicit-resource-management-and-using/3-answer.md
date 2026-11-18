@@ -25,7 +25,7 @@ supported cells: 11 / 21
 **왜 그런가**
 
 - ★★★ node 18·20 은 **문법이 없다** — `new Function("{ using x = null; }")` 이 `SyntaxError` 라 `no`. 그런데 `Symbol.dispose` 는 **node 가 `Symbol.for("nodejs.dispose")` 로 만들어 둔 것**이 있어 `yes` — `Symbol.keyFor` 가 키를 돌려주는 것이 **등록된 심볼**이라는 증거다(9번).
-- ★★ 두 node 판은 **한 칸도 안 갈렸다.**
+- ★★ 두 node 버전은 **한 칸도 달라지지 않았다.**
 
 ### 2. Chrome 151 — **`parsed` 9줄**(함수 몸통 · 블록 · 스크립트 최상위의 블록 · `for…of` · `for(;;)` · `case` 안의 블록 · 바인딩 둘 · `let using` · async 안 `await using`) · 거절 6줄 · node 20 — **`let using = 1; return using;` 한 줄만 `parsed`** ★★
 
@@ -72,7 +72,7 @@ supported cells: 11 / 21
 **왜 그런가**
 
 - ★★★ **스크립트 최상위**(명세 16.1.1)와 **`case` 절 바로 밑**(14.12.1)은 명세의 Syntax Error — 문구는 둘 다 `Unexpected identifier 'x'` 라 **「`using` 을 모르는 엔진」 과 글자가 같다.** 블록으로 감싸면 `parsed`.
-- ★★ `for…in` · 초기자 없음 · 구조 분해 · async 밖 `await using` 은 **문구가 각각 다르다**(V8). `using` 은 예약어가 아니어서 `let using = 1` 은 **세 판 다** 된다.
+- ★★ `for…in` · 초기자 없음 · 구조 분해 · async 밖 `await using` 은 **문구가 각각 다르다**(V8). `using` 은 예약어가 아니어서 `let using = 1` 은 **세 버전 다** 된다.
 - ★ node 18 은 같은 자리에서 **`Unexpected identifier`**(식별자 없이)를 냈다 — 2-summary 동작 (2).
 
 ### 3. **`[1]` `dispose c · b · a` · `[2]` `dispose b` 가 안쪽 블록 끝, 이어 `make c` · `[3]`·`[4]` 둘 다 `dispose a` 뒤 원래 결과 · `[5]` `dispose a` 가 `finally` 보다 먼저 · `[6]` 반복마다 · `[7]` `dispose c` 만 · `[8]` `TypeError` 전에 `dispose a` · `[9]` 처음 메서드 · `[10]` `TypeError 「Assignment to using variable.」`** ★★★
@@ -202,7 +202,7 @@ supported cells: 11 / 21
 - ★★★ **`null` 이어도 한 틱**(`[3]` 대 `[4]`) — 명세 NOTE 「null·undefined 여도 **여전히 Await** 하도록 기록한다」. `Symbol.dispose` 만 있는 값도 같은 한 틱을 치른다(`[2]`).
 - ★★ 동기 `using` 은 `Symbol.asyncDispose` 를 **찾지 않는다**(`[5]`).
 
-### 7. `[2]` — `finally` 안의 해제가 던진 오류가 **`try` 의 완료를 바꿔 쥐어** 본문 오류가 **흔적 없이** 사라진다 — 32번 동작 (2) `[4]` 와 같은 칸 · `[3]` — node 20 은 **`SuppressedByHand`**, Chrome 151 은 **`SuppressedError`** — Chrome 에만 진짜 생성자가 있어 소스의 `typeof SuppressedError === "function"` 분기가 갈렸다 ★★
+### 7. `[2]` — `finally` 안의 해제가 던진 오류가 **`try` 의 완료를 바꿔 쥐어** 본문 오류가 **흔적 없이** 사라진다 — 32번 동작 (2) `[4]` 와 같은 칸 · `[3]` — node 20 은 **`SuppressedByHand`**, Chrome 151 은 **`SuppressedError`** — Chrome 에만 진짜 생성자가 있어 소스의 `typeof SuppressedError === "function"` 분기가 달라졌다 ★★
 
 **출력**
 
@@ -315,7 +315,7 @@ tsc -p . --target esnext --outDir out-esnext   exit=0
 
 ### 11. Python — 정리 중 예외가 **`__context__` 사슬**로 이어진다(묶음이 아니다 — Python 28) · Java — 주 예외에 **`addSuppressed`** 로 매단다(주인공은 **본문 예외** — Java 26) · JS — **새 `SuppressedError` 가 겉**이 되고 본문 오류는 **`.suppressed` 안**으로 들어간다(4번) ★★
 
-- ★★ 셋 다 「둘 다 던졌을 때만」 둘을 함께 남기고, 순서는 셋 다 **역순**이다. **모양이 다르다** — Java 는 본문 예외를 꺼내면 첨부가 따라오고, JS 는 겉을 벗겨야 본문이 나온다(이 비교는 각 편의 결과를 견준 해석이다 — 세 갈래를 한 탐침으로 돌리지는 않았다).
+- ★★ 셋 다 「둘 다 던졌을 때만」 둘을 함께 남기고, 순서는 셋 다 **역순**이다. **모양이 다르다** — Java 는 본문 예외를 꺼내면 첨부가 따라오고, JS 는 겉을 벗겨야 본문이 나온다(이 비교는 각 편의 결과를 견준 해석이다 — 세 갈래를 한 probe로 돌리지는 않았다).
 
 ## 실행 검증
 
@@ -330,9 +330,9 @@ tsc -p . --target esnext --outDir out-esnext   exit=0
 | `js48b-51g-by-hand.js` | ★★ 손 코드의 역순 · 본문 오류 소실 | node20 · node18(같음) · Chrome 151(`[3]` 이름만 다름) |
 | `in51h.ts` + `tsconfig.json` + `js48b-51h-tsc.sh` | ★★ tsc 7.0.2 의 방출 · 방출물의 세 판 실행 | tsc 7.0.2 → node18 · node20 · Chrome 151 |
 
-- ★ 캡처를 두 번 돌려 정규화 대조했다 — 실행마다 바뀌는 칸이 **없었다**(「실행 환경」 흔들리는 칸 표).
+- ★ 캡처를 두 번 돌려 정규화 대조했다 — 실행마다 바뀌는 칸이 **없었다**(「실행 환경」 실행마다 달라지는 항목 표).
 
-**구현 의존 항목 — 판이 오르면 다시 돌릴 것** — ★★★ **1번 격자 전체**(node 가 문법을 받는 판이 오면 칸이 바뀐다 · 그때 `Symbol.keyFor(Symbol.dispose)` 도) · 2번 · 3번의 **문구** · 4번 `[6]` 의 `message` · **8번의 헬퍼 모양**(tsc 판). 순서와 중첩 모양(3번 · 4번 · 6번)은 명세 칸이라 판이 올라도 같아야 한다.
+**구현 의존 항목 — 버전이 오르면 다시 돌릴 것** — ★★★ **1번 격자 전체**(node 가 문법을 받는 판이 오면 칸이 바뀐다 · 그때 `Symbol.keyFor(Symbol.dispose)` 도) · 2번 · 3번의 **문구** · 4번 `[6]` 의 `message` · **8번의 헬퍼 모양**(tsc 버전). 순서와 중첩 모양(3번 · 4번 · 6번)은 명세 칸이라 판이 올라도 같아야 한다.
 
 ## 실행 환경
 

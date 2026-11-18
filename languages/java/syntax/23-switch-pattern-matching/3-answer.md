@@ -91,7 +91,7 @@ BootstrapMethods:
   그것이 돌려준 `int` 로 평범한 `tableswitch` 를 탄다.
 - **명령 이름**은 `invokedynamic`, 부트스트랩 이름은 `typeSwitch`,\
   부트스트랩을 제공하는 클래스는 `java.lang.runtime.SwitchBootstraps` 다.
-- **`enum` `switch` 식과 갈리는 자리**는 "번호를 어떻게 얻느냐"다.
+- **`enum` `switch` 식과 달라지는 자리**는 "번호를 어떻게 얻느냐"다.
 
 | | 옛 `switch`(`enum`) | 패턴 `switch` |
 |---|---|---|
@@ -181,7 +181,7 @@ Exception in thread "main" java.lang.NullPointerException
 - 맨 위가 **`java.util.Objects.requireNonNull`** 이다.
 - 옛 `switch` 의 NPE 와 달리 **메시지가 비어 있다.** 로그만 보고 원인을 찾기가 더 어렵다.
 
-**바이트코드가 갈리는 자리** — `case null` 이 **없을 때**
+**바이트코드가 달라지는 자리** — `case null` 이 **없을 때**
 
 ```text
   static java.lang.String noCaseNull(java.lang.Object);
@@ -460,7 +460,7 @@ Exception in thread "main" java.lang.MatchException
 	at Ex.main(Ex.java:10)
 ```
 
-**2차 컴파일 뒤에 두 클래스 파일을 다시 찍으면 어긋남이 그대로 보인다.**
+**2차 컴파일 뒤에 두 클래스 파일을 다시 찍으면 불일치가 그대로 보인다.**
 
 ```text
 --- Shape.class 의 PermittedSubclasses (2차 뒤)
@@ -670,7 +670,7 @@ java.lang.UnsupportedClassVersionError: Ex (class file version 61.65535) was com
   외울 것은 이름이 아니라 **"판별이 런타임 호출 한 번이고 대상 목록이 클래스 파일에 박힌다"** 는 성질이다.
 - **`typeSwitch` 가 `null` 에 `-1` 을 준다**는 것은 바이트코드에서 **관찰**한 것이다. 명세 인용이 아니다.
 - **`Objects.requireNonNull` 로 `null` 을 막는 것**도 구현 선택이다. NPE 가 난다는 **사실**만 보장이다.
-- **에러 메시지의 문구 자체**는 javac 의 것이다. 특히 11번의 두 메시지는 **javac 판에 따라 다르다.**
+- **에러 메시지의 문구 자체**는 javac 의 것이다. 특히 11번의 두 메시지는 **javac 버전에 따라 다르다.**
 - **클래스 파일 버전 `61.65535`** 는 17 의 프리뷰 표시다. 판마다 숫자가 다르다(21 은 `65.65535`).
 - 두 판(21·25)에서 출력이 같았던 것은 **관찰**이다.\
   [**21번 주제**](../21-switch-statement-and-expression/)에서 **출력이 같은데 바이트코드가 달랐던 실례**를 봤으므로,\
@@ -681,7 +681,7 @@ java.lang.UnsupportedClassVersionError: Ex (class file version 61.65535) was com
 이 파일의 모든 출력·에러 메시지는 Temurin JDK 에서 **실제로 돌려 얻은 것**이다.\
 기본은 **21.0.5**이고, 도는 프로그램은 **25.0.1** 에서도 돌렸다.\
 ★ **17.0.13 에서는 컴파일되지 않는다** — 그 에러도 11번에 실었다.\
-두 판에서 같았던 것은 "같았다"라고 **관찰로** 적었다 — 보장이 아니다.\
+두 버전에서 같았던 것은 "같았다"라고 **관찰로** 적었다 — 보장이 아니다.\
 버전 갈림(`--release 17` / `20` / `21`)은 JDK 21 의 `javac --release` 로 찍었다.\
 역어셈블은 `javap -c -p` · `javap -v -p` 출력을 그대로 옮겼다.\
 javadoc 인용은 JDK 21.0.5 의 `lib/src.zip` 에서 복사한 것이다.

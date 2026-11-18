@@ -136,9 +136,9 @@ GitLab은 백업 절차를 넷 두었다. 사고 당일 바로 쓸 수 있는 �
 
 - 한계 근처의 동작은 **PostgreSQL 판마다 문구와 수치가 다르다.**
   - Sentry 글: 최대치까지 "백만 개 미만" 남으면 명령을 받지 않는다.
-  - 9.4 문서: 1천만 남으면 경고, 1백만 미만이면 `database is not accepting commands to avoid wraparound data loss`로 새 트랜잭션 거부. (9.4 소스 `varsup.c`의 경고 문턱은 거부 문턱 − 1천만, 곧 1,100만 남았을 때다.)
+  - 9.4 문서: 1천만 남으면 경고, 1백만 미만이면 `database is not accepting commands to avoid wraparound data loss`로 새 트랜잭션 거부. (9.4 소스 `varsup.c`의 경고 임계값은 거부 임계값 − 1천만, 곧 1,100만 남았을 때다.)
   - 14~16 문서: 4천만 남으면 경고, 3백만 미만이면 새 XID 할당 거부. 문구는 9.4와 같다.
-  - 17 문서: 문턱은 같고, 문구가 `... not accepting commands that assign new transaction IDs ...`로 바뀌었다(16번). 거부 상태에서도 VACUUM은 돌지만, 레코드를 바꾸거나 relation을 TRUNCATE하는 작업은 실패한다.
+  - 17 문서: 임계값은 같고, 문구가 `... not accepting commands that assign new transaction IDs ...`로 바뀌었다(16번). 거부 상태에서도 VACUUM은 돌지만, 레코드를 바꾸거나 relation을 TRUNCATE하는 작업은 실패한다.
   - Sentry가 쓴 판은 글에 없다 [?].
 - 단일 사용자 모드: Sentry 글은 "일반적 조언"으로 소개했다. PostgreSQL 17 문서 24.1.5는 예전 판에서는 필요했지만 지금은 대개 필요 없고 피해야 한다고 적는다. wraparound 보호를 끄는 위험이 있어서다. 이 모드가 필요한 유일한 이유로 문서가 드는 것은 불필요한 테이블을 `TRUNCATE`·`DROP`해 VACUUM을 피하려는 경우다(거부 상태의 일반 모드에서는 TRUNCATE가 실패하기 때문이다). Sentry가 실제로 택한 길(거대 테이블 TRUNCATE)과 같은 방향이다. Sentry 글은 TRUNCATE를 어느 모드에서 실행했는지 적지 않았다.
 - Sentry가 밝힌 설정 문제

@@ -4,7 +4,7 @@
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
 
-### 1. ★★★ 같은 호출부를 두 판의 선언에 붙이면 (예측)
+### 1. ★★★ 같은 호출부를 두 버전의 선언에 붙이면 (예측)
 
 ```kotlin
 // person1.kt
@@ -35,7 +35,7 @@ fun main() {
 ```
 
 - `kotlinc person1.kt readp.kt` 와 `kotlinc person2.kt readp.kt` 는 각각 컴파일되는가? 에러나 경고가 나는가?
-- 두 판에서 `A` 줄과 `B` 줄에 각각 무엇이 찍히는가?
+- 두 버전에서 `A` 줄과 `B` 줄에 각각 무엇이 찍히는가?
 
 ### 2. ★★ 호출부를 다시 컴파일하지 않으면 (예측)
 
@@ -120,7 +120,7 @@ fun main() {
 
 ### 6. ★★★ 컴파일러에게 이름을 읽게 하면 (예측)
 
-1번의 `person2.kt readp.kt` 를 다음 세 형태로 다시 던졌다.
+1번의 `person2.kt readp.kt` 를 다음 세 형태로 다시 실행했다.
 
 ```text
 kotlinc -Xname-based-destructuring=name-mismatch person2.kt readp.kt -d o30c
@@ -147,7 +147,7 @@ fun main() {
 
 ### 7. `component1` 이 읽는 필드 (경계)
 
-- 1번의 두 판에서 `javap -c -p P.class` 로 `component1()` 을 보면 **어느 필드**를 `getfield` 하는가?
+- 1번의 두 버전에서 `javap -c -p P.class` 로 `component1()` 을 보면 **어느 필드**를 `getfield` 하는가?
 - 번호를 정하는 것은 언어인가, JVM 백엔드인가?
 
 ### 8. `Map.Entry` 는 Java 인터페이스인데 (왜)
@@ -170,7 +170,7 @@ fun main() {
 선행은 [22번 주제](../22-data-class-generated-members/)다 — `componentN` 이 **만들어진다는 것**은 거기서 봤다.
 
 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
-이 주제의 모든 답은 **kotlinc 2.4.20 · JRE 21.0.5**(Java 쪽은 **javac 21.0.5**)에서 실제로 던져 받은 것이다.
+이 주제의 모든 답은 **kotlinc 2.4.20 · JRE 21.0.5**(Java 쪽은 **javac 21.0.5**)에서 실제로 실행해 받은 것이다.
 
 ## 복습 기록
 

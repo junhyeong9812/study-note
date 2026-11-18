@@ -280,7 +280,7 @@ void trx_commit_complete_for_mysql(trx_t *trx) /*!< in/out: transaction */
  L6108  return 0
 ```
 
-같은 함수가 binlog 유무에 따라 redo 를 언제 누가 내리는지가 갈린다.
+같은 함수가 binlog 유무에 따라 redo 를 언제 누가 내리는지가 달라진다.
 
 ```text
  커밋 기록의 redo 는 누가 내리나 (innodb_flush_log_at_trx_commit=1)

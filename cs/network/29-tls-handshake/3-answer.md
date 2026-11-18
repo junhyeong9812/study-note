@@ -78,7 +78,7 @@ RFC 8446 §2.3 IMPORTANT NOTE의 두 가지다.
 - 서버는 **인증서를 보내기 전에** 어느 도메인인지 알아야 한다.
 - HTTP `Host` 헤더는 TLS 핸드셰이크가 끝난 뒤 암호화된 채널로 온다. 그래서 인증서 선택 시점에는 쓸 수 없다.
 - 그래서 ClientHello에 `server_name`을 싣는다(RFC 6066 §3).
-- SNI가 빠져도 **반드시 실패하지는 않는다**. 서버 설정에 따라 셋으로 갈린다.
+- SNI가 빠져도 **반드시 실패하지는 않는다**. 서버 설정에 따라 셋으로 나뉜다.
   - 기본 서버의 인증서에 대상 이름이 들어 있으면 → 성공한다.
   - 기본 인증서에 대상 이름이 없으면 → 클라이언트의 호스트명 검증이 실패한다. 에러는 **클라이언트 쪽**에서 난다. Java는 `CertificateException: No subject alternative DNS name matching ... found.`, Node는 `ERR_TLS_CERT_ALTNAME_INVALID`다.
   - 서버가 SNI를 요구하거나 이름 없는 핸드셰이크를 거절하면 → 서버가 alert로 끊는다(`missing_extension`·`unrecognized_name` 등, RFC 8446 §9.2, RFC 6066 §3).

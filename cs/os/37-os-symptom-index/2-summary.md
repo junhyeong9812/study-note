@@ -372,9 +372,9 @@ df -h; df -i; lsof -nP +L1
   - 네이티브라면 `pthread_create` = `EAGAIN`, 셸이라면 `fork: retry: Resource temporarily unavailable`.
 - **원인**
   - 이름과 달리 힙이 아니다. `pthread_create`의 `EAGAIN`이다(pthread_create(3)). `RLIMIT_NPROC`(실사용자 ID 단위 합산), `threads-max`, `pid_max`, cgroup `pids.max` 중 하나에 닿았다([07](../07-threads-and-context-switch/2-summary.md), [04](../04-process-and-lifecycle/2-summary.md)).
-  - "OutOfMemoryError"라는 클래스 이름 때문에 힙 문제로 읽었다. 힙 크기는 이 개수 한도들과 무관하다. 07번은 스레드 스택 등을 확보할 메모리 부족도 원인으로 든다. 이때도 부족한 것은 힙이 아니라 native 메모리다. glibc는 이 경우의 `ENOMEM`도 `EAGAIN`으로 바꿔 돌려주므로 errno만으로는 둘을 가를 수 없다([13](../13-oom-and-memory-limits/2-summary.md)).
+  - "OutOfMemoryError"라는 클래스 이름 때문에 힙 문제로 읽었다. 힙 크기는 이 개수 한도들과 무관하다. 07번은 스레드 스택 등을 확보할 메모리 부족도 원인으로 든다. 이때도 부족한 것은 힙이 아니라 native 메모리다. glibc는 이 경우의 `ENOMEM`도 `EAGAIN`으로 바꿔 돌려주므로 errno만으로는 둘을 구분할 수 없다([13](../13-oom-and-memory-limits/2-summary.md)).
 - **대처**
-  - `jstack`으로 스레드 수·이름을 세어 누수 풀을 찾는다. 좀비가 PID를 쥐고 있지 않은지 본다(04·05번).
+  - `jstack`으로 스레드 수·이름을 세어 누수 풀을 찾는다. 좀비가 PID를 잡고 있지 않은지 본다(04·05번).
   - `ulimit -u`, `pids.current`/`pids.max`, `threads-max`를 비교한다.
   - 연결당 스레드 구조면 구조를 바꾼다([36](../36-server-concurrency-architectures/2-summary.md)).
 

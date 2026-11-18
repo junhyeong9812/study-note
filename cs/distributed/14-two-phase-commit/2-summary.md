@@ -66,7 +66,7 @@
 
 - DDIA 9장은 이 둘을 2PC의 두 "돌아올 수 없는 지점(points of no return)"이라 부른다.
 - 그래서 YES를 보낸 참가자는 TC의 결정이 올 때까지 **기다리는 것 말고 할 수 있는 게 없다**(6.5840 L11: "if B voted YES, it must block").
-  - *in-doubt(불확실) 상태*: YES를 보냈지만 결과를 아직 모르는 참가자의 상태. 이 동안 그 트랜잭션의 락을 계속 쥔다.
+  - *in-doubt(불확실) 상태*: YES를 보냈지만 결과를 아직 모르는 참가자의 상태. 이 동안 그 트랜잭션의 락을 계속 잡는다.
 
 ### 3. 상태 기계
 
@@ -97,7 +97,7 @@
 | TC가 결정 전 크래시 | 결정 기록이 없으니 중단해도 안전하다 |
 | TC가 영영 안 돌아옴 | 참가자는 in-doubt로 계속 기다린다. 사람이 결정해야 한다 |
 
-### 실험: prepare 뒤 코디네이터를 죽이면 참가자가 락을 쥐고 기다린다
+### 실험: prepare 뒤 코디네이터를 죽이면 참가자가 락을 잡고 기다린다
 
 - 환경: 전용 일회용 컨테이너 PostgreSQL 17.11 두 대(`max_prepared_transactions=20`, 기본값 0은 기능 꺼짐), Java 21 코디네이터. 2026-10-01.
 - 코디네이터는 결정을 파일에 append + `SYNC`로 쓴다. `Runtime.halt()`로 프로세스를 즉시 죽인다.
@@ -182,7 +182,7 @@ recover sn-dw-w14-pg2: COMMIT PREPARED tx-3          → A 800, B 1200
 
 - **상태 기계** — 참가자(작업중 → PREPARED → COMMITTED/ABORTED)와 코디네이터(작업중 → 결정 기록 → 완료). 위 3절. 복구는 "지금 어느 상태인가"만 보고 다음 행동을 정한다.
 - **append-only 결정 로그 + fsync** — 코디네이터의 커밋 지점은 "결정 로그가 디스크에 닿은 순간"이다. DB의 WAL과 같은 발상이다. [database/19-wal-and-logging](../../database/19-wal-and-logging/2-summary.md)
-- **2단계 락킹(strict 2PL)** — 참가자는 커밋·중단 뒤까지 락을 쥔다(6.5840 L11의 "strong strict two-phase locking"). 그래서 in-doubt 동안 락이 풀리지 않는다. 이름이 비슷한 2PL과 2PC는 다른 것이다. [database/15](../../database/15-two-phase-locking-and-deadlock/2-summary.md)
+- **2단계 락킹(strict 2PL)** — 참가자는 커밋·중단 뒤까지 락을 잡는다(6.5840 L11의 "strong strict two-phase locking"). 그래서 in-doubt 동안 락이 풀리지 않는다. 이름이 비슷한 2PL과 2PC는 다른 것이다. [database/15](../../database/15-two-phase-locking-and-deadlock/2-summary.md)
 - **TID 기반 멱등** — 재시작한 TC가 COMMIT을 다시 보내도 참가자는 트랜잭션 ID(PostgreSQL의 `gid`)로 중복을 거른다.
 - **presumed abort** — "결정 기록이 없으면 중단"이라는 규칙. ABORT를 로그에 쓰지 않아도 되고, 복구가 단순해진다. 위 실험의 `recover()`가 이 규칙이다.
 - **합의(Raft·Paxos)로 복제한 코디네이터** — 블로킹을 줄이는 실무 해법. [11-consensus-raft](../11-consensus-raft/2-summary.md)
@@ -201,7 +201,7 @@ recover sn-dw-w14-pg2: COMMIT PREPARED tx-3          → A 800, B 1200
   2PC (가능하면 합의로 복제한 코디네이터를 가진 DB 내장 기능: Spanner·CockroachDB 등)
 ```
 
-- 6.5840 L11의 평가: 2PC는 느리고(왕복 여러 번·디스크 쓰기), prepare~commit 동안 락을 쥐며, TC가 죽으면 **락을 쥔 채** 무기한 블로킹할 수 있다. 그래서 보통 한 작은 영역 안에서만 쓴다. 은행 사이, 항공사 사이, 광역망 너머로는 쓰지 않는다.
+- 6.5840 L11의 평가: 2PC는 느리고(왕복 여러 번·디스크 쓰기), prepare~commit 동안 락을 쥐며, TC가 죽으면 **락을 잡은 채** 무기한 블로킹할 수 있다. 그래서 보통 한 작은 영역 안에서만 쓴다. 은행 사이, 항공사 사이, 광역망 너머로는 쓰지 않는다.
 
 ### 2. XA를 쓴다면 — Java(JTA) 모양
 
@@ -286,13 +286,13 @@ tuples: 1000 removed, 1000 remain, 0 are dead but not yet removable
 
 - **현상**: 샤드 하나의 디스크가 느려지자 여러 샤드에 걸친 트랜잭션 전부의 지연이 늘었다.
 - **보이는 형태**: prepare 응답 지연. 다른 샤드에서도 락 대기 증가.
-- **원인**: 2PC는 **참가자 전원**의 YES가 필요하다. 가장 느린 참가자가 전체 지연을 정하고, 그동안 다른 참가자들은 락을 쥔다. 2PC는 가용성을 높이지 않는다(6.5840 L11).
+- **원인**: 2PC는 **참가자 전원**의 YES가 필요하다. 가장 느린 참가자가 전체 지연을 정하고, 그동안 다른 참가자들은 락을 잡는다. 2PC는 가용성을 높이지 않는다(6.5840 L11).
 - **대처**: 참가 범위를 줄인다(데이터 배치를 바꿔 단일 샤드 트랜잭션 비율을 높인다). TC가 PREPARE 응답 타임아웃 후 ABORT하게 한다. 그러면 결정 전 단계에서는 락이 풀린다.
 
 ## 핵심 문장
 
 - 2PC는 "모두 YES면 커밋, 하나라도 NO면 중단"을 prepare·commit 두 단계로 보장한다.
-- YES를 보낸 참가자는 혼자 커밋도 중단도 못 한다. 코디네이터의 결정이 올 때까지 락을 쥔 채 기다린다(in-doubt).
+- YES를 보낸 참가자는 혼자 커밋도 중단도 못 한다. 코디네이터의 결정이 올 때까지 락을 잡은 채 기다린다(in-doubt).
 - 코디네이터의 커밋 지점은 결정을 디스크 로그에 쓴 순간이다. 그 로그가 사라지면 in-doubt를 바르게 끝낼 근거도 사라진다.
 - prepared 상태는 재시작을 견딘다. 그래서 방치된 prepared 트랜잭션은 락과 vacuum cutoff를 계속 붙잡는다.
 - 2PC는 원자성을 줄 뿐 가용성을 높이지 않는다. 블로킹은 3PC가 아니라 코디네이터를 합의로 복제해서 줄인다.

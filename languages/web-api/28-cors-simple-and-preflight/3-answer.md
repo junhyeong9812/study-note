@@ -1,9 +1,9 @@
 # web-api/28 — CORS: 단순 요청과 프리플라이트, 막는 것과 못 막는 것 — 정답
 
-| 안 흔들리는 칸 | 흔들리는 칸 · 못 잰 칸 |
+| 달라지지 않는 항목 | 실행마다 달라지는 항목 · 못 잰 항목 |
 |---|---|
 | 격자 32칸 · 격자 밖 · 거부 · 노출 헤더 · `no-cors` · 리다이렉트 · Go | **시간에 기댄 칸** — `Max-Age` 없음의 「1번」(기본 5초 안) |
-| 캡처를 세 판 돌려 **한 글자도 같았다** | **못 잰 것** — 프리플라이트의 지연 · HTTP/2 스트림 업로드 · `Max-Age` 상한 |
+| 캡처를 세 번 돌려 **한 글자도 같았다** | **못 잰 것** — 프리플라이트의 지연 · HTTP/2 스트림 업로드 · `Max-Age` 상한 |
 
 ```text
 $ google-chrome --version
@@ -102,7 +102,7 @@ B OPTIONS /cors?id=e6  Origin=http://127.0.0.1:<A> · Access-Control-Request-Met
 **왜 그런가**
 
 - **`;charset=UTF-8`·대문자는 안전**(본질이 `text/plain`), **129바이트는 붙는다**(128바이트를 넘으면 안전 목록 밖). **`Accept`·`Accept-Language` 는 안전 목록 헤더**다.
-- ★★ **스트림 + `duplex: 'half'` 는 OPTIONS 가 먼저 왔는데 `Access-Control-Request-Headers=(없음)`** — 붙은 이유가 **본문의 종류**다(명세: `ReadableStream` 이면 use-CORS-preflight flag). 본 요청은 서버에 안 왔고 페이지는 `TypeError 「Failed to fetch」`, 콘솔은 `ERR_ALPN_NEGOTIATION_FAILED` — 이 판의 Chrome 은 HTTP/1.1 로 스트림 본문을 안 보낸다(구현).
+- ★★ **스트림 + `duplex: 'half'` 는 OPTIONS 가 먼저 왔는데 `Access-Control-Request-Headers=(없음)`** — 붙은 이유가 **본문의 종류**다(명세: `ReadableStream` 이면 use-CORS-preflight flag). 본 요청은 서버에 안 왔고 페이지는 `TypeError 「Failed to fetch」`, 콘솔은 `ERR_ALPN_NEGOTIATION_FAILED` — 이 버전의 Chrome 은 HTTP/1.1 로 스트림 본문을 안 보낸다(구현).
 - **`duplex` 없음·`no-cors` 는 보내기 전 `TypeError`** — 서버에 아무것도 없다.
 
 ### 3. 거부되면 서버 로그에 OPTIONS 한 줄뿐

@@ -26,6 +26,6 @@ TypeScript/JavaScript와 그 위 브라우저·React·Next.js에 뿌리내린 �
 
 ## 패턴 카드 (이 폴더 직속)
 
-- [js-language-traps](js-language-traps/) — JS 언어 규칙(TDZ·객체 리터럴 즉시 평가·중복 키 무음 덮어쓰기·try 안 await 없는 return·구조화 에러의 String 변환)이 직관과 달라 조용히 오동작한다.
+- [js-language-traps](js-language-traps/) — JS 언어 규칙(TDZ·객체 리터럴 즉시 평가·중복 키 조용한 덮어쓰기·try 안 await 없는 return·구조화 에러의 String 변환)이 직관과 달라 조용히 오동작한다.
 
 > 이 폴더의 메타 태그: `silent-failure`(1) · `resource-bounding`(2) · `least-privilege`(1) · `race-condition`(1) · `test-reliability`(1) · `single-source-of-truth`(2) — 태그별 전체 목록은 [issue 태그 역인덱스](../README.md#태그-역인덱스).

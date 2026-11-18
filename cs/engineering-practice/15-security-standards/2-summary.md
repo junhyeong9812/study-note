@@ -113,7 +113,7 @@ public class OrderDao {
 관찰과 해석.
 - 보안 기준의 두 항목이 도구로 잡혔다: SQL 삽입(13행 `SQL_INJECTION_JDBC`·`SQL_NONCONSTANT_STRING_PASSED_TO_EXECUTE`)과 예측 가능한 난수(`PREDICTABLE_RANDOM`). 행안부 별표 3 구현단계의 "SQL 삽입"·"적절하지 않은 난수 값 사용" 항목, Top 10 A05·A04와 대응한다(대응은 해석).
 - 좋은 예(`findByUserSafe`)는 SQL 인젝션 경고를 받지 않았다. 도구는 **이어 붙인 문자열이 실행 메서드에 닿는 흐름**을 본다.
-- 9건 중 보안 경고(SpotBugs 범주 `SECURITY`)는 3건이다. 나머지 6건은 `BAD_PRACTICE` 3건(자원 미해제 2·`DMI_RANDOM_USED_ONLY_ONCE`), `EXPERIMENTAL` 2건(`OBL_…`), `MALICIOUS_CODE` 1건(`EI_EXPOSE_REP2` 내부 표현 노출)이다(같은 실행의 `target/spotbugsXml.xml` category 속성). effort=Max·threshold=Low로 최대한 넓게 켰기 때문이다. 이대로 게이트를 걸면 소음 때문에 사람이 경고를 읽지 않게 된다(장애 2). 보안 게이트에는 보안 범주만, 품질 경고는 [14-quality-standards](../14-quality-standards/2-summary.md)의 기준선 방식으로 나눠 다룬다.
+- 9건 중 보안 경고(SpotBugs 범주 `SECURITY`)는 3건이다. 나머지 6건은 `BAD_PRACTICE` 3건(자원 미해제 2·`DMI_RANDOM_USED_ONLY_ONCE`), `EXPERIMENTAL` 2건(`OBL_…`), `MALICIOUS_CODE` 1건(`EI_EXPOSE_REP2` 내부 표현 노출)이다(같은 실행의 `target/spotbugsXml.xml` category 속성). effort=Max·threshold=Low로 최대한 넓게 켰기 때문이다. 이대로 게이트를 걸면 소음 때문에 사람이 경고를 읽지 않게 된다(장애 2). 보안 게이트에는 보안 범주만, 품질 경고는 [14-quality-standards](../14-quality-standards/2-summary.md)의 베이스라인 방식으로 나눠 다룬다.
 
 ### 4. 실험 B: 어제 안전한 버전이 오늘 취약하다 — SCA는 한 번이 아니라 계속
 
@@ -186,7 +186,7 @@ ASVS 5.0.0 릴리스 태그의 장 파일 17개에서 요구사항 행(`| **x.y.
 1. **수준을 정한다.** 서비스의 데이터·손실·규제로 ASVS 목표 수준을 정한다(원본 §2 판단 예). 공공 사업이면 행안부 별표 3이 필수 진단 항목이다.
 2. **의존성 목록을 만든다.** 빌드 도구에서 전이 의존성까지 펼친 목록(SBOM)을 산출물로 남긴다. 없으면 SCA가 전이 의존성을 빠뜨리고, 사고 때 영향 범위 산정도 어렵다.
 3. **자동 검사를 PR과 정기 작업에 건다.** PR: SAST(보안 범주) + SCA(새로 추가된 의존성). 정기(예: 매일): 배포된 버전의 SCA 재질의.
-4. **경고를 분류해 게이트에 건다.** 보안 범주의 높은 심각도만 병합을 막고, 나머지는 기준선으로 관리한다.
+4. **경고를 분류해 게이트에 건다.** 보안 범주의 높은 심각도만 병합을 막고, 나머지는 베이스라인으로 관리한다.
 5. **예외는 기한과 함께 기록한다.** "위험 수용"은 누가·왜·언제까지를 남긴다.
 6. **사람 몫은 체크리스트로.** 인가 위치(A01), 위협 모델링(A06), 예외 경로 fail-closed(A10)는 리뷰 체크리스트(ASVS 해당 장)로 본다.
 
@@ -268,7 +268,7 @@ async function osvScan(deps) {
 - 현상: 정적 분석 경고가 수백 건이라 아무도 읽지 않는다.
 - 보이는 형태: 실험 A처럼 보안 3건이 품질 경고 6건과 섞여 같은 `[ERROR]` 줄로 나온다. 팀이 게이트를 "경고만"으로 낮춘다.
 - 원인: 범주·심각도를 나누지 않고 한 게이트에 걸었다.
-- 대처: 보안 범주의 높은 심각도만 병합을 막고, 나머지는 기준선으로 관리한다. 오탐은 이유와 함께 억제하고 억제 수를 본다([14-quality-standards](../14-quality-standards/2-summary.md) 장애 4).
+- 대처: 보안 범주의 높은 심각도만 병합을 막고, 나머지는 베이스라인으로 관리한다. 오탐은 이유와 함께 억제하고 억제 수를 본다([14-quality-standards](../14-quality-standards/2-summary.md) 장애 4).
 
 ### 3. 출시 때만 스캔 → 새로 공개된 CVE를 모른다
 
@@ -304,7 +304,7 @@ async function osvScan(deps) {
 - 원본(기초): [engineering/development-standards/security-standards](../../engineering/development-standards/security-standards/2-summary.md) — Top 10:2025 항목별 공격·방어, ASVS 5.0 수준, SSDF 네 그룹, 세 기준의 연결
 - 선행: [security/01-security-principles](../../security/01-security-principles/2-summary.md)
 - 후속·연결
-  - [14-quality-standards](../14-quality-standards/2-summary.md) — 기준 → 자동 검사 구조, 기준선·래칫
+  - [14-quality-standards](../14-quality-standards/2-summary.md) — 기준 → 자동 검사 구조, 베이스라인·래칫
   - [16-operational-standards](../16-operational-standards/2-summary.md) — 보안 로그·경보(A09)와 운영 표준
   - [17-legal-standards](../17-legal-standards/2-summary.md) — 안전성 확보조치(법적 의무)와 의존성 라이선스
   - security [18-injection](../../security/18-injection/2-summary.md) · [22-ssrf](../../security/22-ssrf/2-summary.md) · [25-supply-chain-security](../../security/25-supply-chain-security/2-summary.md) · [26-security-logging-and-audit](../../security/26-security-logging-and-audit/2-summary.md)

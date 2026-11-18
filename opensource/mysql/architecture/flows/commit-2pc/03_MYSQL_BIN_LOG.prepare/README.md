@@ -275,7 +275,7 @@ static lsn_t trx_prepare_low(
 }
 ```
 
-redo 를 내릴지 말지는 여기서 갈린다.
+redo 를 내릴지 말지는 여기서 달라진다.
 
 `storage` / `innobase` / `trx` / `trx0trx.cc` L3643-L3677 ([GitHub](https://github.com/mysql/mysql-server/blob/008e09c2834b98143a8c067d4d225c90953050cf/storage/innobase/trx/trx0trx.cc#L3643-L3677))
 

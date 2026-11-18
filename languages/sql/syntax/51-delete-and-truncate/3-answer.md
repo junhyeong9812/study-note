@@ -627,7 +627,7 @@ DELETE FROM t51_big WHERE id IN (SELECT id FROM t51_big ORDER BY id LIMIT 10000)
 ```
 
 ★ `ORDER BY` 를 붙이면 매 회차가 **같은 쪽부터** 지워 인덱스 스캔이 앞에서 진행된다.\
-**이 효과는 계획으로 확인하지 않았다** — 계획은 통계에 흔들린다([작성법 §2-1](../../../../reference/study-note-guide.md)).
+**이 효과는 계획으로 확인하지 않았다** — 계획은 통계에 실행마다 달라진다([작성법 §2-1](../../../../reference/study-note-guide.md)).
 
 ---
 
@@ -804,7 +804,7 @@ DELETE FROM t51_c WHERE p_id IN (SELECT id FROM t51_p WHERE name = 'p1');
 
 **돌려 보지 않은 것** — ① MyISAM 등 **다른 스토리지 엔진** ② `VACUUM FULL` ③ MySQL 의 `RENAME TABLE` 교체 기법\
 ④ **undo log 크기와 복제 지연**(복제를 구성하지 않았다) ⑤ `TRUNCATE` 가 잡는 **잠금 수준**([57 명시적 잠금과 교착](../57-explicit-locking-and-deadlock/))\
-⑥ 나눠 도는 `DELETE` 의 **실행 계획**(통계에 흔들린다).
+⑥ 나눠 도는 `DELETE` 의 **실행 계획**(통계에 실행마다 달라진다).
 
 ★ **복구한 자리** — 2번(MySQL `t51_a` 5행)·9번(MySQL `t51_p`·`t51_c`)·14번(MySQL `t51_c`)에서\
 **롤백이 안 되는 문을 던졌으므로 값을 손으로 다시 채웠다.** 그 사실을 여기 남긴다.
@@ -815,7 +815,7 @@ DELETE FROM t51_c WHERE p_id IN (SELECT id FROM t51_p WHERE name = 'p1');
 ## 실행 환경
 
 근거는 **실행 결과**다 — 본문의 출력·에러·수치는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+2026-09-21 에 실제로 실행해 받은 것이다. 지어낸 출력은 없다.\
 ★ **환경** — MySQL `autocommit=1` · `sql_safe_updates=0`(기본) · 스토리지 엔진 **InnoDB**.\
 ★ **측정 조건** — 11번의 수치는 JMH 가 아니라 **클라이언트 타이머**다(`psql \timing` · `SYSDATE(6)` 차). **3판 원값**을 싣는다.\
 이 편이 만든 표(`t51_a`·`t51_p`·`t51_c`·`t51_pc`·`t51_cc`·`t51_big`)는 **전부 지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\

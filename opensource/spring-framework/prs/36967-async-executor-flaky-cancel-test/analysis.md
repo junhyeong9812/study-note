@@ -134,7 +134,7 @@
 | `checkCancelled(Future)` :422 | 취소 신호 확인 + 정식 취소 | 호출 시 `cancelled` 읽기 | `run()` :487 (호출자가 이미 모니터 안이라는 전제, :423 주석) | 읽기 쪽 당사자. `future.cancel(false)`(:425) 후 `CancellationException`(:427) |
 | `TaskTrackingRunnable` :468 | 사용자 태스크 데코레이터. 취소 검사·등록·해제를 전부 품는다 | `execute` 분기 2(:331)에서 생성 | 워커(수정 전) 또는 테스트 스레드(수정 후) | **비-static 내부 클래스**라 바깥 executor 인스턴스를 암묵 참조한다. 캡처해 두었다가 나중에 실행해도 같은 executor의 `cancelled`를 읽는다 — 캡처 기법이 성립하는 토대 |
 | `TaskTrackingRunnable.future` (:472) | 대응 `FutureTask` | 생성자. `submit` 경로라 non-null | `checkCancelled`(:487) | `cancel(false)`의 대상. 두 번째 단언이 관측하는 결과의 출처 |
-| `FutureTask` 상태 | NEW -> (CANCELLED | NORMAL) | `cancel(false)` 또는 `task.run()` 완료 | `future.get()` | 두 인터리빙의 결과가 갈리는 최종 관측점. CANCELLED면 `get()`이 던지고, NORMAL이면 `null`을 돌려준다 |
+| `FutureTask` 상태 | NEW -> (CANCELLED | NORMAL) | `cancel(false)` 또는 `task.run()` 완료 | `future.get()` | 두 인터리빙의 결과가 달라지는 최종 관측점. CANCELLED면 `get()`이 던지고, NORMAL이면 `null`을 돌려준다 |
 
 ### 2.5.2 테스트 쪽 이름표
 
@@ -158,7 +158,7 @@
 
 ### 3.1 두 인터리빙
 
-두 스레드의 도착 순서에 따라 갈리는 두 실행 경로를 단계별로 대조한다.
+두 스레드의 도착 순서에 따라 달라지는 두 실행 경로를 단계별로 대조한다.
 
 | 단계 | 통과 인터리빙 (close가 이김) | 실패 인터리빙 (워커가 이김) |
 |---|---|---|

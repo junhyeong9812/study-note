@@ -1,14 +1,14 @@
 # kotlin/syntax/48 — 문자열 API — `split`/`trim*`/`pad*`/`Regex` — 정리 (힌트)
 
-★★★ **본체는 첫째 창이다** — 「**Java 와 갈리는 격자 — 입력 다섯 × 쪼개는 꼴 다섯(Kotlin `split(d)` · Java `split(d)` · Kotlin `split(Regex(d))` · Kotlin `split(d, limit = 2)` · Java `split(d, -1)`) → 원소 수 · 원소**」. 두 언어 모두 `split` 이라는 **같은 이름**이 컴파일되고 에러도 없다 — 원소 수가 갈리는지는 **같은 입력을 양쪽에 넣어 봐야** 보인다.
+★★★ **핵심은 첫째 창이다** — 「**Java 와 달라지는 격자 — 입력 다섯 × 쪼개는 꼴 다섯(Kotlin `split(d)` · Java `split(d)` · Kotlin `split(Regex(d))` · Kotlin `split(d, limit = 2)` · Java `split(d, -1)`) → 원소 수 · 원소**」. 두 언어 모두 `split` 이라는 **같은 이름**이 컴파일되고 에러도 없다 — 원소 수가 달라지는지는 **같은 입력을 양쪽에 넣어 봐야** 보인다.
 
 ## 이 주제가 쓰는 세 층
 
 | 층 | 뜻 | 근거로 쓰는 것 |
 |---|---|---|
 | **언어 보장 / API 계약** | 서명·KDoc·javadoc 이 약속한 것 | ★★★ Kotlin `split` KDoc 「**the resulting list will end with an empty string**」 · Java `split` javadoc 「**Trailing empty strings are therefore not included**」 · Java `trim` 「**less than or equal to `'U+0020'`**」 · `Regex.matches` 「**matches the entire [input]**」 · `replace` KDoc 의 **`${name}`·`$index`** |
-| **구현(stdlib)** | 이 판의 stdlib 가 실제로 하는 것 | ★★ `Char.isWhitespace()` = **`Character.isWhitespace(c) \|\| Character.isSpaceChar(c)`** · `String.trim()` 이 **`@InlineOnly`**(클래스 파일에 없다) · 확장 함수들이 **`kotlin.text.StringsKt`** 의 정적 메서드 · 예외 문장 `Desired length -1 is less than zero.` |
-| **이 판의 관찰** | 이번에 본 것 | 격자 값 · `javap` 에 박힌 `StringsKt.split$default` |
+| **구현(stdlib)** | 이 버전의 stdlib 가 실제로 하는 것 | ★★ `Char.isWhitespace()` = **`Character.isWhitespace(c) \|\| Character.isSpaceChar(c)`** · `String.trim()` 이 **`@InlineOnly`**(클래스 파일에 없다) · 확장 함수들이 **`kotlin.text.StringsKt`** 의 정적 메서드 · 예외 문장 `Desired length -1 is less than zero.` |
+| **이 버전의 관찰** | 이번에 본 것 | 격자 값 · `javap` 에 박힌 `StringsKt.split$default` |
 
 ## 이 판
 
@@ -24,14 +24,14 @@ javac 21.0.5
 (exit 0)
 ```
 
-## 흔들리는 칸 / 안 흔들리는 칸
+## 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| **흔들린다** | (이 주제에는 없다) | 해시코드·주소·시간을 찍지 않았다 |
-| 안 흔들린다 | `split` 격자 5행 × 5열 · `trim` 격자 7행 · 갈린 행 수 | 결정적 문자열 함수 |
-| 안 흔들린다 | 정규식 출력 · `pad` 출력 · 예외 문장 | 같은 JDK·stdlib 이면 같다 |
-| 안 흔들린다 | stdlib·JDK 소스 발췌(줄 번호째) · `javap` 의 명령·상수 풀 번호 · 종료 코드 | jar·`src.zip`·컴파일러가 같으면 같다 |
+| **실행마다 달라진다** | (이 주제에는 없다) | 해시코드·주소·시간을 찍지 않았다 |
+| 달라지지 않는다 | `split` 격자 5행 × 5열 · `trim` 격자 7행 · 달라진 행 수 | 결정적 문자열 함수 |
+| 달라지지 않는다 | 정규식 출력 · `pad` 출력 · 예외 문장 | 같은 JDK·stdlib 이면 같다 |
+| 달라지지 않는다 | stdlib·JDK 소스 발췌(줄 번호째) · `javap` 의 명령·상수 풀 번호 · 종료 코드 | jar·`src.zip`·컴파일러가 같으면 같다 |
 
 ★ 근거 — 캡처 스크립트를 처음부터 두 번 돌려 **블록 전체를 대조**했다(수치는 3-answer 의 「실행 검증」).
 
@@ -69,19 +69,19 @@ javac 21.0.5
 
 ## 동작 방식
 
-### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「부적용인 창」
+### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「해당 없는 창」
 
 | 창 | 무엇을 보여 주나 | 어디서 왔나 |
 |---|---|---|
-| ★★★ **Java 대비 격자(실행)** | 입력 × 쪼개는 꼴 → 원소 수 · 원소((1)) | ★ **본체 창** — Java 열은 `javac` 로 만든 `JSplit` 이 **진짜 `String.split`** 을 부른다 |
+| ★★★ **Java 대비 격자(실행)** | 입력 × 쪼개는 꼴 → 원소 수 · 원소((1)) | ★ **핵심 창** — Java 열은 `javac` 로 만든 `JSplit` 이 **진짜 `String.split`** 을 부른다 |
 | ★★ **`trim` 코드포인트 격자** | 앞뒤에 둔 글자 × 세 `trim` → 남은 코드포인트((3)) | — |
 | ★★ **한 쌍 실행** | `split(".")` Java 대 Kotlin((2)) | [Java 35번](../../../java/syntax/35-string/)과 같은 입력 |
 | ★★ **stdlib·JDK 소스 발췌** | 그 동작이 **KDoc/javadoc 계약**인가((1)(3)(4)) | — |
 | ★★ **`javap`** | 확장 함수가 **`StringsKt`** 의 정적 메서드인 것 · Java 에서 부르는 모양((6)) | [26번 주제](../26-value-class-and-boxing/)·[39번 주제](../39-java-interop-annotations/)와 같은 창 |
 | **인용 — 다시 안 잰다** | `trimIndent`/`trimMargin` 의 기준 · `$` 가 글자인 조건 | [02번 주제](../02-string-templates-and-raw-strings/) (1)(6) |
-| **부적용 — 실행 시간** | 「`Regex` 를 미리 만들면 빠르다」·「Kotlin `split` 이 빠르다」는 **재지 않았다** | — |
+| **해당 없음 — 실행 시간** | 「`Regex` 를 미리 만들면 빠르다」·「Kotlin `split` 이 빠르다」는 **재지 않았다** | — |
 
-### (1) ★★★ Java 와 갈리는 격자 — `split`
+### (1) ★★★ Java 와 달라지는 격자 — `split`
 
 **언제 쓰나** — CSV 한 줄·경로·키 목록을 쪼갤 때. 특히 **Java 코드를 옮길 때.**
 
@@ -158,8 +158,8 @@ rows where kt split(d) and java split(d) differ: 2 / 5
 (exit 0)
 ```
 
-- ★★★ **Java `split(d)` 와 갈린 행은 5행 중 2행** — `"a,b,,"`(Kotlin **4개** · Java **2개**)와 `","`(Kotlin **`["", ""]`** · Java **`0 []`**). Java 는 **끝의 빈 조각을 지우고**, `","` 처럼 조각이 **전부 빈 것이면 배열이 통째로 빈다.**
-- ★★★ **Java `split(d, -1)` 과는 한 행도 안 갈린다(0 / 5)** — Kotlin `split` 은 Java 의 `-1`(끝 조각을 지우지 않는 꼴)과 **같은 원소**를 준다.
+- ★★★ **Java `split(d)` 와 달라진 행은 5행 중 2행** — `"a,b,,"`(Kotlin **4개** · Java **2개**)와 `","`(Kotlin **`["", ""]`** · Java **`0 []`**). Java 는 **끝의 빈 조각을 지우고**, `","` 처럼 조각이 **전부 빈 것이면 배열이 통째로 빈다.**
+- ★★★ **Java `split(d, -1)` 과는 한 행도 안 달라진다(0 / 5)** — Kotlin `split` 은 Java 의 `-1`(끝 조각을 지우지 않는 꼴)과 **같은 원소**를 준다.
 - ★★ **`""` 는 둘 다 `1 [""]`** — 빈 문자열을 쪼개면 **빈 조각 하나**다(0개가 아니다).
 - ★★ **`",a"` 는 둘 다 `["", "a"]`** — Java 도 **앞의** 빈 조각은 지우지 않는다. 지우는 것은 **끝**뿐이다.
 - ★ **`limit = 2` 는 「조각을 최대 둘로」** — `"a,b,,"` 는 `["a", "b,,"]`, 나머지는 **통째로 마지막 조각**에 남는다. `"a<U+0020><U+0020>b"` 를 `" "` 로 쪼개면 가운데 빈 조각이 **양쪽 다** 남는다.
@@ -322,8 +322,8 @@ rows where kt trim() and java trim() differ: 4 / 7
 (exit 0)
 ```
 
-- ★★★ **Kotlin `trim()` 과 Java `trim()` 은 7행 중 4행에서 갈린다** — U+3000(전각 공백) · U+00A0(줄바꿈 없는 공백) · U+2003(em 공백)은 **Kotlin 만** 깎고, U+0001(제어문자)은 **Java 만** 깎는다.
-- ★★★ **Java `strip()` 과는 1행만 갈린다 — U+00A0** — `strip()` 은 `Character.isWhitespace` 를 쓰는데 그 판정이 U+00A0 에서 `false` 다(「줄바꿈 없는」 공백은 제외). Kotlin 은 거기에 **`isSpaceChar`** 를 더해 U+00A0 까지 깎는다.
+- ★★★ **Kotlin `trim()` 과 Java `trim()` 은 7행 중 4행에서 달라진다** — U+3000(전각 공백) · U+00A0(줄바꿈 없는 공백) · U+2003(em 공백)은 **Kotlin 만** 깎고, U+0001(제어문자)은 **Java 만** 깎는다.
+- ★★★ **Java `strip()` 과는 1행만 달라진다 — U+00A0** — `strip()` 은 `Character.isWhitespace` 를 쓰는데 그 판정이 U+00A0 에서 `false` 다(「줄바꿈 없는」 공백은 제외). Kotlin 은 거기에 **`isSpaceChar`** 를 더해 U+00A0 까지 깎는다.
 - ★★ **U+200B(폭 없는 공백)는 셋 다 안 깎는다** — 이름에 「공백」이 있어도 유니코드 분류가 공백이 아니다(`isWhitespace` 둘 다 `false`).
 - ★ 공백 U+0020 과 탭 U+0009 는 **셋 다** 깎는다 — 갈림은 ASCII 밖과 제어문자에서만 난다.
 
@@ -382,7 +382,7 @@ fun main() {
 - ★★★ **`"$2:$1"` 은 그대로 그룹 참조가 된다**(`7`·`8` 이 같다) — `$` 뒤가 **숫자**면 Kotlin 템플릿이 아니다([02번 주제](../02-string-templates-and-raw-strings/) (1)). **`\$` 는 여기서 필요 없다.**
 - ★★★ **부딪히는 것은 이름 있는 그룹 `${name}`** — `"\${host}:\${user}"`(`9`)는 `host:kim` 인데, `\` 를 하나 빠뜨린 `"\${host}:${user}"`(`10`)는 **`host:lee`** — 바깥의 `val user = "lee"` 가 **템플릿으로 먼저 끼어들었다.** 컴파일 에러도 경고도 없다.
 - ★★ **람다를 받는 `replace`**(`11`)는 `$` 해석이 **아예 없다** — 그룹을 `groupValues` 로 꺼내 문자열을 직접 만든다.
-- ★★ **`String.replace(".", "-")` 는 글자 그대로**(`a-b-c`) · `replace(Regex("."), "-")` 는 정규식(`-----`) — Java 의 `replace`(글자)·`replaceAll`(정규식) 두 이름이 Kotlin 에서는 **인자 타입**으로 갈린다.
+- ★★ **`String.replace(".", "-")` 는 글자 그대로**(`a-b-c`) · `replace(Regex("."), "-")` 는 정규식(`-----`) — Java 의 `replace`(글자)·`replaceAll`(정규식) 두 이름이 Kotlin 에서는 **인자 타입**으로 나뉜다.
 
 ```text
 ===== sed -n '107,111p' jvmMain/kotlin/text/regex/Regex.kt =====
@@ -563,7 +563,7 @@ swap    26/09/2026
 |---|---|---|
 | Kotlin `split` 이 끝 빈 조각을 남긴다 | ★★★ **API 계약(KDoc)** | (1) |
 | Java `split` 이 끝 빈 조각을 지운다 · `trim` 은 `<= U+0020` | ★★★ **JDK 계약(javadoc)** | (1)(3) |
-| Kotlin `split(String)` 의 구분자는 글자 | ★★ **API 계약(서명)** — 매개변수 타입이 `String`·`Char`·`Regex` 로 갈린다 | (1)(2) |
+| Kotlin `split(String)` 의 구분자는 글자 | ★★ **API 계약(서명)** — 매개변수 타입이 `String`·`Char`·`Regex` 로 나뉜다 | (1)(2) |
 | Kotlin `trim` 은 `Char::isWhitespace` | ★★ **API 계약(선언)** | (3) |
 | JVM `isWhitespace` = `Character.isWhitespace \|\| isSpaceChar` | ★ **stdlib JVM 구현** — 다른 플랫폼(JS·Native)은 **재지 않았다** | (3) |
 | `matches` = 전체 · `containsMatchIn` = 부분 | ★★ **API 계약(KDoc)** | (4) |
@@ -587,7 +587,7 @@ swap    26/09/2026
 
 ## 핵심 문장
 
-1. **Kotlin `split` 은 끝 빈 조각을 남기고, Java `split` 은 지운다** — 5행 중 2행이 갈렸고, Java `split(d, -1)` 과는 0행이다.
+1. **Kotlin `split` 은 끝 빈 조각을 남기고, Java `split` 은 지운다** — 5행 중 2행이 달라졌고, Java `split(d, -1)` 과는 0행이다.
 2. **Kotlin `split(".")` 은 점 글자, Java `split(".")` 은 「아무 글자」** — Java 쪽은 빈 배열이다.
 3. **`trim` 의 공백은 셋** — Java `trim` 은 `<= U+0020`, `strip` 은 `isWhitespace`, Kotlin 은 `isWhitespace ∪ isSpaceChar`(JVM).
 4. **`matches` 는 전체 일치**, 부분은 `containsMatchIn`·`find` — 치환의 **`${name}` 만** Kotlin 템플릿과 부딪힌다.
@@ -624,12 +624,12 @@ swap    26/09/2026
 
 ## 실행 환경
 
-**기준 소스** — [Strings](https://kotlinlang.org/docs/strings.html) · [kotlin.text 패키지 API](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.text/)(`split`·`trim`·`padStart`·`Regex`) — 이 문서는 그 목록을 따르되, 문장은 인용하지 않고 **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 구현, 그리고 **JDK 21.0.5 의 `src.zip`**(`String.java`)의 javadoc 을 근거로 삼는다((3)(6)).
+**기준 소스** — [Strings](https://kotlinlang.org/docs/strings.html) · [kotlin.text 패키지 API](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.text/)(`split`·`trim`·`padStart`·`Regex`) — 이 문서는 그 목록을 따르되, 문장은 인용하지 않고 **이 버전의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 구현, 그리고 **JDK 21.0.5 의 `src.zip`**(`String.java`)의 javadoc 을 근거로 삼는다((3)(6)).
 **실행 검증** — 이 문서의 모든 출력·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`java`·`javap` 에서 실제로 얻었다.\
 `kotlinc` 7회 · `javac` 3회 · `java` 8회 · `javap` 3회 · stdlib 소스 jar 에서 발췌 6곳 · JDK `src.zip` 에서 2곳.\
-★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「갈린 행 N / M」은 격자 프로그램이 스스로 센 것**이다.
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「달라진 행 N / M」은 격자 프로그램이 스스로 센 것**이다.
 ★★ 입력에 공백·제어문자·전각 공백이 들어가므로 격자는 **보이는 표기**로 찍는다 — 따옴표 안에서 `!`\~`~`(0x21\~0x7E) 밖의 글자는 전부 `<U+XXXX>`, `trim` 격자는 **코드포인트 덤프**(`U+0061` 꼴)다. 이 문서의 어떤 블록에도 **U+3000·U+00A0 글자 자체는 없다.**
-**버전** — `split`·`trim`·`padStart`·`padEnd`·`Regex` 는 **1.0** — 이 판의 소스에서 선언 위에 `@SinceKotlin` 이 **없다**(확인만 했고 발췌하지 않았다). Java `String.strip()` 은 **Java 11**.
+**버전** — `split`·`trim`·`padStart`·`padEnd`·`Regex` 는 **1.0** — 이 버전의 소스에서 선언 위에 `@SinceKotlin` 이 **없다**(확인만 했고 발췌하지 않았다). Java `String.strip()` 은 **Java 11**.
 **경계** — ★★★ **문자열 매칭 알고리즘**(KMP·보이어-무어·정규식 엔진의 동작)은 [`cs/algorithm/25-string-matching/`](../../../../cs/algorithm/25-string-matching/) 이 정본이다 — 여기는 **stdlib 함수의 경계 동작**(빈 조각 · 공백의 정의 · 전체 일치 대 부분 일치)만 본다.\
 **Java 쪽 `split` 함정**(`"a,b,,c,,".split(",")` · `split(".")`)은 [Java 35번](../../../java/syntax/35-string/)이, **정규식 문법**은 [Java 37번](../../../java/syntax/37-regex/)이 정본이다 — 여기서는 **같은 입력을 Kotlin 과 한 쌍으로** 던진다.\
 **`$` 가 템플릿이 되는 조건**과 `trimIndent`/`trimMargin` 은 [02번 주제](../02-string-templates-and-raw-strings/) (1)(6)이 정본이다 — 여기서는 `Regex.replace` 의 그룹 참조와 부딪히는 자리만 본다. 확장 함수가 **정적 메서드**로 풀린다는 논지는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §7 이다.

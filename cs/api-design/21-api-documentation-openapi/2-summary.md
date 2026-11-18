@@ -145,7 +145,7 @@ GET /orders/ord_1 -> 200 application/json
 - **트리 + 참조 그래프**: OpenAPI 문서는 JSON 트리이고 `$ref`가 노드 사이에 간선을 더한다. `dereference`는 참조를 따라가 트리에 펼친다. 자기 참조 스키마(트리 구조 자원)가 있으면 순환이 생기므로 방문 기록이 필요하다 → [data-structure/08-graph](../../data-structure/08-graph/2-summary.md).
 - **JSON Pointer**: `#/components/schemas/Order`는 루트에서 키를 따라 내려가는 경로다. 실험 오류의 `Token "Ordr" does not exist`가 그 경로 탐색 실패다.
 - **스키마 검증 = 재귀 하강**: 검증기는 스키마 트리와 값 트리를 함께 내려가며 키워드(`type`·`required`·`enum`·`additionalProperties`)를 검사하고, 실패 위치를 JSON Pointer(`/id`, `/status`)로 보고한다. ajv는 스키마를 JS 함수로 컴파일해 둔다.
-- **명세 diff**: 두 판의 명세 트리를 비교해 삭제된 경로·필수로 바뀐 필드·좁아진 enum을 파괴적 변경으로 분류한다.
+- **명세 diff**: 두 버전의 명세 트리를 비교해 삭제된 경로·필수로 바뀐 필드·좁아진 enum을 파괴적 변경으로 분류한다.
 
 ## 적용 — 풀어나가는 법
 

@@ -208,13 +208,13 @@ console.log("    Reflect.set(p, 'y', 1, {}) fired: " + fired.join(" -> "));
 
 ### 9. 14번 · 22번과 이어 보기 (연결) ★★
 
-- ★★ 2번 탐침이 엄격 모드여야 했던 이유를 14번으로, `keys` 대 `ownKeys` 행을 22번으로 설명하라.
+- ★★ 2번 probe가 엄격 모드여야 했던 이유를 14번으로, `keys` 대 `ownKeys` 행을 22번으로 설명하라.
 
 ## 실행 환경
 
-**환경** — node v20.19.6(배너의 `node20`) · x86-64 Linux. ★ 이 주제의 탐침은 node 18 · Chrome 151 에서도 **한 글자도 같았다.**
+**환경** — node v20.19.6(배너의 `node20`) · x86-64 Linux. ★ 이 주제의 probe는 node 18 · Chrome 151 에서도 **한 글자도 같았다.**
 
-★★★ **이 주제의 본체는 격자 둘이다** — 대응 표 13행 · `Object` 대 `Reflect` 19행. **1번 · 2번 문항이 이 주제의 중심이다.**
+★★★ **이 주제의 핵심은 격자 둘이다** — 대응 표 13행 · `Object` 대 `Reflect` 19행. **1번 · 2번 문항이 이 주제의 중심이다.**
 
 **선행** — [45](../45-proxy/2-summary.md) · [09](../09-call-apply-bind/2-summary.md) · [14](../14-property-descriptors-and-freezing/2-summary.md) · [22](../22-symbol-and-well-known-symbols/2-summary.md).
 

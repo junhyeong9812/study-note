@@ -122,7 +122,7 @@
 - 앱이 받는 답은 A(IPv4)와 AAAA(IPv6) 두 종류일 수 있다.
   - 둘 다 있으면 *Happy Eyeballs*를 구현한 클라이언트(주요 브라우저, curl 등)는 한쪽이 느릴 때 다른 쪽으로 빨리 넘어간다. 구현하지 않은 런타임은 주소 목록을 순서대로 시도하기도 한다. AAAA 질의를 먼저 보내고 곧바로 A 질의를 보내야 한다(SHOULD). 연결 시도 사이 간격의 권장값 하나는 250ms다(RFC 8305 §3, §5).
 - DNS의 HTTPS 레코드(RFC 9460)는 첫 접속 전에 `h3` 지원을 알릴 수 있다(37번).
-- 실패는 `NXDOMAIN`(이름 없음)과 `SERVFAIL`(답을 못 만듦)로 갈린다. Java에서는 둘 다 `UnknownHostException` 하나로 뭉개진다. getaddrinfo를 쓰는 런타임(Node `dns.lookup` 등)에서는 NXDOMAIN이 `ENOTFOUND`, SERVFAIL이 `EAI_AGAIN`으로 갈리기도 한다(27번).
+- 실패는 `NXDOMAIN`(이름 없음)과 `SERVFAIL`(답을 못 만듦)로 나뉜다. Java에서는 둘 다 `UnknownHostException` 하나로 뭉개진다. getaddrinfo를 쓰는 런타임(Node `dns.lookup` 등)에서는 NXDOMAIN이 `ENOTFOUND`, SERVFAIL이 `EAI_AGAIN`으로 갈리기도 한다(27번).
 
 ### 5. 구간 2 — TCP: 경로가 열리나
 

@@ -255,7 +255,7 @@ print("blocked cells: %d / %d" % (blocked, cells))
 
 선행은 [01번 주제](../01-val-var-and-basic-types/)(`val`/`var` 와 기본 타입 — 암묵 수치 변환이 없다)다.
 
-이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5** 에서 실제로 던져 받은 것이다(`delay` 두 칸만 kotlinx-coroutines 1.11.0).
+이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5** 에서 실제로 실행해 받은 것이다(`delay` 두 칸만 kotlinx-coroutines 1.11.0).
 
 ## 복습 기록
 

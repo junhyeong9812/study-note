@@ -45,7 +45,7 @@
 - **확인**
   - tcpdump로 요청 직후 RST가 오는지 본다.
   - AWS면 `IdleTimeoutCount` 지표가 오르는지 본다.
-  - 실패가 idle 시간 350초 전후로 갈리는지 본다.
+  - 실패가 idle 시간 350초 전후로 나뉘는지 본다.
 - **대처**
   - TCP keepalive를 NAT timeout보다 짧게 켠다(Java `TCP_KEEPIDLE`, Node `setKeepAlive(true, ms)`).
   - 또는 풀의 idle 연결 최대 수명을 NAT timeout보다 짧게 둔다.

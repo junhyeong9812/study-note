@@ -259,7 +259,7 @@ ERROR 1054 (42S22) at line 1: Unknown column 'dept_id' in 'from clause'
 **`dept` 에는 `dept_id` 열이 없다.** 두 엔진 다 즉시 거부한다.
 
 그림 해설 — **`USING` 은 내가 이름을 적기 때문에 오타·스키마 변경이 에러로 드러난다.**\
-비용 — 없다. **이것이 다음 절의 `NATURAL JOIN` 과 갈리는 결정적 지점이다** — `NATURAL` 은 이름을 안 적으므로 **막아 줄 근거 자체가 없다.**
+비용 — 없다. **이것이 다음 절의 `NATURAL JOIN` 과 달라지는 결정적 지점이다** — `NATURAL` 은 이름을 안 적으므로 **막아 줄 근거 자체가 없다.**
 
 ---
 
@@ -627,7 +627,7 @@ FROM 왼쪽 NATURAL LEFT JOIN 오른쪽             -- 외부 조인과도 조�
   예: 공통 열이 없는 `NATURAL JOIN` 이 12행을 냈다. [목록의 **12번 주제**](../12-cartesian-product-cross-join/).
 - **스키마 변경(schema change)** — 열 추가·삭제·이름 변경처럼 표의 구조를 바꾸는 것.\
   예: `ALTER TABLE deptx ADD COLUMN name` — 이것 하나로 3행이 0행이 됐다.
-- **silent failure(무음 실패)** — 에러 없이 틀린 값이 나오는 실패.\
+- **silent failure(조용한 실패)** — 에러 없이 틀린 값이 나오는 실패.\
   예: `NATURAL LEFT JOIN` 이 `SELECT * FROM emp` 과 똑같은 4행을 준 것.
 - **투영(projection)** — 결과에 어느 열을 어떤 순서로 내보낼지 정하는 것.\
   예: `USING` 은 조건이 아니라 투영을 바꾼다 — 행이 아니라 열이 달라지는 이유다.

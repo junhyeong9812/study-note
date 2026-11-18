@@ -21,7 +21,7 @@
 
 | 상황 | 떼어 쓸 것 |
 |---|---|
-| 도메인이 복잡한데 모델이 계속 흔들린다 | [04 애그리게이트 양식](phase2/04-aggregate-format.md) §4 **합계 필드 판정** · **상한을 쓸 때 묻는 네 가지** |
+| 도메인이 복잡한데 모델이 계속 실행마다 달라진다 | [04 애그리게이트 양식](phase2/04-aggregate-format.md) §4 **합계 필드 판정** · **상한을 쓸 때 묻는 네 가지** |
 | 같은 자리가 반복해서 깨진다 | [design-change](design-change/README.md) — 토대 변경 절차 |
 | 리뷰가 매번 다른 것만 잡는다 | [verification-by-construction](verification-by-construction.md) — 검산 기계화 |
 | 문서 라운드가 수렴하지 않는다 | [docs-only-limits](docs-only-limits.md) — 매체를 바꿀 시점 |

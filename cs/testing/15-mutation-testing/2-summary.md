@@ -136,7 +136,7 @@ ConditionalsBoundaryMutator,discountedPrice,8,SURVIVED
 ```
 
 - PIT maven 문서: `mutationThreshold`는 "전체 변이 중 죽인 비율", `testStrengthThreshold`는 "killed / (killed + survived), 커버리지 정보가 없는 변이 제외"로 정의한다.
-- 해석: Test strength는 "**실행된 곳에서** 단언이 얼마나 날카로운가", Killed %는 "실행 여부까지 포함한 전체 판별력"이다. PartialTest처럼 실행 범위가 좁으면 둘이 크게 갈린다.
+- 해석: Test strength는 "**실행된 곳에서** 단언이 얼마나 날카로운가", Killed %는 "실행 여부까지 포함한 전체 판별력"이다. PartialTest처럼 실행 범위가 좁으면 둘이 크게 달라진다.
 - PIT는 생성된 변이체가 등가인지 판정해 분모에서 빼지 않는다. 다만 흔한 등가·무의미 변이 일부는 아예 만들지 않는다 — 예: 로깅 프레임워크 호출이 있는 줄은 변이하지 않는다(PIT Basic concepts, 기능 `FLOGCALL`). 그래서 PIT 점수는 학술 정의의 MS보다 낮게 나올 수 있다.
 
 ### 5. 등가 변이체 — 죽일 수 없는 변이

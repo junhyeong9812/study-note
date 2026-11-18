@@ -81,7 +81,7 @@ PinBuffer(BufferDesc *buf, BufferAccessStrategy strategy)
 }
 ```
 
-희생자를 잡을 때는 헤더 spinlock 을 쥔 채 pin 해야 해서 별도 함수를 쓴다. usage_count 는 건드리지 않는다.
+희생자를 잡을 때는 헤더 spinlock 을 잡은 채 pin 해야 해서 별도 함수를 쓴다. usage_count 는 건드리지 않는다.
 
 `src/backend/storage/buffer` / `bufmgr.c` L3200-L3235 ([GitHub](https://github.com/postgres/postgres/blob/724edf9bde9d356724ad384a2e196edc3c9f80f7/src/backend/storage/buffer/bufmgr.c#L3200-L3235))
 

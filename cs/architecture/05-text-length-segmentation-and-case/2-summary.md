@@ -93,7 +93,7 @@
 - PostgreSQL 17: `character varying(n)`은 "n characters (not bytes)"까지 담는다. 넘으면 보통 `ERROR: value too long for type character varying(n)`(8.3절). 예외: 넘는 부분이 모두 공백이면 오류 없이 잘리고, `'…'::varchar(n)`처럼 명시 형변환한 값도 n자로 잘린다(같은 절, SQL 표준 요구).
 - MySQL 8.0: `CHAR(30)`은 "30 characters"까지. strict SQL 모드가 아니면 잘라 넣고 경고, strict 모드면 오류다. 단 strict 오류는 공백 아닌 문자가 잘릴 때이고, 넘는 끝 공백은 모드와 상관없이 잘린다(`VARCHAR`는 경고, `CHAR`는 조용히)(13.3.2절). 오류 코드는 1406 `Data too long for column '%s' at row %ld`(오류 참조).
 - 두 문서는 "문자"라고만 쓴다. 이것이 코드 포인트라는 것은 이 작업에서 DB를 띄워 확인하지 못했다 [?]. 국기 10개(그래핌 10, 코드 포인트 20)가 `VARCHAR(10)`을 넘는 것은 이 해석에 기댄 예측이다.
-- 커리큘럼 칸의 "MySQL 문자 수 vs PG" 대비는 위 문서 기준으로는 둘 다 "문자" 단위다. 실제 어긋남은 **앱(그래핌·UTF-16)과 DB(문자) 사이**, 그리고 바이트로 재는 한도(MySQL 행 크기 65,535바이트, 인덱스 키 바이트 한도, [04](../04-character-encoding-unicode/2-summary.md) 장애 4)에서 생긴다.
+- 커리큘럼 칸의 "MySQL 문자 수 vs PG" 대비는 위 문서 기준으로는 둘 다 "문자" 단위다. 실제 불일치는 **앱(그래핌·UTF-16)과 DB(문자) 사이**, 그리고 바이트로 재는 한도(MySQL 행 크기 65,535바이트, 인덱스 키 바이트 한도, [04](../04-character-encoding-unicode/2-summary.md) 장애 4)에서 생긴다.
 
 ### 5. 대소문자 — 로캘에 따라, 길이도 바뀐다
 

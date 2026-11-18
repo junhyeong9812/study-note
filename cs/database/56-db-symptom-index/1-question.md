@@ -5,7 +5,7 @@
 1. (왜) DB 장애 현장에서 Spring 예외 이름 하나(예: `CannotAcquireLockException`)만 보고 원인을 적으면 안 되는 이유는 무엇인가? 증상과 함께 확보해야 할 원문과 모양을 말하라.
 2. (구분) MySQL `ERROR 1205`와 `ERROR 1213`은 각각 무엇이 일어난 것인가? 걸린 시간, 롤백 범위, 첫 진단 명령이 어떻게 다른가? 1205가 교착 때문에 나는 경우는 언제인가?
 3. (경계) SQLSTATE `40001`이 나올 수 있는 경우를 제품·메시지별로 넷 이상 들어라. 각각의 대처가 왜 다른가?
-4. (연결) Spring 6.x의 `JdbcTemplate`에서 SQL 예외가 `DataAccessException`으로 번역되는 경로 두 가지는 무엇이며 무엇으로 갈리나? MySQL Connector/J에서 1205와 1213을 예외 클래스나 `getSQLState()`로 가를 수 없는 이유와, 대신 로그에 남길 값은?
+4. (연결) Spring 6.x의 `JdbcTemplate`에서 SQL 예외가 `DataAccessException`으로 번역되는 경로 두 가지는 무엇이며 무엇으로 갈리나? MySQL Connector/J에서 1205와 1213을 예외 클래스나 `getSQLState()`로 구분할 수 없는 이유와, 대신 로그에 남길 값은?
 5. (장애 진단) API가 전부 타임아웃이라 앱을 재시작했더니 잠시 괜찮다가 다시 막힌다. DB CPU는 내내 높다. 무엇을 의심하고 DB에서 무엇을 먼저 보나? 재발 방지 설정 셋을 말하라.
 6. (장애 진단) 리포트 API가 `57014 canceling statement due to statement timeout`으로 실패한다. 한도를 올리기 전에 할 일은? 같은 `57014`인데 메시지가 `due to user request`라면 무엇이 다른가?
 7. (예측) 배포 중 새 인스턴스가 `FATAL: sorry, too many clients already`로 뜨지 못한다. `max_connections`와 풀 크기를 크게 올리면 무슨 일이 생길 수 있나? 먼저 할 계산은?

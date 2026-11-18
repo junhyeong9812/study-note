@@ -86,7 +86,7 @@ node 20.19.6  v8 11.3.244.8-node.33  fields yes  #private yes  static{} yes  has
 
 > 이 절이 본문이다. 그림을 먼저 두고 그 그림을 출력으로 읽는다.
 
-### (1) ★★★ 소비자 17가지에 로그를 심는다 — 이 주제의 본체
+### (1) ★★★ 소비자 17가지에 로그를 심는다 — 이 주제의 핵심
 
 **언제 쓰나** — 「이 API 가 내 이터러블을 **끝까지 읽나, 몇 번 읽나, 닫나**」를 물을 때.
 ★★★ 값으로는 답이 안 나온다 — `[10,20,30]` 은 누가 읽었든 `[10,20,30]` 이다.
@@ -399,14 +399,14 @@ e + U+0301  .length / [...].length              -> 2 / 2
   **원래 완료가 정상일 때만 `return()` 의 결과를 검사한다.**
 - ★★ **`[3]` `done: true` 와 같이 온 값은 `Array.from` · `[x, y]` · `new Set` 도 버린다** — 동작 (3)의 `[4]` 에서 다시 본다.
 - ★★ **`[4]` 이터레이터 헬퍼는 이 두 판에 없다** — `Iterator` 전역도, 배열 이터레이터의 `map`·`toArray` 도 `undefined` 다.
-  ES2025 기능이고, 이 블록은 **두 판에서 identical** 이다. **이 주제는 헬퍼를 한 줄도 쓰지 않는다**([목록의 **21번 주제**](../21-iterator-helpers/)).
+  ES2025 기능이고, 이 블록은 **두 버전에서 identical** 이다. **이 주제는 헬퍼를 한 줄도 쓰지 않는다**([목록의 **21번 주제**](../21-iterator-helpers/)).
 - ★★ **`[5]` `arguments` 는 유사 배열이면서 이터러블이다** — `arguments[Symbol.iterator]` 가 `function` 이고 `[...arguments]` 가 `[1,2]` 다.
   **유사 배열이라서 도는 것이 아니라 제 `Symbol.iterator` 를 따로 가져서 돈다.** 동작 (4)의 `[2]` 와 짝이다.
 - ★★★ **`[6]` 끝없는 이터레이터에 `const [a]` 는 `next` 한 번, `return()` 한 번으로 멈춘다**(`{"a":1,"nexts":1,"closes":1}`).
   **패턴이 채워지면 더 읽지 않고 닫는다** — 동작 (1)의 `[a, b, c]` 가 딱 맞아도 닫는 것과 **같은 규칙의 다른 얼굴**이다.
 - ★ **`[7]` 결합 문자 하나를 붙인 `e` 는 `length` 도 2, `[...e].length` 도 2** 다. **코드 포인트 단위는 사람이 보는 한 글자와 다르다** — 동작 (5)에서 이어진다.
 
-### (3) ★★★ 이터러블 대 이터레이터 — 두 번 돌면 갈린다
+### (3) ★★★ 이터러블 대 이터레이터 — 두 번 돌면 달라진다
 
 **언제 쓰나** — 함수에 넘긴 값을 **그 함수가 두 번 돌 수 있나**를 판단할 때.
 
@@ -600,7 +600,7 @@ iterator has no next                        -> TypeError {(intermediate value)} 
 return() returns a primitive (on break)     -> TypeError Iterator result 1 is not an object
 ```
 
-- ★★★ **`[1]` 평범한 객체 하나가 여섯 자리에서 네 가지로 갈린다.**
+- ★★★ **`[1]` 평범한 객체 하나가 여섯 자리에서 네 가지로 나뉜다.**
   `for...of` · `[...plain]` · `const [v] = plain` 은 **`plain is not iterable`**(변수 이름이 문구에 들어간다),
   호출 스프레드 `id(...plain)` 은 **`Spread syntax requires ...iterable[Symbol.iterator] to be a function`**,
   `new Set(plain)` 은 **`object is not iterable (cannot read property Symbol(Symbol.iterator))`**,
@@ -611,7 +611,7 @@ return() returns a primitive (on break)     -> TypeError Iterator result 1 is no
   **인덱스와 `length` 가 다 있어도 JS 는 그것으로 돌지 않는다.** 대체 경로가 없다.
   `Array.from` · `Array.prototype.slice.call` · `apply` 는 **유사 배열 문**이라 된다(11번의 격자 그대로).
 - ★★★ **`Array.prototype[Symbol.iterator]` 를 빌려 붙이자 스프레드가 `["x","y"]`** 가 되었다.
-  **이터러블은 「무엇으로 태어났나」가 아니라 「그 프로퍼티가 있나」다** — 이 줄이 ③ 브랜드 태그를 이 주제에서 부적용으로 만든다.
+  **이터러블은 「무엇으로 태어났나」가 아니라 「그 프로퍼티가 있나」다** — 이 줄이 ③ 브랜드 태그를 이 주제에서 해당 없음으로 만든다.
   ★ 빌려 온 배열 이터레이터가 이 객체에서 무엇을 읽어 도는지는 **로그를 안 심었다.** 결과만 적는다.
 - ★★★ **`[3]` `null`·`undefined` 에 `for...of` 는 `TypeError`** 다.
   ★★★ **[18번](../18-for-in-and-enumeration/2-summary.md)의 `for-in null` 은 조용히 0회**(`[]`)였다 — **같은 모양의 문이 반대로 군다.**
@@ -622,10 +622,10 @@ return() returns a primitive (on break)     -> TypeError Iterator result 1 is no
   그것이 원시값을 돌려주면 **`Result of the Symbol.iterator method is not an object`**(명세 `GetIteratorFromMethod` 의 "If iterator is not an Object, throw a TypeError exception."),
   `next()` 가 원시값을 주면 **`Iterator result 1 is not an object`**(`IteratorNext` 의 "If result is not an Object, then … Throw a TypeError exception.").
   ★★★ **관찰 하나** — **`next` 가 아예 없는 이터레이터도 `{(intermediate value)} is not iterable`** 이다.
-  「`next` 가 없다」가 아니라 **「이터러블이 아니다」로 보고된다** — 첫 줄과 문구가 같다. **이 판의 V8 이 그렇게 적는다**는 관찰로만 적는다.
+  「`next` 가 없다」가 아니라 **「이터러블이 아니다」로 보고된다** — 첫 줄과 문구가 같다. **이 버전의 V8 이 그렇게 적는다**는 관찰로만 적는다.
   ★ `break` 때 `return()` 이 원시값을 주면 **`Iterator result 1 is not an object`** — `next` 쪽과 **같은 문구**다.
 
-**두 판에서 돌리면 — 이 블록 하나가 갈린다.**
+**두 버전에서 돌리면 — 이 블록 하나가 달라진다.**
 
 ```text
 ===== node18 js16b-19c-errors.js (exit=0) =====
@@ -658,10 +658,10 @@ iterator has no next                        -> TypeError {(intermediate value)} 
 return() returns a primitive (on break)     -> TypeError Iterator result 1 is not an object
 ```
 
-- ★★★ **갈린 것은 넷째 줄 하나 — `id(...plain)` 이다.** v18 은 **`Found non-callable @@iterator`**, v20 은 **`Spread syntax requires ...iterable[Symbol.iterator] to be a function`**.
-  ★★★ **11번의 `f(...obj)` 가 갈린 것과 정확히 같은 자리, 같은 두 문구다.** 호출 자리의 스프레드만 v20 에서 문구가 바뀌었다.
+- ★★★ **달라진 것은 넷째 줄 하나 — `id(...plain)` 이다.** v18 은 **`Found non-callable @@iterator`**, v20 은 **`Spread syntax requires ...iterable[Symbol.iterator] to be a function`**.
+  ★★★ **11번의 `f(...obj)` 가 달라진 것과 정확히 같은 자리, 같은 두 문구다.** 호출 자리의 스프레드만 v20 에서 문구가 바뀌었다.
   **배열 자리 `[...plain]` 과 `for...of` 는 두 판 모두 `plain is not iterable`** 이다.
-- ★★ **값·종류는 한 글자도 안 갈렸다.** 갈린 것은 **문구뿐**이다 — 그래서 「흔들리는 칸」에 문구를 넣었다.
+- ★★ **값·종류는 한 글자도 달라지지 않았다.** 달라진 것은 **문구뿐**이다 — 그래서 「실행마다 달라지는 항목」에 문구를 넣었다.
 
 ```sh
 # js16b-vdiff.sh
@@ -722,7 +722,7 @@ identical 22  ·  differs 1  ·  total 23
 
 `identical 22  ·  differs 1  ·  total 23`
 
-★★ **나머지 블록은 전부 `identical`** 이고, 갈린 것은 위의 `js16b-19c-errors.js` 한 줄이다.
+★★ **나머지 블록은 전부 `identical`** 이고, 달라진 것은 위의 `js16b-19c-errors.js` 한 줄이다.
 
 ### (5) ★★ 내장 이터러블 둘 — 문자열은 「무엇 단위로」, `Map`·`Set` 은 「어떤 순서로」
 
@@ -882,7 +882,7 @@ Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.m
 ### (1) ★★★ 「구조 분해는 필요한 만큼만 읽고 끝이다」로 믿는다
 
 **읽는 것은 맞는데 끝이 아니다 — 닫는다.** `const [a, b, c] = it` 은 값이 **딱 셋이어도** `return()` 을 부른다.
-★★ 그 이터레이터가 **파일 핸들이나 구독**을 쥔 것이면 `const [first] = stream` 한 줄이 **스트림을 닫는다.**
+★★ 그 이터레이터가 **파일 핸들이나 구독**을 잡은 것이면 `const [first] = stream` 한 줄이 **스트림을 닫는다.**
 그 뒤에 같은 이터레이터로 「나머지를 읽겠다」는 코드는 이미 닫힌 것을 돌게 된다.
 ★ 반대로 **패턴이 값 개수보다 길면**(`[a, b, c, d]`) `done` 을 직접 받아 **닫지 않는다.** 경계가 **개수 하나**에 걸려 있다.
 
@@ -903,7 +903,7 @@ DOM 컬렉션은 **브라우저를 안 돌려서** 이 문서가 말하지 않�
 
 **반만 맞다.** `Symbol.iterator` 가 함수가 아닐 때와 **`next` 가 아예 없을 때**가 **같은 문구**(`{(intermediate value)} is not iterable`)였다.
 ★★ 그리고 호출 스프레드는 **판마다 문구가 다르다**(v18 `Found non-callable @@iterator` 대 v20 `Spread syntax requires …`).
-★ 문구로 grep 하는 테스트·알림 규칙은 **판이 오르면 깨진다.** 근거로 쓸 것은 **종류(`TypeError`)** 뿐이다.
+★ 문구로 grep 하는 테스트·알림 규칙은 **버전이 오르면 깨진다.** 근거로 쓸 것은 **종류(`TypeError`)** 뿐이다.
 
 ### (5) ★★ `return()` 에 정리 코드를 두고 「언제나 불린다」고 믿는다
 
@@ -948,7 +948,7 @@ BMP 밖 글자 하나가 **`length` 로는 2, `for...of` 로는 1** 이다. 잘�
 - ★ **문자열 이터레이터가 코드 포인트 단위인 것.**
 - ★ **배열 구조 분해가 딱 맞게 끝나도 닫는 것** — ★ 이 주제는 **배열 구조 분해 쪽 명세 문장을 받아 두지 않았다.** 로그로만 섰다.
 
-### 엔진(V8) 구현 · 이 판의 관찰
+### 엔진(V8) 구현 · 이 버전의 관찰
 
 - **예외 문구 전부** — `plain is not iterable` · `Spread syntax requires ...iterable[Symbol.iterator] to be a function`(v20) · `Found non-callable @@iterator`(v18) ·
   `object is not iterable (cannot read property Symbol(Symbol.iterator))` · `{(intermediate value)} is not iterable` ·
@@ -961,7 +961,7 @@ BMP 밖 글자 하나가 **`length` 로는 2, `for...of` 로는 1** 이다. 잘�
 
 ### 호스트가 정하는 것 — ECMA-262 밖
 
-- **이 주제의 블록에서 호스트가 정하는 칸은 없다.** 출력은 전부 `console.log` 에 **우리가 만든 문자열**만 넘겼다(`util.inspect` 의 표기를 싣지 않았다).
+- **이 주제의 블록에서 호스트가 정하는 항목은 없다.** 출력은 전부 `console.log` 에 **우리가 만든 문자열**만 넘겼다(`util.inspect` 의 표기를 싣지 않았다).
 - ★ **DOM 컬렉션(`NodeList` 등)이 이터러블인지**는 **웹 호스트의 명세**가 정한다 — 이 배치는 브라우저를 **안 돌렸다.**
 
 ### 그래서 이렇게 적으면 틀린다
@@ -997,7 +997,7 @@ BMP 밖 글자 하나가 **`length` 로는 2, `for...of` 로는 1** 이다. 잘�
    **`[a, b, c]` 는 딱 셋이어도 닫고, `[a, b, c, d]` 는 닫지 않는다.**
 3. ★★★ **이터러블은 매번 새 이터레이터를 주고, 이터레이터는 한 번짜리다.** 제너레이터·배열 이터레이터·`m.keys()` 는 `it[Symbol.iterator]() === it` 인 쪽이라 두 번째가 `[]` 다.
 4. ★★★ **JS 의 `for...of` 에는 파이썬의 `__getitem__` 같은 대체 경로가 없다** — 유사 배열은 `TypeError` 이고, 두 문을 가진 것은 `Array.from` 뿐이다.
-5. ★★ **「이터러블이 아니다」는 종류가 `TypeError` 로 하나지만 문구는 자리마다·판마다 다르다** — 호출 스프레드가 v18 과 v20 에서 갈린 것이 11번과 같은 자리다.
+5. ★★ **「이터러블이 아니다」는 종류가 `TypeError` 로 하나지만 문구는 자리마다·판마다 다르다** — 호출 스프레드가 v18 과 v20 에서 달라진 것이 11번과 같은 자리다.
 
 ## 관련 자료
 
@@ -1044,7 +1044,7 @@ BMP 밖 글자 하나가 **`length` 로는 2, `for...of` 로는 1** 이다. 잘�
 
 ## 실행 환경
 
-★★★ **이 주제의 본체는 ① 추상 연산에 로그 심기다.**
+★★★ **이 주제의 핵심은 ① 추상 연산에 로그 심기다.**
 `for...of`·스프레드·`Array.from`·`new Set`·배열 구조 분해·`Promise.all` 은 **결과만 보면 「값을 차례로 꺼냈다」로 똑같다.**
 그런데 그 안에서 `Symbol.iterator` 를 **몇 번 읽고**, `next()` 를 **몇 번 부르고**, `return()` 을 **부르나 안 부르나**는
 결과 값에 한 글자도 안 남는다. ★★★ **값으로는 원리상 못 가른다.**
@@ -1064,8 +1064,8 @@ BMP 밖 글자 하나가 **`length` 로는 2, `for...of` 로는 1** 이다. 잘�
 **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
 ★★ **예외는 `try`/`catch` 로 받아 `e.constructor.name` 과 `e.message` 만** 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
-★ **이 주제의 블록에는 주소도 시간도 난수도 없다.** 같은 판에서 다시 돌리면 한 글자도 안 변한다.
-★ **이 문서는 BMP 밖 글자(이모지 따위)를 한 글자도 싣지 않는다** — 문자열 탐침은 그 글자를 `String.fromCodePoint(0x1F600)` 로 **만들어서** 쓰고, 출력도 16진 코드 포인트로만 찍는다.
+★ **이 주제의 블록에는 주소도 시간도 난수도 없다.** 같은 버전에서 다시 돌리면 한 글자도 안 변한다.
+★ **이 문서는 BMP 밖 글자(이모지 따위)를 한 글자도 싣지 않는다** — 문자열 probe는 그 글자를 `String.fromCodePoint(0x1F600)` 로 **만들어서** 쓰고, 출력도 16진 코드 포인트로만 찍는다.
 
 **버전** — 이 주제의 거의 전부가 **한 판에 들어왔다.**
 
@@ -1077,30 +1077,30 @@ BMP 밖 글자 하나가 **`length` 로는 2, `for...of` 로는 1** 이다. 잘�
 | `Promise.all` 이 이터러블을 받는 것 | **ES2015** |
 | 이터레이터 헬퍼(`Iterator.prototype.map` 등) | **ES2025** — ★ 이 두 판에는 **없다**(동작 (2)의 `[4]`, 두 판 identical) |
 
-**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+**★★★ 이 주제가 쓰는 창 — 그리고 해당 없는 창**
 
 | 창 | 이 주제에서 무엇을 보나 |
 |---|---|
-| ★★★ **① 추상 연산에 로그 심기**(본체) | `get @@iterator` · `@@iterator()` · `next#N` · `return()` 을 찍는 이터러블 하나로 **소비자 17가지**를 돌린다. `return()` 이 **언제 불리나**는 오직 이것으로만 보인다 |
+| ★★★ **① 추상 연산에 로그 심기**(핵심) | `get @@iterator` · `@@iterator()` · `next#N` · `return()` 을 찍는 이터러블 하나로 **소비자 17가지**를 돌린다. `return()` 이 **언제 불리나**는 오직 이것으로만 보인다 |
 | ★★★ **② 전수 격자** | 그 17가지의 **요약 표**(`next` 횟수 · `return` 횟수) · 이터러블이 아닌 것을 **여섯 자리**에 · 깨진 프로토콜 **다섯 가지** |
 | ★★ **④ 예외의 `constructor.name` + `message`** | 같은 「이터러블이 아니다」가 **자리마다 문구가 다르다** — 네 가지 문구가 나온다 |
-| ★★ **⑤ 두 판 대조기** | ★★★ **이 배치에서 두 판이 갈린 유일한 블록이 이 주제의 것이다** — 호출 스프레드 `id(...plain)` 의 문구. 11번 주제의 `f(...obj)` 와 **같은 자리**다 |
+| ★★ **⑤ 두 판 대조기** | ★★★ **이 배치에서 두 버전이 달라진 유일한 블록이 이 주제의 것이다** — 호출 스프레드 `id(...plain)` 의 문구. 11번 주제의 `f(...obj)` 와 **같은 자리**다 |
 | ★★ **창을 바꿔 물었다**(제5의 상태) | `done: true` 와 함께 온 값 — **소비자 창은 전부 그것을 버려 닫혀 있다.** 수동 `next()` 로 바꿔 물어야 보인다(동작 (3)의 `[4]`) |
-| ★ **부적용 — ③ 브랜드 태그** | 「이것이 이터러블인가」는 **내부 슬롯(브랜드)이 아니라 프로퍼티 하나의 계약**이다. 유사 배열에 `Symbol.iterator` 하나를 붙이자 이터러블이 된 줄(동작 (4)의 `[2]`)이 그 증거다. 브랜드가 답할 질문이 없다 — **잴 것이 없다** |
-| ★ **부적용 — 진단의 `(행,열)`**(18-C) | 이 주제에는 `SyntaxError` 가 한 줄도 없다. 프로토콜은 전부 런타임 의미다 — **잴 것이 없다** |
+| ★ **해당 없음 — ③ 브랜드 태그** | 「이것이 이터러블인가」는 **내부 슬롯(브랜드)이 아니라 프로퍼티 하나의 계약**이다. 유사 배열에 `Symbol.iterator` 하나를 붙이자 이터러블이 된 줄(동작 (4)의 `[2]`)이 그 증거다. 브랜드가 답할 질문이 없다 — **잴 것이 없다** |
+| ★ **해당 없음 — 진단의 `(행,열)`**(18-C) | 이 주제에는 `SyntaxError` 가 한 줄도 없다. 프로토콜은 전부 런타임 의미다 — **잴 것이 없다** |
 | ★ **쟀다 — 「없다」**: 파이썬식 `__getitem__` 대체 경로 | 파이썬은 `__getitem__` 만 있어도 `for` 가 돈다. JS 에 그 경로가 있나를 **유사 배열로 실제로 물었고** `for...of` 는 `TypeError` 였다(동작 (4)의 `[2]`). ★ 「잴 것이 없다」가 아니라 「**재 봤더니 없다**」다 |
 | ★ **안 쟀다 — 성능** | 「`for...of` 는 인덱스 `for` 보다 느리다」류의 말을 **한 줄도 쓰지 않는다.** 안 쟀다 |
-| ★ **안 돌렸다 — 브라우저 · 두 번 컴파일**(엄격/비엄격) | 이 배치는 Chrome 을 돌리지 않았다. 탐침은 전부 비엄격 스크립트 한 벌이다 |
+| ★ **안 돌렸다 — 브라우저 · 두 번 컴파일**(엄격/비엄격) | 이 배치는 Chrome 을 돌리지 않았다. probe는 전부 비엄격 스크립트 한 벌이다 |
 
-**★ 흔들리는 칸 / 안 흔들리는 칸**
+**★ 실행마다 달라지는 항목 / 달라지지 않는 항목**
 
-| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+| 실행마다 달라진다(근거로 쓰지 않는다) | 달라지지 않는다(근거로 쓴다) |
 |---|---|
-| 예외 **문구** — ★ **이 주제에서 실제로 판마다 갈렸다** | ★★★ **호출 로그의 개수와 순서** · `return()` 이 불렸나 |
+| 예외 **문구** — ★ **이 주제에서 실제로 판마다 달라졌다** | ★★★ **호출 로그의 개수와 순서** · `return()` 이 불렸나 |
 | `{(intermediate value)}` 같은 V8 의 표현 조각 | ★★★ **예외의 종류**(`TypeError`) |
 | Node 스택트레이스의 절대 경로 — 한 줄도 싣지 않았다 | ★★ `Map`/`Set` 의 **삽입 순서** · 문자열의 **코드 포인트 개수** |
 
-두 판 대조기가 **갈렸다고 세는 블록은 이 주제의 `js16b-19c-errors.js` 하나**다 — 집계 줄은 동작 (4)의 끝에 있다.
+두 판 대조기가 **달라졌다고 세는 블록은 이 주제의 `js16b-19c-errors.js` 하나**다 — 집계 줄은 동작 (4)의 끝에 있다.
 
 **선행** — [11 — 스프레드와 나머지](../11-spread-and-rest/2-summary.md)(★★★ 직접 선행) · [10 — 구조 분해 할당](../10-destructuring-assignment/2-summary.md) ·
 [04 — 문자열과 UTF-16](../04-strings-and-utf16/2-summary.md) · [13 — 객체 리터럴과 프로퍼티](../13-object-literals-and-properties/2-summary.md).

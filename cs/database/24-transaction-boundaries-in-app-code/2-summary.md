@@ -23,7 +23,7 @@ DB 트랜잭션은 `BEGIN … COMMIT` 사이다. 앱 코드에서는 그 경계�
 - 업무 도중 직원이 외부에 전화를 걸어 3분 기다리면, 그동안 창구(커넥션)가 묶인다.
 
 똑같은 구조다.\
-선언적 트랜잭션은 **프록시를 거친 호출**에만 걸린다. 경계 안에 둔 모든 것은 커넥션과 락을 쥔 채 실행된다.
+선언적 트랜잭션은 **프록시를 거친 호출**에만 걸린다. 경계 안에 둔 모든 것은 커넥션과 락을 잡은 채 실행된다.
 
 실무 예:
 - 같은 클래스 안에서 `this.save()`를 불렀더니 `@Transactional`이 **조용히 무시**됐다.
@@ -119,7 +119,7 @@ DB 트랜잭션은 `BEGIN … COMMIT` 사이다. 앱 코드에서는 그 경계�
 **REQUIRES_NEW — 커넥션을 하나 더 쓴다**
 
 - 안쪽은 독립 물리 트랜잭션이다. 따로 커밋·롤백되고, 끝나는 즉시 락을 푼다.
-- 바깥 커넥션은 묶인 채 남고, 안쪽은 **풀에서 새 커넥션**을 빌린다. 문서가 직접 경고한다: 여러 스레드가 바깥 트랜잭션을 쥔 채 안쪽 커넥션을 기다리면 풀 고갈·교착이 날 수 있다. 풀 크기가 동시 스레드 수보다 최소 1 커야 한다([21 §5](../21-connection-pooling/2-summary.md)).
+- 바깥 커넥션은 묶인 채 남고, 안쪽은 **풀에서 새 커넥션**을 빌린다. 문서가 직접 경고한다: 여러 스레드가 바깥 트랜잭션을 잡은 채 안쪽 커넥션을 기다리면 풀 고갈·교착이 날 수 있다. 풀 크기가 동시 스레드 수보다 최소 1 커야 한다([21 §5](../21-connection-pooling/2-summary.md)).
 - 같은 행을 건드리면 **자기 교착**이다.
 
 ```text
@@ -208,7 +208,7 @@ public void placeOrder(Order o) {
                |<──────── 커넥션 점유 + 행 락 유지 + idle in transaction ────────>|
 ```
 
-- 쥔 시간 W가 외부 호출 시간만큼 늘어 필요한 커넥션 수가 비례해 는다(리틀의 법칙, [21](../21-connection-pooling/2-summary.md)).
+- 잡은 시간 W가 외부 호출 시간만큼 늘어 필요한 커넥션 수가 비례해 는다(리틀의 법칙, [21](../21-connection-pooling/2-summary.md)).
 - 외부 호출 동안 DB 입장에서는 `idle in transaction`이다. 락이 유지되고 vacuum이 막힌다([22](../22-database-side-timeouts/2-summary.md)).
 - 외부 호출은 롤백되지 않는다. 결제는 됐는데 DB가 롤백되는 불일치가 생긴다.
 - 로컬 재현(예시): 풀 2, `connectionTimeout` 1.5초, 트랜잭션 안에서 3초 대기하는 요청 4개를 동시에 보냈다.
@@ -312,7 +312,7 @@ try {
 
 - 현상: 외부 결제사가 느려지자 우리 API 전체가 멈춘다. 결제와 무관한 API도 멈춘다.
 - 보이는 형태: `CannotCreateTransactionException: Could not open JDBC Connection for transaction` ← `Connection is not available, request timed out after ...ms`. DB에는 `idle in transaction` 세션이 풀 크기만큼 있다.
-- 원인: 트랜잭션 안에서 외부 호출을 기다리며 커넥션을 쥔다. 외부 지연이 그대로 커넥션 점유 시간이 된다.
+- 원인: 트랜잭션 안에서 외부 호출을 기다리며 커넥션을 잡는다. 외부 지연이 그대로 커넥션 점유 시간이 된다.
 - 대처: 외부 호출을 트랜잭션 밖으로 뺀다(§적용 1). 외부 호출 자체에 짧은 타임아웃을 둔다. 서버 측 `idle_in_transaction_session_timeout`으로 상한을 둔다([22](../22-database-side-timeouts/2-summary.md)).
 
 ### 4. `REQUIRES_NEW` 남용 → 자기 교착·풀 교착
@@ -322,7 +322,7 @@ try {
   - 같은 행: DB에 `deadlock detected`가 없다. `lock_timeout`이 있으면 55P03. 다른 타임아웃(동작·원리 §4 그림의 괄호)도 없으면 무한 대기.
   - 풀: 스레드 덤프가 전부 `getConnection` 대기이고 `Connection is not available`이 난다.
 - 원인:
-  - 바깥이 락을 쥔 행을 안쪽 새 트랜잭션이 기다린다. 바깥은 안쪽이 돌아오기를 기다린다. 대기의 한쪽이 JVM 안이라 DB가 사이클을 보지 못한다.
+  - 바깥이 락을 잡은 행을 안쪽 새 트랜잭션이 기다린다. 바깥은 안쪽이 돌아오기를 기다린다. 대기의 한쪽이 JVM 안이라 DB가 사이클을 보지 못한다.
   - 스레드마다 커넥션 2개가 필요해 풀이 마른다.
 - 대처: 안쪽이 바깥과 같은 행을 건드리지 않게 설계한다. 정말 독립이어야 하는 기록(실패 감사 로그 등)만 `REQUIRES_NEW`로 둔다. 풀 크기 ≥ 동시 스레드 × (최대 동시 커넥션 − 1) + 1. 서버 측 `lock_timeout`을 둔다.
 
@@ -339,14 +339,14 @@ try {
 - Spring 기본 롤백 규칙은 예외 중 RuntimeException·Error만 롤백한다. checked 예외는 커밋된다.
 - (JDBC·JPA 명령형 경로에서) 트랜잭션 컨텍스트는 스레드에 묶인다. 다른 스레드로 넘긴 DB 작업은 바깥 트랜잭션 밖이다.
 - `REQUIRES_NEW`는 커넥션을 하나 더 빌린다. 풀 교착과, DB가 탐지하지 못하는 자기 교착을 만들 수 있다.
-- 트랜잭션 안의 외부 호출은 그 시간만큼 커넥션과 락을 쥔다. 외부 호출은 경계 밖으로, 커밋 뒤 할 일은 훅이나 outbox로 옮긴다.
+- 트랜잭션 안의 외부 호출은 그 시간만큼 커넥션과 락을 잡는다. 외부 호출은 경계 밖으로, 커밋 뒤 할 일은 훅이나 outbox로 옮긴다.
 - `readOnly`는 힌트다. 실제로 막는지는 트랜잭션 매니저·드라이버·DB에 달렸다(pgjdbc + PostgreSQL은 `BEGIN READ ONLY`로 쓰기를 거부).
 
 ## 관련 주제·근거
 
 - 선행
   - [13-transactions-acid](../13-transactions-acid/2-summary.md) — 원자성·격리의 정확한 뜻
-  - [21-connection-pooling](../21-connection-pooling/2-summary.md) — 쥔 시간과 풀 크기, 풀 교착
+  - [21-connection-pooling](../21-connection-pooling/2-summary.md) — 잡은 시간과 풀 크기, 풀 교착
   - [distributed/16-outbox-and-dual-write](../../distributed/16-outbox-and-dual-write/2-summary.md)
 - 연결
   - [22-database-side-timeouts](../22-database-side-timeouts/2-summary.md) — idle in transaction·lock_timeout

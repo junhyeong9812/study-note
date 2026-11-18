@@ -474,7 +474,7 @@ error: expected item, found keyword `let`
   - **타입 표기** — `const` 는 의무, `let` 은 추론.
   - **놓일 수 있는 자리** — `const`/`static` 은 모듈 최상위에도 놓이고, `let` 은 **함수 안**에서만.
 - 더 깊이 안 다루는 이유 — 메모리 배치(`const` 는 쓰이는 자리마다 인라인, `static` 은 고정 주소)와 `const fn` 은 **다른 주제의 본문**이기 때문이다.\
-  정본은 [목록의 **07번 주제**](../07-const-static-and-const-fn/)(상수·`static`·`const fn`)다. 여기서는 **`let` 과 갈리는 두 줄**까지만 둔다.
+  정본은 [목록의 **07번 주제**](../07-const-static-and-const-fn/)(상수·`static`·`const fn`)다. 여기서는 **`let` 과 달라지는 두 줄**까지만 둔다.
 
 ### 10. 다른 주제와 잇기
 

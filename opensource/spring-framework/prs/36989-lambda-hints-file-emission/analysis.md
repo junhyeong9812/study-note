@@ -33,7 +33,7 @@
 
 무대의 형태는 **두 패키지가 같은 목록을 각자 알고 있어야 하는 구조**다.\
 `aot.hint`가 힌트 종류를 정의하고, `aot.nativex`가 그 종류를 JSON으로 옮긴다.\
-`aot.nativex` 안에서도 책임이 둘로 갈린다 — **방출기**(`RuntimeHintsWriter` + `ReflectionHintsAttributes` + `ResourceHintsAttributes`)는 "어떻게 직렬화할지"를 알고, **게이트**(`hasAnyHint`)는 "쓸 만한 내용이 있는지"를 판정한다.\
+`aot.nativex` 안에서도 책임이 둘로 나뉜다 — **방출기**(`RuntimeHintsWriter` + `ReflectionHintsAttributes` + `ResourceHintsAttributes`)는 "어떻게 직렬화할지"를 알고, **게이트**(`hasAnyHint`)는 "쓸 만한 내용이 있는지"를 판정한다.\
 결함은 이 둘의 목록이 어긋난 데서 나왔다.
 
 호출 시점은 #36972와 같다 — 빌드 타임 AOT 처리의 마지막 단계인 `AbstractAotProcessor.writeHints(RuntimeHints)`(`spring-context/.../AbstractAotProcessor.java:124-128`)가 writer를 만들어 `write(hints)`를 부른다.\

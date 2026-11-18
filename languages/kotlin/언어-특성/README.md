@@ -168,7 +168,7 @@ public value class BusinessDate(val value: LocalDate) : Comparable<BusinessDate>
 
 `suspend`는 문법 설탕이 아니라 **JVM 시그니처를 바꾸는 컴파일 변환**이다 — CPS(Continuation-Passing-Style)로 구현되어 모든 suspend 함수에 `Continuation` 파라미터가 암묵적으로 붙는다([KEEP-0164](https://github.com/Kotlin/KEEP/blob/main/proposals/KEEP-0164-coroutines.md)). 본문은 상태 기계로 컴파일되고, **지역 변수는 스택이 아니라 익명 클래스의 필드로 승격**된다. "가볍다"의 실체는 "**중단된 코루틴만 스레드를 놓는다**" — 실행 중일 때는 언제나 진짜 스레드 위에 있다.
 
-**구조적 동시성 — 이 모델의 진짜 값.** 가장 크게 갈리는 것은 성능이 아니라 **생명주기 관리**다 — "coroutines form a tree hierarchy … A parent coroutine waits for its children … if the parent … fails or gets canceled, all its child coroutines are recursively canceled too"([Coroutines basics](https://kotlinlang.org/docs/coroutines-basics.html)). 새 코루틴은 `CoroutineScope` 안에서만 시작하므로 "던져 놓고 잊는" 작업이 구조적으로 안 생긴다. 예외 전파도 강하다 — 형제까지 함께 죽는 것이 기본이고, 벗어나려면 `try/catch`가 아니라 `SupervisorJob`으로 **구조 자체를 바꿔야** 한다.
+**구조적 동시성 — 이 모델의 진짜 값.** 가장 크게 달라지는 것은 성능이 아니라 **생명주기 관리**다 — "coroutines form a tree hierarchy … A parent coroutine waits for its children … if the parent … fails or gets canceled, all its child coroutines are recursively canceled too"([Coroutines basics](https://kotlinlang.org/docs/coroutines-basics.html)). 새 코루틴은 `CoroutineScope` 안에서만 시작하므로 "던져 놓고 잊는" 작업이 구조적으로 안 생긴다. 예외 전파도 강하다 — 형제까지 함께 죽는 것이 기본이고, 벗어나려면 `try/catch`가 아니라 `SupervisorJob`으로 **구조 자체를 바꿔야** 한다.
 
 **한계 — 취소는 보장이 아니라 규약이다.** "coroutine cancellation is cooperative" — 중단점을 지나지 않는 계산 루프는 취소해도 계속 돈다([Cancellation](https://kotlinlang.org/docs/coroutines-cancellation.html)). 관측성 비용도 실재한다 — 비동기 스택 트레이스는 사후 재봉합해야 하고 "losing referential transparency"의 대가가 붙으며, 디버거에서 변수가 "was optimized out"으로 사라지고 회피 옵션 `-Xdebug`는 "Never use this flag in production"이라 못박혀 있다.
 
@@ -237,7 +237,7 @@ public value class BusinessDate(val value: LocalDate) : Comparable<BusinessDate>
 
 돌아본 기능들은 하나의 공통 형태를 갖는다 — **각각은 특정한 경계 하나에서 코드를 거부한다**(non-null은 대입에서, `when` 완결성은 sealed 분기에서, value class는 그 타입을 요구하는 API에서, 읽기 전용 컬렉션은 수신자가 변경 메서드를 부르는 지점에서). 그리고 각각은 그 경계 **바깥에서 정확히 무력하다.**
 
-그래서 실전에서는 규칙마다 주 강제 수단이 갈린다 — 불변 우선은 린트+변경 감지 테스트가, null 안전은 정적 검사+경계 테스트가, 값 타입 의무는 정적 스캔이 막는다. 컴파일이 **단독** 강제 수단인 것은 모듈 경계뿐이다(별도 빌드 모듈로 빼서 다른 컨텍스트 참조를 컴파일 단계에서 끊는 것 — 타입이 아니라 **모듈 그래프**가 하는 일).
+그래서 실전에서는 규칙마다 주 강제 수단이 달라진다 — 불변 우선은 린트+변경 감지 테스트가, null 안전은 정적 검사+경계 테스트가, 값 타입 의무는 정적 스캔이 막는다. 컴파일이 **단독** 강제 수단인 것은 모듈 경계뿐이다(별도 빌드 모듈로 빼서 다른 컨텍스트 참조를 컴파일 단계에서 끊는 것 — 타입이 아니라 **모듈 그래프**가 하는 일).
 
 이것을 "Kotlin이 기대만 못하다"로 읽으면 틀린 독해다. 저 배치에 도달할 수 있었던 것 자체가 언어 덕분이다 — 무엇이 컴파일에 걸리고 무엇이 안 걸리는지를 **한 줄로 판정할 수 있었기 때문에** 나머지를 린트·테스트·리뷰로 정확히 배분할 수 있었다. Java에서 같은 표를 만들면 대부분 칸이 "리뷰"가 된다. 그래서 실질은 이렇게 요약된다 — Kotlin은 규칙을 대신 지켜 주지 않는다. **어느 규칙이 언어로 지켜질 수 있고 어느 규칙이 그럴 수 없는지를 분명하게 만들어 준다.**
 
@@ -283,7 +283,7 @@ public value class BusinessDate(val value: LocalDate) : Comparable<BusinessDate>
 
 > 아래는 원고에 없던 배경 지식이다. 복습 시 본문(원고)과 섞어 인출하지 않는다.
 
-- **"불법 상태를 표현 불가능하게(make illegal states unrepresentable)".** sealed + when 완결성, value class, non-null이 함께 겨냥하는 설계 격언이다. Kotlin이 Go와 갈리는 지점([`go.md`](../../go/언어-특성/README.md) §8)이 정확히 이 도구의 유무이고, 값 타입·불변식은 [`../../engineering/clean-code/`](../../../cs/engineering/clean-code/)의 캡슐화·단정적(Assertive)과 이어진다.
+- **"불법 상태를 표현 불가능하게(make illegal states unrepresentable)".** sealed + when 완결성, value class, non-null이 함께 겨냥하는 설계 격언이다. Kotlin이 Go와 달라지는 지점([`go.md`](../../go/언어-특성/README.md) §8)이 정확히 이 도구의 유무이고, 값 타입·불변식은 [`../../engineering/clean-code/`](../../../cs/engineering/clean-code/)의 캡슐화·단정적(Assertive)과 이어진다.
 - **왜 `!!`가 위험 신호인가.** `!!`는 타입 방어선을 코드 한 줄로 취소하는 유일한 창구라, 코드베이스에서 `!!` 개수가 곧 "타입이 보장한다는 문장이 취소된 지점 수"다. 그래서 많은 팀이 린트로 개수를 0에 묶는다.
 - **Project Valhalla가 왜 value class에 걸리나.** JVM에 진짜 값 타입이 오면(JEP 401) 다필드 value class도 힙 할당 없이 표현되지만, 그전까지 Kotlin의 `@JvmInline`은 "프로퍼티 하나"로 제한된다 — 언어가 런타임에 얹혀 있어서 런타임이 못 주는 것은 언어도 못 주는 전형이다.
 - **CPS 변환이 스택 트레이스를 흐리는 이유.** 코루틴은 콜스택을 힙의 `Continuation` 체인으로 옮기므로, 예외가 났을 때 "어디서 왔나"의 물리적 콜스택이 존재하지 않는다. 그래서 디버깅 지원이 별도 기능(사후 재봉합)으로 필요하고, 이것이 가상 스레드(콜스택을 그대로 두는 쪽)와의 실무적 차이다.

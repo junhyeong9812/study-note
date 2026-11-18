@@ -109,7 +109,7 @@ while (true) {
 
 - MCP 명세 2026-07-28 "Tools"는 두 경로를 나눈다. 모르는 도구·잘못된 요청은 JSON-RPC 오류(프로토콜 오류), API 실패·입력 검증·업무 규칙 오류는 결과 안의 `isError: true`(도구 실행 오류)다. 클라이언트는 실행 오류를 모델에 제공해 스스로 고치게 하는 것이 SHOULD다(Error Handling 절) — 자세한 메시지 형식은 [21-mcp-protocol](../21-mcp-protocol/2-summary.md).
 - Anthropic "Handle tool calls"도 `"failed"` 같은 일반 오류 대신 무엇이 잘못됐고 다음에 무엇을 할지 적으라고 권한다(예: 재시도 가능 시각).
-- 같은 오류 코드라도 상황에 따라 갈린다. HTTP 503은 일시적 과부하·점검을 뜻하고 `Retry-After`를 보낼 수 있다(RFC 9110 15.6.4). MCP "Tools"는 만료되거나 모르는 핸들에 대한 호출이 그 사실을 적은 실행 오류를 돌려줘 모델이 새 핸들을 만들어 회복하게 하라고 한다(Expiry errors).
+- 같은 오류 코드라도 상황에 따라 달라진다. HTTP 503은 일시적 과부하·점검을 뜻하고 `Retry-After`를 보낼 수 있다(RFC 9110 15.6.4). MCP "Tools"는 만료되거나 모르는 핸들에 대한 호출이 그 사실을 적은 실행 오류를 돌려줘 모델이 새 핸들을 만들어 회복하게 하라고 한다(Expiry errors).
 - 문제는 "모델이 고쳐도 안 되는" 오류다. 503이 계속되는 업스트림을 모델에게 맡기면 모델은 인자를 바꿔 볼 뿐이다(실험 A). 이 판단은 코드가 한다 — 연속 실패 횟수·서킷 브레이커([reliability/10-circuit-breaker](../../reliability/10-circuit-breaker/2-summary.md)).
 
 ### 4. 부작용 도구 — 멱등 키는 "시도"가 아니라 "의도한 행동"마다

@@ -219,7 +219,7 @@ func main() {
   `os.ErrNotExist == fs.ErrNotExist` 가 **`true`** 인 것은 `os` 가 `fs` 의 값을 **다시 내보냈기** 때문이다.
 - ★★★ **`%v` 판과 `%w` 판의 메시지가 한 글자도 같다**(`true`, `"포장 스트림이 닫혔다"`).
   그런데 `errors.Is` 는 **`false` 대 `true`** 로 갈리고 `%T` 도
-  `*errors.errorString` 대 **`*fmt.wrapError`** 로 갈린다.
+  `*errors.errorString` 대 **`*fmt.wrapError`** 로 나뉜다.
   ★★ **로그만 봐서는 안 보이는 사고**다 — 정본은 [24번 주제](../24-error-wrapping-and-errors-is-as-join/)다.
 - ★★ **마지막 두 줄이 `==` 의 한계**다 — 한 겹만 감싸도 `wrapped == ErrClosed` 가 **`false`** 다.
   `errors.Is` 는 **`true`** 다. 그래서 센티넬을 `==` 로 견주는 코드는 **감싸는 순간 깨진다.**
@@ -381,7 +381,7 @@ func show(e error) { fmt.Println(e) }
 - **되는 네 가지**는 `&PtrErr{}` · `ValErr{}` · `&ValErr{}` 이고, 그 셋이 첫 줄에 찍혔다
   (값 리시버 메서드는 `T` 와 `*T` 둘 다의 집합에 들고, 포인터 리시버 메서드는 `*T` 에만 든다 —
   [19번 주제](../19-method-sets-value-vs-pointer-receiver/)).
-- ★★ **그래서 오류 타입의 관례가 갈린다** — 포인터 리시버로 달면 **`&MyErr{}` 로만** 쓰게 된다.
+- ★★ **그래서 오류 타입의 관례가 달라진다** — 포인터 리시버로 달면 **`&MyErr{}` 로만** 쓰게 된다.
 
 ### 5. 세 언어의 호출부 — 네 줄은 같고 문구가 다르다
 
@@ -783,7 +783,7 @@ Java catch                      1
 | `panic`/`recover` | ★ **안 던졌다**([목록의 **27번 주제**](../27-panic-recover-and-where-to-use-them/)) |
 | 오류 메시지 작성 관례(소문자·마침표) | ★ **안 던졌다** — 스타일 문제다 |
 | `errors.Is`/`As`/`Unwrap`/`Join` 전반 | ★ (2)절에서 `Is` 를 한 번 부르고 넘겼다([24번 주제](../24-error-wrapping-and-errors-is-as-join/)) |
-| 자바의 `finally`·try-with-resources, Rust 의 `Drop` | ★ **안 던졌다**(Go 의 짝은 [목록의 **26번 주제**](../26-defer-evaluation-lifo-named-results-and-loops/)) |
+| 자바의 `finally`·try-with-resources, Rust 의 `Drop` | ★ **실행하지 않았다**(Go 의 짝은 [목록의 **26번 주제**](../26-defer-evaluation-lifo-named-results-and-loops/)) |
 
 ★ **다시 찍는 법** — `capture.sh <디렉토리>` 를 그대로 돌리고 `normalize-shaky.py` 로 견준다.
 
@@ -793,7 +793,7 @@ Java catch                      1
 Rust 출력은 **`rustc 1.92.0 (ded5c06cf 2025-12-08)`**,
 자바 출력은 **`javac 21.0.5`(Temurin, `openjdk 21.0.5 2024-10-15 LTS`)** 에서 실제로 돌려
 **파일로 캡처한 것**이다. 소스 펜스도 같은 파일에서 떠 왔다 — 손으로 옮겨 적은 블록은 없다.\
-★ **근거로 읽을 칸** — 네 줄의 출력, `count.sh` 가 센 수, `==` 의 답, `%T`,
+★ **근거로 읽을 항목** — 네 줄의 출력, `count.sh` 가 센 수, `==` 의 답, `%T`,
 컴파일 에러의 **문장과 `파일:줄:칸`**, 종료 코드.
-**근거로 읽지 않을 칸** — **없다.** 이 주제의 블록은 재실행에서 한 글자도 같았다.
+**근거로 읽지 않을 항목** — **없다.** 이 주제의 블록은 재실행에서 한 글자도 같았다.
 ★★ **이 문서는 시간도 할당도 재지 않았다.** 센 것은 **줄 수와 오류 경로 수**뿐이다.

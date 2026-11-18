@@ -24,7 +24,7 @@ func main( ){
 
 - `gofmt -d` 가 **바꾸는 것**과 **안 바꾸는 것**은? `-s` 가 더 바꾸는 줄은 어느 셋인가? `gofmt -d` 와 `gofmt -l` 의 종료 코드는?
 
-### 2. 탐침 열둘 (예측)
+### 2. probe 열둘 (예측)
 
 ```text
 ===== 소스: copylock1.go =====
@@ -155,9 +155,9 @@ import "fmt"
 func F(n int) { fmt.Sprintf("%d", n) }
 ```
 
-<!-- 탐침마다 go vet ./<탐침> 과 go test -count=1 -run "^$" ./<탐침> 의 종료 코드를 찍고, 둘이 0 이 아닌 칸을 센다. go vet 이 낸 줄도 모아 찍는다. -->
+<!-- probe마다 go vet ./<probe> 과 go test -count=1 -run "^$" ./<probe> 의 종료 코드를 찍고, 둘이 0 이 아닌 칸을 센다. go vet 이 낸 줄도 모아 찍는다. -->
 
-- 어느 탐침에서 `go vet` 이 짚나(몇 / 12)? `go test` 는 몇 / 12 를 막나 — 그리고 **어느 것**인가?
+- 어느 probe에서 `go vet` 이 짚나(몇 / 12)? `go test` 는 몇 / 12 를 막나 — 그리고 **어느 것**인가?
 
 ### 3. `go test` 가 막은 하나 (왜)
 
@@ -305,7 +305,7 @@ func main() { println(len(s)) }
 
 - 두 패키지를 빌드하면 각각 무엇이 나오나? `x.txt` 가 **실제로 있는데도** 결과가 같은가?
 
-### 7. 탐침 아홉의 탈출 (예측)
+### 7. probe 아홉의 탈출 (예측)
 
 ```text
 ===== 소스: esc.go =====
@@ -414,9 +414,9 @@ paste a1.txt a2.txt | awk -F'\t' 'NR==FNR { m[$1]=$2; next }
         printf "인라인을 켜서 allocs 가 달라진 칸 %d / %d\n", y, t }' msgs.txt -
 ```
 
-<!-- -gcflags="-m -l" 로 빌드한 판(p1)과 기본 빌드(p2)를 각각 돌려 탐침마다 AllocsPerRun 을 찍고, grid.sh 가 -m 줄을 함수에 붙여 나란히 놓는다. 마지막 줄은 go1.25.12 로 같은 -m 을 뜬 것과의 차이. -->
+<!-- -gcflags="-m -l" 로 빌드한 판(p1)과 기본 빌드(p2)를 각각 돌려 probe마다 AllocsPerRun 을 찍고, grid.sh 가 -m 줄을 함수에 붙여 나란히 놓는다. 마지막 줄은 go1.25.12 로 같은 -m 을 뜬 것과의 차이. -->
 
-- 탐침마다 `-m` 은 무엇이라 말하고 할당은 몇인가? 네 개의 「칸 수」 줄의 값은?
+- probe마다 `-m` 은 무엇이라 말하고 할당은 몇인가? 네 개의 「칸 수」 줄의 값은?
 
 ### 8. 「`does not escape` 면 스택」 (경계)
 

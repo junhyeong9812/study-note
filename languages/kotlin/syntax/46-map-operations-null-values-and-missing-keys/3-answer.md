@@ -197,9 +197,9 @@ missing  0
 **왜 그런가**
 
 - ★★★ KDoc — 「`This implicit default value is used when the original map doesn't contain a value for the key specified and a value is obtained with [Map.getValue] function`」. 범위가 **글자로** 적혀 있다.
-- ★★ 그리고 `getValue` 로 읽어도 **키가 있고 값이 `null`** 이면 기본값이 아니라 `null` 이다(1번 격자) — 이 판의 `getOrImplicitDefault` 가 `getOrElseIfMissing` 을 부르기 때문이다(구현 관찰).
+- ★★ 그리고 `getValue` 로 읽어도 **키가 있고 값이 `null`** 이면 기본값이 아니라 `null` 이다(1번 격자) — 이 버전의 `getOrImplicitDefault` 가 `getOrElseIfMissing` 을 부르기 때문이다(구현 관찰).
 
-### 9. **넣기는 한 번**(`putIfAbsent`)을 약속하고 **람다가 한 번만 불린다**는 약속하지 **않는다** — 경쟁 결과는 판마다 흔들리는 칸이다
+### 9. **넣기는 한 번**(`putIfAbsent`)을 약속하고 **람다가 한 번만 불린다**는 약속하지 **않는다** — 경쟁 결과는 판마다 달라지는 항목이다
 
 **왜 그런가**
 
@@ -229,9 +229,9 @@ OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sha
 (exit 0)
 ```
 
-★ **흔들리는 칸과 안 흔들리는 칸**
+★ **실행마다 달라지는 항목과 달라지지 않는 항목**
 
-| 흔들린다 | 안 흔들린다 |
+| 실행마다 달라진다 | 달라지지 않는다 |
 |---|---|
 | **없다** — 해시코드·주소·시간을 찍지 않았고 동시 실행을 하지 않았다 | 격자 13행 × 3열 · 같은 결과 행 수 · 람다 호출 수 · 실행 출력 |
 | | stdlib 소스 발췌(줄 번호째) · `javap` 의 명령·상수 풀 번호 |
@@ -240,7 +240,7 @@ OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sha
 > 근거 — 캡처 스크립트를 처음부터 다시 돌려 **블록 전체를 대조**했다.
 >
 > 실측 — `capture.sh blocks` 와 `capture.sh blocks-recheck` 를 처음부터 따로 돌려 `normalize-shaky.py` 로 대조했다 —\
-> **블록 71개 · 동일 71 · 흔들린 칸 0 · ★고칠 것 0**(46\~49 네 주제를 한 캡처로 받았다). 추가한 정규화 규칙은 **없다**.
+> **블록 71개 · 동일 71 · 달라진 항목 0 · ★고칠 것 0**(46\~49 네 주제를 한 캡처로 받았다). 추가한 정규화 규칙은 **없다**.
 
 | 프로그램 | 무엇을 확인했나 | 돌린 방법 |
 |---|---|---|
@@ -253,7 +253,7 @@ OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sha
 **구현 의존 항목** — `{k=null}` 의 `getValue` 가 `null` 인 것 · 결과 맵의 클래스(`LinkedHashMap`) · 예외 문장 — 이 stdlib 판의 산출물이다.\
 반면 **`getOrPut` 의 재삽입** · **`getOrDefault` 는 키를 본다** · **`withDefault` 는 `getValue` 에만** · **`ConcurrentMap.getOrPut` 의 한 번 넣기** 는 **API 계약(KDoc)** 이다.
 
-**★ 던져 봤더니 예상과 달랐던 것 — 세 건**
+**★ 실행해 봤더니 예상과 달랐던 것 — 세 건**
 
 1. ★★★ **2.4 stdlib 에 `getOrElseIfNull`·`getOrElseIfMissing`·`getOrPutIfNull`·`getOrPutIfMissing` 이 실험 API 로 들어와 있었다** — 옛 `getOrPut` KDoc 이 이제 그쪽을 쓰라고 가리킨다.
 2. ★★ **`ConcurrentHashMap.getOrPut` 은 「원자적이지 않다」가 아니라 「넣기는 한 번, 람다는 여러 번일 수 있다」였다** — 그리고 그 약속은 **`ConcurrentHashMap` 타입으로 받을 때만** 붙는다(`MutableMap` 이면 `put` 판).

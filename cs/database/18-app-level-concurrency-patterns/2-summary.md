@@ -135,7 +135,7 @@ COMMIT;
 - PostgreSQL은 없는 행에 행 락을 걸지 않는다(SERIALIZABLE의 SIRead 술어 락은 별개 — 이것은 막지 않고, 위험을 검출하면 문장 실행 중이나 커밋 때 40001로 실패시킨다. 동시 키 INSERT에서는 23505로 나오기도 한다, 13.2.3·13.5). 두 세션 모두 0행을 보고 지나가 결국 INSERT에서 부딪힌다.
 - 결론: "없는 것"은 **유니크 제약 + upsert**로 막는다. 잠글 대상이 없으면 DDIA 7장의 **충돌 구체화**(잠글 행을 미리 만들어 두기, 예: 회의실 × 시간 칸 테이블)를 쓴다.
 
-### 6. 트랜잭션 안의 원격 호출 — 락을 쥔 채 기다린다
+### 6. 트랜잭션 안의 원격 호출 — 락을 잡은 채 기다린다
 
 ```text
   BEGIN
@@ -256,7 +256,7 @@ SELECT ENGINE_TRANSACTION_ID, INDEX_NAME, LOCK_MODE, LOCK_STATUS, LOCK_DATA FROM
 - **보이는 형태**
   - `pg_stat_activity`에 `idle in transaction`이 늘고, 뒤에 `wait_event_type = Lock`이 줄선다.
   - MySQL은 `ERROR 1205 Lock wait timeout exceeded`(기본 50초), 앱에는 HikariCP `... - Connection is not available, request timed out after <N>ms`(HikariCP 소스 `HikariPool.java`).
-- **원인**: 행 락은 커밋까지 간다. 원격 호출 시간만큼 락과 커넥션을 쥔다. 로컬 재현에서 4초 쉬는 동안 다른 UPDATE가 3.5초 기다렸다.
+- **원인**: 행 락은 커밋까지 간다. 원격 호출 시간만큼 락과 커넥션을 잡는다. 로컬 재현에서 4초 쉬는 동안 다른 UPDATE가 3.5초 기다렸다.
 - **대처**
   - 원격 호출을 트랜잭션 밖으로 뺀다(위 3단계 흐름).
   - 원격 호출에 짧은 타임아웃을 둔다.

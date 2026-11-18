@@ -55,7 +55,7 @@ int main() {
 }
 ```
 
-- **1·2·3·4 의 순서**가 1번과 **어디서 갈리는가**?
+- **1·2·3·4 의 순서**가 1번과 **어디서 달라지는가**?
 - ★★★ `tag` 와 `baseTag` 값은 각각 얼마인가?
 - ★★ 두 언어가 **각각 무엇을 지키려다** 이렇게 갈렸는지 한 줄로 말할 수 있는가?
 - ★ **한 클래스 안의 선언 순서 규칙**은 어느 주제가 정본인가 — 그 주제가 **상속을 다루었는가**?
@@ -210,7 +210,7 @@ class Classic {
 ### 9. ★★ 경고를 누가 보나 (경계)
 
 - 생성자 주변 함정 여섯을 심고 `-warn:9` 로 물으면 **몇 건**이 나오는가?
-- ★★★ 이 주제에서 컴파일러가 **보는 것**과 **안 보는 것**을 한 줄씩으로 가를 수 있는가?
+- ★★★ 이 주제에서 컴파일러가 **보는 것**과 **안 보는 것**을 한 줄씩으로 구분할 수 있는가?
 - ★ 이 주제에서 유일한 「**경고**」는 무엇인가(나머지는 에러이거나 침묵이다)?
 
 ### 10. 다른 주제와 잇기 (연결)
@@ -230,7 +230,7 @@ class Classic {
 Roslyn `csc` 를 직접 부른다 · `-langversion:latest` · `-preferreduilang:en-US` · **`-debug` 없음**.
 C++ 대비는 **g++ 13.3.0 · `-std=c++20`** 이다.
 ★★ **네 번째 창은 「예외 전문」이다**(5번) — 스택 프레임이 **누가 누구를 불렀나**를 적는다.
-★ **「부적용인 창」이 있다** — **할당 바이트**. 필드 초기자를 쓰든 본문에서 대입하든
+★ **「해당 없는 창」이 있다** — **할당 바이트**. 필드 초기자를 쓰든 본문에서 대입하든
 **같은 객체 하나**가 만들어진다. **「안 쟀다」가 아니라 「잴 것이 없다」다.**
 선행 — [01번](../01-value-types-and-reference-types/)(값/참조)·[11번](../11-collection-initializers-and-collection-expressions/)(객체 초기화자는 생성자 뒤).
 대비 — C++ 갈래 목록([`cpp/syntax/README.md`](../../../cpp/syntax/README.md))의 **13번**([`13-constructors-member-init-list-and-delegating/`](../../../cpp/syntax/13-constructors-member-init-list-and-delegating/))·**14번**([`14-destructors-and-deterministic-destruction/`](../../../cpp/syntax/14-destructors-and-deterministic-destruction/)).

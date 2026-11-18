@@ -14,7 +14,7 @@
 
 **⑷ 게이트 2 — OIDC (배포 agent).** GitHub 발급자의 JWKS 공개키로 토큰 서명을 검증하고, claim을 행렬로 대조한다 — 발급자·audience·저장소 수치 ID·ref·워크플로 경로. 그리고 저장소가 이 배포 대상을 배포할 권한이 있는지(repo↔target allowlist) 확인한다. 두 게이트는 AND다.
 
-**⑸ 오케스트레이션 (배포 agent).** 모드 판정(dev 자동 / 운영 승인) → 배포 창 락 획득 → mode version 재검증 → manifest 엄격 검증 → dispatch 직전 fencing 재확인. 각 단계의 실패가 "락을 풀 실패"인지 "락을 쥔 채 사람을 부를 실패"인지 갈린다.
+**⑸ 오케스트레이션 (배포 agent).** 모드 판정(dev 자동 / 운영 승인) → 배포 창 락 획득 → mode version 재검증 → manifest 엄격 검증 → dispatch 직전 fencing 재확인. 각 단계의 실패가 "락을 풀 실패"인지 "락을 잡은 채 사람을 부를 실패"인지 달라진다.
 
 **⑹ 실행 (배포 agent + gateway).** compose 정의를 검증(strict YAML·allowlist)한 뒤 workspace에 해시 명명 파일로 굳히고, 이미지 pull(digest 고정) → compose up → 이미지 무결성 대조 → 헬스체크. core면 여기에 라우트 전환·드레인·구 슬롯 종료가 더해진다(블루-그린). gateway면 재기동 교체다.
 

@@ -2,7 +2,7 @@
 
 ## 정답
 
-### 1. node 20 — **막힌 행 `7 / 16`**(TLA 가 든 `require(esm)` · 이름 있는 가져오기 셋 · ESM 의 `require` · 확장자 없는 `import` · 디렉토리 `import`) · node 18 — **`8 / 16`**(`require(esm)` 도 막힘) · 갈린 행 **`2 / 16`** ★★★
+### 1. node 20 — **막힌 행 `7 / 16`**(TLA 가 든 `require(esm)` · 이름 있는 가져오기 셋 · ESM 의 `require` · 확장자 없는 `import` · 디렉토리 `import`) · node 18 — **`8 / 16`**(`require(esm)` 도 막힘) · 달라진 행 **`2 / 16`** ★★★
 
 **출력**
 
@@ -56,7 +56,7 @@ rows where node18 and node20 differ: 2 / 16
 - ★★ ESM → CommonJS 의 **기본 가져오기는 늘 `module.exports`**, 이름 있는 가져오기는 **lexer 가 찾은 모양만**(7번).
 - ★★ ESM 의 지정자는 **확장자·디렉토리 색인을 채워 주지 않는다** — CommonJS 의 `require` 는 채워 준다(`lib.js` · `dir/index.js`).
 
-### 2. `.mjs` 는 **늘 `ES module`**, `.cjs` 는 **늘 `CommonJS`**(`export` 가 들면 `SyntaxError`) · `.js` 는 **`type` 을 따르고**, `type` 이 없으면 `plain` 은 **`CommonJS`**, `export {}` 가 들면 **node 20 `ES module` · node 18 `SyntaxError`** — 막힌 칸 **node 20 `4 / 18` · node 18 `5 / 18`** ★★★
+### 2. `.mjs` 는 **늘 `ES module`**, `.cjs` 는 **늘 `CommonJS`**(`export` 가 들면 `SyntaxError`) · `.js` 는 **`type` 을 따르고**, `type` 이 없으면 `plain` 은 **`CommonJS`**, `export {}` 가 들면 **node 20 `ES module` · node 18 `SyntaxError`** — 막힌 항목 **node 20 `4 / 18` · node 18 `5 / 18`** ★★★
 
 **출력**
 
@@ -217,7 +217,7 @@ Instead change the require of <dir>/lib43e.mjs to a dynamic import() which is av
 - ★★ ESM 의 이름은 **연결 단계**에서 정해져야 한다(42번 — 없는 이름은 본문 전에 `SyntaxError`). CommonJS 는 **실행해야** 무엇을 내보내는지 안다 — 그 사이를 lexer 의 **정적 추측**이 메운다(이 문장은 이 문서의 해석이다 — node 문서는 「정적 분석으로 정한다」까지 적는다).
 - ★ 추측이라 **모양에 민감**하다 — `{ a }` 는 찾고 `{ a: "…" }` 는 못 찾았다(1번). 값은 CommonJS 평가가 끝난 뒤 한 번 채워 넣으니 **라이브가 아니다**(3번).
 
-### 8. `import()` 문법만 **ECMA-262** — `require`·`module.exports`·`"type"`·`import.meta.dirname`(의 속성)은 전부 **node** · 브라우저에는 **CommonJS 가 없어 부적용** ★★
+### 8. `import()` 문법만 **ECMA-262** — `require`·`module.exports`·`"type"`·`import.meta.dirname`(의 속성)은 전부 **node** · 브라우저에는 **CommonJS 가 없어 해당 없음** ★★
 
 - ★★ `import.meta` 라는 **문법**은 ECMA-262(ES2020)지만 그 **속성**은 호스트가 채운다 — node 18 과 20 의 키 목록이 달랐다(4번).
 - ★ Chrome 판별 블록 — `host require (this script's scope) no`.
@@ -231,11 +231,11 @@ counter43f.cjs: body runs
 after two bump() through import: import side count = 2 · require side count = 0
 ```
 
-- ★★ 조건 `"import"`/`"require"` 가 **다른 파일**을 고르니 **다른 모듈 두 벌**이다 — 상태가 갈린다. 연혁 문서의 「dual package hazard」 모양이다.
+- ★★ 조건 `"import"`/`"require"` 가 **다른 파일**을 고르니 **다른 모듈 두 벌**이다 — 상태가 달라진다. 연혁 문서의 「dual package hazard」 모양이다.
 
 ### 10. 36번 — **CommonJS 4위 · ES 모듈 9위** — **파일 형식 판정**(2번)이 실행 순서까지 바꾼다 · 42번과 한 쌍은 **ESM → ESM 은 바인딩, CommonJS 가 끼면 복사** ★★
 
-- ★★ 36번의 `N1` 이 같은 파일에서 4위와 9위로 갈렸다 — 확장자나 `"type"` 한 글자로 파일 형식이 바뀌면 **`nextTick` 과 마이크로태스크의 순서가 말없이** 바뀐다.
+- ★★ 36번의 `N1` 이 같은 파일에서 4위와 9위로 나뉘었다 — 확장자나 `"type"` 한 글자로 파일 형식이 바뀌면 **`nextTick` 과 마이크로태스크의 순서가 말없이** 바뀐다.
 - ★ 42번 동작 (1)의 `0 → 1 → 2` 대 `0 · 0 · 0`, 그리고 이 문서 3번의 `named n = 0` — **라이브는 ESM 끼리만**이다.
 
 ## 실행 검증
@@ -243,13 +243,13 @@ after two bump() through import: import side count = 2 · require side count = 0
 | 소스 | 무엇을 고정하나 | 몇 번 · 어디서 |
 |---|---|---|
 | `js40b-43a-interop-grid.js` + `js40b-43a-interop.sh` | ★★★ 16행 · 「`blocked 7 / 16`·`8 / 16`」 · 「`differ 2 / 16`」 | node20 · node18 행마다 새 프로세스 1벌 |
-| `js40b-43b-type-grid.js` + `js40b-43b-type.sh` | ★★★ 18칸 · 「`4 / 18`·`5 / 18`」 · 갈린 행 1 | node20 · node18 칸마다 새 프로세스 1벌 |
+| `js40b-43b-type-grid.js` + `js40b-43b-type.sh` | ★★★ 18칸 · 「`4 / 18`·`5 / 18`」 · 달라진 행 1 | node20 · node18 칸마다 새 프로세스 1벌 |
 | `js40b-43c/*` | ★★★ CommonJS 의 복사 · ESM 이 CJS 를 가져올 때의 복사 | node20 1벌 + node18 대조 |
-| `js40b-43d/*` | ★★ CommonJS 래퍼 변수 · `import.meta` 키 | node20 1벌 + node18 1벌(갈렸다) |
+| `js40b-43d/*` | ★★ CommonJS 래퍼 변수 · `import.meta` 키 | node20 1벌 + node18 1벌(달라졌다) |
 | `js40b-43e/*` + `js40b-43e-messages.sh` | ★★ 막힐 때의 문구 전문 | node20 · node18 각 1벌 |
 | `js40b-43f/*` | ★★ 한 지정자 · 두 파일 · 두 상태 | node20 1벌 + node18 대조 |
 
-세 판 대조기(이 묶음 전체의 plain 탐침). 이 주제의 줄은 `43a`·`43b` 둘이고 **둘 다 `DIFFERS`**(node 판 차이 — 1번 · 2번) · Chrome 부적용이다.
+세 판 대조기(이 묶음 전체의 plain probe). 이 주제의 줄은 `43a`·`43b` 둘이고 **둘 다 `DIFFERS`**(node 버전 차이 — 1번 · 2번) · Chrome 해당 없음이다.
 
 ```sh
 # js40b-vdiff.sh
@@ -292,9 +292,9 @@ js40b-43b-type-grid.js             node18/node20 DIFFERS    node20/Chrome (node 
 node18 vs node20: identical 7 · differs 2   ·   node20 vs Chrome 151: identical 3 · differs 3 · node only 3
 ```
 
-**구현 의존 항목 — 판이 오르면 다시 돌릴 것** — ★★★ **이 주제는 전부다**(node 의 규칙이다).
+**구현 의존 항목 — 버전이 오르면 다시 돌릴 것** — ★★★ **이 주제는 전부다**(node 의 규칙이다).
 
-- ★★★ `require(esm)` · 문법 감지 · `import.meta.dirname` — node 판마다 1번 · 2번 · 4번을 다시 돌린다. 22 계열은 이 머신에 없어 돌리지 않았다.
+- ★★★ `require(esm)` · 문법 감지 · `import.meta.dirname` — node 버전마다 1번 · 2번 · 4번을 다시 돌린다. 22 계열은 이 머신에 없어 돌리지 않았다.
 - ★★ **lexer 가 알아보는 모양**(1번의 이름 있는 가져오기 다섯 행) — node 가 lexer 판을 올리면 바뀔 수 있는 자리다.
 - ★ 문구 — `Named export 'a' not found …` · `require is not defined in ES module scope …` · `require() of ES Module … not supported.`
 
@@ -302,7 +302,7 @@ node18 vs node20: identical 7 · differs 2   ·   node20 vs Chrome 151: identica
 
 이 파일의 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
 블록은 **전부 캡처 파일에서 조립**했다.
-★★★ **이 주제는 두 node 판의 차이가 본체의 절반이다** — 상호운용 `2 / 16` · 판정 격자 `1 / 9` 행 · `import.meta.dirname` · `require(esm)` 의 문구.
+★★★ **이 주제는 두 node 버전의 차이가 본체의 절반이다** — 상호운용 `2 / 16` · 판정 격자 `1 / 9` 행 · `import.meta.dirname` · `require(esm)` 의 문구.
 
-**이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다(두 판을 돌리는 `.sh` 는 [2-summary.md](2-summary.md) 동작 (1)·(2)·(5), `package.json` 과 두 카운터는 동작 (6)).
+**이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다(두 버전을 돌리는 `.sh` 는 [2-summary.md](2-summary.md) 동작 (1)·(2)·(5), `package.json` 과 두 카운터는 동작 (6)).
 `js40b-43a-interop-grid.js` + `js40b-43a-interop.sh`(1번 · 7번) · `js40b-43b-type-grid.js` + `js40b-43b-type.sh`(2번 · 6번) · `js40b-43c/`(3번 · 7번 · 10번) · `js40b-43d/`(4번 · 8번) · `js40b-43e/` + `js40b-43e-messages.sh`(5번) · `js40b-43f/`(9번).

@@ -313,7 +313,7 @@ static class Probe {
 진단은 **영어로 고정**했다(`DOTNET_CLI_UI_LANGUAGE=en` + `csc -preferreduilang:en-US`).
 ★★★ **이 주제에는 컴파일 진단이 거의 없다** — 박싱은 합법적인 암묵 변환이라 **에러도 경고도 안 난다**.
 그래서 창이 둘이다 — ★★★ **할당 바이트**(`GC.GetAllocatedBytesForCurrentThread`)와 ★★ **IL**.
-★★ **8번을 외우려 하지 마라** — 「보간 문자열은 박싱한다」가 **이 판에서 뒤집힌다**. 던져서 확인하는 것이 답이다.
+★★ **8번을 외우려 하지 마라** — 「보간 문자열은 박싱한다」가 **이 버전에서 뒤집힌다**. 던져서 확인하는 것이 답이다.
 선행 — [01번](../01-value-types-and-reference-types/)·[02번](../02-struct-vs-class-choosing/).
 
 ## 복습 기록

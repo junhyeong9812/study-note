@@ -54,7 +54,7 @@ cs15b-same.cs(8,15): error CS0122: 'Vault.Priv' is inaccessible due to its prote
   `Pub`·`Intl`·`ProtIntl` 은 통과했다. ★ **같은 어셈블리 안에서는 `internal` 이 `public` 과 구분이 안 된다.**
 - ★★★ **같은 어셈블리 · 파생**(`Heir`) — **`Priv` 하나만 막힌다**(18행).\
   `Prot` 과 `PrivProt` 이 여기서 열렸다 — **상속 축이 붙었기 때문**이다.
-- ★★ **갈리는 필드 둘은 `Prot` 과 `PrivProt` 이다.** 나머지 넷은 두 클래스에서 같은 결과다.
+- ★★ **달라지는 필드 둘은 `Prot` 과 `PrivProt` 이다.** 나머지 넷은 두 클래스에서 같은 결과다.
 - ★★ **진단 코드가 전부 `CS0122`** 다 — 「보호 수준 때문에 접근할 수 없다」.\
   ★★★ **이 코드가 「이름은 보인다」는 뜻**이라는 것이 2번에서 결정적이 된다.
 - ★ 에러 네 건이고 `cc exit=1` 이다.
@@ -163,20 +163,20 @@ cs15b-pp.cs(1,51): error CS0281: Friend access was granted by 'liba, Version=0.0
 **왜 그런가**
 
 - ★★★ **위 판은 `cc exit=1`, 아래 판은 `cc exit=0` 이고 `1 3 4` 가 찍혔다.**\
-  같은 소스가 **`InternalsVisibleTo` 한 줄로** 갈렸다.
+  같은 소스가 **`InternalsVisibleTo` 한 줄로** 달라졌다.
 - ★★★ **뚫린 멤버는 `Intl`(internal)과 `ProtIntl`(protected internal) 둘**이다.\
   찍힌 세 숫자 `1 3 4` 가 각각 `Pub`·`Intl`·`ProtIntl` 이다 — **선언만 통과한 게 아니라 값이 읽혔다.**
 - ★★★ **`private protected` 는 파생이어야 열린다.**\
   `StrangerPP`(파생 아님) → **`cc exit=1`** · `HeirPP`(파생) → **`cc exit=0`**.\
   즉 **친구 어셈블리가 `AND` 의 「어셈블리」 조건을 만족시키고**, 「파생」 조건은 여전히 필요하다.
 - ★★★ **막힌 쪽의 진단이 `CS0281` 이고 문구가 「공개 키가 안 맞는다」고 말한다.**\
-  그런데 ★★★ **이 판에서 두 어셈블리 모두 `PublicKeyToken=null` 이다** — 문구 안에 그렇게 찍혀 있다.\
+  그런데 ★★★ **이 버전에서 두 어셈블리 모두 `PublicKeyToken=null` 이다** — 문구 안에 그렇게 찍혀 있다.\
   ★★★ **즉 문구가 실제 원인을 가리키지 않는다.** 실제 원인은 **파생이 아니라는 것**이다.
 - ★★★ **그래서 여기서는 문구를 근거로 쓰지 않았다.** 근거는 **같은 어트리뷰트·같은 두 어셈블리에서\
-  파생 여부 하나만 바꿨더니 `cc exit` 가 0 과 1 로 갈렸다**는 사실이다.\
-  ★ 지침의 「진단 문구는 흔들리는 칸」이 **문구가 아예 틀릴 수도 있다**는 형태로 나온 자리다.
+  파생 여부 하나만 바꿨더니 `cc exit` 가 0 과 1 로 나뉘었다**는 사실이다.\
+  ★ 지침의 「진단 문구는 실행마다 달라지는 항목」이 **문구가 아예 틀릴 수도 있다**는 형태로 나온 자리다.
 - ★ **어셈블리 이름으로 지목한다** — `-out:appb.dll` 이므로 이름이 `appb` 다.\
-  강력한 이름으로 서명한 어셈블리라면 **공개 키까지** 적어야 하는데, **그 판은 안 던졌다.**
+  강력한 이름으로 서명한 어셈블리라면 **공개 키까지** 적어야 하는데, **그 판은 실행하지 않았다.**
 
 ### 4. ★★ **최상위 타입은 `internal`, 중첩 타입과 멤버는 `private`**
 
@@ -392,12 +392,12 @@ Priv                 Private        False       False     False               Fa
 
 **왜 그런가**
 
-- ★★★ **`protected internal` 과 `private protected` 가 처음 갈리는 칸은 「다른 어셈블리 · 파생」이다.**\
+- ★★★ **`protected internal` 과 `private protected` 가 처음 달라지는 항목은 「다른 어셈블리 · 파생」이다.**\
   앞의 네 칸(같은 어셈블리 두 칸 · 다른 어셈블리 파생 아님)에서는 **결과가 같다.**\
   ★ **그 칸 하나를 안 던지면 두 낱말을 못 가른다** — 그래서 어셈블리를 둘 만들어야 했다.
 - ★★★ **`protected` 행은 어셈블리 축을 안 탄다** — 같은/다른/친구 어느 쪽이든 **파생이면 ○, 아니면 ✕** 다.
 - ★★ **`internal` 행과 `private` 행은 다른 어셈블리에서 진단 코드가 같다** — 둘 다 「없는 것」이다.\
-  ★ 갈리는 곳은 **같은 어셈블리 칸**과 **친구 어셈블리 칸**이다.
+  ★ 달라지는 곳은 **같은 어셈블리 칸**과 **친구 어셈블리 칸**이다.
 - ★ **친구 어셈블리 · 파생 열은 셋만 실측했다**(`private protected` 는 3번에서, 나머지는 위 열들에서 따라온다).\
   ★★ **`public`·`protected`·`protected internal` 의 「친구 · 파생」 칸은 던지지 않았다** —\
   친구 관계가 `internal` 축만 건드리므로 **다른 어셈블리 · 파생 칸과 같아야** 하지만, **그 칸은 관찰이 아니라 추론이다.**
@@ -484,14 +484,14 @@ jsrc/other/Stranger.java:8: error: priv has private access in Vault
   - ★★ **그래서 「Java 의 네 단계에 C# 의 여섯을 대응시키기」가 원리상 안 된다.**
 - ★★★ **자르는 단위가 다르다.**
   - **package 는 이름 공간**이고 한 jar 에 여러 package 가 들어간다 — **배포 단위와 무관**하다.\
-    ★ 다른 jar 가 같은 package 이름을 선언하면 뚫린다(split package). **이 판에서 그 실험은 안 던졌다.**
+    ★ 다른 jar 가 같은 package 이름을 선언하면 뚫린다(split package). **이 버전에서 그 실험은 실행하지 않았다.**
   - **어셈블리는 배포 단위**다. `internal` 은 **`.dll` 하나**로 잘리고,\
     뚫으려면 **선언한 쪽이 `InternalsVisibleTo` 로 허락**해야 한다(3번).\
     ★★★ **그래서 C# 쪽은 「허락하는 문」이고 Java 쪽은 「이름만 맞추면 되는 틈」이다.**
 - ★★ **C# 에만 있는 칸 둘** — **`internal`**(건물만) 과 **`private protected`**(집안 `AND` 건물).\
   Java 에는 대응물이 없다.
 - ★★ **Java 에만 있는 것** — `module-info.java` 의 `exports`(JPMS, Java 9).\
-  ★★★ **이 판에서 안 던졌다** — 모듈 경로 설정이 따로 필요하다.
+  ★★★ **이 버전에서 실행하지 않았다** — 모듈 경로 설정이 따로 필요하다.
 - ★ **재검증 방식이 다르다** — **javac 는 소스 줄과 `^` 캐럿을 끼워 준다.**\
   C# 진단은 **`(행,열)` 만** 준다. 그래서 C# 쪽은 **소스 배너를 같은 블록에 싣는 것**이 필수다.
 
@@ -504,7 +504,7 @@ jsrc/other/Stranger.java:8: error: priv has private access in Vault
   ★ 이 주제의 여섯 한정자로는 설명이 안 되는 **일곱 번째 자리**다 — 한정자를 못 적는데 `private` 이 된다.
 - ★ **C++ 에는 이 주제의 절반이 없다** — `public`/`protected`/`private` 셋뿐이고 **어셈블리 축이 아예 없다.**\
   대신 **`friend` 선언**이 있는데, 그것은 **타입 단위**라 `InternalsVisibleTo` 의 **어셈블리 단위**와 다르다.\
-  C++ 갈래 목록([`cpp/syntax/README.md`](../../../cpp/syntax/README.md))의 **12번**([`12-class-basics-members-access-and-this/`](../../../cpp/syntax/12-class-basics-members-access-and-this/))이 그쪽 정본이다. **이 판에서 C++ 은 안 던졌다.**
+  C++ 갈래 목록([`cpp/syntax/README.md`](../../../cpp/syntax/README.md))의 **12번**([`12-class-basics-members-access-and-this/`](../../../cpp/syntax/12-class-basics-members-access-and-this/))이 그쪽 정본이다. **이 버전에서 C++ 은 실행하지 않았다.**
 
 ## 실행 검증
 
@@ -521,7 +521,7 @@ jsrc/other/Stranger.java:8: error: priv has private access in Vault
 | `cs15b-file1/2/3.cs` `file` | csc 2회 | ★★★ 같은 이름 공존 `cc exit=0` · 다른 파일은 **`CS0246`** |
 | Java `Vault`·`Neighbor`·`Heir`·`Stranger` | javac 1회 | ★★★ **에러 6건** — `Neighbor` 는 `priv` 만 · `Heir` 는 `pkg`·`priv` |
 
-**구현 의존 항목** — 다음은 **이 판(.NET SDK 10.0.401 · Roslyn · javac 21.0.5)에서만** 그렇다.
+**구현 의존 항목** — 다음은 **이 버전(.NET SDK 10.0.401 · Roslyn · javac 21.0.5)에서만** 그렇다.
 
 - ★★★ **다른 어셈블리의 `internal` 이 `CS1061`/`CS0103` 으로 보이는 것** — 명세는 「접근 불가」만 정하고\
   **어떤 진단을 낼지는 정하지 않는다.** Roslyn 의 선택이다.
@@ -545,14 +545,14 @@ jsrc/other/Stranger.java:8: error: priv has private access in Vault
 - **안 돌려 본 것** — ★★ **강력한 이름으로 서명한 어셈블리의 `InternalsVisibleTo`**(공개 키를 적는 판) ·\
   ★★ **Java 의 `module-info.java`/`exports`**(모듈 경로 설정이 따로 필요하다) ·\
   ★★ **Java 의 split package**(같은 package 이름을 두 jar 가 선언하는 것) ·\
-  ★ **C++ 의 `friend` 선언**(이 판에서 C++ 은 안 던졌다) ·\
-  ★ **`internal protected` 라는 순서**(같은 뜻으로 받는다고 알려져 있으나 안 던졌다) ·\
+  ★ **C++ 의 `friend` 선언**(이 버전에서 C++ 은 실행하지 않았다) ·\
+  ★ **`internal protected` 라는 순서**(같은 뜻으로 받는다고 알려져 있으나 실행하지 않았다) ·\
   ★ **`file` 타입을 부분 클래스·제네릭과 섞는 판** ·\
   ★ **8번 표의 「친구 어셈블리 · 파생」 열 중 셋**(`public`·`protected`·`protected internal`) — **추론이지 관찰이 아니다.**
 - **못 잰 것** — ★ **「`internal` 을 많이 쓰면 JIT 이 더 최적화하나」.**\
   어셈블리 밖에서 재정의될 수 없다는 정보를 런타임이 쓸 수 있지만,\
-  **그것을 관찰하려면 JIT 덤프가 필요하고 이 판에서는 안 만들었다.**
-- ★ 「**부적용인 창**」 **둘** — **① IL 덤프**와 **④ 할당 바이트.**\
+  **그것을 관찰하려면 JIT 덤프가 필요하고 이 버전에서는 안 만들었다.**
+- ★ 「**해당 없는 창**」 **둘** — **① IL 덤프**와 **④ 할당 바이트.**\
   접근 한정자는 **멤버 본문을 한 글자도 안 바꾼다.** `public int Pub` 과 `private int Priv` 의 `ldfld` 가 같다.\
   바뀌는 것은 **시그니처의 접근성 비트 하나**이고, 그것은 7번이 리플렉션으로 이미 찍는다.\
   ★★★ **「안 쟀다」가 아니라 「잴 것이 없다」다**(규칙 18-B).
@@ -560,7 +560,7 @@ jsrc/other/Stranger.java:8: error: priv has private access in Vault
 **버전이 올랐을 때 다시 돌려야 하는 것**
 
 - ★★ **3번의 `CS0281`** — Roslyn 이 진단을 고치면 **문구가 바뀌거나 다른 코드가 된다.**\
-  ★ 이 문서는 그 경우에도 **결론이 안 흔들린다** — `cc exit` 만 근거로 썼기 때문이다.
+  ★ 이 문서는 그 경우에도 **결론이 달라지지 않는다** — `cc exit` 만 근거로 썼기 때문이다.
 - ★★ **2번의 `CS1061`/`CS0103`** — Roslyn 의 선택이라 바뀔 수 있다.
 - ★ **1번·4번·5번·6번·7번** — **명세와 메타데이터가 정한 것이라 바뀔 일이 없다.** 바뀌면 그것이 뉴스다.
 
@@ -571,7 +571,7 @@ jsrc/other/Stranger.java:8: error: priv has private access in Vault
 진단은 **`-preferreduilang:en-US`** 로 영어로 고정했다.\
 ★★★ **어셈블리를 둘 만들었다** — `liba.dll`(라이브러리)과 `appb.dll`(참조하는 쪽).\
 ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 손으로 옮긴 줄은 없다.
-**읽는 법** — **진단 문구**와 `CS0281` 에 박힌 **어셈블리 버전·`PublicKeyToken` 표기**는 흔들리는 칸이다.\
+**읽는 법** — **진단 문구**와 `CS0281` 에 박힌 **어셈블리 버전·`PublicKeyToken` 표기**는 실행마다 달라지는 항목이다.\
 근거로 쓰는 것은 **어느 멤버가 막히고 어느 멤버가 통과했나 · 진단 코드와 `(행,열)` ·
 `cc exit` · `FieldAttributes` 의 이름** 이다.\
 ★★★ **4번에서는 진단 문구가 원인을 안 가리킨다** — 그래서 거기서는 **`cc exit` 만 근거로 썼다.**

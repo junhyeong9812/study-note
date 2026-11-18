@@ -99,7 +99,7 @@ early(-1) = 0 / early(5) = 10
 
 비용 — 없음. 반환 규칙은 컴파일 타임에 끝난다.
 
-### (2) ★ 반환이 사라지는 두 자리 — 에러 번호가 갈린다
+### (2) ★ 반환이 사라지는 두 자리 — 에러 번호가 달라진다
 
 **언제 쓰나** — 함수를 고치다가 마지막 줄을 건드릴 때마다.
 
@@ -246,7 +246,7 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 - 남는 단서는 **경고 둘**뿐이다 — `unreachable_code` 와 `unused_variables`.
 - ★ **경고도 출력이다.** 이 자리는 에러가 안 나므로 경고를 안 읽으면 못 잡는다.
 - 실행하면 그 줄에서 **패닉**하고 **종료 코드 101**이다.\
-  패닉 줄의 괄호 안 번호는 **실행마다 바뀐다** — 근거로 읽을 칸이 아니다.
+  패닉 줄의 괄호 안 번호는 **실행마다 바뀐다** — 근거로 읽을 항목이 아니다.
 
 비용 — 타입 검사는 0. 실행 비용은 그 자리에서 프로세스가 끝나는 것이다.
 
@@ -602,7 +602,7 @@ error[E0658]: the `!` type is experimental
 > any unstable features. In order to do so, please switch to a nightly version of
 > rustc (by using [rustup]).
 
-### 금지 사례 — 던져서 확인한 것들
+### 금지 사례 — 실행해서 확인한 것들
 
 인자 타입을 생략하면 **파서**가 먼저 막는다(에러 번호가 없다).
 
@@ -633,7 +633,7 @@ error[E0428]: the name `add` is defined multiple times
   = note: `add` must be defined only once in the value namespace of this module
 ```
 
-함수 안에 함수를 써도 **바깥 변수를 못 본다** — 그게 클로저와 갈리는 자리다.
+함수 안에 함수를 써도 **바깥 변수를 못 본다** — 그게 클로저와 달라지는 자리다.
 
 ```text
 error[E0434]: can't capture dynamic environment in a fn item
@@ -788,12 +788,12 @@ fn inner() -> i32 { k + 1 }   ->  error[E0434]: can't capture dynamic environmen
 | **`!` 를 타입으로 못 적는 것** | **툴체인 채널** | E0658 — stable 1.92.0 기준. nightly 는 `#![feature(never_type)]` 로 연다 |
 | **에러·경고 메시지의 문구와 화살표 배치** | **rustc 구현** | 버전이 오르면 바뀐다. **에러 번호**가 더 안정적이다 |
 | **`unreachable_code` 가 경고인 것** | **린트 설정** | `-D warnings`·`#[deny]` 로 에러가 된다 |
-| **패닉 줄의 괄호 안 번호** | **실행마다** | 근거로 읽을 칸이 아니다 |
+| **패닉 줄의 괄호 안 번호** | **실행마다** | 근거로 읽을 항목이 아니다 |
 | **종료 코드 101 · 2** | 101은 **런타임**, 2는 **이 프로그램** | 패닉은 101 고정, `exit(2)` 는 내가 고른 값 |
 
-★ 이 주제에서 **디버그·릴리스로 갈리는 자리는 없다.** 전부 컴파일 타임 타입 규칙이다 —
+★ 이 주제에서 **디버그·릴리스로 나뉘는 자리는 없다.** 전부 컴파일 타임 타입 규칙이다 —
 [**03번 주제**](../03-primitive-types-and-integer-overflow/)와 다른 점이다.
-대신 **툴체인 채널로 갈리는 자리**가 하나 있다(`!` 타입 표기).
+대신 **툴체인 채널로 나뉘는 자리**가 하나 있다(`!` 타입 표기).
 
 ## 언제 쓰고 언제 안 쓰나
 
@@ -817,7 +817,7 @@ fn inner() -> i32 { k + 1 }   ->  error[E0434]: can't capture dynamic environmen
 ## 핵심 문장
 
 - 함수의 반환값은 **꼬리 표현식**이고, 반환 타입을 생략하면 **`()`** 다.
-- 몸통이 `()` 를 내는 사고는 두 가지인데 **번호가 갈린다** — 세미콜론은 **E0308**, 꼬리 없는 `if` 는 **E0317**.
+- 몸통이 `()` 를 내는 사고는 두 가지인데 **번호가 달라진다** — 세미콜론은 **E0308**, 꼬리 없는 `if` 는 **E0317**.
 - **`!` 는 「값이 절대 안 만들어진다」는 타입**이고, 그래서 **어떤 타입 자리에도 들어간다**.
 - `!` 를 내는 것은 셋이다 — **`panic!`·`process::exit`·끝나지 않는 `loop`**(그리고 `todo!`·`unreachable!`).
 - `match` 한 갈래가 `!` 면 **전체 타입은 다른 갈래가 정한다**. 전부 `!` 면 `as all arms diverge` 경고가 붙는다.
@@ -831,7 +831,7 @@ fn inner() -> i32 { k + 1 }   ->  error[E0434]: can't capture dynamic environmen
 - [**04번 주제**](../04-expressions-and-semicolons/)(표현식 지향) — **꼬리 표현식·`return`·`()` 의 정본**.\
   그쪽은 「세미콜론이 블록에 무엇을 하나」까지, 여기는 「**그게 함수 경계에서 무엇이 되나**」부터다
 - [**05번 주제**](../05-control-flow-loops-and-labels/)(제어 흐름) — 끝나지 않는 `loop` 가 `!` 라는 사실의 출처
-- [**03번 주제**](../03-primitive-types-and-integer-overflow/)(기본 타입) — 디버그·릴리스로 갈리는 주제의 대비
+- [**03번 주제**](../03-primitive-types-and-integer-overflow/)(기본 타입) — 디버그·릴리스로 나뉘는 주제의 대비
 - [**07번 주제**](../07-const-static-and-const-fn/)(상수·`static`·`const fn`) — `const fn` 이라는 다른 종류의 함수
 - [**08번 주제**](../08-ownership-and-move/)(소유권과 이동) — 함수 인자·반환이 **값을 이동시킨다**는 쪽
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) — 그쪽은 「**왜 Rust 를 고르나**」,\
@@ -853,7 +853,7 @@ fn inner() -> i32 { k + 1 }   ->  error[E0434]: can't capture dynamic environmen
 - **패닉(panic)** — 복구 불가능한 오류로 판단해 스레드를 중단시키는 것. 프로세스 종료 코드는 101이다.
 - **`unreachable_code`** — `!` 뒤처럼 도달할 수 없는 줄에 붙는 기본 경고.
 - **E0658** — 안정판에서 불안정 기능을 썼을 때의 에러. `!` 타입 표기가 여기 걸린다.
-- **툴체인 채널(channel)** — stable · beta · nightly. 어떤 기능이 되는지가 여기서 갈린다.
+- **툴체인 채널(channel)** — stable · beta · nightly. 어떤 기능이 되는지가 여기서 달라진다.
 
 ---
 
@@ -903,6 +903,6 @@ Never type · Type coercions(`!` 강제) · Function pointer types 절 ·
 **실행 검증** — 이 문서의 모든 출력·에러·경고는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` 에서\
 **`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 얻은 것이다. `cargo` 는 쓰지 않았다.
 ★ 패닉 메시지 **괄호 안 번호**(`(1778250)`)는 **실행마다 바뀐다.** 출력을 그대로 옮기느라 남겨 두었을 뿐,\
-근거로 읽을 칸이 아니다.
+근거로 읽을 항목이 아니다.
 **버전** — 함수 문법과 `-> !` 는 1.0부터다. **`!` 를 타입으로 적는 것**(`let x: !`·`Vec<!>`)은\
 **1.92.0 stable 에서 아직 안 된다**(E0658 — 추적 이슈 #35121). 이 문서는 **stable 에서 되는 것만** 적는다.

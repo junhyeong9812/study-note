@@ -356,10 +356,10 @@ public final class NoninlKt {
 - ★ **기본값에서는 둘 다 2개**다. Kotlin 2.x 의 기본 람다 전략이 **`invokedynamic`** 이라\
   람다가 **클래스가 아니라 `private static final` 메서드 + `LambdaMetafactory`** 로 내려가기 때문이다.\
   **그래서 「클래스 파일이 안 늘었으니 인라인됐다」는 틀린 추론이다.**
-- ★★ **`-Xlambdas=class` 를 주면 갈린다** — `inl.kt` 는 2개 그대로, `noninl.kt` 는 **4개**(`NoninlKt$five$a$1`·`$b$1`).\
+- ★★ **`-Xlambdas=class` 를 주면 달라진다** — `inl.kt` 는 2개 그대로, `noninl.kt` 는 **4개**(`NoninlKt$five$a$1`·`$b$1`).\
   만들 람다 객체가 애초에 없는 쪽과 있는 쪽의 차이가 여기서 눈에 보인다.
 - ★ **`ACC_SYNTHETIC` 은 0건이다.** `five$lambda$0` 의 플래그는 `(0x001a) ACC_PRIVATE, ACC_STATIC, ACC_FINAL` 이다 —\
-  **이 판의 관찰**이고 언어 보장이 아니다.
+  **이 버전의 관찰**이고 언어 보장이 아니다.
 - 인라인 쪽 본문에는 **`Cup.getMl`·`Cup.setMl` 말고 호출이 없다.** 다섯 함수 이름이 한 번도 안 나온다.\
   중간의 `nop`·`iconst_0; istore` 는 **인라인된 구간 표시**이지 계산이 아니다.
 - 인라인 아닌 쪽은 람다마다 `invokedynamic` → `invokestatic myLet` → **`checkcast Number` → `intValue`** 가 반복된다.\
@@ -451,7 +451,7 @@ fun f(s: String?): Int = with(s) { length }
 
 - `run(T, Function1)` 과 `with(T, Function1)` 이 둘 다 `(Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;` 다.\
   **`let` 까지 합치면 셋이 같다.**
-- ★★ Kotlin 에서 뜻이 갈리는 이유는 **`T.() -> R` 와 `(T) -> R` 의 구분이 JVM 디스크립터에 없기 때문**이다.\
+- ★★ Kotlin 에서 뜻이 달라지는 이유는 **`T.() -> R` 와 `(T) -> R` 의 구분이 JVM 디스크립터에 없기 때문**이다.\
   그 구분은 **`kotlin.Metadata` 와 `@kotlin.ExtensionFunctionType` 이라는 타입 애너테이션**에만 있다.
 - ★ 그래서 **Java 에서는 그 둘을 구분할 수단이 없다.** 애초에 다섯은 `@InlineOnly` 라 **Java 에서 부를 수도 없다**(10번).
 - `run` 의 오버로드가 둘인 것도 보인다 — `run(Function0)` 은 **수신자 없는 형태**(`run { … }`)다.
@@ -525,13 +525,13 @@ OpenJDK Runtime Environment Temurin-21.0.5+11 (build 21.0.5+11-LTS)
 OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sharing)
 ```
 
-★ **흔들리는 칸과 안 흔들리는 칸**(제출 전 재대조에서 「고칠 것」과 「설계상 다른 것」을 가르는 선언이다)
+★ **실행마다 달라지는 항목과 달라지지 않는 항목**(제출 전 재대조에서 「고칠 것」과 「설계상 다른 것」을 가르는 선언이다)
 
-| 흔들린다 | 안 흔들린다 |
+| 실행마다 달라진다 | 달라지지 않는다 |
 |---|---|
 | **없다** — 이 문서의 블록은 전부 결정적이다(스레드·시간·해시코드·순서 미정 출력을 싣지 않았다) | `javap` 출력 **전체**(오프셋·상수 풀 번호 포함) · 클래스 파일 목록 · `grep -c` 수치 · 경고·에러 문구 · 종료 코드 · 실행 출력 전체 |
 
-> 근거 — **캡처 스크립트를 두 번 돌려 블록 82개를 바이트 단위로 대조**했고, 이 주제의 블록은 한 글자도 안 갈렸다.
+> 근거 — **캡처 스크립트를 두 번 돌려 블록 82개를 바이트 단위로 대조**했고, 이 주제의 블록은 한 글자도 달라지지 않았다.
 
 | 프로그램 | 무엇을 확인했나 | 돌린 방법 |
 |---|---|---|
@@ -552,11 +552,11 @@ OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sha
 「`apply`/`also` 가 수신자를 돌려준다」·「다섯이 `inline` 이다」·「`with` 만 확장이 아니다」**
 는 **언어·stdlib 의 계약**이라 타깃·플래그와 무관하다.
 
-**★ 던져 봤더니 예상과 달랐던 것 — 세 건**
+**★ 실행해 봤더니 예상과 달랐던 것 — 세 건**
 
 1. ★★★ **클래스 파일 개수만으로는 인라인 여부를 못 가른다.** 「인라인이 아니면 `Function1` 클래스가 생긴다」는
    **Kotlin 2.4.20 기본값에서 재현되지 않았다** — 기본 람다 전략이 `invokedynamic` 이라 클래스 대신
-   **`private static final` 메서드**가 생긴다. **`-Xlambdas=class` 를 줘야** 클래스 파일 개수가 갈렸고(2개 대 4개),
+   **`private static final` 메서드**가 생긴다. **`-Xlambdas=class` 를 줘야** 클래스 파일 개수가 달라졌고(2개 대 4개),
    플래그 없이 가르는 것은 **`Function1` 등장 횟수**(0회 대 23회)였다.
 2. ★★ **그 람다 메서드는 `ACC_SYNTHETIC` 이 아니었다.** `NoninlKt` 전체에서 `ACC_SYNTHETIC` 이 **0건**이고
    플래그는 `ACC_PRIVATE, ACC_STATIC, ACC_FINAL` 이다. `-Xlambdas=class` 로 생긴 클래스도

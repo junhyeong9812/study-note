@@ -284,7 +284,7 @@ fun main() = runBlocking(CoroutineName("form54")) {
 
 선행은 [52번 주제](../52-coroutine-basics-suspend-scope-launch-async/)(코루틴 기초 — `suspend` 호출 규칙 · `runBlocking` · `delay` 대 `Thread.sleep`)다.
 
-이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5 · kotlinx-coroutines-core-jvm 1.11.0** 에서 실제로 던져 받은 것이다(이 머신은 코어 24개).
+이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5 · kotlinx-coroutines-core-jvm 1.11.0** 에서 실제로 실행해 받은 것이다(이 머신은 코어 24개).
 
 ## 복습 기록
 

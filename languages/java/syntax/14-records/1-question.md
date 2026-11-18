@@ -88,7 +88,7 @@ System.out.println(new Temp(0.0).equals(new Temp(-0.0)));
 ```
 
 - 네 줄의 출력은 각각 무엇인가?
-- 원시 비교와 record 의 `equals` 가 갈리는 근거는 javadoc 의 어느 문장인가?
+- 원시 비교와 record 의 `equals` 가 달라지는 근거는 javadoc 의 어느 문장인가?
 - 이 둘 중 **`equals` 계약을 구해 주는 쪽**은 어느 것인가?
 - `-0.0` 이 코드에 리터럴로 없는데도 생기는 경로는 무엇인가?
 

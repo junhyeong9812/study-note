@@ -47,7 +47,7 @@
 
 ### 6. 풀 교착
 
-- 둘 다 첫 커넥션을 쥔 채 두 번째를 기다린다. 풀에 빈 자리가 없어 아무도 진행하지 못한다.
+- 둘 다 첫 커넥션을 잡은 채 두 번째를 기다린다. 풀에 빈 자리가 없어 아무도 진행하지 못한다.
   - 로컬 재현: 두 스레드 모두 `request timed out after 2000ms (total=2, active=2, idle=0, waiting=0)`.
   - HikariCP에서 `connectionTimeout`을 0으로 두면 `Integer.MAX_VALUE` ms(약 24.8일)가 되어 사실상 영원히 멈춘다.
 - 최소 풀 크기(HikariCP 위키 Pool-locking): `Tn × (Cm − 1) + 1` = 8 × (3 − 1) + 1 = **17**.
@@ -70,7 +70,7 @@
   2. `idle in transaction`이 많으면 트랜잭션 안에서 앱이 딴 일을 한다(외부 HTTP 호출 등, [24](../24-transaction-boundaries-in-app-code/2-summary.md)).
   3. `active`이고 `wait_event_type = 'Lock'`이면 락 대기다. `pg_blocking_pids()`로 막는 쪽을 찾는다([22](../22-database-side-timeouts/2-summary.md)).
   4. DB 쪽 세션이 적은데 풀이 비었다면 누수다. `leakDetectionThreshold`를 켜서 반납하지 않은 스택을 찾는다.
-- 대처: 원인 세션 정리 → 쥔 시간 단축 → 서버 측 타임아웃으로 상한 → `connectionTimeout` 단축(빨리 실패). 풀을 키우는 것은 마지막이다.
+- 대처: 원인 세션 정리 → 잡은 시간 단축 → 서버 측 타임아웃으로 상한 → `connectionTimeout` 단축(빨리 실패). 풀을 키우는 것은 마지막이다.
 
 ### 9. `too many clients`
 

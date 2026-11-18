@@ -16,7 +16,7 @@ int check_self(double x) { return x != x; }
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
 
-### 1. ctype 격자 — **`(int)c` 는 `-23` · `-1` · 갈린 칸 1 / 20(Latin-1 · 기본 · `0xFF`) · UB 칸 다섯은 전부 같은 답 · sanitizer 침묵** ★★★
+### 1. ctype 격자 — **`(int)c` 는 `-23` · `-1` · 달라진 항목 1 / 20(Latin-1 · 기본 · `0xFF`) · UB 칸 다섯은 전부 같은 답 · sanitizer 침묵** ★★★
 
 **출력**
 
@@ -45,7 +45,7 @@ ok -23 1 1 1 -1 0 1 1
 **왜 그런가**
 
 - ★★★ **`-23` 은 UB, `-1` 은 UB 가 아니다** — 인자는 「`unsigned char` 로 표현 가능하거나 `EOF` 와 같아야」 한다. `-1` 은 `EOF` 와 같다. 그래서 **UB 칸은 `0xE9` 쪽(`*`)**, `0xFF` 쪽은 **정의된 `EOF` 호출**이다.
-- ★★★ **갈린 칸은 Latin-1 · `0xFF` 하나** — `EOF` 로 읽힌 `isalpha(c)` 는 0, 'ÿ' 로 읽힌 `isalpha((unsigned char)c)` 는 1. 다른 로케일에서는 `0xFF` 가 애초에 알파벳이 아니라 **둘 다 0** 이라 안 갈렸다.
+- ★★★ **달라진 항목은 Latin-1 · `0xFF` 하나** — `EOF` 로 읽힌 `isalpha(c)` 는 0, 'ÿ' 로 읽힌 `isalpha((unsigned char)c)` 는 1. 다른 로케일에서는 `0xFF` 가 애초에 알파벳이 아니라 **둘 다 0** 이라 달라지지 않았다.
 - ★★ **`iswalpha` 는 U+00E9 · U+00FF 를 묻는다** — 두 UTF-8 로케일과 Latin-1 에서 1, `C` 에서 0. `en_US.UTF-8` 은 **`setlocale` 이 `NULL` 이라 `C` 로 남아** `C` 줄과 같다.
 - ★★ **ASan+UBSan 판은 같은 값을 찍고 아무 말도 없다** — UB 칸조차.
 
@@ -105,7 +105,7 @@ a                          b                           ==  abs  rel
 
 - ★★ **둘째 줄** — `1e-20` 과 `2e-20` 의 차이 `1e-20` 은 `DBL_EPSILON`(`2.2e-16`)보다 한참 작아 **`abs` 가 「같다」** 고 했다. 두 배 차이인데.
 - ★★ **셋째 · 넷째 줄** — `1e16` 근처의 이웃 double 간격은 **2** 라 차이 `2` 가 `DBL_EPSILON` 보다 커 **`abs` 가 「다르다」**. 한 칸 옆인데.
-- ★ `rel` 은 문턱을 **값의 크기에 비례**시켜 넷 다 의도대로다.
+- ★ `rel` 은 임계값을 **값의 크기에 비례**시켜 넷 다 의도대로다.
 
 ### 4. NaN 격자 — **못 본 칸 18 / 64 · 비트 검사는 0 칸 · gcc 는 `-O0` 에서도 못 봄 · clang 만 경고** ★★★
 
@@ -273,7 +273,7 @@ data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
 
 - ★★★ **표준** — 「the value of which **shall be representable as an unsigned char or shall equal the value of the macro EOF**. If the argument has any other value, the behavior is undefined.」
 - ★★★ **glibc 는 `[-128, 255]` 를 다 받는 표**를 만들어 두었다 — 「**we also support negative `signed char` values for broken old programs**」. 그래서 1번의 `*` 칸이 `unsigned char` 칸과 **같은 답**을 냈다.
-- ★★ **그런데 `-1` 한 칸만은 `EOF` 의 자리**다 — 부호 있는 `char` 의 `'\xFF'` 는 `-1` 이 되어 **「문자 ÿ」가 아니라 「EOF」** 로 분류된다. 1번에서 갈린 **유일한 칸**이 그것이다.
+- ★★ **그런데 `-1` 한 칸만은 `EOF` 의 자리**다 — 부호 있는 `char` 의 `'\xFF'` 는 `-1` 이 되어 **「문자 ÿ」가 아니라 「EOF」** 로 분류된다. 1번에서 달라진 **유일한 칸**이 그것이다.
 
 ### 9. 로케일이 없을 때 — **`C` 로케일로 돌았다 · 「C 줄 한 번 더」로 읽는다** ★
 
@@ -318,7 +318,7 @@ data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
 | `s52f.c` | ★★★ 정적 버퍼 · `mktime` · `TZ` 둘 | 2 |
 | `s52g.c` | ★★ `localtime_r` c17 · c2x | 진단 1 · 실행 1 |
 
-**재대조** — 제출 전 캡처를 처음부터 다시 돌려 `normalize-shaky.py`(기본 규칙만)로 대조했다. 흔들린 칸은 **ASan 리포트의 PID · 주소 · `BuildId` · 레지스터 값**뿐이어야 하고, 그랬다.
+**재대조** — 제출 전 캡처를 처음부터 다시 돌려 `normalize-shaky.py`(기본 규칙만)로 대조했다. 달라진 항목은 **ASan 리포트의 PID · 주소 · `BuildId` · 레지스터 값**뿐이어야 하고, 그랬다.
 
 **구현 의존 항목** — 다음은 **이 환경에서만** 그렇다.
 
@@ -344,5 +344,5 @@ data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
 
 이 파일의 모든 출력·진단은 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** · **clang 18.1.3** · **glibc 2.39** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
 소스는 `s52a.c`\~`s52g.c` 이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮긴 출력이 없다). 시각은 **고정 `time_t` + `TZ=`** 로만 찍었다.\
-★★★ **본체 창은 ctype 격자** — 로케일 5 × 부호 2 × 바이트 2.
-★★ **흔들리는 칸** — ASan 리포트의 PID · 주소 · `BuildId`(정규화 기본 규칙).
+★★★ **핵심 창은 ctype 격자** — 로케일 5 × 부호 2 × 바이트 2.
+★★ **실행마다 달라지는 항목** — ASan 리포트의 PID · 주소 · `BuildId`(정규화 기본 규칙).

@@ -2,7 +2,7 @@
 
 상위: [클러스터 상태 갱신](../README.md)
 
-배치 하나가 실행되고 **발행할지 말지가 갈리는 자리**다. 가르는 기준이 참조 비교 한 줄인데, 그 한 줄에 실행기의 정상 반환과 예외가 **같이** 걸린다.
+배치 하나가 실행되고 **발행할지 말지가 달라지는 자리**다. 가르는 기준이 참조 비교 한 줄인데, 그 한 줄에 실행기의 정상 반환과 예외가 **같이** 걸린다.
 
 ## 위치
 
@@ -49,7 +49,7 @@
         logExecutionTime(computationTime, "compute cluster state update", summary);
 ```
 
-그리고 참조 비교로 갈린다.
+그리고 참조 비교로 나뉜다.
 
 `server` / `org.elasticsearch.cluster.service` / `MasterService.java` L368-L382 ([GitHub](https://github.com/elastic/elasticsearch/blob/60bb239edb99f0e002eb620e4e82a6f2b15a49b0/server/src/main/java/org/elasticsearch/cluster/service/MasterService.java#L368-L382))
 

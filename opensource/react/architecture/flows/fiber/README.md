@@ -19,7 +19,7 @@
 
 1. [칸 서른셋](01_shape/README.md) — Fiber 타입의 필드와 그 주석.
 2. [짝 만들기](02_workInProgress/README.md) — `alternate` 와 이중 버퍼링, `StaticMask`.
-3. [JSX 가 tag 이 되기까지](03_tagFromType/README.md) — `<div>` 와 `<Foo/>` 가 갈리는 자리.
+3. [JSX 가 tag 이 되기까지](03_tagFromType/README.md) — `<div>` 와 `<Foo/>` 가 달라지는 자리.
 
 ```text
  ★★ 필드가 서른셋이다 — 필수 23, 선택 10

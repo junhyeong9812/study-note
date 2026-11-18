@@ -35,7 +35,7 @@ console.log(add(1, 2));
 ```
 
 - 위 두 설정이 「`composite` 있음 · `references` 있음」 칸이다. `core` 의 `composite` 를 빼거나 `app` 의 `references` 를 빼서 네 조합을 만들고, 각각 `tsc -b app` 과 `tsc -p app` 으로 7.0.2 · 5.9.3 에 던진다. 칸마다 무슨 진단이 나고, 진단 없이 빌드되는 칸은 몇 칸인가?
-- 두 판이 다른 칸이 있다면 무엇이 다른가?
+- 두 버전이 다른 칸이 있다면 무엇이 다른가?
 
 ### 2. `app` 에게 물은 세 가지 (예측)
 
@@ -89,7 +89,7 @@ export class K {
 }
 ```
 
-- 각각을 `--declaration --isolatedDeclarations` 로 7.0.2 · 5.9.3 · 4.9.5 에 던지면 무엇이 나는가? 두 판의 코드가 다른 행은?
+- 각각을 `--declaration --isolatedDeclarations` 로 7.0.2 · 5.9.3 · 4.9.5 에 던지면 무엇이 나는가? 두 버전의 코드가 다른 행은?
 
 ### 5. `rootDir` 도 `references` 도 없는 `app` (예측)
 

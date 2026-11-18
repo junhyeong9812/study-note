@@ -76,7 +76,7 @@ print("   Storage.copy 가 있나 :", callable(Storage.copy))
 print("   Storage.read(None, 'k') ->", Storage.read(None, "k"))
 ```
 
-* ②와 ③의 두 메시지는 **어떻게 다른가** — 무엇이 단수·복수로 갈리는가?
+* ②와 ③의 두 메시지는 **어떻게 다른가** — 무엇이 단수·복수로 나뉘는가?
 * ★ ④에서 `copy` 가 `Mem.__dict__` 에 있는가, 그런데 도는가?
 * ★★ ⑤가 묻는 것 — `Half` 라는 **클래스는 만들어졌는가**?
 
@@ -296,7 +296,7 @@ print("   HasName.__protocol_attrs__ :", sorted(HasName.__protocol_attrs__))
 
 * ①의 네 줄은 각각 참인가 거짓인가 — `close = 42` 인 클래스는?
 * ★ 그 동안 **경고가 몇 건** 잡혔는가?
-* ★★ ④에서 `isinstance` 와 `issubclass` 의 답이 **갈리는가** — 갈린다면 어느 쪽이 막히는가?
+* ★★ ④에서 `isinstance` 와 `issubclass` 의 답이 **달라지는가** — 달라진다면 어느 쪽이 막히는가?
 
 ### 5. 갈고리를 직접 달면 (예측)
 
@@ -473,7 +473,7 @@ print("   Protocol : ProtoBroken() 이 만들어졌다 ->", type(ProtoBroken()).
 
 * ①에서 **각각 몇 개**가 공짜로 따라오는가?
 * ★ ④에서 `__getitem__` 만 가진 낡은 객체는 **양쪽 다** 어떻게 판정되는가 — 그런데 `for` 는 도는가?
-* ★★ ⑤에서 안 채운 하위 클래스를 만들면 **두 장치가 어떻게 갈리는가**?
+* ★★ ⑤에서 안 채운 하위 클래스를 만들면 **두 장치가 어떻게 달라지는가**?
 
 ### 7. ABC 가 막는 시점 (왜)
 

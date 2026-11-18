@@ -78,7 +78,7 @@ HTTP는 요청마다 따로다. 페이지를 새로 열면 메모리의 JS 변�
                                     └ 이 동안 입력·렌더링 못 함
 ```
 
-- HTML 표준의 Web Storage는 **동기** API다. 호출이 끝날 때까지 메인 스레드를 쥔다.
+- HTML 표준의 Web Storage는 **동기** API다. 호출이 끝날 때까지 메인 스레드를 잡는다.
 - 값은 문자열만. 객체는 `JSON.stringify`로 바꿔 넣고, 직렬화 비용도 메인 스레드에서 낸다.
 - Chromium 소스의 `kPerStorageAreaQuota`는 10485760(10 MiB)이다(`third_party/blink/public/mojom/dom_storage/storage_area.mojom`, 현재 main). 렌더러 쪽 `StorageAreaMap`은 키와 값의 길이 × `sizeof(UChar)`(2바이트)로 사용량을 센다(`third_party/blink/renderer/modules/storage/storage_area_map.cc`의 `QuotaForString`). 그래서 약 5Mi 문자에서 막힌다. 실험에서 들어간 양도 약 5Mi 문자였다.
 - 같은 출처의 다른 문서에는 `storage` 이벤트로 변경이 알려진다.
@@ -172,7 +172,7 @@ SQLite 헤더: Default/WebStorage/QuotaManager
 - **정렬된 키 저장 + 범위 스캔**: IndexedDB 객체 저장소·인덱스. SQLite 백엔드는 B-트리, LevelDB 백엔드는 LSM 트리다. [data-structure/15-b-tree](../../data-structure/15-b-tree/2-summary.md) · [data-structure/24-lsm-tree](../../data-structure/24-lsm-tree/2-summary.md) · [database/08-btree-indexes](../../database/08-btree-indexes/2-summary.md) · [database/38-lsm-storage-engine](../../database/38-lsm-storage-engine/2-summary.md)
 - **트랜잭션 원자성**: 한 트랜잭션의 요청은 전부 반영되거나(커밋) 전부 취소된다(abort).
 - **LRU 축출**: 출처 단위 마지막 사용 시각 기준. [data-structure/10-lru-cache](../../data-structure/10-lru-cache/2-summary.md)
-- **스키마 버전 업그레이드**: `indexedDB.open(name, version)` → `onupgradeneeded`에서 마이그레이션. 다른 탭이 옛 버전 연결을 쥐고 있으면 `blocked`.
+- **스키마 버전 업그레이드**: `indexedDB.open(name, version)` → `onupgradeneeded`에서 마이그레이션. 다른 탭이 옛 버전 연결을 잡고 있으면 `blocked`.
 
 ## 적용 — 풀어나가는 법
 
@@ -263,7 +263,7 @@ const { usage, quota } = await navigator.storage.estimate();   // 추정치
 
 - **현상**: "저장" 버튼을 누를 때마다 화면이 잠깐 멈춘다. INP가 나쁘다.
 - **보이는 형태**: Performance 패널에 `setItem`·`JSON.stringify`가 든 수십 ms 태스크.
-- **원인**: localStorage는 동기라 MiB 단위 값이면 메인 스레드를 수십 ms 쥔다(실험 3: 4MiB 42~54ms).
+- **원인**: localStorage는 동기라 MiB 단위 값이면 메인 스레드를 수십 ms 잡는다(실험 3: 4MiB 42~54ms).
 - **대처**: IndexedDB(비동기)로 옮기고, 직렬화가 큰 작업은 웹 워커로 넘긴다([16-long-tasks-and-web-workers](../16-long-tasks-and-web-workers/2-summary.md)).
 
 ## 핵심 문장

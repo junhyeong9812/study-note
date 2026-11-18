@@ -276,7 +276,7 @@ GitHub PR 상태는 CLOSED지만 거절이 아니라 스프링 팀 관행이다 
 |---|---|---|
 | `setInitialInterval`에서 0 거부 | 입구에서 막는다 | 이미 열린 이슈 gh-35357("Add validation support for FixedBackOff and ExponentialBackOff")의 영역이고, `jitter = 0` + `initialInterval = 0`으로 정상 동작하던 사용자를 깨뜨린다. PR 본문이 "어느 쪽으로 검증이 결정되든 호환된다"고 명시해 이 논쟁을 분리했다 |
 | `applicableJitter = 0`으로 두기 | 분모가 0이면 지터를 아예 끈다 | 사용자가 명시적으로 켠 기능을 조용히 무시한다. `min == max == 0`이 되어 반환이 항상 0 — thundering herd 분산이라는 지터의 목적이 사라진다 |
-| 배율만 `double`로 바꾸기 | `(double) interval / initialInterval` | **예외는 사라지지만 결과가 조용히 틀린다.** `0.0/0.0`은 `NaN`이고 `100 * NaN`도 `NaN`이며 `(long) NaN`은 **0**이다. 즉 위 대안과 같은 "지터 무음 소실"이 된다. 후속 gh-36943이 double 나눗셈으로 바꾸면서도 **삼항 조건을 남긴 이유**가 정확히 이것이다 |
+| 배율만 `double`로 바꾸기 | `(double) interval / initialInterval` | **예외는 사라지지만 결과가 조용히 틀린다.** `0.0/0.0`은 `NaN`이고 `100 * NaN`도 `NaN`이며 `(long) NaN`은 **0**이다. 즉 위 대안과 같은 "지터 조용한 소실"이 된다. 후속 gh-36943이 double 나눗셈으로 바꾸면서도 **삼항 조건을 남긴 이유**가 정확히 이것이다 |
 | `ArithmeticException`을 잡아 폴백 | try/catch | 정상 제어 흐름을 예외로 다룬다. 비용도 비용이지만 "왜 여기서 예외가 나는가"를 코드가 설명하지 못한다 |
 | 더 친절한 예외로 치환 | `IllegalStateException("initialInterval must be > 0 when jitter is set")` | 두 설정이 각각 허용되고 `jitter = 0`일 때는 조합이 이미 동작한다는 사실과 충돌한다. 고칠 수 있는 것을 금지로 바꾸는 방향 |
 

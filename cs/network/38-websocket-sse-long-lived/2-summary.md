@@ -355,7 +355,7 @@ ss -tnH state established '( sport = :443 )' | wc -l   # -H: 헤더 줄 빼고 �
 - **대처**
   - 가장 짧은 idle timeout보다 짧은 주기로 heartbeat를 보낸다. WebSocket은 ping, SSE는 주석 줄이다.
   - 또는 경로 위 타임아웃을 늘린다. 둘 다 할 때는 "heartbeat 주기 < 모든 타임아웃"을 문서로 남긴다.
-  - nginx의 타임아웃은 "데이터를 보내지 않은 시간" 기준이다(문서). 데이터가 없는 TCP keepalive 탐침으로는 L7 프록시의 타이머가 리셋된다고 기대하기 어렵다. 앱 계층 heartbeat를 쓴다(21번).
+  - nginx의 타임아웃은 "데이터를 보내지 않은 시간" 기준이다(문서). 데이터가 없는 TCP keepalive probe로는 L7 프록시의 타이머가 리셋된다고 기대하기 어렵다. 앱 계층 heartbeat를 쓴다(21번).
   - ALB는 HTTP/2 PING 프레임으로는 idle timeout이 리셋되지 않는다고 명시한다(ALB 문서).
 
 ### 2. 서버 재배포 → 재연결 폭풍

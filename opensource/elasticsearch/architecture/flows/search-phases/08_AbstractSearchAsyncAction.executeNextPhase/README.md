@@ -24,7 +24,7 @@
             onPhaseFailure(currentPhase, "all shards failed", cause);
 ```
 
-부분 실패는 세 갈래로 더 갈린다.
+부분 실패는 세 갈래로 더 달라진다.
 
 `server` / `org.elasticsearch.action.search` / `AbstractSearchAsyncAction.java` L359-L397 ([GitHub](https://github.com/elastic/elasticsearch/blob/60bb239edb99f0e002eb620e4e82a6f2b15a49b0/server/src/main/java/org/elasticsearch/action/search/AbstractSearchAsyncAction.java#L359-L397))
 

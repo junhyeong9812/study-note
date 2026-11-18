@@ -180,7 +180,7 @@ public final class NulKt {
 
 - **보간 자리에서 NPE 는 안 난다.** `null` 은 `"null"` 이라는 **넉 자**가 된다. `?.` 도 `!!` 도 필요 없다.\
   그래서 **조용히 틀린다** — 예외가 안 나므로 코드 리뷰나 로그에서 눈으로 잡는 수밖에 없다.
-- 오버로드가 타입으로 갈린다 — **`String?` 은 `append(String)`, `Any?` 는 `append(Object)`.**\
+- 오버로드가 타입으로 나뉜다 — **`String?` 은 `append(String)`, `Any?` 는 `append(Object)`.**\
   대괄호 한 글자는 `append(C)`(`bipush 91` = `[`, `93` = `]`)다. 컴파일러가 **글자 하나까지 골라서** 오버로드를 고른다.
 - **배열은 `toString()` 을 오버라이드하지 않아** `[I@15db9742` 가 나온다. `contentToString()` 을 써야 한다.\
   `[I` 는 `int[]` 의 JVM 디스크립터다 — [01번](../01-val-var-and-basic-types/)의 디스크립터 표기와 같은 것.

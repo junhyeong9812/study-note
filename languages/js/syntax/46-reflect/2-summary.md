@@ -412,7 +412,7 @@ console.log("    Reflect.set(p, 'y', 1, {}) fired: " + fired.join(" -> "));
 
 ### (4) ★★ `Object.keys` 와 `Reflect.ownKeys` 를 같은 것으로 쓴다
 
-**열거 불가·심볼 키**에서 갈린다 — `[a]` 대 `[a, hidden, Symbol(s)]`(동작 (2)).
+**열거 불가·심볼 키**에서 달라진다 — `[a]` 대 `[a, hidden, Symbol(s)]`(동작 (2)).
 
 ### (5) ★★ `Reflect.apply(f, null)` 을 `f.apply(null)` 처럼 쓴다
 
@@ -436,7 +436,7 @@ console.log("    Reflect.set(p, 'y', 1, {}) fired: " + fired.join(" -> "));
 - ★★ **`receiver`** — `[[Get]]`/`[[Set]]` 의 인자를 그대로 넘긴다. `OrdinarySet` 은 쓰기를 **`receiver` 에** 정의한다(동작 (3)의 `[5]`·`[7]`).
 - ★★ **`Reflect.apply` 의 `CreateListFromArrayLike(args)`** — 목록이 없으면 던진다.
 
-### 구현(V8) · 이 판의 관찰
+### 구현(V8) · 이 버전의 관찰
 
 - ★ `Object.getOwnPropertyNames(Reflect)` 의 **순서**(`defineProperty deleteProperty apply …`) — 세 판 같았지만 근거로 쓰지 않는다.
 
@@ -457,7 +457,7 @@ console.log("    Reflect.set(p, 'y', 1, {}) fired: " + fired.join(" -> "));
 
 1. ★★★ `Reflect` 는 **함수 13개** — 트랩 이름을 손으로 적은 handler 에 불러 보니 **같은 이름의 트랩 하나만** 불렸다 `13 / 13`.
 2. ★★★ `Object`/연산자 대 `Reflect` 19행 — **한쪽만 던진 행 `11 / 19`**, 값이 다른 행 `3 / 19`, 합 **`14 / 19`**.
-3. ★★★ 갈리는 이유는 둘 — **실패를 `false` 로**(defineProperty·set·delete·setPrototypeOf) · **원시값을 안 감싼다**(getPrototypeOf(1) 등 다섯).
+3. ★★★ 달라지는 이유는 둘 — **실패를 `false` 로**(defineProperty·set·delete·setPrototypeOf) · **원시값을 안 감싼다**(getPrototypeOf(1) 등 다섯).
 4. ★★★ **`receiver`** 는 getter·setter 의 `this` 와 데이터 쓰기가 떨어지는 객체다 — 트랩에서 버리면 상속한 쪽이 `target` 을 본다(`child` 가 아니라).
 5. ★★ 트랩에서 **`Reflect.<같은 이름>(...arguments)`** 로 넘기면 맨 대상과 다른 칸 **`0 / 24`**(45번).
 
@@ -482,7 +482,7 @@ console.log("    Reflect.set(p, 'y', 1, {}) fired: " + fired.join(" -> "));
 
 ## 실행 환경
 
-★★★ **이 주제의 본체는 ② 전수 격자 둘이다** — ① **대응 표** — `Reflect` 의 함수 **13개**를 각각 「트랩 이름 13개를 **손으로 적은** handler」의 Proxy 에 불러 **어느 트랩이 불렸나**를 찍고, 「**같은 이름의 트랩 하나만 불린 함수 N / 13**」을 스크립트가 센다(동작 (1)). ② **`Object`/연산자 대 `Reflect` 격자 19행** — 「**한쪽만 던진 행 N / 19**」·「**둘 다 돌려줬는데 값이 다른 행 N / 19**」(동작 (2)).
+★★★ **이 주제의 핵심은 ② 전수 격자 둘이다** — ① **대응 표** — `Reflect` 의 함수 **13개**를 각각 「트랩 이름 13개를 **손으로 적은** handler」의 Proxy 에 불러 **어느 트랩이 불렸나**를 찍고, 「**같은 이름의 트랩 하나만 불린 함수 N / 13**」을 스크립트가 센다(동작 (1)). ② **`Object`/연산자 대 `Reflect` 격자 19행** — 「**한쪽만 던진 행 N / 19**」·「**둘 다 돌려줬는데 값이 다른 행 N / 19**」(동작 (2)).
 ★★ 보조로 **① 로그 심기**(`receiver` — getter 가 `this` 로 누구를 보나 · `set` 을 넘기면 어느 트랩이 더 불리나 — 동작 (3))를 쓴다.
 
 **기준 소스** — 열어서 확인한 것만.
@@ -492,28 +492,28 @@ console.log("    Reflect.set(p, 'y', 1, {}) fired: " + fired.join(" -> "));
 
 **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
 배너의 `node20` 은 v20.19.6 이다. 하네스 소스는 [44번](../44-dynamic-import-top-level-await-and-import-attributes/2-summary.md) 맨 위 부분에 있다.
-★★★ **이 주제의 탐침 셋은 node 18 · node 20 · Chrome 151 에서 한 글자도 같았다**(세 판 대조기 · 맨 위 집계 줄) — 블록은 node 20 판 하나씩만 싣는다.
-★★ **탐침 파일 `js44b-46b-object-vs-reflect.js` 는 엄격 모드다** — 대입·`delete` 행이 비엄격이면 조용히 지나가 「같다」로 셀 것이기 때문이다(14번 동작 (4)).
+★★★ **이 주제의 probe 셋은 node 18 · node 20 · Chrome 151 에서 한 글자도 같았다**(세 판 대조기 · 맨 위 집계 줄) — 블록은 node 20 판 하나씩만 싣는다.
+★★ **probe 파일 `js44b-46b-object-vs-reflect.js` 는 엄격 모드다** — 대입·`delete` 행이 비엄격이면 조용히 지나가 「같다」로 셀 것이기 때문이다(14번 동작 (4)).
 ★★★ **성능은 재지 않았다.**
 
-**버전** — `Reflect` 13개 함수 전부 **ES2015** · 세 판 다 있다(판별 블록).
+**버전** — `Reflect` 13개 함수 전부 **ES2015** · 세 버전 다 있다(판별 블록).
 
-**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+**★★★ 이 주제가 쓰는 창 — 그리고 해당 없는 창**
 
 | 창 | 이 주제에서 무엇을 보나 |
 |---|---|
-| ★★★ **② 전수 격자**(본체) | 대응 표 13행 「`13 / 13`」(동작 (1)) · `Object` 대 `Reflect` 19행 「`only one side threw`」·「`both returned, different values`」(동작 (2)) |
+| ★★★ **② 전수 격자**(핵심) | 대응 표 13행 「`13 / 13`」(동작 (1)) · `Object` 대 `Reflect` 19행 「`only one side threw`」·「`both returned, different values`」(동작 (2)) |
 | ★★ **① 로그 심기** | getter 의 `this` · 쓰기가 떨어진 객체 · `set` 트랩을 넘겼을 때 **더 불린 트랩**(동작 (3)) |
 | ★ **45번 격자의 한 줄을 다시 쓴다** | `Reflect` 로 넘기는 트랩 24칸 — 「**맨 대상과 다른 칸 `0 / 24`**」(45번 동작 (1)의 `[2]`) |
-| ★ **부적용 — ④ 예외 문구** | 격자 칸은 **예외의 이름**만 싣는다 — 이 주제의 질문은 「던지나 `false` 인가」라서 문구가 답을 바꾸지 않는다 |
-| ★ **부적용 — 판 격자** | 세 판이 같아 **갈린 칸이 없다** |
+| ★ **해당 없음 — ④ 예외 문구** | 격자 칸은 **예외의 이름**만 싣는다 — 이 주제의 질문은 「던지나 `false` 인가」라서 문구가 답을 바꾸지 않는다 |
+| ★ **해당 없음 — 판 격자** | 세 버전이 같아 **달라진 항목이 없다** |
 
-**★ 흔들리는 칸 / 안 흔들리는 칸**
+**★ 실행마다 달라지는 항목 / 달라지지 않는 항목**
 
-| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+| 실행마다 달라진다(근거로 쓰지 않는다) | 달라지지 않는다(근거로 쓴다) |
 |---|---|
 | 판별 블록의 판 문자열 · ★ `Object.getOwnPropertyNames(Reflect)` 의 **나열 순서**(명세가 정하지 않는다 — V8 이 정의 순서대로 준 것이다. 근거로는 **개수 13**만 쓴다) | ★★★ 두 격자의 모든 칸과 집계 줄 · 로그 값 · 예외의 **종류** |
-| ★ **재실행에서 흔들린 칸은 없다**(재대조 동일) | — |
+| ★ **재실행에서 달라진 항목은 없다**(재대조 동일) | — |
 
 **선행** — [45 — `Proxy`](../45-proxy/2-summary.md)(직접 선행 — ★★★ **불변식 격자 24칸** · ★★ **`Reflect` 로 넘기는 트랩은 맨 대상과 `0 / 24` 다르다** · 트랩의 `false` 를 **엄격 대입이** `TypeError` 로 바꾼다) ·
 [09 — `call`·`apply`·`bind`](../09-call-apply-bind/2-summary.md)(★★ **`apply(t, null)` 은 인자 0개로 조용히 부른다** · `Reflect.apply(f, t, 'ab')` 는 `CreateListFromArrayLike called on non-object` — 거기 동작 (1). 그 편은 「`Reflect` 전체는 46번이 정본」이라고 적는다) ·

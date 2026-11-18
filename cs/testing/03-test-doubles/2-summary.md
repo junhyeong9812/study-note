@@ -45,7 +45,7 @@
 
 - *간접 입력(indirect input)*: SUT가 DOC를 불러 **받아 오는** 값. 반환값·예외. 테스트가 인자로 직접 넣을 수 없다.
 - *간접 출력(indirect output)*: SUT가 DOC에 **내보내는** 호출과 인자. SUT의 반환값에 나타나지 않는다.
-- Meszaros의 분류는 이 두 방향으로 갈린다(xunitpatterns.com의 각 패턴 요약 문장).
+- Meszaros의 분류는 이 두 방향으로 나뉜다(xunitpatterns.com의 각 패턴 요약 문장).
   - Test Stub: "feeds the desired indirect inputs into the system under test" — 간접 입력을 조종한다.
   - Test Spy: "capture the indirect output calls ... for later verification by the test" — 간접 출력을 기록해 두고 테스트가 나중에 확인한다.
   - Mock Object: "verifies it is being used correctly by the SUT" — 간접 출력을 더블 자신이 기대와 대조한다.

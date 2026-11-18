@@ -111,7 +111,7 @@ java 21.0.12 / tzdb 2026b
 
 - 같은 순간을 서로 다른 층이 다른 판으로 해석하면, 앱과 DB의 현지 시각 표시가 1시간 다를 수 있다.
 - JDK의 판은 코드로 확인한다: `ZoneRulesProvider.getVersions("UTC").lastEntry().getKey()`.
-- JDK에 들어 있는 규칙이 특정 지역에서 판마다 달라지는 실측(JDK 17.0.13·21.0.5의 2024a vs 25.0.1의 2025b, `America/Asuncion`)은 [java/syntax/51](../../../languages/java/syntax/51-java-time-types/2-summary.md) 「tzdb 판이 갈렸다」에 있다. 같은 메이저 판이라도 패치 판마다 tzdb가 다르다 — 이 노트가 쓴 JDK 21.0.12(2026b)·17.0.19(2026a)에는 파라과이 변경(2025a)이 이미 들어 있어 `America/Asuncion` 2026-07-15 09:00이 `-03:00`이었다(`Tz.java`).
+- JDK에 들어 있는 규칙이 특정 지역에서 판마다 달라지는 실측(JDK 17.0.13·21.0.5의 2024a vs 25.0.1의 2025b, `America/Asuncion`)은 [java/syntax/51](../../../languages/java/syntax/51-java-time-types/2-summary.md) 「tzdb 판이 달라졌다」에 있다. 같은 메이저 판이라도 패치 판마다 tzdb가 다르다 — 이 노트가 쓴 JDK 21.0.12(2026b)·17.0.19(2026a)에는 파라과이 변경(2025a)이 이미 들어 있어 `America/Asuncion` 2026-07-15 09:00이 `-03:00`이었다(`Tz.java`).
 - PostgreSQL 17 문서 8.5.3은 IANA(Olson) 데이터를 쓴다고 적고, 미래에 대해서는 "the latest known rules for a given time zone will continue to be observed indefinitely far into the future"라고 가정한다. 미래 순간은 **지금 아는 규칙**으로 계산된다는 뜻이다.
 - PostgreSQL은 소스에 자체 tz 데이터베이스를 포함한다. 빌드 옵션 `--with-system-tzdata=DIRECTORY`를 쓰면 OS 사본을 쓴다(17판 설치 문서 configure 옵션). 이 옵션의 장점으로 문서는 "DST 규칙이 바뀔 때마다 PostgreSQL 패키지를 올리지 않아도 된다"를 든다. 운영 중인 패키지가 어느 쪽으로 빌드됐는지는 배포판마다 확인해야 한다. 예: 이 노트에서 쓴 `postgres:17` 이미지(17.11)는 `pg_config --configure`에 `--with-system-tzdata=/usr/share/zoneinfo`가 있었고, 그 OS 사본(`tzdata.zi`)은 2026c였다 — 같은 날 JDK 21.0.12(2026b)와 판이 달랐다.
 
@@ -295,7 +295,7 @@ WHERE start_utc > now() AND start_utc <> (local_start AT TIME ZONE tz_id);
 
 ## 장애 시나리오와 대처
 
-### 1. 미래 예약을 UTC로 저장했는데 그 나라가 DST 규칙을 바꿨다 → 1시간 어긋남 (⚠)
+### 1. 미래 예약을 UTC로 저장했는데 그 나라가 DST 규칙을 바꿨다 → 1시간 불일치 (⚠)
 - 현상: 특정 지역 고객의 예약 알림·화면 시각이 1시간 다르다. 고객은 원래 시각에 온다.
 - 보이는 형태: 에러 없음. tzdata 갱신(JDK·OS 업데이트) 뒤 그 지역 예약에서만 생긴다. 실험 A에서 위니펙 09:00 → 10:00.
 - 원인: 의도(현지 시각)를 버리고 옛 규칙으로 계산한 순간만 남겼다.

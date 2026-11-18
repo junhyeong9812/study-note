@@ -386,7 +386,7 @@ private static class TwoByteMatcher extends AbstractNestedMatcher {
 
 ### 5.3 테스트 배치
 
-테스트는 두 층으로 나뉘고, 갈리는 기준은 `CompositeMatcher`의 개입 여부다.\
+테스트는 두 층으로 나뉘고, 달라지는 기준은 `CompositeMatcher`의 개입 여부다.\
 `matcher(delims)`에 2바이트 구분자 **하나만** 넘기면 `createMatcher`가 `TwoByteMatcher`를 직접 만들어 최장 우선 규칙이 끼어들지 않은 상태로 상태 기계만 관찰할 수 있다.
 
 | 테스트 | 파일 | 층 | fix 전 | 고정하는 것 |

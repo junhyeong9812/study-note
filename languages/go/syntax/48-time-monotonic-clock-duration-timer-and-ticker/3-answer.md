@@ -33,7 +33,7 @@ time.After(1h) 20만 번 뒤 GC 한 HeapInuse 증분 < 1MiB	false	true	true	true
 
 ### 2. `go` 줄이 **GODEBUG 기본값**을 정한다 — `go 1.22` 줄이면 그 판의 옛 기본값 `asynctimerchan=1` 이 켜진다 · 41번의 `go` 줄이 **언어 판**을 정하듯 **라이브러리 동작의 판**도 정한다
 
-- ★★★ 이 판의 `godebug.md` — 「Go 1.23 changed the channels created by package time … The `asynctimerchan` setting … disables this change」. 모듈의 `go` 줄이 그 판보다 낮으면 **옛 값이 기본**이 된다(46번의 `httpmuxgo121` 과 같은 구조).
+- ★★★ 이 버전의 `godebug.md` — 「Go 1.23 changed the channels created by package time … The `asynctimerchan` setting … disables this change」. 모듈의 `go` 줄이 그 판보다 낮으면 **옛 값이 기본**이 된다(46번의 `httpmuxgo121` 과 같은 구조).
 - ★★ 그래서 **툴체인을 올려도 `go` 줄이 낮으면 옛 의미**였다 — 1.26 툴체인까지는(1.27 이 스위치를 없앴다).
 
 ### 3. ① `fatal error: removed GODEBUG "asynctimerchan" set to old value "1" …` · `exit=2` · ② `cap(NewTimer(1h).C) = 0` · ③ `go.mod:5: removed GODEBUG …` · build `exit=1` · ④ `invalid //go:debug: removed GODEBUG …` · build `exit=1`
@@ -182,7 +182,7 @@ AddDate 결과 - t0   : 23h0m0s
 | 무엇을 | 어떻게 | 몇 번 | 결과 |
 |---|---|---|---|
 | 이 문서의 모든 블록 | `capture.sh <디렉토리>` 가 소스 배너 + 명령 배너 + 출력 + `(exit N)` 을 파일로 받고 `assemble-blocks.py` 가 원고에 꽂는다 | 배치 내내 + **제출 전 전수 재실행** | `normalize-shaky.py` 로 **★고칠 것 0** |
-| ★★★ 타이머 판 격자 (`t48timer`) | 탐침 7 × 판 4(툴체인 2 × `go` 줄 2) · `paste` 후 탭 8칸 검사 | 캡처마다 | **`7 / 7` · `0 / 7`** |
+| ★★★ 타이머 판 격자 (`t48timer`) | probe 7 × 판 4(툴체인 2 × `go` 줄 2) · `paste` 후 탭 8칸 검사 | 캡처마다 | **`7 / 7` · `0 / 7`** |
 | ★★ 스위치 거부 (`t48rej`) | 환경 변수 · `go.mod` `godebug` · `//go:debug` | 캡처마다 | 셋 다 거부 |
 | ★★ 단조 시계 (`t48mono`) | `m=` 유무 · `==`/`Equal` · 경과 참/거짓 | 캡처마다 | 벗기는 연산 넷 · 직렬화 하나 |
 | ★★ `Duration`·`Parse`·시간대 | 문자열·에러·`EST`/`EDT` | 캡처마다 | 감싸 돔 · 4월 3일 · 23h |
@@ -203,5 +203,5 @@ AddDate 결과 - t0   : 23h0m0s
 
 이 파일의 모든 출력은 **`go version go1.27.1 linux/amd64`** 에서 실제로 돌려
 **파일로 캡처한 것**이다(1번은 `go1.25.12` 판을 나란히). 소스 펜스도 같은 파일에서 떠 왔다 — 손으로 옮겨 적은 블록은 없다.\
-★ **근거로 읽을 칸** — 판 격자의 값 · `7 / 7` · `0 / 7` · `m=` 유무 · `==`/`Equal` · `Duration` 문자열 · 파싱 결과 · 에러 문구.
+★ **근거로 읽을 항목** — 판 격자의 값 · `7 / 7` · `0 / 7` · `m=` 유무 · `==`/`Equal` · `Duration` 문자열 · 파싱 결과 · 에러 문구.
 **칸으로 안 만든 것** — 시각 · 경과 시간(참/거짓만).

@@ -102,7 +102,7 @@ prog exit=0 · GOEXPERIMENT=nojsonv2 로 빌드한 판과 다른 줄 0
 ### 4. `*int` 는 **「값이 있었나(0 포함)」까지만** 가른다 · 셋을 다 가르려면 **`json.RawMessage` 나 `UnmarshalJSON` 을 단 타입** · `sql.NullInt64` 는 **JSON 용이 아니다**
 
 - ★★★ 3번 — `*int` 의 `{}` 와 `{"A":null}` 이 둘 다 `nil`. 「지워라」와 「안 보냄」이 **같은 값**이 된다.
-- ★★★ `Opt` 처럼 **포인터 수신자 `UnmarshalJSON`** 을 달면, 키가 없으면 **안 불리고**, `null` 이면 **글자 `null` 로 불린다** — 두 사실로 셋이 갈린다.
+- ★★★ `Opt` 처럼 **포인터 수신자 `UnmarshalJSON`** 을 달면, 키가 없으면 **안 불리고**, `null` 이면 **글자 `null` 로 불린다** — 두 사실로 셋이 달라진다.
 - ★★ `sql.NullInt64` 는 **`UnmarshalJSON` 이 없다** — 숫자 `0`·`1` 이 `cannot unmarshal number` 에러다. 이름의 「Null」은 **SQL 의 NULL** 이다.
 
 ### 5. `[1]` `float64` · `9007199254740992` · `[2]` `int64` 정확 · `[3]` `json.Number` 정확 — `int` 필드는 **`1` 만** 통과(`1.0`·`1.5`·`1e3`·`"1"`·20자리 전부 에러) · `,string` 태그로 `"1"` → 1
@@ -199,12 +199,12 @@ prog exit=0 · GOEXPERIMENT=nojsonv2 로 빌드한 판과 다른 줄 0
 ```
 
 - ★★★ 문서 「preferring an exact match but also accepting a **case-insensitive** match」. 「exact 우선」은 **한 키에 맞는 필드가 둘일 때**의 규칙이다(`Name`·`NAME` 세 줄).
-- ★★ **한 필드에 맞는 키가 둘**이면 정확히 맞는지와 무관하게 **나중에 온 키**가 이겼다 — 문서에 없는 **이 판의 관찰**이다(옛 엔진도 같았다 — `다른 줄 0`).
+- ★★ **한 필드에 맞는 키가 둘**이면 정확히 맞는지와 무관하게 **나중에 온 키**가 이겼다 — 문서에 없는 **이 버전의 관찰**이다(옛 엔진도 같았다 — `다른 줄 0`).
 
 ### 9. **안 막는다** — 대소문자만 다른 키는 「아는 필드」다 · 막는 것은 **어느 필드에도 안 맞는 키**(`"Nmae"`) · 막으려면 **v2**(대소문자 구분이 기본)로
 
 - ★★★ 8번 — `{"NAME":"a"}` 가 `DisallowUnknownFields` 아래에서도 `Name:a` · `err=<nil>`.
-- ★★ v1 에서 대소문자 구분을 켜는 옵션은 이 문서가 **안 던졌다.** v2 의 기본이 구분이라는 것은 11번 블록이 보였다.
+- ★★ v1 에서 대소문자 구분을 켜는 옵션은 이 문서가 **실행하지 않았다.** v2 의 기본이 구분이라는 것은 11번 블록이 보였다.
 
 ### 10. `[1]` `[` → `{N:1}`·`{N:2}`·`{N:3}`(`InputOffset` 8·16·24) → `]` · `[2]` 둘 뒤 `io.EOF` · `[3]` `Unmarshal` 은 **에러·값 없음**, 첫 `Decode` 는 **`<nil>`·`{N:1}`**, 둘째 `Decode` 가 에러 · `More()` 는 `true` — **똑같이 다루지 않는다**
 
@@ -256,7 +256,7 @@ Marshal(U{})             v1: {"Name":"","S":null}
 (exit 0)
 ```
 
-- ★★★ `[기본] build exit=0` · `[GOEXPERIMENT=nojsonv2] build exit=1`. 이 판의 `go doc encoding/json` 이 「All the behavior of the v1 package is implemented in terms of the v2 package」라고 적는다 — **v1 도 이미 v2 엔진 위에서 돈다.**
+- ★★★ `[기본] build exit=0` · `[GOEXPERIMENT=nojsonv2] build exit=1`. 이 버전의 `go doc encoding/json` 이 「All the behavior of the v1 package is implemented in terms of the v2 package」라고 적는다 — **v1 도 이미 v2 엔진 위에서 돈다.**
 - ★★ v2 도 `any` 의 숫자는 **`float64`** 다 — 5번의 손실은 v2 로 옮겨도 **그대로**.
 - ★ v2 의 **`{"Name":"a"} x` 가 `Name:a` 를 채운 채 에러**다. 에러를 보고도 값을 쓰면 v1 과 결과가 다르다.
 
@@ -275,8 +275,8 @@ Marshal(U{})             v1: {"Name":"","S":null}
 | 항목 | 무엇에 달렸나 |
 |---|---|
 | `InvalidUnmarshalError` · `null` 의 효과 · `float64` · 대소문자 무시 · `omitempty`/`omitzero` | **표준 라이브러리 문서의 계약** |
-| 중복 키에서 뒤의 것 | **이 판의 관찰**(두 엔진 모두) |
-| v2 가 기본 빌드 · 옛 엔진은 `nojsonv2` | **이 판(`go1.27.1`)의 빌드 설정** |
+| 중복 키에서 뒤의 것 | **이 버전의 관찰**(두 엔진 모두) |
+| v2 가 기본 빌드 · 옛 엔진은 `nojsonv2` | **이 버전(`go1.27.1`)의 빌드 설정** |
 | `2^53 + 1` 의 반올림 | **IEEE 754 배정밀도** |
 
 ★ **다시 찍는 법** — `capture.sh <디렉토리>` 를 그대로 돌리고 `normalize-shaky.py` 로 견준다(기본 규칙만). JS 블록은 `node` 가 있어야 한다.
@@ -285,4 +285,4 @@ Marshal(U{})             v1: {"Name":"","S":null}
 
 이 파일의 모든 출력은 **`go version go1.27.1 linux/amd64`** 에서 실제로 돌려
 **파일로 캡처한 것**이다(6번만 `node v18.19.1`). 소스 펜스도 같은 파일에서 떠 왔다 — 손으로 옮겨 적은 블록은 없다.\
-★ **근거로 읽을 칸** — 디코드 값 · `2 / 6` · `7 / 10` · 에러 문구 · 「`nojsonv2` 로 빌드한 판과 다른 줄 0」.
+★ **근거로 읽을 항목** — 디코드 값 · `2 / 6` · `7 / 10` · 에러 문구 · 「`nojsonv2` 로 빌드한 판과 다른 줄 0」.

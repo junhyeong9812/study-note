@@ -41,7 +41,7 @@ return ConversionUtils.canConvertElements(sourceType.getElementTypeDescriptor(),
 > **getElementTypeDescriptor()** — 배열 컴포넌트 타입 또는 Collection 원소 타입을 카드로 돌려주고, 아니면 null을 주는 메서드.\
 > 예: `List<String>` 카드에는 `String` 카드를 주지만, `Optional<Integer>` 카드에는 null을 준다.
 
-호출이 어디서 갈리는지를 세로로 따라가면 이렇다.
+호출이 어디서 달라지는지를 세로로 따라가면 이렇다.
 
 ```text
 canConvert(Optional<Integer> 카드, LocalDate 카드)  질의 — 값 없이 카드만
@@ -64,7 +64,7 @@ return true                                         입력과 무관하게 항�
 
 원소 카드가 null로 고정되므로, 마지막 분기는 늘 같은 갈래만 탄다.
 
-## 3. 무엇이 문제였나 — canConvert와 convert의 어긋남
+## 3. 무엇이 문제였나 — canConvert와 convert의 불일치
 
 `Optional<Integer>`를 `LocalDate`로 바꿀 수 있느냐고 물으면, 정답은 "없다"다 (`Integer -> LocalDate` 컨버터가 등록돼 있지 않다).\
 그런데 수정 전에는 `canConvert`가 true를 돌려주고, 정작 `convert`를 실행하면 변환기를 못 찾아 실패했다.\
@@ -106,7 +106,7 @@ return ConversionUtils.canConvertElements(sourceElementType, targetType, this.co
 상한이 `Object`면 정보 없음으로 보고 null(-> 관대), `Number`처럼 구체적이면 그 타입을 돌려준다(-> 실제 판별 기준).\
 이 판별 전체가 값 없이, 선언 메타데이터만으로 이루어진다.
 
-같은 입력에 대해 수정 전후 답이 어떻게 갈리는지 나란히 두면 이렇다.
+같은 입력에 대해 수정 전후 답이 어떻게 달라지는지 나란히 두면 이렇다.
 
 ```text
 수정 전 matches()                           수정 후 matches()

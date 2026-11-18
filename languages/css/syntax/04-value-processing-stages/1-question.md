@@ -25,7 +25,7 @@
 ```
 
 - `getComputedStyle(a).width` 와 `getComputedStyle(b).width` 는 각각 무엇인가?
-- 두 값이 갈리는 **조건**을 한 문장으로 말하라.
+- 두 값이 달라지는 **조건**을 한 문장으로 말하라.
 - `width` 대신 `color`·`letter-spacing` 을 읽으면 같은 현상이 일어나는가?
 - 이 차이가 `parseFloat` 를 쓰는 코드에서 어떤 버그로 나타나는가?
 

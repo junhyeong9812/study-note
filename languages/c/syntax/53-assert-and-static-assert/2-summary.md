@@ -1,6 +1,6 @@
 # c/syntax/53 — `assert` 와 `static_assert`: 「**`assert` 는 `NDEBUG` 하나에 식째 사라지는 매크로이고, `static_assert` 는 컴파일러가 대신 멈춰 주는 선언이다**」 — 정리 (힌트)
 
-★★★ **본체는 둘째 창 — 실행 출력의 `NDEBUG` 격자다.** 부작용이 든 단언 `assert(x++ > 0)` 을 두 컴파일러 × 두 최적화 × `NDEBUG` 두 값으로 빌드해 **`x` 를 찍고, 스크립트가 「`x` 가 1 로 남은 칸」을 센다.**
+★★★ **핵심은 둘째 창 — 실행 출력의 `NDEBUG` 격자다.** 부작용이 든 단언 `assert(x++ > 0)` 을 두 컴파일러 × 두 최적화 × `NDEBUG` 두 값으로 빌드해 **`x` 를 찍고, 스크립트가 「`x` 가 1 로 남은 칸」을 센다.**
 ★★★ 그 격자에서 **`x` 가 1 로 남은 칸 4 / 8** — 정확히 **`-DNDEBUG` 네 칸**이다. 최적화 수준은 한 칸도 바꾸지 않았다 — **지운 것은 컴파일러가 아니라 전처리기**다.
 
 ## 이 주제가 쓰는 창
@@ -8,11 +8,11 @@
 | 창 | 이 주제에서 | 상태 |
 |---|---|---|
 | ① 컴파일 진단 | ★★ `static_assert` 격자(여섯 꼴 × 두 컴파일러 × 세 판) · 실패 메시지 · 상수 아닌 식 · `assert` 를 함수처럼 · 쉼표 | 씀 |
-| ★★★ ② **실행 출력(`NDEBUG` 격자)** | ★ **본체** — `x` · 실패 메시지 · `run exit` | 씀 |
+| ★★★ ② **실행 출력(`NDEBUG` 격자)** | ★ **핵심** — `x` · 실패 메시지 · `run exit` | 씀 |
 | ③ 전처리 결과(`gcc -E -P`) | ★★ **`NDEBUG` 판은 식이 `((void) (0))` 로 바뀐다** — 사라진 것을 **글자로** 본다 | 씀 |
 | ④ 오브젝트 재배치 | ★★ `__assert_fail` 재배치 수 — `NDEBUG` 판은 **0** | 씀 |
-| sanitizer | — | 부적용 — 단언은 UB 를 만들지도 잡지도 않는다(★ `NDEBUG` 판의 **0 으로 나누기**는 UB 지만 그 칸은 `SIGFPE` 종료 코드로만 적었다) |
-| 시간 측정 | — | 부적용 — 「`NDEBUG` 가 빠르다」는 **재지 않았다** |
+| sanitizer | — | 해당 없음 — 단언은 UB 를 만들지도 잡지도 않는다(★ `NDEBUG` 판의 **0 으로 나누기**는 UB 지만 그 칸은 `SIGFPE` 종료 코드로만 적었다) |
+| 시간 측정 | — | 해당 없음 — 「`NDEBUG` 가 빠르다」는 **재지 않았다** |
 
 ★ **이 편은 제5의 상태가 없다** — 묻고 싶은 것(「사라졌나」)을 **전처리 결과가 글자로 직접** 답한다.
 
@@ -45,13 +45,13 @@ ldd (Ubuntu GLIBC 2.39-0ubuntu8.9) 2.39
 
 ★★ **glibc 2.39 의 `assert` 는 인자 하나짜리 매크로**다(`define assert(expr)` — 네 정의 전부). **`static_assert` 는 C17 이하에서만 `_Static_assert` 로 정의**한다(154 줄의 조건 · 158 줄).
 
-## 흔들리는 칸 / 안 흔들리는 칸
+## 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| **흔들린다** | 없음 | 이 편의 출력에는 PID · 주소 · 시간이 없다 |
-| 안 흔들린다 | ★★★ **`NDEBUG` 격자 · 실패 메시지 · 종료 코드 134/136** · `static_assert` 격자 · 재배치 수 · 전처리 결과 | 같은 판 · 같은 플래그면 같다 |
-| 안 흔들린다(선언) | ★ **메시지의 프로그램 이름 `x:`** | 실행 파일 이름이 박힌다 — 그래서 늘 `./x` 로 돌렸다 |
+| **실행마다 달라진다** | 없음 | 이 편의 출력에는 PID · 주소 · 시간이 없다 |
+| 달라지지 않는다 | ★★★ **`NDEBUG` 격자 · 실패 메시지 · 종료 코드 134/136** · `static_assert` 격자 · 재배치 수 · 전처리 결과 | 같은 판 · 같은 플래그면 같다 |
+| 달라지지 않는다(선언) | ★ **메시지의 프로그램 이름 `x:`** | 실행 파일 이름이 박힌다 — 그래서 늘 `./x` 로 돌렸다 |
 
 ★★ **정규화 규칙은 기본 넷뿐**이다(이 편에서는 지울 것이 없다).
 
@@ -84,7 +84,7 @@ ldd (Ubuntu GLIBC 2.39-0ubuntu8.9) 2.39
    __assert_fail 재배치 1                         __assert_fail 재배치 0
 ```
 
-- ★★★ **이 주제의 본체는 「표준」 칸** — `NDEBUG` 가 있으면 `assert(...)` 가 `((void)0)` 이 된다는 것 · 실패하면 `abort` 한다는 것 · 메시지에 **식 · 파일 · 줄 · 함수**가 들어간다는 것이 **전부 표준**이다.
+- ★★★ **이 주제의 핵심은 「표준」 칸** — `NDEBUG` 가 있으면 `assert(...)` 가 `((void)0)` 이 된다는 것 · 실패하면 `abort` 한다는 것 · 메시지에 **식 · 파일 · 줄 · 함수**가 들어간다는 것이 **전부 표준**이다.
 - ★★ **「구현」 칸** — 메시지의 **양식**(`` x: 파일:줄: 함수: Assertion `식' failed. ``) · 함수 칸을 `take` 로 쓰나 `int take(int)` 로 쓰나 · C23 요구를 따라잡았나.
 
 > **`assert(식)`** — `NDEBUG` 가 없으면 `식` 이 0 일 때 메시지를 쓰고 `abort()`. **`NDEBUG` 가 있으면 `((void)0)`** — 식은 **평가되지 않는다.**\
@@ -105,7 +105,7 @@ ldd (Ubuntu GLIBC 2.39-0ubuntu8.9) 2.39
 
 ### (1) ★★★ `NDEBUG` 격자 — 부작용이 있는 단언
 
-**언제 쓰나** — 단언 안에서 **함수를 부르거나 값을 바꾸고** 싶어질 때(`assert(init() == 0)` · `assert(n-- > 0)`). ★★★ **이 편의 본체**다.
+**언제 쓰나** — 단언 안에서 **함수를 부르거나 값을 바꾸고** 싶어질 때(`assert(init() == 0)` · `assert(n-- > 0)`). ★★★ **이 편의 핵심**다.
 
 ```c
 /* s53a.c */
@@ -147,7 +147,7 @@ x = 1
 
 그림 해설 (한 단계씩):
 
-- ★★★ **`x` 가 1 로 남은 칸 4 / 8 — `-DNDEBUG` 네 칸 전부, 그 밖은 0 칸.** 단언은 여덟 칸 다 **참**(`1 > 0`)이었다. 갈린 것은 참·거짓이 아니라 **`x++` 가 실행됐느냐**다.
+- ★★★ **`x` 가 1 로 남은 칸 4 / 8 — `-DNDEBUG` 네 칸 전부, 그 밖은 0 칸.** 단언은 여덟 칸 다 **참**(`1 > 0`)이었다. 달라진 것은 참·거짓이 아니라 **`x++` 가 실행됐느냐**다.
 - ★★★ **최적화 수준은 답을 안 바꿨다** — `-O0` 과 `-O2` 가 같은 값이다. 「최적화가 지웠다」가 아니다 — **`NDEBUG` 판은 컴파일러에 식이 도착하지도 않는다**((2)의 전처리 결과).
 - ★★ **그래서 단언에는 부작용을 넣지 않는다** — 디버그 빌드와 릴리스 빌드가 **다른 프로그램**이 된다. 필요한 일은 단언 **밖**에서 하고 결과만 단언한다(`int r = init(); assert(r == 0);` — 그러면 `NDEBUG` 판에서 `r` 이 안 쓰인다는 경고를 받을 수 있다. ★ 표준은 그 경우 **경고하지 말라고 권한다**).
 
@@ -225,7 +225,7 @@ clang  -O2  -DNDEBUG     | 0                    | run exit=136 · stdout start/ 
 - ★★★ **메시지는 표준이 요구한 네 칸** — 식 `count > 0` · 파일 `s53b.c` · 줄 `5` · 함수. 앞의 **`x:`** 는 프로그램 이름이다(glibc 의 양식).
 - ★★ **함수 칸만 컴파일러마다 다르다** — gcc 는 `take`, clang 은 **`int take(int)`**. gcc 의 전처리 결과는 `__PRETTY_FUNCTION__` 을 넘기고((2)), 그 값이 **C 에서 gcc 는 이름만**이다. clang 은 **서명째**를 적었다(★ clang 쪽 전처리 결과는 펼쳐 보지 않았다). 표준이 「구현 정의 형식」이라 적은 자리다.
 - ★★★ **`run exit=134`** = 128 + 6(`SIGABRT`) — `abort()` 가 불렸다. **`start` 는 찍혔고 `r = …` 는 안 찍혔다**(stdout 을 버퍼 없이 둔 판 — 규칙 19-A).
-- ★★★ **`-DNDEBUG` 네 칸은 `run exit=136`** = 128 + 8(`SIGFPE`) — 단언이 사라져 **`100 / 0` 이 실제로 실행됐다.** 메시지는 0 줄이다. **단언이 막던 UB 가 그대로 드러난 것**이다(★ 0 으로 나누기는 UB — 이 판은 신호로 죽었을 뿐이다).
+- ★★★ **`-DNDEBUG` 네 칸은 `run exit=136`** = 128 + 8(`SIGFPE`) — 단언이 사라져 **`100 / 0` 이 실제로 실행됐다.** 메시지는 0 줄이다. **단언이 막던 UB 가 그대로 드러난 것**이다(★ 0 으로 나누기는 UB — 이 버전은 신호로 죽었을 뿐이다).
 - ★★ **`__assert_fail` 재배치 — `NDEBUG` 판 0 · gcc 1 · clang `-O0` 1 · clang `-O2` 2** — (4)에서 함수 목록으로 읽는다.
 
 ### (4) ★★ 재배치 수를 함수 목록으로 읽기
@@ -390,7 +390,7 @@ s53c5.c:2:31: warning: '_Static_assert' with no message is a C23 extension [-Wc2
    static_assert(e)          error                              ok
 ```
 
-- ★★★ **`c11` 과 `c2x` 가 갈린 줄 7 / 12** — `<assert.h>` 없는 `static_assert` 네 줄(error → ok) · 메시지 생략 `_Static_assert` 두 줄(warning → ok) · 그리고 **clang 의 `<assert.h>` + 메시지 생략 한 줄**(warning → ok). `c17` 은 열두 줄 다 `c11` 과 같다.
+- ★★★ **`c11` 과 `c2x` 가 달라진 줄 7 / 12** — `<assert.h>` 없는 `static_assert` 네 줄(error → ok) · 메시지 생략 `_Static_assert` 두 줄(warning → ok) · 그리고 **clang 의 `<assert.h>` + 메시지 생략 한 줄**(warning → ok). `c17` 은 열두 줄 다 `c11` 과 같다.
 - ★★★ **`<assert.h>` 없이 `static_assert` 를 쓰면 C11·C17 에서 에러** — 그 판에서 `static_assert` 는 **헤더가 주는 매크로**이지 키워드가 아니다. 진단이 엉뚱하다 — gcc 는 **「`sizeof` 앞에 선언 지정자가 와야 한다」**, clang 은 **「매개변수 선언자가 와야 한다」 · 「implicit int」** — **함수 선언으로 읽었다.** 진단 문구가 원인을 가리키지 않는 자리다(규칙 27).
 - ★★★ **`s53c5.c`(헤더 + 메시지 생략)에서 gcc 는 조용하다 — `-pedantic-errors` 에서도 `cc exit=0`.** 같은 생략을 **직접** 쓴 `s53c4.c` 는 `-Wpedantic` 경고를 낸다. 매크로가 **시스템 헤더에서 펼쳐졌기 때문에** gcc 가 그 자리의 `-pedantic` 진단을 **거둔 것**으로 보인다(★ 그 메커니즘은 확인하지 않았다 — 두 블록의 차이만 사실이다). clang 은 `-Wc23-extensions` 로 짚는다.
 
@@ -568,7 +568,7 @@ s53f.c:6:5: note: parentheses are required around macro argument containing brac
 ```
 
 - ★★★ **`{ 1, 2 }` 의 쉼표가 매크로 인자를 둘로 가른다** — 괄호 `( )` 는 쉼표를 보호하지만 **중괄호 `{ }` 는 못 한다**([42번 형제](../42-function-like-macro-pitfalls/)). 그래서 `assert` 가 **인자 2 개**를 받았다.
-- ★★★ **C23 은 이것을 고치려고 `assert(...)` — 가변 인자 매크로 — 를 요구한다.** 그런데 **`-std=c2x` 에서도 같은 에러**다 — 이 판의 glibc 헤더가 `define assert(expr)` 하나뿐이기 때문이다((이 판)의 헤더 블록). **표준 문장과 이 판의 라이브러리가 다르다.**
+- ★★★ **C23 은 이것을 고치려고 `assert(...)` — 가변 인자 매크로 — 를 요구한다.** 그런데 **`-std=c2x` 에서도 같은 에러**다 — 이 버전의 glibc 헤더가 `define assert(expr)` 하나뿐이기 때문이다((이 판)의 헤더 블록). **표준 문장과 이 버전의 라이브러리가 다르다.**
 - ★★ **clang 은 고치는 법을 짚는다** — 「parentheses are required around macro argument containing braced initializer list」. **식 전체를 한 겹 더 괄호로** 감싸면 된다(★ 그 판은 **던지지 않았다**).
 - ★ gcc 의 「did you forget to `#include <assert.h>`」는 (7)과 같은 엉뚱한 제안이다.
 
@@ -635,7 +635,7 @@ int f(int n) {
 
 | 쓴 꼴 | 진단 · 도구 | 층 | 절 |
 |---|---|---|---|
-| `assert(x++ > 0)` | 경고 0 | 적법 — `NDEBUG` 판과 뜻이 갈린다 | (1) |
+| `assert(x++ > 0)` | 경고 0 | 적법 — `NDEBUG` 판과 뜻이 달라진다 | (1) |
 | `assert` 로 입력 검증 | 경고 0 | 적법 — 릴리스에서 검증이 사라진다 | (3) |
 | `static_assert(e, "m")`(C11/C17, 헤더 없음) | gcc·clang **error**(엉뚱한 문구) | 제약 위반 | (5) |
 | `_Static_assert(e)`(C11/C17) | `-Wpedantic` / `-Wc23-extensions` | 확장 | (5) |
@@ -675,7 +675,7 @@ gcc 는 **헤더 매크로를 거친 메시지 생략**을 **말하지 않았다
 
 ### 6. ★★ 「C23 으로 컴파일하면 `assert` 안의 쉼표가 된다」
 
-**표준은 그렇지만 이 판의 glibc 는 아니다**((8)).
+**표준은 그렇지만 이 버전의 glibc 는 아니다**((8)).
 
 ### 7. ★ 「파일 첫머리에 `#define NDEBUG` 를 두면 된다」
 
@@ -689,7 +689,7 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 |---|---|---|---|
 | ★★★ **표준** | 어느 구현에서도 같다 | `NDEBUG` → `((void)0)` · 포함될 때마다 다시 정의 · 실패하면 표준 오류에 쓰고 `abort` · 메시지에 식·파일·줄·함수 · `assert` 는 함수가 아니다 · `_Static_assert` 는 상수식 · C23 키워드·메시지 생략·가변 인자 | 격자 · 전처리 결과 · 진단 |
 | ★★ **구현 정의** | 문서화 의무 | ★★ **메시지의 양식** · `abort` 의 종료 방식 | `x: s53b.c:5: take: …` · `134` |
-| ★★ **컴파일러·glibc 구현** | 이 판이 한 것 | 함수 칸(`take` 대 `int take(int)`) · 실패 경로 분리(`take.part.0`) · **glibc 2.39 의 인자 하나짜리 `assert`** · gcc 가 헤더 매크로의 `-pedantic` 진단을 안 내는 것 · 진단 문구와 「고친 제안」 | 블록들 |
+| ★★ **컴파일러·glibc 구현** | 이 버전이 한 것 | 함수 칸(`take` 대 `int take(int)`) · 실패 경로 분리(`take.part.0`) · **glibc 2.39 의 인자 하나짜리 `assert`** · gcc 가 헤더 매크로의 `-pedantic` 진단을 안 내는 것 · 진단 문구와 「고친 제안」 | 블록들 |
 | **미명시** | 몇 가지 중 하나 | ★ 해당 없음 | — |
 | ★★★ **UB** | 아무 일이나 | ★★ 매크로를 억눌러 `assert` 함수에 닿기 · ★★ **`NDEBUG` 판에서 단언이 막던 UB 가 드러나는 것**(`100 / 0`) | `run exit=136` |
 
@@ -714,11 +714,11 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 
 ## 핵심 문장
 
-1. ★★★ **`NDEBUG` 는 전처리 단계에서 `assert(...)` 를 `((void)0)` 으로 바꾼다 — 식째 사라지고, 이 판에서 `x` 가 1 로 남은 칸은 4 / 8 이었다.**
+1. ★★★ **`NDEBUG` 는 전처리 단계에서 `assert(...)` 를 `((void)0)` 으로 바꾼다 — 식째 사라지고, 이 버전에서 `x` 가 1 로 남은 칸은 4 / 8 이었다.**
 2. ★★★ **최적화 수준은 아무것도 바꾸지 않았다 — 지우는 것은 컴파일러가 아니라 `NDEBUG` 다.**
 3. ★★ **실패 메시지는 식·파일·줄·함수가 표준이고 양식은 구현이 정한다 — gcc 는 `take`, clang 은 `int take(int)`.**
-4. ★★★ **`static_assert` 는 C11·C17 에서 헤더의 매크로, C23 에서 키워드다 — 판 사이에서 7 / 12 줄이 갈렸다.**
-5. ★★ **C23 은 `assert(...)` 를 요구하지만 이 판의 glibc 는 아직 인자 하나다 — 쉼표가 든 단언은 `-std=c2x` 에서도 에러다.**
+4. ★★★ **`static_assert` 는 C11·C17 에서 헤더의 매크로, C23 에서 키워드다 — 판 사이에서 7 / 12 줄이 달라졌다.**
+5. ★★ **C23 은 `assert(...)` 를 요구하지만 이 버전의 glibc 는 아직 인자 하나다 — 쉼표가 든 단언은 `-std=c2x` 에서도 에러다.**
 
 ## 관련 자료
 
@@ -737,9 +737,9 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 
 > **`__assert_fail`** — glibc 의 내부 함수. `assert` 가 거짓일 때 메시지를 쓰고 `abort` 한다.
 
-> **`abort`** — 프로그램을 **비정상 종료**시키는 표준 함수. 이 판에서는 `SIGABRT` 로 죽어 종료 코드 134.
+> **`abort`** — 프로그램을 **비정상 종료**시키는 표준 함수. 이 버전에서는 `SIGABRT` 로 죽어 종료 코드 134.
 
-> **`SIGFPE`** — 산술 예외 신호. 이 판에서 정수 0 으로 나누기가 이것으로 죽었다(종료 코드 136).
+> **`SIGFPE`** — 산술 예외 신호. 이 버전에서 정수 0 으로 나누기가 이것으로 죽었다(종료 코드 136).
 
 > **정적 단언(static assertion)** — 컴파일 때 평가하는 단언. `_Static_assert` · `static_assert`.
 
@@ -755,8 +755,8 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 
 **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects)(C23 대응 초안 [**N3220**](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf) — `<assert.h>` 머리의 「**If NDEBUG is defined as a macro name at the point in the source file where <assert.h> is included, the assert macro is defined simply as `#define assert(...) ((void)0)`**」·「**The assert macro is redefined according to the current state of NDEBUG each time that <assert.h> is included**」·「**shall be implemented as a macro with an ellipsis parameter, not as an actual function. If the macro definition is suppressed to access an actual function, the behavior is undefined**」, `assert` 의 「**writes information about the particular invocation that failed (including the text of the argument, the name of the source file, the source line number, and the name of the enclosing function …) on the standard error stream in an implementation-defined format. It then calls the abort function**」를 **본문에서 직접 찾아 읽었다**) · glibc `/usr/include/assert.h`(이 머신)
 ★ **표준 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **`x` 값 · 메시지 · 종료 코드 · 진단 · 재배치 · 전처리 결과는 전부 실행으로** 접지했다.
-**실행 검증** — 이 문서의 모든 출력·진단은 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`, 캡처 셸은 `LC_ALL=C` · `ulimit -c 0`.\
+**실행 검증** — 이 문서의 모든 출력·진단은 「이 버전」 절의 버전에서 실제로 돌려 **파일로 캡처한 것**이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`, 캡처 셸은 `LC_ALL=C` · `ulimit -c 0`.\
 ★★ **블록은 전부 캡처 파일에서 조립했다.** 이 편의 **그림 2 · 덤프(캡처 블록) 32**.
-**버전** — `assert` 는 **C89 부터**. `_Static_assert` 는 **C11 부터**, `<assert.h>` 의 `static_assert` 매크로도 **C11 부터**. ★★ **C23** 이 `static_assert` 를 **키워드**로 만들고 **메시지를 생략**할 수 있게 했으며, `assert` 를 **가변 인자 매크로**(`assert(...)`)로 정의하라고 요구한다 — ★ 이 판의 glibc 는 **마지막 것을 아직 따르지 않는다**((5)).
+**버전** — `assert` 는 **C89 부터**. `_Static_assert` 는 **C11 부터**, `<assert.h>` 의 `static_assert` 매크로도 **C11 부터**. ★★ **C23** 이 `static_assert` 를 **키워드**로 만들고 **메시지를 생략**할 수 있게 했으며, `assert` 를 **가변 인자 매크로**(`assert(...)`)로 정의하라고 요구한다 — ★ 이 버전의 glibc 는 **마지막 것을 아직 따르지 않는다**((5)).
 ★★★ **경계** — **전처리기 · 조건부 컴파일 · `gcc -E` 읽기**는 [41번 형제](../41-preprocessor-directives-and-conditional-compilation/), **함수형 매크로가 인자를 글자로 받는 것**은 [42번 형제](../42-function-like-macro-pitfalls/), **`#` 문자열화**는 [43번 형제](../43-stringizing-and-token-pasting/)가 정본이다. **`offsetof`·패딩 계산 자체**는 [08번 형제](../08-sizeof-alignment-and-offsetof/)·[22번 형제](../22-struct-padding-and-alignment/). 여기는 **단언을 언제 쓰고, 무엇이 사라지고, 판마다 무엇이 되나**만 본다.
 선행 — [41번 형제](../41-preprocessor-directives-and-conditional-compilation/).

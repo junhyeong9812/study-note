@@ -43,7 +43,7 @@
 - *손실(loss)*: 예측이 정답에서 얼마나 먼지를 하나의 수로 낸 것. 분류·언어 모델에서는 대개 교차 엔트로피다([03](../03-cross-entropy-and-perplexity/2-summary.md)).
 - *하이퍼파라미터(hyperparameter)*: 학습이 직접 바꾸지 않고 사람이(또는 탐색이) 정하는 값. 학습률, 모델 크기, k-NN의 k 등.
 - 기울기를 따라 θ를 옮기는 방법(경사 하강)은 [data-analysis/22](../../data-analysis/22-multiple-and-logistic-regression/2-summary.md) 4절이 단일 출처다. 기울기를 계산하는 법(역전파)은 [02](../02-gradient-descent-and-backprop/2-summary.md).
-- 핵심 어긋남: 학습은 **학습 데이터의 손실**을 줄인다. 우리가 원하는 것은 **새 입력에서의 오류**(일반화 오류)가 작은 것이다(Goodfellow 외 5.2).
+- 핵심 불일치: 학습은 **학습 데이터의 손실**을 줄인다. 우리가 원하는 것은 **새 입력에서의 오류**(일반화 오류)가 작은 것이다(Goodfellow 외 5.2).
   - *일반화 오류(generalization error)*: 앞으로 만날 입력 분포에서 오류의 기댓값. 학습과 따로 모은 시험셋으로 추정한다(Goodfellow 외 5.2).
 
 ### 2. 세 갈래 분할 — 무엇을 어디에 쓰나

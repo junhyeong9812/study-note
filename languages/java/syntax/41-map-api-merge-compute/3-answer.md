@@ -211,7 +211,7 @@ compute("k", (x,v) -> v)              null / {}                 1 / {k=1}       
    고칠 수 있다                            며칠 뒤 "데이터가 없어졌다" 로 발견된다
 ```
 
-- **무음 실패**다. 재매핑 함수는 **항상 `null` 이 아닌 값을 돌려준다**를 규칙으로 삼는다.
+- **조용한 실패**다. 재매핑 함수는 **항상 `null` 이 아닌 값을 돌려준다**를 규칙으로 삼는다.
 - 버려야 하면 `remove` 를 명시적으로 부른다. 그래야 의도가 코드에 남는다.
 
 ### 5. 캐시에 `null` 을 넣으려 하면
@@ -406,7 +406,7 @@ setValue          : java.lang.UnsupportedOperationException: not supported
 
 > `@throws IllegalStateException` implementations may, but are not required to, throw this exception if the entry has been removed from the backing map.
 
-- **"던져도 되고 안 던져도 된다"** 까지 적혀 있다. 실측에서는 안 던졌다.
+- **"던져도 되고 안 던져도 된다"** 까지 적혀 있다. 실측에서는 실행하지 않았다.
 
 **안전하게 보관하려면**
 
@@ -528,7 +528,7 @@ computeIfAbsent : {p=[pear], a=[apple, apple], f=[fig], d=[date]} / 만든 리�
 
 **javac 12회 · java 12회.**
 
-**버전별로 갈린 것**
+**버전별로 달라진 것**
 
 ```text
 41-a · 41-c · 41-d : 세 버전 출력이 한 글자도 같다

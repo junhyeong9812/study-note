@@ -118,7 +118,7 @@
 
 > for normal rules the declaration whose cascade layer is latest in the layer order wins, and for important rules the declaration whose cascade layer is earliest wins.
 
-완전히 대칭인 두 판을 만들어 `!important` 하나만 다르게 준 실측이다.
+완전히 대칭인 두 버전을 만들어 `!important` 하나만 다르게 준 실측이다.
 
 ```text
   @layer base, theme;
@@ -414,7 +414,7 @@ file:// 로 연 문서            http://127.0.0.1 로 연 같은 문서
 - 레이어 순서는 **이름이 처음 나타난 자리**에서 고정되고, 재개방·후속 재나열로는 **안 움직인다.**
 - **레이어 밖 규칙은 normal 에서 모든 레이어를 이긴다** — 도입 시 시트 한 장만 빠져도 그 한 장이 전부를 이긴다.
 - **`!important` 는 레이어 순서를 뒤집고, 레이어 밖까지 같이 뒤집어 맨 아래로 보낸다.** 「나중 레이어 + `!important`」는 두 번 실패한다.
-- 레이어는 캐스케이드 **4단계**라 **5단계 명시도보다 먼저** 갈린다 — 아래 서랍의 `#id` 가 위 서랍의 타입 선택자에 진다.
+- 레이어는 캐스케이드 **4단계**라 **5단계 명시도보다 먼저** 달라진다 — 아래 서랍의 `#id` 가 위 서랍의 타입 선택자에 진다.
 - **익명 `@layer { }` 는 쓸 때마다 새 레이어**다. 「다시 열었다」가 아니다.
 - `@import url(x) layer(v)` 는 **시트를 안 고치고** 통째로 아래에 깔 수 있는 유일한 수단이다.
 - 이 문서의 `@import` 실험은 **`file://` 에서 조용히 실패했다** — HTTP 로 띄워야 확인된다.

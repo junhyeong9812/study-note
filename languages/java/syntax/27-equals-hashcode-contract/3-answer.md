@@ -30,7 +30,7 @@ B) HashSet size  : 1
 | `List.of(a1).contains(a2)` | **`true`** | 리스트는 전부 훑으며 `equals` 만 쓴다 |
 | `new HashSet<>(List.of(a1,a2)).size()` | **`2`** | 다른 칸에 들어가 중복 판정이 안 된다 |
 
-**앞 두 줄과 마지막 줄이 갈리는 이유**
+**앞 두 줄과 마지막 줄이 달라지는 이유**
 
 ```text
 Map / Set — 칸을 먼저 고른다              List — 칸이 없다
@@ -299,7 +299,7 @@ new HashSet<>(List.of(a,b)).size() : 2
 
 - **`false`.** `Object.equals(Object)` 가 뽑혀 참조 비교를 했다.
 
-**두 답이 갈리는 이유**
+**두 답이 달라지는 이유**
 
 ```text
   클래스 Id 가 실제로 갖는 equals 는 둘이다
@@ -374,7 +374,7 @@ javadoc 의 `implSpec` 원문이다.
 
 - **그 객체의 `hashCode()` 를 16진수로 적은 것**이다.
 - `Plain` 은 `hashCode` 를 재정의하지 않았으므로 identity hash code 다.
-- 그래서 **실행마다 달라질 수 있다** — 1번의 표에서 JDK 버전만 바꿔도 값이 갈렸다.
+- 그래서 **실행마다 달라질 수 있다** — 1번의 표에서 JDK 버전만 바꿔도 값이 달라졌다.
 
 **파싱하거나 비교에 쓰면 안 되는 이유**
 
@@ -530,5 +530,5 @@ TreeSet size       : 1 [1.0]
 
 이 파일의 모든 출력은 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
 javadoc 인용은 `lib/src.zip` 의 `java.base/java/lang/Object.java` 원문 그대로다.\
-17.0.13 · 25.0.1 에서도 같은 프로그램을 돌려 확인했다(갈리는 것은 1번에 따로 적었다).
+17.0.13 · 25.0.1 에서도 같은 프로그램을 돌려 확인했다(달라지는 것은 1번에 따로 적었다).
 해시 테이블의 **원리**는 이 파일이 다루지 않는다 — [`data-structure/05-hashmap`](../../../../cs/data-structure/05-hashmap/) 이 정본이다.

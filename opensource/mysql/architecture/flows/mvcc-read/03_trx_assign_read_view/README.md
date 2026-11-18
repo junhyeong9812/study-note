@@ -91,7 +91,7 @@ void MVCC::view_open(ReadView *&view, trx_t *trx) {
 }
 ```
 
-닫는 쪽이다. 뮤텍스를 쥔 호출자는 view 를 목록에서 빼서 빈 목록(`m_free`)으로 돌린다. 뮤텍스 없이 닫는 자동 커밋 읽기 전용 경로는 포인터의 가장 낮은 비트를 1로 켜서 "닫힘"만 표시하고 객체는 다음 재사용을 위해 남긴다.
+닫는 쪽이다. 뮤텍스를 잡은 호출자는 view 를 목록에서 빼서 빈 목록(`m_free`)으로 돌린다. 뮤텍스 없이 닫는 자동 커밋 읽기 전용 경로는 포인터의 가장 낮은 비트를 1로 켜서 "닫힘"만 표시하고 객체는 다음 재사용을 위해 남긴다.
 
 `storage` / `innobase` / `read` / `read0read.cc` L741-L774 ([GitHub](https://github.com/mysql/mysql-server/blob/008e09c2834b98143a8c067d4d225c90953050cf/storage/innobase/read/read0read.cc#L741-L774))
 

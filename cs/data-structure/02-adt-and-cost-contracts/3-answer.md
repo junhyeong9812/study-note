@@ -6,7 +6,7 @@
 
 - 연산 계약: 이름·인자·반환·예외·불변식. `List.get(i)` = "i번째 원소, 범위 밖이면 `IndexOutOfBoundsException`".
 - 비용 계약: 그 연산이 n에 따라 얼마나 드는지와 보장의 종류. `ArrayList.get`은 상수, `LinkedList.get`은 가까운 끝부터 순회.
-- 컴파일러는 연산 계약(타입·시그니처)만 확인한다. 비용 계약은 문서·표시 인터페이스·측정으로만 확인된다. 그래서 같은 코드가 구현체에 따라 O(n)과 O(n²)로 갈린다.
+- 컴파일러는 연산 계약(타입·시그니처)만 확인한다. 비용 계약은 문서·표시 인터페이스·측정으로만 확인된다. 그래서 같은 코드가 구현체에 따라 O(n)과 O(n²)로 나뉜다.
 
 ### 2. get(i) 루프 vs for-each
 
@@ -22,7 +22,7 @@
 ### 4. 중간 삽입 두 방식
 
 - `add(size/2, x)` n번: 둘 다 O(n²). `ArrayList`는 뒤 절반을 `System.arraycopy`로 밀고, `LinkedList`는 중간 노드를 **찾는** 데 n/2번 이동한다. 실험(n=40,000, 5회): `ArrayList` 93.4~107.9 ms, `LinkedList` 1961~2247 ms → `ArrayList`가 약 20배 빠르다(이 환경 한정). 연속 메모리 복사가 노드 따라가기보다 상수가 작다.
-- `ListIterator.add` n번: 반복자가 이미 자리를 쥐고 있으므로 `LinkedList`는 삽입마다 O(1) → 전체 선형(1.22~3.67 ms). `ArrayList`는 삽입마다 뒤를 밀어 O(n²)(180~238 ms). 이 경우 `LinkedList`가 이긴다.
+- `ListIterator.add` n번: 반복자가 이미 자리를 잡고 있으므로 `LinkedList`는 삽입마다 O(1) → 전체 선형(1.22~3.67 ms). `ArrayList`는 삽입마다 뒤를 밀어 O(n²)(180~238 ms). 이 경우 `LinkedList`가 이긴다.
 
 ### 5. `RandomAccess`
 

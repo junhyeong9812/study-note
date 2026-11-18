@@ -94,7 +94,7 @@ enum 배열은 실호출이 없으므로 "예외가 안 났다"가 아니라 **�
 
 ## 3. 무엇이 문제였나 — 세 갈래 누출 (실측)
 
-v1 enum(BLUE 있음)으로 컴파일한 annotation을 v2 enum(BLUE 제거)으로 실행하는 재현에서, 단일 enum 속성과 enum 배열 속성이 이렇게 갈렸다.
+v1 enum(BLUE 있음)으로 컴파일한 annotation을 v2 enum(BLUE 제거)으로 실행하는 재현에서, 단일 enum 속성과 enum 배열 속성이 이렇게 달라졌다.
 
 | | 단일 enum 속성 | enum 배열 속성 (수정 전) |
 |---|---|---|
@@ -123,7 +123,7 @@ v1 enum(BLUE 있음)으로 컴파일한 annotation을 v2 enum(BLUE 제거)으로
 예외가 나는 것이 아니라 **오염된 값이 조용히 하류로 흘러가는** silent corruption이라, `AnnotationAttributes` 기반 소비자(빈 이름 결정, `@Qualifier` 매칭 등)는 엉뚱한 곳에서 `ClassCastException`으로 죽는다.\
 JDK 자체는 단일/배열을 똑같이 취급하므로(둘 다 읽는 순간 예외), 이 비대칭은 Spring이 만든 것이었다.
 
-> **silent corruption(무음 오염)** — 에러가 나지 않은 채 잘못된 값이 그대로 다음 단계로 흘러가는 실패.\
+> **silent corruption(조용한 오염)** — 에러가 나지 않은 채 잘못된 값이 그대로 다음 단계로 흘러가는 실패.\
 > 예: 맵에 enum 배열 대신 예외 객체가 들어 있는데 호출자는 그걸 모른 채 캐스팅하다 한참 뒤에 죽는다.
 
 ## 4. 수정 해설 — 1줄, 그리고 왜 그 1줄이면 충분한가

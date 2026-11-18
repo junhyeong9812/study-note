@@ -1,12 +1,12 @@
 # go/syntax/52 — 도구: `gofmt`·`go vet`·빌드 태그·`go:embed`·탈출 분석 읽기 — 정리 (힌트)
 
-★★★ **본체는 넷째 창이 둘이다** — 이 주제는 도구 다섯을 한 편에 묶었고, **판정이 걸린 격자가 둘**이다.
-① 「**`vet` 격자** — 탐침 12(분석기 9 + 대조 3) × (`go vet` · `go test`)」 — 마지막 두 줄 「**go vet 이 짚은 칸 9 / 12**」·「**go test 가 막은 칸 1 / 12**」((2)절).
-② 「**탈출 격자** — 탐침 9 × (`-gcflags='-m -l'` 의 말 · `testing.AllocsPerRun` 할당 수 · 인라인 켠 할당 수)」 — 「**-m 이 힙을 말한 칸 5 / 9**」·「**allocs 가 1 이상인 칸 6 / 9**」·「**둘이 어긋난 칸 1 / 9**」·「**인라인을 켜서 달라진 칸 1 / 9**」((5)절). ★★★ **`-m` 의 말과 실제 할당이 두 칸에서 갈린다 — 하나는 여기서, 하나는 [50번 주제](../50-benchmarks-testing-b-and-reading-profiles/) (3)절에서.**
+★★★ **핵심은 넷째 창이 둘이다** — 이 주제는 도구 다섯을 한 편에 묶었고, **판정이 걸린 격자가 둘**이다.
+① 「**`vet` 격자** — probe 12(분석기 9 + 대조 3) × (`go vet` · `go test`)」 — 마지막 두 줄 「**go vet 이 짚은 칸 9 / 12**」·「**go test 가 막은 칸 1 / 12**」((2)절).
+② 「**탈출 격자** — probe 9 × (`-gcflags='-m -l'` 의 말 · `testing.AllocsPerRun` 할당 수 · 인라인 켠 할당 수)」 — 「**-m 이 힙을 말한 칸 5 / 9**」·「**allocs 가 1 이상인 칸 6 / 9**」·「**둘이 어긋난 칸 1 / 9**」·「**인라인을 켜서 달라진 항목 1 / 9**」((5)절). ★★★ **`-m` 의 말과 실제 할당이 두 칸에서 달라진다 — 하나는 여기서, 하나는 [50번 주제](../50-benchmarks-testing-b-and-reading-profiles/) (3)절에서.**
 ★ 나머지 셋(`gofmt` · 빌드 태그 · `go:embed`)은 **결과가 파일 목록·diff 로 바로 보이는** 도구라 격자 하나씩(빌드 태그 「빌드에 들어간 칸 15 / 36」)과 에러 전문으로 적는다.
 
 ★★★ **이 주제의 경계** — 스택·힙·가상 메모리 **일반**은 [`cs/foundations/memory-management/`](../../../../cs/foundations/memory-management/)(§3 스택 프레임 · §11 다이나믹 힙)가 정본이다 — ★ 그 폴더는 README 하나이고 **GC 알고리즘 절이나 탈출 분석 절은 없다.** 여기는 **Go 컴파일러의 `-m` 출력을 읽는 법**으로 좁힌다.
-클로저 캡처가 힙으로 가는 첫 관찰은 [13번 주제](../13-closures-variable-capture-and-loop-variable-change/) (7)절 · `Printf` 서식 `vet` 의 여섯 줄은 [42번 주제](../42-fmt-verbs-stringer-and-errorf/) (5)절 · `lostcancel` 탐침 11개는 [34번 주제](../34-context-cancellation-deadlines-and-values/) (5)절 · `go.mod` 의 `go` 줄은 [41번 주제](../41-modules-go-mod-version-selection-and-workspaces/) · 테스트에서의 `vet` 구멍은 [49번 주제](../49-testing-table-driven-t-run-cleanup-and-parallel/) (3)·(4)절 이다.
+클로저 캡처가 힙으로 가는 첫 관찰은 [13번 주제](../13-closures-variable-capture-and-loop-variable-change/) (7)절 · `Printf` 서식 `vet` 의 여섯 줄은 [42번 주제](../42-fmt-verbs-stringer-and-errorf/) (5)절 · `lostcancel` probe 11개는 [34번 주제](../34-context-cancellation-deadlines-and-values/) (5)절 · `go.mod` 의 `go` 줄은 [41번 주제](../41-modules-go-mod-version-selection-and-workspaces/) · 테스트에서의 `vet` 구멍은 [49번 주제](../49-testing-table-driven-t-run-cleanup-and-parallel/) (3)·(4)절 이다.
 
 ## 이 갈래가 쓰는 세 층
 
@@ -14,9 +14,9 @@
 |---|---|---|
 | **명세 보장** | Go 명세가 약속한 것 | ★★★ **명세에는 스택도 힙도 없다** — 「변수는 참조되는 동안 살아 있다」까지다. **어디에 두느냐는 컴파일러의 일**이다(13번 (7)절) · 루프 변수 의미(1.22) |
 | **도구 계약** | `go help`·`go doc` 이 적은 것 | ★★ **빌드 제약** — `//go:build` 식 · `_GOOS`·`_GOARCH` 파일 이름 · `go1.N` 태그는 「through the current version」 · ★★ **`go:embed`** — 디렉토리는 `.`·`_` 로 시작하는 파일을 빼고, `dir/*` 는 **그 층의** 그런 파일을 넣고, `all:` 은 전부 · `..` 금지 · ★★ **`go test` 는 `vet` 의 부분 집합만** |
-| **구현·판** | 이 판에서 찍힌 것 | ★★★ **`-m` 의 문구와 결정**(인라인·탈출) · **`vet` 분석기 목록** · `gofmt` 의 출력 모양 |
+| **구현·판** | 이 버전에서 찍힌 것 | ★★★ **`-m` 의 문구와 결정**(인라인·탈출) · **`vet` 분석기 목록** · `gofmt` 의 출력 모양 |
 
-★★★ **선을 긋는다** — 「`&p` 를 반환하면 `p` 가 힙으로 간다」는 **gc 컴파일러 이 판의 결정**이다. 명세는 「`p` 가 반환 뒤에도 살아 있다」만 약속한다. ★ (5)절에서 **같은 `retPtr` 이 인라인되면 할당이 0** 이 됐다 — 「힙으로 간다」는 **함수의 성질이 아니라 부르는 자리에서의 결정**이다.
+★★★ **선을 긋는다** — 「`&p` 를 반환하면 `p` 가 힙으로 간다」는 **gc 컴파일러 이 버전의 결정**이다. 명세는 「`p` 가 반환 뒤에도 살아 있다」만 약속한다. ★ (5)절에서 **같은 `retPtr` 이 인라인되면 할당이 0** 이 됐다 — 「힙으로 간다」는 **함수의 성질이 아니라 부르는 자리에서의 결정**이다.
 
 ## 이 판
 
@@ -64,16 +64,16 @@ not caught by the compilers.
 ```
 
 - ★★ **`embed` — 「Patterns may not contain ‘.’ or ‘..’」 · 「files with names beginning with ‘.’ or ‘_’ are excluded」 · 「‘image/*’ embeds ‘image/.tempfile’ while ‘image’ does not. Neither embeds ‘image/dir/.tempfile’」 · 「‘all:image’ embeds both」** — (4)절 격자가 이 네 문장을 그대로 재현한다.
-- ★★ **`buildconstraint` — 「"go1.1" from Go version 1.1 onward … through the current version」** — 그래서 `//go:build go1.99` 파일은 **이 판에서 빠진다**((3)절 `future.go`).
+- ★★ **`buildconstraint` — 「"go1.1" from Go version 1.1 onward … through the current version」** — 그래서 `//go:build go1.99` 파일은 **이 버전에서 빠진다**((3)절 `future.go`).
 - ★ **`vet` — 「Vet uses heuristics that do not guarantee all reports are genuine problems」** — 반대 방향(못 잡는 것)도 있다((2)절 `printf2`).
 
-## 흔들리는 칸 / 안 흔들리는 칸
+## 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| 안 흔들린다 | ★★★ **`vet` 격자 12 × 2 · `9 / 12` · `1 / 12` · `vet` 문구** | 소스와 도구 판이 정한다 |
-| 안 흔들린다 | ★★★ **탈출 격자 9 × 3 · `5 / 9` · `6 / 9` · `1 / 9` · `1 / 9`** | `AllocsPerRun` 은 **평균 할당 수**를 정수로 준다 — 예행·재대조에서 같았다 |
-| 안 흔들린다 | ★★ 빌드 태그 격자 9 × 4 · `15 / 36` · `go:embed` 목록 · 에러 문구 · `gofmt` diff | |
+| 달라지지 않는다 | ★★★ **`vet` 격자 12 × 2 · `9 / 12` · `1 / 12` · `vet` 문구** | 소스와 도구 판이 정한다 |
+| 달라지지 않는다 | ★★★ **탈출 격자 9 × 3 · `5 / 9` · `6 / 9` · `1 / 9` · `1 / 9`** | `AllocsPerRun` 은 **평균 할당 수**를 정수로 준다 — 예행·재대조에서 같았다 |
+| 달라지지 않는다 | ★★ 빌드 태그 격자 9 × 4 · `15 / 36` · `go:embed` 목록 · 에러 문구 · `gofmt` diff | |
 | **판을 탄다** | ★★ **`-m` 의 문구** | `go1.25.12` 와 `go1.27.1` 은 **이 소스에서 한 줄도 안 달랐다**(「다른 줄 0」) — **보장이 아니다**(규칙 3 「여러 버전에서 같았다」) |
 
 ★ 정규화 규칙은 **기본 넷**만 썼다(이 주제에는 시간 칸이 없다).
@@ -89,7 +89,7 @@ not caught by the compilers.
 | 비유 | 실체 |
 |---|---|
 | 활자 조판기 | ★★ **`gofmt`** — 입력이 뭐든 출력은 하나 · `-s` 는 **군더더기 표현 줄이기** |
-| 감리사 | ★★ **`go vet`** — 분석기 여럿(여기서 탐침한 것은 9) |
+| 감리사 | ★★ **`go vet`** — 분석기 여럿(여기서 probe한 것은 9) |
 | 몇 명만 데려오는 현장 | ★★★ **`go test` 의 `vet` 부분 집합** — 12 중 1 만 막았다 |
 | 현장 도장 | ★★ **`//go:build linux && !cgo`** · `_linux.go` |
 | 첨부 파일 묶기 | ★★ **`//go:embed data`** · 숨김 파일은 `all:` 로만 |
@@ -119,17 +119,17 @@ not caught by the compilers.
 
 ## 동작 방식
 
-### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「부적용인 창」
+### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「해당 없는 창」
 
 | 창 | 무엇을 보여 주나 | 어디서 왔나 |
 |---|---|---|
-| ★★★ **`vet` 격자 — 탐침 12 × (`go vet` · `go test`)** | 수상한 모양을 **누가 잡나** | ★ 본체 창 ① · 탭 3칸 검사 · 두 수를 센다 |
-| ★★★ **탈출 격자 — 탐침 9 × (`-m` · allocs · 인라인 allocs)** | `-m` 의 **말**과 **실제 할당** | ★ 본체 창 ② · `grid.sh` 가 `-m` 줄을 함수에 붙이고 탭 6칸 검사 |
+| ★★★ **`vet` 격자 — probe 12 × (`go vet` · `go test`)** | 수상한 모양을 **누가 잡나** | ★ 핵심 창 ① · 탭 3칸 검사 · 두 수를 센다 |
+| ★★★ **탈출 격자 — probe 9 × (`-m` · allocs · 인라인 allocs)** | `-m` 의 **말**과 **실제 할당** | ★ 핵심 창 ② · `grid.sh` 가 `-m` 줄을 함수에 붙이고 탭 6칸 검사 |
 | ★★ **빌드 태그 격자 — 파일 9 × 환경 4** | **어느 파일이** 빌드에 들어가나 | (3)절 · `go list -f` |
 | ★★ **`go:embed` 목록 · 빌드 에러** | 패턴이 **무엇을** 묶나 | (4)절 |
 | ★ **`gofmt -d` · `-s` diff** | 무엇이 **바뀌나** | (1)절 |
 | ★★ **제5의 상태 — 「기준만 다른 것」** | ★★★ **`make([]int, n)` 은 `does not escape` 인데 할당 1** · 같은 문구의 `make([]int, m)`(m=4)은 0 — `-m` 은 **「탈출하나」** 를 말하고, 할당은 **「스택에 담을 수 있나」**(크기)까지 본다. 두 창이 **서로 다른 질문**에 답한다 · 반대 방향(`escapes` 인데 0)은 50번 (3)절 `BoxSmall` · ★ `vet` 격자의 `printf2` 도 같은 모양 — **서식 실수가 그대로인데 `vet exit 0`**(동사가 변수라 읽을 수 없다 — 42번) | (2)·(5)절 |
-| **부적용 — 속도** | ★★ **「힙이 느리다」는 여기서 재지 않았다** — 50번의 `ns/op` 가 그 창이다 | 규칙 4 |
+| **해당 없음 — 속도** | ★★ **「힙이 느리다」는 여기서 재지 않았다** — 50번의 `ns/op` 가 그 창이다 | 규칙 4 |
 
 ### (1) ★★ `gofmt` — 입력이 달라도 출력은 하나
 
@@ -218,7 +218,7 @@ gofmt -l exit=0
 - ★★ **`-s`(simplify) 가 더 바꾼 세 줄** — `[]point{point{1, 2}, …}` → `[]point{{1, 2}, …}`(원소 타입 생략) · `for _ = range ps` → `for range ps` · `s[2:len(s)]` → `s[2:]`. **뜻이 같은 짧은 표현**으로 바꾼다.
 - ★ **`gofmt -l .` — 고칠 파일 이름만 찍고 `exit=0`** — ★★ **`-l` 은 파일이 있어도 0 이다.** CI 에서는 **출력이 비었나**로 판정한다(`test -z "$(gofmt -l .)"`).
 
-### (2) ★★★ `go vet` 격자 — 탐침 12 × (`go vet` · `go test`)
+### (2) ★★★ `go vet` 격자 — probe 12 × (`go vet` · `go test`)
 
 **언제 쓰나** — CI 에 무엇을 둘지 정할 때, 그리고 「`go test` 가 통과했으니 괜찮다」를 의심할 때.
 
@@ -474,7 +474,7 @@ withcgo.go	·	빌드	빌드	·
 
 그림 해설 (한 단계씩):
 
-- ★★★ **`os_linux.go` / `os_windows.go`** — 파일 이름 꼬리만으로 GOOS 가 갈린다(`//go:build` 줄이 없다). `arch_amd64.go` 는 **`linux/arm64` 에서 빠졌다.** 문서 「*_GOOS · *_GOARCH · *_GOOS_GOARCH … an implicit build constraint」.
+- ★★★ **`os_linux.go` / `os_windows.go`** — 파일 이름 꼬리만으로 GOOS 가 달라진다(`//go:build` 줄이 없다). `arch_amd64.go` 는 **`linux/arm64` 에서 빠졌다.** 문서 「*_GOOS · *_GOARCH · *_GOOS_GOARCH … an implicit build constraint」.
 - ★★★ **`nocgo.go`(`//go:build linux && !cgo`)** 와 **`withcgo.go`(`//go:build cgo || !linux`)** 는 **네 환경 모두에서 정확히 하나만** 들어갔다 — 두 식이 서로의 부정이라 **같은 함수 `Cgo()` 를 두 번 정의하지 않는다.** 이렇게 짝을 맞추지 않으면 어느 환경에서 **중복 정의** 또는 **정의 없음** 이 된다.
 - ★★ **`windows/amd64 cgo=0` 에서 `withcgo.go` 가 들어갔다** — `!linux` 가 참이라서다. 이름이 「withcgo」여도 **식이 정한다.**
 - ★★ **`gen.go`(`//go:build ignore`)** 는 어디서도 안 들어간다 — 관례적 이름일 뿐 **만족 안 되는 아무 낱말**이면 같다(문서 「Any other unsatisfied word will work as well」). `go run gen.go` 처럼 **따로 돌리는 파일**에 쓴다.
@@ -716,11 +716,11 @@ go1.25.12 의 -m 출력과 다른 줄 0
 
 - ★★★ **지역 값 반환(`retVal`) — `-m` 은 한 줄도 없고 할당 0** — 값은 **복사되어** 나간다. 스택에 둔 채 끝난다.
 - ★★★ **포인터 반환(`retPtr`) — `moved to heap: p` · 할당 1** — `p` 의 주소가 함수 밖으로 나가므로 **변수 자체를 힙에 만든다.**
-- ★★★ **그런데 인라인을 켜면(기본 빌드) 「호출한 쪽에서 필드만 읽음」 칸이 0** — 「인라인을 켜서 달라진 칸 **1 / 9**」. `retPtr` 이 호출한 자리로 **펴지면** 컴파일러가 `p` 가 **그 자리를 못 벗어난다**는 것을 보고 스택에 둔다. 전역에 담은 칸은 여전히 1. ★★ **「이 함수는 힙에 할당한다」가 아니라 「이 호출은 …」** 이다.
+- ★★★ **그런데 인라인을 켜면(기본 빌드) 「호출한 쪽에서 필드만 읽음」 칸이 0** — 「인라인을 켜서 달라진 항목 **1 / 9**」. `retPtr` 이 호출한 자리로 **펴지면** 컴파일러가 `p` 가 **그 자리를 못 벗어난다**는 것을 보고 스택에 둔다. 전역에 담은 칸은 여전히 1. ★★ **「이 함수는 힙에 할당한다」가 아니라 「이 호출은 …」** 이다.
 - ★★ **인터페이스에 담기(`toIface`) — `v + 1000 escapes to heap` · 1** · **클로저(`capture`) — `moved to heap: c` · `func literal escapes to heap` · 2**(변수 하나 + 클로저 하나) — 13번 (7)절과 같다.
-- ★★★ **`make([]int, 8)` — `does not escape` · 0** 대 **`make([]int, n)`(n=8) — `does not escape` 인데 1** 대 **`make([]int, m)`(m=4) — 0** — 「둘이 어긋난 칸 **1 / 9**」가 이것이다. 크기가 **컴파일 때 모르는 값**이면 「탈출 안 함」이어도 **작을 때만** 스택에 담겼다(이 판의 관찰 — 경계 크기는 재지 않았다: 4 원소는 0, 8 원소는 1).
+- ★★★ **`make([]int, 8)` — `does not escape` · 0** 대 **`make([]int, n)`(n=8) — `does not escape` 인데 1** 대 **`make([]int, m)`(m=4) — 0** — 「둘이 어긋난 칸 **1 / 9**」가 이것이다. 크기가 **컴파일 때 모르는 값**이면 「탈출 안 함」이어도 **작을 때만** 스택에 담겼다(이 버전의 관찰 — 경계 크기는 재지 않았다: 4 원소는 0, 8 원소는 1).
 - ★★ **`fmt.Fprintln(io.Discard, v)` — `v escapes to heap` · 1** — `...any` 인자에 담으면서 **박싱**된다. `... argument does not escape` 는 **가변 인자 슬라이스 자체**는 스택이라는 뜻이다. ★ 로그 한 줄마다 할당이 나는 이유다.
-- ★★ **「go1.25.12 의 -m 출력과 다른 줄 0」** — 두 판이 **이 소스에서** 같은 결정을 했다. 보장은 아니다.
+- ★★ **「go1.25.12 의 -m 출력과 다른 줄 0」** — 두 버전이 **이 소스에서** 같은 결정을 했다. 보장은 아니다.
 - ★ `-l` 을 붙인 이유 — 안 붙이면 `inlining call to …` 줄이 섞여 **읽을 줄이 묻힌다**(13번 (7)절). 대신 **인라인이 바꾸는 결정**은 `-l` 판만 보면 놓친다 — 그래서 할당은 두 빌드에서 쟀다.
 
 비용 — `-gcflags=-m` 은 **빌드 한 번**이다. 줄이 많으면 `-m` 을 **패키지 하나에만**(`-gcflags=ex=-m`) 건다.
@@ -827,8 +827,8 @@ go1.25.12 의 -m 출력과 다른 줄 0
 
 - `go doc cmd/vet` · `go help test` · `go help buildconstraint` · [`embed`](https://pkg.go.dev/embed) · `go tool compile -help` — 이 툴체인에서 떴다.
 - [`cs/foundations/memory-management/`](../../../../cs/foundations/memory-management/) — ★ **스택·힙 일반의 정본**(§3 스택 프레임 · §11 다이나믹 힙). 그쪽은 메모리 계층까지, 여기는 **Go 컴파일러가 어디에 두는지 읽는 법**부터. GC 알고리즘 절은 거기에도 없다.
-- [13번 주제](../13-closures-variable-capture-and-loop-variable-change/) — 클로저 캡처가 `moved to heap` · `vet` 이 판을 안다.
-- [34번 주제](../34-context-cancellation-deadlines-and-values/) — `vet lostcancel` 탐침 11개.
+- [13번 주제](../13-closures-variable-capture-and-loop-variable-change/) — 클로저 캡처가 `moved to heap` · `vet` 이 버전을 안다.
+- [34번 주제](../34-context-cancellation-deadlines-and-values/) — `vet lostcancel` probe 11개.
 - [41번 주제](../41-modules-go-mod-version-selection-and-workspaces/) — `go.mod` 의 `go` 줄 · 빌드 태그 `go1.N` 과 짝.
 - [42번 주제](../42-fmt-verbs-stringer-and-errorf/) — `vet printf` 여섯 줄과 동사를 변수로 넘긴 구멍.
 - [47번 주제](../47-net-http-client-reuse-timeouts-and-closing-body/) — `Body` 닫기 · `httpresponse` 가 그 순서를 본다.
@@ -856,6 +856,6 @@ go1.25.12 의 -m 출력과 다른 줄 0
 ## 실행 환경
 
 **기준 소스** — `go doc cmd/vet` · `go help test` · `go help buildconstraint` · [`embed`](https://pkg.go.dev/embed) 패키지 문서 · `go tool compile -help`(`-m`·`-l`). **이 툴체인에서 직접 떴다.**\
-**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다. 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.
+**실행 검증** — 이 문서의 출력은 전부 「이 버전」 절의 버전에서 실제로 돌려 **파일로 캡처한 것**이다. 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.
 ★ 탈출 분석의 판 대조에는 모듈 캐시의 **`go1.25.12`** 를 같이 썼다(명령에는 `"$GO125"` 로 찍힌다 — 그 블록의 `go.mod` 는 `go 1.25`).\
-**버전** — `//go:build` 줄은 1.17 부터(문서 「Go versions 1.16 and earlier used a different syntax … "// +build"」) · `go:embed`(`embed.FS`)는 1.16([49번 주제](../49-testing-table-driven-t-run-cleanup-and-parallel/) 「이 판」의 `tapi`) · `for` 루프 변수 의미 변경은 1.22([13번 주제](../13-closures-variable-capture-and-loop-variable-change/)) · ★★ **`vet` 분석기 목록과 탈출 분석 결과는 명세가 아니라 툴체인 판의 성질**이다.
+**버전** — `//go:build` 줄은 1.17 부터(문서 「Go versions 1.16 and earlier used a different syntax … "// +build"」) · `go:embed`(`embed.FS`)는 1.16([49번 주제](../49-testing-table-driven-t-run-cleanup-and-parallel/) 「이 버전」의 `tapi`) · `for` 루프 변수 의미 변경은 1.22([13번 주제](../13-closures-variable-capture-and-loop-variable-change/)) · ★★ **`vet` 분석기 목록과 탈출 분석 결과는 명세가 아니라 툴체인 판의 성질**이다.

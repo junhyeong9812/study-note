@@ -1,14 +1,14 @@
 # kotlin/syntax/42 — 변환 연산 — `map`/`flatMap`/`associate`/`zip` — 정리 (힌트)
 
-★★★ **본체는 첫째 창이다** — 「**결과 타입 격자 — 연산 × 입력 모양 → 컴파일러가 붙인 반환 타입**」. 타입은 **실행해서 찍으면 지워진다**(`List<Int>` 의 `<Int>` 는 런타임에 없다). 그래서 **일부러 타입이 안 맞는 자리에 넣고 컴파일러가 뭐라고 우기는지** 읽는다.
+★★★ **핵심은 첫째 창이다** — 「**결과 타입 격자 — 연산 × 입력 모양 → 컴파일러가 붙인 반환 타입**」. 타입은 **실행해서 찍으면 지워진다**(`List<Int>` 의 `<Int>` 는 런타임에 없다). 그래서 **일부러 타입이 안 맞는 자리에 넣고 컴파일러가 뭐라고 우기는지** 읽는다.
 
 ## 이 주제가 쓰는 세 층
 
 | 층 | 뜻 | 근거로 쓰는 것 |
 |---|---|---|
 | **언어 보장 / API 계약** | 서명·KDoc 이 약속한 것 | ★★★ **반환 타입**(서명) — `Iterable<T>.map` 은 `List<R>` · `Map.map` 은 `List<R>` · `mapValues` 는 `Map<K, R>` · ★★ KDoc 「**the last one gets added to the map**」(`associateBy`) · 「**length of the shortest collection**」(`zip`) |
-| **구현(stdlib)** | 이 판의 stdlib 가 실제로 하는 것 | ★ `associateByTo` 가 **`destination.put`** 을 원소마다 부른다 — 덮어쓰기가 거기서 난다 · 결과 맵이 `LinkedHashMap` |
-| **이 판의 관찰** | kotlinc 2.4.20 에서 이번에 본 것 | 진단 문구(`argument type mismatch: actual type is …`) · 없는 칸의 `unresolved reference` |
+| **구현(stdlib)** | 이 버전의 stdlib 가 실제로 하는 것 | ★ `associateByTo` 가 **`destination.put`** 을 원소마다 부른다 — 덮어쓰기가 거기서 난다 · 결과 맵이 `LinkedHashMap` |
+| **이 버전의 관찰** | kotlinc 2.4.20 에서 이번에 본 것 | 진단 문구(`argument type mismatch: actual type is …`) · 없는 칸의 `unresolved reference` |
 
 ## 이 판
 
@@ -18,14 +18,14 @@ info: kotlinc-jvm 2.4.20 (JRE 21.0.5+11-LTS)
 (exit 0)
 ```
 
-## 흔들리는 칸 / 안 흔들리는 칸
+## 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| **흔들린다** | (이 주제에는 없다) | 해시코드·주소·시간을 찍지 않았다 |
-| 안 흔들린다 | 격자 13행 × 5열 · 갈린 칸 수 | 컴파일러 진단은 결정적이다 |
-| 안 흔들린다 | 실행 출력(`Set.map` · `associateBy` 로그 · `zip`) | 단일 스레드 · 입력 순서가 고정된 `setOf`·`listOf`·`mapOf` 만 썼다 |
-| 안 흔들린다 | stdlib 소스 발췌(줄 번호째) · 진단의 `파일:줄:칸` · 종료 코드 | jar·컴파일러가 같으면 같다 |
+| **실행마다 달라진다** | (이 주제에는 없다) | 해시코드·주소·시간을 찍지 않았다 |
+| 달라지지 않는다 | 격자 13행 × 5열 · 달라진 항목 수 | 컴파일러 진단은 결정적이다 |
+| 달라지지 않는다 | 실행 출력(`Set.map` · `associateBy` 로그 · `zip`) | 단일 스레드 · 입력 순서가 고정된 `setOf`·`listOf`·`mapOf` 만 썼다 |
+| 달라지지 않는다 | stdlib 소스 발췌(줄 번호째) · 진단의 `파일:줄:칸` · 종료 코드 | jar·컴파일러가 같으면 같다 |
 
 ★ 근거 — 캡처 스크립트를 처음부터 두 번 돌려 **블록 전체를 대조**했다(수치는 3-answer 의 「실행 검증」).
 
@@ -66,16 +66,16 @@ info: kotlinc-jvm 2.4.20 (JRE 21.0.5+11-LTS)
 
 ## 동작 방식
 
-### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「부적용인 창」
+### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「해당 없는 창」
 
 | 창 | 무엇을 보여 주나 | 어디서 왔나 |
 |---|---|---|
-| ★★★ **결과 타입 격자(의도적 타입 불일치 진단)** | 연산 × 입력 → 컴파일러가 붙인 반환 타입 · 없는 칸((1)) | ★ **본체 창** |
+| ★★★ **결과 타입 격자(의도적 타입 불일치 진단)** | 연산 × 입력 → 컴파일러가 붙인 반환 타입 · 없는 칸((1)) | ★ **핵심 창** |
 | ★★ **실행 + 로그** | 중복이 사는가 · 키 충돌이 덮나 · 짧은 쪽에서 멈추나((2)) | — |
 | ★★ **stdlib 소스 jar 발췌** | 그 동작이 **KDoc 계약**인가, 구현 한 줄인가((3)) | [41번 주제](../41-collection-creation-and-copying/) (2)와 같은 창 |
 | **인용 — 다시 안 잰다** | 결과가 원본과 `===` 가 아닌 새 리스트다 | [40번 주제](../40-read-only-collections-and-runtime-types/) (4) |
 | ★ **제5의 상태 — 창을 바꿔 물었다** | 「결과 타입이 무엇인가」를 **실행 창**으로는 못 묻는다(소거) — **컴파일 에러 창**으로 물었다 | (1) — 이 창은 **정적 타입**만 보고 런타임 클래스는 못 본다 |
-| **부적용 — 실행 시간·할당** | 「`Sequence` 가 빠르다」·「`associateBy` 가 `groupBy` 보다 싸다」는 **재지 않았다** | — |
+| **해당 없음 — 실행 시간·할당** | 「`Sequence` 가 빠르다」·「`associateBy` 가 `groupBy` 보다 싸다」는 **재지 않았다** | — |
 
 ### (1) ★★★ 결과 타입 격자 — 컴파일러에게 타입을 말하게 한다
 
@@ -454,7 +454,7 @@ labeled  [(1, a), (2, b), (3, c)]
 | 덮어쓰기가 `put` 한 줄에서 난다 | ★ **stdlib 구현** | (3) |
 | `mapValues` 결과가 `LinkedHashMap` · `Map.map` 결과가 `ArrayList` | ★ **stdlib 구현**(런타임 클래스) — 계약은 `Map`·`List` 까지 | (2) |
 | `flatMap{seq}` 오버로드의 `@SinceKotlin("1.4")` | **stdlib 판의 사실** — 그 전 판에서는 **못 쟀다** | (3) |
-| 진단 문구(`argument type mismatch: …`) | **이 판의 관찰** — 격자 스크립트가 문구 모양에 기대므로 **판이 오르면 다시 돌린다** | (1) |
+| 진단 문구(`argument type mismatch: …`) | **이 버전의 관찰** — 격자 스크립트가 문구 모양에 기대므로 **버전이 오르면 다시 돌린다** | (1) |
 
 ★★ **가장 조심할 자리** — 「`associateBy` 가 조용히 덮는다」는 **구현 사고가 아니라 계약**이다. 그래서 「언젠가 고쳐지겠지」가 아니다 — 유일성은 **부르는 쪽이 보장**해야 한다.
 
@@ -513,10 +513,10 @@ labeled  [(1, a), (2, b), (3, c)]
 
 ## 실행 환경
 
-**기준 소스** — [Collection transformation operations](https://kotlinlang.org/docs/collection-transformations.html)(매핑 `map`·`mapNotNull`·`mapIndexed` · 지퍼 `zip`·`unzip` · 연관 `associateWith`·`associateBy`·`associate` · 평탄화 `flatten`·`flatMap`) — 이 문서는 그 페이지의 **목록**을 따르되, 문장은 인용하지 않고 **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 선언을 근거로 삼는다((3)).
+**기준 소스** — [Collection transformation operations](https://kotlinlang.org/docs/collection-transformations.html)(매핑 `map`·`mapNotNull`·`mapIndexed` · 지퍼 `zip`·`unzip` · 연관 `associateWith`·`associateBy`·`associate` · 평탄화 `flatten`·`flatMap`) — 이 문서는 그 페이지의 **목록**을 따르되, 문장은 인용하지 않고 **이 버전의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 선언을 근거로 삼는다((3)).
 **실행 검증** — 이 문서의 모든 출력·에러는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java` 에서 실제로 얻었다.\
 `kotlinc` 4회(같은 파일의 컴파일 실패 2벌 — 그 실패가 결과다) · `java` 2회 · stdlib 소스 jar 에서 4곳.\
-★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「갈린 칸 N / M」은 스크립트가 스스로 센 것**이다.
-**버전** — `map`·`flatMap`·`associate`·`associateBy`·`zip` 의 기본형은 **1.0** — 이 판의 소스에서 선언 위에 `@SinceKotlin` 이 **없다**(확인만 했고 발췌하지 않았다). `flatMap` 에 **`Sequence` 를 돌려주는 람다**를 받는 오버로드는 stdlib 소스에 **`@SinceKotlin("1.4")`**((3)) — ★ 그 전 판에서 어땠는지는 **이 판에서 잴 수 없다**(`-api-version` 은 2.0 미만을 안 받는다 — [43번 주제](../43-filter-search-and-empty-collections/) (4)).
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「달라진 항목 N / M」은 스크립트가 스스로 센 것**이다.
+**버전** — `map`·`flatMap`·`associate`·`associateBy`·`zip` 의 기본형은 **1.0** — 이 버전의 소스에서 선언 위에 `@SinceKotlin` 이 **없다**(확인만 했고 발췌하지 않았다). `flatMap` 에 **`Sequence` 를 돌려주는 람다**를 받는 오버로드는 stdlib 소스에 **`@SinceKotlin("1.4")`**((3)) — ★ 그 전 판에서 어땠는지는 **이 버전에서 잴 수 없다**(`-api-version` 은 2.0 미만을 안 받는다 — [43번 주제](../43-filter-search-and-empty-collections/) (4)).
 **경계** — 결과가 **새 리스트인가**(원본과 `===` 가 아닌가)는 [40번 주제](../40-read-only-collections-and-runtime-types/) (4)가 이미 쟀다 — `map`·`filter` 는 `=== src` 가 `false`. 여기서는 다시 재지 않고 **「어떤 모양(타입)으로 바꾸나」** 만 본다.\
 만든 결과가 **복사인가 창인가**는 [41번 주제](../41-collection-creation-and-copying/)가 정본이다. `Sequence` 가 **즉시 평가가 아니라 지연 평가**라는 것과 그 비용은 [목록의 **47번 주제**](../47-sequences-lazy-evaluation/)다 — 여기 격자의 `Sequence` 열은 **컴파일러가 붙인 타입**만 말한다.

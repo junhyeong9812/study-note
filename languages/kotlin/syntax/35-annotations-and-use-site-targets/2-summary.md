@@ -1,6 +1,6 @@
 # kotlin/syntax/35 — 애너테이션과 use-site target (`@field:`·`@get:`·`@param:`) — 정리 (힌트)
 
-★★★ **본체는 넷째 창이다** — 「**`javap -v` 의 `RuntimeVisibleAnnotations`/`RuntimeVisibleParameterAnnotations` 가 어느 멤버 아래에 있나**」. 애너테이션은 실행 결과를 바꾸지 않으므로 출력으로는 안 보이고, **클래스 파일의 자리**가 곧 답이다. 그 자리를 **Java 리플렉션으로 칸마다 물어 격자**로 만들었다((1)(2)).
+★★★ **핵심은 넷째 창이다** — 「**`javap -v` 의 `RuntimeVisibleAnnotations`/`RuntimeVisibleParameterAnnotations` 가 어느 멤버 아래에 있나**」. 애너테이션은 실행 결과를 바꾸지 않으므로 출력으로는 안 보이고, **클래스 파일의 자리**가 곧 답이다. 그 자리를 **Java 리플렉션으로 칸마다 물어 격자**로 만들었다((1)(2)).
 
 ## 이 주제가 쓰는 세 층
 
@@ -8,7 +8,7 @@
 |---|---|---|
 | **언어 보장** | 명세·공식 문서가 약속한 것 | ★★★ use-site target 목록과 뜻 · **target 없을 때의 선택 순서**(param → property → field) · 그 순서가 **언어 판마다** 하나만 고르나(`first-only`) 둘을 고르나(`param-property`) |
 | **구현(JVM 백엔드)** | kotlinc 가 JVM 으로 내리는 방식 | ★★ `param` → **생성자의 `RuntimeVisibleParameterAnnotations`** · `field` → **필드** · `get` → **게터 메서드** · ★ `property` → **합성 메서드 `getV$annotations()`** · 값 클래스 게터의 **뭉개진 이름** |
-| **이 판의 관찰** | kotlinc 2.4.20 에서 이번에 본 것 | 경고·에러 문구 · `-X` 도움말 문구 · `-Xannotation-target-all` 이 「redundant」라는 경고 |
+| **이 버전의 관찰** | kotlinc 2.4.20 에서 이번에 본 것 | 경고·에러 문구 · `-X` 도움말 문구 · `-Xannotation-target-all` 이 「redundant」라는 경고 |
 
 ★★★ **이 주제에서 층이 가장 헷갈리는 자리** — 「target 을 안 적으면 **어느 target** 이 고라지나」는 **언어 규칙**이다(판마다 다르다). 「그 target 이 **JVM 의 어느 멤버**가 되나」는 **백엔드의 구현**이다. `@property:` 가 `getV$annotations()` 라는 메서드가 되는 것은 후자다 — 언어는 「프로퍼티에 붙는다」만 약속한다.
 
@@ -26,14 +26,14 @@ javac 21.0.5
 (exit 0)
 ```
 
-## 흔들리는 칸 / 안 흔들리는 칸
+## 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| **흔들린다** | (이 주제에는 없다) | 해시코드·주소·시간을 **하나도 안 찍었다** |
-| 안 흔들린다 | ★ 리플렉션 출력 — 멤버를 **이름으로 직접** 물었다 | `getDeclaredMethods()` 의 **순서**는 보장이 없으므로, 순서에 기대는 출력은 **한 줄로 모았다**(합성 메서드는 이름으로 골랐다) |
-| 안 흔들린다 | `javap` 출력 · 뭉개진 이름의 해시 글자(`-DyZRee4`) | 같은 소스·같은 판이면 같다. ★ 해시 글자는 **판이 바뀌면 달라질 수 있어** 모양만 근거로 쓴다([26번 주제](../26-value-class-and-boxing/)) |
-| 안 흔들린다 | 진단 문구 · 격자의 「갈린 칸 N / M」 | 결정적이다 |
+| **실행마다 달라진다** | (이 주제에는 없다) | 해시코드·주소·시간을 **하나도 안 찍었다** |
+| 달라지지 않는다 | ★ 리플렉션 출력 — 멤버를 **이름으로 직접** 물었다 | `getDeclaredMethods()` 의 **순서**는 보장이 없으므로, 순서에 기대는 출력은 **한 줄로 모았다**(합성 메서드는 이름으로 골랐다) |
+| 달라지지 않는다 | `javap` 출력 · 뭉개진 이름의 해시 글자(`-DyZRee4`) | 같은 소스·같은 판이면 같다. ★ 해시 글자는 **판이 바뀌면 달라질 수 있어** 모양만 근거로 쓴다([26번 주제](../26-value-class-and-boxing/)) |
+| 달라지지 않는다 | 진단 문구 · 격자의 「달라진 항목 N / M」 | 결정적이다 |
 
 ★ 근거 — 캡처 스크립트를 처음부터 두 번 돌려 **블록 전체를 바이트 단위로 대조**했다(수치는 3-answer 의 「실행 검증」).
 
@@ -71,22 +71,22 @@ javac 21.0.5
 
 1. target 을 적지 않은 애너테이션은 **어느 JVM 멤버**에 붙나 — 그리고 그 답이 **언어 판**에 따라 어떻게 바뀌었나.
 2. `@field:`·`@get:`·`@param:`·`@property:`·`@all:` 은 각각 **클래스 파일의 어디**가 되나.
-3. 「프레임워크가 애너테이션을 못 본다」는 사고는 **어느 칸에서** 나고, 이 판에서도 여전히 나나.
+3. 「프레임워크가 애너테이션을 못 본다」는 사고는 **어느 칸에서** 나고, 이 버전에서도 여전히 나나.
 
 ## 동작 방식
 
-### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「부적용인 창」
+### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「해당 없는 창」
 
 | 창 | 무엇을 보여 주나 | 어디서 왔나 |
 |---|---|---|
-| ★★★ **`javap -v` 의 `RuntimeVisible…Annotations` 자리** | 애너테이션이 **어느 멤버 아래**에 기록됐나((1)(3)(5)) | ★ **본체 창** |
-| ★★★ **Java 리플렉션 격자 — 판 두 벌을 칸마다 대조** | 매개변수·필드·게터·합성 메서드 **네 자리 × 아홉 클래스** — 「갈린 칸 N / 36」을 스크립트가 센다((2)) | 규칙 22 의 격자 |
+| ★★★ **`javap -v` 의 `RuntimeVisible…Annotations` 자리** | 애너테이션이 **어느 멤버 아래**에 기록됐나((1)(3)(5)) | ★ **핵심 창** |
+| ★★★ **Java 리플렉션 격자 — 판 두 벌을 칸마다 대조** | 매개변수·필드·게터·합성 메서드 **네 자리 × 아홉 클래스** — 「달라진 항목 N / 36」을 스크립트가 센다((2)) | 규칙 22 의 격자 |
 | ★★ **필드만 읽는 검증기** | 「단골」 오동작이 **에러 없이 통과**하는 모양((4)) | 이 주제의 고유 창 |
 | ★ **`kotlin-reflect`** | `@property:` 를 **Kotlin 쪽에서** 읽기((3)) | ★ 제5의 상태 — 같은 질문을 **다른 창으로** 물었다 |
 | ★ **컴파일 경고** | 2.2·2.3 이 **바뀔 것을 예고**한 문구((6)) | 이 갈래의 기본 창 |
 | ★ **C# 로 같은 모양** | `record` 위치 매개변수의 같은 함정((7)) | 대비 창 |
-| **부적용 — 실행 출력** | 애너테이션은 **값을 바꾸지 않는다** — 붙은 자리를 묻지 않으면 출력에 아무 흔적이 없다 | — |
-| **부적용 — 실행 시간** | 리플렉션 비용은 이 주제의 질문이 아니다 | — |
+| **해당 없음 — 실행 출력** | 애너테이션은 **값을 바꾸지 않는다** — 붙은 자리를 묻지 않으면 출력에 아무 흔적이 없다 | — |
+| **해당 없음 — 실행 시간** | 리플렉션 비용은 이 주제의 질문이 아니다 | — |
 
 ★★ **「`@property:` 는 Java 에서 안 보인다」를 브리핑은 「`kotlin-reflect` 가 없으면 못 잰 것」으로 예상했다.** 실제로는 ① `kotlin-reflect.jar` 가 `kotlinc` 배포본 `lib/` 에 **있었고**(3-answer 의 환경 블록), ② 그보다 먼저 **Java 리플렉션이 합성 메서드로 찾았다**((3)). 「못 잰 것」이 아니라 **두 창이 같은 답**을 냈다.
 
@@ -325,7 +325,7 @@ for c in CLASSES:
 print(f"cells that differ: {diff} / {total}")
 ```
 
-- ★★★ **갈린 칸 2 / 36** — `J0 field`(2.4 에서 **새로 붙음**)와 `K0 synthetic`(2.4 에서 **새로 붙음**). 나머지 34칸은 **target 을 적은 일곱 클래스 전부 + 두 클래스의 나머지 칸**이다.
+- ★★★ **달라진 항목 2 / 36** — `J0 field`(2.4 에서 **새로 붙음**)와 `K0 synthetic`(2.4 에서 **새로 붙음**). 나머지 34칸은 **target 을 적은 일곱 클래스 전부 + 두 클래스의 나머지 칸**이다.
 - ★★★ **옛 규칙(`first-only`)은 「param · property · field 중 첫째 하나」** 라 주 생성자 `val` 이면 **언제나 매개변수 하나**였다. 2.4 규칙(`param-property`)은 **매개변수에 더해** property/field 중 하나에도 붙인다 — `-X` 도움말이 「`use '@param:' target if applicable, and also use the first of either '@property:' or '@field:'`」로 적는다.
 - ★★ **`-Xannotation-default-target=first-only` 에 경고가 붙는다** — 「`disables a stable language feature for the current language version 2.4.`」 옛 규칙은 이제 **언어 기능을 끄는 옵션**이다.
 - ★ 격자 스크립트는 **행마다 칸 수를 세어 어긋나면 멈춘다**(규칙 32). 구분자는 데이터에 안 나오는 `;` 다.
@@ -523,10 +523,10 @@ C SignupKF -> [name is blank]
 | 클래스 | 2.4.20 기본 | `first-only`(= 2.1 이하) |
 |---|---|---|
 | `SignupJ`(Java 애너테이션 · target 없음) | ★ `[name is blank]` — **잡힌다** | ★★ **`[]` — 검증을 건너뛴다** |
-| `SignupK`(Kotlin 애너테이션 · `PROPERTY` 허용 · target 없음) | ★★★ **`[]` — 이 판에서도 건너뛴다** | `[]` |
+| `SignupK`(Kotlin 애너테이션 · `PROPERTY` 허용 · target 없음) | ★★★ **`[]` — 이 버전에서도 건너뛴다** | `[]` |
 | `SignupKF`(`@field:`) | `[name is blank]` | `[name is blank]` |
 
-- ★★★ **「단골」의 정체** — 옛 판에서 `@NotBlankJ val name` 은 **매개변수에만** 붙었고, 필드를 읽는 검증기는 **아무것도 못 찾아 `[]`** 를 돌려준다. **에러도 경고도 없이 「통과」다**(규칙 3 — 통과도 출력이다).
+- ★★★ **「단골」의 정체** — 옛 버전에서 `@NotBlankJ val name` 은 **매개변수에만** 붙었고, 필드를 읽는 검증기는 **아무것도 못 찾아 `[]`** 를 돌려준다. **에러도 경고도 없이 「통과」다**(규칙 3 — 통과도 출력이다).
 - ★★★ **2.4 가 이 사고를 절반만 없앴다** — Java 애너테이션(`PROPERTY` 가 없다)은 이제 필드에도 붙지만, **`PROPERTY` 를 허용하는 Kotlin 애너테이션은 property 로 가서 필드가 여전히 비었다**(`B`). 규칙이 「property 또는 field **중 첫째**」이기 때문이다.
 - ★★ **판과 무관하게 맞는 쓰는 법은 `@field:`** 다(`C` — 두 판 모두 잡힌다). 필드를 읽는 도구에는 **target 을 적어라.**
 
@@ -606,7 +606,7 @@ B java.lang.NoSuchMethodException: Acc.getId()
 
 - ★★ **값 클래스 게터는 `getId-DyZRee4()` 이고 `JT` 는 그 뭉개진 이름에 붙었다.** 일반 `Long` 게터는 `getN()` 그대로다. 뭉개기의 이유(서명 충돌 회피)는 [26번 주제](../26-value-class-and-boxing/)가 정본이다.
 - ★★ **`B java.lang.NoSuchMethodException: Acc.getId()`** — 게터를 **이름으로 찾는 도구**는 애너테이션 이전에 **메서드 자체를 못 찾는다.** 스티커는 붙었는데 **방 번호가 바뀌었다.**
-- ★ 주 생성자도 `private Acc(long, long)` + 합성 생성자로 갈렸다 — 생성자 매개변수를 읽는 도구도 같은 문제를 겪을 자리다(이 문서는 **던지지 않았다**).
+- ★ 주 생성자도 `private Acc(long, long)` + 합성 생성자로 나뉘었다 — 생성자 매개변수를 읽는 도구도 같은 문제를 겪을 자리다(이 문서는 **던지지 않았다**).
 
 ### (6) ★ 붙일 수 없는 자리 · 판이 바뀔 것을 예고한 경고
 
@@ -762,9 +762,9 @@ C null
 | ★★ `property` → **`getV$annotations()` 합성 메서드** | ★★ **JVM 백엔드의 구현** | (3) `javap` |
 | 값 클래스 게터의 **뭉개진 이름** | ★ **JVM 백엔드의 구현** | (5) · [26번 주제](../26-value-class-and-boxing/) |
 | Java 애너테이션에 `PROPERTY` 대상이 없는 것 | **Java 언어의 사실** | (1)(6) |
-| 경고·에러 문구 · 「redundant」 경고 · 도움말의 「experimental」 | **이 판의 산출물** | (2)(5)(6) |
+| 경고·에러 문구 · 「redundant」 경고 · 도움말의 「experimental」 | **이 버전의 산출물** | (2)(5)(6) |
 
-★★★ **공식 문서 본문(`annotations.html`)의 기본 규칙 문단은 「param → property → field 중 하나」로 적혀 있다** — 이 판의 기본값(`param-property`)과 **표현이 어긋난다.** 2.4 가 Stable 로 바꾼 것은 whatsnew24 가 적고, 칸 단위 증거는 (2)의 격자다. **문서를 읽었다고 이 판을 확인한 것이 아니다**(규칙 3).
+★★★ **공식 문서 본문(`annotations.html`)의 기본 규칙 문단은 「param → property → field 중 하나」로 적혀 있다** — 이 버전의 기본값(`param-property`)과 **표현이 어긋난다.** 2.4 가 Stable 로 바꾼 것은 whatsnew24 가 적고, 칸 단위 증거는 (2)의 격자다. **문서를 읽었다고 이 버전을 확인한 것이 아니다**(규칙 3).
 
 ## 언제 쓰고 언제 안 쓰나
 
@@ -780,7 +780,7 @@ C null
 ## 핵심 문장
 
 1. 주 생성자 `val` 은 JVM 에서 **매개변수·필드·게터**(+ Kotlin 만 보는 프로퍼티)로 쪼개지고, use-site target 은 **그중 어디에 붙일지**를 정한다.
-2. target 을 안 적으면 **판마다 규칙이 다르다** — 2.1 이하는 **매개변수 하나**, 2.4 는 **매개변수 + (property 또는 field 중 첫째)** 다. 격자에서 **36칸 중 2칸**이 갈렸다.
+2. target 을 안 적으면 **판마다 규칙이 다르다** — 2.1 이하는 **매개변수 하나**, 2.4 는 **매개변수 + (property 또는 field 중 첫째)** 다. 격자에서 **36칸 중 2칸**이 달라졌다.
 3. 「필드 기반 프레임워크가 애너테이션을 못 본다」는 **에러 없이 검증이 꺼지는** 사고이고, 2.4 에서도 **`PROPERTY` 를 허용하는 Kotlin 애너테이션**에서는 그대로 난다.
 4. `@property:` 는 JVM 에서 **`getV$annotations()` 라는 빈 합성 메서드**에 붙는다 — Java 도구의 일반 경로에는 안 보이고 `kotlin-reflect` 로는 보인다.
 5. 필드를 읽는 도구에는 **`@field:` 를 적는 것**이 판과 무관한 답이다.
@@ -792,7 +792,7 @@ C null
 - [17번 주제](../17-delegated-properties/) — `@delegate:` 가 붙는 위임 필드.
 - [15번 주제](../15-class-declaration-constructors-and-init/) — 주 생성자와 `constructor` 낱말.
 - [목록의 **39번 주제**](../39-java-interop-annotations/) — `@JvmField`·`@JvmName` 같은 상호운용 애너테이션 하나하나.
-- C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **53번**(특성) — 아직 폴더가 없다. (7)이 C# 쪽을 직접 던졌다.
+- C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **53번**(특성) — 아직 폴더가 없다. (7)이 C# 쪽을 직접 실행했다.
 
 ## 용어 풀이
 
@@ -819,8 +819,8 @@ C null
 **기준 소스** — [Annotations — use-site targets](https://kotlinlang.org/docs/annotations.html#annotation-use-site-targets)(대상 목록 `file`·`field`·`property`·`get`·`set`·`all`·`receiver`·`param`·`setparam`·`delegate` · 「`property` (annotations with this target are not visible to Java)」 · 기본 규칙 「param → property → field(property 가 안 될 때)」) · [What's new in Kotlin 2.2.0](https://kotlinlang.org/docs/whatsnew22.html)(새 기본 규칙과 `@all` 이 **미리보기**로 들어온 판 · `-Xannotation-default-target=param-property`) · [What's new in Kotlin 2.4.0](https://kotlinlang.org/docs/whatsnew24.html)(「`@all` meta-target for properties」·「New defaulting rules for use-site annotation targets」가 **Stable**).
 **실행 검증** — 이 문서의 모든 출력·에러·경고·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`java`·`javap` 에서 실제로 얻었다. C# 은 **.NET SDK 10.0.401** 의 Roslyn `csc` 를 직접 불렀다.\
 `kotlinc` 14회(`-X` 도움말 1회 · 실패 1벌) · `javac` 10회 · `java` 7회 + 격자 스크립트 안에서 4회 · `javap` 3회 · `csc` 1회 · `dotnet` 1회.\
-★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. 격자의 「갈린 칸 N / M」도 **스크립트가 세어 마지막 줄로 찍었다.**
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. 격자의 「달라진 항목 N / M」도 **스크립트가 세어 마지막 줄로 찍었다.**
 **버전** — ★★★ **이 주제의 답은 언어 판에 매인다.** target 없는 애너테이션의 기본 규칙이 **2.1 이하 `first-only` → 2.2·2.3 `first-only-warn` → 2.4 이상 `param-property`** 로 바뀌었다(`kotlinc -X` 의 문구 · (2)(6)). `@all:` 은 2.2 미리보기 → **2.4 Stable**((5)).
 **경계** — 프로퍼티가 **필드·게터·매개변수로 쪼개지는 것 자체**는 [16번 주제](../16-properties-backing-field-lateinit-const/)가, 값 클래스의 **이름 뭉개기**는 [26번 주제](../26-value-class-and-boxing/)가, `@delegate:` 가 붙는 위임 필드는 [17번 주제](../17-delegated-properties/)가 정본이다.\
 `@JvmField`·`@JvmName`·`@Throws` 같은 **상호운용 애너테이션**은 [목록의 **39번 주제**](../39-java-interop-annotations/)다 — 여기는 「어디에 붙나」를 **아무 애너테이션에 대해** 다룬다.\
-★ **대비** — C# 의 특성(attribute) 대상 지정자(`[field:]`·`[property:]`)는 C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **53번**이 정본인데 아직 폴더가 없다 — 이 문서가 **직접 던졌다**((7)).
+★ **대비** — C# 의 특성(attribute) 대상 지정자(`[field:]`·`[property:]`)는 C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **53번**이 정본인데 아직 폴더가 없다 — 이 문서가 **직접 실행했다**((7)).

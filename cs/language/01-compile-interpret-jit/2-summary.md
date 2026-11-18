@@ -210,7 +210,7 @@ java -XX:+PrintCompilation     -cp out Hot > pc.txt 2> rounds.txt
 
 ## 쓰이는 자료구조·알고리즘
 
-- **핫스팟 카운터** — 메서드마다 호출 수·백엣지 수를 세는 정수 카운터. 문턱(위 기본값 × 배율 s)을 넘으면 컴파일 요청을 큐에 넣는다. 프로파일은 메서드별 *MDO(MethodData)* 객체에 쌓인다(compilationPolicy.hpp).
+- **핫스팟 카운터** — 메서드마다 호출 수·백엣지 수를 세는 정수 카운터. 임계값(위 기본값 × 배율 s)을 넘으면 컴파일 요청을 큐에 넣는다. 프로파일은 메서드별 *MDO(MethodData)* 객체에 쌓인다(compilationPolicy.hpp).
 - **피연산자 스택** — JVM·CPython 바이트코드의 계산 공간. [data-structure/03-stack](../../data-structure/03-stack/2-summary.md).
 - **디스패치 루프** — `for(;;) switch(opcode)`(개념 모형, CPython 3.12 gcc 빌드는 computed goto). 원고 §11. 분기 예측이 성능을 가른다([architecture/18](../../architecture/18-pipelining-and-branch-prediction/2-summary.md)).
 - **컴파일 큐와 코드 캐시** — 컴파일 요청 대기열, 완성된 기계어를 두는 메모리 영역. `jcmd <pid> Compiler.queue`·`Compiler.codecache`로 본다.

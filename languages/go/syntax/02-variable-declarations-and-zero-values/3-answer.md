@@ -108,7 +108,7 @@ Point          | {0 0  []}      | main.Point{X:0, Y:0, Name:"", Tags:[]string(ni
 > interfaces, slices, channels, and maps.
 > This initialization is done recursively …
 
-### 2. `len`·`cap`·`Sizeof` 는 넷 다 같고, `== nil` 과 JSON 만 갈린다
+### 2. `len`·`cap`·`Sizeof` 는 넷 다 같고, `== nil` 과 JSON 만 달라진다
 
 **출력**
 
@@ -175,7 +175,7 @@ range 는 둘 다 0바퀴
 | `make([]int, 0, 4)` | 0 | **4** | false | `[]` |
 
 - **`len`·`range`·`append` 는 넷 다 똑같이 동작한다.** 그래서 안쪽 코드에서는 구별이 안 보인다.
-- 갈리는 것은 **`== nil` 과 JSON** 둘이다. `reflect.DeepEqual(a, b)` 도 **false** 다.
+- 달라지는 것은 **`== nil` 과 JSON** 둘이다. `reflect.DeepEqual(a, b)` 도 **false** 다.
 - **`Sizeof` 는 넷 다 24** — 슬라이스 값은 (데이터 포인터, `len`, `cap`) 세 칸이고
   이 플랫폼에서 포인터가 8바이트라 8×3 이다.\
   ★ **24는 명세 보장이 아니다.** linux/amd64 의 관찰이다.
@@ -689,6 +689,6 @@ range 는 둘 다 0바퀴
 이 파일의 모든 출력은 **`go version go1.27.1 linux/amd64`** 에서 실제로 돌려
 **파일로 캡처한 것**이다. 손으로 옮겨 적은 블록은 없다.\
 블록은 전부 `===== 소스: … =====` 로 소스를 먼저 싣는다 — **그대로 다시 던질 수 있게** 하기 위해서다.
-★ **근거로 읽을 칸** — 제로값 자체, `== nil` 의 참·거짓, 에러 문장 본문, `파일:줄:칸`, 종료 코드.
-**근거로 읽지 않을 칸** — `unsafe.Sizeof` 의 값(플랫폼에 달렸다),
+★ **근거로 읽을 항목** — 제로값 자체, `== nil` 의 참·거짓, 에러 문장 본문, `파일:줄:칸`, 종료 코드.
+**근거로 읽지 않을 항목** — `unsafe.Sizeof` 의 값(플랫폼에 달렸다),
 패닉의 `pc=0x…`·`+0x…`(빌드 산출물에 달렸다. 같은 바이너리 3판은 md5 동일).

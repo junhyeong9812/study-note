@@ -141,7 +141,7 @@ already-aborted         fetch rejected DOMException AbortError 「signal is abor
 
 ### 6. **`e.name`**(`AbortError`/`TimeoutError`) 또는 **`e === signal.reason`** — `message` 는 **판마다 달라** 안 된다 · `abort("stop")` 이면 `e` 는 **문자열이라 `name` 이 `undefined`** ★★
 
-- ★★ 2번 — `name` 과 `code` 는 세 판이 같았고 `message` 는 node 와 Chrome 이 달랐다. 준 이유는 **아무 값**이나 될 수 있으니 `e === signal.reason`(또는 `signal.aborted`)이 가장 넓다.
+- ★★ 2번 — `name` 과 `code` 는 세 버전이 같았고 `message` 는 node 와 Chrome 이 달랐다. 준 이유는 **아무 값**이나 될 수 있으니 `e === signal.reason`(또는 `signal.aborted`)이 가장 넓다.
 - ★ `"stop"` 은 `string · "stop"` 이었다 — 문자열에는 `name` 속성이 없다.
 
 ### 7. 프라미스의 취소 부재는 **ECMA-262**, `AbortController`·`DOMException` 은 **DOM 표준**, `fetch` 는 **fetch 표준**, 그리고 **node 가 그것들을 구현**한다 — `alone`/`keep` 의 차이는 **node 의 성질**이다 ★★
@@ -172,7 +172,7 @@ already-aborted         fetch rejected DOMException AbortError 「signal is abor
 | `js40b-41-h-fetch.js` + `js40b-41-h-timeout-alone.js` + `js40b-41d-node-fetch.sh` | ★★★ `fetch` 4행 · 「`differ 1 / 4`」 · 타이머가 프로세스를 붙잡나 | node20 · node18 각 행 1벌 |
 | `js40b-41e-fetch.web.js` | ★★ Chrome 의 `fetch` 3행 | Chrome 151 1벌(로컬 서버) |
 
-세 판 대조기(이 묶음 전체의 plain 탐침). 이 주제의 줄은 `41a`·`41b`(Chrome `DIFFERS` — 문구) · `41c` 셋이다.
+세 판 대조기(이 묶음 전체의 plain probe). 이 주제의 줄은 `41a`·`41b`(Chrome `DIFFERS` — 문구) · `41c` 셋이다.
 
 ```sh
 # js40b-vdiff.sh
@@ -215,9 +215,9 @@ js40b-43b-type-grid.js             node18/node20 DIFFERS    node20/Chrome (node 
 node18 vs node20: identical 7 · differs 2   ·   node20 vs Chrome 151: identical 3 · differs 3 · node only 3
 ```
 
-**구현 의존 항목 — 판이 오르면 다시 돌릴 것**
+**구현 의존 항목 — 버전이 오르면 다시 돌릴 것**
 
-- ★★★ **node 18 의 `abort("mine")` → `TypeError 「invalid_argument」`** — node 20 에서 사라졌다. 판이 오르면 4번을 다시 돌린다.
+- ★★★ **node 18 의 `abort("mine")` → `TypeError 「invalid_argument」`** — node 20 에서 사라졌다. 버전이 오르면 4번을 다시 돌린다.
 - ★★ **`timeout` 이 프로세스를 붙잡지 않는 것** — node 의 성질이다.
 - ★ 문구 — `This operation was aborted` · `The operation was aborted due to timeout`(node) / `signal is aborted without reason` · `signal timed out`(Chrome 151).
 
@@ -225,7 +225,7 @@ node18 vs node20: identical 7 · differs 2   ·   node20 vs Chrome 151: identica
 
 이 파일의 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Chrome 151**(헤드리스) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
 블록은 **전부 캡처 파일에서 조립**했다.
-★★★ **판이 갈린 자리** — `message` 문구(node 대 Chrome) · node 18 `fetch` 의 `abort("mine")`(4번). 그 밖의 줄 순서·종류·숫자는 세 판이 같았다.
+★★★ **판이 달라진 자리** — `message` 문구(node 대 Chrome) · node 18 `fetch` 의 `abort("mine")`(4번). 그 밖의 줄 순서·종류·숫자는 세 버전이 같았다.
 
 **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다(Chrome 의 `fetch` 소스는 [2-summary.md](2-summary.md) 동작 (4)).
 `js40b-41a-abort-mid-job.js`(1번 · 5번) · `js40b-41b-reasons.js`(2번 · 6번 · 10번) · `js40b-41c-signal-tree.js`(3번 · 8번) · `js40b-41-h-fetch.js` + `js40b-41-h-timeout-alone.js` + `js40b-41d-node-fetch.sh`(4번 · 7번 · 9번) · `js40b-41e-fetch.web.js`(4번).

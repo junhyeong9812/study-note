@@ -61,7 +61,7 @@ Input.insertText({ text: '한' })
 // 열두 칸 각각 beforeinput 의 inputType, input 이 오나, 끝 내용은?
 ```
 
-- 열두 칸을 채워라. `<input>` 과 **갈리는** 칸은 어디인가?
+- 열두 칸을 채워라. `<input>` 과 **달라지는** 칸은 어디인가?
 
 ### 5. `beforeinput` 에서 막으면 (예측)
 
@@ -105,7 +105,7 @@ Input.insertText({ text: '한' })
 ### 8. `change` 는 언제 오나 (왜)
 
 - `input` 과 `change` 의 차이를 한 문장으로 말하라.
-- HTML 이 정한 것과 이 판에서 관찰한 것을 가르면?
+- HTML 이 정한 것과 이 버전에서 관찰한 것을 가르면?
 
 ### 9. CDP 흉내가 못 보는 것 (경계)
 

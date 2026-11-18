@@ -375,13 +375,13 @@ overflow-wrap: break-word  80.00  (높이 72)    <- 안 줄인다
 | `demo` 블록 3개 | 완성된 문서에서 `extract-demo-blocks.py --render` 로 재추출해 재실행 | 1 | 수치 일치 |
 
 **구현에 의존하는 항목** — 모든 픽셀값이 글꼴(`monospace` 의 실제 글꼴)과 글꼴 크기에 달렸다. `128.02` 의 `.02` 같은 잔차도 그렇다.
-**명세와 구현이 갈린 자리** — `fit-content()` 는 css-sizing-4 에 있지만 **이 Chrome 은 값을 모른다.** 명세를 읽은 것은 확인한 것이 아니다.
+**명세와 구현이 달라진 자리** — `fit-content()` 는 css-sizing-4 에 있지만 **이 Chrome 은 값을 모른다.** 명세를 읽은 것은 확인한 것이 아니다.
 **엔진은 Chrome 하나다** — Firefox 는 이 환경에서 headless 스크린샷이 산출되지 않아 엔진 차이를 주장하지 않았다.
 
 ## 이 주제가 답하려는 질문
 
 1. 「내용만큼」의 두 가지 뜻은 수치로 얼마나 다른가 — 같은 글에서 **80.00 대 128.02** 였고, 그 차이를 만드는 것은 **줄바꿈 기회**다(1·3번).
-2. `width: auto` 와 `fit-content` 는 언제 갈리나 — **블록에서만 갈린다.** `float`·`absolute`·`inline-block` 에서는 같다(6번).
+2. `width: auto` 와 `fit-content` 는 언제 갈리나 — **블록에서만 달라진다.** `float`·`absolute`·`inline-block` 에서는 같다(6번).
 3. `aspect-ratio` 는 언제 깨지나 — **두 축을 다 주면 무시되고, 내용이 넘치면 내용 기반 최소 크기가 이긴다**(7·8번).
 
 ## 구현 세부사항 대 언어 보장
@@ -389,7 +389,7 @@ overflow-wrap: break-word  80.00  (높이 72)    <- 안 줄인다
 - **명세가 보장하는 것** — `min ≤ fit ≤ max` 와 `fit-content` 공식 · 블록의 `auto` 는 채움이고 float/absolute/inline-block 은 축소 맞춤인 것 · flex·grid 항목의 `min-*: auto` 가 자동 최소 크기인 것 · 두 축이 다 지정되면 `aspect-ratio` 가 무시되는 것 · 비율로 정해지는 축에 내용 기반 최소 크기가 걸리는 것.
 - **이 Chrome 의 관찰인 것** — 모든 구체 픽셀값 · `1.5` 가 `1.5 / 1` 로 정규화되는 표현 형식 · `word-break: break-word` 가 `min-content` 를 줄인 것 · 버려진 선언이 `cssRules` 에서 빈 상자로 보이는 것.
 - **명세에 있는데 구현이 없는 것** — `fit-content()`. Baseline `limited` 와 실측이 일치한다.
-- **관찰을 보장으로 적지 않았다** — 특히 8번은 **같은 선언이 내용에 따라 결과가 갈리는** 자리라 「한 번 돌려 보고 지켜진다」고 말할 수 없다. 짧은 내용 판과 긴 내용 판을 **둘 다** 실었다.
+- **관찰을 보장으로 적지 않았다** — 특히 8번은 **같은 선언이 내용에 따라 결과가 달라지는** 자리라 「한 번 돌려 보고 지켜진다」고 말할 수 없다. 짧은 내용 판과 긴 내용 판을 **둘 다** 실었다.
 
 ## 용어 풀이
 
@@ -404,7 +404,7 @@ overflow-wrap: break-word  80.00  (높이 72)    <- 안 줄인다
 - **내용 기반 최소 크기(content-based minimum size)** — 비율로 정해지는 축에 걸리는 바닥. 8번에서 비율을 깨는 범인.
 - **`aspect-ratio`** — 한 축이 정해지면 다른 축을 비율로 만든다. 두 축이 다 지정되면 **담기되 무시된다.**
 - **퇴화한 비율(degenerate ratio)** — `0 / 1` 처럼 어느 한쪽이 0 인 비율. 담기지만 레이아웃에서 쓰이지 않는다.
-- **진단 3창** — `cssRules`(담겼나) → `querySelectorAll`(잡혔나) → `getComputedStyle`(이겼나). 5번은 첫째 창에서, 8·9번은 셋을 다 통과하고 `getBoundingClientRect()` 에서 갈렸다.
+- **진단 3창** — `cssRules`(담겼나) → `querySelectorAll`(잡혔나) → `getComputedStyle`(이겼나). 5번은 첫째 창에서, 8·9번은 셋을 다 통과하고 `getBoundingClientRect()` 에서 달라졌다.
 
 ## 실행 환경
 

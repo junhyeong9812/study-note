@@ -130,4 +130,4 @@ false 가 곧 실패는 아니다. [07] 이 "이미 page hash 에 있음"을 발
 
 ## 다루지 않는 것
 
-`buf_read_ahead_random` 의 판정(영역 안 최근 접근 블록 수가 문턱을 넘는지), `innodb_random_read_ahead` 설정, `buf_LRU_stat_inc_io` 가 LRU 와 unzip_LRU 중 어느 쪽에서 교체할지 정하는 통계는 이 함수의 곁가지라 요약만 했다.
+`buf_read_ahead_random` 의 판정(영역 안 최근 접근 블록 수가 임계값을 넘는지), `innodb_random_read_ahead` 설정, `buf_LRU_stat_inc_io` 가 LRU 와 unzip_LRU 중 어느 쪽에서 교체할지 정하는 통계는 이 함수의 곁가지라 요약만 했다.

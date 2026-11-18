@@ -786,7 +786,7 @@ private static final DateTimeFormatter DF = DateTimeFormatter.ofPattern("yyyy-MM
 
 ## 구현 세부사항 대 언어 보장
 
-### 예외 메시지가 세 판에서 전부 달랐다
+### 예외 메시지가 세 버전에서 전부 달랐다
 
 **실행 결과** (`Ex.java` — 52-d 의 (8) 마지막 줄)
 
@@ -814,7 +814,7 @@ JDK 25.0.1
 그림 해설 (한 단계씩):
 
 - **예외 메시지를 파싱하거나 스냅샷 테스트로 고정하면 JDK 를 올릴 때마다 깨진다.**
-- 46번에서 "메시지가 세 판에서 같았던 것은 운이지 계약이 아니다"라고 적었는데, **여기서 실제로 갈렸다.**
+- 46번에서 "메시지가 세 버전에서 같았던 것은 운이지 계약이 아니다"라고 적었는데, **여기서 실제로 나뉘었다.**
 - 예외 **타입**(`DateTimeParseException`)은 javadoc 이 보장한다. 메시지는 아니다.
 
 ### 표
@@ -830,15 +830,15 @@ JDK 25.0.1
 | `ResolverStyle` 기본값이 `SMART` | **보장** | `DateTimeFormatter.ofPattern` javadoc |
 | `Y` 가 `Locale` 에 의존한다 | **보장** | `DateTimeFormatterBuilder` 소스 — "append special **localized** WeekFields element" |
 | `DateTimeFormatter` 가 불변·스레드 안전 | **보장** | javadoc 클래스 설명 |
-| **`DateTimeParseException` 의 메시지 문구** | **보장 아님 — 세 판이 전부 달랐다** | 위 실측 |
+| **`DateTimeParseException` 의 메시지 문구** | **보장 아님 — 세 버전이 전부 달랐다** | 위 실측 |
 | **특정 지역·날짜의 DST 전이** | **보장 아님 — tzdb 판에 달렸다** | [`../51-java-time-types/`](../51-java-time-types/) 13번 |
 | `ko_KR` 의 `firstDayOfWeek` 가 일요일 | **보장 아님** | CLDR 데이터에서 온다. JDK 판·`-Djava.locale.providers` 에 따라 달라질 수 있다 |
 
-**세 판에서 같았던 것**
+**세 버전에서 같았던 것**
 
 - 52-a·52-b·52-f 는 **tzdb 줄 하나를 빼고 출력이 전부 같았다.**
 - 52-d 는 **위 한 줄만 달랐다.**
-- 52-c·52-e 의 컴파일 에러 메시지는 세 판이 같았다.
+- 52-c·52-e 의 컴파일 에러 메시지는 세 버전이 같았다.
 - **하지만 그것은 관찰이지 보장이 아니다.** 바로 위 한 줄이 반례다.
 
 ## 언제 쓰고 언제 안 쓰나
@@ -923,10 +923,10 @@ JDK 25.0.1
 **선행** — [`../51-java-time-types/`](../51-java-time-types/). 갭·중복을 모르면 이 문서의 절반이 안 읽힌다.
 **기준 소스** — Temurin **JDK 21.0.5** 표준 라이브러리 소스 `java.base/java/time/Duration.java`·`Period.java`·`format/DateTimeFormatter.java`·`format/DateTimeFormatterBuilder.java`·`temporal/ChronoUnit.java`(`lib/src.zip`) · [`DateTimeFormatter` javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/format/DateTimeFormatter.html) · [`Duration` javadoc](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html) · [`Period` javadoc](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Period.html)
 **실행 검증** — 이 문서의 모든 출력은 실제로 돌려 얻은 것이다. 프로그램 일곱(52-a\~52-g)을 **17.0.13 · 21.0.5 · 25.0.1** 에서 각각 돌렸다.\
-★ **세 판의 출력이 전부 같지는 않았다.** `DateTimeParseException` 의 메시지에 들어가는 **필드 나열 순서가 세 판에서 전부 달랐다**(본문 「구현 세부사항 대 언어 보장」이 정본).\
-tzdb 판도 갈린다(17·21 = 2024a, 25 = 2025b). 이 주제의 출력 중 갈린 것은 그 줄에 표시했다.
+★ **세 버전의 출력이 전부 같지는 않았다.** `DateTimeParseException` 의 메시지에 들어가는 **필드 나열 순서가 세 버전에서 전부 달랐다**(본문 「구현 세부사항 대 언어 보장」이 정본).\
+tzdb 판도 달라진다(17·21 = 2024a, 25 = 2025b). 이 주제의 출력 중 달라진 것은 그 줄에 표시했다.
 **버전** — `Duration`·`Period`·`DateTimeFormatter` 전부 `src.zip` 의 **`@since 1.8`**.
-**측정 조건** — 기본 시간대 `Asia/Seoul`, 기본 `Locale` `ko_KR`. `Locale` 에 따라 갈리는 출력은 그 사실이 붙어 있다.
+**측정 조건** — 기본 시간대 `Asia/Seoul`, 기본 `Locale` `ko_KR`. `Locale` 에 따라 달라지는 출력은 그 사실이 붙어 있다.
 **범위** — 시각 **한 점**을 어느 타입으로 적나는 [`../51-java-time-types/`](../51-java-time-types/) 가 정본이다.\
 그쪽은 **`Instant`/`LocalDateTime`/`ZonedDateTime` 의 선택**까지, 여기는 **두 점 사이의 간격과 문자열 변환**부터다.\
 로그 시각을 **어떻게 적재·집계하나**는 [`../../../../cs/ops-patterns/17-timeseries/`](../../../../cs/ops-patterns/17-timeseries/) 가 정본이다 — 여기는 **한 값을 문자열로 바꾸는 API 표면**까지만.

@@ -230,7 +230,7 @@ leak41.kt:3:17: error: type mismatch: inferred type is 'CapturedType(out Mutable
 **왜 그런가**
 
 - ★★ `buildList` 는 타입 인자를 **람다 몸통에서 추론**한다(빌더 추론). 그 몸통에서 `this` 를 바깥 `MutableList<Int>?` 변수에 담자 추론이 두 「포획 타입」을 못 맞췄다. `<Int>` 를 적으면 추론할 것이 없어져 통과한다(3번).
-- ★ 문구의 뜻을 **해설할 근거는 없다** — 이 판의 관찰로만 적는다.
+- ★ 문구의 뜻을 **해설할 근거는 없다** — 이 버전의 관찰로만 적는다.
 
 ### 5. ★★ `1 true` · `2 true` · `3 true` · `4 false` · `5 true  true` · `6 kotlin.collections.EmptyList`
 
@@ -319,9 +319,9 @@ OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sha
 (exit 0)
 ```
 
-★ **흔들리는 칸과 안 흔들리는 칸**
+★ **실행마다 달라지는 항목과 달라지지 않는 항목**
 
-| 흔들린다 | 안 흔들린다 |
+| 실행마다 달라진다 | 달라지지 않는다 |
 |---|---|
 | **없다** — 해시코드·`identityHashCode` 를 찍지 않았다(같은 객체는 `===`) | 격자 15행 · 복사 수 · 실행 출력 · 클래스 이름 |
 | | stdlib 소스 발췌(줄 번호째) |
@@ -330,7 +330,7 @@ OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sha
 > 근거 — 캡처 스크립트를 처음부터 다시 돌려 **블록 전체를 바이트 단위로 대조**했다.
 >
 > 실측 — `capture.sh blocks` 와 `capture.sh blocks-recheck` 를 처음부터 따로 돌려 `normalize-shaky.py` 로 대조했다 —\
-> **블록 80개 · 동일 80 · 흔들린 칸 0 · ★고칠 것 0**(38\~41 네 주제를 한 캡처로 받았다). `diff -rq` 도 차이 0 이다.\
+> **블록 80개 · 동일 80 · 달라진 항목 0 · ★고칠 것 0**(38\~41 네 주제를 한 캡처로 받았다). `diff -rq` 도 차이 0 이다.\
 > ★ **정규화 규칙은 하나도 안 썼다** — 기본 넷(주소·PID·스레드 id·시간)에 걸리는 칸이 애초에 없었다.
 
 | 프로그램 | 무엇을 확인했나 | 돌린 방법 |
@@ -346,7 +346,7 @@ OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sha
 **구현 의존 항목** — `toList()` 의 세 갈래와 결과 클래스 · `listOf(vararg)` 의 `asList()` · `ListBuilder` 가 결과이자 잠기는 것 · `EmptyList` 싱글턴 · 빌더 추론 에러 문구 — 이 stdlib·컴파일러 판의 산출물이다.\
 반면 **「반환 타입이 가변성을 정한다」「`toList()`·`toMutableList()` 는 원본과 끊긴 새 리스트」** 는 **API 의 뜻**이다.
 
-**★ 던져 봤더니 예상과 달랐던 것 — 세 건**
+**★ 실행해 봤더니 예상과 달랐던 것 — 세 건**
 
 1. ★★★ **`toList()` 의 사본이 캐스트로 고쳐졌다**(원소 둘 이상) — 「읽기 전용 사본」이 **객체까지 잠긴 것**은 아니었다(2번·7번).
 2. ★★ **`buildList` 가 나올 때 복사하지 않았다** — `inside === built`. 「안에서 짓고 사본을 준다」가 아니라 「**같은 것을 잠근다**」였다(3번).

@@ -509,7 +509,7 @@ Ex.java:5: error: reversed() in MyList cannot implement reversed() in List
 
 **javac 20회 · java 13회.**
 
-**버전별로 갈린 것**
+**버전별로 달라진 것**
 
 ```text
 21 vs 25 : 도는 프로그램 4개(42-a·42-b·42-f·42-h) 출력이 한 글자도 같다

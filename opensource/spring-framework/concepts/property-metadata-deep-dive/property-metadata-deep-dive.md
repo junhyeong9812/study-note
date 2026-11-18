@@ -125,7 +125,7 @@ Property property = new Property(getBeanClass(), getReadMethod(), getWriteMethod
 무인자 + 비void + **선언 클래스에 같은 이름의 인스턴스 필드 존재**이며, record·Kotlin
 data class·커스텀 데이터 클래스가 모두 이 모양이다.
 
-쓰기 메서드만 있으면 다음과 같이 갈린다(setter PR 반영).
+쓰기 메서드만 있으면 다음과 같이 달라진다(setter PR 반영).
 
 | 메서드 이름 | 결과 |
 |---|---|

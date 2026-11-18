@@ -57,7 +57,7 @@ Optional.of(null)         -> java.lang.NullPointerException: null
 | `Optional.ofNullable(null)` | `Optional.empty` |
 | `Optional.empty()` | `Optional.empty` |
 
-- `toString` 형태가 **`Optional[값]` / `Optional.empty`** 로 갈린다. 대괄호 유무로 눈에 보인다.
+- `toString` 형태가 **`Optional[값]` / `Optional.empty`** 로 나뉜다. 대괄호 유무로 눈에 보인다.
 
 **마지막 줄**
 
@@ -316,7 +316,7 @@ String v = m.getOrDefault(key, "기본값");
 Optional<String> find(String key) { return Optional.ofNullable(m.get(key)); }
 ```
 
-### 8. `map` 과 `flatMap` 은 어디서 갈리는가
+### 8. `map` 과 `flatMap` 은 어디서 달라지는가
 
 **출력** (`Ex.java (38-b)`, JDK 21.0.5 — 17·25 동일)
 
@@ -422,7 +422,7 @@ IntStream.average()        : OptionalDouble[2.0]
 - 기본형 쪽은 **박싱을 피하려고 만든 별도 클래스**라 `map`·`flatMap`·`filter` 가 없다.
 - 왜 이 자리들이 `Optional` 인지는 [`../46-terminal-operations/`](../46-terminal-operations/) 가 정본이다.
 
-### 10. 메서드마다 버전이 어떻게 갈리는가
+### 10. 메서드마다 버전이 어떻게 달라지는가
 
 **`src.zip` 의 `@since`**
 

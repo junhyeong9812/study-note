@@ -52,7 +52,7 @@
 
 ### 7. 사흘째 빨간 main
 
-- 위험: 기준선이 빨가니 새로 깨진 것이 옛 실패에 묻힌다. 실패를 무시하는 습관이 생기고 CI 신호를 아무도 믿지 않는다.
+- 위험: 베이스라인이 빨가니 새로 깨진 것이 옛 실패에 묻힌다. 실패를 무시하는 습관이 생기고 CI 신호를 아무도 믿지 않는다.
 - 먼저: 깨뜨린 커밋을 되돌려 초록으로(Fowler "revert the latest commit", SWE@G "Rolling a change back is often the fastest and safest route"). 불안정 테스트는 격리하고 버그로 추적한다(hotlist).
 - SWE@G 23장은 "Nobody can commit if our latest CI results aren't green" 정책을 "probably misguided"라고 본다. 실패는 조사해야 하지만, 원인이 분명하고 운영에 영향이 없으면 커밋을 막을 이유는 없다는 것이다. 핵심은 조사하지 않은 실패를 쌓지 않는 것이다.
 

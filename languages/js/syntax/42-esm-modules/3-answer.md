@@ -84,7 +84,7 @@ cells that did not read "A": 6 / 32
 
 - ★★★ `main` 이 `a` 를 먼저 가져오면 평가는 **깊이 우선**이라 `b` 의 본문이 **`a` 의 본문보다 먼저** 돈다. 그때 `a` 의 `X` 는 **준비만 된 상태**다 — 준비의 모양이 셋이다(6번).
 - ★★ `b` 를 먼저 가져오면 `a` 가 **먼저 끝까지** 돌아, `b` 가 읽을 때는 모두 `A` 다. 「나중에 읽기」는 `main` 이 부를 때라 **늘** `A` 다.
-- ★ 두 node 판과 Chrome 151 이 32칸을 같게 냈다(Chrome 도 `6 / 32` — 요약 동작 (3)).
+- ★ 두 node 버전과 Chrome 151 이 32칸을 같게 냈다(Chrome 도 `6 / 32` — 요약 동작 (3)).
 
 ### 4. ESM — **`dep42d.mjs: body runs` 가 맨 먼저** · CommonJS — **`first line` → `dep42d.cjs: body runs` → `line after the require`** · 평가 순서 **`right · left · top`**, `right` 는 **한 번** ★★★
 
@@ -199,7 +199,7 @@ missing file: rejected with TypeError · code undefined
 ### 6. `var` 는 **`undefined` 로 초기화** · 렉시컬 선언(`let`·`const`·`class`)은 **바인딩만**(초기화 전) · **함수 선언은 곧바로 함수 객체로 초기화** — 3번의 `undefined` 한 칸 · TDZ 다섯 칸 · 함수 두 칸 ★★★
 
 - ★★★ 명세 `InitializeEnvironment` 의 세 걸음 그대로다 — `CreateMutableBinding` + `InitializeBinding(name, undefined)`(var) · `CreateMutableBinding`/`CreateImmutableBinding` 만(렉시컬) · `InstantiateFunctionObject` + `InitializeBinding`(함수 선언).
-- ★★ `export default 식` 과 `export default class` 는 렉시컬 쪽, `export default function` 은 **함수 선언** 쪽이다 — 격자에서 그렇게 갈렸다.
+- ★★ `export default 식` 과 `export default class` 는 렉시컬 쪽, `export default function` 은 **함수 선언** 쪽이다 — 격자에서 그렇게 달라졌다.
 
 ### 7. **16칸 전부 `A`** — TDZ 는 **「언제 읽나」** 의 문제다(05번) · `var` 로 바꾸면 **`ReferenceError` 대신 `undefined` 가 조용히 흐른다** ★★
 
@@ -229,7 +229,7 @@ missing file: rejected with TypeError · code undefined
 | `js40b-42d/*` | ★★★ `import` 가 먼저 · 평가 순서 | node20 1벌씩 + node18 대조 + Chrome 1벌 |
 | `js40b-42e/*` + `js40b-42e-static.sh` | ★★ 파싱·연결 단계의 `SyntaxError` · `import()` | node20 · node18 각 1벌 + Chrome 1벌씩 |
 
-세 판 대조기(이 묶음 전체의 plain 탐침). 이 주제의 줄은 `42c`(node 전용) 하나다 — 나머지 모듈 탐침은 `cd <디렉토리> && node20 …` 블록마다 **node 18 을 같은 명령으로 던져 비교했고**(다르면 `-node18` 블록이 생긴다) **이 주제에서는 하나도 생기지 않았다.**
+세 판 대조기(이 묶음 전체의 plain probe). 이 주제의 줄은 `42c`(node 전용) 하나다 — 나머지 모듈 probe는 `cd <디렉토리> && node20 …` 블록마다 **node 18 을 같은 명령으로 던져 비교했고**(다르면 `-node18` 블록이 생긴다) **이 주제에서는 하나도 생기지 않았다.**
 
 ```sh
 # js40b-vdiff.sh
@@ -272,7 +272,7 @@ js40b-43b-type-grid.js             node18/node20 DIFFERS    node20/Chrome (node 
 node18 vs node20: identical 7 · differs 2   ·   node20 vs Chrome 151: identical 3 · differs 3 · node only 3
 ```
 
-**구현 의존 항목 — 판이 오르면 다시 돌릴 것**
+**구현 의존 항목 — 버전이 오르면 다시 돌릴 것**
 
 - ★★ **없는 파일의 `import()` 거부 모양**(node `ERR_MODULE_NOT_FOUND` · Chrome `TypeError`) — 호스트의 것이다.
 - ★ 문구 — `Cannot access 'X' before initialization` · `Assignment to constant variable.` · 이름공간 쓰기 문구(Chrome 151 은 `Cannot assign to property …`).
@@ -281,7 +281,7 @@ node18 vs node20: identical 7 · differs 2   ·   node20 vs Chrome 151: identica
 
 이 파일의 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Chrome 151**(헤드리스 · 로컬 HTTP 서버) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
 블록은 **전부 캡처 파일에서 조립**했다.
-★★ **이 주제에서 두 node 판이 갈린 탐침은 없다.** Chrome 151 은 이름공간 쓰기 문구와 없는 파일의 거부 모양만 달랐다.
+★★ **이 주제에서 두 node 버전이 달라진 probe는 없다.** Chrome 151 은 이름공간 쓰기 문구와 없는 파일의 거부 모양만 달랐다.
 
 **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다(`dynamic42e.cjs` 와 Chrome 쪽 소스는 [2-summary.md](2-summary.md) 동작 (3)·(5)).
 `js40b-42a/`(1번) · `js40b-42b/`(2번 · 10번) · `js40b-42c-cycle-grid.js`(3번 · 6번 · 7번 · 8번) · `js40b-42d/`(4번) · `js40b-42e/` + `js40b-42e-static.sh`(5번 · 9번).

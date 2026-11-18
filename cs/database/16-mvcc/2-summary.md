@@ -93,7 +93,7 @@
 | InnoDB READ COMMITTED | 일관된 읽기마다 새로 |
 | InnoDB REPEATABLE READ(기본) | 트랜잭션의 첫 일관된 읽기 시 한 번(17.7.2.3) |
 
-### 3. 같은 행을 둘이 쓰면 — 두 엔진이 갈린다
+### 3. 같은 행을 둘이 쓰면 — 두 엔진이 달라진다
 
 ```text
   T1 (REPEATABLE READ)                 T2
@@ -201,7 +201,7 @@ SHOW ENGINE INNODB STATUS\G   -- TRANSACTIONS 절: History list length, read vie
 ```
 
 - 흔한 범인: 자동 커밋을 끄고 `SELECT`만 한 뒤 커밋을 잊은 세션, 스트리밍 커서를 연 채 느리게 읽는 배치, 트랜잭션 안의 원격 호출(18번), `mysqldump --single-transaction`(17.8.9).
-- Spring: 읽기만 하는 긴 `@Transactional` 메서드도 스냅샷을 붙잡을 수 있다. MySQL 기본(REPEATABLE READ)·PostgreSQL REPEATABLE READ는 첫 읽기 스냅샷을 커밋까지 쥔다. PostgreSQL 기본(READ COMMITTED)은 문장이 끝나면 스냅샷을 놓지만, 그 트랜잭션이 이미 쓰기를 했다면 자기 XID(`backend_xid`)가 cutoff를 붙잡는다. 트랜잭션 범위를 짧게 한다([24번](../24-transaction-boundaries-in-app-code/2-summary.md)).
+- Spring: 읽기만 하는 긴 `@Transactional` 메서드도 스냅샷을 붙잡을 수 있다. MySQL 기본(REPEATABLE READ)·PostgreSQL REPEATABLE READ는 첫 읽기 스냅샷을 커밋까지 잡는다. PostgreSQL 기본(READ COMMITTED)은 문장이 끝나면 스냅샷을 놓지만, 그 트랜잭션이 이미 쓰기를 했다면 자기 XID(`backend_xid`)가 cutoff를 붙잡는다. 트랜잭션 범위를 짧게 한다([24번](../24-transaction-boundaries-in-app-code/2-summary.md)).
   - 로컬 재현(예시, PostgreSQL 17.11): `idle in transaction` 상태에서 READ COMMITTED 읽기 전용 세션은 `backend_xmin` NULL, REPEATABLE READ 세션은 값이 남았다. INSERT한 세션은 `backend_xid`만 있고 `backend_xmin`은 NULL이었다.
 
 ### 2. bloat와 vacuum 상태를 본다 (PostgreSQL 17)

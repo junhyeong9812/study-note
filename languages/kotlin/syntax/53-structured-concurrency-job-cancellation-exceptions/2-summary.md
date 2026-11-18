@@ -1,6 +1,6 @@
 # kotlin/syntax/53 — 구조적 동시성 — `Job`·취소 전파·예외 전파·`supervisorScope` — 정리 (힌트)
 
-★★★ **본체는 첫째 창이다** — 「**전파 격자 — 구조 셋(`coroutineScope` · `supervisorScope` · `launch(SupervisorJob())`) × 사건 셋(자식 하나가 예외 · 자식 하나가 `cancel()` · 바깥이 취소) × 빌더 둘(`launch` · `async`) → 형제 A·C · 호출자가 본 것 · 핸들러가 본 것**」. 단일 스레드에서 `yield()` 걸음으로 **결정적으로** 만들었다(Python 52 의 `sleep(0)` 걸음과 같은 꾀).
+★★★ **핵심은 첫째 창이다** — 「**전파 격자 — 구조 셋(`coroutineScope` · `supervisorScope` · `launch(SupervisorJob())`) × 사건 셋(자식 하나가 예외 · 자식 하나가 `cancel()` · 바깥이 취소) × 빌더 둘(`launch` · `async`) → 형제 A·C · 호출자가 본 것 · 핸들러가 본 것**」. 단일 스레드에서 `yield()` 걸음으로 **결정적으로** 만들었다(Python 52 의 `sleep(0)` 걸음과 같은 꾀).
 
 ## 이 주제가 쓰는 세 층
 
@@ -8,7 +8,7 @@
 |---|---|---|
 | **언어 보장** | 컴파일러가 하는 것 | ★ **거의 없다** — `suspend` 변환([52번](../52-coroutine-basics-suspend-scope-launch-async/))과 `CancellationException` 이 `java.util.concurrent.CancellationException` 의 별칭이라는 것뿐이다 |
 | **라이브러리 계약(kotlinx-coroutines KDoc)** | 문서가 약속한 것 | ★★★ `coroutineScope` 「**any child coroutine in this scope fails … cancelling all the other children**」 · `supervisorScope` 「**will not affect the other children**」 · `SupervisorJob` 「`launch` 실패는 **`CoroutineExceptionHandler`**, `async` 실패는 **`await`**」 · `yield` 「**cancellable**」 · `NonCancellable` 「**designed for [withContext]**」 · `launch(Job)` **deprecated** |
-| **이 판의 관찰** | 1.11.0 에서 이번에 본 것 | 격자 값 · 걸음 수 · 로그 · 경고 문구 |
+| **이 버전의 관찰** | 1.11.0 에서 이번에 본 것 | 격자 값 · 걸음 수 · 로그 · 경고 문구 |
 
 ## 이 판
 
@@ -31,13 +31,13 @@ Implementation-Version: 1.11.0
 (exit 0)
 ```
 
-## 흔들리는 칸 / 안 흔들리는 칸
+## 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| 안 흔들린다 | ★★★ 전파 격자 18행 × 9칸 · 갈린 칸 수 · 「A steps then」 걸음 수 | **단일 스레드 + `yield()` 걸음** — 시간을 안 쓴다. 다섯 판 되풀이에서 출력 해시가 하나였다((3) 끝) |
-| 안 흔들린다 | 삼키기 쌍 · 협조적 취소 로그 | 같은 꾀(자기 자신에게 `cancel()` · `yield()` 걸음) |
-| 안 흔들린다 | `withTimeout` 의 결과 클래스·메시지 | 20ms 로 끊는 1000ms `delay` — 폭이 50배라 결과는 늘 같다. ★ 걸린 시간은 **안 찍었다** |
+| 달라지지 않는다 | ★★★ 전파 격자 18행 × 9칸 · 달라진 항목 수 · 「A steps then」 걸음 수 | **단일 스레드 + `yield()` 걸음** — 시간을 안 쓴다. 다섯 판 되풀이에서 출력 해시가 하나였다((3) 끝) |
+| 달라지지 않는다 | 삼키기 쌍 · 협조적 취소 로그 | 같은 꾀(자기 자신에게 `cancel()` · `yield()` 걸음) |
+| 달라지지 않는다 | `withTimeout` 의 결과 클래스·메시지 | 20ms 로 끊는 1000ms `delay` — 폭이 50배라 결과는 늘 같다. ★ 걸린 시간은 **안 찍었다** |
 | ★ **판에 매인다** | 라이브러리 **1.11.0** 의 동작 · **경고** | 1.10.2 에서는 출력이 같고 **`launch(SupervisorJob())` 경고가 없다**((1)) |
 
 ★ 근거 — 캡처 스크립트를 처음부터 두 번 돌려 **블록 전체를 대조**했다(수치는 3-answer 의 「실행 검증」).
@@ -78,18 +78,18 @@ Implementation-Version: 1.11.0
 
 ## 동작 방식
 
-### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「부적용인 창」
+### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「해당 없는 창」
 
 | 창 | 무엇을 보여 주나 | 어디서 왔나 |
 |---|---|---|
-| ★★★ **전파 격자(실행 · 단일 스레드 · `yield` 걸음)** | 형제 상태 · 호출자가 본 것 · 핸들러가 본 것 · 그때 A 의 걸음 수((1)) | ★ **본체 창** — 갈린 칸을 프로그램이 센다 |
+| ★★★ **전파 격자(실행 · 단일 스레드 · `yield` 걸음)** | 형제 상태 · 호출자가 본 것 · 핸들러가 본 것 · 그때 A 의 걸음 수((1)) | ★ **핵심 창** — 달라진 항목을 프로그램이 센다 |
 | ★★ **컴파일 경고** | `launch(SupervisorJob())` 가 deprecated 인가((1)(2)) | ★ 라이브러리 판을 바꾸면 **경고만** 달라진다 |
 | ★★ **판 대조(1.11.0 대 1.10.2)** | 같은 격자의 출력이 같은가((1)) | `cmp` |
 | ★★ **걸음 계수 로그** | 취소 뒤에 몇 걸음 더 갔나((4)(5)) | 자기 자신에게 `cancel()` 을 걸어 결정적으로 |
 | ★★ **소스 jar 발췌** | KDoc 계약((6)) | — |
 | **인용 — 다시 안 잰다** | `runCatching`·`catch (e: Exception)` 이 `CancellationException` 을 잡는다 · `async` 예외는 `await` 에서 | [49번](../49-result-and-runcatching/) (4) · [52번](../52-coroutine-basics-suspend-scope-launch-async/) (4) |
-| **부적용 — 운영 패턴** | 종료 신호 · 드레인 · 타임아웃 예산 | [`ops-patterns/19`](../../../../cs/ops-patterns/19-graceful-shutdown/) |
-| **부적용 — 멀티스레드 경쟁** | 여러 스레드에서 누가 먼저 취소를 받나 | 이 문서는 **단일 스레드로만** 돌렸다 — [목록의 **54번 주제**](../54-coroutine-context-dispatchers-and-withcontext/)(디스패처) |
+| **해당 없음 — 운영 패턴** | 종료 신호 · 드레인 · 타임아웃 예산 | [`ops-patterns/19`](../../../../cs/ops-patterns/19-graceful-shutdown/) |
+| **해당 없음 — 멀티스레드 경쟁** | 여러 스레드에서 누가 먼저 취소를 받나 | 이 문서는 **단일 스레드로만** 돌렸다 — [목록의 **54번 주제**](../54-coroutine-context-dispatchers-and-withcontext/)(디스패처) |
 
 ### (1) ★★★ 전파 격자 — 구조 3 × 사건 3 × 빌더 2
 
@@ -238,13 +238,13 @@ supervisorScope vs launch(SupervisorJob()), cells that differ (same columns): 11
 (exit 0)
 ```
 
-- ★★★ **`coroutineScope` 대 `supervisorScope` — 갈린 칸 7 / 24, 일곱 칸 전부 `one raises` 에 있다**(`launch` 행 4칸 · `async` 행 3칸).
+- ★★★ **`coroutineScope` 대 `supervisorScope` — 달라진 항목 7 / 24, 일곱 칸 전부 `one raises` 에 있다**(`launch` 행 4칸 · `async` 행 3칸).
   `coroutineScope` 는 **A·C 를 `cancelled`**, 호출자가 **`IllegalStateException(b)`** 를 받는다(그때 A 는 **1걸음**). `supervisorScope` 는 **A·C 가 `completed`**, 호출자는 **정상 반환**(A 가 4걸음 — 다 기다렸다).
   `launch` 행의 넷째 칸은 **핸들러** — `supervisorScope` 의 `launch` 실패는 **핸들러가 받았고**(`IllegalStateException(b)`), `coroutineScope` 에서는 핸들러가 **안 불렸다**(예외가 호출자에게 갔으니까).
 - ★★★ **`supervisorScope` 안의 `async` 실패는 아무 데도 안 나온다** — 호출자 `returned normally` · 핸들러 `-`. 예외는 `Deferred` 안에 들어 있고, **`await` 을 부르지 않았으니** 누구도 못 봤다. KDoc 대로다 — 「`async` 실패는 `await` 으로 다룬다」((6)).
 - ★★ **`one child cancelled` — 여섯 칸 모두 형제 `completed` · 호출자 정상** — **취소는 실패가 아니다.** B 만 `cancelled` 이고 아무 데도 안 번진다.
 - ★★ **`outer cancelled` — `coroutineScope`·`supervisorScope` 둘 다 A·B·C 전부 `cancelled`**, 호출자는 `CancellationException`. 부모의 취소는 **어느 구조든 아래로** 번진다(KDoc 「`whenever the caller gets cancelled, so does the new scope`」).
-- ★★★ **`supervisorScope` 대 `launch(SupervisorJob())` — 갈린 칸 11 / 24.** 이름이 비슷한데 **거의 반이 다르다** — (2).
+- ★★★ **`supervisorScope` 대 `launch(SupervisorJob())` — 달라진 항목 11 / 24.** 이름이 비슷한데 **거의 반이 다르다** — (2).
 
 ```text
 ===== kotlinc -cp kotlinx-coroutines-core-jvm-1.10.2.jar grid53.kt -d o53o =====
@@ -272,7 +272,7 @@ same bytes
 
 ### (3) ★★ Python 52 의 `gather` 대 `TaskGroup` 과 한 쌍으로
 
-같은 축(자식 하나가 예외 · 자식 하나가 취소 · 바깥이 취소)을 [Python 52번](../../../python/syntax/52-asyncio-concurrency-structure/)이 `gather`·`TaskGroup` 으로 쟀다(그쪽 「갈린 칸 4 / 9」). 두 격자의 출력을 **사건별로 나란히** 옮기면 이렇다(Kotlin 은 빌더 `launch` 행).
+같은 축(자식 하나가 예외 · 자식 하나가 취소 · 바깥이 취소)을 [Python 52번](../../../python/syntax/52-asyncio-concurrency-structure/)이 `gather`·`TaskGroup` 으로 쟀다(그쪽 「달라진 항목 4 / 9」). 두 격자의 출력을 **사건별로 나란히** 옮기면 이렇다(Kotlin 은 빌더 `launch` 행).
 
 | 사건 | Python `gather`(기본) | Python `TaskGroup` | Kotlin `coroutineScope` | Kotlin `supervisorScope` |
 |---|---|---|---|---|
@@ -700,7 +700,7 @@ after the supervised block
 | `launch(Job)` 이 구조를 끊는다 | ★★ **라이브러리 계약(KDoc · 1.11.0 은 deprecated 선언)** — 동작은 1.10.2 와 같았다 | (1)(2) |
 | `yield`·`delay` 가 취소에 응한다 · 바쁜 루프는 안 응한다 | ★★ **라이브러리 계약(KDoc 「`cancellable`」)** — 「협조적 취소」는 **설계**다 | (5)(6) |
 | `CancellationException` 이 `Exception` 이다 | ★ **플랫폼(JVM) 사실** — stdlib 의 타입 별칭 | [52번](../52-coroutine-basics-suspend-scope-launch-async/) (5) |
-| 걸음 수(`A steps then` 1 · 4 · 0) · 핸들러가 불린 시점 | ★ **이 판의 관찰**(단일 스레드 스케줄) | (1) |
+| 걸음 수(`A steps then` 1 · 4 · 0) · 핸들러가 불린 시점 | ★ **이 버전의 관찰**(단일 스레드 스케줄) | (1) |
 | 「취소가 빠르다」·「구조적 동시성의 비용」 | **재지 않았다** | — |
 
 ## 언제 쓰고 언제 안 쓰나
@@ -717,7 +717,7 @@ after the supervised block
 
 ## 핵심 문장
 
-1. **`coroutineScope` 는 한 자식의 실패로 형제를 취소하고 원래 예외를 호출자에게 다시 던진다** — `supervisorScope` 와 **24칸 중 7칸**이 갈렸다.
+1. **`coroutineScope` 는 한 자식의 실패로 형제를 취소하고 원래 예외를 호출자에게 다시 던진다** — `supervisorScope` 와 **24칸 중 7칸**이 달라졌다.
 2. **`supervisorScope` 의 실패는 호출자에게 안 온다** — `launch` 는 핸들러로, `async` 는 `await` 전까지 **아무 데도.**
 3. **`launch(SupervisorJob())` 는 `supervisorScope` 가 아니다** — 형제는 같이 죽고 바깥 취소는 안 닿는다(24칸 중 11칸이 달랐다 · 1.11.0 은 경고한다).
 4. **취소는 실패가 아니고, 요청일 뿐이다** — 확인 자리(`yield`·`ensureActive`·`isActive`)를 지나야 멈춘다.
@@ -762,6 +762,6 @@ after the supervised block
 **실행 검증** — 이 문서의 모든 출력·경고는 **kotlinc 2.4.20 (JRE 21.0.5)** · Temurin **JDK 21.0.5** · **kotlinx-coroutines-core-jvm 1.11.0** 에서 실제로 얻었다.\
 `kotlinc` 6회(대조용 1.10.2 로 1회 포함) · `java` 6회 + 대조 2회 + 되풀이 15회 · 소스 jar 발췌 7곳.\
 ★★★ **라이브러리 판** — 이 주제의 규칙은 **전부 kotlinx-coroutines 의 문서 계약**이다(언어가 아니다). 판을 바꿔 본 대조 — 같은 격자를 **1.10.2**(gradle 배포본에 들어 있던 판 · 메타데이터 `mv=[2,1,0]`)로 컴파일·실행하니 **출력이 바이트까지 같았고, 경고만 달랐다**((1)).\
-★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「갈린 칸 N / M」은 프로그램이 스스로 센 것**이다.
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「달라진 항목 N / M」은 프로그램이 스스로 센 것**이다.
 **경계** — ★★★ `suspend`·`launch`·`async`·`await` 의 기초와 「`async` 예외는 `await` 에서 나오지만 부모는 이미 취소됐다」는 [52번 주제](../52-coroutine-basics-suspend-scope-launch-async/)가 정본이다. **서버를 멈출 때 요청을 어떻게 흘려 보내나**(운영 패턴)는 [`cs/ops-patterns/19-graceful-shutdown/`](../../../../cs/ops-patterns/19-graceful-shutdown/) 가 정본이다 — 여기는 **`Job` 트리에서 취소·예외가 번지는 규칙**만 본다. `runCatching` 이 `CancellationException` 까지 잡는다는 것 자체는 [49번 주제](../49-result-and-runcatching/) (4)가 쟀다 — 여기서는 **그래서 무엇이 깨지나**를 본다.\
 ★ **대비** — 같은 축의 Python 격자(`gather` 대 `TaskGroup`)는 [Python 52번](../../../python/syntax/52-asyncio-concurrency-structure/), Go 의 `context` 취소 나무는 [Go 34번](../../../go/syntax/34-context-cancellation-deadlines-and-values/), JS 의 `AbortSignal` 은 [JS 41번](../../../js/syntax/41-cancellation-and-timeouts/)이 정본이다.

@@ -2,7 +2,7 @@
 
 상위: [행 쓰기와 WAL 기록](../README.md)
 
-**조립된 레코드를 공유 WAL 버퍼에 넣는다.** 넣는 일은 두 단계다. 위치 예약은 spinlock 하나로 직렬화하되 덧셈 몇 번으로 끝내고([09]), 바이트 복사는 여러 백엔드가 동시에 한다. 동시 복사를 추적하는 장치가 WAL 삽입 잠금(`WALInsertLocks`, 8개)이다. 삽입하는 백엔드는 그중 하나를 쥐고, 잠금마다 "어디까지 복사했는지"(`insertingAt`)를 적을 수 있다. WAL 을 디스크로 쓰려는 쪽은 이 잠금들을 훑어 아직 복사 중인 구간을 기다린다([10]). 잠금을 쥔 동안 체크포인트 위치(RedoRecPtr)와 full_page_writes 가 바뀌지 않으므로, 조립 때의 FPI 판정이 여전히 맞는지 여기서 다시 확인한다.
+**조립된 레코드를 공유 WAL 버퍼에 넣는다.** 넣는 일은 두 단계다. 위치 예약은 spinlock 하나로 직렬화하되 덧셈 몇 번으로 끝내고([09]), 바이트 복사는 여러 백엔드가 동시에 한다. 동시 복사를 추적하는 장치가 WAL 삽입 잠금(`WALInsertLocks`, 8개)이다. 삽입하는 백엔드는 그중 하나를 잡고, 잠금마다 "어디까지 복사했는지"(`insertingAt`)를 적을 수 있다. WAL 을 디스크로 쓰려는 쪽은 이 잠금들을 훑어 아직 복사 중인 구간을 기다린다([10]). 잠금을 잡은 동안 체크포인트 위치(RedoRecPtr)와 full_page_writes 가 바뀌지 않으므로, 조립 때의 FPI 판정이 여전히 맞는지 여기서 다시 확인한다.
 
 ## 위치
 
@@ -84,7 +84,7 @@ XLogInsertRecord(XLogRecData *rdata,
 	START_CRIT_SECTION();
 ```
 
-일반 레코드 갈래다. 잠금 하나를 쥐고, FPI 판정이 낡았는지 보고, 위치를 예약한다.
+일반 레코드 갈래다. 잠금 하나를 잡고, FPI 판정이 낡았는지 보고, 위치를 예약한다.
 
 `access` / `transam` / `xlog.c` L821-L870 ([GitHub](https://github.com/postgres/postgres/blob/724edf9bde9d356724ad384a2e196edc3c9f80f7/src/backend/access/transam/xlog.c#L821-L870))
 

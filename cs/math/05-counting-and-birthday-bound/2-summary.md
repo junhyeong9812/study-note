@@ -57,7 +57,7 @@ ID·해시·키의 비트 수를 정할 때 "칸이 43억 개면 충분하겠지
 - *이항계수 C(n, k)*: n개 중 k개를 순서 없이 고르는 방법의 수(MCS 15.5). 나눗셈 규칙(division rule, MCS 15.4) — 같은 묶음을 k!번씩 셌으니 k!로 나눈다.
 - 생일 문제의 핵심은 C(k, 2)다. ID는 k개지만 충돌 후보는 쌍이라 k²/2에 비례해 늘어난다.
 
-### 3. 비둘기집 원리 — "반드시 겹친다"의 문턱
+### 3. 비둘기집 원리 — "반드시 겹친다"의 임계값
 
 ```text
   비둘기 |A| 마리, 집 |B|개
@@ -163,9 +163,9 @@ seed=4 first failure after 102,983 rows: IntegrityError: UNIQUE constraint faile
 seed=5 first failure after 59,993 rows: IntegrityError: UNIQUE constraint failed: t.id
 ```
 
-- 첫 실패 지점이 4.8만~10.3만으로 크게 흔들린다. 운영에서는 "어느 날 갑자기 한 번" 보인다.
+- 첫 실패 지점이 4.8만~10.3만으로 크게 달라진다. 운영에서는 "어느 날 갑자기 한 번" 보인다.
 - 처음 충돌을 일으키는 값이 몇 번째인지(B)의 기댓값은 E(B) = √(πN/2) + 2/3 + O(N^(−1/2))이다(Flajolet·Sedgewick, *Analytic Combinatorics* Example II.10 식 (28) — Knuth TAOCP 1권 1.2.11.3을 같은 계산의 출처로 든다). N = 2^32면 √(πN/2) ≈ 82,137이다(근사).
-  - 위 출력의 "after n rows"는 성공한 행 수라 B = n + 1이다. 다섯 시드 평균 74,679는 이 근처다. 표본이 5개뿐이고 B 자체가 실행마다 두 배 넘게 흔들려 평균도 크게 흔들린다(해석).
+  - 위 출력의 "after n rows"는 성공한 행 수라 B = n + 1이다. 다섯 시드 평균 74,679는 이 근처다. 표본이 5개뿐이고 B 자체가 실행마다 두 배 넘게 흔들려 평균도 크게 달라진다(해석).
 
 ### 실험: 짧은 해시 prefix — git 약어 SHA
 

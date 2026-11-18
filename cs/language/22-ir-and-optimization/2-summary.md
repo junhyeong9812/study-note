@@ -191,7 +191,7 @@ int status_of(int *p) {
 
 - 관찰 — 같은 소스가 컴파일러·옵션에 따라 **죽거나, 0이거나, -1**이었다. 셋 다 표준 위반이 아니다. UB라서다.
 - gcc의 추론(GCC 13.3 문서 `-fdelete-null-pointer-checks`): "이미 역참조한 포인터를 나중에 검사하면, 그 포인터는 null일 수 없다." 이 옵션은 대부분의 타깃에서 기본으로 켜져 있다. 그래서 `if (p == 0)`이 죽은 분기가 되고, 쓰이지 않는 `*p` 읽기도 DCE로 사라졌다.
-- 역참조 결과를 쓰는 판(`int v = *p; if (!p) return -1; return v;`)은 gcc·clang `-O2` 모두 `mov (%rdi),%eax ; ret`만 남겼다(검사 삭제). 이 판은 실험한 네 빌드(gcc `-O0`·`-O2`·`-O2 -fno-delete-null-pointer-checks`, clang `-O2`) 모두 NULL에서 SIGSEGV였다.
+- 역참조 결과를 쓰는 판(`int v = *p; if (!p) return -1; return v;`)은 gcc·clang `-O2` 모두 `mov (%rdi),%eax ; ret`만 남겼다(검사 삭제). 이 버전은 실험한 네 빌드(gcc `-O0`·`-O2`·`-O2 -fno-delete-null-pointer-checks`, clang `-O2`) 모두 NULL에서 SIGSEGV였다.
 - UB 목록·sanitizer·언어별 안전 경계는 [language 20](../20-undefined-behavior-and-memory-safety/2-summary.md), 정수 오버플로 UB의 최적화 사례는 [architecture/02](../../architecture/02-integer-overflow-and-truncation/2-summary.md).
 
 ### 8. 같은 일을 실행 중에 — JIT

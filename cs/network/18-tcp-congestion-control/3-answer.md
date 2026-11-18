@@ -13,7 +13,7 @@
 
 - cwnd: 송신자가 스스로 정한, ACK 전에 망에 내보낼 수 있는 양의 상한. 헤더에 없고 송신 커널 안에만 있다.
 - rwnd: 수신자가 헤더 Window 필드로 알린 남은 버퍼.
-- ssthresh: slow start와 혼잡 회피를 가르는 문턱.
+- ssthresh: slow start와 혼잡 회피를 가르는 임계값.
 - 보낼 수 있는 양 = `min(cwnd, rwnd) − FlightSize`(RFC 5681 §3.1).
 
 ### 3. cwnd 시간 변화

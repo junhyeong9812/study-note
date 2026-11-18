@@ -102,7 +102,7 @@ vet exit=0
 (exit 0)
 ```
 
-- ★★★ `io.Copy` 는 **두 경우 모두 `n=2600 err=<nil>`** — 받은 쪽(`gzip.Writer`)이 **안에 쥐고 있었다.** 밑의 `bytes.Buffer` 에는 헤더 10 바이트뿐이다.
+- ★★★ `io.Copy` 는 **두 경우 모두 `n=2600 err=<nil>`** — 받은 쪽(`gzip.Writer`)이 **안에 잡고 있었다.** 밑의 `bytes.Buffer` 에는 헤더 10 바이트뿐이다.
 - ★★ **`Close` 가 남은 것을 밀어내고 끝 표시까지 써야** 읽는 쪽이 온전하게 받는다. [44번 주제](../44-os-bufio-and-io-copy/)의 `bufio.Writer`·`Flush` 와 같은 자리다.
 
 ### 7. `io.Copy` `n=4 short write` · `Flush` `short write` · **`fmt.Fprint` `n=4 <nil>`** · **`io.WriteString` `n=4 <nil>`** — 받은 것은 넷 다 `"hell"`
@@ -150,9 +150,9 @@ io.WriteString n=4 err=<nil> 받은="hell"
 
 | 항목 | 무엇에 달렸나 |
 |---|---|
-| `Read`·`Write` 계약 | **`io` 문서의 계약**(이 판 `go doc`) |
+| `Read`·`Write` 계약 | **`io` 문서의 계약**(이 버전 `go doc`) |
 | `strings.Reader` 가 끝을 알리는 방식 | **구현** — 계약이 허용한 한쪽 |
-| `io.Copy`·`bufio` 의 `ErrShortWrite` · `fmt.Fprint` 의 전달 | **이 판의 구현** |
+| `io.Copy`·`bufio` 의 `ErrShortWrite` · `fmt.Fprint` 의 전달 | **이 버전의 구현** |
 | Rust `Ok(0)` | **rustc 1.92.0 의 표준 라이브러리** |
 
 ★ **다시 찍는 법** — `capture.sh <디렉토리>` 를 그대로 돌리고 `normalize-shaky.py` 로 견준다(기본 규칙만).
@@ -161,4 +161,4 @@ io.WriteString n=4 err=<nil> 받은="hell"
 
 이 파일의 모든 출력은 **`go version go1.27.1 linux/amd64`** 에서 실제로 돌려
 **파일로 캡처한 것**이다(5번만 `rustc 1.92.0`). 소스 펜스도 같은 파일에서 떠 왔다 — 손으로 옮겨 적은 블록은 없다.\
-★ **근거로 읽을 칸** — 받은 바이트와 `err` · `3 / 20` · `1 / 5` · `(n, err)` 한 줄씩 · `buf.Len()` · `short write`. 이 문서에는 **흔들리는 칸이 없다.**
+★ **근거로 읽을 항목** — 받은 바이트와 `err` · `3 / 20` · `1 / 5` · `(n, err)` 한 줄씩 · `buf.Len()` · `short write`. 이 문서에는 **실행마다 달라지는 항목이 없다.**

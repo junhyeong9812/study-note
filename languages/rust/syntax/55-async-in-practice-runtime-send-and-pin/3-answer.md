@@ -488,7 +488,7 @@ pub fn block_on<F: Future>(fut: F) -> F::Output {
 
 ### 9. ★★ 교착의 구조 — 처방은 「await 전에 놓기」와 「비동기 락」 · 재현은 하지 않았다
 
-- ★★ `std::sync::Mutex::lock` 은 **스레드를 막는** 호출이다. 작업 A 가 가드를 쥔 채 `Pending` 으로 스레드를 내주고, 같은 스레드의 작업 B 가 `lock()` 에서 **스레드를 막으면** A 는 다시 poll 될 수 없어 가드를 못 놓는다(서머리 (3)의 개념 도식).
+- ★★ `std::sync::Mutex::lock` 은 **스레드를 막는** 호출이다. 작업 A 가 가드를 잡은 채 `Pending` 으로 스레드를 내주고, 같은 스레드의 작업 B 가 `lock()` 에서 **스레드를 막으면** A 는 다시 poll 될 수 없어 가드를 못 놓는다(서머리 (3)의 개념 도식).
 - ★★ **처방** — ① 가드를 **블록에 가둬 await 전에 놓는다**(5번의 `ok` — `Send` 문제도 같이 풀린다) ② 꼭 쥐어야 하면 **`tokio::sync::Mutex`**(`lock().await` 로 기다리며 스레드를 내준다 — 10번 블록의 `async mutex : 2`).
 - ★ **재현하지 않았다** — 교착은 판마다 안 날 수도 있고(안 터졌다 ≠ 안전하다), 같은 질문을 컴파일러가 **`Send` 판에서는** 판마다 같게 답한다(제5의 상태).
 
@@ -681,7 +681,7 @@ error: could not compile `r55tk` (bin "rc_spawn_ct") due to 1 previous error
 ### 12. ★★ 같은 분석 — 「빌린 적이 있으면 스코프 끝까지 살아 있다」 · 언어 보장이 아니라 rustc 의 판정
 
 - ★★★ 54번 `b` 는 `&buf` 로 빌린 배열이 await 앞에서만 쓰였는데도 **future 안에 남았다**(1032). 4번 `read_then_drop` 은 `*r` 로 빌린 `Rc` 가 `drop` 됐는데도 **await 너머로 살아 있다고** 판정됐다. **한쪽은 크기로, 한쪽은 `Send` 로 드러난 같은 판정**이다.
-- ★★ Reference 는 이 판정의 세부를 정하지 않는다 — **rustc 1.92 의 관찰**이고, 판이 오르면 분석이 정교해져 **4번의 `drop` 판이 통과로 바뀔 수 있는 칸**이다(다시 찍을 것).
+- ★★ Reference 는 이 판정의 세부를 정하지 않는다 — **rustc 1.92 의 관찰**이고, 버전이 오르면 분석이 정교해져 **4번의 `drop` 판이 통과로 바뀔 수 있는 칸**이다(다시 찍을 것).
 
 ## 실행 검증
 
@@ -698,7 +698,7 @@ error: could not compile `r55tk` (bin "rc_spawn_ct") due to 1 previous error
 
 | 항목 | 왜 |
 |---|---|
-| 「빌린 뒤 `drop` 해도 await 너머로 산다」는 판정 | ★ rustc 의 분석 — 판이 오르면 바뀔 수 있다 |
+| 「빌린 뒤 `drop` 해도 await 너머로 산다」는 판정 | ★ rustc 의 분석 — 버전이 오르면 바뀔 수 있다 |
 | future `Send` 실패에 번호가 없는 문구 | ★ rustc 의 진단 |
 | tokio 의 `Send + 'static` 경계 · `tokio-rt-worker` 이름 · `#[tokio::main]` 의 기본 `multi_thread` | ★ tokio 1.52.3 · tokio-macros 2.7.2 |
 | 캐시에 있는 tokio 판 | ★ 이 머신의 `~/.cargo/registry` — 다른 머신에서는 `--offline` 이 실패할 수 있다 |

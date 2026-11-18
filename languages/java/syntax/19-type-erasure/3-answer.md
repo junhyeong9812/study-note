@@ -726,7 +726,7 @@ class Ex$Raw extends Ex$TypeRef
 
 - **`String[] picked = ...` 는 터진다** — 메시지는 `class [Ljava.lang.Object; cannot be cast to class [Ljava.lang.String;` 이다.
 - **`Object[] ok = ...` 는 된다** — 받는 타입이 `Object[]` 라 `checkcast` 가 `[Ljava/lang/Object;` 이고, 실제도 그렇기 때문이다.
-- **받는 타입에 따라 갈린다.** 메서드 안에서는 절대 안 터진다(`T[]` 가 `Object[]` 로 소거돼 캐스트가 없다).
+- **받는 타입에 따라 달라진다.** 메서드 안에서는 절대 안 터진다(`T[]` 가 `Object[]` 로 소거돼 캐스트가 없다).
 - `ArrayList.toArray()` 가 `Object[]` 를 돌려주는 이유가 이것이다 — 정본은 [`../05-arrays/`](../05-arrays/).
 
 ### 13. 지역 변수의 제네릭 타입은 어디에 있는가

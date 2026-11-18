@@ -154,7 +154,7 @@ s.createContext("/order", ex -> {
 ## 쓰이는 자료구조·알고리즘
 
 - **인스턴스 풀(예열 풀)** — 미리 만든 객체를 빌려 주는 풀 패턴의 인프라판. 크기는 Little's Law(동시성 = 도착률 × 체류 시간)로 정한다.
-- **계층 컴파일 + 프로파일** — 인터프리터가 호출 횟수·분기 빈도를 세고, 문턱을 넘으면 C1 → C2로 컴파일한다. 실험의 2~10 / 11~100 / 1,001+ 계단이 그 흔적이다. 기초는 [language/23-jit-tiered-compilation-and-warmup](../../language/23-jit-tiered-compilation-and-warmup/2-summary.md).
+- **계층 컴파일 + 프로파일** — 인터프리터가 호출 횟수·분기 빈도를 세고, 임계값을 넘으면 C1 → C2로 컴파일한다. 실험의 2~10 / 11~100 / 1,001+ 계단이 그 흔적이다. 기초는 [language/23-jit-tiered-compilation-and-warmup](../../language/23-jit-tiered-compilation-and-warmup/2-summary.md).
 - **클래스 데이터 공유(CDS)·AOT 캐시** — 클래스 파일을 미리 읽고 파싱한 결과를 파일로 저장해 다음 실행에서 매핑한다(CDS: JEP 310 AppCDS, JEP 350 동적 아카이브). JEP 483 AOT 캐시는 여기에 클래스를 로드·링크한 상태를, JEP 515는 메서드 프로파일을 더한다(JEP 514는 만드는 절차를 줄인다). AOT 네이티브 이미지와의 비교는 [language/24-aot-native-image-and-startup](../../language/24-aot-native-image-and-startup/2-summary.md).
 - **스냅숏(체크포인트/복원)** — 프로세스 메모리·디스크 상태를 통째로 저장하고 재개한다. 복원은 복사이므로 "한 번만 만들어야 할 값"이 깨진다.
 - **상태 기계** — 컨테이너의 시작 → startup 통과 → ready → (트래픽) 전이. readiness는 이 기계의 "트래픽 받음" 상태로 가는 문이다.

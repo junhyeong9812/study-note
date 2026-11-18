@@ -243,7 +243,7 @@ fun main() {
 
 선행은 [42번 주제](../42-transformations-map-flatmap-associate-zip/)(변환 연산의 결과 타입 — `Sequence` 열)다.
 
-이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5** 에서 실제로 던져 받은 것이다.
+이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5** 에서 실제로 실행해 받은 것이다.
 
 ## 복습 기록
 

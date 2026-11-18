@@ -141,7 +141,7 @@ min-height: 60px        간격 40    높이 60    ✗
 **`padding`/`border` 의 대가**
 
 - **그 1px 이 실제 치수에 더해진다.** 실측에서 부모 높이가 70 이 아니라 **71** 이었다.
-- `border` 는 **선이 보인다**(투명하게 하려면 `transparent` 로 해야 하고, 그러면 `box-sizing` 에 따라 치수 계산이 또 흔들린다 — [15번](../15-box-model-and-box-sizing/2-summary.md)).
+- `border` 는 **선이 보인다**(투명하게 하려면 `transparent` 로 해야 하고, 그러면 `box-sizing` 에 따라 치수 계산이 또 실행마다 달라진다 — [15번](../15-box-model-and-box-sizing/2-summary.md)).
 
 **대가가 없는 것**
 
@@ -266,7 +266,7 @@ flex 항목 안에 margin-top: 40px 인 손자를 넣은 경우
 **`<!doctype html>` 을 빼면**
 
 - **쿼크 모드가 된다.** `document.compatMode` 가 `BackCompat` 이었다.
-- 같은 내용의 `body` 높이가 **445 대 110** 으로 갈렸다 — 쿼크 모드에서 `body` 가 뷰포트를 채운다.
+- 같은 내용의 `body` 높이가 **445 대 110** 으로 나뉘었다 — 쿼크 모드에서 `body` 가 뷰포트를 채운다.
 - ★ **다만 전설의 「쿼크 모드 = IE 박스 모델」은 재현되지 않았다.** `width: 300px; padding: 20px; border: 5px` 인 상자의 `rect.width` 가 **양쪽 다 350** 이었다. 예상과 달랐던 대목이라 그대로 적는다.
 
 **통제해야 하는 것 둘**

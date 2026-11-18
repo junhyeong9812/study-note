@@ -8,7 +8,7 @@
 
 ### A. 문제 (NaiveRunner · Saga 의 TODO)
 
-1. TODO 1 — NaiveRunner.run (기준선: 보상 없음)
+1. TODO 1 — NaiveRunner.run (베이스라인: 보상 없음)
 
 ```java
 public SagaResult run() {
@@ -22,7 +22,7 @@ public SagaResult run() {
 }
 ```
 
-- 이 기준선 클래스는 무엇을 보여주려고 존재하는가?
+- 이 베이스라인 클래스는 무엇을 보여주려고 존재하는가?
 - 재고✓ → 결제✓ → 배송✗ 이후 시스템에는 정확히 무엇이 남는가?
 - 되돌리는 코드를 여기 쓰면 왜 안 되는가?
 - 실패해도 예외를 밖으로 던지지 않는 이유는 무엇인가?

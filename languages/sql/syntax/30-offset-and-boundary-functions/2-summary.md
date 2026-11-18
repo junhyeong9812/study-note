@@ -200,10 +200,10 @@ LAG( 식 , 오프셋 , 기본값 )
 +------+--------+------+---------+----------+
 ```
 
-그림 해설 — **두 엔진이 한 자리도 안 갈렸다.**
+그림 해설 — **두 엔진이 한 자리도 달라지지 않았다.**
 
 ★ **기본값은 「경계에서만」 쓰인다.** `lag_def` 의 `ann` 은 **0**(경계라서 기본값)이고 `dan` 은 **`NULL`**(값이 `NULL`)이다.\
-**기본값을 줘도 「값이 `NULL`」인 경우는 안 메워진다** — 1번의 두 `NULL` 이 여기서 **행동으로** 갈린다.
+**기본값을 줘도 「값이 `NULL`」인 경우는 안 메워진다** — 1번의 두 `NULL` 이 여기서 **행동으로** 달라진다.
 
 ★ **`eve` 의 `lag2` 가 `NULL`** 인 것에 주의하라. 두 칸 앞은 `cho` 이고 `cho` 의 급여가 `NULL` 이다 —\
 「두 칸 앞이 없다」가 아니다. `ann`·`bob` 의 `NULL` 만 경계다.
@@ -336,7 +336,7 @@ LAST_VALUE(salary) OVER (ORDER BY salary ROWS BETWEEN UNBOUNDED PRECEDING AND UN
 
 그림 해설 — **`fv` 는 전부 300 으로 기대대로**다. 프레임 **시작**이 창의 처음이기 때문이다.\
 `nv`(2번째)도 전부 300 인데, 프레임의 두 번째 행이 언제나 `eve`(300) 또는 `ann`(300)이기 때문이다.\
-**`nv` 가 프레임에 의존한다는 사실은 `lv` 가 갈리는 것과 같은 이유**이고, PG 문서가 *"sometimes also `nth_value`"* 라고 적은 자리다.
+**`nv` 가 프레임에 의존한다는 사실은 `lv` 가 달라지는 것과 같은 이유**이고, PG 문서가 *"sometimes also `nth_value`"* 라고 적은 자리다.
 
 ★ **`NTH_VALUE` 가 `NULL` 을 돌려주는 두 경우가 있다.**
 
@@ -365,7 +365,7 @@ LAST_VALUE(salary) OVER (ORDER BY salary ROWS BETWEEN UNBOUNDED PRECEDING AND UN
 
 ---
 
-### 5. `LAG`·`LEAD` 는 프레임을 **무시한다** — 경계 함수와 갈리는 자리
+### 5. `LAG`·`LEAD` 는 프레임을 **무시한다** — 경계 함수와 달라지는 자리
 
 **언제 쓰나** — 프레임을 적어 놓고 `LAG` 가 달라졌을 거라 믿을 때.
 
@@ -628,7 +628,7 @@ FIRST_VALUE(name) OVER (PARTITION BY dept_id ORDER BY (salary IS NULL), salary D
 | **동률·`NULL` 에서 `FIRST_VALUE` 가 고르는 행** | **비결정 + 방언** | `ORDER BY` 가 안 정한 자리. 두 엔진이 다른 사람을 줬다(7번) |
 | `NTH_VALUE` 가 `NULL` 을 주는 경우 | **정의** | 「행이 없다」와 「값이 `NULL`」 둘 다. 두 엔진 출력이 같았다(4번) |
 
-- **이 주제에서 값이 갈린 자리는 7·8번 둘**이다. 7번은 `ORDER BY` 미결정, 8번은 타입 검사 차이다.
+- **이 주제에서 값이 달라진 자리는 7·8번 둘**이다. 7번은 `ORDER BY` 미결정, 8번은 타입 검사 차이다.
 - **`LAST_VALUE` 함정은 방언이 아니다** — 두 엔진이 **똑같이** 그렇게 한다. 그래서 「엔진을 바꾸면 고쳐질」 성격이 아니다.
 
 ## 언제 쓰고 언제 안 쓰나
@@ -693,7 +693,7 @@ FIRST_VALUE(name) OVER (PARTITION BY dept_id ORDER BY (salary IS NULL), salary D
 
 ## 더 들어가면
 
-- **`LAG`/`LEAD` 의 오프셋에 0과 음수를 넣으면** 두 엔진이 갈린다. 던져 봤다.
+- **`LAG`/`LEAD` 의 오프셋에 0과 음수를 넣으면** 두 엔진이 달라진다. 던져 봤다.
 
 ```text
 ### SQL: SELECT name, salary, LAG(salary, 0) OVER (ORDER BY id) AS lag0 FROM emp8 ORDER BY id;
@@ -745,7 +745,7 @@ ERROR 1064 (42000) at line 1: You have an error in your SQL syntax; check the ma
 본문에 실린 출력·에러·**경고**는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
 MySQL 의 경고는 **`SHOW WARNINGS` 로 따로 물어서** 받았다(8번) — 안 물으면 안 보인다.\
 **버전** — 네 함수 모두 PG 8.4 · MySQL 8.0 부터. `NTH_VALUE` 도 같다.\
-**갈리는 자리는 인자 검사**다(2·8번) — `IGNORE NULLS` 는 **양쪽 다 거부**한다(6번).\
+**달라지는 자리는 인자 검사**다(2·8번) — `IGNORE NULLS` 는 **양쪽 다 거부**한다(6번).\
 **목록 README 의 30번 행은 `LAG`·`LEAD`·`FIRST_VALUE`·`NTH_VALUE` 로 적혀 있다.**\
 이 문서는 **`LAST_VALUE` 를 포함해 다섯 함수**를 다룬다 — 이 갈래 최대 함정이 `LAST_VALUE` 에 있기 때문이다(3번).\
 (README 의 「무엇을 인출하게 되나」 칸도 `LAST_VALUE` 를 든다. 제목 칸만 `NTH_VALUE` 다.)\

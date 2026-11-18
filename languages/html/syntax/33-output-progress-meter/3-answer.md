@@ -4,7 +4,7 @@
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
 
-### 1. 명세 열과 갈린 칸 0 / 22 — `output` 은 `status` · `live=polite atomic=true` · 제출 ✕ · `form.elements` 에는 있음 / 서버 필드는 `i` 하나
+### 1. 명세 열과 달라진 항목 0 / 22 — `output` 은 `status` · `live=polite atomic=true` · 제출 ✕ · `form.elements` 에는 있음 / 서버 필드는 `i` 하나
 
 **출력**
 
@@ -57,7 +57,7 @@ m1 meter · low/high/optimum meter        "측정"  —                    —  
 - ★★ **`form.elements`** — `input`·`output` 만. **`output` 은 listed 인데 제출되지 않는다.**
 - **접근성 값** — `progress` 확정 `30` · 불확정 **없음** · `meter` `0.6000000238418579` · `output` **없음**(글자는 자식 노드). **범위** — `progress` 는 둘 다 `0..100`, `meter` 는 `0..1`.
 
-### 2. 명세 열과 갈린 칸 0 / 10 — `pseudo` 셋(최적 · 차선 · 더 나쁨) · 색 세 가지
+### 2. 명세 열과 달라진 항목 0 / 10 — `pseudo` 셋(최적 · 차선 · 더 나쁨) · 색 세 가지
 
 **출력**
 
@@ -139,25 +139,25 @@ $ python3 html33b-run.py 라이브 html33b-33-live.html
 
 - 명세 `progress` 절 — 「The `progress` element is the wrong element to use for something that is just a gauge … **indicating disk space usage using `progress` would be inappropriate.**」
 - 명세 `meter` 절 — 「The `meter` element **should not be used to indicate progress**」 · 「범위를 모르는 값(몸무게·키)에도 틀렸다」.
-- 트리에서는 역할이 갈린다 — `progressbar` 대 `meter`(A1). **틀린 요소를 쓰면 보조 기술에는 틀린 뜻이 간다.**
+- 트리에서는 역할이 달라진다 — `progressbar` 대 `meter`(A1). **틀린 요소를 쓰면 보조 기술에는 틀린 뜻이 간다.**
 
 ### 6. 불확정 진행 막대 — 속성이 **없을 때만** · `value="0"` 은 확정 · 0 · 접근성 값 칸
 
 - 명세 — 「`value` 속성이 **생략되면** 불확정 진행 막대다. 그렇지 않으면 확정이다」. `value="0"` 은 **값이 0 인 확정 막대**다.
-- 명세 — `position` 은 불확정이면 **−1**, `value` getter 는 불확정이면 **0** 을 돌려준다(이 판은 IDL 로 찍지 않았다).
-- 이 판의 트리 — **`p2` 의 접근성 값이 「—」**(없음), 범위는 `0..100` 그대로(A1).
+- 명세 — `position` 은 불확정이면 **−1**, `value` getter 는 불확정이면 **0** 을 돌려준다(이 버전은 IDL 로 찍지 않았다).
+- 이 버전의 트리 — **`p2` 의 접근성 값이 「—」**(없음), 범위는 `0..100` 그대로(A1).
 
 ### 7. 정하는 것 — 여섯 점과 **구역** · 정하지 않는 것 — **모양과 색** / 확인 — 그림자 트리의 `pseudo` 와 계산된 색 · 못 보는 것 — 칠해진 픽셀
 
 - 명세 — 「UA requirements for regions of the gauge」가 **구역을 must** 로 정한다 · 「UA requirements for showing the gauge」는 「세 구역과의 관계를 **보여야 한다(should)**」 · 렌더링 절은 「**플랫폼 관례**에 맞게」.
-- ★★ 이 판 — 스크린샷 대신 **값 막대 요소의 `pseudo` 이름(구역) + `background-color` 계산값(색)**(A2 — 새 창).
-- ★ **계산값은 선언이다** — `appearance: auto` 가 테마로 그리면 **화면과 다를 수 있다.** 픽셀은 이 판이 안 찍었다.
+- ★★ 이 버전 — 스크린샷 대신 **값 막대 요소의 `pseudo` 이름(구역) + `background-color` 계산값(색)**(A2 — 새 창).
+- ★ **계산값은 선언이다** — `appearance: auto` 가 테마로 그리면 **화면과 다를 수 있다.** 픽셀은 이 버전이 안 찍었다.
 
 ### 8. `label[for]` — 이름을 줄 **칸 하나**(문자열) · `output[for]` — 계산에 들어간 **칸들**(`DOMTokenList`) · 이름은 `label` 이 준다
 
 - `label` 의 `for` — 그 `id` 의 첫 labelable 요소가 **연결된 컨트롤**이 되어 **이름**을 받는다([25번](../25-label-association/2-summary.md)).
 - `output` 의 `for` — 「계산 결과와 **계산에 들어간 값을 나타내는 요소들**의 관계」 · 순서 없는 고유 토큰 집합. **이름을 주지 않는다.**
-- 이 판 — `output` 의 이름은 **`label for="o"` 의 글자 「결과」다**(A1 의 「이름」 열 · `labels` 1). `output for="i"` 는 이름에 아무것도 보태지 않았다.
+- 이 버전 — `output` 의 이름은 **`label for="o"` 의 글자 「결과」다**(A1 의 「이름」 열 · `labels` 1). `output for="i"` 는 이름에 아무것도 보태지 않았다.
 
 ### 9. 본 것 — 노드의 `live=polite · atomic=true` · 바뀐 글자 · 못 본 것 — 플랫폼 API 로 가는 알림 · 발화 / CDP 의 `Accessibility` 도메인은 라이브 알림을 이벤트로 내보내는 창이 아니다
 
@@ -207,7 +207,7 @@ $ diff ../../html29b/src/html29b-form.py <(sed 's/html33b/html29b/g' html33b-for
 ★ **더한 것 셋** — ① **실행기 `html33b-run.py`**(33\~36번 — 서버가 **어느 파일을 받았나**를 창 ⑤ 로 · 이미지를 **`/go` 까지 붙잡아** 「로드 전」을 잡는다 · 칸마다 **새 탭 · 캐시 끔 · 뷰포트/DPR 을 CDP `Emulation.setDeviceMetricsOverride` 로** · CDP 의 요청 **우선순위** · 콘솔 기록 · 그리고 이 편의 **UA 그림자 트리 창**(`속`)과 **라이브 창**(`라이브`)) · ② **시험 이미지 생성기 `html33b-make-images.py`**(34\~36번) · ③ **순서 세기 `html33b-tally.py`**(34번).\
 ★ **`/go`·끝 표지는 호스트 이름만 `localhost` 로 바꿔 부른다** — 붙잡힌 이미지가 `127.0.0.1` 의 연결(호스트당 여섯)을 다 차지해도 막히지 않게. 같은 서버다.
 
-**흔들림 확인** — 이 배치의 캡처를 **세 번** 돌려(`capture.sh blocks` · `blocks-r1` · `blocks-r2`) `normalize-shaky.py` 로 첫 판과 견줬다 — 결과는 이 절 끝의 「재대조」 줄이다. 33\~36번의 블록이 전부 그 안에 있다.
+**재현성 확인** — 이 배치의 캡처를 **세 번** 돌려(`capture.sh blocks` · `blocks-r1` · `blocks-r2`) `normalize-shaky.py` 로 첫 판과 견줬다 — 결과는 이 절 끝의 「재대조」 줄이다. 33\~36번의 블록이 전부 그 안에 있다.
 
 | 무엇을 | 몇 번 | 결과가 쓰인 곳 |
 |---|---|---|
@@ -217,7 +217,7 @@ $ diff ../../html29b/src/html29b-form.py <(sed 's/html33b/html29b/g' html33b-for
 
 **구현에 달린 항목**
 
-| 항목 | 이 판의 값 | 왜 다시 찍나 |
+| 항목 | 이 버전의 값 | 왜 다시 찍나 |
 |---|---|---|
 | `meter` 구역의 색 | 초록 · 노랑 · 주황 | 명세는 모양을 정하지 않는다 |
 | `meter` 의 접근성 값 | `0.6000000238418579` | 32비트 부동소수를 거친다 — 구현 |
@@ -227,12 +227,12 @@ $ diff ../../html29b/src/html29b-form.py <(sed 's/html33b/html29b/g' html33b-for
 
 **못 잰 것** — ① **스크린 리더의 발화.** ② **`meter` 의 실제 픽셀.**
 
-**부적용인 창** — **창 ① · ③ · ④ · ⑥**.
+**해당 없는 창** — **창 ① · ③ · ④ · ⑥**.
 
-**재대조** — `capture.sh blocks-r1`·`blocks-r2` 를 첫 판(`blocks`)과 `normalize-shaky.py` 로 견준 결과가 **두 번 다 「블록 54개 · 동일 53 · 흔들린 칸 1 · ★고칠 것 0 · 한쪽에만 0」** 이다. 흔들린 한 블록은 **34번의 `34-prio-tally`**(20 판의 순서 세기)이고, 그것은 34번 맨 위 부분의 「흔들리는 칸」 표에 **미리 선언한** 칸이다. 기본 규칙 넷에 **그 블록 전용 규칙 넷**을 더했다 —\
+**재대조** — `capture.sh blocks-r1`·`blocks-r2` 를 첫 판(`blocks`)과 `normalize-shaky.py` 로 견준 결과가 **두 번 다 「블록 54개 · 동일 53 · 달라진 항목 1 · ★고칠 것 0 · 한쪽에만 0」** 이다. 흔들린 한 블록은 **34번의 `34-prio-tally`**(20 판의 순서 세기)이고, 그것은 34번 맨 위 부분의 「실행마다 달라지는 항목」 표에 **미리 선언한** 칸이다. 기본 규칙 넷에 **그 블록 전용 규칙 넷**을 더했다 —\
 `--rule '^ *[0-9]+ 판  [r0-9 ]+\n='`(순서 한 줄씩) · `--rule '가짓수 . [0-9]+=가짓수 = <n>'` · `--rule '마지막인 판 . [0-9]+=마지막인 판 = <n>'` · `--rule '먼저인 판 . [0-9]+=먼저인 판 = <n>'`.\
 ★ **규칙 패턴에 `=` 를 쓰지 마라** — 이 도구는 `--rule` 을 **첫 `=`** 에서 가른다. 처음 판에서 `가짓수 = [0-9]+=…` 로 적었다가 패턴이 `가짓수 ` 에서 잘려 **정규화가 조용히 빗나갔다**(규칙 32 의 같은 집안) — `.` 으로 바꿨다.\
-★ **첫 재대조에서 「고칠 것」 둘이 더 나왔다** — `34-lazy-out`·`36-resize-out` 의 **함께 나간 두 요청의 순서**가 판마다 자리를 바꿨다. 한 블록에 흔들리는 칸을 섞지 않으려고(규칙 11) 페이지가 **표지 사이 묶음 안만 이름순으로** 찍게 고치고 세 판을 처음부터 다시 받았다 — 위 줄이 그 결과다.
+★ **첫 재대조에서 「고칠 것」 둘이 더 나왔다** — `34-lazy-out`·`36-resize-out` 의 **함께 나간 두 요청의 순서**가 판마다 자리를 바꿨다. 한 블록에 실행마다 달라지는 항목을 섞지 않으려고(규칙 11) 페이지가 **표지 사이 묶음 안만 이름순으로** 찍게 고치고 세 버전을 처음부터 다시 받았다 — 위 줄이 그 결과다.
 
 **하네스 전문** — 34\~36번이 같은 파일을 쓴다. 29번 판에서 온 셋(`html33b-cdp.py`·`html33b-form.py`·`html33b-rec.js`)은 위 `diff` 가 차이의 전부다 — 전문은 [29번](../29-constraint-validation/3-answer.md)에 있다.
 
@@ -787,4 +787,4 @@ src_sh   capture-sh    ../capture.sh
 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스(33\~36번 공용)는 이 파일의 `## 실행 검증` 절에 있다.\
 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 `output`·`progress`·`meter` 절 · 렌더링 절 · [HTML-AAM](https://w3c.github.io/html-aam/) 의 요소 대응표로 접지했다(앞 배치가 받아 둔 사본 — **WAI-ARIA 사본은 없다**).\
 ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-★★★ **본체는 역할 격자다** — 명세 열로 셀 수 있는 22 칸을 미리 선언하고 「명세 열과 갈린 칸」을 스크립트가 센다(A1).
+★★★ **본체는 역할 격자다** — 명세 열로 셀 수 있는 22 칸을 미리 선언하고 「명세 열과 달라진 항목」을 스크립트가 센다(A1).

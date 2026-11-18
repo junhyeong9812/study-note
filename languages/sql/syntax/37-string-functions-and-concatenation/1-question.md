@@ -77,7 +77,7 @@ SELECT 'abc' = 'ABC' AS same_case;
 
 - 두 엔진에서 각각 무엇이 나오고, 그것을 정하는 것은 무엇인가?
 
-### 7. 갈리지 않는 것 (경계)
+### 7. 달라지지 않는 것 (경계)
 
 - `TRIM`·`REPLACE`·`UPPER`·`LPAD`·`REPEAT`·`REVERSE`·`POSITION` 중 두 엔진에서 다르게 도는 것이 있는가?
 

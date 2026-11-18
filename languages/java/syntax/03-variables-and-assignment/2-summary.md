@@ -535,7 +535,7 @@ Ex.java:4: error: local variables referenced from a lambda expression must be fi
 ```
 
 - **에러가 나는 줄이 원인이 아니다.** 원인은 아래의 `counter = 1;` 이다.\
-  이 어긋남이 이 에러를 처음 볼 때 제일 헷갈리는 자리다.
+  이 불일치가 이 에러를 처음 볼 때 제일 헷갈리는 자리다.
 - 흔한 우회는 **길이 1짜리 배열**이다 — 쪽지는 고정하고 창고 안을 고치는 것.
 
 ```java

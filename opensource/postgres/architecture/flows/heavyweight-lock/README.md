@@ -2,7 +2,7 @@
 
 상위: [PostgreSQL 아키텍처 지도](../../README.md)
 
-테이블·트랜잭션 ID·객체 같은 **이름 붙은 대상에 트랜잭션 끝까지 걸리는 잠금**이 잡히고, 기다리고, 풀리는 흐름이다. 페이지 내용을 잠깐 지키는 LWLock 이나 버퍼 content lock 과 달리, 이 잠금은 모드가 여덟 가지이고 충돌하면 잠들어 기다리며, 교착을 검사받고, 트랜잭션이 끝날 때 한꺼번에 풀린다. 입구는 [02] `LockAcquireExtended` 하나지만 안에서 길이 셋으로 갈린다. 이미 가진 잠금이면 backend 지역 해시만 보고 끝나고, 약한 테이블 잠금이면 공유 메모리 해시를 건드리지 않는 **fast-path** 로 끝나며, 그 밖에는 파티션 LWLock 을 잡고 공유 해시의 `LOCK`·`PROCLOCK` 을 고친다. 충돌하면 대기 큐에 들어가 잠들고, `deadlock_timeout`(기본 1000ms) 뒤에야 교착 검사를 한다.
+테이블·트랜잭션 ID·객체 같은 **이름 붙은 대상에 트랜잭션 끝까지 걸리는 잠금**이 잡히고, 기다리고, 풀리는 흐름이다. 페이지 내용을 잠깐 지키는 LWLock 이나 버퍼 content lock 과 달리, 이 잠금은 모드가 여덟 가지이고 충돌하면 잠들어 기다리며, 교착을 검사받고, 트랜잭션이 끝날 때 한꺼번에 풀린다. 입구는 [02] `LockAcquireExtended` 하나지만 안에서 길이 셋으로 나뉜다. 이미 가진 잠금이면 backend 지역 해시만 보고 끝나고, 약한 테이블 잠금이면 공유 메모리 해시를 건드리지 않는 **fast-path** 로 끝나며, 그 밖에는 파티션 LWLock 을 잡고 공유 해시의 `LOCK`·`PROCLOCK` 을 고친다. 충돌하면 대기 큐에 들어가 잠들고, `deadlock_timeout`(기본 1000ms) 뒤에야 교착 검사를 한다.
 
 기준 태그: `REL_18_6` [`724edf9bde`](https://github.com/postgres/postgres/tree/724edf9bde9d356724ad384a2e196edc3c9f80f7). 모든 줄 번호는 이 태그 기준이고, 경로는 따로 적지 않으면 `src/backend/` 아래다. `lock.c`·`lmgr.c`·`proc.c`·`deadlock.c` 는 모두 `storage/lmgr/` 에 있다.
 

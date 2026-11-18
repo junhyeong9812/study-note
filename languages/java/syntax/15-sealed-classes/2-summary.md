@@ -813,7 +813,7 @@ String.getPermittedSubclasses() = null
 - **닫힌 선택지를 타입으로 표현할 때** — `Result` 는 `Ok` 아니면 `Fail`, `Json` 은 객체·배열·문자열·수·불리언·널.\
   `record` 와 묶으면 그대로 합타입이 된다.
 - **도메인 상태 기계** — 주문이 `Placed` · `Paid` · `Shipped` · `Cancelled` 중 하나이고 **각 상태가 다른 필드를 가질 때.**\
-  `enum` 은 상태마다 다른 필드를 갖기 어렵다([`../13-enum-classes/`](../13-enum-classes/)와 갈리는 지점이 여기다).
+  `enum` 은 상태마다 다른 필드를 갖기 어렵다([`../13-enum-classes/`](../13-enum-classes/)와 달라지는 지점이 여기다).
 - **Visitor 패턴을 쓰려던 자리** — "타입마다 다른 연산을 추가하고 싶다"는 요구는\
   `sealed` + 완결 `switch` 로 훨씬 짧게 풀린다. 새 연산은 새 `switch` 하나다.\
   패턴 자체의 해설은 [`../../../../cs/engineering/design-patterns-gof/`](../../../../cs/engineering/design-patterns-gof/) 가 정본이다.

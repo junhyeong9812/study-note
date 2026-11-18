@@ -159,7 +159,7 @@ export type NavigationTask = {
 ```
 
 1. [트리를 비교해 새로 짓기](01_build-tree/README.md) — 같으면 복사, 갈라지면 새로, `refetch` 표시는 가지마다 맨 위에만.
-2. [세그먼트 하나를 채우기](02_fill-segment/README.md) — `FreshnessPolicy` 여섯 값이 여기서 갈린다.
+2. [세그먼트 하나를 채우기](02_fill-segment/README.md) — `FreshnessPolicy` 여섯 값이 여기서 달라진다.
 3. [서버에 RSC 요청하기](03_fetch/README.md) — 실패는 전부 **URL 문자열**로 돌아온다.
 4. [응답을 쓰고, 어긋나면 다시 하기](04_write-back/README.md) — 약속을 푸는 규칙과 재시도 넷.
 

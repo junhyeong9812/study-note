@@ -38,7 +38,7 @@
             money ?              ← 한 판만 올릴 수 있으면 하나가 깨진다
 ```
 
-- 노드 = 패키지의 한 판(이름 + 버전), 간선 = "이 판은 저 범위가 필요하다".
+- 노드 = 패키지의 한 판(이름 + 버전), 간선 = "이 버전은 저 범위가 필요하다".
 - 해석기(resolver)는 그래프에서 이름마다 판 하나(또는 여러 개)를 고른다. 고른 결과가 *빌드 목록(build list)*이다.
 
 ### 2. semver — 버전 번호에 호환성 약속을 싣는다
@@ -63,7 +63,7 @@
 |---|---|---|
 | Maven | **가장 가까운 선언**(트리에서 얕은 쪽), 같은 깊이면 먼저 선언한 쪽 | Maven "Introduction to the Dependency Mechanism" — `A→B→C→D 2.0`, `A→E→D 1.0`이면 **D 1.0** |
 | Gradle | 그래프 전체 요청 중 **가장 높은 판**(기본) | Gradle User Manual "Graph Resolution" Version conflicts |
-| npm | 범위를 만족하는 최신 판. 못 맞추면 **중첩 `node_modules`로 두 판을 같이 설치**(일반 의존성 — `peerDependencies` 충돌은 중첩으로 못 풀어 npm 7+에서 설치 오류가 날 수 있다) | 실험 2, Node.js 22 `modules` 문서의 `node_modules` 탐색 규칙 |
+| npm | 범위를 만족하는 최신 판. 못 맞추면 **중첩 `node_modules`로 두 버전을 같이 설치**(일반 의존성 — `peerDependencies` 충돌은 중첩으로 못 풀어 npm 7+에서 설치 오류가 날 수 있다) | 실험 2, Node.js 22 `modules` 문서의 `node_modules` 탐색 규칙 |
 | Go | **최소 버전 선택(MVS)** — 요구된 최솟값들 중 최댓값 | Go Modules Reference "Minimal version selection" |
 | Cargo | 백트래킹 탐색. 서로 다른 판을 한 바이너리에 같이 링크할 수 있음 | Cox, "Version SAT"(2016-12-13)의 도구 목록 |
 
@@ -72,8 +72,8 @@
   1. 의존성에 특정 판을 지정할 수 있다.
   2. 설치하려면 의존성을 모두 설치해야 한다.
   3. 판마다 의존성이 다를 수 있다.
-  4. 한 패키지의 두 판을 동시에 설치할 수 없다.
-- 탈출구는 가정을 깨는 것이다(Cox 같은 글 "Alternatives?"). 4를 깨면 두 판을 같이 둔다 — 그러면 거의 어떤 탐색이든 해를 찾지만, **가장 작은** 조합 찾기는 여전히 NP-완전이다. npm의 중첩 설치가 이 방향이다(해석 — Cox는 같은 글에서 npm도 네 가정이 성립하는 도구로 꼽는다. 충돌을 선언할 수단이 있으면 가정 4가 성립하기 때문이다). 1을 깨면 "최솟값만 선언"하게 되고, 이것이 MVS의 출발점이다.
+  4. 한 패키지의 두 버전을 동시에 설치할 수 없다.
+- 탈출구는 가정을 깨는 것이다(Cox 같은 글 "Alternatives?"). 4를 깨면 두 버전을 같이 둔다 — 그러면 거의 어떤 탐색이든 해를 찾지만, **가장 작은** 조합 찾기는 여전히 NP-완전이다. npm의 중첩 설치가 이 방향이다(해석 — Cox는 같은 글에서 npm도 네 가정이 성립하는 도구로 꼽는다. 충돌을 선언할 수단이 있으면 가정 4가 성립하기 때문이다). 1을 깨면 "최솟값만 선언"하게 되고, 이것이 MVS의 출발점이다.
 
 ### 4. JVM — 컴파일 때 본 메서드를 실행 때 이름으로 다시 찾는다
 
@@ -106,11 +106,11 @@
   [info][class,load] com.x.Money source: file:/w/libc-1.0.jar
 ```
 
-- 두 판을 다 올려도 **먼저 나온 jar 하나만** 쓰였다(이 JDK의 앱 클래스 로더 관찰). 순서를 바꾸면 결과가 바뀐다.
+- 두 버전을 다 올려도 **먼저 나온 jar 하나만** 쓰였다(이 JDK의 앱 클래스 로더 관찰). 순서를 바꾸면 결과가 바뀐다.
 - `A:1000`이 먼저 찍히고 B에서 죽었다. 일부 일을 한 뒤 실패한다.
 - money 3.0처럼 옛 메서드를 지우면(major 변경) A가 깨진다. 1.0은 B를, 3.0은 A를 깬다. 이 실험의 해는 둘 다 만족하는 2.0 하나다. 그런 판이 없으면(예: B가 3.0에만 있는 메서드를 요구하면 — 가정) 한 판만 올릴 수 있는 환경에서는 **해가 없는** 다이아몬드다.
 
-### 5. Node.js — 중첩 `node_modules`로 두 판이 공존한다
+### 5. Node.js — 중첩 `node_modules`로 두 버전이 공존한다
 
 ```text
   /w/node_modules/money            (1.0.0)   ← liba가 require('money') 하면 위로 올라가며 찾다가 여기
@@ -127,7 +127,7 @@
   same module object?  false
 ```
 
-- 둘 다 동작한다. 대신 같은 이름의 모듈이 **두 개의 다른 객체**다. 싱글턴·`instanceof`·전역 레지스트리가 둘로 갈린다. 브라우저 번들에서 같은 라이브러리 두 벌이 생기는 문제는 [web-platform/09-js-modules-and-bundling](../../web-platform/09-js-modules-and-bundling/2-summary.md) 장애 5.
+- 둘 다 동작한다. 대신 같은 이름의 모듈이 **두 개의 다른 객체**다. 싱글턴·`instanceof`·전역 레지스트리가 둘로 나뉜다. 브라우저 번들에서 같은 라이브러리 두 벌이 생기는 문제는 [web-platform/09-js-modules-and-bundling](../../web-platform/09-js-modules-and-bundling/2-summary.md) 장애 5.
 
 ### 6. 최소 버전 선택(MVS) — 요구된 최솟값 중 최댓값
 
@@ -244,7 +244,7 @@ python -v -c 'import app' 2>&1 | grep json                         # 어느 파�
 
 3. **고친다.**
    - 판을 명시해 묶는다: Maven `dependencyManagement`·BOM, Gradle 제약(`constraints`)·`strictly`, npm `overrides`, Go `go get money@v1.4.0`.
-   - 한 판으로 못 맞추면(실험 1의 3.0): 한쪽 라이브러리를 올리거나, 셰이딩(패키지 이름 바꿔 다시 묶기)으로 두 판을 격리한다.
+   - 한 판으로 못 맞추면(실험 1의 3.0): 한쪽 라이브러리를 올리거나, 셰이딩(패키지 이름 바꿔 다시 묶기)으로 두 버전을 격리한다.
    - 재현: 락파일을 커밋하고 CI는 락을 따르는 명령(`npm ci` 등)만 쓴다.
 
 ## 장애 시나리오와 대처
@@ -253,7 +253,7 @@ python -v -c 'import app' 2>&1 | grep json                         # 어느 파�
 
 - **현상**: 테스트·기동은 통과했는데 운영에서 특정 기능을 처음 쓸 때 500이 난다.
 - **보이는 형태**: `java.lang.NoSuchMethodError: 'java.lang.String com.x.Money.fmt(long, java.lang.String)'`. 스택 맨 위가 라이브러리 내부다.
-- **원인**: B는 money 2.0에 맞춰 컴파일됐는데 실행 경로에는 1.0이 올라갔다. Maven의 "가까운 쪽" 규칙이 낮은 판을 골랐거나, 클래스패스에 두 판이 있어 앞의 것이 이겼다(실험 1).
+- **원인**: B는 money 2.0에 맞춰 컴파일됐는데 실행 경로에는 1.0이 올라갔다. Maven의 "가까운 쪽" 규칙이 낮은 판을 골랐거나, 클래스패스에 두 버전이 있어 앞의 것이 이겼다(실험 1).
 - **대처**: `-verbose:class`로 실제 jar를 확인하고, 해석 트리로 누가 그 판을 끌어왔는지 본다. `dependencyManagement`로 판을 고정하고, 트리 안에서 판이 갈리면 빌드를 실패시킨다(Maven Enforcer `dependencyConvergence` 규칙: "트리 어디서나 의존성 판이 같아야 한다" <https://maven.apache.org/enforcer/enforcer-rules/dependencyConvergence.html>).
 
 ### 2. 실행 경로에서 jar 누락 → `NoClassDefFoundError`
@@ -277,7 +277,7 @@ python -v -c 'import app' 2>&1 | grep json                         # 어느 파�
 - **원인**: 작가가 `kik`을 포함한 273개 패키지를 내렸고 그중 `left-pad`가 있었다. 10분 안에 다른 사람이 같은 기능을 1.0.0으로 냈지만, `line-numbers`를 거쳐 `0.0.3`을 정확히 요구하는 사슬(babel·atom)이 남아 실패가 이어졌다. npm은 백업에서 원래 0.0.3을 다시 올렸고, 중단은 2.5시간이었다.
 - **대처**: 락파일은 "무슨 판"을 고정할 뿐 "그 판이 남아 있음"은 보장하지 않는다. 사내 미러·프록시 캐시, 벤더링, 아티팩트 보관으로 원천이 사라져도 빌드되게 한다. 공급망 보안 쪽 대처는 [security/25](../../security/25-supply-chain-security/2-summary.md).
 
-### 5. 같은 패키지 두 사본 → 상태가 갈린다
+### 5. 같은 패키지 두 사본 → 상태가 달라진다
 
 - **현상**: 설정을 분명히 등록했는데 다른 모듈에서는 "등록 안 됨", `instanceof`가 false.
 - **보이는 형태**: `npm ls <pkg>`에 같은 이름이 두 경로로 나온다. 실험 2의 `same module object? false`.

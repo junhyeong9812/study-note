@@ -1018,7 +1018,7 @@ inline fun exposed(x: Int): Int = helper(x)
   ([10번 주제](../10-lambdas-and-higher-order-functions/)가 그 함정을 다룬다).
 - **`crossinline` 의 클래스 이름이 호출 경로를 말해 준다.** `CrossKt$caller$$inlined$guard$1` 에서\
   `caller` 는 **호출한 함수**, `guard` 는 **인라인된 함수**, `$$inlined$` 는 **전개해서 만든 것**이라는 표시다.\
-  선언 쪽 본체용 클래스는 `CrossKt$guard$r$1` 로 **`caller` 가 없다** — 둘을 이름만으로 가를 수 있다.
+  선언 쪽 본체용 클래스는 `CrossKt$guard$r$1` 로 **`caller` 가 없다** — 둘을 이름만으로 구분할 수 있다.
 - **에러가 하나라도 있으면 경고가 통째로 안 보인다.** (1)의 경고 두 줄은 `warn2.kt`(에러 없음)에서만 나왔고,\
   같은 선언에 nullable 인라인 파라미터 에러를 하나 섞은 `warn.kt` 에서는 **경고가 0줄**이었다.\
   ★ **경고를 근거로 쓰려면 에러 시나리오와 갈라서 던져야 한다.**

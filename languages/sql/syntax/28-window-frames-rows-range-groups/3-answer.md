@@ -160,7 +160,7 @@ MySQL 문서가 괄호로 그 이유를 적는다: *"(because, without `ORDER BY
  range_sum 열은 두 엔진이 600/600/1800/1800/1800/2800/2800 으로 똑같았다
 ```
 
-★★ **`RANGE` 는 같고 `ROWS` 만 갈렸다.** 이유 한 줄 —\
+★★ **`RANGE` 는 같고 `ROWS` 만 달라졌다.** 이유 한 줄 —\
 **`ROWS` 는 「몇 번째 행인가」를 세는데, 동률 안의 순서를 질의문이 정하지 않았다.**\
 `ORDER BY salary` 는 `ann` 과 `eve` 를 구별하지 못하므로, 누가 먼저인지는 **엔진이 정한다.**
 
@@ -191,7 +191,7 @@ ORDER BY salary 가 말한 것        말하지 않은 것
 | PG 와 MySQL 의 `rows_sum` 이 다르다 | **`ROWS` 의 답이 하나로 정해지지 않는다**는 반증. 양쪽 출력이 다 있다 |
 | 한 엔진에서 여러 번 돌려 같았다 | **보장이 아니다.** 같은 계획을 썼을 뿐이다 |
 
-그래서 이 결론은 **「두 엔진이 갈렸다」는 사실**에 걸려 있고, 한쪽만 보면 세지 않는다.
+그래서 이 결론은 **「두 엔진이 달라졌다」는 사실**에 걸려 있고, 한쪽만 보면 세지 않는다.
 
 ---
 
@@ -225,7 +225,7 @@ ORDER BY salary, id  -> 동률이 사라진다     -> ROWS 의 답이 하나로 
                         id 가 기본키라 같은 값이 없다
 ```
 
-★ **3번에서 갈렸던 두 엔진이 여기서는 한 자리도 안 갈린다.** 고친 것은 `ORDER BY` 에 `, id` 를 더한 것뿐이다.
+★ **3번에서 갈렸던 두 엔진이 여기서는 한 자리도 안 달라진다.** 고친 것은 `ORDER BY` 에 `, id` 를 더한 것뿐이다.
 
 ★ **`RANGE` 도 같이 바뀐다** — 동률이 없으니 `RANGE` 와 `ROWS` 가 이제 같은 답을 낸다.\
 「어느 프레임을 쓸까」로 고민하기 전에 **「동률이 있나」를 먼저 본다**가 순서다.
@@ -356,7 +356,7 @@ EXCLUDE GROUP       : []           -> NULL   덩어리 통째로 -> 프레임이
 ```
 
 ★ **`EXCLUDE CURRENT ROW` 와 `EXCLUDE TIES` 가 `ann` 에서 우연히 같은 300 이다** — 둘 다 한 행씩 남았기 때문이다.\
-`dan` 무리(3행)를 보면 갈린다 — `ex_ties` 는 1000(`600+400`, 자기만 남김), `ex_group` 은 600(덩어리 통째로 빠짐)이다.
+`dan` 무리(3행)를 보면 달라진다 — `ex_ties` 는 1000(`600+400`, 자기만 남김), `ex_group` 은 600(덩어리 통째로 빠짐)이다.
 
 **셋 다 PG 전용**이다. MySQL 은 `GROUPS` 와 **같은 `ERROR 1235`** 로 거부한다 — 두 기능이 같은 방식으로 빠져 있다.
 
@@ -512,7 +512,7 @@ ROWS 는 "내 앞 행" 을 센다
   -> 계획이 바뀌면 답이 바뀐다
 ```
 
-★ **두 엔진의 값이 한 자리도 안 갈렸다. 그런데 그것은 보장이 아니라 관찰이다.**\
+★ **두 엔진의 값이 한 자리도 달라지지 않았다. 그런데 그것은 보장이 아니라 관찰이다.**\
 지금 두 엔진이 **우연히 같은 순서로 읽었을** 뿐이고, 인덱스가 생기거나 병렬 스캔이 붙으면 달라질 수 있다.\
 [08번](../08-order-by-null-position-stability/) 6번이 `ORDER BY` 없는 `SELECT` 에서 같은 성격의 함정을 다뤘다.
 
@@ -569,7 +569,7 @@ PG 문서가 명시한다 — `row_number`·`rank`·`dense_rank`·`percent_rank`
 
 ★ **`ROWS` 를 적어도 에러가 안 나고 값도 안 바뀐다.** 「적었으니 뭔가 달라졌겠지」라고 믿으면 그대로 넘어간다.
 
-★ **`rn_framed` 열은 여전히 두 엔진에서 갈린다.** 그건 프레임 때문이 아니라 **동률 순서** 때문이다([29번](../29-ranking-functions/)).\
+★ **`rn_framed` 열은 여전히 두 엔진에서 달라진다.** 그건 프레임 때문이 아니라 **동률 순서** 때문이다([29번](../29-ranking-functions/)).\
 **프레임을 의심할 자리와 동률을 의심할 자리를 구분**하는 것이 이 출력의 값이다.
 
 ★ 다만 **`lag`/`lead` 는 프레임을 무시하는데 `first_value`/`last_value`/`nth_value` 는 프레임을 본다** —\
@@ -581,7 +581,7 @@ PG 문서가 명시한다 — `row_number`·`rank`·`dense_rank`·`percent_rank`
 |---|---|---|---|
 | 기본 프레임 = `RANGE` (1번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | `implicit` = `explicit_range` |
 | `ORDER BY` 없을 때 (2번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | `OVER ()` = 창 전체 |
-| ★ `ROWS` 대 `RANGE` (3번) | PG 18.6 · MySQL 8.4.10 | 각 2회 | **`ROWS` 가 두 엔진에서 갈렸다 — 이 주제의 핵심 근거** |
+| ★ `ROWS` 대 `RANGE` (3번) | PG 18.6 · MySQL 8.4.10 | 각 2회 | **`ROWS` 가 두 엔진에서 달라졌다 — 이 주제의 핵심 근거** |
 | 고유 키를 더한 `ROWS` (5번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | **갈림이 사라졌다** |
 | `GROUPS` (6번) | PG 18.6 · MySQL 8.4.10 | 각 2회 | **MySQL `ERROR 1235 … 'GROUPS'`** |
 | `EXCLUDE` 세 형태 (8번) | PG 18.6 · MySQL 8.4.10 | 각 2회 | **MySQL `ERROR 1235 … 'EXCLUDE'`** · `ex_group` 이 `NULL` |
@@ -606,6 +606,6 @@ PG 문서가 명시한다 — `row_number`·`rank`·`dense_rank`·`percent_rank`
 ## 실행 환경
 
 근거는 **실행 결과**다 — 본문의 출력·에러는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+2026-09-21 에 실제로 실행해 받은 것이다. 지어낸 출력은 없다.\
 모든 질의는 [1-question.md](1-question.md) 머리의 `WITH emp8 AS (...)` CTE 를 앞에 붙여 돌렸다.\
 문서 근거는 [PG 18 Window Function Calls](https://www.postgresql.org/docs/18/sql-expressions.html) · [MySQL 8.4 Window Function Frame Specification](https://dev.mysql.com/doc/refman/8.4/en/window-functions-frames.html).

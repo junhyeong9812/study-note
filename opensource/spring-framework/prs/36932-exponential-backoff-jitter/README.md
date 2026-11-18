@@ -247,7 +247,7 @@ backOff.start().nextBackOff(); // throws ArithmeticException: / by zero
 +				long applicableJitter = jitter * (initialInterval > 0 ? (interval / initialInterval) : 1);
 ```
 
-같은 입력(`initialInterval = 0`, `jitter = 100`)을 수정 전후 코드에 각각 넣으면 이렇게 갈린다.
+같은 입력(`initialInterval = 0`, `jitter = 100`)을 수정 전후 코드에 각각 넣으면 이렇게 달라진다.
 
 ```text
 수정 전                                      수정 후

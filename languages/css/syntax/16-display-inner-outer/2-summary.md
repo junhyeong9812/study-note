@@ -322,7 +322,7 @@ CSS 는 무효한 선언을 **조용히 버리는** 언어이므로, 계산값�
 ### 2. `getComputedStyle` 만 보고 "미지원"이라 판정한다
 
 `display: block flow` 를 쓰고 계산값 `block` 을 보면 "버려졌구나" 싶지만 **접힌 것**이다.\
-**대조군을 깔고 판정해야** 갈린다((2)).
+**대조군을 깔고 판정해야** 달라진다((2)).
 
 ### 3. `display: contents` 로 요소를 "없앤다"고 생각한다
 
@@ -330,7 +330,7 @@ CSS 는 무효한 선언을 **조용히 버리는** 언어이므로, 계산값�
 
 ### 4. `visibility: hidden` 과 `content-visibility: hidden` 을 같은 것으로 본다
 
-(6)의 demo 에서 **눈으로 바로 갈린다** — 뒤엣것은 **배경과 테두리가 그대로 보인다.**\
+(6)의 demo 에서 **눈으로 바로 나뉜다** — 뒤엣것은 **배경과 테두리가 그대로 보인다.**\
 그리고 높이를 안 주면 **뒤엣것만 0 으로 무너진다.**
 
 ### 5. 인라인 요소에 `width` 를 준다
@@ -368,7 +368,7 @@ CSS 는 무효한 선언을 **조용히 버리는** 언어이므로, 계산값�
 
 - [`../README.md`](../README.md) — CSS 문법·API 주제 목록(이 주제는 16번)
 - [15번 주제](../15-box-model-and-box-sizing/2-summary.md)(박스 모델과 `box-sizing`) — **이 상자의 치수가 정해지는 규칙**은 거기. 여기는 **그 상자가 어떤 종류인가**다
-- [17번 주제](../17-block-formatting-context/2-summary.md)(서식 문맥) — **`flow-root` 가 연 독립 흐름이 무엇을 가두는가**는 거기. 여기는 **`flow` 와 `flow-root` 가 `display` 의 내부 값으로 갈린다**는 것까지다
+- [17번 주제](../17-block-formatting-context/2-summary.md)(서식 문맥) — **`flow-root` 가 연 독립 흐름이 무엇을 가두는가**는 거기. 여기는 **`flow` 와 `flow-root` 가 `display` 의 내부 값으로 나뉜다**는 것까지다
 - [18번 주제](../18-margin-collapsing/2-summary.md)(마진 상쇄) — `flow` 안에서 마진이 합쳐지는 규칙은 거기
 - [24번 주제](../24-flexbox-axes/2-summary.md)(Flexbox 축·정렬) — **flex 컨테이너가 어떻게 배치하는가는 거기가 정본**이다. 여기는 `flex` 가 `block flex` 의 별명이라는 것까지
 - [목록의 **19번 주제**](../19-inline-formatting-context/)(인라인 서식 문맥) — 인라인 상자가 줄 안에서 정렬되는 규칙과 이미지 아래 빈 공간

@@ -918,7 +918,7 @@ capacity 5, head = 3, size = 3   ->  인덱스 3, 4, 0 에 감겨 있다
 - `%` 는 나눗셈이라 덧셈보다 비싸다.\
   용량을 2의 거듭제곱으로 고정하면 `(head + i) & (length - 1)` 로 바꿀 수 있고, 실무 구현(자바 표준 `java.util.ArrayDeque`)이 그렇게 한다(원본에 근거 없음 — 내 추론).
 - O(1) 이라고 다 같은 O(1) 이 아니다 — 배열판은 인접한 메모리를 건드리고 연결판은 흩어진 노드를 따라간다.\
-  복잡도 표기는 같아도 실측은 상수배로 갈린다.
+  복잡도 표기는 같아도 실측은 상수배로 나뉜다.
 - 배열판의 `enqueue` 는 엄밀히는 **상환** O(1) 이다 — 확장이 걸리는 그 한 번은 O(n) 이다.\
   연결판은 그 확장이 없어 진짜 최악 O(1) 이다.
 
@@ -930,9 +930,9 @@ capacity 5, head = 3, size = 3   ->  인덱스 3, 4, 0 에 감겨 있다
   그래서 담긴 개수가 늘 0~1개인데도 배열만 계속 커진다.\
   `ArrayQueueTest` 의 주석이 이 점을 분명히 한다 — `wastesSpace` 는 "버그를 잡는 테스트가 아니라 이 구현이 이런 성질을 가진다를 눈으로 보여주는 테스트"다.
 
-- Q: `ArrayQueueTest.wastesSpace` 와 `CircularQueueTest.reusesSpace` 가 같은 시나리오에서 갈리는 이유는 무엇인가.\
+- Q: `ArrayQueueTest.wastesSpace` 와 `CircularQueueTest.reusesSpace` 가 같은 시나리오에서 달라지는 이유는 무엇인가.\
   A: 두 테스트는 초기 용량 4로 시작해 `enqueue` → `dequeue` 를 1,000번 반복하는 **완전히 같은 시나리오**다.\
-  갈리는 지점은 `ensureCapacity` 에 넘기는 값이다.
+  달라지는 지점은 `ensureCapacity` 에 넘기는 값이다.
 
 ```text
 ArrayQueue.enqueue :  ensureCapacity(head + size + 1)      <- head 왼쪽 죽은 칸까지 포함해 센다

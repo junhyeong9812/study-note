@@ -32,7 +32,7 @@
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-`type`과 `variableResolver`에 무엇이 들어가는지는 **어느 팩토리를 탔는가**로 갈린다.\
+`type`과 `variableResolver`에 무엇이 들어가는지는 **어느 팩토리를 탔는가**로 나뉜다.\
 필드·메서드 파라미터 경로는 `SerializableTypeWrapper`가 JDK Type을 직렬화 가능한 프록시로 감싸 주지만(`forType` :1538-1540 -> `SerializableTypeWrapper.forTypeProvider` — SerializableTypeWrapper.java:103), **`forClassWithGenerics`는 그 우회로를 타지 않는다** — 자기가 만든 `SyntheticParameterizedType`을 그대로 `type`에 넣는다.
 
 ```text

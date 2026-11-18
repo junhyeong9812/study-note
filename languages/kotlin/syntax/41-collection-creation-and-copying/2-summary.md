@@ -1,14 +1,14 @@
 # kotlin/syntax/41 — 컬렉션 생성 — `listOf`/`mutableListOf`/`buildList`/`toList` — 정리 (힌트)
 
-★★★ **본체는 첫째 창이다** — 「**복사 격자 — 만드는 꼴마다 원본과 같은 객체인가 · 원본을 고치면 따라 바뀌나**」. 복사 여부는 **타입에 안 나온다** — 전부 `List<Int>` 다. 실행해서 **원본을 고쳐 봐야** 보인다.
+★★★ **핵심은 첫째 창이다** — 「**복사 격자 — 만드는 꼴마다 원본과 같은 객체인가 · 원본을 고치면 따라 바뀌나**」. 복사 여부는 **타입에 안 나온다** — 전부 `List<Int>` 다. 실행해서 **원본을 고쳐 봐야** 보인다.
 
 ## 이 주제가 쓰는 세 층
 
 | 층 | 뜻 | 근거로 쓰는 것 |
 |---|---|---|
 | **언어 보장 / API 계약** | 문서·서명이 약속한 것 | ★★ 반환 **타입**이 가변성을 정한다(`List` 대 `MutableList`) · `toList()`·`toMutableList()` 는 「**새**」 리스트 · `buildList` 는 람다 안에서 `MutableList`, 결과는 `List` |
-| **구현(stdlib · 백엔드)** | 이 판의 stdlib·kotlinc 가 실제로 하는 것 | ★ `*arr` 가 **새 배열**(09 — `Arrays.copyOf`) · ★★★ **`toList()` 가 원소 수로 클래스를 고른다**(0개 `EmptyList` · 1개 `SingletonList` · 그 이상 `ArrayList`) · `listOf(vararg)` 가 **`asList()`**(감싸기) · `buildList` 결과가 **빌더 객체 그 자체**(`ListBuilder`) · `emptyList()` 가 **싱글턴** |
-| **이 판의 관찰** | kotlinc 2.4.20 에서 이번에 본 것 | ★ `buildList` 의 `this` 를 밖에 담으려 하면 **추론 에러**((3)) · 진단 문구 |
+| **구현(stdlib · 백엔드)** | 이 버전의 stdlib·kotlinc 가 실제로 하는 것 | ★ `*arr` 가 **새 배열**(09 — `Arrays.copyOf`) · ★★★ **`toList()` 가 원소 수로 클래스를 고른다**(0개 `EmptyList` · 1개 `SingletonList` · 그 이상 `ArrayList`) · `listOf(vararg)` 가 **`asList()`**(감싸기) · `buildList` 결과가 **빌더 객체 그 자체**(`ListBuilder`) · `emptyList()` 가 **싱글턴** |
+| **이 버전의 관찰** | kotlinc 2.4.20 에서 이번에 본 것 | ★ `buildList` 의 `this` 를 밖에 담으려 하면 **추론 에러**((3)) · 진단 문구 |
 
 ## 이 판
 
@@ -18,20 +18,20 @@ info: kotlinc-jvm 2.4.20 (JRE 21.0.5+11-LTS)
 (exit 0)
 ```
 
-## 흔들리는 칸 / 안 흔들리는 칸
+## 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| **흔들린다** | (이 주제에는 없다) | 해시코드·`identityHashCode` 를 찍지 않았다 — 같은 객체인지는 **`===`** 로만 물었다 |
-| 안 흔들린다 | 격자 15행 · 복사 수 · 런타임 클래스 이름 | 결정적이다 |
-| 안 흔들린다 | stdlib 소스 발췌(줄 번호째) | jar 가 같으면 같다 |
-| 안 흔들린다 | 진단 문구·`파일:줄:칸` · 종료 코드 | 결정적이다 |
+| **실행마다 달라진다** | (이 주제에는 없다) | 해시코드·`identityHashCode` 를 찍지 않았다 — 같은 객체인지는 **`===`** 로만 물었다 |
+| 달라지지 않는다 | 격자 15행 · 복사 수 · 런타임 클래스 이름 | 결정적이다 |
+| 달라지지 않는다 | stdlib 소스 발췌(줄 번호째) | jar 가 같으면 같다 |
+| 달라지지 않는다 | 진단 문구·`파일:줄:칸` · 종료 코드 | 결정적이다 |
 
 ★ 근거 — 캡처 스크립트를 처음부터 두 번 돌려 **블록 전체를 바이트 단위로 대조**했다(수치는 3-answer 의 「실행 검증」).
 
 ## 한눈에 — 쉽게 말하면
 
-**리스트를 만드는 함수는 「복사기로 뜨느냐, 원본에 창을 내느냐」가 갈린다.** `src.toList()` 는 **복사기**다 — 뜬 뒤 원본을 고쳐도 사본은 그대로다. `arr.asList()` 는 **창**이다 — 원본 배열을 고치면 창으로 그대로 보인다. 둘 다 이름만 보면 「리스트로 만든다」다.
+**리스트를 만드는 함수는 「복사기로 뜨느냐, 원본에 창을 내느냐」가 달라진다.** `src.toList()` 는 **복사기**다 — 뜬 뒤 원본을 고쳐도 사본은 그대로다. `arr.asList()` 는 **창**이다 — 원본 배열을 고치면 창으로 그대로 보인다. 둘 다 이름만 보면 「리스트로 만든다」다.
 ★ 그리고 **복사가 어디서 일어나는지**도 겉보기와 다르다. `listOf(*arr)` 에서 복사하는 것은 `listOf` 가 **아니라** 호출 자리의 `*` 다([09번 주제](../09-varargs-spread-local-and-infix-functions/)) — `listOf` 자신은 받은 배열에 **창을 낼 뿐**이다.
 `buildList { }` 는 **공사장**이다 — 안에서는 마음대로 짓고, 문을 닫고 나오면 **같은 건물이 잠긴다**(복사 없이).
 
@@ -65,17 +65,17 @@ info: kotlinc-jvm 2.4.20 (JRE 21.0.5+11-LTS)
 
 ## 동작 방식
 
-### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「부적용인 창」
+### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「해당 없는 창」
 
 | 창 | 무엇을 보여 주나 | 어디서 왔나 |
 |---|---|---|
-| ★★★ **복사 격자(`===` + 원본 변경)** | 꼴마다 같은 객체인가 · 따라 바뀌나((1)) | ★ **본체 창** |
+| ★★★ **복사 격자(`===` + 원본 변경)** | 꼴마다 같은 객체인가 · 따라 바뀌나((1)) | ★ **핵심 창** |
 | ★★ **stdlib 소스 jar 발췌** | `toList`·`listOf`·`emptyList`·`buildList` 가 **실제로 하는 일**((2)(3)) | [28번 주제](../28-generics-variance-in-out-star-where/) (3)과 같은 창 |
 | ★★ **원소 수 격자** | `toList()` 결과 클래스가 0·1·2·3 에서 무엇인가((2)) | — |
 | ★ **캐스트해 고치기** | 「나오면 읽기 전용」을 **객체가** 지키나((2)(3)) | [40번 주제](../40-read-only-collections-and-runtime-types/) (1)의 창 |
 | ★ **컴파일 에러** | 빌더의 `this` 를 밖에 담으려 할 때((3)) | 이 갈래의 기본 창 |
 | **인용 — 다시 안 잰다** | `listOf(…)`·`mutableListOf` 의 런타임 클래스 · `*` 의 `Arrays.copyOf` | [`../../언어-특성/README.md`](../../언어-특성/README.md) §5 · [09번 주제](../09-varargs-spread-local-and-infix-functions/) (2) |
-| **부적용 — 실행 시간·할당** | 「`buildList` 가 빠르다」·「`toList` 는 비싸다」는 **재지 않았다** — 이 문서는 **복사가 일어나느냐**만 본다 | — |
+| **해당 없음 — 실행 시간·할당** | 「`buildList` 가 빠르다」·「`toList` 는 비싸다」는 **재지 않았다** — 이 문서는 **복사가 일어나느냐**만 본다 | — |
 
 ### (1) ★★★ 복사 격자 — 원본과 같은가, 따라 바뀌나
 
@@ -264,7 +264,7 @@ public inline fun <E> buildList(@BuilderInference builderAction: MutableList<E>.
 ```
 
 - ★★★ **0 → `EmptyList` · 1 → `Collections$SingletonList` · 2·3 → `java.util.ArrayList`** — 소스의 `when (size)` 세 갈래 그대로다. `Set` 도 `Sequence` 도 원소 둘이면 `ArrayList` 다.
-- ★★★ **`toList()` 의 결과를 캐스트하면 원소 수에 따라 갈린다** — 둘일 때는 **`add` 가 통과**해 `[1, 2, 3]`, 하나일 때는 **`UnsupportedOperationException`**. 같은 함수의 결과가 **원소 수에 따라** 가변이기도 하고 아니기도 하다. 원본은 어느 쪽이든 안 바뀐다(사본이므로).
+- ★★★ **`toList()` 의 결과를 캐스트하면 원소 수에 따라 달라진다** — 둘일 때는 **`add` 가 통과**해 `[1, 2, 3]`, 하나일 때는 **`UnsupportedOperationException`**. 같은 함수의 결과가 **원소 수에 따라** 가변이기도 하고 아니기도 하다. 원본은 어느 쪽이든 안 바뀐다(사본이므로).
 - ★★ **`toList()` 의 `toList()` 도 새 객체**다(`=== false`) — 「이미 읽기 전용이면 그대로 돌려준다」가 **아니다**(Java `List.copyOf` 는 이미 불변이면 복사하지 않는다 — [Java 40번](../../../java/syntax/40-list-set-and-immutable-factories/)). 원소가 둘 이상이면 **매번 복사**한다. ★ **빈 리스트만 예외**다((4)의 `3`).
 - ★★ **`listOf(vararg)` 는 `elements.asList()`** — 받은 배열을 **감쌀 뿐 복사하지 않는다.** `listOf(1, 2, 3)` 처럼 쓰면 그 배열은 **호출 자리가 새로 만든 것**이라 문제가 없고, `listOf(*arr)` 면 **`*` 가 복사**한다. 어느 쪽이든 복사는 `listOf` 밖에서 일어난다.
 - ★ **`listOf(element)` 하나짜리는 JVM 에서 `Collections.singletonList`** — `jvmMain` 쪽 `actual` 이다(플랫폼 구현).
@@ -335,7 +335,7 @@ leak41.kt:3:17: error: type mismatch: inferred type is 'CapturedType(out Mutable
 (exit 1)
 ```
 
-- ★★ **`buildList<Int> { … }` 가 아니면 컴파일이 안 됐다** — 「`type mismatch: inferred type is 'CapturedType(out MutableList<Int>)#2', but 'CapturedType(out MutableList<Int>)#1' was expected.`」. 원소 타입을 **람다 몸통에서 추론**하는 중에 `this` 를 바깥 `var` 에 담으면 추론이 꼬인다(빌더 추론 — 소스의 `@BuilderInference`). 문구가 무엇을 말하는지는 **이 판의 관찰**로만 적는다.
+- ★★ **`buildList<Int> { … }` 가 아니면 컴파일이 안 됐다** — 「`type mismatch: inferred type is 'CapturedType(out MutableList<Int>)#2', but 'CapturedType(out MutableList<Int>)#1' was expected.`」. 원소 타입을 **람다 몸통에서 추론**하는 중에 `this` 를 바깥 `var` 에 담으면 추론이 꼬인다(빌더 추론 — 소스의 `@BuilderInference`). 문구가 무엇을 말하는지는 **이 버전의 관찰**로만 적는다.
 - ★ 두 파일은 **`<Int>` 하나만** 다르다 — `build41.kt` 3번째 줄이 `buildList<Int> {`, `leak41.kt` 는 `buildList {`.
 
 ### (4) ★ `emptyList()` 는 싱글턴이다
@@ -435,16 +435,16 @@ built: [#, apple, pear]
 | 항목 | 어느 쪽인가 | 근거 |
 |---|---|---|
 | 반환 **타입**이 가변성을 정한다(`List` 대 `MutableList`) | ★★★ **언어 보장**(서명) | (1) |
-| `toList()`·`toMutableList()` 가 **새** 리스트 | **API 의 뜻**(「복사」 함수) — 이 판에서 `===` 로 확인. 함수 주석은 **싣지 않았다** | (1)(2) |
+| `toList()`·`toMutableList()` 가 **새** 리스트 | **API 의 뜻**(「복사」 함수) — 이 버전에서 `===` 로 확인. 함수 주석은 **싣지 않았다** | (1)(2) |
 | `*arr` 가 새 배열 | **JVM 백엔드 구현**(`Arrays.copyOf`) — 이 문서는 언어 명세 문장을 확인하지 않았다 | [09번 주제](../09-varargs-spread-local-and-infix-functions/) (2) |
 | `toList()` 가 **원소 수로 클래스**를 고른다 | ★★★ **stdlib 구현** | (2) — 소스 `when (size)` |
 | `listOf(vararg)` = `asList()` · `listOf(e)` = `singletonList` | ★★ **stdlib 구현** | (2) |
 | `buildList` 결과가 **빌더 객체 그 자체** · 나오면 객체가 거부 | ★★ **stdlib 구현** | (3) |
 | `emptyList()` 가 싱글턴 | ★ **stdlib 구현**(`object EmptyList`) | (2)(4) |
 | `buildList` 의 `@SinceKotlin("1.6")` | **stdlib 판의 사실** — 그 전 실험 여부는 **못 쟀다** | (2) |
-| 빌더 추론 에러 문구 | **이 판의 관찰** | (3) |
+| 빌더 추론 에러 문구 | **이 버전의 관찰** | (3) |
 
-★★ **가장 조심할 자리** — 「`toList()` 는 읽기 전용 사본을 준다」까지가 계약이다. 「**캐스트해도 못 고친다**」는 계약이 아니고, 이 판에서는 **원소 수에 따라 참이기도 거짓이기도** 하다((2)). 방어 복사의 목적(원본 보호)은 지켜지지만 **사본 자체가 잠긴다고 믿으면 틀린다.**
+★★ **가장 조심할 자리** — 「`toList()` 는 읽기 전용 사본을 준다」까지가 계약이다. 「**캐스트해도 못 고친다**」는 계약이 아니고, 이 버전에서는 **원소 수에 따라 참이기도 거짓이기도** 하다((2)). 방어 복사의 목적(원본 보호)은 지켜지지만 **사본 자체가 잠긴다고 믿으면 틀린다.**
 
 ## 언제 쓰고 언제 안 쓰나
 
@@ -500,10 +500,10 @@ built: [#, apple, pear]
 
 ## 실행 환경
 
-**기준 소스** — [Constructing collections](https://kotlinlang.org/docs/constructing-collections.html)(요소로 만들기 `listOf`·`mutableListOf` · 빌더 함수 `buildList` · 복사 `toList()`·`toMutableList()` · 빈 컬렉션 `emptyList()`) — 이 문서는 그 페이지의 **목록**을 따르되, 문장은 인용하지 않고 **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)를 근거로 삼는다((2)).
+**기준 소스** — [Constructing collections](https://kotlinlang.org/docs/constructing-collections.html)(요소로 만들기 `listOf`·`mutableListOf` · 빌더 함수 `buildList` · 복사 `toList()`·`toMutableList()` · 빈 컬렉션 `emptyList()`) — 이 문서는 그 페이지의 **목록**을 따르되, 문장은 인용하지 않고 **이 버전의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)를 근거로 삼는다((2)).
 **실행 검증** — 이 문서의 모든 출력·에러는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java` 에서 실제로 얻었다.\
 `kotlinc` 6회(컴파일 실패 1벌) · `java` 4회 + 격자 스크립트 안에서 1회 · stdlib 소스 jar 에서 4곳.\
 ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「복사된 칸 N / M」은 스크립트가 스스로 센 것**이다.
-**버전** — `listOf`·`mutableListOf`·`toList`·`emptyList` 는 **1.0**. `buildList` 는 stdlib 소스에 **`@SinceKotlin("1.6")`**((2)) — ★ 그 전 판에서 실험 API 였는지는 **이 판에서 잴 수 없다**(컴파일러가 2.4.20 하나뿐이고 `-api-version` 격자는 돌리지 않았다).
+**버전** — `listOf`·`mutableListOf`·`toList`·`emptyList` 는 **1.0**. `buildList` 는 stdlib 소스에 **`@SinceKotlin("1.6")`**((2)) — ★ 그 전 판에서 실험 API 였는지는 **이 버전에서 잴 수 없다**(컴파일러가 2.4.20 하나뿐이고 `-api-version` 격자는 돌리지 않았다).
 **경계** — ★★★ **런타임 클래스는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §5 가 정본이다** — `listOf()`·`listOf("a")`·`listOf("a","b")`·`mutableListOf` 의 클래스는 거기 표에 있다. 여기 격자의 「런타임 클래스」 칸은 **짧게** 두고, 새로 잰 것은 **`===` 와 「원본을 고치면 따라 바뀌나」** 두 칸이다.\
 `List` 가 읽기 전용 **뷰**라는 것, `as MutableList` 로 뚫리는 것은 [40번 주제](../40-read-only-collections-and-runtime-types/)가 정본이다. `*arr`(spread)가 **`Arrays.copyOf` 로 복사**한다는 것은 [09번 주제](../09-varargs-spread-local-and-infix-functions/) (2)가 바이트코드로 쟀다 — 여기서는 인용한다. `buildList` 가 받는 **수신자 람다**(`MutableList<E>.() -> Unit`)는 [37번 주제](../37-lambdas-with-receiver-and-type-safe-builders/)다.

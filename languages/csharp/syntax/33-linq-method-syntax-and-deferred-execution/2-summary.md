@@ -21,7 +21,7 @@ OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sha
 | **언어 명세(ECMA-334)** | ★ C# 언어가 약속한 것 | ★ 람다 캡처(변수를 잡는다 — [28번](../28-lambdas-and-closure-capture/)) · 확장 메서드 호출 해석([30번](../30-extension-methods-and-extension-members/)) · 반복자의 지연([32번](../32-yield-return-iterators-and-deferred-execution/)). ★★★ **「`Where` 가 지연이다」는 언어가 아니다** — `Where` 는 **라이브러리 메서드**다 |
 | **BCL 계약(XML 문서)** | ★★ 문서가 약속한 것 | ★★ `Where`·`OrderBy`·`Count` 의 **예외 조항**(`null` 인자 → `ArgumentNullException`) · `TryGetNonEnumeratedCount` 의 「열거를 강제하지 않고」 |
 | **BCL 구현(System.Linq 10.0.12)** | ★★★ 그것을 **어떻게 짰나** | ★★★ `OrderBy`·`Reverse`·`GroupBy` 가 **첫 `MoveNext` 에서 끝까지** 읽는 것 · `Distinct` 가 **한 개씩**인 것 · `Chunk(2)` 가 **두 개** · ★★★ **`Count()` 가 `ICollection<T>` 면 `Count` 속성만 읽는 것** · 돌려준 타입 이름 |
-| **이 판의 관찰** | .NET 10.0.12 · linux-x64 · javac/java 21.0.5 | 로그 줄 수 · Java 예외 문구 |
+| **이 버전의 관찰** | .NET 10.0.12 · linux-x64 · javac/java 21.0.5 | 로그 줄 수 · Java 예외 문구 |
 
 ★★★ **이 주제의 층 구분이 급소다 —**\
 **지연 실행은 C# 언어의 성질이 아니라 `System.Linq` 가 그렇게 짠 것**이다. 언어가 주는 것은 [32번](../32-yield-return-iterators-and-deferred-execution/)의 `yield`(지연되는 **도구**)뿐이고, `Where` 를 그 도구로 **지연되게 짠 것**은 BCL 이다. 그래서 **연산자마다 따로 물어야 한다** — (1)이 그 질문을 16번 던진다.
@@ -47,7 +47,7 @@ OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sha
 | 주문서 검사는 적을 때 | ★★ `null` 소스·`null` 람다는 **호출 때** `ArgumentNullException` · 람다 **안**의 예외는 **열거 때** | (4) |
 | 다시 낼 수 있나 | ★★★ C# **2 · 2** · Java **`IllegalStateException`** | (5) |
 
-★★★ **이 주제의 본체 그림 — 「언제 소스를 건드리나」 세 갈래.**
+★★★ **이 주제의 핵심 그림 — 「언제 소스를 건드리나」 세 갈래.**
 
 ```text
    연산자를 부른 순간                첫 MoveNext 한 번                   (소스 로그 줄 수 · (1) 실측)
@@ -76,14 +76,14 @@ OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sha
 
 1. **어느 연산자가 부르는 순간 소스를 읽고, 어느 것이 첫 `MoveNext` 까지 미루나 — 미룬 것은 첫 `MoveNext` 에서 얼마나 읽나**((1)).
 2. **`Count()` 는 언제 열거하지 않나** — `ICollection<T>` 의 형 검사((2)).
-3. **지연이 만드는 함정 둘** — 캡처한 변수가 **나중 값**으로 읽히는 것((3)) · 인자 검사와 람다 안 예외의 **시점이 갈리는** 것((4)).
+3. **지연이 만드는 함정 둘** — 캡처한 변수가 **나중 값**으로 읽히는 것((3)) · 인자 검사와 람다 안 예외의 **시점이 달라지는** 것((4)).
 4. **Java `Stream` 과 무엇이 갈리나** — 다시 쓰기((5)).
 
 ## 동작 방식
 
 ### (0) 이 주제가 쓰는 창
 
-★★★ **본체 창은 ⑤ 실행 로그 격자다.**
+★★★ **핵심 창은 ⑤ 실행 로그 격자다.**
 
 | 창 | 무엇을 보여 주나 | 이 주제에서 |
 |---|---|---|
@@ -92,7 +92,7 @@ OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sha
 | ★ **② 진단** | ★ `-langversion:2` 의 `CS8023`(람다) — 판 경계 | (6) |
 | **① IL 덤프** | ★ **이 주제는 안 쓴다** — `xs.Where(f)` 가 `call Enumerable::Where` 인 것은 [30번](../30-extension-methods-and-extension-members/) (1)이 찍었다(인용) | — |
 | **④ 할당 바이트** | ★ **안 쟀다** — 이 주제의 질문(「언제 읽나」)은 할당이 아니라 **로그 줄 수**가 답한다. 반복자 객체의 할당은 [32번](../32-yield-return-iterators-and-deferred-execution/) (8)이 쟀다 | — |
-| **부적용인 창** | 없다 | — |
+| **해당 없는 창** | 없다 | — |
 
 ```text
 ===== cd packs/Microsoft.NETCore.App.Ref/10.0.12/ref/net10.0 && echo "deferred $(grep -c -i deferred System.Linq.xml) · lazy $(grep -c -i lazy System.Linq.xml) · member $(grep -c "<member " System.Linq.xml)" (exit=0) =====
@@ -179,7 +179,7 @@ ToDictionary	6	6	Dictionary`2	pull(3) pull(1) pull(4) pull(2) pull(5) end
 
 - ★★★ **호출 즉시 소스를 건드린 칸 7 / 16** — 스크립트가 셌다. `ToList`·`ToArray`·`Count()`·`Sum()`·`ToDictionary` 는 **6 줄**(`pull` 다섯 + `end` — **끝까지**), `Any()`·`First()` 는 **1 줄**(`pull(3)` 에서 멈춤). 나머지 9개는 **호출 직후 0 줄**이다.
 - ★★★ **호출 직후 0 줄 · 첫 `MoveNext` 뒤 `end` 가 찍힌 칸 3 / 16** — **`OrderBy`·`Reverse`·`GroupBy`**. 부를 때는 [32번](../32-yield-return-iterators-and-deferred-execution/) (6)처럼 0 줄인데, **첫 결과 하나를 달라는 순간 소스를 끝까지** 읽었다(`pull(3) pull(1) pull(4) pull(2) pull(5) end`).
-- ★★★ **`Distinct` 는 그 셋과 다르다 — 첫 `MoveNext` 뒤 1 줄.** 「본 적 있나」를 **지금까지 본 것**으로만 판단하면 되니, 첫 원소는 **바로** 낸다. ★ 「`Distinct` 도 전부 끌어온다」는 **이 판에서 틀렸다.**
+- ★★★ **`Distinct` 는 그 셋과 다르다 — 첫 `MoveNext` 뒤 1 줄.** 「본 적 있나」를 **지금까지 본 것**으로만 판단하면 되니, 첫 원소는 **바로** 낸다. ★ 「`Distinct` 도 전부 끌어온다」는 **이 버전에서 틀렸다.**
 - ★★ **`Chunk(2)` 는 2 줄** — 덩어리 하나를 채울 만큼. 「지연」 안에 **한 개 · 몇 개 · 전부**가 다 있다.
 - ★★ **`AsEnumerable` 의 타입이 `<Src>d__1`** — **소스 그 자체**다. 「`IEnumerable<T>` 로 **보이게**」만 한다(XML 문서의 요약 그대로). 그 쓸모는 [36번](../36-iqueryable-and-expression-trees/)에 있다.
 - ★★ **`ToList`·`ToArray`·`ToDictionary` 의 「첫 MoveNext 뒤」 가 6 그대로** — 이미 모은 컬렉션을 읽으니 **소스는 더 안 열린다.** ★★★ 그리고 이 셋의 결과도 **`IEnumerable` 이다** — 스크립트의 `r is IEnumerable` 이 참이라 `MoveNext` 를 불렀다. **반환 타입으로는 즉시·지연을 못 가른다.**
@@ -236,7 +236,7 @@ class Program {
 ```
 
 - ★★★ **네 소비자 모두 키 선택자 10 번** — 원소 10개의 키를 **전부** 계산했다. (1)의 「첫 `MoveNext` 에서 끝까지 읽는다」와 맞는다.
-- ★★★ **그런데 `Compare` 가 갈린다 — `[1]` `First()` · `[2]` `Take(1).ToList()` 는 9 번, `[3]` `foreach` 첫 원소 · `[4]` `ToList()` 는 36 번.** 9 는 원소 10개에서 **최솟값 하나를 찾는** 비교 수이고, 36 은 **전부 정렬**한 수다(같은 입력 · 같은 판에서 결정적).
+- ★★★ **그런데 `Compare` 가 달라진다 — `[1]` `First()` · `[2]` `Take(1).ToList()` 는 9 번, `[3]` `foreach` 첫 원소 · `[4]` `ToList()` 는 36 번.** 9 는 원소 10개에서 **최솟값 하나를 찾는** 비교 수이고, 36 은 **전부 정렬**한 수다(같은 입력 · 같은 버전에서 결정적).
 - ★★★ **같은 「첫 원소 하나」인데 `foreach` 로 꺼내면 전부 정렬했다** — `OrderBy` 가 돌려준 객체가 **뒤에 무엇이 붙었는지**(`First` · `Take(1)`)를 보고 **최솟값 찾기로 바꿔 탔다**는 뜻이다. `foreach` 는 그 정보를 안 주니 **정렬부터** 한다.
 - ★★★ **이것은 BCL 구현이다** — XML 문서의 `OrderBy`·`First` 어디에도 비교 횟수 약속은 없다. ★ 「그래서 `First()` 가 빠르다」는 **재지 않았다** — 잰 것은 **`Compare` 호출 수**다.
 - ★ (1) 격자의 `OrderBy` 칸(6 줄)은 **「읽은 양」** 이고, 이 표는 **「그 뒤에 한 일」** 이다. 둘을 같은 것으로 읽지 마라.
@@ -467,7 +467,7 @@ cs33b-v2e.cs(1,42): error CS8023: Feature 'extension method' is not available in
 - ★★★ **`-langversion:2` → `CS8023 … 'lambda expression' … 3 or greater` 하나(6행)** — `a` 의 람다만 막혔다.
 - ★★★ **`b` `xs.Where(delegate (int x) { … })` 는 막히지 않았다** — 확장 메서드 **호출** 꼴인데 C# 2 로도 컴파일됐다. `c` 의 정적 호출은 당연히 된다(`Enumerable.Where` 는 그냥 정적 메서드다 — [30번](../30-extension-methods-and-extension-members/)).
 - ★★★ **확장 메서드 선언(`this int x`)은 막힌다** — (1,42) 의 `CS8023`(`'extension method'`). 같은 파일의 호출 `3.Twice()` 에는 진단이 없다. **판이 막는 것은 선언 쪽**이다.
-- ★★ **「LINQ 는 C# 3」의 언어 쪽 몸통은 람다·확장 메서드 선언(과 [34번](../34-linq-query-syntax/)의 쿼리 구문)** 으로 드러났다. 이미 선언된 확장 메서드의 **호출**을 판으로 막지 않는 것은 **이 판 Roslyn 의 성질**이다.
+- ★★ **「LINQ 는 C# 3」의 언어 쪽 몸통은 람다·확장 메서드 선언(과 [34번](../34-linq-query-syntax/)의 쿼리 구문)** 으로 드러났다. 이미 선언된 확장 메서드의 **호출**을 판으로 막지 않는 것은 **이 버전 Roslyn 의 성질**이다.
 - ★ **두 파일로 나눈 까닭** — 처음에 한 파일에 넣었더니 **선언 쪽 `CS8023` 하나만** 나오고 람다 쪽 `CS8023` 이 **사라졌다**(선언 단계의 오류가 있으면 메서드 본문 진단을 안 낸 것으로 읽힌다). 진단 0 줄이 「막히지 않았다」를 뜻하려면 **다른 오류가 없는 파일**이어야 한다.
 
 ## 문법 — 형태와 규칙
@@ -513,7 +513,7 @@ choi kim lee park
 
 1. ★★★ **「지연 연산자는 원소를 한 개씩 당긴다」** — `OrderBy`·`Reverse`·`GroupBy` 는 **첫 `MoveNext` 에서 끝까지**(3 / 16)((1)).
 2. ★★★ **「`Distinct` 도 다 모은 뒤 낸다」** — **한 개씩**이다(첫 `MoveNext` 뒤 1 줄)((1)).
-3. ★★ **「`OrderBy(…).First()` 는 전부 정렬한 뒤 첫 것을 집는다」** — 이 판은 **최솟값만 찾았다**(`Compare` 9). 전부 정렬하는 것은 `foreach` 로 꺼낼 때다(36)((1-b)).
+3. ★★ **「`OrderBy(…).First()` 는 전부 정렬한 뒤 첫 것을 집는다」** — 이 버전은 **최솟값만 찾았다**(`Compare` 9). 전부 정렬하는 것은 `foreach` 로 꺼낼 때다(36)((1-b)).
 4. ★★★ **「`IEnumerable<T>` 를 돌려주면 지연이다」** — `ToList`·`ToArray`·`ToDictionary` 도 `IEnumerable` 을 구현한다. **이름**(`To…`)과 **로그**로 가른다((1)).
 5. ★★★ **「`Any()` 는 컬렉션이면 첫 원소를 꺼낸다」** — `ICollection<T>` 면 **`Count` 속성만** 읽었다((2)). ★ 단 이것은 **BCL 구현**이다.
 6. ★★★ **「쿼리를 만들 때의 변수 값이 들어간다」** — **열거할 때의 값**이다((3)).
@@ -529,12 +529,12 @@ choi kim lee park
 | **`xs.Where(f)` 가 `Enumerable.Where(xs, f)` 로 풀린다** | ★★★ **언어**(확장 메서드 호출) | [30번](../30-extension-methods-and-extension-members/) |
 | **`null` 인자 → `ArgumentNullException`** | ★★ **BCL 계약**(XML 문서의 예외 조항) | (4) |
 | **`TryGetNonEnumeratedCount` 가 열거를 강제하지 않는다** | ★★ **BCL 계약**(XML 요약) | (2) 의 근거 |
-| **어느 연산자가 즉시이고 어느 것이 지연인가** | ★★ **BCL 계약**(Learn 의 분류 표 — ★ **이 배치는 안 열었다**) · ★★★ **로그는 이 판의 관찰** | (1) |
+| **어느 연산자가 즉시이고 어느 것이 지연인가** | ★★ **BCL 계약**(Learn 의 분류 표 — ★ **이 배치는 안 열었다**) · ★★★ **로그는 이 버전의 관찰** | (1) |
 | **`OrderBy`·`Reverse`·`GroupBy` 가 첫 `MoveNext` 에서 끝까지 · `Distinct` 가 한 개씩 · `Chunk(2)` 가 두 개** | ★★★ **BCL 구현**(첫 결과의 정의상 셋은 그럴 수밖에 없다 — 모으는 **방법**은 구현) | (1) |
 | **`Count()`·`Any()`·`ToList()` 가 `ICollection<T>` 를 알아본다** | ★★★ **BCL 구현** | (2) |
 | **`OrderBy(…).First()`·`Take(1)` 이 정렬 대신 최솟값 찾기(`Compare` 9 대 36)** | ★★★ **BCL 구현** | (1-b) |
 | **돌려준 타입 이름** | ★ **BCL 구현**(내부 클래스) | (1) |
-| **Java `Stream` 재사용 → `IllegalStateException`** | ★★ **Java API 계약**(Java 46편) · 문구는 이 판 | (5) |
+| **Java `Stream` 재사용 → `IllegalStateException`** | ★★ **Java API 계약**(Java 46편) · 문구는 이 버전 | (5) |
 
 ## 언제 쓰고 언제 안 쓰나
 
@@ -559,7 +559,7 @@ choi kim lee park
 - [28번 — 람다와 캡처](../28-lambdas-and-closure-capture/) (6) — 캡처한 변수를 고치면 양쪽이 본다.
 - [31번 — `IEnumerable<T>` 와 `foreach`](../31-ienumerable-and-foreach/) — `ICollection<T>`·`IEnumerable<T>` 의 역할.
 - 다음 — [34번 — 쿼리 구문](../34-linq-query-syntax/) · [35번 — 그룹·조인·집계](../35-linq-grouping-joins-and-aggregation/) · [36번 — `IQueryable`](../36-iqueryable-and-expression-trees/).
-- Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **44번**([`44-stream-creation/`](../../../java/syntax/44-stream-creation/)) · **45번**([`45-intermediate-operations/`](../../../java/syntax/45-intermediate-operations/) — `sorted`·`distinct` 는 **상태 있는 연산**) · **46번**([`46-terminal-operations/`](../../../java/syntax/46-terminal-operations/) — 재사용 `IllegalStateException`). ★ Java 45편은 `distinct` 를 `sorted` 와 같은 「모았다가 내보내는」 쪽에 두었다 — **C# `Distinct` 는 이 판에서 한 개씩**이었다. 두 언어의 구현이 다른 것인지는 **Java 쪽을 여기서 재지 않았다.**
+- Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **44번**([`44-stream-creation/`](../../../java/syntax/44-stream-creation/)) · **45번**([`45-intermediate-operations/`](../../../java/syntax/45-intermediate-operations/) — `sorted`·`distinct` 는 **상태 있는 연산**) · **46번**([`46-terminal-operations/`](../../../java/syntax/46-terminal-operations/) — 재사용 `IllegalStateException`). ★ Java 45편은 `distinct` 를 `sorted` 와 같은 「모았다가 내보내는」 쪽에 두었다 — **C# `Distinct` 는 이 버전에서 한 개씩**이었다. 두 언어의 구현이 다른 것인지는 **Java 쪽을 여기서 재지 않았다.**
 - Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **15번**([`15-generator-expressions-lazy-eval/`](../../../python/syntax/15-generator-expressions-lazy-eval/)) §4 — 두 번째 소비는 **예외가 아니라 빈 것**. 세 언어가 세 갈래다(C# 다시 돈다 · Java 던진다 · Python 비었다).
 - JS 갈래 목록([`js/syntax/README.md`](../../../js/syntax/README.md))의 **21번**([`21-iterator-helpers/`](../../../js/syntax/21-iterator-helpers/)) — 이터레이터 헬퍼의 지연.
 - Kotlin 갈래 목록([`kotlin/syntax/README.md`](../../../kotlin/syntax/README.md))의 **42번**(컬렉션 변환 — 기본 **즉시**) · **47번**(`Sequence` — 지연). ★ 폴더가 아직 없어 링크하지 않는다.
@@ -582,15 +582,15 @@ choi kim lee park
 
 **기준 소스** — ★ **SDK 참조 팩의 XML 문서** `packs/Microsoft.NETCore.App.Ref/10.0.12/ref/net10.0/System.Linq.xml`(로컬에서 열어 확인: `Enumerable.Where` 의 예외 조항 「`source` 또는 `predicate` 가 `null` 이면 **`ArgumentNullException`**」 · `Count` 의 조항 「`source` 가 `null` 이면 `ArgumentNullException` · 개수가 `Int32.MaxValue` 를 넘으면 `OverflowException`」 · `TryGetNonEnumeratedCount` 의 요약 「**열거를 강제하지 않고** 개수를 알아내려 시도한다」 · `AsEnumerable` 의 요약 「입력을 **`IEnumerable<T>` 타입으로** 돌려준다」).\
 ★★★ **이 배치는 외부 네트워크를 쓰지 않았다** — Learn 의 「표준 쿼리 연산자의 실행 방식 분류」 표와 LINQ 개요는 **열어 보지 않았다.** 그 표를 인용하는 대신 **(1) 격자가 실측이다.** XML 문서에는 **「지연 실행」이라는 낱말이 한 번도 없다**((0) — `deferred 0 · lazy 0`) — 그래서 연산자마다 **즉시냐 지연이냐는 이 문서에서 전부 로그로** 가렸다.
-**실행 검증** — 이 문서의 모든 출력은 맨 위 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26). 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣었다 — 사람이 옮겨 적은 줄은 없다. **대비는 실측이다** — **javac/java 21.0.5** 로 Stream 을 두 번 썼다((5)).
+**실행 검증** — 이 문서의 모든 출력은 맨 위 「이 버전」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26). 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣었다 — 사람이 옮겨 적은 줄은 없다. **대비는 실측이다** — **javac/java 21.0.5** 로 Stream 을 두 번 썼다((5)).
 **버전** — ★★ **언어 쪽 경계는 쟀다** — `-langversion:2` 가 **람다**와 **확장 메서드 선언**에 `CS8023 … 3 or greater` 를 냈고, **확장 메서드 호출 `xs.Where(delegate …)` 는 막지 않았다**((6)). ★ 라이브러리 쪽(`Chunk`·`TryGetNonEnumeratedCount` 가 들어온 .NET 판)은 이 머신에 참조 팩이 **10.0.12 하나뿐**이라 **확인하지 못했다.**
 **경계** — ★★★ **「호출하면 0 줄 · `ToList()` 하면 돈다 · 사슬이 `4 · 4`」 는 [32번](../32-yield-return-iterators-and-deferred-execution/) (6)(7)이 이미 쟀다** — 여기서는 **다시 재지 않고 인용한다.** 여기는 그 다음 두 칸이다 — ① **연산자 16개를 「호출 즉시」와 「첫 `MoveNext`」 두 시점으로 가른 격자** · ② **「지연인데 한 개씩이 아닌」 연산자**(`OrderBy`·`Reverse`·`GroupBy`).\
 ★★ LINQ 가 **`System.Linq.Enumerable` 의 확장 메서드 묶음**인 것은 [30번](../30-extension-methods-and-extension-members/) (1)이 정본이다(`Where` 오버로드 2개가 전부 `static` · `[Extension]`). ★★ 캡처한 변수를 고치면 양쪽이 본다는 것은 [28번](../28-lambdas-and-closure-capture/) (6)이 정본이다 — 여기서는 **그것이 쿼리에서 어떻게 보이나** 한 칸((3)).
-★★★ **본체 창은 ⑤ 실행 로그 격자다** — 「즉시냐 지연이냐」는 **소스가 로그를 몇 줄 남겼나**로만 보인다. 반환 타입으로는 안 보인다((1) — `ToList` 도 `IEnumerable<T>` 를 구현한다).
+★★★ **핵심 창은 ⑤ 실행 로그 격자다** — 「즉시냐 지연이냐」는 **소스가 로그를 몇 줄 남겼나**로만 보인다. 반환 타입으로는 안 보인다((1) — `ToList` 도 `IEnumerable<T>` 를 구현한다).
 
-★★ **흔들리는 칸 / 안 흔들리는 칸**
+★★ **실행마다 달라지는 항목 / 달라지지 않는 항목**
 
-| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+| 실행마다 달라진다(근거로 쓰지 않는다) | 달라지지 않는다(근거로 쓴다) |
 |---|---|
 | ★ **돌려준 타입의 이름**(``IEnumerableWhereIterator`1`` · ``OrderedIterator`2`` …) — BCL 내부 클래스라 **판마다 바뀔 수 있다** | ★★★ **로그 줄 수와 순서** · **「호출 즉시 소스를 건드린 칸 N / M」** · **「GetEnumerator 가 안 불린 칸 N / M」** |
 | 예외 **문구**(Java 의 `stream has already been operated upon or closed`) | ★★★ 예외 **타입**(`ArgumentNullException` · `DivideByZeroException` · `IllegalStateException`) · **호출 때냐 열거 때냐** |

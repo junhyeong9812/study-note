@@ -189,7 +189,7 @@ javap -v -p Ex$Plain — flags 줄 그대로
 - 상수별 본문의 진짜 이득은 다형성이 아니라 **컴파일 에러**다.\
   JLS §8.9.2: 추상 메서드가 있으면 "all of `E` 's enum constants have class bodies that provide concrete implementations of `m`" 여야 한다 — 상수를 하나 추가하면 **그 자리가 컴파일 에러**가 된다. `switch` 는 그것을 못 잡는다.
 
-### 4. `EnumSet`·`EnumMap` 과 `HashSet`·`HashMap` 의 출력이 갈린다
+### 4. `EnumSet`·`EnumMap` 과 `HashSet`·`HashMap` 의 출력이 달라진다
 
 **출력** (`Ex.java (13-c)`, JDK 21.0.5)
 
@@ -278,7 +278,7 @@ java/util/EnumMap.java — put/get 의 핵심 줄 (JDK 21.0.5 src.zip · 전문�
 - 그래서 규칙은 "`ordinal()` 을 쓰지 마라"가 아니라 **"`ordinal()` 을 내보내지 마라"** 다.\
   숫자 코드가 꼭 필요하면 `SHIPPED(30)` 처럼 **내가 정한 필드**를 둔다.
 
-### 6. 같은 파일이냐 다른 파일이냐로 `switch` 의 컴파일 결과가 갈린다
+### 6. 같은 파일이냐 다른 파일이냐로 `switch` 의 컴파일 결과가 달라진다
 
 **출력** — `javap -c -p Ex` 의 `kind()` 첫머리 (전문은 2-summary.md 동작 방식 (5))
 

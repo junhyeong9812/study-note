@@ -89,7 +89,7 @@
 
 | 보이는 것 (예외·로그·지표) | 원인 후보 (언어·런타임) | 첫 확인 (명령·플래그) | leaf |
 |---|---|---|---|
-| `java.lang.NoSuchMethodError: 'java.lang.String com.x.Money.fmt(long, java.lang.String)'`, 기동·테스트는 통과, 그 기능을 처음 쓸 때 500, 스택 맨 위가 라이브러리 내부 | 호출 지점은 컴파일 때 본 **서술자**(이름 + 인자·반환 타입)로 실행 때 메서드를 다시 찾는다. 실행 경로에 낮은 판이 올라왔다(Maven "가까운 쪽" 규칙, 클래스패스 앞의 jar가 이김). 19 실험에서 두 판을 다 올려도 먼저 나온 jar 하나만 쓰였다 | `java -verbose:class … \| grep Money`(어느 jar에서 왔나), `javap -c`로 호출 지점의 서술자, `mvn dependency:tree -Dincludes=…`·`gradle dependencyInsight` | [19-1](../19-modules-and-dependency-resolution/2-summary.md) |
+| `java.lang.NoSuchMethodError: 'java.lang.String com.x.Money.fmt(long, java.lang.String)'`, 기동·테스트는 통과, 그 기능을 처음 쓸 때 500, 스택 맨 위가 라이브러리 내부 | 호출 지점은 컴파일 때 본 **서술자**(이름 + 인자·반환 타입)로 실행 때 메서드를 다시 찾는다. 실행 경로에 낮은 판이 올라왔다(Maven "가까운 쪽" 규칙, 클래스패스 앞의 jar가 이김). 19 실험에서 두 버전을 다 올려도 먼저 나온 jar 하나만 쓰였다 | `java -verbose:class … \| grep Money`(어느 jar에서 왔나), `javap -c`로 호출 지점의 서술자, `mvn dependency:tree -Dincludes=…`·`gradle dependencyInsight` | [19-1](../19-modules-and-dependency-resolution/2-summary.md) |
 | `java.lang.NoClassDefFoundError: com/x/Money` + `Caused by: java.lang.ClassNotFoundException: com.x.Money`, IDE에서는 됨 | 컴파일 경로에는 있고 실행 경로에는 없음(`provided`·`compileOnly`, 셰이딩 누락) | 패키징 결과 `jar tf`에 그 클래스가 있나 | [19-2](../19-modules-and-dependency-resolution/2-summary.md) |
 | 예외 없음. 설정을 등록했는데 다른 모듈은 "없음", `instanceof`가 false, `npm ls <pkg>`에 같은 이름이 두 경로 | 범위가 겹치지 않아 중첩 설치 → 모듈 객체가 둘(19 실험 2 `same module object? false`) | `npm ls <pkg>` | [19-5](../19-modules-and-dependency-resolution/2-summary.md) |
 | JVM에서는 통과, 네이티브 바이너리에서만 `ClassNotFoundException`·`NoSuchMethodException`·`MissingReflectionRegistrationError` | AOT 빌더는 빌드 때 보이는 호출 그래프만 넣는다. 이름이 설정·DB·요청에서 오는 리플렉션은 그래프에 안 보인다. 클래스가 다른 경로로 들어가 있어도 리플렉션 등록이 없으면 조회가 실패한다 | 실패한 클래스 이름이 문자열에서 오나, `reachability-metadata.json`에 있나 | [24-1](../24-aot-native-image-and-startup/2-summary.md) · [01-2](../01-compile-interpret-jit/2-summary.md) |
@@ -315,7 +315,7 @@ NPE는 **문구로 두 갈래**다. JEP 358의 상세 메시지(`Cannot invoke "
 
 | 보이는 것 | 원인 후보 | 첫 확인 | leaf |
 |---|---|---|---|
-| API 하나가 무거워졌는데 **모든** 요청 지연이 동시에 뜀, CPU는 코어 하나만 100%, 헬스 체크 타임아웃. 프로파일에서 루프 스레드가 `pbkdf2Sync`·`JSON.parse`·JDBC 드라이버 안 | 협력적 전환은 `await`·콜백 반환에서만 — 그 사이의 동기 코드는 끝날 때까지 루프를 쥔다. 14 실험 3(node 22, 4회): `sync`는 handler 156~173ms 동안 10ms 타이머 최대 지연도 같은 156~173ms, `async`는 1~4ms | `monitorEventLoopDelay` p99, 루프 스레드 스택 | [14-1](../14-concurrency-models/2-summary.md) |
+| API 하나가 무거워졌는데 **모든** 요청 지연이 동시에 뜀, CPU는 코어 하나만 100%, 헬스 체크 타임아웃. 프로파일에서 루프 스레드가 `pbkdf2Sync`·`JSON.parse`·JDBC 드라이버 안 | 협력적 전환은 `await`·콜백 반환에서만 — 그 사이의 동기 코드는 끝날 때까지 루프를 잡는다. 14 실험 3(node 22, 4회): `sync`는 handler 156~173ms 동안 10ms 타이머 최대 지연도 같은 156~173ms, `async`는 1~4ms | `monitorEventLoopDelay` p99, 루프 스레드 스택 | [14-1](../14-concurrency-models/2-summary.md) |
 | Node 보고서 생성 API가 돌 때 다른 API도 멈춤 | JS는 이벤트 루프 스레드 하나에서 CPU 작업을 함 — GIL과 같은 모양의 런타임 제약 | 그 API의 동기 CPU 시간 | [15-5](../15-gil-and-runtime-constraints/2-summary.md) |
 | 가상 스레드로 바꿨는데 처리량이 낮고 CPU는 놂, 덤프에서 `ForkJoinPool-1-worker-*`가 모두 `synchronized` 안 블로킹 호출 | JDK 21~23: `synchronized` 안 블로킹은 언마운트가 안 돼 캐리어(기본 CPU 수)까지 잠듦. 14 실험 2: 100ms 작업 100개가 5초 | `-Djdk.tracePinnedThreads=short`의 `reason:MONITOR`, JFR `jdk.VirtualThreadPinned` | [14-2](../14-concurrency-models/2-summary.md) |
 | 전환 뒤 `Connection is not available, request timed out` 같은 풀 대기 타임아웃 증가 | 가상 스레드는 동시 요청을 늘릴 뿐 DB 처리량은 그대로. 대기가 풀 앞으로 옮겨감 | 동시 요청 수 vs 풀 크기 | [14-3](../14-concurrency-models/2-summary.md) |

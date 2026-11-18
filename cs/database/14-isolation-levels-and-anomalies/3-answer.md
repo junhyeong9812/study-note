@@ -41,7 +41,7 @@
 - PostgreSQL 17 RR: 둘 다 성공, **0명**. 서로 다른 행을 써서 SI의 같은 행 검사에 안 걸린다.
 - PostgreSQL 17 SERIALIZABLE: 나중 세션이 `ERROR: could not serialize access due to read/write dependencies among transactions`, `DETAIL: Reason code: Canceled on identification as a pivot, during write.`, `HINT: The transaction might succeed if retried.` → 최종 1명.
 - MySQL 8.4 SERIALIZABLE: `ERROR 1213 (40001): Deadlock found when trying to get lock; try restarting transaction` → 최종 1명.
-  - 이유: 자동 커밋이 꺼진 트랜잭션의 일반 SELECT가 `FOR SHARE`로 바뀐다. 두 세션이 둘 다 공유 락을 쥔 채 상대가 공유 락을 쥔 행에 배타 락을 요청해 교착이 된다. InnoDB 교착 탐지가 한쪽을 롤백한다.
+  - 이유: 자동 커밋이 꺼진 트랜잭션의 일반 SELECT가 `FOR SHARE`로 바뀐다. 두 세션이 둘 다 공유 락을 잡은 채 상대가 공유 락을 잡은 행에 배타 락을 요청해 교착이 된다. InnoDB 교착 탐지가 한쪽을 롤백한다.
 
 ### 5. SI vs 락 기반 RR
 

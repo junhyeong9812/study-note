@@ -144,7 +144,7 @@ http://sn-dw-w10-e3:2379   member=73614ce759299fd2 leader=73614ce759299fd2 term=
   - 그래도 시계 속도 차이(drift)와 프로세스 멈춤(GC·스왑)은 남는다.
 - Kubernetes client-go `leaderelection` 패키지 문서 주석이 이것을 그대로 적는다.
   - "This implementation does not guarantee that only one client is acting as a leader (a.k.a. fencing)."
-  - 임의의 시계 어긋남(skew)에는 견디지만 임의의 시계 **속도** 차이(skew rate)에는 견디지 못한다("tolerant to arbitrary clock skew, but is not tolerant to arbitrary clock skew rate"). 견딜 수 있는 속도 비율은 `LeaseDuration` 대 `RenewDeadline` 비로 정한다고 적는다.
+  - 임의의 클럭 스큐(skew)에는 견디지만 임의의 시계 **속도** 차이(skew rate)에는 견디지 못한다("tolerant to arbitrary clock skew, but is not tolerant to arbitrary clock skew rate"). 견딜 수 있는 속도 비율은 `LeaseDuration` 대 `RenewDeadline` 비로 정한다고 적는다.
 - 그래서 리스만으로는 리더 둘을 못 막는다. 남는 겹침은 **임기 번호를 쓰기에 실어 받는 쪽이 검사**해서 막는다(12번 fencing).
 
 ### 5. 실험: etcd lease로 하는 애플리케이션 선출
@@ -177,7 +177,7 @@ t= 6458ms B 사임(lease revoke) → 리더 = (없음)
 - **단조 증가 카운터(term·epoch)** — 더 큰 번호가 더 최근 리더다. 저장할 때 디스크에 남겨야 재시작 뒤에도 되돌아가지 않는다(Raft 그림 2의 영속 상태 `currentTerm`·`votedFor`).
 - **정족수(과반)** — 두 과반은 한 대 이상 겹친다. "한 term에 리더 하나"와 "과반 없는 쪽은 결정 못 함"이 여기서 나온다. 계산은 28번 Paxos의 정족수 교집합 실험.
 - **상태 기계** — follower → (pre-candidate) → candidate → leader. 더 큰 term을 보면 어느 상태에서든 follower로.
-- **무작위 타이머** — 모두 같은 순간에 후보가 되면 표가 갈린다. 타임아웃을 무작위로 흩어 놓는다(11번 실험).
+- **무작위 타이머** — 모두 같은 순간에 후보가 되면 표가 달라진다. 타임아웃을 무작위로 흩어 놓는다(11번 실험).
 - **lease(기한 + 갱신)** — 시간으로 권리를 끊는 장치. 원본 [ops-patterns/11-distributed-lock](../../ops-patterns/11-distributed-lock/2-summary.md)의 `LeaseLock`과 같은 구조다.
 - **순서 대기열(create_revision·sequential znode)** — etcd는 create_revision, ZooKeeper는 `EPHEMERAL|SEQUENTIAL` znode의 순번으로 후보를 줄 세운다. 앞사람 키만 지켜보면 리더가 바뀔 때 모두가 한꺼번에 깨어나지 않는다(Hunt 외 2010, "Simple Locks without Herd Effect").
 - **장애 탐지기** — 하트비트 + 타임아웃. φ accrual 같은 적응형 탐지기는 [02-system-and-failure-models](../02-system-and-failure-models/2-summary.md).

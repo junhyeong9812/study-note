@@ -18,7 +18,7 @@ PR은 2026-06-13 제출 후 리뷰 대기 상태다.
 다음 표는 그 좌표를 항목별로 정리한 것이다.
 
 > **package-private** — 접근 제어자를 붙이지 않았을 때의 가시성. 같은 패키지 밖에서는 클래스 이름조차 쓸 수 없다.\
-> 예: `AbstractXMLStreamReader`·`XMLEventStreamReader`가 그렇고, 그래서 외부는 `StaxUtils` 팩터리를 통해서만 이 객체를 손에 쥔다.
+> 예: `AbstractXMLStreamReader`·`XMLEventStreamReader`가 그렇고, 그래서 외부는 `StaxUtils` 팩터리를 통해서만 이 객체를 손에 잡는다.
 
 | 항목 | 값 |
 |---|---|
@@ -34,7 +34,7 @@ PR은 2026-06-13 제출 후 리뷰 대기 상태다.
 그런데 결함이 공개 표면에 노출되는 이유는 `StaxUtils.createEventStreamReader`가 public이고 **반환 타입이 JDK 표준 인터페이스**라는 데 있다.\
 호출자는 구현 클래스 이름을 볼 수 없는 대신 `XMLStreamReader` javadoc이 약속한 모든 계약을 쓸 권리를 갖는다.
 
-누가 언제 부르는가는 두 층으로 갈린다.\
+누가 언제 부르는가는 두 층으로 나뉜다.\
 **어댑터를 만드는 쪽**은 저장소 안에 하나뿐이다 — `XStreamMarshaller.unmarshalXmlEventReader`가 `StAXSource` 언마셜링 경로에서 `createEventStreamReader`를 호출한 뒤 XStream의 `StaxReader`에 넘긴다.\
 **문제의 4인자 오버로드를 부르는 쪽**은 저장소 안에 하나도 없다.\
 `git grep getTextCharacters` 기준으로 프로덕션 호출처는 `StaxStreamXMLReader.java:214`(문자 이벤트)와 `:224`(주석 이벤트) 두 곳뿐이고, 둘 다 인자 없는 `getTextCharacters()`에 `getTextStart()`·`getTextLength()`를 조합해 쓴다.\
@@ -218,7 +218,7 @@ source = "content" (길이 7), sourceStart = 4, 요청 length = 4
 `sourceStart > source.length`는 (C4)가 명시적으로 배제한 무효 입력이고, 0을 돌려주면 호출자에게는 "텍스트 끝"으로 보여 계약 위반이 조용히 삼켜진다.\
 수정의 목표는 **유효 입력에서 예외를 없애되 무효 입력을 감추지 않는 것**이었다.
 
-> **무음 실패 (silent failure)** — 잘못된 입력이나 처리가 예외·로그 없이 정상처럼 통과해 버리는 상태.\
+> **조용한 실패 (silent failure)** — 잘못된 입력이나 처리가 예외·로그 없이 정상처럼 통과해 버리는 상태.\
 > 예: 범위를 벗어난 `sourceStart = 8`에 0을 돌려주면 호출자 눈에는 "텍스트 끝"으로 보여 위반이 감춰진다.
 
 둘째, `sourceStart`를 명시적으로 검증해 `IndexOutOfBoundsException`을 직접 던지는 안. 기각했다.\

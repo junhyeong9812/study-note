@@ -170,7 +170,7 @@ void canConvertOptionalToObjectReflectsContainedElementType() {
   갈 수 있는 방향은 true, 갈 수 없는 방향은 false, 그리고 그 false가 `convert`의 실제 실패와 짝을 이룬다는 것 — `canConvert`가 예언이고 `convert`가 실행인데 둘이 어긋나 있었다는 문제 정의를 단언 배치로 재현한다.\
   마지막 줄의 raw 확인은 1번 테스트와 중복이지만, "조이면서 관대함을 잃지 않았다"를 같은 시야 안에서 보이려는 배치다.
 - **`ResolvableType.forClassWithGenerics`를 쓰는 이유**: 4번과 달리 구체 타입 인자는 코드로 직접 조립할 수 있으므로 필드 선언 없이 만든다.\
-  즉 이 파일의 두 fixture 방식(필드 선언 읽기 / 코드 조립)은 만들 수 있는 타입인지 아닌지에 따라 갈린다.
+  즉 이 파일의 두 fixture 방식(필드 선언 읽기 / 코드 조립)은 만들 수 있는 타입인지 아닌지에 따라 달라진다.
 
 ## fixture
 

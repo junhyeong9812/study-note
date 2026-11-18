@@ -2,7 +2,7 @@
 
 상위: [vacuum](../README.md)
 
-**테이블 하나를 트랜잭션 하나로 vacuum 한다.** 트랜잭션을 열고, lazy vacuum 이면 자기 PGPROC 에 `PROC_IN_VACUUM` 을 세워 다른 VACUUM 의 OldestXmin 계산에서 빠지고, `ShareUpdateExclusiveLock` 으로 테이블을 잠근다. 이 잠금은 SELECT·INSERT·UPDATE·DELETE 와는 충돌하지 않고 다른 VACUUM·DDL 과만 충돌한다. 그 뒤 세션 잠금을 하나 더 걸고 테이블 AM 의 vacuum([06] `heap_vacuum_rel`)을 부르고, 커밋하고, 같은 세션 잠금을 쥔 채로 TOAST 테이블에 대해 자기 자신을 다시 부른다.
+**테이블 하나를 트랜잭션 하나로 vacuum 한다.** 트랜잭션을 열고, lazy vacuum 이면 자기 PGPROC 에 `PROC_IN_VACUUM` 을 세워 다른 VACUUM 의 OldestXmin 계산에서 빠지고, `ShareUpdateExclusiveLock` 으로 테이블을 잠근다. 이 잠금은 SELECT·INSERT·UPDATE·DELETE 와는 충돌하지 않고 다른 VACUUM·DDL 과만 충돌한다. 그 뒤 세션 잠금을 하나 더 걸고 테이블 AM 의 vacuum([06] `heap_vacuum_rel`)을 부르고, 커밋하고, 같은 세션 잠금을 잡은 채로 TOAST 테이블에 대해 자기 자신을 다시 부른다.
 
 ## 위치
 

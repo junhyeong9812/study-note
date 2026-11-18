@@ -20,7 +20,7 @@
 - 실제 차이(git 2.43 `--word-diff=plain`)
   - 게으름: "and document" → "and **then** document".
   - 오만: "the sort of thing Zeus zaps you for" → "the sort of thing **for which** Zeus zaps you".
-- 조급함 항목은 두 판이 같았다.
+- 조급함 항목은 두 버전이 같았다.
 
 ### 4. laziness vs 지연 평가
 

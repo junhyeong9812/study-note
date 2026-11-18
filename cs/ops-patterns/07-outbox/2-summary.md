@@ -166,7 +166,7 @@ db.inTransaction(tx -> {
 1. `FoundationTest.java` 를 따라친다 — 스켈레톤에서도 통과한다.\
    전제 확인이다.
 2. `CrashTest.java` 를 따라친다.
-3. `DirectPublisher` 의 **TODO 1** — 기준선.\
+3. `DirectPublisher` 의 **TODO 1** — 베이스라인.\
    읽으면 맞는 것 같다(저장 후 곧바로 발행, 장애 지점 둘을 주입).
 4. `OutboxPublisher` 의 **TODO 2** — 주문 저장과 이벤트 기록을 **한 트랜잭션 안에서**.\
    브로커를 부르지 않는다.
@@ -177,7 +177,7 @@ db.inTransaction(tx -> {
 아래 서머리는 이 문제(README)를 분석·정리한 것이다.
 
 실제 시스템에 붙일 때의 순서: ① 비즈니스 쓰기와 아웃박스 쓰기를 **같은 트랜잭션**에 넣는다(커밋 횟수 1) → ② 릴레이는 발행 → 표시 순서로, 지우지 않고 표시한다 → ③ 소비자 쪽에 이벤트 id 기준 멱등을 둔다(중복은 여기서 흡수) → ④ 미발행 조회 인덱스와 표시된 행의 보관 기간을 정한다 → ⑤ 릴레이 수와 순서 요구를 맞춘다(하나 또는 파티션 키).\
-위 「문제」절의 TODO는 ①·②를 기준선(직접 발행)과 대조해 만든다.
+위 「문제」절의 TODO는 ①·②를 베이스라인(직접 발행)과 대조해 만든다.
 
 ## 장애 시나리오와 대처
 
@@ -267,7 +267,7 @@ db.inTransaction(tx -> {
 
 ### 관련 자료
 - 챕터 안내: `/home/jun/project/myway/ops-patterns/07-outbox/README.md`
-- 정답 기준 소스: `/home/jun/project/myway/ops-patterns/07-outbox/impl/DirectPublisher.java`(기준선 — 읽으면 맞는 것 같다), `impl/OutboxPublisher.java`, `impl/OutboxRelay.java`
+- 정답 기준 소스: `/home/jun/project/myway/ops-patterns/07-outbox/impl/DirectPublisher.java`(베이스라인 — 읽으면 맞는 것 같다), `impl/OutboxPublisher.java`, `impl/OutboxRelay.java`
 - 조각들: `.../src/main/java/com/ops/outbox/Database.java`, `MessageBroker.java`, `OutboxEntry.java`, `Event.java`, `CrashPoint.java`(장애 지점 주입), `OrderService.java`
 - 테스트: `.../src/test/java/com/ops/outbox/FoundationTest.java`(전제 확인 — 스켈레톤에서도 통과), `CrashTest.java`(죽는 지점별 결과), `DeliveryTest.java`
 - 이웃 주제: `06-idempotency-store`(중복을 흡수하는 받는 쪽), 다음 챕터 `08-saga`(여러 서비스에 걸친 작업 — 저장소가 하나라는 전제조차 없어진다)

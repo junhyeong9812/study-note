@@ -365,8 +365,8 @@ show("default=lambda o: [o]", lambda: json.dumps(Box(), default=lambda o: [o]))
 ### 10. 층 가르기 (경계)
 
 * 「키는 늘 `str`」·「`object_hook` 은 안쪽 객체부터」·「`Circular reference detected`」·「`indent` 를 주면 다른 인코더가 돈다」 —
-  각각 **라이브러리 보장 · CPython 구현 · 이 판의 관찰** 중 어디인가?
-* ★ 이 주제에서 **3.11 과 3.12 가 갈린 칸**은 무엇이었나 — 무엇은 안 갈렸나?
+  각각 **라이브러리 보장 · CPython 구현 · 이 버전의 관찰** 중 어디인가?
+* ★ 이 주제에서 **3.11 과 3.12 가 달라진 항목**은 무엇이었나 — 무엇은 안 갈렸나?
 
 ### 11. JS 31편과의 경계 (연결)
 

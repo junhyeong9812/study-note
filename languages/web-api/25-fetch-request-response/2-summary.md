@@ -1,6 +1,6 @@
 # web-api/25 — `fetch` 와 `Request`/`Response`: 옵션·헤더·상태 코드가 예외가 아니라는 것 — 정리 (힌트)
 
-**이 판의 Chrome**
+**이 버전의 Chrome**
 
 ```text
 $ google-chrome --version
@@ -8,24 +8,24 @@ Google Chrome 151.0.7922.173
 (exit 0)
 ```
 
-### 흔들리는 칸 / 안 흔들리는 칸
+### 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| **안 흔들린다** | 격자 여섯 줄 · 콘솔 다섯 줄 · 서버 로그 · 값 다루기 · 헤더 · `urllib` 대비 | 캡처 세 판이 **한 글자도 같았다** |
+| **달라지지 않는다** | 격자 여섯 줄 · 콘솔 다섯 줄 · 서버 로그 · 값 다루기 · 헤더 · `urllib` 대비 | 캡처 세 번이 **한 글자도 같았다** |
 | ★ **흔들렸다가 고쳤다** | **서버 로그의 마지막 줄이 빠지는 것** — `urllib` 블록에서 한 판 | 클라이언트는 **헤더만 받고도** 돌아온다. 서버가 로그를 남기기 전에 찍었다. **처리 중인 요청이 0 이 될 때까지** 기다린 뒤 찍게 고쳤다 |
-| **흔들린다** | Chrome 판 번호 · 포트 | 포트는 출력에 안 나온다(이름 A·B 로 바꿔 적는다) |
+| **실행마다 달라진다** | Chrome 판 번호 · 포트 | 포트는 출력에 안 나온다(이름 A·B 로 바꿔 적는다) |
 
 - 재대조에서 정규화하는 칸은 없다. **위 표에 없는 차이는 전부 고칠 것**이다.
 
-### 이 주제가 쓰는 창 / 부적용인 창
+### 이 주제가 쓰는 창 / 해당 없는 창
 
 | 창 | 이 주제에서 | 무엇을 답하나 |
 |---|---|---|
-| 창 ① `--dump-dom` 트리 | **부적용** | — |
+| 창 ① `--dump-dom` 트리 | **해당 없음** | — |
 | 창 ② 노드 프로브 | ★ **쓴다** | `res.ok` · `res.status` · `res.headers.get()` · `document.cookie` |
 | 창 ③ 같은 것을 두 번 읽기 | ★ **쓴다** | 같은 `Request` 를 두 번 `fetch` ((4)) |
-| **창 ④ 서버 요청 로그 — 페이지 대 서버** | ★★★ **본체** | 요청이 **도착했나** · 서버가 **처리했나** · 어떤 헤더가 **실제로 실렸나** |
+| **창 ④ 서버 요청 로그 — 페이지 대 서버** | ★★★ **핵심** | 요청이 **도착했나** · 서버가 **처리했나** · 어떤 헤더가 **실제로 실렸나** |
 | **콘솔(CDP Log 도메인)** | ★★ **쓴다** | `catch` 가 **말해 주지 않는** 이유(CORS 문구) |
 | 파이썬 `urllib` | ★ **대비** | 같은 404 에 **다른 언어는 예외를 던진다** |
 
@@ -34,7 +34,7 @@ Google Chrome 151.0.7922.173
 | 무엇을 | 왜 못 보나 |
 |---|---|
 | ★ **실제 네트워크 끊김**(와이파이·DNS 실패·중간 장비) | 로컬 루프백만 썼다. 「네트워크 실패」는 **아무도 안 듣는 포트**(`ERR_CONNECTION_REFUSED`) 한 가지로만 흉내 냈다 |
-| **HTTP/2 · HTTP/3 에서의 헤더 이름 글자꼴** | 이 판은 HTTP/1.1 이다 — 헤더 이름이 **보낸 글자꼴 그대로** 서버에 닿았다((5)). HTTP/2 에서 어떻게 되는지는 이 판으로 못 본다 |
+| **HTTP/2 · HTTP/3 에서의 헤더 이름 글자꼴** | 이 버전은 HTTP/1.1 이다 — 헤더 이름이 **보낸 글자꼴 그대로** 서버에 닿았다((5)). HTTP/2 에서 어떻게 되는지는 이 버전으로 못 본다 |
 | **리다이렉트 · 캐시 · 서비스 워커** | 던지지 않았다 |
 
 ## 한눈에 — 쉽게 말하면
@@ -72,7 +72,7 @@ Google Chrome 151.0.7922.173
 
 **언제 쓰나** — 「에러 처리를 했는데 404 가 화면에 안 뜬다」·「CORS 에러가 났으니 주문은 안 들어갔겠지」일 때.
 
-**던진 것** — 여섯 요청을 차례로. 서버 A 의 `/status?code=N` 은 그 상태로 JSON 을 돌려주고, 서버 B 의 `/order` 는 본문을 받아 **「주문을 처리했다」** 고 로그를 남긴 뒤 200 을 준다 — `acao=1` 일 때만 `Access-Control-Allow-Origin: *` 를 붙인다.
+**실행한 것** — 여섯 요청을 차례로. 서버 A 의 `/status?code=N` 은 그 상태로 JSON 을 돌려주고, 서버 B 의 `/order` 는 본문을 받아 **「주문을 처리했다」** 고 로그를 남긴 뒤 200 을 준다 — `acao=1` 일 때만 `Access-Control-Allow-Origin: *` 를 붙인다.
 
 ```html
 <!-- wa24b-25-grid.html -->
@@ -125,7 +125,7 @@ catch 로 간 칸 = 2 / 6
 ```
 
 - ★★★ **`catch` 로 간 칸 2 / 6** — 없는 포트와 허용 없는 다른 출처 POST 뿐이다. **404·500 은 `then`** 이고 `res.ok` 만 `false` 다.
-- ★★ **두 `catch` 의 오류가 한 글자도 같다** — `TypeError 「Failed to fetch」`. 페이지는 **「연결이 안 됐다」와 「CORS 로 막혔다」를 가를 수 없다.**
+- ★★ **두 `catch` 의 오류가 한 글자도 같다** — `TypeError 「Failed to fetch」`. 페이지는 **「연결이 안 됐다」와 「CORS 로 막혔다」를 구분할 수 없다.**
 - ★ Fetch 명세 그대로 — **「ok status 는 200\~299」** 이고, 거부는 **「response 가 network error 일 때 `TypeError`」** 뿐이다. 404 응답은 network error 가 아니다.
 
 ### (2) ★★★ 서버는 처리했는데 페이지만 못 읽는다 — 콘솔과 서버 로그
@@ -433,14 +433,14 @@ A GET /status?code=500  → 500 응답을 끝까지 보냈다
 
 | 이 문서의 서술 | 누가 보장하나 |
 |---|---|
-| `ok` 는 200\~299 · 404·500 에서 이행 | **명세**(Fetch — ok status · fetch() 는 network error 일 때만 `TypeError` 로 거부) · 이 판도 그랬다((1)) |
-| CORS 검사 실패 → network error → `TypeError` | **명세**(Fetch — CORS check 실패면 network error) · 이 판도 그랬다((1)) |
+| `ok` 는 200\~299 · 404·500 에서 이행 | **명세**(Fetch — ok status · fetch() 는 network error 일 때만 `TypeError` 로 거부) · 이 버전도 그랬다((1)) |
+| CORS 검사 실패 → network error → `TypeError` | **명세**(Fetch — CORS check 실패면 network error) · 이 버전도 그랬다((1)) |
 | ★ CORS 로 거부돼도 **요청은 서버에 닿고 처리된다** | **명세의 순서**(검사는 **응답**에 대해 한다) · ★ **서버 로그가 증명**((2)) |
-| 금지 요청 헤더가 지워지는 것 · `Set-Cookie` 를 못 읽는 것 | **명세**(Fetch — forbidden request-header · forbidden response-header name) · 이 판도 그랬다((5)) |
-| 한 번 쓴 본문 있는 `Request` 는 다시 못 쓴다 · `clone()` | **명세**(Fetch — unusable · clone) · 이 판도 그랬다((4)) |
+| 금지 요청 헤더가 지워지는 것 · `Set-Cookie` 를 못 읽는 것 | **명세**(Fetch — forbidden request-header · forbidden response-header name) · 이 버전도 그랬다((5)) |
+| 한 번 쓴 본문 있는 `Request` 는 다시 못 쓴다 · `clone()` | **명세**(Fetch — unusable · clone) · 이 버전도 그랬다((4)) |
 | 오류 **문구**(`Failed to fetch` 등) | ★ **Chrome 의 글자** — 명세는 `TypeError` 만 정한다 |
 | 콘솔의 CORS 설명 · 404 를 `error` 로 적는 것 | ★ **Chrome 개발자 도구의 성질** |
-| 헤더 이름이 **보낸 글자꼴 그대로** 닿은 것 | ★ **이 판의 관찰**(HTTP/1.1) |
+| 헤더 이름이 **보낸 글자꼴 그대로** 닿은 것 | ★ **이 버전의 관찰**(HTTP/1.1) |
 
 ## 언제 쓰고 언제 안 쓰나
 
@@ -480,17 +480,17 @@ A GET /status?code=500  → 500 응답을 끝까지 보냈다
 - **CORS 거부** — 다른 출처의 응답에 허용 헤더가 없어 브라우저가 **읽기를 막은 것.** 요청은 이미 갔다.
 - **금지 헤더** — 스크립트가 설정할 수 없는 요청 헤더(`Host` · `Cookie` · `Origin` …). 예외 없이 지워진다.
 - **`clone()`** — 본문까지 둘로 가르는 복사. 한 번 쓴 것은 복사할 수 없다.
-- **「`catch` 로 간 칸」 격자** — 요청 여섯 × (`then`/`catch`·`ok`·`status`·오류). 이 편의 본체.
+- **「`catch` 로 간 칸」 격자** — 요청 여섯 × (`then`/`catch`·`ok`·`status`·오류). 이 편의 핵심.
 
 ## 더 들어가면
 
 - **`mode: "no-cors"`** 는 불투명 응답(`status 0`)을 준다 — 던지지 않았다(28번 주제).
 - **리다이렉트(`redirect: "manual"`)** 와 **`Response.error()`** 는 던지지 않았다.
-- **HTTP/2 에서의 헤더 이름 글자꼴**은 이 판의 서버(HTTP/1.1)로는 못 본다.
+- **HTTP/2 에서의 헤더 이름 글자꼴**은 이 버전의 서버(HTTP/1.1)로는 못 본다.
 
 ## 실행 환경
 
-★★★ **이 편의 본체는 창 ④ 「서버 요청 로그」 — 페이지가 본 것과 서버가 한 일을 나란히 놓는 「`catch` 로 간 칸」 격자다.** 200 · 404 · 500 · 아무도 안 듣는 포트 · 다른 출처의 허용 없는 POST · 허용 있는 POST 여섯 요청을 던지고, 칸마다 **`then`/`catch` · `res.ok` · `res.status` · 오류 이름**을 적은 뒤 **서버 두 대의 로그와 콘솔**을 같이 싣는다.\
+★★★ **이 편의 핵심은 창 ④ 「서버 요청 로그」 — 페이지가 본 것과 서버가 한 일을 나란히 놓는 「`catch` 로 간 칸」 격자다.** 200 · 404 · 500 · 아무도 안 듣는 포트 · 다른 출처의 허용 없는 POST · 허용 있는 POST 여섯 요청을 던지고, 칸마다 **`then`/`catch` · `res.ok` · `res.status` · 오류 이름**을 적은 뒤 **서버 두 대의 로그와 콘솔**을 같이 싣는다.\
 **기준 소스** — [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 「ok status」(**200\~299** 범위의 상태) · fetch() 메서드 단계(「**If response is a network error, then reject p with a TypeError**」) · HTTP fetch 의 「response tainting 이 cors 이고 **CORS check 가 실패하면 network error 를 돌려준다**」 · 「forbidden request-header」(`Host` · `Cookie` · `Origin` · `Referer` · `Content-Length` · `Connection` 등, 그리고 `proxy-`·`sec-` 로 시작하는 이름) · 「forbidden response-header name」(`Set-Cookie`·`Set-Cookie2`) · `Response`/`Request` 의 `clone()`(「unusable 이면 TypeError」). 열어서 확인한 것만 적었다(기준일 2026-09-26).\
 **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. 페이지는 **서버 A**(`http://127.0.0.1`)에서 열었고, 다른 출처는 **같은 기계의 다른 포트인 서버 B** 다. **바깥 인터넷으로는 한 번도 요청하지 않았다.** 하네스는 [24번 주제](../24-document-lifecycle-events/2-summary.md)의 (1)에 있다.\
 **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\

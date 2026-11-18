@@ -25,7 +25,7 @@
 
 실무 예:
 - 같은 증상이 런타임마다 **다른 이름**으로 보인다. 커널의 `ECONNREFUSED`는 Java에서 `ConnectException: Connection refused`, Node에서 `connect ECONNREFUSED`다.
-- 이름이 같아도 **단계**가 다르면 뜻이 다르다. connect 중의 `ETIMEDOUT`은 SYN에 답이 없었다는 뜻이다. 연결이 선 뒤의 `ETIMEDOUT`은 재전송이 끝내 확인받지 못했거나, keepalive 탐침에 끝내 답이 없었다는 뜻이다.
+- 이름이 같아도 **단계**가 다르면 뜻이 다르다. connect 중의 `ETIMEDOUT`은 SYN에 답이 없었다는 뜻이다. 연결이 선 뒤의 `ETIMEDOUT`은 재전송이 끝내 확인받지 못했거나, keepalive probe에 끝내 답이 없었다는 뜻이다.
 - 에러가 **없는** 증상도 있다. 느림, 큰 응답만 멈춤, 200인데 잘린 본문이 그렇다.
 
 ## 동작·원리
@@ -113,7 +113,7 @@
 - connect의 `EADDRNOTAVAIL`: connect(2)는 "bind되지 않은 소켓에 임시 포트를 붙이려 했는데 임시 포트 범위의 포트가 모두 사용 중"이라고 적는다. bind의 `EADDRNOTAVAIL`은 "로컬이 아닌 주소"다(bind(2), ip(7)). **같은 errno, 다른 원인**이다.
 - `EHOSTUNREACH`: ip(7)은 "맞는 라우팅 항목이 없음. 원격 라우터의 ICMP나 로컬 라우팅 테이블 때문일 수 있다"고 적는다.
   - 리눅스에서 로컬 경로가 아예 없으면 `ENETUNREACH`다(작성 환경에서 기본 경로가 없는 IPv6로 재현). 로컬 원인의 `EHOSTUNREACH`는 `unreachable` 타입 경로(ip-route(8), `fib_semantics.c`의 `RTN_UNREACHABLE` → `-EHOSTUNREACH`)나 이웃 해석 실패다.
-  - ICMP는 종류에 따라 갈린다. port unreachable → `ECONNREFUSED`, net unreachable → `ENETUNREACH`, host unreachable·prohibited → `EHOSTUNREACH`(01번, `net/ipv4/icmp.c` `icmp_err_convert[]`).
+  - ICMP는 종류에 따라 달라진다. port unreachable → `ECONNREFUSED`, net unreachable → `ENETUNREACH`, host unreachable·prohibited → `EHOSTUNREACH`(01번, `net/ipv4/icmp.c` `icmp_err_convert[]`).
 - listen(2)는 큐가 가득 차면 `ECONNREFUSED`를 받거나 요청이 무시될 수 있다고 쓴다. **리눅스는 기본으로 무시 쪽**이라 클라이언트는 refused를 보지 않는다(15·23번).
   - 새 SYN이 오면 버린다(`tcp_conn_request`). 클라이언트는 느린 connect를 본다.
   - 핸드셰이크 마지막 ACK가 오면, 기본(`tcp_abort_on_overflow=0`)에서는 그 ACK를 버린다(`tcp_minisocks.c` `listen_overflow`). 클라이언트의 connect는 이미 **성공**했다. 서버가 SYN-ACK를 재전송(`tcp_synack_retries`)하는 동안 첫 요청이 지연된다.
@@ -148,7 +148,7 @@
 | `ECONNRESET` — connect 직후 첫 요청(피크 때) | 전송 | `tcp_abort_on_overflow=1`이 accept 큐 넘침에 RST | 서버 `sysctl net.ipv4.tcp_abort_on_overflow` | [15](../15-tcp-handshake-and-backlog/2-summary.md) |
 | `EPIPE` / "Broken pipe", 네이티브 프로세스가 로그 없이 종료(종료 코드 141) | 전송·프로세스 | 닫힌(RST 받은·`shutdown` 한) 소켓에 쓰기 → `SIGPIPE` 기본 동작 = 종료 | 셸 종료 코드, `strace -e trace=network,signal` | [19](../19-tcp-termination-fin-rst-half-open/2-summary.md) |
 | 데이터 전송 중 `ETIMEDOUT`(약 15분 이상 뒤) | 전송 | 상대가 조용히 사라짐(전원·방화벽 DROP·NAT 삭제), 재전송이 `tcp_retries2` 한도 도달 | `ss -tio`의 `timer:(on,…,N)`, `nstat`의 `TcpExtTCPAbortOnTimeout` | [16](../16-tcp-reliability-retransmission/2-summary.md) · [21](../21-tcp-keepalive-and-user-timeout/2-summary.md) · [19](../19-tcp-termination-fin-rst-half-open/2-summary.md) |
-| 보낼 것 없던 idle 연결의 `ETIMEDOUT` | 전송 | `SO_KEEPALIVE` 탐침이 모두 무응답(리눅스 기본 7200 + 9 × 75초 ≈ 2시간 11분, tcp(7)) — 상대가 사라짐 | `ss -tio`의 `timer:(keepalive,…)` | [21](../21-tcp-keepalive-and-user-timeout/2-summary.md) |
+| 보낼 것 없던 idle 연결의 `ETIMEDOUT` | 전송 | `SO_KEEPALIVE` probe가 모두 무응답(리눅스 기본 7200 + 9 × 75초 ≈ 2시간 11분, tcp(7)) — 상대가 사라짐 | `ss -tio`의 `timer:(keepalive,…)` | [21](../21-tcp-keepalive-and-user-timeout/2-summary.md) |
 | 에러 없이 멈춤, 연결은 ESTABLISHED | 전송·응용 | half-open(보낼 것이 없어 RST 받을 기회 없음), zero window(상대 앱이 안 읽음) | `ss -tno`의 Send-Q·Recv-Q·`timer:(persist…)`, 스레드 덤프 | [19](../19-tcp-termination-fin-rst-half-open/2-summary.md) · [17](../17-tcp-flow-control/2-summary.md) · [21](../21-tcp-keepalive-and-user-timeout/2-summary.md) |
 | `ETIMEDOUT`로 수 초 만에 끊김 | 전송 | `TCP_USER_TIMEOUT`이 RTO 백오프보다 짧게 설정됨 | 소켓 옵션 설정 코드 | [21](../21-tcp-keepalive-and-user-timeout/2-summary.md) |
 | Node `socket hang up`(`code: 'ECONNRESET'`) | 응용(HTTP 클라이언트) | 응답을 받기 전에 연결이 닫힘 — 대개 idle close 경합 | 서버 keep-alive timeout vs 클라이언트 idle | [35](../35-http-connection-management/2-summary.md) |

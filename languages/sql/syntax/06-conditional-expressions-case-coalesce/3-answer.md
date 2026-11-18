@@ -259,7 +259,7 @@ ERROR:  division by zero
 > ```
 >
 > 조건이 상수 `1 = 0` 이면 계획 단계에서 그 항이 통째로 사라진 것으로 보인다.\
-> **즉 「`CASE` 안의 집계가 평가되나」는 조건이 상수냐에 따라 갈린다.** 이런 자리는 「되더라」를 근거로 삼지 말아야 한다.
+> **즉 「`CASE` 안의 집계가 평가되나」는 조건이 상수냐에 따라 달라진다.** 이런 자리는 「되더라」를 근거로 삼지 말아야 한다.
 
 **실무 처방** — 0 나눗셈은 `CASE` 로 감싸지 말고 **`NULLIF` 로 분모를 `NULL` 로 만든다**(9번).\
 `NULLIF` 는 조건 분기가 아니라 **값 변환**이라 집계 앞뒤 어디서든 같게 동작한다.
@@ -649,10 +649,10 @@ HINT:  No function matches the given name and argument types. You might need to 
 **언어 보장 항목** — 1·2·3·7·9·11번. `WHEN` 을 앞에서부터 훑는 것, 단순 `CASE` 가 `=` 로 견주는 것,\
 `ELSE` 생략이 `NULL` 인 것, `COALESCE`·`NULLIF` 의 의미는 **두 엔진에서 같았다.**
 
-**버전** — 이 주제에서 버전에 갈리는 것은 없다. 다음 버전에서는 **4·5·6·8·10번**(엔진 선택·최적화가 걸린 자리)을 다시 돌린다.
+**버전** — 이 주제에서 버전에 달라지는 것은 없다. 다음 버전에서는 **4·5·6·8·10번**(엔진 선택·최적화가 걸린 자리)을 다시 돌린다.
 
 ## 실행 환경
 
 근거는 **실행 결과**다 — 본문의 출력은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-2026-09-21 에 실제로 던져 받은 것이다. 문서를 보고 적은 출력은 없다.\
+2026-09-21 에 실제로 실행해 받은 것이다. 문서를 보고 적은 출력은 없다.\
 문서 근거는 [PG 18 Conditional Expressions](https://www.postgresql.org/docs/18/functions-conditional.html) · [MySQL 8.4 Flow Control Functions](https://dev.mysql.com/doc/refman/8.4/en/flow-control-functions.html).

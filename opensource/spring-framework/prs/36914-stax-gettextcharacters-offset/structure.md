@@ -187,7 +187,7 @@ throw ArrayIndexOutOfBoundsException
       "arraycopy: last source index 8 out of bounds for char[7]"
 ```
 
-값 세 개만 비교하면 어긋남이 한눈에 보인다.
+값 세 개만 비교하면 불일치가 한눈에 보인다.
 
 ```text
 텍스트 "content" (길이 7), 요청 length = 4
@@ -253,7 +253,7 @@ return length                                                                 :1
         ★ 수정 전에는 상한이 축소되지 않으므로 이 신호가 나올 수 없다
 ```
 
-수정 후 상한 계산이 어떻게 갈리는지 경계별로 정리하면 다음과 같다.\
+수정 후 상한 계산이 어떻게 달라지는지 경계별로 정리하면 다음과 같다.\
 `length = Math.min(length, source.length - sourceStart)` 한 줄이 만드는 결과다.
 
 ```text

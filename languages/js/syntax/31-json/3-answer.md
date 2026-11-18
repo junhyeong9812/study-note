@@ -2,7 +2,7 @@
 
 ## 정답
 
-### 1. 못 싣는 값(`undefined`·함수·심볼)만 자리가 가른다 — **속성이면 키째 빠지고, 배열이면 `null`, 최상위면 `undefined`** · 갈린 행 `3 / 14` ★★★
+### 1. 못 싣는 값(`undefined`·함수·심볼)만 자리가 가른다 — **속성이면 키째 빠지고, 배열이면 `null`, 최상위면 `undefined`** · 달라진 행 `3 / 14` ★★★
 
 **출력**
 
@@ -42,7 +42,7 @@ rows whose three positions do not all agree: 3 / 14
 
 - ★★★ **세 칸이 전부 다른 행은 `undefined` · `() => 1` · `Symbol('s')` 셋**이다 — `(key gone)` / `null` / `(undefined)`.
   명세의 `SerializeJSONProperty` 가 이 셋에 **`undefined` 를 돌려주고**, 그것을 받은 쪽이 자리마다 다르게 처리한다 — 객체는 **멤버를 안 만들고**, 배열은 **`"null"` 을 넣고**, 최상위는 **그대로 돌려준다**(7번).
-- ★★★ **최상위의 `(undefined)` 는 글자가 아니다** — `JSON.stringify` 의 반환값이 `undefined` 라는 값이다. 탐침이 그것을 `(undefined)` 로 표시했다.
+- ★★★ **최상위의 `(undefined)` 는 글자가 아니다** — `JSON.stringify` 의 반환값이 `undefined` 라는 값이다. probe가 그것을 `(undefined)` 로 표시했다.
 - ★★ **`NaN`·`Infinity` 는 `null`**, **`-0` 은 `0`** — 세 자리 모두 같다. 이들은 「숫자이지만 유한하지 않다」 갈래라 `"null"` 이라는 **글자**가 돌아오고, 그래서 **속성 자리에서도 키가 남는다.**
 - ★★ **`Date` 는 ISO 문자열**(`toJSON`) · **`Map`·`Set` 은 `{}`**(own 키가 없다 — `Map` 은 23번이 정본) · **null 프로토타입 객체는 `{"a":1}`** · **`new Boolean(false)` 는 `false`**(래퍼를 푼다) · **`1n` 은 `TypeError`**.
 - ★★★ **`[2]` 구멍과 `undefined` 는 결과 글자로 못 가른다** — 둘 다 `[1,null,3]`, `new Array(2)` 는 `[null,null]`.
@@ -241,9 +241,9 @@ node 18 에서는 `[4]` 의 문구 여섯 줄이 이렇게 달랐다(나머지�
 - ★★★ **`[2]`** — `undefined` 를 돌려주면 지운다. **`drop index 0` 의 배열은 여전히 두 칸**이고 앞칸이 구멍이라 다시 찍으면 `[null,3]` 이다. 뿌리에서 지우면 결과 전체가 `undefined`. **`Date` 는 `reviver` 가 만들어 줘야** 돌아온다.
 - ★★★ **`[3]` `JSON.parse` 의 `"__proto__"` 는 own 키**(`["__proto__"]`)이고 `o.marker` 는 `undefined`, 프로토타입은 **그대로**다. 객체 리터럴은 반대로 own 키가 없고 `marker 1`, 프로토타입이 **바뀌었다.**
 - ★★ **`[4]` 앞의 여덟 줄은 전부 `SyntaxError`** — 작은따옴표 · 끝 쉼표(객체·배열) · 따옴표 없는 키 · `NaN` · `undefined` · 앞자리 `0` · 빈 문자열. **앞뒤 공백은 통과**하고 **중복 키는 뒤의 것이 이긴다**(`{"a":2}`).
-- ★★★ **문구는 두 판이 다르다** — node18 은 `Unexpected token ' in JSON at position 1` 꼴, node20 은 `Expected property name or '}' in JSON at position 1` · `"NaN" is not valid JSON` 꼴이다. **이 주제에서 두 판이 갈린 유일한 블록**이고, 갈린 것은 **문구뿐**(종류 · 위치 숫자 · 나머지 줄은 같다).
+- ★★★ **문구는 두 버전이 다르다** — node18 은 `Unexpected token ' in JSON at position 1` 꼴, node20 은 `Expected property name or '}' in JSON at position 1` · `"NaN" is not valid JSON` 꼴이다. **이 주제에서 두 버전이 달라진 유일한 블록**이고, 달라진 것은 **문구뿐**(종류 · 위치 숫자 · 나머지 줄은 같다).
 
-### 5. 두 열이 `11 / 13` 행에서 갈린다 — **JSON 왕복은 `Date`·`Map`·`Set`·`undefined`·`NaN`·`-0`·`RegExp`·공유·순환을 잃고, 둘 다 프로토타입과 getter 를 잃는다** ★★★
+### 5. 두 열이 `11 / 13` 행에서 달라진다 — **JSON 왕복은 `Date`·`Map`·`Set`·`undefined`·`NaN`·`-0`·`RegExp`·공유·순환을 잃고, 둘 다 프로토타입과 getter 를 잃는다** ★★★
 
 **출력**
 
@@ -274,7 +274,7 @@ rows where the two columns differ: 11 / 13
 **왜 그런가**
 
 - ★★★ JSON 왕복 열은 **1번 격자를 한 번 지나 글자에서 다시 만든 것**이다 — `Date` 는 `string`, `Map`·`Set`·`RegExp` 는 `{}`, `undefined` 속성은 `key gone`, `NaN` 은 `null`, `-0` 은 `0`, `BigInt` 와 순환은 `TypeError`, 공유는 **두 객체**가 된다.
-- ★★ **`class instance` 와 `getter` 행은 두 열이 같다** — 둘 다 **`plain {"x":1}`**(프로토타입을 잃는다)와 **`data 1`**(getter 가 값으로 굳는다). 그래서 갈린 행이 13 이 아니라 **11** 이다.
+- ★★ **`class instance` 와 `getter` 행은 두 열이 같다** — 둘 다 **`plain {"x":1}`**(프로토타입을 잃는다)와 **`data 1`**(getter 가 값으로 굳는다). 그래서 달라진 행이 13 이 아니라 **11** 이다.
 - ★★ **`function property`** — JSON 은 `undefined`(속성이 빠졌다), `structuredClone` 은 **`DOMException`**(던졌다).
 - ★★ **`[2]`** — 순환은 `TypeError (name TypeError)`, 함수는 **`DOMException (name DataCloneError)`** — 생성자 이름과 `name` 이 **다르다.** `DOMException` 은 한 생성자가 `name` 으로 종류를 가른다(호스트 API).
 - ★ 마지막 줄 **`11 / 13`**.
@@ -398,17 +398,17 @@ JSON.rawJSON('1')        TypeError 「JSON.rawJSON is not a function」
 
 | 소스 | 무엇을 고정하나 | 몇 번 · 어디서 |
 |---|---|---|
-| `js28b-31a-type-grid.js` | ★★★ 값 14 × 자리 3 격자 · 「갈린 행 3 / 14」 · 구멍 · 키 종류 | node20 1벌 + node18 대조 1벌 |
+| `js28b-31a-type-grid.js` | ★★★ 값 14 × 자리 3 격자 · 「달라진 행 3 / 14」 · 구멍 · 키 종류 | node20 1벌 + node18 대조 1벌 |
 | `js28b-31b-throws.js` | ★★★ 순환 참조 네 경우의 **여러 줄 메시지** · 공유 · `BigInt` · `replacer` 로 끊기 | node20 1벌 + node18 대조 1벌 |
 | `js28b-31c-tojson-replacer.js` | ★★★ `toJSON` → `replacer` 로그 · `this` · `undefined` 반환 · 허용 목록 · `space` 상한 | node20 1벌 + node18 대조 1벌 |
-| `js28b-31d-parse-reviver.js` | ★★★ `reviver` 후위 순서 · 삭제 · `"__proto__"` · 문법 가장자리(★ **문구가 두 판에서 갈림**) | node20 1벌 + **node18 1벌(따로 실음)** |
-| `js28b-31e-deep-copy.js` | ★★★ JSON 왕복 × `structuredClone` 격자 · 「갈린 행 11 / 13」 · 두 예외 | node20 1벌 + node18 대조 1벌 |
+| `js28b-31d-parse-reviver.js` | ★★★ `reviver` 후위 순서 · 삭제 · `"__proto__"` · 문법 가장자리(★ **문구가 두 버전에서 갈림**) | node20 1벌 + **node18 1벌(따로 실음)** |
+| `js28b-31e-deep-copy.js` | ★★★ JSON 왕복 × `structuredClone` 격자 · 「달라진 행 11 / 13」 · 두 예외 | node20 1벌 + node18 대조 1벌 |
 | `js28b-31x-node-rawjson.js` | ES2026 원문 접근이 node 에 있나 | node20 1벌 + node18 대조 1벌 |
 | `js28b-31f-rawjson.web.js` | ★★ `context.source` · `JSON.rawJSON` | **Chrome 151 만** |
 | `js28b-31g-python-contrast.sh` · `js28b-31-h-pyjson.py` | 파이썬 `json` 대비 | python3 3.12.3 1벌 |
-| `js28b-vdiff.sh` · `js28b-versions.sh` | 두 판이 갈린 탐침 수 · 이 문서의 출력이 **어느 판에서 나왔나** + 판별 기능 표 | 1벌씩 |
+| `js28b-vdiff.sh` · `js28b-versions.sh` | 두 버전이 달라진 probe 수 · 이 문서의 출력이 **어느 버전에서 나왔나** + 판별 기능 표 | 1벌씩 |
 
-두 node 판 대조기(이 배치 전체의 node 탐침). 이 주제의 줄(`js28b-31…`) 가운데 `DIFFERS` 는 `js28b-31d-parse-reviver.js` 하나다. 그 밖의 `DIFFERS` 줄은 **다른 주제의 탐침**이다(같은 배치가 한 대조기를 공유한다).
+두 node 버전 대조기(이 배치 전체의 node probe). 이 주제의 줄(`js28b-31…`) 가운데 `DIFFERS` 는 `js28b-31d-parse-reviver.js` 하나다. 그 밖의 `DIFFERS` 줄은 **다른 주제의 probe**이다(같은 배치가 한 대조기를 공유한다).
 
 ```sh
 # js28b-vdiff.sh
@@ -547,7 +547,7 @@ js28b-31x-node-rawjson.js                    identical
 identical 19  ·  differs 6  ·  total 25
 ```
 
-**구현 의존 항목 — 판이 오르면 다시 돌릴 것**
+**구현 의존 항목 — 버전이 오르면 다시 돌릴 것**
 
 - ★★ `JSON.parse` 의 **실패 문구**(이미 node18 → node20 에서 바뀌었다) · 순환 참조 메시지의 **경로 그림**.
 - ★★ ES2026 원문 접근 — node 가 올라가면 `js28b-31x-node-rawjson.js` 가 `function` 을 답할 것이다. 그때 `js28b-31f-rawjson.web.js` 를 node 로도 돌린다.
@@ -559,7 +559,7 @@ identical 19  ·  differs 6  ·  total 25
 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮긴 출력이 하나도 없다).
 
 ★★ **예외는 `e.constructor.name` 과 `e.message` 로만** 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
-★★ **이 주제에서 두 node 판이 갈린 탐침은 `js28b-31d-parse-reviver.js` 하나**다 — `JSON.parse` 의 실패 **문구**만 갈렸다(4번).
+★★ **이 주제에서 두 node 버전이 달라진 probe는 `js28b-31d-parse-reviver.js` 하나**다 — `JSON.parse` 의 실패 **문구**만 달라졌다(4번).
 
 **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
 `js28b-31a-type-grid.js`(1번 · 7번) · `js28b-31b-throws.js`(2번 · 8번) · `js28b-31c-tojson-replacer.js`(3번 · 8번) · `js28b-31d-parse-reviver.js`(4번 · 8번 · 10번) ·

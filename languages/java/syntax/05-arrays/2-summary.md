@@ -55,7 +55,7 @@ objects[1] = Integer.valueOf(42);
 
 1. 배열은 객체인가 아닌가 — 그렇다면 **어떤 클래스의 인스턴스이고 무엇을 상속하는가.**
 2. 공변성은 **어느 검사를 컴파일에서 런타임으로 미뤘고**, 제네릭은 왜 그러지 않는가.
-3. `Arrays` 유틸의 이름이 비슷한 짝들(`equals`/`deepEquals`, `toString`/`deepToString`)은 **무엇이 다르고 언제 갈리는가.**
+3. `Arrays` 유틸의 이름이 비슷한 짝들(`equals`/`deepEquals`, `toString`/`deepToString`)은 **무엇이 다르고 언제 달라지는가.**
 
 ## 동작 방식
 
@@ -599,7 +599,7 @@ asList(int[]) 원소0  = [I
 
 - **에러가 없다.** `size()` 가 1이라는 것을 확인하기 전에는 모른다.
 - 뒤이은 `stream()`·`forEach` 가 전부 "원소 하나"에 대해 돌아간다.
-- `Integer[]` 를 넘기면 3이 된다 — **박싱 여부 하나로 결과가 갈린다.**
+- `Integer[]` 를 넘기면 3이 된다 — **박싱 여부 하나로 결과가 달라진다.**
 
 ### 4. `clone()` 으로 다차원 배열을 방어한다
 
@@ -663,7 +663,7 @@ Cannot store to int array because "outer[0]" is null
 | `Arrays.hashCode(int[][])` 의 구체적 값 | **구현 세부** | identity hash 기반 — **JDK 마다 달랐다** |
 | NPE 메시지에 변수 이름이 나오는 것 | **구현 세부 + 컴파일 옵션** | 아래 참조 |
 
-### NPE 메시지는 버전이 아니라 **플래그**에 갈린다
+### NPE 메시지는 버전이 아니라 **플래그**에 달라진다
 
 `Ex.java (05-f)` 를 같은 소스로 세 JDK × 세 조건에서 돌렸다. **세 JDK 의 결과가 조건별로 완전히 같았다.**
 
@@ -729,7 +729,7 @@ java -XX:-ShowCodeDetailsInExceptionMessages
 - [**19번 주제**](../19-type-erasure/)(타입 소거) — `new List<String>[3]` 이 왜 금지인가의 정본
 - [**40번 주제**](../40-list-set-and-immutable-factories/)(`List.of`·`copyOf`·`unmodifiable*`) — `asList` 의 대안과 "불변 대 수정 불가 뷰"의 정본
 - [**43번 주제**](../43-iterator-and-fail-fast/)(`Iterator`·fail-fast) — 리스트 순회 중 수정. 배열에는 이 개념이 없다
-- [`../44-stream-creation/`](../44-stream-creation/) — `Arrays.stream(int[])` 과 `Stream.of(T...)` 가 갈리는 자리
+- [`../44-stream-creation/`](../44-stream-creation/) — `Arrays.stream(int[])` 과 `Stream.of(T...)` 가 달라지는 자리
 
 ## 용어 풀이
 

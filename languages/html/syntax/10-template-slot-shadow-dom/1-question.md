@@ -107,7 +107,7 @@ window.__끝 = function () {
 </html>
 ```
 
-- 이 판에서 선언적 Shadow DOM 이 **되는가**?
+- 이 버전에서 선언적 Shadow DOM 이 **되는가**?
 - 덤프에서 `<template>` 이 남아 있는 것은 셋 중 어느 것인가?
 - **그림자 안의 `<p>` 가 덤프에 보이는가?**
 - 콘솔에 무엇이 나는가?
@@ -160,7 +160,7 @@ window.__끝 = function () {
 
 - `my-card.shadowRoot` · `my-closed.shadowRoot` · `my-bad.shadowRoot` 를 각각 예측하라.
 - `열림.outerHTML` 과 `열림.getHTML()` 에 그림자가 보이는가?
-- `getHTML({serializableShadowRoots: true})` 에는 보이는가? **`my-ser` 와 갈리는가?**
+- `getHTML({serializableShadowRoots: true})` 에는 보이는가? **`my-ser` 와 달라지는가?**
 - 왜 기본값이 「안 보임」인가?
 
 ### 5. 슬롯 셋을 두고 하나만 채우면 (예측)
@@ -220,7 +220,7 @@ window.__끝 = function () {
 
 - 세 슬롯의 `assignedNodes()` 를 각각 예측하라.
 - `slot="오타"` 인 요소의 `assignedSlot` 은 무엇인가? 화면에는 나오는가?
-- `호스트.textContent` 와 `호스트.innerText` 가 갈리는가? 어떻게 갈리는가?
+- `호스트.textContent` 와 `호스트.innerText` 가 달라지는가? 어떻게 달라지는가?
 - **기본 내용이 진짜 그려진 칸**은 어느 것인가? 그것을 무엇으로 쟀겠는가?
 
 ### 6. `define` 보다 먼저 파서가 만든 요소는 (예측)
@@ -298,7 +298,7 @@ window.__끝 = function () {
 ★ 이 주제는 「**트리에 있나 · 화면에 있나 · 덤프에 보이나**」 셋을 **갈라서** 답한다. 셋이 다 다르다.
 ★★ **「`--dump-dom` 에 안 보인다」를 「없다」로 답하지 마라** — 이 주제에 그 함정이 하나 있다.
 ★ **경계** — Shadow DOM 과 커스텀 요소의 **API** 는 web-api 갈래 목록([`web-api/README.md`](../../../web-api/README.md))의 **12번**·**13번**이 정본이다. 여기서 묻는 것은 **마크업**뿐이다.
-★ 소스 펜스 첫 줄의 `<!-- 파일이름 -->` 은 **어느 파일을 던진 것인지 표시**이지 파일 내용이 아니다.
+★ 소스 펜스 첫 줄의 `<!-- 파일이름 -->` 은 **어느 파일을 실행한 것인지 표시**이지 파일 내용이 아니다.
 선행 — [05번 주제](../05-content-categories-and-models/1-question.md) · [08번 주제](../08-script-loading/1-question.md).
 
 ## 복습 기록

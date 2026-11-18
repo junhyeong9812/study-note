@@ -74,7 +74,7 @@ function dispatch(native) {
   }                                   // 이 루프가 멈춘다
 }
 ```
-- 핸들러는 `stopped`라는 변수를 모른다. `event.stopPropagation()`만 부른다. 그 메서드가 클로저로 `stopped`를 쥐고 있어서 루프 조건이 바뀐다.
+- 핸들러는 `stopped`라는 변수를 모른다. `event.stopPropagation()`만 부른다. 그 메서드가 클로저로 `stopped`를 잡고 있어서 루프 조건이 바뀐다.
 - 클릭할 때마다 dispatch가 새로 호출되므로 `stopped`도 매번 새로 생긴다 → 이전 클릭이 다음 클릭에 영향 없음.
 
 ### 2. listen이 돌려주는 해제 함수 (`src/events.js:44-49`)

@@ -330,7 +330,7 @@ linear-gradient(to right,transparent,#000)  (249,250,254) → … → (34,82,217
 - **도형 함수(basic shape)** — `inset()`·`circle()`·`ellipse()`·`polygon()`·`path()`.\
   예: `polygon(50% 0, 100% 100%, 0 100%)` 은 위를 향한 삼각형이다.
 - **`<geometry-box>`** — 도형의 기준 상자. 기본은 `border-box` 이고, 명시해도 계산값에서 생략된다.
-- **알파(alpha)** — 픽셀의 불투명도. `transparent` 는 0, `#fff` 는 1 이다 — 마스크에서 갈리는 것은 색이 아니라 이 값이다.
+- **알파(alpha)** — 픽셀의 불투명도. `transparent` 는 0, `#fff` 는 1 이다 — 마스크에서 달라지는 것은 색이 아니라 이 값이다.
 - **휘도(luminance)** — 픽셀의 밝기. `mask-mode: luminance` 가 읽는 값. 검정이 0, 흰색이 최대다.
 - **`mask-mode`** — 알파를 읽을지 휘도를 읽을지. 기본 `match-source` 는 이미지면 알파, SVG `<mask>` 참조면 휘도다.
 - **`mask-composite`** — 마스크 레이어들의 알파를 합치는 규칙. `add`(기본)·`subtract`·`intersect`·`exclude`.
@@ -344,7 +344,7 @@ linear-gradient(to right,transparent,#000)  (249,250,254) → … → (34,82,217
 
 | 무엇을 | 어떻게 | 결과 |
 |---|---|---|
-| 도형 함수 다섯 | 노란 페이지 위 파란 상자 여섯 판을 렌더해 안팎 픽셀 | 도형 밖이 전부 `(255,204,0)` 페이지 배경 |
+| 도형 함수 다섯 | 노란 페이지 위 파란 상자 여섯 버전을 렌더해 안팎 픽셀 | 도형 밖이 전부 `(255,204,0)` 페이지 배경 |
 | 잘려도 치수가 그대로인 것 | `getBoundingClientRect()` | 다섯 판 모두 120×120 |
 | 잘린 밖의 이벤트 | `document.elementFromPoint()` | 도형 밖에서 `HTML`(또는 부모)이 나옴 |
 | `<geometry-box>` | border 10 + padding 20 상자 셋의 테두리·패딩 픽셀 | 기본 `border-box` · `padding-box` · `content-box` 가 각각 다르게 잘림 |
@@ -355,7 +355,7 @@ linear-gradient(to right,transparent,#000)  (249,250,254) → … → (34,82,217
 | `fixed` 포함 블록 | `rect`·`offsetParent` 두 판 | 둘 다 `(0,0)`·`null` (**안 가로챈다**) |
 | 알파 마스크 대 휘도 마스크 | 알파 255·휘도 그라디언트인 PNG(data URI) 한 장으로 세 판 | `alpha` 전부 보임 · `luminance` 왼쪽 사라짐 |
 | 삼각형 PNG 로 재확인 | 같은 이미지, 두 모드 | `alpha` 는 삼각형 · `luminance` 는 거의 전부 사라짐 |
-| 그라디언트 마스크 | 네 판을 다섯 지점씩 | `#000→#fff` 는 **무변화** · `transparent` 판만 페이드 |
+| 그라디언트 마스크 | 네 버전을 다섯 지점씩 | `#000→#fff` 는 **무변화** · `transparent` 판만 페이드 |
 | `mask-composite: intersect` | 두 겹 그라디언트 한 판 | 양 끝 배경 · 가운데 원색 |
 | `-webkit-mask-` | 두 규칙을 던져 `cssRules` 대조 | **별칭** — 접두사가 무접두사로 직렬화되고 순서로 덮임 |
 | 단축 `mask` 의 리셋 | 순서를 바꾼 두 규칙 | 앞의 `mask-mode` 가 `match-source` 로 되돌아감 |

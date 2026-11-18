@@ -2,7 +2,7 @@
 
 상위: [체크포인트](../README.md)
 
-**체크포인트가 끝난 뒤 `pg_wal` 디렉터리를 훑어, 경계 세그먼트 이하의 WAL 파일을 미래 세그먼트 이름으로 바꿔 재활용하거나 지우는 함수다.** 경계는 호출자 `CreateCheckPoint` 가 정한다. REDO 지점이 든 세그먼트에서 시작해 `KeepLogSeg` 가 복제 슬롯, `wal_keep_size`, WAL summarizer 가 아직 필요로 하는 만큼 뒤로 당기고, 마지막에 하나를 뺀다. 아카이빙 중이면 아직 아카이브되지 않은 파일은 남긴다. 재활용할지 지울지는 `XLOGfileslop` 이 `min_wal_size`, `max_wal_size`, 체크포인트 간 거리 추정치로 정한 상한까지 빈 이름이 있는가로 갈린다.
+**체크포인트가 끝난 뒤 `pg_wal` 디렉터리를 훑어, 경계 세그먼트 이하의 WAL 파일을 미래 세그먼트 이름으로 바꿔 재활용하거나 지우는 함수다.** 경계는 호출자 `CreateCheckPoint` 가 정한다. REDO 지점이 든 세그먼트에서 시작해 `KeepLogSeg` 가 복제 슬롯, `wal_keep_size`, WAL summarizer 가 아직 필요로 하는 만큼 뒤로 당기고, 마지막에 하나를 뺀다. 아카이빙 중이면 아직 아카이브되지 않은 파일은 남긴다. 재활용할지 지울지는 `XLOGfileslop` 이 `min_wal_size`, `max_wal_size`, 체크포인트 간 거리 추정치로 정한 상한까지 빈 이름이 있는가로 나뉜다.
 
 ## 위치
 

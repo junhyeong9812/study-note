@@ -46,7 +46,7 @@
 4. [게이트 2: OIDC](infra/issue4/) — claim을 sub 하나로 판정하지 않는다
 5. [배포 모드](infra/issue5/) — 모르면 실행하지 않는다
 6. [배포 창 락](infra/issue6/) — 남의 락을 풀 수 없게
-7. [HTTP를 배포 시퀀스로](infra/issue7/) — 어떤 실패가 락을 쥔 채 사람을 부르나
+7. [HTTP를 배포 시퀀스로](infra/issue7/) — 어떤 실패가 락을 잡은 채 사람을 부르나
 8. [로컬 dispatch](infra/issue8/) — pull·up·헬스, 결과를 무엇으로 부를까
 9. [JWKS 실 공개키 페치](infra/issue9/) — 인증 뿌리에서 샌 fail-open
 10. [false-UNKNOWN](infra/issue10/) — 배포는 됐는데 배포가 실패했다

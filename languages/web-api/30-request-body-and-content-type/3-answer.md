@@ -1,9 +1,9 @@
 # web-api/30 — 요청 본문 만들기: `FormData`·`URLSearchParams`·JSON 과 `Content-Type` 자동 설정 — 정답
 
-| 안 흔들리는 칸 | 흔들리는 칸 · 못 잰 칸 |
+| 달라지지 않는 항목 | 실행마다 달라지는 항목 · 못 잰 항목 |
 |---|---|
 | 격자 14칸 · 원문 · 바이트 수 · 파일 칸 · 폼 대 `fetch` · 파이썬 | ★ **boundary 뒤 16자 · `requests` 의 32자** — 요청마다 새로 만든다. **하네스가 출력 전에 가렸다** |
-| 캡처를 세 판 돌려 **한 글자도 같았다** | **못 잰 것** — 서버 프레임워크의 관용 |
+| 캡처를 세 번 돌려 **한 글자도 같았다** | **못 잰 것** — 서버 프레임워크의 관용 |
 
 ```text
 $ google-chrome --version
@@ -64,7 +64,7 @@ A POST /echo?id=f2&raw=1  Content-Type=multipart/form-data · 본문 133바이�
 
 **왜 그런가**
 
-- ★★★ **두 원문이 한 글자도 같다(133바이트)** — 본문은 여전히 boundary 로 쌌다. **직접 쓴 쪽의 `Content-Type` 은 `multipart/form-data` 뿐**이라 서버는 **가를 수 없다.**
+- ★★★ **두 원문이 한 글자도 같다(133바이트)** — 본문은 여전히 boundary 로 쌌다. **직접 쓴 쪽의 `Content-Type` 은 `multipart/form-data` 뿐**이라 서버는 **구분할 수 없다.**
 - 브라우저 쪽에는 **예외도 경고도 없다** — 요청은 `200` 이다.
 
 ### 3. `Blob` 은 `File` 이 된다 — 이름 없으면 `blob`
@@ -84,7 +84,7 @@ A POST /echo?id=f3&raw=1  Content-Type=multipart/form-data; boundary=----WebKitF
 **왜 그런가**
 
 - **`f.get("b")` 는 `File(name=blob, type="")`** — 명세의 create an entry(`File` 이 아닌 `Blob` → 이름 `"blob"` 인 `File`).
-- **파일 칸의 `Content-Type` 은 `type`**, 비었으면 **`application/octet-stream`**(이 판의 관찰). **문자열 칸에는 `Content-Type` 줄이 없다**(명세).
+- **파일 칸의 `Content-Type` 은 `type`**, 비었으면 **`application/octet-stream`**(이 버전의 관찰). **문자열 칸에는 `Content-Type` 줄이 없다**(명세).
 
 ### 4. boundary 만 가리면 한 글자도 같다
 
@@ -189,7 +189,7 @@ python3 wa28b-net.py py
 | 항목 | 값 | 왜 다시 찍나 |
 |---|---|---|
 | boundary 의 모양 | `----WebKitFormBoundary` + 16자 | Chrome 의 글자 |
-| 빈 `type` 파일 칸 | `application/octet-stream` | 이 판의 관찰 |
+| 빈 `type` 파일 칸 | `application/octet-stream` | 이 버전의 관찰 |
 | `urllib` 의 기본 `Content-Type` | `application/x-www-form-urlencoded` | 라이브러리 설계 |
 
 **안 돌려 본 것** — ① Firefox·Safari(엔진이 없다). ② `text/plain` 폼 인코딩 · 비 UTF-8 폼. ③ `filename` 에 `"`·줄바꿈.

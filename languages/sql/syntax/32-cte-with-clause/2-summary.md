@@ -97,7 +97,7 @@ emp (사원)                          dept (부서)
 
 ---
 
-### 2. 이름이 붙으니 **한 번 쓰고 여러 번 참조**할 수 있다 — 10번과 갈리는 자리
+### 2. 이름이 붙으니 **한 번 쓰고 여러 번 참조**할 수 있다 — 10번과 달라지는 자리
 
 **언제 쓰나** — 같은 중간 결과를 두 군데 이상에서 쓸 때. **이것이 파생 테이블로는 안 되는 유일한 것**이다.
 
@@ -251,7 +251,7 @@ ERROR 1146 (42S02) at line 1: Table 'study.t' doesn't exist
 ```
 
 그림 해설 — **에러가 나지 않는다.** 두 엔진 모두 조용히 CTE 를 골랐다.\
-비용 — **무음 실패다.** 긴 질의 위쪽에 `WITH orders AS (…)` 를 얹어 놓고 아래에서 진짜 `orders` 표를 쓴 줄 알면, 타입도 열 이름도 맞고 값만 틀린다.\
+비용 — **조용한 실패다.** 긴 질의 위쪽에 `WITH orders AS (…)` 를 얹어 놓고 아래에서 진짜 `orders` 표를 쓴 줄 알면, 타입도 열 이름도 맞고 값만 틀린다.\
 처방 — **CTE 이름에 접두어를 붙인다**(`cte_orders`·`x_orders`). [11번](../11-subquery-scalar-correlated-any-all/)의 "한정자를 붙인다"와 같은 처방이다.
 
 ---
@@ -273,7 +273,7 @@ PG 문서가 규칙을 문장으로 적는다 — 인용한다.
 > "Specifically, CTEs are automatically inlined if they have no side-effects, are not recursive, and are referenced only once in the query… **Previously, CTEs were never inlined and were always evaluated before the rest of the query.**"\
 > — [PostgreSQL 12 릴리스 노트](https://www.postgresql.org/docs/release/12.0/)
 
-실제로 계획이 갈린다. **같은 질의, `MATERIALIZED` 한 낱말 차이다.**
+실제로 계획이 달라진다. **같은 질의, `MATERIALIZED` 한 낱말 차이다.**
 
 ```text
  (A) 기본 — 참조 1회 -> 인라인            (B) MATERIALIZED -> 벽이 선다
@@ -334,7 +334,7 @@ MySQL 은 **`MATERIALIZED`·`NOT MATERIALIZED` 를 둘 다 문법 오류로 거�
 
 ### 7. **참조가 둘이면 PG 는 벽을 세우고, MySQL 8.4 는 안 세운다**
 
-**언제 쓰나** — CTE 를 두 번 이상 참조할 때. **여기가 두 엔진이 가장 크게 갈리는 자리다.**
+**언제 쓰나** — CTE 를 두 번 이상 참조할 때. **여기가 두 엔진이 가장 크게 달라지는 자리다.**
 
 ```text
 ### SQL: EXPLAIN (COSTS OFF) WITH c AS (SELECT * FROM emp)
@@ -516,7 +516,7 @@ SELECT /*+ NO_MERGE(c) */ ... FROM c;
 
 1. **CTE 이름은 그 문장 하나 안에서만 산다.** 세미콜론을 넘기면 없다.
 2. **앞의 CTE 만 볼 수 있다.** 전방 참조는 `RECURSIVE` 없이는 금지다([33번](../33-recursive-cte/)).
-3. **한 번 정의하고 여러 번 참조**할 수 있다. 파생 테이블과 갈리는 자리가 여기 하나다.
+3. **한 번 정의하고 여러 번 참조**할 수 있다. 파생 테이블과 달라지는 자리가 여기 하나다.
 4. **CTE 이름이 같은 이름의 실제 표를 가린다.** 에러 없이.
 5. **열 이름은 `이름(a, b)` 로 다시 붙일 수 있다.**
 6. **`MATERIALIZED`/`NOT MATERIALIZED` 는 PG 12+ 전용**이다. MySQL 은 `ERROR 1064`.
@@ -541,7 +541,7 @@ SELECT /*+ NO_MERGE(c) */ ... FROM c;
   PG 에서 **참조를 둘로 늘리는 순간** 벽이 선다(7번 절). 같은 CTE 를 한 번 더 부르는 것만으로 계획이 바뀐다.
 - **PG 의 `MATERIALIZED` 를 MySQL 로 옮긴다.** `ERROR 1064` 다. MySQL 은 `/*+ NO_MERGE() */` 힌트다.
 - **CTE 이름을 실제 표 이름과 같게 짓는다.**\
-  **에러가 안 난다.** 두 엔진 다 조용히 CTE 를 고른다 — 무음 실패다.
+  **에러가 안 난다.** 두 엔진 다 조용히 CTE 를 고른다 — 조용한 실패다.
 - **전방 참조를 한다.**\
   PG 는 `HINT` 로 알려 주지만 **MySQL 은 `Table 'study.b' doesn't exist` 라고만 한다** — 오타로 오인하고 표를 찾으러 간다.
 - **CTE 안에서 `ORDER BY` 를 하고 바깥 순서를 기대한다.**\
@@ -564,7 +564,7 @@ SELECT /*+ NO_MERGE(c) */ ... FROM c;
 | 계획에 `CTE Scan`·`Materialize CTE` 가 찍히는 것 | **그 엔진의 표기** | 각 엔진 — 낱말이 서로 다르다 |
 
 - ★ **실행 계획은 관찰이지 보장이 아니다.** 이 절의 계획은 **작성 중 한 번, 제출 직전 한 번** 같은 서버·같은 버전에서 찍었다.\
-  **두 번의 출력이 한 글자도 달라지지 않았다** — 통계가 흔들리지 않았다는 뜻이지, 다음에도 같다는 뜻이 아니다.\
+  **두 번의 출력이 한 글자도 달라지지 않았다** — 통계가 달라지지 않았다는 뜻이지, 다음에도 같다는 뜻이 아니다.\
   버전이 오르거나 데이터가 커지면 **같은 문장에서 다른 계획이 나올 수 있다.** 외울 것은 계획의 모양이 아니라 "**참조 횟수와 휘발성이 그것을 정한다**"는 규칙이다.
 - `EXPLAIN (COSTS OFF)` 로 찍은 것은 그 때문이다 — **비용 수치가 아니라 노드의 모양**이 볼 것이다.
 
@@ -582,7 +582,7 @@ SELECT /*+ NO_MERGE(c) */ ... FROM c;
 ## 핵심 문장
 
 - CTE 는 **이름을 붙일 뿐**이다 — 표를 만들지도, 저장하지도 않는다.
-- 파생 테이블과 갈리는 자리는 하나다 — **한 번 정의하고 여러 번 참조**할 수 있다.
+- 파생 테이블과 달라지는 자리는 하나다 — **한 번 정의하고 여러 번 참조**할 수 있다.
 - 이름은 **앞에서 뒤로만** 보이고, 수명은 **문장 하나**다.
 - **CTE 이름이 실제 표를 조용히 가린다.** 에러가 안 난다.
 - **PG 12 부터 참조가 한 번이면 인라인한다** — "CTE 는 최적화 장벽"은 그 전 버전의 사실이다.
@@ -626,7 +626,7 @@ SELECT /*+ NO_MERGE(c) */ ... FROM c;
   예: 집계가 든 CTE 를 두 번 참조했을 때 떴다.
 - **옵티마이저 힌트(optimizer hint)** — 질의 안에 `/*+ … */` 로 적어 옵티마이저의 선택을 돌리는 주석.\
   예: MySQL 의 `/*+ NO_MERGE(c) */`.
-- **무음 실패(silent failure)** — 에러 없이 틀린 값이 나오는 실패.\
+- **조용한 실패(silent failure)** — 에러 없이 틀린 값이 나오는 실패.\
   예: CTE 이름이 실제 표를 가려 엉뚱한 데이터가 나온 것.
 
 ## 더 들어가면
@@ -642,6 +642,6 @@ SELECT /*+ NO_MERGE(c) */ ... FROM c;
 **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
 본문에 실린 출력·에러·실행 계획은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
 표는 기존 `emp`·`dept` 두 개만 썼다. **새로 만든 표가 없다.**\
-**버전** — `WITH` 자체는 두 엔진 모두 오래전부터 있다. 갈리는 것은 **`MATERIALIZED`/`NOT MATERIALIZED`** 로, PG 는 **12 부터**다(릴리스 노트 확인). MySQL 매뉴얼에는 이 문법이 없고 **실제로 `ERROR 1064`** 다.\
+**버전** — `WITH` 자체는 두 엔진 모두 오래전부터 있다. 달라지는 것은 **`MATERIALIZED`/`NOT MATERIALIZED`** 로, PG 는 **12 부터**다(릴리스 노트 확인). MySQL 매뉴얼에는 이 문법이 없고 **실제로 `ERROR 1064`** 다.\
 **선행** — [11 서브쿼리 — 스칼라·상관·ANY/ALL](../11-subquery-scalar-correlated-any-all/) · [10 FROM 절 — 테이블 별칭·파생 테이블](../10-from-clause-aliases-derived-tables/).\
 **이어지는 것** — [33 재귀 CTE](../33-recursive-cte/)가 같은 `WITH` 에 `RECURSIVE` 를 붙인 것이다.

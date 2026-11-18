@@ -140,7 +140,7 @@ ex.04d.ts(3,7): error TS2322: Type 'unknown' is not assignable to type 'string'.
 
 - ★★ 그래서 `any` 의 비용은 「**그 줄**」이 아니라 「**그 값이 흘러간 모든 줄**」이다.
 
-### 4. ★★★ `arrow` 는 **`() => never`**, `declared` 는 **`void`** — **같은 몸통인데 갈린다**
+### 4. ★★★ `arrow` 는 **`() => never`**, `declared` 는 **`void`** — **같은 몸통인데 달라진다**
 
 **출력**
 
@@ -186,7 +186,7 @@ export declare function narrow(v: string | number): "문자열" | "숫자";
 **왜 그런가**
 
 - `export declare const arrow: () => never;` 와 `export declare function declared(): void;` 다.\
-  ★★★ 몸통이 둘 다 `throw new Error("x")` **하나뿐인데 갈렸다.**
+  ★★★ 몸통이 둘 다 `throw new Error("x")` **하나뿐인데 달라졌다.**
 - 규칙은 **함수 선언은 `void` 로, 함수 표현식·화살표는 `never` 로** 추론하는 것이다.\
   함수 선언은 나중에 몸통이 바뀔 수 있는 「이름 붙은 API」로 다루기 때문이다.
 - `fail` 은 **명시**해서 `never` 다.
@@ -254,7 +254,7 @@ ex.04f.ts(25,19): error TS2322: Type '{ kind: "tri"; b: number; h: number; }' is
 - `area2`(세 갈래 중 둘만 다룸)는 `TS2322` 이고 문구가 **`{ kind: "tri"; b: number; h: number; }`** 를 그대로 적는다.\
   ★★ **무엇을 빠뜨렸는지 컴파일러가 이름을 말해 준다.** 이것이 이 관용구의 값이다.
 - ★★★ `const rest: null = sh;` 로는 안 된다 — **`never` 는 `null` 에도 대입되므로** 다 다뤘을 때 에러가 안 나야 하는데,\
-  `null` 탐침은 **다 다룬 경우에도** 에러를 낸다. 방향이 반대라 관용구가 성립하지 않는다.
+  `null` probe는 **다 다룬 경우에도** 에러를 낸다. 방향이 반대라 관용구가 성립하지 않는다.
 - ★ 즉 **`never` 를 대상 자리에 두는 것**이 핵심이다. 「여기 도달하면 안 된다」는 주장을 **타입으로** 적은 것이다.
 
 ### 6. ★★★ 진단 **1건**(8행 `direct`) — `const cb: Cb = () => 42;` 는 **통과한다** · `node` 는 **`42`** 를 찍는다
@@ -442,19 +442,19 @@ ex.04i.ts(15,7): error TS2322: Type 'void' is not assignable to type 'undefined'
 
 **왜 그런가**
 
-- [**03번 주제**](../03-basic-type-annotations/)의 탐침은 `const probe: null = 값;` 이었다. 진단 문구가 그 값의 타입을 말해 주는 방식이다.
+- [**03번 주제**](../03-basic-type-annotations/)의 probe는 `const probe: null = 값;` 이었다. 진단 문구가 그 값의 타입을 말해 주는 방식이다.
 - ★ 그런데 **`never` 는 `null` 에 대입된다**(1번 격자의 `never` 열이 전부 O). 그래서 **에러가 안 나고 문구도 안 나온다.**
 - 같은 이유로 `any` 도 안 잡힌다 — `any` 는 `null` 에 들어간다.
 - 그래서 `never` 는 **대상 자리**에 둔다 — `const x: never = v;`. 그러면 `v` 가 `never` 가 아닐 때 그 타입 이름을 문구에 적어 준다(5번이 그 형태다).
-- ★ 정리하면 **탐침은 두 방향으로 쓴다** — 「이게 무슨 타입이지」는 `: null`, 「여기 도달하면 안 되는데」는 `: never`.
+- ★ 정리하면 **probe는 두 방향으로 쓴다** — 「이게 무슨 타입이지」는 `: null`, 「여기 도달하면 안 되는데」는 `: never`.
 
 ### 11. ★★ 세 층
 
 | 층 | 이 주제의 항목 |
 |---|---|
 | **언어 보장** | 16칸 격자의 O/X 배치 · `unknown` 은 좁히기 전 아무 연산도 허용 안 함(`TS18046`) · `any` 의 프로퍼티·연산 결과는 `any` · `void` 반환 함수 타입은 **반환값을 무시**한다 · `never` 대입으로 완전성 검사 |
-| **설정에 달린 것** | `null`·`undefined` 가 **따로 있는 것**(`strictNullChecks`) · `catch (e)` 의 `e` 가 `unknown` 인 것(`useUnknownInCatchVariables`, 4.4+) — 이 판은 `strict` 기본 `true` |
-| **이 판(7.0.2)의 관찰** | `arrow` 는 `() => never`, `declared` 는 `void` 로 **갈리는 것** · 진단 문구의 정확한 글자 · `Symbol`·`Extract` 같은 것이 `.d.ts` 에 **적은 모양 그대로** 남는 것 |
+| **설정에 달린 것** | `null`·`undefined` 가 **따로 있는 것**(`strictNullChecks`) · `catch (e)` 의 `e` 가 `unknown` 인 것(`useUnknownInCatchVariables`, 4.4+) — 이 버전은 `strict` 기본 `true` |
+| **이 버전(7.0.2)의 관찰** | `arrow` 는 `() => never`, `declared` 는 `void` 로 **달라지는 것** · 진단 문구의 정확한 글자 · `Symbol`·`Extract` 같은 것이 `.d.ts` 에 **적은 모양 그대로** 남는 것 |
 
 - ★ **`strictNullChecks` 를 끄면 격자가 통째로 달라진다.** 그래서 모든 블록의 배너에 옵션을 적었다.
 
@@ -484,9 +484,9 @@ ex.04i.ts(15,7): error TS2322: Type 'void' is not assignable to type 'undefined'
 | `void` 대 `undefined` | `--noEmit ex.04i.ts` | exit 1 · `TS2322` **3건** — 전부 `void` → `undefined` 방향 |
 | 방출 | `tsc ex.04h.ts` + `node ex.04h.js` | exit 0 · 표기 전부 사라짐 · 실행 3줄 |
 
-**구현 의존 항목 — 판이 오르면 다시 돌릴 것**
+**구현 의존 항목 — 버전이 오르면 다시 돌릴 것**
 
-- `arrow` 와 `declared` 가 갈리는 추론 규칙 — 결론은 안정적이지만 **직접 던져** 확인했다.
+- `arrow` 와 `declared` 가 달라지는 추론 규칙 — 결론은 안정적이지만 **직접 던져** 확인했다.
 - 진단 문구의 정확한 글자 — 코드(`TS18046`·`TS2322`)가 더 오래 간다.
 - `strict` 기본값이 `true` 라는 것 — **7.0 에서 바뀐 것**이다. 6.x 이하에서 재현하려면 `--strict` 를 명시해야 한다.
 - `.d.ts` 가 `Extract<"a" \| "b", "c">` 를 **접지 않고 그대로** 적는 것 — 선언 방출기의 구현이다.
@@ -499,5 +499,5 @@ ex.04i.ts(15,7): error TS2322: Type 'void' is not assignable to type 'undefined'
 
 모든 진단·`.d.ts` 전문·방출 전문·실행 출력은 `tsc` **7.0.2** 와 `node` **v18.19.1** 에서 실제로 얻었다.\
 블록은 전부 **캡처 스크립트가 파일로 받은 것**이고 손으로 옮겨 적지 않았다 — 배너의 `(tsc exit=N)` 도 스크립트가 찍은 값이다.\
-★★ **설정이 결과를 바꾸는 주제다.** 이 판은 `strict` 가 **기본 `true`** 이고, `strictNullChecks` 를 끄면 격자가 통째로 달라진다.\
+★★ **설정이 결과를 바꾸는 주제다.** 이 버전은 `strict` 가 **기본 `true`** 이고, `strictNullChecks` 를 끄면 격자가 통째로 달라진다.\
 ★ 소스 펜스 첫 줄 `// 파일명` 은 대조용 배너다 — **진단의 행 번호는 그 줄을 뺀 기준**이다.

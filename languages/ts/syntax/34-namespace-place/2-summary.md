@@ -7,22 +7,22 @@ v18.19.1
 Python 3.12.3
 ```
 
-> ★★★ **본체 창 선언 — 이 주제의 본체는 판 격자(세 판 × 진단 코드)이고, 급소는 3창(방출된 `.js` + `node`)이다.**
+> ★★★ **핵심 창 선언 — 이 주제의 핵심은 판 격자(세 판 × 진단 코드)이고, 급소는 3창(방출된 `.js` + `node`)이다.**
 > README 의 과녁 「7.0 에서 `module` 키워드 표기가 막혔다」를 **세 판**으로 확인하고(1절), 값이 든 namespace 가 **IIFE** 가 되는 것과 타입만 든 namespace 가 **아무것도 안 남기는** 것을 방출물로 가른다(2·3절).
 > ★★★ **34 는 33(선언 병합) 의 결론에서 온다.** [**33번 주제**](../33-declaration-merging/) 3절이 「함수·enum 에 붙은 namespace 는 **대상에 멤버를 다는 IIFE**」 · 「`--erasableSyntaxOnly` 에서 값을 만드는 namespace 는 `TS1294`」 · enum 순회에 `parse` 가 섞이는 것을 **이미 쟀다** — 인용한다. **여기는 namespace 혼자 선 자리와, 모듈이 표준이 된 뒤 남은 용도**다.
 > ★ `--erasableSyntaxOnly` 가 enum 을 막는 판 격자는 [**31번 주제**](../31-enum-pitfalls/) 3절, 매개변수 프로퍼티는 [**32번 주제**](../32-class-type-aspects/) 3절이 정본이다. **여기서는 namespace 꼴 여섯 칸만** 더한다.
 > ★ 소스 펜스 첫 줄 `// 파일명`·`# 파일명` 은 대조용 배너다 — 실파일에는 없다. **진단의 행 번호는 그 줄을 뺀 기준**이다.
 > ★★ 표 안의 `\|` 는 이스케이프이고 **뜻은 `|` 다.**
 
-## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
+## 이 문서에서 실행마다 달라지는 항목과 달라지지 않는 항목
 
 | | 무엇 | 왜 |
 |---|---|---|
-| **안 흔들린다** | 에러 코드(`TS####`)·`(행,열)` | 같은 입력·같은 옵션이면 같은 글자다 |
-| **안 흔들린다** | ★★★ 1·3절 격자의 칸과 마지막 줄의 **수** | 스크립트가 세어 찍는다 |
+| **달라지지 않는다** | 에러 코드(`TS####`)·`(행,열)` | 같은 입력·같은 옵션이면 같은 글자다 |
+| **달라지지 않는다** | ★★★ 1·3절 격자의 칸과 마지막 줄의 **수** | 스크립트가 세어 찍는다 |
 | **판에 매인다** | ★★ **종료 코드** — 진단 있는 `--noEmit` 이 7.0.2 는 `1`, 5.9.3 은 `2`([**35번 주제**](../35-module-resolution/) 6절의 블록) | 그래서 격자는 **종료 코드가 아니라 진단 코드로** 갈랐다 |
-| **안 흔들린다** | 방출된 `.js` 와 `node` 출력 | 예외는 **타입과 메시지만** 찍었다 |
-| **★ 부적용 — 5창(`.d.ts` 방출)** | 선언 방출은 안 물었다 | 이 주제의 질문은 **`.js` 에 무엇이 남나**다 — `.d.ts` 는 **입력**으로만 썼다(4절) |
+| **달라지지 않는다** | 방출된 `.js` 와 `node` 출력 | 예외는 **타입과 메시지만** 찍었다 |
+| **★ 해당 없음 — 5창(`.d.ts` 방출)** | 선언 방출은 안 물었다 | 이 주제의 질문은 **`.js` 에 무엇이 남나**다 — `.d.ts` 는 **입력**으로만 썼다(4절) |
 | **안 잰 것** | namespace 가 번들 크기·로딩 시간에 주는 영향 | **재지 않았다** — 방출 **줄 수**만 셌다 |
 
 ## 한눈에 — 쉽게 말하면
@@ -54,7 +54,7 @@ Python 3.12.3
 
 원고가 없는 문법 주제라 「문제」 대신 이 셋을 둔다.
 
-1. **★★★ `module` 키워드로 쓴 namespace 는 어느 판에서 막히나** — 여덟 꼴 × 세 판(1절). 따옴표를 쓴 `declare module "x"` 도 같이 막히나?
+1. **★★★ `module` 키워드로 쓴 namespace 는 어느 버전에서 막히나** — 여덟 꼴 × 세 판(1절). 따옴표를 쓴 `declare module "x"` 도 같이 막히나?
 2. **★★ namespace 는 방출물에 무엇을 남기나** — 값이 든 것·타입만 든 것·점으로 이은 것(2절). 그리고 **그 차이가 곧 `--erasableSyntaxOnly` 의 경계인가**(3절).
 3. **★★ 모듈이 표준이 된 뒤 namespace 는 어디에 남나** — `declare namespace`(타입 묶기) · 병합(33 인용) · 옛 `.d.ts` 와 `skipLibCheck`(4절) · `/// <reference>` 의 경계(5절).
 
@@ -64,12 +64,12 @@ Python 3.12.3
 
 | 창 | 무엇을 보여 주나 | 성질 | 이 주제에서 |
 |---|---|---|---|
-| ★★★ **판 격자** | 꼴 여덟 × (7.0.2 · 5.9.3 · 4.9.5) 의 진단 코드 | 세 판 대조 | **본체**(1절) |
+| ★★★ **판 격자** | 꼴 여덟 × (7.0.2 · 5.9.3 · 4.9.5) 의 진단 코드 | 세 판 대조 | **핵심**(1절) |
 | ★★★ **3창 — 방출된 `.js` + `node`** | namespace 가 **값 공간에 남긴 것** | 실행 결과 | **급소**(2·5절) |
-| ★★ **방출 줄 수 × 진단 격자** | 꼴 여섯 × (방출 줄 · 세 판의 `--erasableSyntaxOnly`) | 수로 센다 | 3절 |
+| ★★ **방출 줄 수 × 진단 격자** | 꼴 여섯 × (방출 줄 · 세 버전의 `--erasableSyntaxOnly`) | 수로 센다 | 3절 |
 | ★ **「함께 컴파일한 파일」 목록** | `--listFilesOnly` — `/// <reference>` 가 무엇을 끌어오나 | 파일 목록 | 5절 |
-| ★ **부적용 — 5창(`.d.ts` 방출)** | 선언 방출은 안 물었다 | — | — |
-| **2창 — `null` 탐침** | 4절 한 칸(`Legacy.a` 가 `number`) | 계산된 것 | 조수로만 |
+| ★ **해당 없음 — 5창(`.d.ts` 방출)** | 선언 방출은 안 물었다 | — | — |
+| **2창 — `null` probe** | 4절 한 칸(`Legacy.a` 가 `number`) | 계산된 것 | 조수로만 |
 
 비용 — 격자 두 벌(꼴 여덟 × 세 판 · 꼴 여섯 × 방출 + 세 판) + 파일 다섯의 검사·방출·`node`(정답 파일 「실행 검증」 표).
 
@@ -147,12 +147,12 @@ declare-module-string-dts    OK               OK               OK
 그림 해설 — 한 단계에 한 문장.
 
 - ★★★ **`module-value`·`module-dotted`·`module-types-only`·`declare-module-id` 넷이 7.0.2 에서 `TS1540`** — 「A 'namespace' declaration should not be declared using the 'module' keyword. Please use the 'namespace' keyword instead.」
-  같은 넷이 **5.9.3 · 4.9.5 에서는 `OK`** 다. README 의 과녁 「7.0 에서 막혔다」가 **세 판으로 확인됐다.**
+  같은 넷이 **5.9.3 · 4.9.5 에서는 `OK`** 다. README 의 과녁 「7.0 에서 막혔다」가 **세 버전으로 확인됐다.**
 - ★★★ **`declare-module-id-dts` — `.d.ts` 안이어도 `TS1540`**. `declare` 가 붙어도, 선언 파일이어도 **이름이 식별자면** 막힌다.
 - ★★ **`module-dotted` 는 `TS1540` 이 둘** — `Foo.Bar` 의 **이름 조각마다** 하나씩 난다.
-- ★★ **`namespace-value`·`declare-namespace-dts` 는 세 판 다 `OK`** — 막힌 것은 **뜻이 아니라 낱말**이다. `module` → `namespace` 한 낱말을 바꾸면 끝난다.
-- ★★★ **`declare-module-string-dts`(`declare module "foo"`) 는 세 판 다 `OK`** — 이름이 **따옴표 문자열**이면 namespace 가 아니라 **앰비언트 모듈 선언**이다. 같은 `module` 낱말인데 **다른 물건**이라 안 막힌다([목록의 **37번 주제**](../37-writing-declaration-files/)).
-- ★★ 마지막 줄 **7.0.2 에서 진단이 난 탐침 5 / 8 · 7.0.2 와 5.9.3 이 갈린 탐침 5 / 8** — 갈린 다섯이 **정확히 7.0.2 가 막은 다섯**이다.
+- ★★ **`namespace-value`·`declare-namespace-dts` 는 세 버전 다 `OK`** — 막힌 것은 **뜻이 아니라 낱말**이다. `module` → `namespace` 한 낱말을 바꾸면 끝난다.
+- ★★★ **`declare-module-string-dts`(`declare module "foo"`) 는 세 버전 다 `OK`** — 이름이 **따옴표 문자열**이면 namespace 가 아니라 **앰비언트 모듈 선언**이다. 같은 `module` 낱말인데 **다른 물건**이라 안 막힌다([목록의 **37번 주제**](../37-writing-declaration-files/)).
+- ★★ 마지막 줄 **7.0.2 에서 진단이 난 probe 5 / 8 · 7.0.2 와 5.9.3 이 달라진 probe 5 / 8** — 달라진 다섯이 **정확히 7.0.2 가 막은 다섯**이다.
 - ★ **5.9.3 은 한 줄도 안 낸다** — 릴리스 글이 말하는 「6.0 의 hard deprecation」은 **이 머신에 6.0 이 없어 못 봤다.** 5.9.3 이 명령줄에 **경고조차 안 찍는다**는 것까지가 관찰이다.
 
 ```text
@@ -365,11 +365,11 @@ useold34.ts(1,7): error TS2322: Type 'number' is not assignable to type 'null'.
 그림 해설 — 한 단계에 한 문장.
 
 - ★★ 그냥 던지면 — **`old34.d.ts(1,16) TS1540`**. 옛 `.d.ts` 의 `declare module Legacy` 가 1절과 같이 막혔다.
-- ★★ `useold34.ts(1,7) TS2322`(「Type 'number' …」) — 탐침이 `Legacy.a` 를 **`number` 로 읽었다.** 막혔어도 **선언 자체는 쓰였다.**
-- ★★★ **`--skipLibCheck` 를 붙이면 `TS1540` 이 사라진다** — 탐침의 `TS2322` 만 남는다. `skipLibCheck` 는 **`.d.ts` 의 진단을 통째로 건너뛴다**([목록의 **37번 주제**](../37-writing-declaration-files/)가 그 창이다).
+- ★★ `useold34.ts(1,7) TS2322`(「Type 'number' …」) — probe가 `Legacy.a` 를 **`number` 로 읽었다.** 막혔어도 **선언 자체는 쓰였다.**
+- ★★★ **`--skipLibCheck` 를 붙이면 `TS1540` 이 사라진다** — probe의 `TS2322` 만 남는다. `skipLibCheck` 는 **`.d.ts` 의 진단을 통째로 건너뛴다**([목록의 **37번 주제**](../37-writing-declaration-files/)가 그 창이다).
   그래서 `node_modules` 의 옛 선언이 이 표기를 써도 **`skipLibCheck` 프로젝트는 7.0 에서 안 깨진다** — 그리고 **안 깨졌다는 사실 때문에 모른다.**
 
-**남은 용도 정리** — 던진 것과 인용한 것을 갈라 적는다.
+**남은 용도 정리** — 실행한 것과 인용한 것을 갈라 적는다.
 
 | 용도 | 근거 | 7.0.2 에서 |
 |---|---|---|
@@ -443,7 +443,7 @@ ReferenceError App is not defined
   33편 4절 「보강이 보이는 범위는 **함께 컴파일한 파일**」과 같은 기제다 — 여기서는 **파일이 스스로** 목록을 늘렸다.
 - ★★ 방출은 **파일 둘** — `ref34a.js` 가 IIFE, `ref34b.js` 는 **`/// <reference path="ref34a.ts" />` 주석을 그대로 싣고** `App.name` 을 부른다.
 - ★★★ `node e34r/ref34b.js` → **`ReferenceError App is not defined`**. 주석은 **node 에게 아무 뜻이 없다** — `ref34a.js` 를 누가 먼저 실어 주지 않으면 `App` 은 없다.
-- ★ 그 「먼저 실어 주기」를 해 주던 것이 **`outFile` 로 한 파일에 이어 붙이기**였고, 7.0 에서 **`outFile` 이 없어졌다**(02편 7절 `TS5102` — 여기서는 다시 안 던졌다). `<script>` 순서로 싣는 HTML 이 아니면 **파일을 건너는 namespace 는 받쳐 줄 도구가 없다.**
+- ★ 그 「먼저 실어 주기」를 해 주던 것이 **`outFile` 로 한 파일에 이어 붙이기**였고, 7.0 에서 **`outFile` 이 없어졌다**(02편 7절 `TS5102` — 여기서는 다시 실행하지 않았다). `<script>` 순서로 싣는 HTML 이 아니면 **파일을 건너는 namespace 는 받쳐 줄 도구가 없다.**
 
 ```text
   /// <reference path> — 두 층이 다르게 읽는다
@@ -468,7 +468,7 @@ ReferenceError App is not defined
   /// <reference path="a.ts" />        컴파일에 파일을 더한다 — 실행과 무관             (5절)
 ```
 
-**금지 사례** — 이 주제에서 던져 받은 것이다.
+**금지 사례** — 이 주제에서 실행해 받은 것이다.
 
 | 쓴 꼴 | 진단 | 어느 절 |
 |---|---|---|
@@ -481,7 +481,7 @@ ReferenceError App is not defined
 **규칙 불릿**
 
 - ★★★ **7.0.2 는 식별자 이름의 `module` 선언을 `TS1540` 으로 막는다** — `.d.ts` 안이어도. 5.9.3·4.9.5 는 조용하다(1절).
-- ★★★ **따옴표 이름의 `declare module "x"` 는 다른 물건이다** — 세 판 다 받는다(1절).
+- ★★★ **따옴표 이름의 `declare module "x"` 는 다른 물건이다** — 세 버전 다 받는다(1절).
 - ★★ **값이 든 namespace 는 IIFE, 타입만 든 것은 0줄**(2절).
 - ★★ **`--erasableSyntaxOnly` 는 값이 든 namespace 와 별칭 `import =` 을 막는다** — 이 여섯 칸에서 방출 유무와 6 / 6 일치(3절).
 - ★ **`/// <reference path>` 는 컴파일 목록을 늘릴 뿐 실행을 준비하지 않는다**(5절).
@@ -505,10 +505,10 @@ ReferenceError App is not defined
 | **컴파일러(7.0.2) 구현** | ★★★ 식별자 이름 `module` 선언에 **`TS1540`**(이름 조각마다) | 1절 |
 | **컴파일러(5.9.3 · 4.9.5)** | 같은 꼴을 **진단 없이** 받는다 | 1절 |
 | **언어 보장(5.8)** | `--erasableSyntaxOnly` 는 런타임 코드가 있는 namespace 를 막는다 | 릴리스 노트 · 3절 |
-| **★ 이 판의 관찰** | 여섯 꼴에서 「방출 줄 있음」 ⇔ `TS1294` 가 **6 / 6** | 3절 — ★ 36번의 반례가 있다 |
-| **★ 이 판의 관찰** | `skipLibCheck` 가 `.d.ts` 의 `TS1540` 을 숨긴다 | 4절 |
+| **★ 이 버전의 관찰** | 여섯 꼴에서 「방출 줄 있음」 ⇔ `TS1294` 가 **6 / 6** | 3절 — ★ 36번의 반례가 있다 |
+| **★ 이 버전의 관찰** | `skipLibCheck` 가 `.d.ts` 의 `TS1540` 을 숨긴다 | 4절 |
 | **호스트(node v18)** | `/// <reference>` 주석은 **아무 뜻이 없다** — 실행 순서를 안 정한다 | 5절 `ReferenceError` |
-| **★ 부적용 — 5창(`.d.ts` 방출)** | 선언 방출은 안 물었다 | — |
+| **★ 해당 없음 — 5창(`.d.ts` 방출)** | 선언 방출은 안 물었다 | — |
 | **안 잰 것** | 번들 크기·로딩 시간 | **재지 않았다** |
 
 ## 언제 쓰고 언제 안 쓰나
@@ -522,7 +522,7 @@ ReferenceError App is not defined
 
 ## 핵심 문장
 
-1. **7.0.2 는 `module Foo {}` 를 `TS1540` 으로 막고, 5.9.3·4.9.5 는 조용히 받는다** — 격자 **5 / 8** 이 7.0.2 에서 막혔고, 갈린 다섯이 그 다섯이다. 따옴표 이름의 `declare module "x"` 는 다른 물건이라 안 막힌다.
+1. **7.0.2 는 `module Foo {}` 를 `TS1540` 으로 막고, 5.9.3·4.9.5 는 조용히 받는다** — 격자 **5 / 8** 이 7.0.2 에서 막혔고, 달라진 다섯이 그 다섯이다. 따옴표 이름의 `declare module "x"` 는 다른 물건이라 안 막힌다.
 2. **값이 든 namespace 는 IIFE 가 되고, 타입만 든 namespace 는 0줄이다** — 그래서 `--erasableSyntaxOnly` 는 앞쪽만 막는다(이 여섯 칸에서 **6 / 6**).
 3. **`skipLibCheck` 는 옛 `.d.ts` 의 `TS1540` 을 숨긴다** — 올린 뒤 「된다」가 「안 봤다」일 수 있다.
 4. **`/// <reference path>` 는 컴파일 목록을 늘릴 뿐이다** — 실행 순서를 정하던 `outFile` 이 7.0 에서 없어졌으니, 새 코드의 자리는 모듈이다.
@@ -548,7 +548,7 @@ ReferenceError App is not defined
 > 예: 1절 `declare-namespace-dts` · 3절 `declare`.
 
 > **앰비언트 모듈 선언** — `declare module "이름" { … }` — **따옴표 이름**의 모듈에 타입을 붙인다. namespace 와 낱말만 같다.\
-> 예: 1절 `declare-module-string-dts` 가 세 판 다 `OK`.
+> 예: 1절 `declare-module-string-dts` 가 세 버전 다 `OK`.
 
 > **`TS1540`** — 「A 'namespace' declaration should not be declared using the 'module' keyword. Please use the 'namespace' keyword instead.」 7.0.2 에서 본 코드.\
 > 예: 1절 `module-value`.
@@ -570,6 +570,6 @@ ReferenceError App is not defined
 **기준 소스** — [Handbook — Namespaces and Modules](https://www.typescriptlang.org/docs/handbook/namespaces-and-modules.html)(「새 프로젝트는 모듈이 권장되는 조직 방식」 · namespace 는 전역의 이름 붙은 객체라 `outFile` 로 이어 붙일 수 있다 · 모듈 파일을 `/// <reference>` 로 가리키는 것은 흔한 실수) ·
 [Announcing TypeScript 6.0](https://devblogs.microsoft.com/typescript/announcing-typescript-6-0/)(「`namespace` 자리에 `module` 을 쓰는 것은 이제 **hard deprecation**」 · `outFile` 제거) ·
 [TypeScript 5.8 릴리스 노트 — `--erasableSyntaxOnly`](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-8.html).
-위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·방출물·출력은 **전부 직접 던져 받은 것**이다. 핸드북 예제를 옮기지 않았다.
+위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·방출물·출력은 **전부 직접 실행해 받은 것**이다. 핸드북 예제를 옮기지 않았다.
 **실행 검증** — 본판은 맨 위 블록이다. ★ 판 비교에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 5.9.3 · 4.9.5** 를 **읽기만** 해서 썼다 — 환경변수 **`TSC_OLD`·`TSC_49`**.
 ★ **6.0 은 이 머신에 없다** — 「6.0 에서 deprecation」은 릴리스 글의 문장이고, 던져서 본 것은 **5.9.3 은 받고 7.0.2 는 막는다**까지다.

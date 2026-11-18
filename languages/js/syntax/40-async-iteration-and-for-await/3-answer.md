@@ -2,7 +2,7 @@
 
 ## 정답
 
-### 1. `break`·`return`·`throw` 는 세 행 모두 **`return() yes · finally yes`**, 끝까지는 **`no · yes`** — 갈린 칸 **`1 / 10`**(`rejects` 열의 C 행) ★★★
+### 1. `break`·`return`·`throw` 는 세 행 모두 **`return() yes · finally yes`**, 끝까지는 **`no · yes`** — 달라진 항목 **`1 / 10`**(`rejects` 열의 C 행) ★★★
 
 **출력**
 
@@ -32,7 +32,7 @@ cells where a for await row differs from row A in (return() called, finally ran)
 **왜 그런가**
 
 - ★★★ 일찍 떠나는 셋은 `for...of` 가 `IteratorClose`, `for await` 가 `AsyncIteratorClose` 를 부른다 — **둘 다 `return()` 을 부른다.** 끝까지 간 루프는 `done: true` 를 **직접 받았으니** 닫을 일이 없고, `finally` 는 제너레이터가 **끝나면서** 돈다.
-- ★★ `rejects` 열에서 A·B 는 `return() no · finally yes` 로 **같은 칸**이지만 이유가 다르다 — A 는 **끝까지 가서**, B 는 **제너레이터 안에서 던져져서**(`caught rejected value`). C 는 `no · no` 로 **A 와 갈린다.**
+- ★★ `rejects` 열에서 A·B 는 `return() no · finally yes` 로 **같은 칸**이지만 이유가 다르다 — A 는 **끝까지 가서**, B 는 **제너레이터 안에서 던져져서**(`caught rejected value`). C 는 `no · no` 로 **A 와 달라진다.**
 
 ### 2. A 는 **아무도 안 기다린다** · B 는 **제너레이터의 `yield`** · C 는 **감싸개** — C 칸은 **node 18·20 은 안 닫고, Chrome 151 은 닫았다** ★★★
 
@@ -187,7 +187,7 @@ rows where node18 gives the same two answers as node20: 4 / 4
 | `js40b-40c-which-protocol.js` | ★★ 찾는 메서드 · `TypeError` 문구 · 정리를 기다리는 것 | node20 1벌 + node18 대조 + Chrome(대조기) |
 | `js40b-40d-yield-and-ticks.js` | ★★ 몸통이 받는 것 · `@k` · 요청 큐 | node20 1벌 + node18 대조 + Chrome(대조기) |
 
-세 판 대조기(이 묶음 전체의 plain 탐침). 이 주제의 줄은 `40a`(Chrome `DIFFERS` — 2번) · `40c` · `40d` 셋이다.
+세 판 대조기(이 묶음 전체의 plain probe). 이 주제의 줄은 `40a`(Chrome `DIFFERS` — 2번) · `40c` · `40d` 셋이다.
 
 ```sh
 # js40b-vdiff.sh
@@ -230,9 +230,9 @@ js40b-43b-type-grid.js             node18/node20 DIFFERS    node20/Chrome (node 
 node18 vs node20: identical 7 · differs 2   ·   node20 vs Chrome 151: identical 3 · differs 3 · node only 3
 ```
 
-**구현 의존 항목 — 판이 오르면 다시 돌릴 것**
+**구현 의존 항목 — 버전이 오르면 다시 돌릴 것**
 
-- ★★★ **C 행 `rejects` 칸** — node 가 ES2025 의 `closeOnRejection` 을 따르는 V8 로 오르면 `return() yes · finally yes` 로 바뀔 자리다. 판이 오르면 1번을 다시 돌린다.
+- ★★★ **C 행 `rejects` 칸** — node 가 ES2025 의 `closeOnRejection` 을 따르는 V8 로 오르면 `return() yes · finally yes` 로 바뀔 자리다. 버전이 오르면 1번을 다시 돌린다.
 - ★★ **3번의 보고와 종료 코드** — node 의 모드(37번).
 - ★ 예외 문구 — `… is not a function or its return value is not iterable` · `… not async iterable`.
 
@@ -240,7 +240,7 @@ node18 vs node20: identical 7 · differs 2   ·   node20 vs Chrome 151: identica
 
 이 파일의 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Chrome 151**(헤드리스) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
 블록은 **전부 캡처 파일에서 조립**했다.
-★★★ **이 주제에서 판이 갈린 칸은 하나다** — 1번 격자 C 행 `rejects`(Chrome 151 만 닫았다). 두 node 판은 서로 한 글자도 같았다.
+★★★ **이 주제에서 판이 달라진 항목은 하나다** — 1번 격자 C 행 `rejects`(Chrome 151 만 닫았다). 두 node 버전은 서로 한 글자도 같았다.
 
 **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
 `js40b-40a-close-grid.js`(1번 · 2번 · 8번) · `js40b-40-h-premade.js` + `js40b-40b-premade.sh`(3번 · 9번) · `js40b-40c-which-protocol.js`(4번 · 6번) · `js40b-40d-yield-and-ticks.js`(5번 · 7번 · 10번).

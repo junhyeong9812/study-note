@@ -156,7 +156,7 @@ RFC 1191의 규칙
 2. **MSS 클램핑** — 경로 중간 장비가 SYN의 MSS 옵션을 줄여 쓴다. 양 끝이 애초에 작은 세그먼트만 보낸다.
    - iptables `TCPMSS --clamp-mss-to-pmtu`의 존재 이유가 바로 "ICMP Fragmentation Needed / Packet Too Big을 막는 ISP·서버"다. 문서가 드는 증상은 "웹 브라우저가 연결 후 데이터 없이 멈춤, 큰 메일만 멈춤, scp가 핸드셰이크 뒤 멈춤"이다(iptables-extensions(8)).
    - TCP에만 통한다. UDP(QUIC·DNS)는 따로 대처해야 한다.
-3. **PLPMTUD / DPLPMTUD** — ICMP에 기대지 않고, 전송 계층이 크기를 바꿔 가며 탐침을 보내 성공·손실로 PMTU를 찾는다(RFC 4821 TCP용, RFC 8899 데이터그램용).
+3. **PLPMTUD / DPLPMTUD** — ICMP에 기대지 않고, 전송 계층이 크기를 바꿔 가며 probe를 보내 성공·손실로 PMTU를 찾는다(RFC 4821 TCP용, RFC 8899 데이터그램용).
    - 리눅스 TCP: `tcp_mtu_probing` 기본 0(끔). 1은 ICMP 블랙홀을 감지했을 때만 켠다. 2는 항상 켠다(tcp(7)).
    - QUIC는 UDP 페이로드 1200바이트를 지원하지 못하는 경로에서는 쓰면 안 된다(MUST NOT, RFC 9000 §14). 그 위로는 DPLPMTUD로 탐색할 수 있다(§14.3).
 4. **인터페이스 MTU를 낮춘다** — 터널 인터페이스의 MTU를 오버헤드만큼 줄여 애초에 큰 패킷을 만들지 않는다.
@@ -165,7 +165,7 @@ RFC 1191의 규칙
 
 - **목적지별 캐시 + 만료 타이머** — PMTU는 목적지(경로)마다 기억하고, 일정 시간 뒤 잊는다(RFC 1191 §6.2·§6.3, 리눅스 `mtu_expires`). 해시 테이블에 시간 필드를 붙인 구조다. 개념: [해시맵](../../data-structure/05-hashmap/2-summary.md).
 - **재조립 큐** — 목적지는 (출발지, 목적지, 프로토콜, Identification)이 같은 조각을 한데 모은다. offset 순으로 빈틈을 채워 가며, 제한 시간이 지나면 통째로 버린다. 구간을 채우는 문제다.
-- **탐색 구간 좁히기** — PLPMTUD는 "성공한 최대 크기(search_low)"와 "실패한 최소 크기(search_high)" 사이를 탐침으로 좁혀 간다. 리눅스 `tcp_base_mss`는 search_low의 초깃값이다(kernel ip-sysctl 문서). 정답이 구간 안의 한 값이라는 점에서 [이분 탐색](../../algorithm/06-binary-search/2-summary.md)과 같은 발상이다. 실제 탐침 크기 선택 방식은 구현마다 다르다 [?].
+- **탐색 구간 좁히기** — PLPMTUD는 "성공한 최대 크기(search_low)"와 "실패한 최소 크기(search_high)" 사이를 probe로 좁혀 간다. 리눅스 `tcp_base_mss`는 search_low의 초깃값이다(kernel ip-sysctl 문서). 정답이 구간 안의 한 값이라는 점에서 [이분 탐색](../../algorithm/06-binary-search/2-summary.md)과 같은 발상이다. 실제 probe 크기 선택 방식은 구현마다 다르다 [?].
 - **정수 산술** — offset은 8바이트 단위라 조각 데이터 크기는 (마지막 조각을 빼고) 8의 배수여야 한다.
 
 ## 적용 — 풀어나가는 법
@@ -248,7 +248,7 @@ iptables -t mangle -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss
 - **대처**
   - 근본: 경로의 방화벽·보안 그룹·네트워크 ACL에서 ICMP 3/4(IPv6 type 2)를 허용한다.
   - 즉시 우회: VPN 게이트웨이에서 MSS 클램핑(`--clamp-mss-to-pmtu`)을 건다. 또는 터널 인터페이스 MTU를 낮춘다.
-  - 보조: 리눅스 서버에 `tcp_mtu_probing=1`을 두면 블랙홀을 감지했을 때 탐침으로 크기를 줄인다(tcp(7)).
+  - 보조: 리눅스 서버에 `tcp_mtu_probing=1`을 두면 블랙홀을 감지했을 때 probe로 크기를 줄인다(tcp(7)).
 
 ### 2. TLS 핸드셰이크가 인증서 단계에서 멈춘다
 

@@ -25,7 +25,7 @@
 
 ### 4. (연결)
 
-재집계(rollup of rollup) 정확성은 이렇게 갈린다.
+재집계(rollup of rollup) 정확성은 이렇게 달라진다.
 
 ```text
 정확히 재집계 가능:  max(max of maxes) · min(min of mins) · sum(sum of sums) · count(sum of counts)

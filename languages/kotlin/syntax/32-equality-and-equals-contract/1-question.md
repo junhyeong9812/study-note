@@ -147,7 +147,7 @@ fun main() {
 }
 ```
 
-- `R1`·`R2`·`R3`·`R6` 줄의 `size` 와 네 `contains` 는 각각 무엇인가? 마지막에 찍히는 「갈린 칸」은?
+- `R1`·`R2`·`R3`·`R6` 줄의 `size` 와 네 `contains` 는 각각 무엇인가? 마지막에 찍히는 「달라진 항목」은?
 - `R4` 의 두 `size`, `R5` 의 두 `contains` 와 두 `equals` 는?
 
 ### 5. ★★ 본문 프로퍼티를 가진 `data class` 를 셋과 맵에 (예측)
@@ -200,7 +200,7 @@ fun main() {
 - `equals` 만 재정의하고 `hashCode` 를 안 고친 클래스에 kotlinc 2.4.20 은 경고를 내는가? `-Wextra` 로는?
 - 같은 컴파일에서 경고가 **나는** 자리는 어디인가? 배열을 가진 `data class` 에는?
 
-### 8. `R2` 에서 셋과 리스트가 갈리는 이유 (왜)
+### 8. `R2` 에서 셋과 리스트가 달라지는 이유 (왜)
 
 - `equals` 는 멀쩡한데 `HashSet.contains(new)` 만 `false` 인 이유는? `ArrayList` 는 왜 멀쩡한가?
 
@@ -227,7 +227,7 @@ fun main() {
 선행은 [22번 주제](../22-data-class-generated-members/)다 — `data class` 의 `equals` 가 **무엇을 보는지**는 거기서 봤다. 해시 원리는 [`cs/data-structure/05-hashmap/`](../../../../cs/data-structure/05-hashmap/)이 정본이다.
 
 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
-이 주제의 모든 답은 **kotlinc 2.4.20 · JRE 21.0.5**(Java 쪽은 **javac 21.0.5**)에서 실제로 던져 받은 것이다.
+이 주제의 모든 답은 **kotlinc 2.4.20 · JRE 21.0.5**(Java 쪽은 **javac 21.0.5**)에서 실제로 실행해 받은 것이다.
 
 ## 복습 기록
 

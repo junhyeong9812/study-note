@@ -48,7 +48,7 @@ SELECT id, payload FROM t57_q WHERE id = 1 FOR UPDATE NOWAIT;
 SELECT id, payload FROM t57_q WHERE state = 'ready' ORDER BY id FOR UPDATE SKIP LOCKED;
 ```
 
-- A 가 1번을 쥔 상태에서 B 는 무엇을 받는가?
+- A 가 1번을 잡은 상태에서 B 는 무엇을 받는가?
 
 ### 5. 큐 소비 — 두 워커가 무엇을 집나 (예측)
 

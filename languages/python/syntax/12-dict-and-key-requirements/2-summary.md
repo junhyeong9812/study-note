@@ -117,7 +117,7 @@ popitem()           : ('z', 3)
   **그래서 테스트가 순서 사고를 안 잡아 준다** — `list(d)` 로 비교해야 잡힌다.
 - `reversed(d)` 는 **3.8** 부터다. `popitem()` 은 **마지막 것**을 뺀다(3.7 부터 LIFO 로 명세).
 
-★ **시드를 바꿔도 dict 순서는 안 갈린다** — 순서가 해시에서 오지 않기 때문이다([13번](../13-set-and-frozenset/2-summary.md)의 `set` 과 정확히 반대다).
+★ **시드를 바꿔도 dict 순서는 안 달라진다** — 순서가 해시에서 오지 않기 때문이다([13번](../13-set-and-frozenset/2-summary.md)의 `set` 과 정확히 반대다).
 
 ```bash
 for seed in 0 1 2; do PYTHONHASHSEED=$seed python3 -c \
@@ -738,7 +738,7 @@ move_to_end 는 dict 에 없다   : True False
 ```
 
 ★ **`<` 는 없다.** 문서가 *"Order comparisons ('<', '<=', '>=', '>') raise `TypeError`"* 라고 적는다 —
-**부분집합 비교가 있는 `set` 과 정확히 갈리는 자리다**([13번](../13-set-and-frozenset/2-summary.md)).\
+**부분집합 비교가 있는 `set` 과 정확히 달라지는 자리다**([13번](../13-set-and-frozenset/2-summary.md)).\
 ★ **`OrderedDict` 는 아직 쓸모가 있다** — `==` 가 **순서를 본다**. 다만 **평범한 dict 와 비교할 때는 순서를 안 본다**(양쪽 다 `True`).
 「순서까지 같은가」를 테스트하려면 **양쪽 다 `OrderedDict`** 이거나 `list(d1) == list(d2)` 여야 한다.
 
@@ -842,7 +842,7 @@ dict.fromkeys(keys, []) : {'a': [1], 'b': [1]}  <- 한 리스트를 공유한다
 | **크기가 같으면 순회 중 변경이 안 잡히는 것** | 실행 — 검사가 크기만 본다 |
 | 예외·경고 **문구** 전부 | 실행 |
 
-### 이 판(3.12.3)·이 머신의 관찰
+### 이 버전(3.12.3)·이 머신의 관찰
 
 | 관찰 | 어디가 흔들리나 |
 |---|---|
@@ -959,7 +959,7 @@ n in dn          : True | float('nan') in dn : False
 - **뷰는 사본이 아니다.** 원본이 바뀌면 따라 변하고 첨자는 못 쓴다.
 - **순회 중 변경은 `RuntimeError` 「또는」 조용히 빠뜨림**이다. 검사는 **크기만** 본다.
 - **병합은 값이 오른쪽, 자리가 왼쪽.** `|` 는 dict 만 받고 `|=` 는 이터러블도 받는다.
-- **dict 순서는 `PYTHONHASHSEED` 에 안 흔들린다.** 순서가 해시에서 오지 않기 때문이다.
+- **dict 순서는 `PYTHONHASHSEED` 에 달라지지 않는다.** 순서가 해시에서 오지 않기 때문이다.
 
 ## 관련 자료
 
@@ -968,7 +968,7 @@ n in dn          : True | float('nan') in dn : False
 - 선행: [11-tuple-and-unpacking](../11-tuple-and-unpacking/2-summary.md) — **튜플이 키가 되는 조건**과 `namedtuple` 이 평범한 튜플과 한 키가 되는 것.
 - 선행: [03-mutability-and-copying](../03-mutability-and-copying/2-summary.md) — 불변 안의 가변. **얕은 복사**의 정본.
 - 이어지는 곳: [13-set-and-frozenset](../13-set-and-frozenset/2-summary.md) — **같은 해시 기계의 「순서 없는」 쪽.**
-  `PYTHONHASHSEED` 로 실제로 갈리는 것은 그쪽이다.
+  `PYTHONHASHSEED` 로 실제로 나뉘는 것은 그쪽이다.
 - 이어지는 곳: [14-comprehensions](../14-comprehensions/2-summary.md) — dict 컴프리헨션.
 - 이어지는 곳: [20-mutable-default-args](../20-mutable-default-args/2-summary.md) — `dict.fromkeys(keys, [])` 와 같은 집안의 함정.
 - 이어지는 곳: [목록의 **30번 주제**](../30-repr-eq-hash-contracts/) 「`__repr__`·`__eq__`·`__hash__` 계약」 — **세 메서드 계약의 정본**이다.

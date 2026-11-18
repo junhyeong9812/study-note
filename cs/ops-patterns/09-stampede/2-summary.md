@@ -13,7 +13,7 @@
 쉬운 예: 반 아이들 100명이 같은 문제의 답을 몰라도, 교무실에 물으러 가는 건 대표 한 명이면 된다. 나머지는 그 답을 받아 적는다.\
 똑같은 구조다: 같은 키의 계산은 동시에 하나만 날리고(싱글플라이트), 더 나아가 만료되기 전에 미리 물어봐 두면 아무도 기다리지 않는다(미리 갱신).\
 실무 예: 메인 페이지 인기 상품, 실시간 검색어 순위, 환율표 — 모두가 같은 키를 읽는 캐시.\
-이 사고는 다른 캐시 사고와 다르다: 없는 키를 계속 묻는 관통(penetration), 모든 키가 한꺼번에 만료되는 눈사태(avalanche)와 구분해야 대처가 갈린다.
+이 사고는 다른 캐시 사고와 다르다: 없는 키를 계속 묻는 관통(penetration), 모든 키가 한꺼번에 만료되는 눈사태(avalanche)와 구분해야 대처가 달라진다.
 
 ### 한눈에 — 쉽게 말하면
 **스탬피드 방지 = 반 아이들 100명이 같은 문제의 답을 몰라도, 선생님께 물으러 가는 건 한 명이면 된다.**
@@ -171,7 +171,7 @@ map: key -> 값 (TTL 새로 시작)      inFlight: 비워짐 (finally 에서 rem
 과제(원본 README "하는 방법"):
 
 1. `StampedeTest.java` 를 따라친다.
-2. `NaiveCache` 의 **TODO 1** — 기준선.\
+2. `NaiveCache` 의 **TODO 1** — 베이스라인.\
    있으면 주고 없으면 만들어 담는다.\
    **막으면 안 된다**("막지 않으면 무슨 일이 벌어지는가"를 보여주는 클래스다).
 
@@ -190,7 +190,7 @@ map: key -> 값 (TTL 새로 시작)      inFlight: 비워짐 (finally 에서 rem
 아래 서머리는 이 문제(README)를 분석·정리한 것이다.
 
 실제 시스템에 붙일 때의 순서: ① 자부터 바꾼다 — 적중률이 아니라 `loader` 호출 수와 동시 최대를 잰다 → ② 싱글플라이트로 같은 키의 동시 계산을 하나로 → ③ 낡아도 되는 데이터면 미리 갱신으로 기다림까지 없앤다 → ④ 키마다 TTL에 지터를 준다(동시 만료 방지) → ⑤ 서버가 여럿이면 갱신자를 하나로 묶을지, 서버 수만큼은 허용할지 정한다.\
-위 「문제」절의 TODO는 ②·③을 기준선(막지 않는 캐시)과 대조해 만든다.
+위 「문제」절의 TODO는 ②·③을 베이스라인(막지 않는 캐시)과 대조해 만든다.
 
 ### 테스트 이야기 — 정상 경로를 통과하는 결함들
 변종 9개를 심었더니 셋이 처음에 살아남았다: "값을 안 담는다", "갱신 중에 기다린다", "갱신 실패를 던진다" — 셋 다 **정상 경로와 스탬피드 테스트를 그대로 통과**해서, 각각 판별 테스트를 따로 만들어야 했다.
@@ -236,7 +236,7 @@ SingleFlight  100    1             1           99
   적중률 대시보드로는 두 구현이 구별되지 않는다 — `loader` 호출 수를 세야 보인다.
 
 > **peakConcurrentLoads** — 동시에 돌던 loader 의 최대 개수.\
-> 예: 스탬피드를 보이게 하는 자다 — 100 vs 1 로 갈린다.
+> 예: 스탬피드를 보이게 하는 자다 — 100 vs 1 로 나뉜다.
 
 ## 핵심 문장
 
@@ -259,7 +259,7 @@ SingleFlight  100    1             1           99
 
 ### 관련 자료
 - 챕터 안내: `/home/jun/project/myway/ops-patterns/09-stampede/README.md`
-- 정답 기준 소스: `/home/jun/project/myway/ops-patterns/09-stampede/impl/NaiveCache.java`(기준선), `impl/SingleFlightCache.java`(본체), `impl/RefreshAheadCache.java`
+- 정답 기준 소스: `/home/jun/project/myway/ops-patterns/09-stampede/impl/NaiveCache.java`(베이스라인), `impl/SingleFlightCache.java`(핵심), `impl/RefreshAheadCache.java`
 - 계약·조각: `.../src/main/java/com/ops/stampede/Cache.java`(hits/misses/loads/peakConcurrentLoads/waits), `Loader.java`, `CacheStats.java`, `Ticker.java`
 - 테스트: `.../src/test/java/com/ops/stampede/StampedeTest.java`, `FakeTicker.java`
 - 이웃 주제: `06-idempotency-store`(같은 "자리 잡기 원자성"), 다음 챕터 `10-scheduler`("읽는 김에"를 진짜 백그라운드 작업으로)

@@ -173,7 +173,7 @@ merge   결과=400000
 
 - Michael–Scott 1996: 읽은 값 A가 CAS 전에 "A에서 B로, 다시 A로" 바뀌면 CAS가 성공하지 말아야 할 때 성공한다.
 - 흔한 해법: 포인터에 **수정 카운터(stamp)** 를 붙여 함께 비교한다. 논문은 이것이 ABA를 "extremely unlikely"하게 만들 뿐 보장하지는 않는다고 적는다(카운터가 한 바퀴 돌 수 있다). 2배 폭 CAS나, 포인터 대신 배열 인덱스 + 카운터를 한 워드에 담는 방법이 필요하다.
-- **GC 언어에서는 노드 재사용이 없으면 ABA가 생기지 않는다.** T1이 A의 참조를 쥐고 있는 동안 A는 수거되지 않으므로, 새로 만든 노드가 같은 참조일 수 없다. `ConcurrentLinkedQueue` 소스 주석: "in garbage collected systems, there is no possibility of ABA problems due to recycled nodes, so there is no need to use 'counted pointers'".
+- **GC 언어에서는 노드 재사용이 없으면 ABA가 생기지 않는다.** T1이 A의 참조를 잡고 있는 동안 A는 수거되지 않으므로, 새로 만든 노드가 같은 참조일 수 없다. `ConcurrentLinkedQueue` 소스 주석: "in garbage collected systems, there is no possibility of ABA problems due to recycled nodes, so there is no need to use 'counted pointers'".
 - 그러므로 Java에서 ABA가 생기는 조건은 노드를 **직접 풀링해 재사용**하거나, 정수 값 자체를 CAS하는 경우다. C·C++에서는 `free` 뒤 `malloc`이 같은 주소를 돌려줄 수 있어 기본으로 위험하다.
 
 #### 실험: ABA 재현 — 노드 재사용 vs 새 노드 vs stamp (`Aba.java`)

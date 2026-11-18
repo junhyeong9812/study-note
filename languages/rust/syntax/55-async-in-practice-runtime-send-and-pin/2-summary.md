@@ -24,16 +24,16 @@ tokio-macros-2.7.2.crate
 
 - ★ **nightly 가 없다**(`stable` 하나) · **tokio 는 캐시에 두 판**(1.52.3 · 1.53.1)이 있다 — `Cargo.toml` 에서 `=1.52.3` 으로 못 박았다.
 
-★★★ **본체 창 — ① 컴파일러의 `Send` 진단 사슬이다.** 「await 를 가로지르는 락이 왜 문제인가」를 **교착을 재현하지 않고** 진단의 `note:` 사슬(「has type … which is not `Send`」 → 「await occurs here, with … maybe used later」)로 본다.
+★★★ **핵심 창 — ① 컴파일러의 `Send` 진단 사슬이다.** 「await 를 가로지르는 락이 왜 문제인가」를 **교착을 재현하지 않고** 진단의 `note:` 사슬(「has type … which is not `Send`」 → 「await occurs here, with … maybe used later」)로 본다.
 
-## 흔들리는 칸 / 안 흔들리는 칸
+## 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| 안 흔들린다 | ★★★ **`Send` 진단의 사슬** — 어느 변수 · 어느 await · 어느 경계 | 같은 rustc 판에서 고정이다 |
-| 안 흔들린다 | E0728 · E0752 · E0277 번호 · `파일:줄:칸` · 종료 코드 | 〃 |
-| 안 흔들린다 | tokio 판의 **스레드 이름 집합**(`{"main"}` · `{"tokio-rt-worker"}`) | 여러 작업의 이름을 **집합으로** 모아 순서를 지웠다(규칙 11) |
-| ★ **구현이 정한다** | ★★ **「빌린 뒤 `drop` 해도 `Send` 가 안 된다」** | rustc 의 await 너머 생존 분석 — 54번 (4)의 크기와 같은 분석이다. 판이 오르면 **다시 찍을 칸** |
+| 달라지지 않는다 | ★★★ **`Send` 진단의 사슬** — 어느 변수 · 어느 await · 어느 경계 | 같은 rustc 버전에서 고정이다 |
+| 달라지지 않는다 | E0728 · E0752 · E0277 번호 · `파일:줄:칸` · 종료 코드 | 〃 |
+| 달라지지 않는다 | tokio 판의 **스레드 이름 집합**(`{"main"}` · `{"tokio-rt-worker"}`) | 여러 작업의 이름을 **집합으로** 모아 순서를 지웠다(규칙 11) |
+| ★ **구현이 정한다** | ★★ **「빌린 뒤 `drop` 해도 `Send` 가 안 된다」** | rustc 의 await 너머 생존 분석 — 54번 (4)의 크기와 같은 분석이다. 버전이 오르면 **다시 찍을 칸** |
 | ★ **구현이 정한다** | tokio 워커 스레드 이름 `tokio-rt-worker` | 그 라이브러리 판의 선택이다 |
 
 ★ 정규화 규칙은 **기본 넷**만 쓴다. ★ tokio 블록의 레지스트리 경로는 캡처가 `<registry>/` 로 바꿨다(배너에 그 `sed` 가 적혀 있다 — 규칙 33).
@@ -88,17 +88,17 @@ tokio-macros-2.7.2.crate
 
 ## 동작 방식
 
-### (0) 이 주제가 쓰는 창 — 본체는 ① `Send` 진단 사슬이다
+### (0) 이 주제가 쓰는 창 — 핵심은 ① `Send` 진단 사슬이다
 
 | 창 | 무엇을 보여 주나 | 이 주제에서 |
 |---|---|---|
-| ① ★★★ **컴파일러 진단 사슬** | await 를 가로지른 값이 **어느 줄에서 무엇 때문에** future 를 `!Send` 로 만드나 | ★ **본체**((2)·(3)) |
+| ① ★★★ **컴파일러 진단 사슬** | await 를 가로지른 값이 **어느 줄에서 무엇 때문에** future 를 `!Send` 로 만드나 | ★ **핵심**((2)·(3)) |
 | ② ★★★ **E0728 · E0752** | std 에 실행기가 없다는 것이 **문법에서** 어떻게 드러나나 | 쓴다((1)) |
 | ③ ★★ **로컬 문서의 항목 목록** | std `task`·`future` 에 **무엇이 있고 무엇이 없나** | 쓴다((1)) |
 | ④ ★★ **E0277 `cannot be unpinned`** + `Box::pin` 실행 | `Pin` 이 필요한 자리 | 쓴다((4)) |
 | ⑤ ★★ **tokio(캐시 · `--offline`)** | 런타임의 스레드 · `spawn` 경계 | 쓴다((5)) |
 | **교착(deadlock) 재현** | await 를 가로지른 락이 실제로 막히는 장면 | ★ **일부러 안 했다** — ① 이 **같은 질문을 컴파일 시점에** 답한다(아래) |
-| 자기 참조 구조체의 **이동 사고** | 옮긴 뒤 옛 주소를 가리키는 포인터 | ★ **안 던졌다** — `unsafe` 가 필요하다(56번 몫). **도식 + 명세 인용**((4)) |
+| 자기 참조 구조체의 **이동 사고** | 옮긴 뒤 옛 주소를 가리키는 포인터 | ★ **실행하지 않았다** — `unsafe` 가 필요하다(56번 몫). **도식 + 명세 인용**((4)) |
 | 시간·스레드 비용 | — | ★ **안 쟀다** |
 
 ★★ **제5의 상태 — 「같은 질문을 다른 창으로」.** 「await 를 가로지르는 `std` 락은 왜 문제인가」를 **실행으로** 물으면 교착을 일부러 만들어야 하고, 교착은 **판마다 안 날 수도 있다**(안 터졌다 ≠ 안전하다).
@@ -297,7 +297,7 @@ error: aborting due to 1 previous error
 
 - ★★★ **「future cannot be sent between threads safely」** — ★ **에러 번호가 없다**(`error:` 만). 같은 `Send` 실패라도 스레드 쪽([41번](../41-rc-arc-shared-ownership-and-weak-cycles/) (3))은 **E0277** 이었는데, future 쪽은 rustc 가 **따로 만든 문구**로 낸다.
 - ★★★ **사슬 셋** — ① `help:` 「the trait `Send` is not implemented for `Rc<i32>`」(**무엇이** 문제인가) ② `note:` 「**has type `Rc<i32>` which is not `Send`**」가 9행 `let r` 을, 「**await occurs here, with `r` maybe used later**」가 10행 `.await` 를 짚는다(**어디서** 문제가 되나) ③ `note:` 「required by a bound in `need_send`」(**누가** 요구했나).
-- ★★ **`Rc` 가 있어서가 아니라 `Rc` 를 쥔 채 await 해서다** — 「await occurs here, with `r` maybe used later」가 핵심 문장이다. await 너머로 살아 있는 값은 **future 의 필드**가 되고(54번 (4)), 필드 하나가 `!Send` 면 future 전체가 `!Send` 다.
+- ★★ **`Rc` 가 있어서가 아니라 `Rc` 를 잡은 채 await 해서다** — 「await occurs here, with `r` maybe used later」가 핵심 문장이다. await 너머로 살아 있는 값은 **future 의 필드**가 되고(54번 (4)), 필드 하나가 `!Send` 면 future 전체가 `!Send` 다.
 
 **await 전에 `drop(r)` 하면.**
 
@@ -442,7 +442,7 @@ error: aborting due to 1 previous error
 ```
 
 - ★★★ **같은 문구 · 같은 사슬** — 「has type `std::sync::MutexGuard<'_, u32>` which is not `Send`」 · 「await occurs here, with `mut g` maybe used later」.
-- ★★★ **`MutexGuard` 는 왜 `!Send` 인가** — std: 「A `MutexGuard` is not `Send` to maximize platform portability. **On platforms that use POSIX threads … there is a requirement to release mutex locks on the same thread they were acquired.**」 락을 연 스레드가 닫아야 한다 — 가드를 쥔 future 가 다른 워커로 옮겨 가 **거기서 가드를 버리면** 그 약속이 깨진다.
+- ★★★ **`MutexGuard` 는 왜 `!Send` 인가** — std: 「A `MutexGuard` is not `Send` to maximize platform portability. **On platforms that use POSIX threads … there is a requirement to release mutex locks on the same thread they were acquired.**」 락을 연 스레드가 닫아야 한다 — 가드를 잡은 future 가 다른 워커로 옮겨 가 **거기서 가드를 버리면** 그 약속이 깨진다.
 
 **가드를 쓰고 `drop(g)` 한 뒤 await 하면.**
 
@@ -861,8 +861,8 @@ error: could not compile `r55tk` (bin "rc_spawn_ct") due to 1 previous error
 (exit 101)
 ```
 
-- ★★★ **`current_thread : {"main"}`** — 작업 8개가 전부 **`block_on` 을 부른 스레드**에서 돌았다. **`multi_thread : {"tokio-rt-worker"}`** — 작업이 **워커 스레드들**에서 돌았다(이름이 같아 집합이 한 원소다 — 워커 **몇 개**가 썼는지는 이 탐침이 세지 않는다).
-- ★★★ **`tokio::spawn` 에 `Rc` 를 쥔 채 await 하는 블록을 넘기면 — (2)와 같은 문구 · 같은 사슬**, 그리고 마지막 `note:` 가 **요구한 자리**를 tokio 소스에서 짚는다: `F: Future + Send + 'static`. `need_send` 로 흉내 낸 경계가 **실제 런타임의 경계 그대로**였다.
+- ★★★ **`current_thread : {"main"}`** — 작업 8개가 전부 **`block_on` 을 부른 스레드**에서 돌았다. **`multi_thread : {"tokio-rt-worker"}`** — 작업이 **워커 스레드들**에서 돌았다(이름이 같아 집합이 한 원소다 — 워커 **몇 개**가 썼는지는 이 probe가 세지 않는다).
+- ★★★ **`tokio::spawn` 에 `Rc` 를 잡은 채 await 하는 블록을 넘기면 — (2)와 같은 문구 · 같은 사슬**, 그리고 마지막 `note:` 가 **요구한 자리**를 tokio 소스에서 짚는다: `F: Future + Send + 'static`. `need_send` 로 흉내 낸 경계가 **실제 런타임의 경계 그대로**였다.
 - ★★★ **`spawn_local : 5`** — 같은 `Rc` 작업을 **`LocalSet` 위의 `spawn_local`** 로 넘기면 돈다. `spawn_local` 은 **작업을 그 스레드에 묶어 두는** 대신 `Send` 를 안 요구한다.
 - ★★ **`async mutex : 2`** — `tokio::sync::Mutex` 의 가드는 await 를 가로질러 쥐어도 **`tokio::spawn` 을 통과했다**((3)의 `std` 가드와 대비).
 - ★ **도구 판** — `cargo tree` 가 `tokio v1.52.3` · `tokio-macros v2.7.2` · `pin-project-lite v0.2.17` 을 보인다. ★ 표준 오류의 「Adding tokio v1.52.3 (available: v1.53.1)」는 **캐시에 더 새 판이 있다**는 cargo 의 안내다.
@@ -901,11 +901,11 @@ error: could not compile `r55tk` (bin "rc_spawn_ct") due to 1 previous error
 
 ### 2. ★★★ 「await 앞에서 `drop(guard)` 하면 `Send` 가 된다」
 
-(2)·(3) — **이 판에서는 안 된다**(빌린 적이 있으면). ★ 흔한 조언이 틀린 자리다 — **안쪽 블록**이 되는 방법이다. 판이 오르면 분석이 정교해져 뒤집힐 수 있는 **구현의 칸**이다.
+(2)·(3) — **이 버전에서는 안 된다**(빌린 적이 있으면). ★ 흔한 조언이 틀린 자리다 — **안쪽 블록**이 되는 방법이다. 버전이 오르면 분석이 정교해져 뒤집힐 수 있는 **구현의 칸**이다.
 
 ### 3. ★★★ 「`Rc` 를 async 코드에서 쓰면 안 된다」
 
-(2)·(5) — **`Rc` 가 아니라 「`Rc` 를 쥔 채 await」가 문제다.** 블록 안에서만 쓰면 `Send` 판에도 통과하고, `spawn_local` 이면 await 를 가로질러도 된다.
+(2)·(5) — **`Rc` 가 아니라 「`Rc` 를 잡은 채 await」가 문제다.** 블록 안에서만 쓰면 `Send` 판에도 통과하고, `spawn_local` 이면 await 를 가로질러도 된다.
 
 ### 4. ★★ 「단일 스레드 런타임이면 `std::sync::Mutex` 를 await 너머로 쥐어도 된다」
 
@@ -927,7 +927,7 @@ error: could not compile `r55tk` (bin "rc_spawn_ct") due to 1 previous error
 | `main` 은 `async` 일 수 없다 | ★ **언어**(E0752 · Reference 의 `main` 제약) | (1) |
 | std 에 실행기가 없다 | ★ **std 의 구성**(로컬 문서 목록) | (1) |
 | `!Send` 필드 하나면 future 전체가 `!Send` | ★ **언어**(자동 트레이트 규칙) | (2) |
-| 「빌린 적이 있으면 `drop` 뒤에도 await 너머로 살아 있다」고 보는 판정 | ★ **rustc 의 분석**(이 판의 관찰 — 54번 (4)의 크기와 같은 모양) | (2)·(3) |
+| 「빌린 적이 있으면 `drop` 뒤에도 await 너머로 살아 있다」고 보는 판정 | ★ **rustc 의 분석**(이 버전의 관찰 — 54번 (4)의 크기와 같은 모양) | (2)·(3) |
 | future `Send` 실패의 문구·번호 없음 | ★ **rustc 의 진단**(판에 매인다) | (2) |
 | `MutexGuard: !Send` | ★ **std 의 선택** — 「to maximize platform portability」(pthread 규칙) | (3) |
 | `async fn` future 가 `Unpin` 이 아니다 · `Pin<Box<T>>: Unpin` | ★ **언어·std** | (4) |
@@ -942,7 +942,7 @@ error: could not compile `r55tk` (bin "rc_spawn_ct") due to 1 previous error
 | 작업을 여러 스레드로 퍼뜨린다 | `multi_thread` + `spawn` — **`Send` 인 future 만** | (5) |
 | `Rc`·`RefCell` 을 await 너머로 꼭 써야 한다 | `LocalSet` + `spawn_local` | (5) |
 | 락을 잠깐 잡고 await 한다 | ★★ **블록으로 가둬 await 전에 놓는다** — `std::sync::Mutex` 그대로 | (3) |
-| 락을 쥔 채 await 해야만 한다 | 비동기 락(`tokio::sync::Mutex`) | (3)·(5) |
+| 락을 잡은 채 await 해야만 한다 | 비동기 락(`tokio::sync::Mutex`) | (3)·(5) |
 | 서로 다른 future 를 한 컬렉션에 | `Pin<Box<dyn Future<Output = T>>>` | (4) |
 | 한 스코프에서 잠깐 poll | `std::pin::pin!` | (4) · 54번 (2) |
 

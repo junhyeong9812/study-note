@@ -187,7 +187,7 @@ Java 20은 단독으로 보면 화려하지 않지만, **Java 21 LTS의 품질�
 - **레코드 패턴** — 레코드 값을 꺼내 변수로 받는 패턴. 이 편에서는 2차 프리뷰이고, 정식은 21(JEP 440)이다.
 - **전체성(exhaustiveness) 보장** — 분기가 가능한 경우를 모두 덮었음이 보장되는 것. 원문 주석 표현으로 "sealed 덕분에 default 불필요 (전체성 보장)"이다.
 - **`when` 가드 / `null` 케이스** — 타입이 맞은 뒤 조건을 하나 더 거는 것 / `null`을 `case`로 직접 받는 것. 원문이 이 편 코드에 붙인 제목이 "when 가드 + null 케이스 (4차 프리뷰)"다.
-- **`MemorySegment` / `MemorySession`** — 원문이 이 편의 API 정리 대상으로 든 두 이름. 원문은 뜻을 풀지 않고, 앞엣것이 `MemoryAddress`와 통합되고 뒤엣것이 `Arena`와 `SegmentScope`로 갈렸다고만 적는다.
+- **`MemorySegment` / `MemorySession`** — 원문이 이 편의 API 정리 대상으로 든 두 이름. 원문은 뜻을 풀지 않고, 앞엣것이 `MemoryAddress`와 통합되고 뒤엣것이 `Arena`와 `SegmentScope`로 나뉘었다고만 적는다.
 - **Scoped Value / 동적 범위(바운드 영역)** — 원문 표현으로 "불변 데이터를 안전하게 공유"하는 메커니즘 / 그 값이 유효한 구간. 이 편에서는 1차 인큐베이터다.
 - **`StructuredTaskScope`** — 구조적 동시성의 클래스. 이 편에서 scoped values를 "상속·전파하도록 업데이트"됐다.
 - **SIMD / Project Valhalla** — 하나의 명령으로 여러 값을 한꺼번에 처리하는 CPU 기능 / 원문이 Vector API가 앞으로 맞춰 갈 대상으로 이름만 든 작업 갈래.

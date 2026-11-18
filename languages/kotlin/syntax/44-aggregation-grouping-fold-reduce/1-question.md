@@ -108,9 +108,9 @@ fn main() {
 
 - 1번에서 `runningFold(0){+}` 과 `runningReduce{+}` 의 `empty`·`one` 칸은 각각 무엇인가?
 
-### 6. `fold` 와 `reduce` 가 갈리는 자리 (왜)
+### 6. `fold` 와 `reduce` 가 달라지는 자리 (왜)
 
-- 1번에서 두 연산은 `one`·`many` 칸이 같다. **빈 입력에서만** 갈리는 이유를 두 함수의 **서명**으로 설명하면?
+- 1번에서 두 연산은 `one`·`many` 칸이 같다. **빈 입력에서만** 달라지는 이유를 두 함수의 **서명**으로 설명하면?
 
 ### 7. `reduce` 의 KDoc 이 약속하는 것 (경계)
 
@@ -132,7 +132,7 @@ fn main() {
 
 선행은 [42번 주제](../42-transformations-map-flatmap-associate-zip/)(`associateBy` 는 키가 겹치면 덮는다)다.
 
-이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5**(대비 **rustc 1.92.0 · Python 3.12.3**)에서 실제로 던져 받은 것이다.
+이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5**(대비 **rustc 1.92.0 · Python 3.12.3**)에서 실제로 실행해 받은 것이다.
 
 ## 복습 기록
 

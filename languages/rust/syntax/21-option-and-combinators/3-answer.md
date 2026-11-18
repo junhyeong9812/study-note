@@ -420,7 +420,7 @@ fn main() {
   `and_then(label)` 을 `map(label)` 로 했으면 `Option<Option<&str>>` 이 나왔을 것이다.
 - ★ **`filter` 는 `Some` 을 `None` 으로 떨어뜨릴 수 있다.** `Some(443).filter(|x| *x < 100)` 이 `None` 이다.
   반대 방향(`None` → `Some`)은 못 한다 — 그쪽은 `or`/`or_else` 다.
-- **`ok_or` 는 `Option<T>` 를 `Result<T, E>` 로** 바꾼다. 출력에서 `Ok(443)` 과 `Err("없다")` 로 갈린 것이 그것이고,
+- **`ok_or` 는 `Option<T>` 를 `Result<T, E>` 로** 바꾼다. 출력에서 `Ok(443)` 과 `Err("없다")` 로 달라진 것이 그것이고,
   이어지는 주제는 [**22번**](../22-result-question-mark-and-from/)이다.
 - `unwrap_or_default()` 는 **`T: Default`** 를 요구한다. `u16` 의 기본값이 `0` 이라 `unwrap_or(0)` 과 같은 답이 나왔다.
 
@@ -550,7 +550,7 @@ gopher:알수없음 | gopher:알수없음 | gopher:알수없음 | gopher:알수�
   같은 주제의 「구현 세부사항 대 언어 보장」 절이 그것을 **레이아웃 보장 아님**으로 못박았다.
 - **`std::mem::take` 와 `std::mem::replace`** 다. 정본은 [목록의 **44번 주제**](../44-drop-mem-drop-replace-and-take/)이며,
   `Option::take`/`replace` 는 그 일반형의 `Option` 전용판이다.
-- ★ **Java 의 `Optional` 과 갈리는 지점** — Java 에는 **`null` 이 여전히 있다.**
+- ★ **Java 의 `Optional` 과 달라지는 지점** — Java 에는 **`null` 이 여전히 있다.**
   `Optional` 은 그 위에 얹힌 **선택적 관용구**라 필드·파라미터에 쓰면 안 된다는 안티패턴 절이 따로 필요하다
   ([`java/syntax/38-optional/`](../../../java/syntax/38-optional/)). Rust 의 `Option` 은 **「없음」의 유일한 표면**이고
   컴파일러가 검사를 강제한다 — 그래서 안티패턴이 아니라 **기본형**이다.

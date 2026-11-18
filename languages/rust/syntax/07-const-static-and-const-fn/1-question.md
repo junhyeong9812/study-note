@@ -230,7 +230,7 @@ const CACHE: RefCell<i32> = RefCell::new(0);
 
 ## 실행 환경
 
-★ 답을 모르겠으면 **던져 보라.** `rustc --edition 2021 ex.rs -o /tmp/ex && /tmp/ex`.
+★ 답을 모르겠으면 **실행해 보라.** `rustc --edition 2021 ex.rs -o /tmp/ex && /tmp/ex`.
 ★ **이 주제는 한 번 돌려서는 안 된다.** 디버그(`rustc --edition 2021 ex.rs`)와 릴리스(`rustc --edition 2021 -O ex.rs`)를
 둘 다 돌리고, `static mut` 이 나오면 `--edition 2024` 로 한 번 더 돌린다.
 

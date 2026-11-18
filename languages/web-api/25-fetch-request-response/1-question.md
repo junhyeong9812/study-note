@@ -15,7 +15,7 @@ await fetch(url, init).then(res => /* res.ok · res.status */, err => /* err.nam
 ```
 
 - 여섯 칸을 채워라. `catch` 로 가는 칸은 어느 것들인가?
-- `catch` 로 간 칸들의 오류는 서로 가를 수 있나?
+- `catch` 로 간 칸들의 오류는 서로 구분할 수 있나?
 
 ### 2. 콘솔과 서버 로그 (예측)
 

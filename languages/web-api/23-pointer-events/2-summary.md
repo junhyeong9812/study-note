@@ -1,6 +1,6 @@
 # web-api/23 — 포인터 이벤트: `pointerdown` 계열·마우스/터치/펜 통합·`setPointerCapture` — 정리 (힌트)
 
-**이 판의 Chrome**
+**이 버전의 Chrome**
 
 ```text
 $ google-chrome --version
@@ -8,25 +8,25 @@ Google Chrome 151.0.7922.173
 (exit 0)
 ```
 
-### 흔들리는 칸 / 안 흔들리는 칸
+### 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| **안 흔들린다** | 세 장치의 순서 로그 · 캡처 격자 9칸 · 막기 일곱 줄 · `touch-action` 격자 10칸의 `pointermove`·`pointercancel`·`pointerup`·「문서가 움직였나」 | 캡처 세 판이 **한 글자도 같았다** |
-| ★ **흔들려서 안 실었다** | 스크롤 중의 **`touchmove` 개수** | 시험판에서 같은 칸이 **4 와 5** 로 갈렸다. 그래서 그 열을 뺐다 |
+| **달라지지 않는다** | 세 장치의 순서 로그 · 캡처 격자 9칸 · 막기 일곱 줄 · `touch-action` 격자 10칸의 `pointermove`·`pointercancel`·`pointerup`·「문서가 움직였나」 | 캡처 세 번이 **한 글자도 같았다** |
+| ★ **흔들려서 안 실었다** | 스크롤 중의 **`touchmove` 개수** | 시험판에서 같은 칸이 **4 와 5** 로 나뉘었다. 그래서 그 열을 뺐다 |
 | ★ **흔들렸다가 고쳤다** | `touch-action` 격자에서 **앞 칸의 관성 스크롤이 다음 칸으로 샌 것** | `scrollend` 하나만 기다리면 `none · 위로` 가 「움직였다」로 찍혔다. **스크롤 위치가 20프레임 연달아 그대로일 때까지** 기다리게 고쳤다 |
-| **흔들린다** | Chrome 판 번호 | 판이 오르면 바뀐다 |
+| **실행마다 달라진다** | Chrome 판 번호 | 버전이 오르면 바뀐다 |
 
 - 재대조에서 정규화하는 칸은 없다. **위 표에 없는 차이는 전부 고칠 것**이다.
 
-### 이 주제가 쓰는 창 / 부적용인 창
+### 이 주제가 쓰는 창 / 해당 없는 창
 
 | 창 | 이 주제에서 | 무엇을 답하나 |
 |---|---|---|
-| 창 ① `--dump-dom` 트리 | **부적용** | — |
+| 창 ① `--dump-dom` 트리 | **해당 없음** | — |
 | 창 ② 노드 프로브 | ★ **쓴다** | `scrollX`·`scrollY` 가 0 에서 움직였나((5)) · `e.constructor.name` |
-| 창 ③ 같은 것을 두 번 읽기 | **부적용** | — |
-| **창 ④ 디스패치 계수기 → 포인터 순서 로그 · 받은 칸 격자** | ★★★ **본체** | 어느 이벤트가 어느 순서로 · 요소 밖에서 받은 `pointermove` 수 |
+| 창 ③ 같은 것을 두 번 읽기 | **해당 없음** | — |
+| **창 ④ 디스패치 계수기 → 포인터 순서 로그 · 받은 칸 격자** | ★★★ **핵심** | 어느 이벤트가 어느 순서로 · 요소 밖에서 받은 `pointermove` 수 |
 | **진짜 입력(CDP)** | ★ **쓴다 — 입력 쪽** | 마우스 · 펜 · 터치 |
 
 ### 도구가 못 보는 것
@@ -75,7 +75,7 @@ Google Chrome 151.0.7922.173
 
 **언제 쓰나** — 「`mousedown` 과 `pointerdown` 을 둘 다 달았더니 두 번 돈다」·「터치에서 `mousedown` 이 늦게 온다」일 때.
 
-**던진 것** — 상자에 포인터·마우스·터치·캡처·`click` 리스너를 달고, 진짜 입력으로 **① 마우스 · ② 펜 · ③ 터치** 한 동작씩. 마우스·펜은 **상자 위로 옮기고 → 누르고 → 떼고 → 바깥으로 옮긴다**, 터치는 **댔다 뗀다.**
+**실행한 것** — 상자에 포인터·마우스·터치·캡처·`click` 리스너를 달고, 진짜 입력으로 **① 마우스 · ② 펜 · ③ 터치** 한 동작씩. 마우스·펜은 **상자 위로 옮기고 → 누르고 → 떼고 → 바깥으로 옮긴다**, 터치는 **댔다 뗀다.**
 
 ```html
 <!-- wa20b-23-order.html -->
@@ -150,7 +150,7 @@ $ python3 wa20b-cdp.py page wa20b-23-order.html | sed -n '1,17p'
 
 - ★★ **포인터가 먼저, 호환 마우스가 바로 뒤** — `pointerover → pointerenter → mouseover → mouseenter`, `pointerdown → mousedown`, `pointerup → mouseup`.
 - ★ **`click` 의 생성자가 `PointerEvent`** 다 — Pointer Events 가 「`click` 은 `PointerEvent` 이고 호환 마우스 이벤트가 아니다」로 정한다. `pointerType` 도 `mouse` 로 실려 온다.
-- ★ **`click` 의 `isPrimary` 가 `false`** 로 찍혔다 — 다른 포인터 이벤트는 `true` 인데 여기만 다르다. **이 판의 관찰**이고, 이 문서는 그 값을 정한 명세 문장을 찾지 못했다 — `click` 에서 `isPrimary` 로 판정하지 마라.
+- ★ **`click` 의 `isPrimary` 가 `false`** 로 찍혔다 — 다른 포인터 이벤트는 `true` 인데 여기만 다르다. **이 버전의 관찰**이고, 이 문서는 그 값을 정한 명세 문장을 찾지 못했다 — `click` 에서 `isPrimary` 로 판정하지 마라.
 - **`button`** — 누르고 뗄 때 `0`(왼쪽), **움직임·들어옴·나감은 `-1`**(버튼 상태가 안 바뀜). 호환 `mouse*` 는 옛 모형대로 `0`.
 
 ```text
@@ -175,7 +175,7 @@ $ python3 wa20b-cdp.py page wa20b-23-order.html | sed -n '19,35p'
 (exit 0)
 ```
 
-- **펜은 마우스와 순서가 한 글자도 같다** — `pointerType` 만 `pen` 이다. ★ CDP 의 펜은 **마우스 이벤트에 종류만 바꿔 단 것**이라, 진짜 펜의 호버·압력은 이 판이 모른다.
+- **펜은 마우스와 순서가 한 글자도 같다** — `pointerType` 만 `pen` 이다. ★ CDP 의 펜은 **마우스 이벤트에 종류만 바꿔 단 것**이라, 진짜 펜의 호버·압력은 이 버전이 모른다.
 
 ```text
 $ python3 wa20b-cdp.py page wa20b-23-order.html | sed -n '37,54p'
@@ -220,7 +220,7 @@ $ python3 wa20b-cdp.py page wa20b-23-order.html | sed -n '37,54p'
 
 **언제 쓰나** — 슬라이더·그림판에서 **끌다가 요소 밖으로 나가면 끊기는** 문제.
 
-**던진 것** — 상자(`touch-action: none`)에서 누르고, **상자 밖 오른쪽 세 점**으로 옮기고, 밖에서 뗀다. `pointerdown` 리스너가 하는 일만 바꾼다 — **아무것도 안 함 · `setPointerCapture` · `releasePointerCapture`**. 상자의 `pointermove` 가운데 **좌표가 상자 밖인 것**을 센다.
+**실행한 것** — 상자(`touch-action: none`)에서 누르고, **상자 밖 오른쪽 세 점**으로 옮기고, 밖에서 뗀다. `pointerdown` 리스너가 하는 일만 바꾼다 — **아무것도 안 함 · `setPointerCapture` · `releasePointerCapture`**. 상자의 `pointermove` 가운데 **좌표가 상자 밖인 것**을 센다.
 
 ```html
 <!-- wa20b-23-capture.html -->
@@ -463,7 +463,7 @@ $ python3 wa20b-cdp.py page wa20b-23-prevent.html | sed -n '1p;10,15p'
 
 **언제 쓰나** — 「터치로 끄는데 `pointermove` 가 한 번 오고 끊긴다」일 때.
 
-**던진 것** — 가로·세로로 다 스크롤되는 문서 위의 상자에 `touch-action` 다섯 값을 주고, **위로 · 왼쪽으로** 각각 100 을 다섯 번에 나눠 끈다. 판마다 **스크롤 위치가 20프레임 연달아 그대로일 때까지** 가라앉힌 뒤 0 으로 돌린다.
+**실행한 것** — 가로·세로로 다 스크롤되는 문서 위의 상자에 `touch-action` 다섯 값을 주고, **위로 · 왼쪽으로** 각각 100 을 다섯 번에 나눠 끈다. 판마다 **스크롤 위치가 20프레임 연달아 그대로일 때까지** 가라앉힌 뒤 0 으로 돌린다.
 
 ```html
 <!-- wa20b-23-cancel.html -->
@@ -631,19 +631,19 @@ pointercancel 이 난 칸 = 6 / 10
 
 ### 7. `click` 의 `isPrimary` 로 판정한다
 
-**이 판에서 `false`** 였다((1)). 판정은 `pointerdown` 에서 한다.
+**이 버전에서 `false`** 였다((1)). 판정은 `pointerdown` 에서 한다.
 
 ## 구현 세부사항 대 언어 보장
 
 | 이 문서의 서술 | 누가 보장하나 |
 |---|---|
-| 포인터 이벤트 뒤에 호환 마우스 이벤트가 오는 것 | **명세**(Pointer Events — 호환 마우스 이벤트 절 · **선택적** 절이다) · 이 판도 그랬다((1)) |
-| 터치의 **암묵 캡처** | **명세**(Pointer Events — implicit pointer capture) · 이 판도 그랬다((2)) |
-| `pointerdown` 을 막으면 `mousedown`·`mousemove`·`mouseup` 이 안 나고 `mouseover` 류·`click` 은 나는 것 | **명세**(Pointer Events — PREVENT MOUSE EVENT · click 은 PointerEvent) · 이 판도 그랬다((3)) |
-| 스크롤·드래그가 시작되면 `pointercancel` | **명세**(Pointer Events — Suppressing a pointer event stream) · 이 판도 그랬다((3)·(4)) |
-| 터치의 호환 이벤트가 **`touchend` 뒤에 몰려** 오는 것 | ★ 명세는 「**그럴 수 있다**」 · **이 판의 관찰**((1)) |
-| `click` 의 `isPrimary` 가 `false` | ★ **이 판의 관찰** — 이 문서는 근거 문장을 찾지 못했다 |
-| `touch-action` 값마다 어느 방향을 브라우저가 가져가나 | ★ `touch-action` 의 정의는 Pointer Events 에 있지만 **이 문서는 그 절을 옮기지 않았다** — **이 판의 10칸 관찰**로 적는다((4)) |
+| 포인터 이벤트 뒤에 호환 마우스 이벤트가 오는 것 | **명세**(Pointer Events — 호환 마우스 이벤트 절 · **선택적** 절이다) · 이 버전도 그랬다((1)) |
+| 터치의 **암묵 캡처** | **명세**(Pointer Events — implicit pointer capture) · 이 버전도 그랬다((2)) |
+| `pointerdown` 을 막으면 `mousedown`·`mousemove`·`mouseup` 이 안 나고 `mouseover` 류·`click` 은 나는 것 | **명세**(Pointer Events — PREVENT MOUSE EVENT · click 은 PointerEvent) · 이 버전도 그랬다((3)) |
+| 스크롤·드래그가 시작되면 `pointercancel` | **명세**(Pointer Events — Suppressing a pointer event stream) · 이 버전도 그랬다((3)·(4)) |
+| 터치의 호환 이벤트가 **`touchend` 뒤에 몰려** 오는 것 | ★ 명세는 「**그럴 수 있다**」 · **이 버전의 관찰**((1)) |
+| `click` 의 `isPrimary` 가 `false` | ★ **이 버전의 관찰** — 이 문서는 근거 문장을 찾지 못했다 |
+| `touch-action` 값마다 어느 방향을 브라우저가 가져가나 | ★ `touch-action` 의 정의는 Pointer Events 에 있지만 **이 문서는 그 절을 옮기지 않았다** — **이 버전의 10칸 관찰**로 적는다((4)) |
 | CDP 의 펜이 **마우스에 종류만 바꾼 것**인 것 | ★ **도구의 성질** |
 
 ## 언제 쓰고 언제 안 쓰나
@@ -685,7 +685,7 @@ pointercancel 이 난 칸 = 6 / 10
 - **`pointercancel`** — 브라우저가 그 포인터를 **가져갔다**(스크롤·드래그 등)는 알림. 그 뒤 `pointerup` 은 없다.
 - **PREVENT MOUSE EVENT 플래그** — `pointerdown` 을 막으면 서는 표시. 호환 `mousedown`·`mousemove`·`mouseup` 을 끈다.
 - **`touch-action`** — 터치로 브라우저가 할 수 있는 일(팬·확대)을 CSS 로 미리 정하는 속성.
-- **받은 칸 격자** — 장치 × 캡처 방식마다 요소가 밖의 `pointermove` 를 받았나 센 것. 이 편의 본체.
+- **받은 칸 격자** — 장치 × 캡처 방식마다 요소가 밖의 `pointermove` 를 받았나 센 것. 이 편의 핵심.
 
 ## 더 들어가면
 
@@ -696,7 +696,7 @@ pointercancel 이 난 칸 = 6 / 10
 
 ## 실행 환경
 
-★★★ **이 편의 본체는 창 ④ 를 늘린 「포인터 순서 로그」와 「받은 칸 격자」다** — 진짜 마우스·펜·터치 한 동작이 부르는 이벤트를 **생성자·`pointerType`·`isPrimary`·`button`·`buttons`** 와 함께 한 줄씩 적고, 드래그가 요소 밖으로 나갔을 때 **그 요소가 `pointermove` 를 받았나**를 장치 × 캡처 방식으로 센다.\
+★★★ **이 편의 핵심은 창 ④ 를 늘린 「포인터 순서 로그」와 「받은 칸 격자」다** — 진짜 마우스·펜·터치 한 동작이 부르는 이벤트를 **생성자·`pointerType`·`isPrimary`·`button`·`buttons`** 와 함께 한 줄씩 적고, 드래그가 요소 밖으로 나갔을 때 **그 요소가 `pointermove` 를 받았나**를 장치 × 캡처 방식으로 센다.\
 **기준 소스** — [W3C Pointer Events](https://w3c.github.io/pointerevents/) 의 「implicit pointer capture」(직접 조작 장치는 `pointerdown` 때 **스스로** 캡처) · 「PREVENT MOUSE EVENT flag」(`pointerdown` 을 막으면 호환 마우스 이벤트가 안 난다 — **단 `mouseover`/`out`/`enter`/`leave` 는 막지 않는다**) · 「`click`·`auxclick`·`contextmenu` 는 `PointerEvent` 이고 호환 마우스 이벤트가 아니다」 · 「Suppressing a pointer event stream」(뷰포트를 움직이는 데 쓰이거나 **드래그 조작이 시작되면** 스트림을 끊는다 → `pointercancel`) 절. 열어서 확인한 것만 적었다(기준일 2026-09-26).\
 **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. **마우스·펜은 CDP `Input.dispatchMouseEvent`**(펜은 `pointerType: "pen"`), **터치는 `Input.dispatchTouchEvent`** 로 넣은 진짜 입력이다. 하네스는 [20번 주제](../20-listener-lifetime/2-summary.md)의 (1)에 있다.\
 **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\

@@ -224,9 +224,9 @@
       -> 화면은 그냥 「안 먹는다」          -> 즉시 알 수 있다
 ```
 
-던져서 확인한 전수 결과다 (Chrome 151 headless). `cssRules` 는 규칙이 담겼는지, `qSA` 는 같은 문자열을 `querySelectorAll` 에 준 결과다.
+실행해서 확인한 전수 결과다 (Chrome 151 headless). `cssRules` 는 규칙이 담겼는지, `qSA` 는 같은 문자열을 `querySelectorAll` 에 준 결과다.
 
-| 던진 것 | `cssRules` | `qSA` | 무슨 일이 일어났나 |
+| 실행한 것 | `cssRules` | `qSA` | 무슨 일이 일어났나 |
 |---|---|---|---|
 | `.card:has(p)` | 담김 | 1 | 정상 |
 | `.card:has(:has(p))` | **버림** | `SyntaxError` | ★ `:has()` 안에 `:has()` — 명세가 금지 |
@@ -268,7 +268,7 @@
 
 비교용으로 관용적 목록이 **정상 동작하는** 예도 같이 확인했다.
 
-| 던진 것 | `selectorText` | `qSA` |
+| 실행한 것 | `selectorText` | `qSA` |
 |---|---|---|
 | `.card:is(:bogus-xyz, p, .card)` | `.card:is(p, .card)` | 1 |
 | `.card:has(:is(p, :bogus-xyz))` | `.card:has(:is(p))` | 1 |

@@ -541,7 +541,7 @@ let x: i32 = while i < 3 { i += 1; };   ->  E0308 expected `i32`, found `()`
 | 꼬리 `return` 에 `rustc` 가 침묵하는 것 | **린트 설정** | `clippy::needless_return` 은 잡는다(기본 켜짐) |
 
 ★ **이 주제는 「구현에 달린 것」이 드물다.** 세미콜론 규칙은 문법이고 컴파일 타임에 끝난다 —
-[03번](../03-primitive-types-and-integer-overflow/)처럼 **빌드 프로필에 따라 답이 갈리는 자리가 없다.**
+[03번](../03-primitive-types-and-integer-overflow/)처럼 **빌드 프로필에 따라 답이 달라지는 자리가 없다.**
 대신 **경고냐 에러냐가 설정에 달린다** — 「어디서 틀리나」 2번이 정확히 그 자리다.
 
 ## 언제 쓰고 언제 안 쓰나

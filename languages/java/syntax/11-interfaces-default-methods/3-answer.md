@@ -439,7 +439,7 @@ x.describe() = Old 가 원래 갖고 있던 메서드
 **`oop-basics` 의 추상 클래스와 어디서 갈리나**
 
 - [`../../../../cs/foundations/oop-basics/`](../../../../cs/foundations/oop-basics/) §17 은 **`abc` 로 구현을 강제하는 것**까지 다룬다 — 개념이다.
-- 여기서 갈린다.
+- 여기서 달라진다.
 
 | | `oop-basics` §17 | 이 주제 |
 |---|---|---|

@@ -237,7 +237,7 @@ a/Ex.java:8: error: cannot find symbol
 - **풀 50 대비 9.7배**지만, **풀 500 과는 거의 차이가 없다**(366 대 315 ms).
 - ★ **`sleep` 실험만큼 극적이지 않다.** 이 실험에서는 **연결 수립과 서버 쪽이 병목**이라\
   클라이언트 스레드 모델을 바꿔도 더 못 줄인다.\
-  **흔들림도 크다** — 183\~326 ms(1.8배).
+  **실행 간 차이도 크다** — 183\~326 ms(1.8배).
 - **결론** — 가상 스레드의 이득은 "**내 스레드가 병목일 때**"만 나온다.\
   병목이 DB·외부 API·대역폭이면 스레드를 바꿔도 그대로다.
 
@@ -280,7 +280,7 @@ a/Ex.java:8: error: cannot find symbol
 비용 — **가상 스레드는 풀에 넣지 않는다.** 동시성을 제한하고 싶으면 **`Semaphore`** 로 제한한다\
 (풀은 "스레드 재활용"과 "동시성 제한" 둘을 겸하는데, 가상 스레드에는 **뒤의 것만** 필요하다).
 
-### (5) ★★ 무엇이 캐리어를 붙잡나 — 21 과 25 가 갈린다
+### (5) ★★ 무엇이 캐리어를 붙잡나 — 21 과 25 가 달라진다
 
 **언제 쓰나** — 가상 스레드로 바꿨는데 안 빨라질 때. **이 주제의 최대 함정이다.**
 
@@ -325,7 +325,7 @@ JDK 21                                     JDK 25
 - **JDK 25 에서는 200 ms** 다. 같은 코드, 같은 설정인데 **고정이 사라졌다.**\
   [JEP 491](https://openjdk.org/jeps/491)(JDK 24) 이 모니터 고정을 없앴다.
 - **`ReentrantLock` 은 21 에서도 200 ms** 다. **21 에서의 처방이 이것**이었다.
-- **흔들림이 거의 없다**(1601\~1605, 200\~215). 이 실험만은 **결론이 흔들리지 않는다.**
+- **실행 간 차이가 거의 없다**(1601\~1605, 200\~215). 이 실험만은 **결론이 달라지지 않는다.**
 
 **21 에서 더 넓게 재 봤다 — 무엇이 고정되나**
 
@@ -529,7 +529,7 @@ JDK 21                                     JDK 25
 
 **언제 쓰나** — "버전을 올리면 무엇이 달라지나"를 판단할 때.
 
-고정 실험((5))만 갈린 것이 아니라, **안 갈린 것도 확인**해야 결론이 선다.
+고정 실험((5))만 달라진 것이 아니라, **안 달라진 것도 확인**해야 결론이 선다.
 
 **실행 결과** (`Ex.java` — 56-a, JDK 25.0.1 — 21 과 같은 프로그램)
 
@@ -738,17 +738,17 @@ JDK 25 : java -XX:StartFlightRecording=filename=p.jfr,settings=profile ...
 | `toString` 이 `VirtualThread[#N]/상태@캐리어` 인 것 | **구현 세부** | 21 에서만 확인 |
 | 캐리어 수가 `availableProcessors` 인 것 | **구현 세부.** 시스템 속성으로 바꿀 수 있다 | 21 에서 확인 |
 | 캐리어 풀 이름이 `ForkJoinPool-1-worker-N` 인 것 | **구현 세부** | 21 에서 확인 |
-| ★ **`synchronized` 가 캐리어를 고정하는 것** | **JEP 444 가 21의 한계로 명시, JEP 491(24)이 제거** | ★★ **갈린다 — 21 은 1,601 ms, 25 는 200 ms** |
-| `Object.wait` 가 고정하는 것 | 위와 같다 | ★ **갈린다 — 21 은 1,602 ms, 25 는 200 ms** |
+| ★ **`synchronized` 가 캐리어를 고정하는 것** | **JEP 444 가 21의 한계로 명시, JEP 491(24)이 제거** | ★★ **달라진다 — 21 은 1,601 ms, 25 는 200 ms** |
+| `Object.wait` 가 고정하는 것 | 위와 같다 | ★ **달라진다 — 21 은 1,602 ms, 25 는 200 ms** |
 | **클래스 초기화 블록 안의 블로킹이 고정하는 것** | JEP 444 가 "native method or foreign function" 을 든다 | **21·25 모두 고정**(808·809 ms) |
-| `-Djdk.tracePinnedThreads` 가 콘솔에 찍는 것 | **구현 세부·진단 플래그** | ★ **갈린다 — 25 에서는 아무것도 안 찍는다** |
-| JFR `jdk.VirtualThreadPinned` 이벤트 | 이벤트는 양쪽 다 있다 | ★ **필드가 갈린다 — 25 에만 `pinnedReason`·`blockingOperation`·`carrierThread`** |
+| `-Djdk.tracePinnedThreads` 가 콘솔에 찍는 것 | **구현 세부·진단 플래그** | ★ **달라진다 — 25 에서는 아무것도 안 찍는다** |
+| JFR `jdk.VirtualThreadPinned` 이벤트 | 이벤트는 양쪽 다 있다 | ★ **필드가 달라진다 — 25 에만 `pinnedReason`·`blockingOperation`·`carrierThread`** |
 | `StructuredTaskScope` 가 프리뷰인 것 | `src.zip` 의 `@PreviewFeature` | **21·25 모두 프리뷰** |
-| `ScopedValue` 의 상태 | `src.zip` 의 애너테이션·`@since` | ★ **갈린다 — 21 프리뷰, 25 확정(`@since 25`)** |
+| `ScopedValue` 의 상태 | `src.zip` 의 애너테이션·`@since` | ★ **달라진다 — 21 프리뷰, 25 확정(`@since 25`)** |
 | 생성 비용·처리 시간 수치 | **아무도 보장 안 한다** | ★ **CPU 바운드의 부호가 뒤집혔다** — 21 은 88 대 97(가상 승), 25 는 99 대 85(가상 패) |
 | 만드는 법·데몬·우선순위·캐리어 수의 출력 | 위 항목들과 같다 | **21·25 에서 스레드 id 말고 한 글자도 안 달랐다**(관찰이지 보장 아님) |
 
-★ **이 주제는 "세 버전에서 같았다"가 성립하지 않는다.** 17 에서는 컴파일이 안 되고, 21 과 25 는 **실제로 갈렸다.**
+★ **이 주제는 "세 버전에서 같았다"가 성립하지 않는다.** 17 에서는 컴파일이 안 되고, 21 과 25 는 **실제로 나뉘었다.**
 
 ## 언제 쓰고 언제 안 쓰나
 
@@ -781,7 +781,7 @@ JDK 25 : java -XX:StartFlightRecording=filename=p.jfr,settings=profile ...
   `close()`(`@since 19`) 규칙은 그쪽이 정본이다.
 - [`../33-synchronized-and-volatile/`](../33-synchronized-and-volatile/) — `synchronized` 의 문법과 잠금 대상.\
   그쪽은 **키워드가 무엇을 보장하나**까지, 여기는 **그 키워드가 가상 스레드에서 무엇을 막나**부터.\
-  ★ **이 주제에서 그 키워드의 동작이 버전에 따라 갈린다.**
+  ★ **이 주제에서 그 키워드의 동작이 버전에 따라 달라진다.**
 - [`../49-parallel-streams/`](../49-parallel-streams/) — 공용 ForkJoinPool 과 CPU 바운드 병렬화.\
   ★ 가상 스레드 스케줄러는 **별도의 `ForkJoinPool`** 이다(캐리어 이름으로 확인).\
   **CPU 바운드 작업은 그쪽이 정본**이고 여기는 **블로킹 작업**이 자리다.
@@ -826,14 +826,14 @@ JDK 25 : java -XX:StartFlightRecording=filename=p.jfr,settings=profile ...
 **선행** — [`../54-executorservice-and-future/`](../54-executorservice-and-future/) (`ExecutorService`·`Future`·풀 크기 — **가상 스레드는 그 질문 자체를 없앤다**) · [`../33-synchronized-and-volatile/`](../33-synchronized-and-volatile/) (`synchronized` 의 문법 — **여기서 그 키워드가 버전에 따라 다르게 동작한다**).
 **기준 소스** — [`java.lang.Thread` API 문서 (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Thread.html) · [`Executors`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/Executors.html) · [JEP 444 — Virtual Threads](https://openjdk.org/jeps/444) · [JEP 491 — Synchronize Virtual Threads without Pinning](https://openjdk.org/jeps/491) · 이 머신의 `lib/src.zip` 에서 **직접 읽은** `java.base/java/lang/Thread.java`·`java/util/concurrent/Executors.java`·`StructuredTaskScope.java`.
 **실행 검증** — 이 문서의 모든 출력·에러·수치는 Temurin **21.0.5** 와 **25.0.1** 에서 실제로 돌려 얻은 것이다.\
-★ **고정(pinning) 실험은 21 과 25 에서 각각 돌렸고 결과가 갈렸다** — 본문 (5).\
+★ **고정(pinning) 실험은 21 과 25 에서 각각 돌렸고 결과가 달라졌다** — 본문 (5).\
 17 에서는 **컴파일부터 안 된다**(`cannot find symbol: method ofVirtual()`) — 그 에러도 실었다.
 ⚠️ **측정 조건**\
 도구: **JMH 가 아니다.** 벽시계(`System.nanoTime`)이고 **워밍업 1\~2회 + 측정 3\~5회의 중앙값**이다(실험마다 본문에 적었다).\
 머신: **CPU 24코어**(`availableProcessors` = 24), Linux x86-64, `ulimit -n` = 1,048,576.\
-흔들림: 소켓 실험이 **183\~326 ms** 로 1.8배 흔들렸다. 고정 실험은 흔들림이 거의 없었다(1601\~1605 ms).\
+실행 간 차이: 소켓 실험이 **183\~326 ms** 로 1.8배 흔들렸다. 고정 실험은 실행 간 차이가 거의 없었다(1601\~1605 ms).\
 고정 실험은 **캐리어를 1개로 묶어**(`-Djdk.virtualThreadScheduler.parallelism=1 -Djdk.virtualThreadScheduler.maxPoolSize=1`)\
-**"줄서면 1600ms, 안 줄서면 200ms"** 라는 **두 자리로 갈리게** 설계했다. 그래서 이 실험만은 흔들림이 결론을 안 흔든다.\
+**"줄서면 1600ms, 안 줄서면 200ms"** 라는 **두 자리로 갈리게** 설계했다. 그래서 이 실험만은 실행 간 차이가 결론을 안 흔든다.\
 힙 사용량은 `System.gc()` 두 번 뒤 `totalMemory - freeMemory` 다 — **정확한 측정이 아니라 자릿수용**이다.
 **버전** — `Thread.ofVirtual()`·`Thread.startVirtualThread()`·`Thread.isVirtual()` 은 **`@since 21`**,\
 `Executors.newVirtualThreadPerTaskExecutor()` 도 **`@since 21`** 이다(`src.zip` 의 `@since` 를 직접 읽었다).\

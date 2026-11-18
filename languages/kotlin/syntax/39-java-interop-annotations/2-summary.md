@@ -1,6 +1,6 @@
 # kotlin/syntax/39 — Java 상호운용 애너테이션 — `@JvmStatic`/`@JvmOverloads`/`@JvmName`/`@JvmField`/`@Throws` — 정리 (힌트)
 
-★★★ **본체는 첫째 창이다** — 「**Java 에서 부르기 격자 — 같은 Java 소스를 애너테이션 없는 판 / 있는 판에 `javac` 로 던진다**」. 이 애너테이션들은 **Kotlin 쪽에서는 아무것도 안 바꾼다** — 차이는 **Java 가 컴파일되느냐**로만 보인다. 둘째 창(`javap -p`)이 **왜** 갈렸는지를 보인다.
+★★★ **핵심은 첫째 창이다** — 「**Java 에서 부르기 격자 — 같은 Java 소스를 애너테이션 없는 판 / 있는 판에 `javac` 로 던진다**」. 이 애너테이션들은 **Kotlin 쪽에서는 아무것도 안 바꾼다** — 차이는 **Java 가 컴파일되느냐**로만 보인다. 둘째 창(`javap -p`)이 **왜** 갈렸는지를 보인다.
 
 ## 이 주제가 쓰는 세 층
 
@@ -8,7 +8,7 @@
 |---|---|---|
 | **언어 보장(애너테이션의 계약)** | 문서가 약속한 것 | ★★ `@JvmStatic` — 정적 메서드를 만든다(동반 객체면 **인스턴스 메서드도 남는다**) · `@JvmOverloads` — 기본값마다 오버로드 · `@JvmField` — 게터 대신 **필드를 공개** · `@JvmName` — **JVM 이름**을 바꾼다 · `@JvmField`·`@JvmStatic`·`@JvmOverloads` 를 **달 수 없는 자리** |
 | **구현(JVM 백엔드)** | kotlinc 가 JVM 으로 내리는 방식 | ★★ 기본값의 **`greet$default`** 합성 메서드 · 파일 facade 기본 이름 **`FacadeKt`** · 오버로드가 **어느 매개변수를 빼는가**의 실제 모양 |
-| **이 판의 관찰** | kotlinc 2.4.20 · javac 21 에서 본 것 | ★ 진단 문구 · ★ **가운데만 기본값인 함수의 오버로드 모양**(문서 문장과 다르다 — (3)) |
+| **이 버전의 관찰** | kotlinc 2.4.20 · javac 21 에서 본 것 | ★ 진단 문구 · ★ **가운데만 기본값인 함수의 오버로드 모양**(문서 문장과 다르다 — (3)) |
 
 ★★ **`javap` 서명은 백엔드 구현이면서 동시에 애너테이션의 계약이다** — `@JvmStatic` 을 달았는데 정적 메서드가 안 생기면 계약 위반이다. 그래서 이 주제의 `javap` 는 「구현의 우연」이 아니라 **계약을 확인하는 창**으로 읽는다. 다만 **합성 메서드의 이름·모양**(`greet$default`)은 계약 밖이다.
 
@@ -26,13 +26,13 @@ javac 21.0.5
 (exit 0)
 ```
 
-## 흔들리는 칸 / 안 흔들리는 칸
+## 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| **흔들린다** | (이 주제에는 없다) | 해시코드·주소·시간을 찍지 않았다 |
-| 안 흔들린다 | 격자 10행 · 갈린 수 | 같은 소스·같은 컴파일러면 결정적이다 |
-| 안 흔들린다 | `javap -p` 출력(멤버 순서까지) · `javac`·`kotlinc` 진단 문구·줄 번호 · 종료 코드 | 결정적이다 |
+| **실행마다 달라진다** | (이 주제에는 없다) | 해시코드·주소·시간을 찍지 않았다 |
+| 달라지지 않는다 | 격자 10행 · 달라진 수 | 같은 소스·같은 컴파일러면 결정적이다 |
+| 달라지지 않는다 | `javap -p` 출력(멤버 순서까지) · `javac`·`kotlinc` 진단 문구·줄 번호 · 종료 코드 | 결정적이다 |
 
 ★ 근거 — 캡처 스크립트를 처음부터 두 번 돌려 **블록 전체를 바이트 단위로 대조**했다(수치는 3-answer 의 「실행 검증」).
 
@@ -68,23 +68,23 @@ javac 21.0.5
 
 ## 동작 방식
 
-### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「부적용인 창」
+### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「해당 없는 창」
 
 | 창 | 무엇을 보여 주나 | 어디서 왔나 |
 |---|---|---|
-| ★★★ **Java 에서 부르기 격자(`javac`)** | 같은 Java 소스 10줄이 **두 판**에서 각각 컴파일되나((1)) | ★ **본체 창** |
+| ★★★ **Java 에서 부르기 격자(`javac`)** | 같은 Java 소스 10줄이 **두 판**에서 각각 컴파일되나((1)) | ★ **핵심 창** |
 | ★★ **`javap -p` 두 판 대조** | 무엇이 **생기고 사라졌나**((2)) | 이 갈래의 기본 창 |
 | ★★ **`javap -p` — 오버로드 세기** | 기본값 위치에 따라 몇 개 · 어떤 모양((3)) | — |
 | ★ **`kotlinc` 에러** | 달 수 없는 자리((4)) | 이 갈래의 기본 창 |
 | ★ **실행** | 만들어진 오버로드·정적 메서드가 **실제로 돈다**((2)(3)) | — |
 | **인용 — 다시 안 잰다** | `@Throws` 의 `Exceptions:` · `@JvmName` 이 value class 의 `init` 을 건너뛰는 것 | [34번 주제](../34-exceptions-nothing-and-try-expression/) (2) · [26번 주제](../26-value-class-and-boxing/) (5) |
-| **부적용 — 실행 시간·할당** | 정적 메서드가 `Companion` 경유보다 빠르다 같은 주장은 **재지 않았다** | — |
+| **해당 없음 — 실행 시간·할당** | 정적 메서드가 `Companion` 경유보다 빠르다 같은 주장은 **재지 않았다** | — |
 
 ### (1) ★★★ Java 에서 부르기 격자 — 같은 Java 소스, 두 판
 
 **언제 쓰나** — Kotlin 으로 만든 라이브러리를 Java 모듈이 쓸 때, 또는 **이미 Java 가 쓰는 API 에 애너테이션을 더할 때**.
 
-두 Kotlin 파일은 **애너테이션만** 다르다 — 클래스 이름·멤버 이름은 같다. ★ 두 파일 모두 첫 줄에 `@file:JvmName("Api")` 를 둬 **최상위 함수가 사는 클래스 이름을 같게** 만들었다(그래야 한 Java 소스로 두 판을 잰다 — 이 애너테이션 자체는 (2)에서 따로 본다).
+두 Kotlin 파일은 **애너테이션만** 다르다 — 클래스 이름·멤버 이름은 같다. ★ 두 파일 모두 첫 줄에 `@file:JvmName("Api")` 를 둬 **최상위 함수가 사는 클래스 이름을 같게** 만들었다(그래야 한 Java 소스로 두 버전을 잰다 — 이 애너테이션 자체는 (2)에서 따로 본다).
 
 ```kotlin
 // api0.kt
@@ -261,7 +261,7 @@ calls whose result differs: 7 / 10
 (exit 0)
 ```
 
-- ★★★ **갈린 줄 7 / 10.** 짧은 모양 다섯은 **없는 판에서 전부 막히고 붙인 판에서 전부 통과**한다. 에러는 **네 종류**로 갈린다 — 이름째 없음(「`cannot find symbol`」 — `make`·`renamed`) · 있는데 정적이 아님(「`non-static method ping() cannot be referenced from a static context`」) · 인자 수 불일치(「`actual and formal argument lists differ in length`」) · 접근 불가(「`size has private access in Box`」).
+- ★★★ **달라진 줄 7 / 10.** 짧은 모양 다섯은 **없는 판에서 전부 막히고 붙인 판에서 전부 통과**한다. 에러는 **네 종류**로 나뉜다 — 이름째 없음(「`cannot find symbol`」 — `make`·`renamed`) · 있는데 정적이 아님(「`non-static method ping() cannot be referenced from a static context`」) · 인자 수 불일치(「`actual and formal argument lists differ in length`」) · 접근 불가(「`size has private access in Box`」).
 - ★★★ **긴 모양 다섯 중 둘은 붙인 판에서 막힌다** — `box.getSize()`(`@JvmField`)와 `Api.original()`(`@JvmName`). **이 둘은 추가가 아니라 교체**다. 이미 긴 모양으로 부르던 Java 코드가 있으면 **애너테이션 하나가 그 코드를 깨뜨린다.**
 - ★★ **나머지 셋은 추가다** — `Box.Companion.make()`·`Reg.INSTANCE.ping()`·`greet("a", 1, "c")` 는 붙인 판에서도 **그대로 통과**한다.
 
@@ -445,7 +445,7 @@ x5c
 
 - ★★★ **기본값 수만큼 더 생긴다** — 2 · 3 · 1 · (없으면) 0. 뒤에서부터 **하나씩** 뗀 모양이다.
 - ★★★ **가운데만 기본값이면 `mid(String, String)`** — `b` 만 빠지고 **기본값 없는 `c` 는 남는다.** Java 에서 `JovKt.mid("a", "z")` 가 `a1z` 를 돌려줬다.
-  ★ **문서 문장과 글자대로는 안 맞는다** — 문서는 「this parameter and **all parameters to the right of it** … removed」라고 적는데, 글자대로면 `mid(String)` 이어야 한다. 실제는 **기본값 있는 매개변수만** 뺐다. 문장을 「그 오른쪽의 **기본값 있는** 매개변수」로 읽어야 이 판의 결과와 맞는다(**이 판의 관찰**).
+  ★ **문서 문장과 글자대로는 안 맞는다** — 문서는 「this parameter and **all parameters to the right of it** … removed」라고 적는데, 글자대로면 `mid(String)` 이어야 한다. 실제는 **기본값 있는 매개변수만** 뺐다. 문장을 「그 오른쪽의 **기본값 있는** 매개변수」로 읽어야 이 버전의 결과와 맞는다(**이 버전의 관찰**).
 - ★★ **애너테이션이 없으면 `none` 도 `none$default` 는 있다** — Java 는 그것을 부를 수 없는 것이 아니라 **부르면 안 되는 것**(합성 메서드 · 비트마스크 인자)이고, Java 가 쓸 입구는 **3인자 판 하나뿐**이다((1)의 `greet("a")` 에러).
 
 ### (4) ★ 달 수 없는 자리
@@ -543,7 +543,7 @@ fun main() {
 2. ★★★ **이미 Java 가 쓰는 함수에 `@JvmName` 을 더한다.** 옛 이름이 **사라진다**((1)(2)).
 3. ★★ **`@JvmStatic` 을 달면 `Companion` 경유가 사라진다고 믿는다.** 동반 객체면 **남는다**((2)) — 그리고 `object` 면 인스턴스 판이 **정말 없다**(Java 의 `INSTANCE.ping()` 은 javac 가 허용할 뿐이다).
 4. ★★ **`@JvmOverloads` 가 모든 조합을 만든다고 믿는다.** 기본값마다 **하나씩**, 뒤에서부터다((3)) — `greet(a, c)` 같은 건너뛴 조합은 없다.
-5. ★★ **가운데 기본값의 오버로드를 문서 문장대로 예측한다.** 이 판은 `mid(String, String)` 이다((3)).
+5. ★★ **가운데 기본값의 오버로드를 문서 문장대로 예측한다.** 이 버전은 `mid(String, String)` 이다((3)).
 6. ★ **`@JvmField` 로 계산 프로퍼티를 공개하려 한다.** 필드가 없어 막힌다((4)).
 7. ★ **value class 를 받는 함수에 `@JvmName` 을 달고 안심한다.** Java 가 알맹이를 직접 넘겨 **`init` 검사를 건너뛴다** — [26번 주제](../26-value-class-and-boxing/) (5).
 
@@ -553,13 +553,13 @@ fun main() {
 |---|---|---|
 | `@JvmStatic` 이 정적 메서드를 만든다 · 동반 객체면 인스턴스 판이 남는다 · `object` 면 안 남는다 | ★★ **애너테이션의 계약**(문서) | (2) |
 | `@JvmOverloads` 가 기본값마다 오버로드를 만든다 | ★★ **애너테이션의 계약** | (3) |
-| ★ 가운데 기본값에서 **어느 매개변수를 빼나** | **이 판의 관찰** — 문서 문장과 글자대로는 다르다 | (3) |
+| ★ 가운데 기본값에서 **어느 매개변수를 빼나** | **이 버전의 관찰** — 문서 문장과 글자대로는 다르다 | (3) |
 | `@JvmField` 가 필드를 공개하고 접근자를 없앤다 · 달 수 있는 조건 | ★★ **애너테이션의 계약** | (2)(4) |
 | `@JvmName` 이 JVM 이름을 바꾼다 | **애너테이션의 계약** | (2) |
 | 파일 facade 기본 이름 `<파일>Kt` | **JVM 백엔드의 구현**(상호운용 문서에 적혀 있다) | (2) |
 | `greet$default` 합성 메서드와 그 서명 | ★ **JVM 백엔드의 구현** — 계약 밖 | (2)(3) |
 | `Reg.INSTANCE.ping()` 이 정적 메서드인데도 컴파일되는 것 | **Java 언어의 규칙**(Kotlin 과 무관) | (1)(2) |
-| 진단 문구 | **이 판(kotlinc 2.4.20 · javac 21)의 산출물** | (1)(4) |
+| 진단 문구 | **이 버전(kotlinc 2.4.20 · javac 21)의 산출물** | (1)(4) |
 
 ★★ **가장 조심할 자리** — 「애너테이션을 달면 Java 쪽이 **편해진다**」는 반만 맞다. `@JvmStatic`·`@JvmOverloads` 는 **추가**라 기존 Java 코드가 안 깨지지만, **`@JvmField`·`@JvmName` 은 교체**라 깨진다((1)의 7 / 10 중 둘). 공개 API 에서는 **처음 낼 때** 정하는 것이 싸다.
 
@@ -579,7 +579,7 @@ fun main() {
 ## 핵심 문장
 
 1. 이 애너테이션들은 **Kotlin 호출자에게는 아무것도 안 바꾼다** — Java 가 보는 **클래스 파일의 이름과 서명**만 바꾼다.
-2. 같은 Java 10줄을 두 판에 던지면 **7줄이 갈린다** — 짧은 모양 다섯이 새로 되고, 긴 모양 중 **`getSize()`·`original()` 둘이 사라진다.**
+2. 같은 Java 10줄을 두 판에 던지면 **7줄이 달라진다** — 짧은 모양 다섯이 새로 되고, 긴 모양 중 **`getSize()`·`original()` 둘이 사라진다.**
 3. `@JvmStatic`·`@JvmOverloads` 는 **추가**, `@JvmField`·`@JvmName` 은 **교체**다 — 뒤의 둘은 기존 Java 코드를 깨뜨린다.
 4. 동반 객체의 `@JvmStatic` 은 **메서드 둘**(정적 + 인스턴스), `object` 의 `@JvmStatic` 은 **하나**(정적)다.
 5. `@JvmOverloads` 는 기본값마다 **하나씩** 만든다 — 가운데만 기본값이면 **그것만 빼고 뒤의 필수 인자는 남긴다**(`mid(String, String)`).
@@ -622,8 +622,8 @@ fun main() {
 **기준 소스** — [Calling Kotlin from Java](https://kotlinlang.org/docs/java-to-kotlin-interop.html)(`@JvmOverloads` — 「For every parameter with a default value, this generates one additional overload, which has this parameter and all parameters to the right of it in the parameter list removed.」 · `@JvmField` 를 달 수 있는 조건 — 「has a backing field · is not private · does not have `open`, `override` or `const` modifiers · is not a delegated property」 · `@JvmStatic` — 이름 있는 `object` 에서는 「doesn't generate a separate instance method」, `companion object` 에서는 바깥 클래스의 정적 메서드와 **동반 객체의 인스턴스 메서드를 둘 다** · 파일 facade 의 `@JvmName` · `@Throws`).
 **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`java`·`javap` 에서 실제로 얻었다.\
 `kotlinc` 6회(컴파일 실패 1벌) · `javac` 4회(실패가 결과인 것 2벌) + 격자 스크립트 안에서 2회 · `java` 3회 · `javap` 3회.\
-★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「갈린 칸 N / M」은 스크립트가 스스로 센 것**이다.
-**버전** — 다섯 애너테이션 전부 **1.0** 부터 있다. 이 판에서 버전에 갈리는 칸은 **없다**(격자는 한 판만 돌렸다).
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「달라진 항목 N / M」은 스크립트가 스스로 센 것**이다.
+**버전** — 다섯 애너테이션 전부 **1.0** 부터 있다. 이 버전에서 버전에 달라지는 항목은 **없다**(격자는 한 판만 돌렸다).
 **경계** — ★★★ **이미 잰 것은 다시 재지 않는다** —\
 `@Throws` 는 [34번 주제](../34-exceptions-nothing-and-try-expression/) (2)가 쟀다 — 없으면 Java `catch` 가 「`exception IOException is never thrown in body`」로 막히고, 달면 `javap -v` 에 **`Exceptions:` 속성**이 생기며 이번엔 **안 잡으면** 「`unreported exception`」이다. 여기서는 **인용만** 한다.\
 `value class` 를 받는 함수의 **뭉개진 이름을 `@JvmName` 으로 풀면** Java 가 `long` 을 직접 넘겨 `init` 의 `require` 가 **한 번도 안 도는 것**(`named#-1`)은 [26번 주제](../26-value-class-and-boxing/) (5)가 쟀다.\

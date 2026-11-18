@@ -183,7 +183,7 @@ RETURN VALUE
 - ★★ **`const` 는 보장이 아니다** — `getenv`·`strerror` 는 고치면 안 되는데 `char *` 이고, `buf_peek` 의 `const char *` 는 **관례로 붙인 힌트**다.
 - ★ `man 3 strdup` 의 STANDARDS 가 `POSIX.1-2008` 만 적는 것은 **이 머신의 문서가 C23 편입 이전의 것**이기 때문이다(N3220 에는 `strdup` 절이 있다).
 
-### 2. `strdup` 의 판 — **`-std=c17` 에서 gcc 두 판은 `exit=0` 경고 2 · clang 은 `exit=1` 에러 2 · `c2x`·`gnu17` 은 전부 0 · `-pedantic-errors` 면 gcc 도 `exit=1`** ★★
+### 2. `strdup` 의 판 — **`-std=c17` 에서 gcc 두 버전은 `exit=0` 경고 2 · clang 은 `exit=1` 에러 2 · `c2x`·`gnu17` 은 전부 0 · `-pedantic-errors` 면 gcc 도 `exit=1`** ★★
 
 **출력**
 
@@ -376,13 +376,13 @@ SUMMARY: AddressSanitizer: SEGV ../../../../src/libsanitizer/sanitizer_common/sa
 
 - ★★★ **[1] `*out` 을 안 놓기** — 적법하지만 누수다. gcc ASan 은 **`Direct leak of 6 byte(s)`**(`buf_get` 의 `malloc`), **clang ASan 은 `exit=0` · 리포트 없음.** LSan 은 종료 시점에 **남은 값을 뿌리로 보므로** 침묵이 「누수 없음」을 뜻하지 않는다(clang 칸의 정확한 원인은 확정하지 않았다).
 - ★★★ **[2] 이전 뒤 다시 놓기** — ASan 이 말한 종류는 **`heap-use-after-free`** 다. `buf_destroy` 가 **`free(b->data)` 를 위해 `b->data` 를 먼저 읽기** 때문에(`s38buf.c:19`) 첫 사고가 읽기다. 보통 빌드는 **SEGV(139)**.
-- ★★★ **[3] `getenv` 결과 `free`** — glibc `free(): invalid pointer` 로 `abort`(134), ASan **`bad-free`** 와 「**`located in stack of thread T0`**」 — 이 판의 환경 문자열은 **스택 꼭대기**에 있다.
+- ★★★ **[3] `getenv` 결과 `free`** — glibc `free(): invalid pointer` 로 `abort`(134), ASan **`bad-free`** 와 「**`located in stack of thread T0`**」 — 이 버전의 환경 문자열은 **스택 꼭대기**에 있다.
 - ★★ **[4] `_create` 결과 `free`** — 실행은 조용하고, 두 ASan 이 **안쪽 `data` 의 누수**로 잡는다. 컴파일 때 gcc 가 이미 `-Wmismatched-dealloc` 을 냈다.
 - ★★ **[5] 주인이 놓은 뒤 빌린 것 쓰기** — 두 ASan `heap-use-after-free`, 보통 빌드는 조용.
 - ★★★ **[6] `strerror` 결과 `free`** — glibc `munmap_chunk(): invalid pointer` 로 `abort`. **두 ASan 은 `SEGV` — 자기 할당기(`Deallocate`) 안에서 죽었다.** 리포트는 나왔지만 **`bad-free` 라는 올바른 진단은 아니다.**
 - ★★ **리포트가 없는 칸은 하나**([1] clang) — 그래서 11 / 12.
 
-### 4. `-Wmismatched-dealloc` — **gcc 두 판은 `free(b)` 만 경고 · `buf_destroy((buf *)s)` 는 조용 · clang 0 · 분석기는 3** ★★
+### 4. `-Wmismatched-dealloc` — **gcc 두 버전은 `free(b)` 만 경고 · `buf_destroy((buf *)s)` 는 조용 · clang 0 · 분석기는 3** ★★
 
 **출력**
 
@@ -620,7 +620,7 @@ For more information about this error, try `rustc --explain E0382`.
 | `s38an.c` | ★★ 분석기 재추론 두 판 | 진단 3 |
 | `s38x.cpp` · `s38x2.cpp` · `s38r.rs` | ★ C++ · Rust 대비 | 3 |
 
-**재대조** — 제출 전 캡처를 처음부터 다시 돌려 `normalize-shaky.py`(기본 규칙만)로 대조했다. 흔들린 칸은 **리포트의 PID · 주소**뿐이어야 하고, 그랬다.
+**재대조** — 제출 전 캡처를 처음부터 다시 돌려 `normalize-shaky.py`(기본 규칙만)로 대조했다. 달라진 항목은 **리포트의 PID · 주소**뿐이어야 하고, 그랬다.
 
 **구현 의존 항목** — 다음은 **이 환경에서만** 그렇다.
 
@@ -649,4 +649,4 @@ For more information about this error, try `rustc --explain E0382`.
 **clang 18.1.3** · **glibc 2.39** · **rustc 1.92.0** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
 소스는 `s38sig.h` · `s38buf.h` · `s38buf.c` · `s38v.c` · `s38m.c` · `s38attr.c` · `s38an.c` · `s38s.c` · `s38x.cpp` · `s38x2.cpp` · `s38r.rs` 이고, 블록은 **전부 캡처 파일에서 조립**했다.\
 ★★★ **본체는 판정표(문서)** — 도구 격자는 **판정을 어겼을 때**를 본다.
-★★ **흔들리는 칸** — 리포트의 PID · 주소. 정규화 규칙은 기본 넷뿐이다.
+★★ **실행마다 달라지는 항목** — 리포트의 PID · 주소. 정규화 규칙은 기본 넷뿐이다.

@@ -35,7 +35,7 @@ cells where switch differs from Object.is: 3 / 64 · from SameValueZero: 1 / 64
 
 **왜 그런가**
 
-- ★★★ `CaseClauseIsSelected` 가 **`IsStrictlyEqual`** 을 돌려준다 — `NaN` 은 자기와도 다르고, `-0 === 0` 은 참이다. 그래서 `Object.is`(SameValue)와 갈린 칸이 **`NaN`/`NaN` · `-0`/`0` · `0`/`-0`** 셋, SameValueZero 와 갈린 칸이 **`NaN`/`NaN`** 하나다.
+- ★★★ `CaseClauseIsSelected` 가 **`IsStrictlyEqual`** 을 돌려준다 — `NaN` 은 자기와도 다르고, `-0 === 0` 은 참이다. 그래서 `Object.is`(SameValue)와 달라진 항목이 **`NaN`/`NaN` · `-0`/`0` · `0`/`-0`** 셋, SameValueZero 와 달라진 항목이 **`NaN`/`NaN`** 하나다.
 - ★★ `-0` 이 `0` 에 들어간 것은 **목록에서 `0` 이 먼저**이기 때문이다 — `case` 는 앞에서부터 시험해 첫 참에서 멈춘다(2번).
 - ★★ 객체는 **정체성** — 모양이 같은 `objB` 를 지나 맨 뒤 `objA` 에 들어갔다. `'1'`/`1` · `null`/`undefined` 칸이 `.` 인 것은 **강제 변환이 없어서**다.
 
@@ -203,7 +203,7 @@ js48b-52d-labels.js              node18/node20 identical  Chrome/node20 identica
 comparisons identical to node20: 8 / 8
 ```
 
-**구현 의존 항목 — 판이 오르면 다시 돌릴 것** — ★ **예외 문구**(3번 · 5번)뿐이다. 격자·로그·예외 **종류**는 명세 본문의 것이라 판이 올라도 같아야 하고, Annex B 두 칸은 **엄격 모드의 `SyntaxError`** 가 같아야 한다.
+**구현 의존 항목 — 버전이 오르면 다시 돌릴 것** — ★ **예외 문구**(3번 · 5번)뿐이다. 격자·로그·예외 **종류**는 명세 본문의 것이라 판이 올라도 같아야 하고, Annex B 두 칸은 **엄격 모드의 `SyntaxError`** 가 같아야 한다.
 
 ## 실행 환경
 

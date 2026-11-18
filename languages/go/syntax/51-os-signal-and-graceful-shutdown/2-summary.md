@@ -1,6 +1,6 @@
 # go/syntax/51 — `os/signal`과 정상 종료 — 정리 (힌트)
 
-★★★ **본체는 넷째 창이다** — 「**종료 경로 격자** — 서버 종료 방식 8(`NotifyContext`→`Shutdown(5s)` · `Shutdown(100ms)` · `Close()` · 신호 처리 없음 · `Shutdown` 을 고루틴에서 부르고 `main` 은 `Serve` 반환에서 끝냄 · `stop()` 뒤 두 번째 신호 · `stop()` 없이 두 번째 신호 · `SIGKILL`) × 관찰 4(느린 요청이 받은 것 · 종료 중 새 요청 · 서버 종료 상태 · 서버 로그 순서)」.
+★★★ **핵심은 넷째 창이다** — 「**종료 경로 격자** — 서버 종료 방식 8(`NotifyContext`→`Shutdown(5s)` · `Shutdown(100ms)` · `Close()` · 신호 처리 없음 · `Shutdown` 을 고루틴에서 부르고 `main` 은 `Serve` 반환에서 끝냄 · `stop()` 뒤 두 번째 신호 · `stop()` 없이 두 번째 신호 · `SIGKILL`) × 관찰 4(느린 요청이 받은 것 · 종료 중 새 요청 · 서버 종료 상태 · 서버 로그 순서)」.
 마지막 줄 「**진행 중 요청이 끝까지 간 칸 2 / 8**」((1)절). ★★★ **여덟 중 둘만 `200 done` 을 받았다 — 둘 다 `main` 이 `Shutdown` 의 반환을 기다린 칸이다.**
 ★★ 짝이 되는 창은 「**셸이 본 종료 상태**」 — `143` · `0` · `137`((3)절). Go 프로그램이 돌려준 것과 셸이 **보고한** 것은 층이 다르다.
 
@@ -15,7 +15,7 @@
 | **표준 라이브러리 계약** | `go doc` 이 적은 것 | ★★★ **`Shutdown` 은 리스너를 먼저 닫고, 쉬는 연결을 닫고, 활성 연결이 쉴 때까지 기다린다** · ★★★ **`Shutdown` 을 부르면 `Serve`·`ListenAndServe` 가 즉시 `ErrServerClosed`** — 「Make sure the program doesn't exit and waits instead for Shutdown to return」 · `Close` 는 **즉시** 닫는다 · `NotifyContext` 의 `stop` 은 **기본 동작을 되돌린다** · SIGINT·SIGTERM 의 기본 동작은 **종료** |
 | **OS·셸** | 커널과 셸이 정한 것 | ★★★ **`SIGKILL` 은 못 잡는다**(커널 — `os/signal` 문서도 그렇게 적는다) · ★★ **`143`·`137` 은 셸의 관례**(128 + 신호 번호)이지 Go 의 종료 코드가 아니다 · 클라이언트가 본 `EOF` 는 **커널이 연결을 닫은 결과** |
 
-★★★ **선을 긋는다** — 「`Shutdown` 은 진행 중 요청을 기다린다」는 **문서의 계약**이다. 「`main` 이 먼저 끝나면 기다림이 끊긴다」는 **명세**(`main` 반환 = 프로그램 종료)와 계약(`Serve` 가 즉시 돌아온다)이 **만나서 생기는 사고**다 — 이 문서는 그 한 쌍을 (1)절 `A` 대 `E` 로 **직접 냈다.** 「클라이언트가 `EOF` 를 받는다」는 **이 머신·이 판의 관찰**이다(서버가 요청을 다 읽은 뒤 죽었기 때문으로 보인다 — `connection reset` 이 나올 조건은 이 문서가 재지 않았다).
+★★★ **선을 긋는다** — 「`Shutdown` 은 진행 중 요청을 기다린다」는 **문서의 계약**이다. 「`main` 이 먼저 끝나면 기다림이 끊긴다」는 **명세**(`main` 반환 = 프로그램 종료)와 계약(`Serve` 가 즉시 돌아온다)이 **만나서 생기는 사고**다 — 이 문서는 그 한 쌍을 (1)절 `A` 대 `E` 로 **직접 냈다.** 「클라이언트가 `EOF` 를 받는다」는 **이 머신·이 버전의 관찰**이다(서버가 요청을 다 읽은 뒤 죽었기 때문으로 보인다 — `connection reset` 이 나올 조건은 이 문서가 재지 않았다).
 
 ## 이 판
 
@@ -61,13 +61,13 @@ SIGINT, or SIGTERM signal causes the program to exit. A SIGQUIT, SIGILL,
 - ★★★ **`stop` — 「unregisters the signal behavior, which … may restore the default behavior」** — `stop()` 을 부른 뒤의 두 번째 신호는 **다시 기본 동작(종료)** 이다((1)절 `F`).
 - ★★★ **`Shutdown` — 「first closing all open listeners, then closing all idle connections, and then waiting indefinitely for connections to return to idle」** · 「**immediately return ErrServerClosed. Make sure the program doesn't exit and waits instead for Shutdown to return**」 — 이 두 문장이 (1)절 `A`·`E` 한 쌍이다.
 
-## 흔들리는 칸 / 안 흔들리는 칸
+## 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| **흔들린다 — 칸으로 안 만들었다** | 서버 주소의 **포트 번호** · 경과 시간 | 포트는 `127.0.0.1:0` 이 고르고 **구동기가 로그에서 지웠다**(첫 줄 `addr …` 은 싣지 않음). 시간은 재지 않았다 — 순서만 |
-| 안 흔들린다 | ★★★ **여덟 칸의 결과 · 서버 로그 순서 · `2 / 8`** | 신호를 **로그 줄(`handler: start`)을 본 뒤** 보냈다 — 예행에서 세 판 md5 가 같았다 |
-| 안 흔들린다 | ★★ 셸의 `143`·`0`·`137` | |
+| **실행마다 달라진다 — 칸으로 안 만들었다** | 서버 주소의 **포트 번호** · 경과 시간 | 포트는 `127.0.0.1:0` 이 고르고 **구동기가 로그에서 지웠다**(첫 줄 `addr …` 은 싣지 않음). 시간은 재지 않았다 — 순서만 |
+| 달라지지 않는다 | ★★★ **여덟 칸의 결과 · 서버 로그 순서 · `2 / 8`** | 신호를 **로그 줄(`handler: start`)을 본 뒤** 보냈다 — 예행에서 세 판 md5 가 같았다 |
+| 달라지지 않는다 | ★★ 셸의 `143`·`0`·`137` | |
 | **관찰** | ★★ 클라이언트의 `EOF`(대 `connection reset`) | 서버가 요청을 다 읽은 뒤 죽어 **FIN 이 간 것으로 보인다** — 재대조에서 같았지만 **보장은 아니다** |
 
 ★ 정규화 규칙은 **기본 넷**만 썼다.
@@ -123,17 +123,17 @@ SIGINT, or SIGTERM signal causes the program to exit. A SIGQUIT, SIGILL,
 
 ## 동작 방식
 
-### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「부적용인 창」
+### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「해당 없는 창」
 
 | 창 | 무엇을 보여 주나 | 어디서 왔나 |
 |---|---|---|
-| ★★★ **종료 경로 격자 — 방식 8 × 관찰 4** | 진행 중 요청이 **끝까지 갔나** · 새 요청은 · 프로세스는 어떻게 끝났나 | ★ 본체 창 · 구동기가 자식 프로세스를 띄우고 **탭 6칸**을 찍고, 스크립트가 칸 수를 검사해 `200` 칸을 센다 |
+| ★★★ **종료 경로 격자 — 방식 8 × 관찰 4** | 진행 중 요청이 **끝까지 갔나** · 새 요청은 · 프로세스는 어떻게 끝났나 | ★ 핵심 창 · 구동기가 자식 프로세스를 띄우고 **탭 6칸**을 찍고, 스크립트가 칸 수를 검사해 `200` 칸을 센다 |
 | ★★ **서버 로그 순서** | `Shutdown` 이 **언제 돌아오나** · `Serve` 가 **언제 돌아오나** | 격자의 마지막 칸 |
 | ★★ **셸이 본 종료 상태** | `143`·`0`·`137` | (3)절 `t51shell` |
-| ★ **문서** | 계약의 문장 | 「이 판」 절 `t51doc` |
+| ★ **문서** | 계약의 문장 | 「이 버전」 절 `t51doc` |
 | ★★ **제5의 상태 — 「기준만 다른 것」** | ★★★ **`E` 칸의 서버 종료는 `exit 0`** 이고 로그도 `Serve returned: http: Server closed` 로 **정상처럼 끝난다** — 틀린 게 없어 보인다. 그런데 **느린 요청은 `EOF`** 다. 「정상 종료했나」를 **서버의 종료 코드로 물으면 예**, **요청의 운명으로 물으면 아니오**다. ★ `B` 칸은 반대로 `exit 1` 로 **실패를 드러낸다** — 기한을 넘긴 걸 알린다 | (1)절 |
 | **대신 쓴 창 — 연결 상태 훅** | 47번은 서버의 `ConnState` 로 연결을 셌다. 여기서는 **클라이언트가 받은 본문(`200 done`)과 서버 로그의 `handler: end`** 두 창으로 「끝까지 갔나」를 물었다 — 둘이 **여덟 칸 모두 일치**했다(`200` 인 칸에만 `handler: end` 가 있다) | (1)절 |
-| **부적용 — 시간** | ★★ **종료에 몇 ms 걸렸나는 재지 않았다** — 순서만 | 규칙 4 · 기한 잡기는 ops-patterns 19 |
+| **해당 없음 — 시간** | ★★ **종료에 몇 ms 걸렸나는 재지 않았다** — 순서만 | 규칙 4 · 기한 잡기는 ops-patterns 19 |
 
 ### (1) ★★★ 종료 경로 격자 — 방식 8 × 관찰 4
 
@@ -479,7 +479,7 @@ H	-mode shutdown	EOF	-	신호로 죽음(killed)	handler: start
 | SIGINT·SIGTERM 기본 동작 = 종료 | **표준 라이브러리 계약**(Go 런타임) | `t51doc` · (1)절 `D` |
 | `SIGKILL` 을 못 잡는다 | **OS(커널)** — 문서도 적는다 | (1)절 `H` |
 | `143`·`137` | ★★ **셸의 관례** | (3)절 |
-| 클라이언트가 `EOF` 를 봤다 | ★★ **이 머신·이 판의 관찰** | (1)절 |
+| 클라이언트가 `EOF` 를 봤다 | ★★ **이 머신·이 버전의 관찰** | (1)절 |
 
 ## 언제 쓰고 언제 안 쓰나
 
@@ -530,6 +530,6 @@ H	-mode shutdown	EOF	-	신호로 죽음(killed)	handler: start
 ## 실행 환경
 
 **기준 소스** — [`os/signal`](https://pkg.go.dev/os/signal) 패키지 문서(「Default behavior of signals in Go programs」 · `NotifyContext`) · [`net/http.Server.Shutdown`](https://pkg.go.dev/net/http#Server.Shutdown) · `Server.Close`. **이 툴체인에서 직접 떴다.**\
-**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다. 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.
+**실행 검증** — 이 문서의 출력은 전부 「이 버전」 절의 버전에서 실제로 돌려 **파일로 캡처한 것**이다. 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.
 ★★ 서버는 **`httptest` 가 아니라 실제 자식 프로세스**다 — 구동기(`drive.go`)가 `./server` 를 띄우고, 느린 요청(2초)이 **핸들러에 들어간 것을 서버 로그로 확인한 뒤** 신호를 보낸다. 시간으로 맞추지 않고 **로그 줄로 맞췄다.**\
-**버전** — `Server.Shutdown`·`ErrServerClosed` 는 1.8 · `signal.NotifyContext` 는 1.16(이 툴체인의 `api/go1*.txt` — [49번 주제](../49-testing-table-driven-t-run-cleanup-and-parallel/) 「이 판」의 `tapi`) · 신호가 `context.Cause` 로 보이는 것은 이 판의 `NotifyContext` 문서가 적는다.
+**버전** — `Server.Shutdown`·`ErrServerClosed` 는 1.8 · `signal.NotifyContext` 는 1.16(이 툴체인의 `api/go1*.txt` — [49번 주제](../49-testing-table-driven-t-run-cleanup-and-parallel/) 「이 버전」의 `tapi`) · 신호가 `context.Cause` 로 보이는 것은 이 버전의 `NotifyContext` 문서가 적는다.

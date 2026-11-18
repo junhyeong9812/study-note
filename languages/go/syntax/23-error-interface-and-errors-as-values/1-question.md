@@ -347,7 +347,7 @@ fn main() {
 ```
 
 - 네 줄의 출력이 Go 와 **어디가 같고 어디가 다른가**?
-- `?` 만 쓴 이 판은 「어느 단계에서 났는지」를 말해 주나?
+- `?` 만 쓴 이 버전은 「어느 단계에서 났는지」를 말해 주나?
 - 문맥을 붙이려면 무엇을 더 적나 — 그러면 **줄 수가 느나**?
 
 
@@ -471,7 +471,7 @@ public class Ex23bad {
 ★ **속도를 답으로 쓰지 마라.** 이 문서는 아무것도 재지 않았다.
 소스는 Go 가 `go build -trimpath -o prog . && ./prog`,
 Rust 가 `rustc --edition 2021 -C debuginfo=0 … -o prog && ./prog`,
-자바가 `javac -d . ….java && java …` 로 던졌다. Go 모듈 이름은 `ex` 다.
+자바가 `javac -d . ….java && java …` 로 실행했다. Go 모듈 이름은 `ex` 다.
 
 ## 복습 기록
 

@@ -316,7 +316,7 @@ fun main() {
 
 선행은 [03번 주제](../03-null-safe-types/)(`?.`·`?:`·`!!` 의 문법)와 [51번 주제](../51-preconditions-require-check-error-todo/)(`require`/`check`/`error` 가 던지는 것)다.
 
-이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5** 에서 실제로 던져 받은 것이다.
+이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5** 에서 실제로 실행해 받은 것이다.
 ★ 소스 펜스의 첫 줄(파일명 주석)은 실파일에 없다 — 줄 번호는 그 다음 줄을 1 로 센다.
 
 ## 복습 기록

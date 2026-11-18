@@ -104,7 +104,7 @@ javap -v -p Ex.class      <- LocalVariableTypeTable (제네릭 인자까지)
 
 - **소거 후 타입**은 `LocalVariableTable` 의 `Signature` 칸 — `I`, `Ljava/lang/String;`, `Ljava/util/ArrayList;`.
 - **제네릭 인자까지** 보려면 `LocalVariableTypeTable` — `Ljava/util/ArrayList<Ljava/lang/Object;>;`.
-- 두 표가 갈리는 이유는 타입 소거다([**19번 주제**](../19-type-erasure/)).
+- 두 표가 달라지는 이유는 타입 소거다([**19번 주제**](../19-type-erasure/)).
 
 **IDE 인레이 힌트**는 눈으로 보기엔 편하지만 **설정에 따라 꺼져 있다.** 근거가 필요하면 위 둘로 간다.
 
@@ -201,7 +201,7 @@ Ex.java:1: error: cannot infer type for local variable x
 **첫 줄은 같은가**
 
 - **여섯 다 첫 줄이 같다** — `error: cannot infer type for local variable <이름>`.
-- 갈리는 것은 **괄호 안 한 줄**이다. 그 줄이 진짜 원인을 말한다.
+- 달라지는 것은 **괄호 안 한 줄**이다. 그 줄이 진짜 원인을 말한다.
 
 **이유 한 줄 정리**
 
@@ -564,7 +564,7 @@ class var { }
 
 - **안 된다.** 에러가 이유를 직접 말한다 — `restricted type name`.
 
-**두 답이 갈리는 이유 한 문장**
+**두 답이 달라지는 이유 한 문장**
 
 > `var` 는 **키워드가 아니라 "예약된 타입 이름(restricted type name)"** 이라, 변수·메서드 이름으로는 쓸 수 있고 **타입 선언의 이름으로만** 막힌다.
 

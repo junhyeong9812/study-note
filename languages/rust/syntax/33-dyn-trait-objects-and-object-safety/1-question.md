@@ -139,7 +139,7 @@ echo "cells that differ between the two columns: $flips / $total"
 
 - 아홉 줄 각각 왼쪽 열(`plain`)과 오른쪽 열(`+ where Self: Sized`)은 `ok` 인가, 무슨 코드인가?
 - ★★ `by_value` 줄의 왼쪽 열은? 그 이유를 Reference 는 어떻게 적는가?
-- ★★ 마지막 줄의 갈린 칸 수는? **갈리지 않는 줄**은 어느 것이고 왜인가?
+- ★★ 마지막 줄의 달라진 항목 수는? **달라지지 않는 줄**은 어느 것이고 왜인가?
 
 ### 4. ★★ 뺀 메서드를 `dyn` 에서 부르면 (예측)
 

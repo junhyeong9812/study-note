@@ -227,7 +227,7 @@ boxed.stream().reduce(0, Integer::sum);             // 또는 reduce 로 직접
 - `IntStream.of().max()` -> **`OptionalInt.empty`**
 - `IntStream.of().average()` -> **`OptionalDouble.empty`**
 
-**두 형태가 갈리는 이유**
+**두 형태가 달라지는 이유**
 
 ```text
 합                                        최댓값

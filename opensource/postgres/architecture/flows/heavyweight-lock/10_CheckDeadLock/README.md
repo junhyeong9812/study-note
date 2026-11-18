@@ -259,7 +259,7 @@ DeadLockCheckRecurse(PGPROC *proc)
 	nPossibleConstraints = oldPossibleConstraints;
 ```
 
-hard 간선을 찾는 부분이다. 내가 기다리는 LOCK 의 PROCLOCK 중 내 요청과 충돌하는 모드를 쥔 proc 으로 간선을 잇는다.
+hard 간선을 찾는 부분이다. 내가 기다리는 LOCK 의 PROCLOCK 중 내 요청과 충돌하는 모드를 잡은 proc 으로 간선을 잇는다.
 
 `storage` / `lmgr` / `deadlock.c` L535-L628 ([GitHub](https://github.com/postgres/postgres/blob/724edf9bde9d356724ad384a2e196edc3c9f80f7/src/backend/storage/lmgr/deadlock.c#L535-L628))
 

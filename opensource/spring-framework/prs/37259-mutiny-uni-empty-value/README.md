@@ -138,7 +138,7 @@ ReactiveTypeDescriptor uniDesc = ReactiveTypeDescriptor.singleOptionalValue(
 ```
 (수정 전 ReactiveAdapterRegistry.java:376-378)
 
-"할 수 있다고 말했는가"와 "실제로 하는가" 두 축으로 세 부류가 갈린다.
+"할 수 있다고 말했는가"와 "실제로 하는가" 두 축으로 세 부류가 달라진다.
 
 ```text
   supportsEmpty() 가 true 인가?
@@ -223,7 +223,7 @@ WebFlux 컨트롤러가 반환값 처리에 쓰는 길이 그 경로다.\
 다만 신호가 오지 않는다.\
 그래서 로그에 남는 것도 없고, 관측되는 것은 클라이언트나 서버 타임아웃뿐이다 - 원인을 어댑터 등록 한 줄로 되짚기가 대단히 어렵다.
 
-> **무음 실패(silent failure)** — 실패했는데도 예외·로그 같은 신호가 남지 않아 정상처럼 보이는 실패.\
+> **조용한 실패(silent failure)** — 실패했는데도 예외·로그 같은 신호가 남지 않아 정상처럼 보이는 실패.\
 > 예: 여기서는 예외가 나지 않고 그저 응답이 오지 않으므로, 관측되는 것은 한참 뒤의 타임아웃뿐이다.
 
 이 결함이 닿는 자리는 WebFlux 본문 쓰기 하나가 아니다.\
@@ -357,7 +357,7 @@ Reactive Streams는 `onNext(null)`을 금지하므로, Mutiny의 Uni -> Publishe
 
 ### Mutiny 1과 2를 한 줄로 덮는 이유
 
-`MutinyRegistrar`는 `UniConvert.toPublisher()`의 반환 타입이 `Flow.Publisher`인지를 보고 Mutiny 2 분기와 Mutiny 1 분기로 갈린다(:383-407).\
+`MutinyRegistrar`는 `UniConvert.toPublisher()`의 반환 타입이 `Flow.Publisher`인지를 보고 Mutiny 2 분기와 Mutiny 1 분기로 나뉜다(:383-407).\
 두 분기는 변환 람다만 다르고 descriptor는 위에서 만든 `uniDesc` **하나를 공유**한다.\
 그래서 공급자 한 줄이 두 경로를 다 커버한다.\
 이 저장소가 고정한 버전은 Mutiny 1.10.0이므로(`framework-platform.gradle:56`) 실제로 실행되고 테스트되는 것은 `else` 분기 쪽이다.
@@ -408,7 +408,7 @@ stakes는 **낮음~중간**으로 판정했다(변경은 한 줄이고 blast rad
 
 ## 6. 교훈
 
-이 한 줄짜리 결함이 남긴 것은 선언과 실물의 어긋남, 침묵하는 실패, 왕복 대칭이라는 판정 기준, 그리고 형제 대조라는 탐지법 넷이다.
+이 한 줄짜리 결함이 남긴 것은 선언과 실물의 불일치, 침묵하는 실패, 왕복 대칭이라는 판정 기준, 그리고 형제 대조라는 탐지법 넷이다.
 
 1. **"할 수 있다"는 선언과 "실제로 하는 것"은 따로 검사된다.**\
    `singleOptionalValue`로 등록하는 순간 `supportsEmpty()`는 true가 되고, 그것을 신뢰하는 코드가 프레임워크 곳곳에 있다.\

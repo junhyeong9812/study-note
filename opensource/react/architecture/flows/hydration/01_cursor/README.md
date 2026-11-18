@@ -36,7 +36,7 @@ function enterHydrationState(fiber: Fiber): boolean {
 }
 ```
 
-집는 모양은 단순하다. 못 집으면 곧장 어긋남이다.
+집는 모양은 단순하다. 못 집으면 곧장 불일치이다.
 
 ```js
 // ReactFiberHydrationContext.js L461-L484

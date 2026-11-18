@@ -156,7 +156,7 @@ run1 transform LayoutCount+1  RecalcStyleCount+62  trace: Layout=1 Paint=2 Updat
 run1 css       LayoutCount+2  RecalcStyleCount+6  trace: Layout=2 Paint=5 UpdateLayoutTree=6
 ```
 
-- `left`: 프레임(61~62)마다 스타일·레이아웃·페인트가 모두 돌았다. 프레임 수는 1초 동안 몇 번의 렌더링 기회가 왔느냐에 따라 ±1 흔들린다.
+- `left`: 프레임(61~62)마다 스타일·레이아웃·페인트가 모두 돌았다. 프레임 수는 1초 동안 몇 번의 렌더링 기회가 왔느냐에 따라 ±1 실행마다 달라진다.
 - `transform`(rAF): 스타일 계산은 프레임마다 돌지만(스크립트가 인라인 스타일을 바꾸므로) 레이아웃 1번·페인트 2번뿐이다.
 - CSS 애니메이션: 메인 스레드의 스타일 계산조차 6번이었다. 해석: 프레임별 진행을 컴포지터가 맡고, 메인 스레드는 시작·끝 무렵에만 일했다.
 

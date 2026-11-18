@@ -196,7 +196,7 @@ T1 에 던져 센 결과다(전부 `p` 로 한정해 h2 를 뺐다).
      :nth-last-child(1 of .item)-> p6
 ```
 
-★ **`of S` 와 `:nth-of-type` 이 갈리는 자리는 태그가 섞인 트리다.** T2 로 확인했다.
+★ **`of S` 와 `:nth-of-type` 이 달라지는 자리는 태그가 섞인 트리다.** T2 로 확인했다.
 
 ```text
    div.mix       .i 줄      p 줄      span 줄

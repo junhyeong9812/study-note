@@ -2,7 +2,7 @@
 
 상위: [SockJsHttpRequestHandler.handleRequest](../README.md)
 
-SockJS 프로토콜의 URL 규약이 코드로 드러나는 자리다. 경로 문자열 하나로 정보 요청, iframe, 순수 WebSocket, 전송 요청이 갈린다.
+SockJS 프로토콜의 URL 규약이 코드로 드러나는 자리다. 경로 문자열 하나로 정보 요청, iframe, 순수 WebSocket, 전송 요청이 달라진다.
 
 ## 실제 코드
 

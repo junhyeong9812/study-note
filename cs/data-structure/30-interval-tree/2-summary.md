@@ -146,7 +146,7 @@
 
 #### 구조
 
-  - *나이브(naive)*: 머리 안 쓰고 전부 확인하는 가장 단순한 방법. 느리지만 틀리기 어려워서 "정답 기준선"으로 쓴다.
+  - *나이브(naive)*: 머리 안 쓰고 전부 확인하는 가장 단순한 방법. 느리지만 틀리기 어려워서 "정답 베이스라인"으로 쓴다.
 
 ```text
 NaiveIntervalStore - ArrayList 하나가 전부다. 정렬도 색인도 없다(들어온 순서로 뒤에 붙는다)
@@ -545,7 +545,7 @@ CoordinateCompressor
 
 ## 적용 — 풀어나가는 법
 
-구간 문제는 "몇 번 묻는가"와 "끝점을 포함하는가"를 먼저 정하는 데서 갈린다.\
+구간 문제는 "몇 번 묻는가"와 "끝점을 포함하는가"를 먼저 정하는 데서 달라진다.\
 순서: ① 구간 표기를 반개구간으로 못 박고 `overlaps` 한 줄을 먼저 쓴다 → ② 질의가 한 번이면 정렬 + 스위핑(문제 1·2), 반복이면 인터벌 트리 → ③ 트리를 쓰면 가지치기 두 줄과 `maxEnd` 갱신을 나이브 구현과 **대조**해 조용한 누락을 잡는다 → ④ 좌표 범위가 크고 집계가 필요하면 좌표 압축 뒤 세그먼트 트리로 넘긴다.\
 아래 과제와 두 문제가 이 순서로 풀린다.
 
@@ -559,7 +559,7 @@ CoordinateCompressor
 과제 목록 — `src/main/java/com/datastructure/interval/`의 TODO 10개:
 
 - `Interval` — TODO 1(`overlaps` — 이 한 줄이 이 박스의 절반) · TODO 2(`contains` — 한쪽에만 등호)
-- `NaiveIntervalStore`(기준선) — TODO 3(`findAll` — 하나 볼 때마다 `visitedNodes` 증가)
+- `NaiveIntervalStore`(베이스라인) — TODO 3(`findAll` — 하나 볼 때마다 `visitedNodes` 증가)
 - `IntervalTree` — TODO 4(`insertInto` — 돌아오는 길에 `maxEnd` 갱신) · TODO 5(`findAny` — 한 갈래) · TODO 6(`collectFrom` — 가지치기 두 줄) · TODO 7(`removeFrom`)
 - `CoordinateCompressor` — TODO 8(등장한 좌표만 정렬·중복 제거해 번호 매기기)
 - `IntervalProblems` — TODO 9(`merge`) · TODO 10(`maxConcurrent` — 좌표가 같을 때 끝을 먼저)
@@ -666,7 +666,7 @@ CoordinateCompressor
 - **maxEnd**: 그 노드 아래(부분트리) 모든 구간의 end 중 최댓값. 가지치기의 근거가 되는 "포스트잇".
 - **부분트리(subtree)**: 어떤 노드와 그 아래에 매달린 전체.
 - **가지치기(pruning)**: 답이 있을 수 없는 가지를 조건 판정으로 통째로 건너뛰는 것.
-- **나이브(naive) / 전수 검사**: 전부 다 확인하는 가장 단순한 방법. 느리지만 정답 기준선이 된다.
+- **나이브(naive) / 전수 검사**: 전부 다 확인하는 가장 단순한 방법. 느리지만 정답 베이스라인이 된다.
 - **대조 검증(cross-check)**: 빠른 구현의 답을 느리고 확실한 구현의 답과 비교해 조용한 누락을 잡는 검증법.
 - **항등원(identity)**: 연산에 넣어도 결과가 안 변하는 값. max 의 항등원은 가장 작은 수(Long.MIN_VALUE).
 - **Long.MIN_VALUE**: 자바 long 타입이 표현할 수 있는 가장 작은 수.

@@ -199,7 +199,7 @@ FROM emp e JOIN dept d               FROM emp e JOIN dept d   FROM emp e, dept d
 
 그림 해설 — **왜 같은가.** 내부 조인은 **짝을 못 지은 행을 어차피 버린다.**\
 `ON` 에서 떨어뜨리나 `WHERE` 에서 떨어뜨리나 **떨어지는 건 같다.** `AND` 로 이어진 조건의 순서를 바꾼 것과 다를 바 없다.\
-대가 — **이 습관이 외부 조인에서 사고가 된다.** 외부 조인은 짝을 못 지어도 행을 **남기므로**, `ON` 에서 떨어진 행과 `WHERE` 에서 떨어진 행의 운명이 갈린다.
+대가 — **이 습관이 외부 조인에서 사고가 된다.** 외부 조인은 짝을 못 지어도 행을 **남기므로**, `ON` 에서 떨어진 행과 `WHERE` 에서 떨어진 행의 운명이 달라진다.
 
 ```text
 INNER JOIN                          OUTER JOIN
@@ -213,7 +213,7 @@ INNER JOIN                          OUTER JOIN
 
 ---
 
-### 3. `JOIN` 에 `ON` 을 빠뜨리면 — 두 엔진이 갈린다
+### 3. `JOIN` 에 `ON` 을 빠뜨리면 — 두 엔진이 달라진다
 
 **언제 쓰나** — 조인 조건을 깜빡했을 때. **한쪽은 막아 주고 한쪽은 안 막아 준다.**
 
@@ -519,7 +519,7 @@ FROM 왼쪽표, 오른쪽표 WHERE <조건>               -- 옛 표기. 결과�
 - [MySQL 8.4 · JOIN Clause](https://dev.mysql.com/doc/refman/8.4/en/join.html) — `JOIN`·`INNER JOIN`·`CROSS JOIN` 을 문법적 동의어로 다룬다.
 - [12 카티션곱과 CROSS JOIN](../12-cartesian-product-cross-join/) — **경계: 그쪽은 12행이 어떻게 생기나까지, 여기는 그 12행을 거르는 것부터.**
 - [14 LEFT·RIGHT OUTER JOIN](../14-left-right-outer-join/) — 여기서 버린 `dan`·`hr` 을 되살린다.
-- [15 OUTER JOIN 에서 ON 과 WHERE 의 차이](../15-on-vs-where-in-outer-join/) — **여기서 같았던 두 자리가 거기서 갈린다.**
+- [15 OUTER JOIN 에서 ON 과 WHERE 의 차이](../15-on-vs-where-in-outer-join/) — **여기서 같았던 두 자리가 거기서 달라진다.**
 - [16 FULL OUTER JOIN](../16-full-outer-join/) — 양쪽 다 되살린다.
 - [04 NULL 의 3값 논리](../04-null-three-valued-logic/) — **경계: 그쪽은 `UNKNOWN` 의 계산까지, 여기는 그것이 `ON` 에서 행을 어떻게 지우나부터.**
 - [10 FROM 절 — 테이블 별칭·파생 테이블](../10-from-clause-aliases-derived-tables/) — 모호한 열 이름과 선집계 처방.
@@ -538,7 +538,7 @@ FROM 왼쪽표, 오른쪽표 WHERE <조건>               -- 옛 표기. 결과�
   예: `emp NATURAL JOIN dept` 는 `id` 와 `name` **둘 다**로 붙어 0행이다.
 - **팬아웃(fan-out)** — 1:N 조인으로 왼쪽 행이 여러 줄로 불어나는 현상.\
   예: `ann` 이 프로젝트 둘에 속하면 `ann` 의 급여가 두 줄에 들어간다.
-- **silent failure(무음 실패)** — 에러 없이 틀린 값이 나오는 실패.\
+- **silent failure(조용한 실패)** — 에러 없이 틀린 값이 나오는 실패.\
   예: 팬아웃된 `SUM` 이 800 대신 1100 을 준다. 타입도 맞고 값도 그럴듯하다.
 - **반조인(semi join)** — 「저쪽에 짝이 있는지만」 보는 조인. 행이 안 늘어난다.\
   예: `WHERE EXISTS (SELECT 1 FROM emp_proj ep WHERE ep.emp_id = e.id)`. [목록의 **19번 주제**](../19-semi-anti-join/).
@@ -555,6 +555,6 @@ FROM 왼쪽표, 오른쪽표 WHERE <조건>               -- 옛 표기. 결과�
 **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
 본문에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 에러 메시지도 실제로 받은 것이고, 지어낸 출력은 없다.\
 팬아웃 절의 `proj`·`emp_proj` 두 표는 **트랜잭션 안에서 만들고 롤백**했다 — DB 에 남기지 않았다. 만드는 문은 그 절에 적어 두었다.\
-**버전** — `INNER JOIN` 자체는 두 엔진 모두 오래전부터 있다. 본문의 **`JOIN` 에 `ON` 을 빠뜨렸을 때**의 처리가 갈리는데, 두 매뉴얼에 도입 버전이 없어 **버전은 적지 않는다.**\
+**버전** — `INNER JOIN` 자체는 두 엔진 모두 오래전부터 있다. 본문의 **`JOIN` 에 `ON` 을 빠뜨렸을 때**의 처리가 달라지는데, 두 매뉴얼에 도입 버전이 없어 **버전은 적지 않는다.**\
 **선행** — [12 카티션곱과 CROSS JOIN](../12-cartesian-product-cross-join/). **12행을 거르는 것이 이 주제다.**\
 **복선** — `ON` 과 `WHERE` 가 **여기서는 결과가 같다.** 그것이 왜 [15번](../15-on-vs-where-in-outer-join/)에서 달라지는지가 이 묶음의 정점이다.

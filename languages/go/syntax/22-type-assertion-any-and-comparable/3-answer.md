@@ -809,9 +809,9 @@ values or variables, or components of other, non-interface types.
 - ★★★ **그 대신 검사가 런타임으로 미뤄진다.** 1.20 판 출력의 둘째 덩어리가 그것이다 —
   `eq[any]([]int{1}, []int{1})` 이 `comparing uncomparable type []int`,
   `dedup[any]` 가 `hash of unhashable type []int` 다.
-  **연산이 달라 문구가 갈린 것**((4)번과 같은 짝)이다.
+  **연산이 달라 문구가 달라진 것**((4)번과 같은 짝)이다.
 - ★★★ **`WithIface` 가 가장 얄궂다** — `eq[WithIface]({[]int}, {[]int})` 는 **런타임에 터지고**
-  `eq[WithIface]({1}, {1})` 은 **`true`** 다. **같은 타입 인자인데 담긴 값에 따라 갈린다.**
+  `eq[WithIface]({1}, {1})` 은 **`true`** 다. **같은 타입 인자인데 담긴 값에 따라 달라진다.**
   ★ (5)번에서 `WithSlice` 가 **컴파일에서** 막혔던 것과 대비하라 —
   필드가 `[]int` 면 컴파일에서 막히고 `any` 면 런타임으로 미뤄진다.
 - 명세가 그 대가를 적어 둔다 — `may panic at run-time (even though comparable type parameters are always strictly comparable)`.
@@ -904,7 +904,7 @@ t22i.go:11:17: impossible type assertion: no type can implement both ex.Speaker 
   컴파일러는 정적 타입만 보고 「불가능하다」고 단정하지 않는다.
 - ★★ **그 자리를 `go vet` 의 `ifaceassert` 분석기가 메운다.** 종료 코드 1이다.
   ★ [21번 주제](../21-nil-interface-vs-interface-holding-nil-pointer/) (6)절과 대비하라 —
-  **거기서 `go vet` 은 탐침 8개 중 0개에 답했다.** 같은 도구인데 주제에 따라 갈린다.
+  **거기서 `go vet` 은 probe 8개 중 0개에 답했다.** 같은 도구인데 주제에 따라 달라진다.
 
 ### 7. 타입을 적는 만큼 검사가 앞당겨진다
 
@@ -942,7 +942,7 @@ t22i.go:11:17: impossible type assertion: no type can implement both ex.Speaker 
   ([`../../../java/syntax/22-instanceof-type-patterns/`](../../../java/syntax/22-instanceof-type-patterns/)).
   ★ 자바 16의 패턴 매칭(`if (o instanceof String s)`)이 그 둘을 묶은 것이고,
   **Go 의 comma-ok 가 처음부터 그 모양**이었다.
-- ★★ 세 언어가 같은 자리에서 갈린다 — 「**틀렸을 때 터지는 길을 문법이 남겨 두는가**」.
+- ★★ 세 언어가 같은 자리에서 달라진다 — 「**틀렸을 때 터지는 길을 문법이 남겨 두는가**」.
   Go 는 남겨 두고(단항), 자바도 남겨 두고(맨 캐스트), Rust 는 **안 남겨 둔다.**
 
 ### 10. 다른 주제와 잇기
@@ -986,14 +986,14 @@ t22i.go:11:17: impossible type assertion: no type can implement both ex.Speaker 
 | 패닉·컴파일 에러의 **문구 자체** | **툴체인 판(go1.27.1)** |
 | `-lang` 게이트가 **안내까지 주는 것**(`check go.mod`) | **도구(구현)** |
 | 맵 키 실패가 **다른 문장인 것** | **런타임(구현)** — 명세는 연산별 문장을 안 정한다 |
-| `go vet` 의 `ifaceassert` 가 **잡는 범위** | **도구(구현)**. 판이 오르면 달라질 수 있다 |
+| `go vet` 의 `ifaceassert` 가 **잡는 범위** | **도구(구현)**. 버전이 오르면 달라질 수 있다 |
 | `%T` 가 `interface {}` 로 찍는 것 | **`fmt`·`reflect` 의 계약** |
 | 단언·타입 스위치의 **비용** | ★ **안 쟀다**([목록의 **50번 주제**](../50-benchmarks-testing-b-and-reading-profiles/)) |
-| `reflect` 로 런타임 단언하는 것 | ★ **안 던졌다** |
-| 제네릭의 **타입 추론·타입 집합·`~T`** | ★ **안 던졌다**([목록의 **37번 주제**](../37-generics-type-parameters-and-constraint-interfaces/)) |
-| `cmp.Ordered` 등 다른 제약 | ★ **안 던졌다**([목록의 **38번 주제**](../38-slices-maps-and-cmp/)) |
-| `go.mod` 를 1.17 로 낮춘 판(`comparable` 자체가 없던 때) | ★ **안 던졌다** |
-| 타입 스위치가 만드는 **기계어** | ★ **안 던졌다**([목록의 **52번 주제**](../52-tools-gofmt-vet-build-tags-embed-and-escape-analysis/)) |
+| `reflect` 로 런타임 단언하는 것 | ★ **실행하지 않았다** |
+| 제네릭의 **타입 추론·타입 집합·`~T`** | ★ **실행하지 않았다**([목록의 **37번 주제**](../37-generics-type-parameters-and-constraint-interfaces/)) |
+| `cmp.Ordered` 등 다른 제약 | ★ **실행하지 않았다**([목록의 **38번 주제**](../38-slices-maps-and-cmp/)) |
+| `go.mod` 를 1.17 로 낮춘 판(`comparable` 자체가 없던 때) | ★ **실행하지 않았다** |
+| 타입 스위치가 만드는 **기계어** | ★ **실행하지 않았다**([목록의 **52번 주제**](../52-tools-gofmt-vet-build-tags-embed-and-escape-analysis/)) |
 
 ★ **다시 찍는 법** — `capture.sh <디렉토리>` 를 그대로 돌리고 `normalize-shaky.py` 로 견준다.
 
@@ -1003,6 +1003,6 @@ t22i.go:11:17: impossible type assertion: no type can implement both ex.Speaker 
 **파일로 캡처한 것**이다. 소스 펜스도 같은 파일에서 떠 왔다 — 손으로 옮겨 적은 블록은 없다.\
 블록은 전부 `===== 소스: … =====` 로 소스를 먼저 싣는다 — **그대로 다시 던질 수 있게** 하기 위해서다.
 판 경계를 보이는 두 블록은 **`===== 소스: go.mod =====` 까지** 싣는다 — 그 한 줄이 결과를 바꾸기 때문이다.
-★ **근거로 읽을 칸** — 패닉·컴파일 에러의 **문장과 `파일:줄:칸`**, 종료 코드,
+★ **근거로 읽을 항목** — 패닉·컴파일 에러의 **문장과 `파일:줄:칸`**, 종료 코드,
 `ok` 의 참거짓, 타입 스위치가 고른 가지, `go vet` 의 진단 문장, `-lang` 게이트 문구.
-**근거로 읽지 않을 칸** — 스택 프레임의 주소(이 주제의 블록에서는 한 건도 안 흔들렸다).
+**근거로 읽지 않을 항목** — 스택 프레임의 주소(이 주제의 블록에서는 한 건도 안 흔들렸다).

@@ -228,7 +228,7 @@ private Class<?> loadClassFromResource(String name) throws ClassNotFoundExceptio
 +		try (inputStream) {
 ```
 
-같은 입력, 즉 `org.springframework.core.NativeDetector`의 클래스 바이트를 실어 나르는 스트림 하나가 §2의 세 출구를 지날 때 수정 전후는 이렇게 갈린다.
+같은 입력, 즉 `org.springframework.core.NativeDetector`의 클래스 바이트를 실어 나르는 스트림 하나가 §2의 세 출구를 지날 때 수정 전후는 이렇게 달라진다.
 
 ```text
  수정 전  try { ... }                   수정 후  try (inputStream) { ... }

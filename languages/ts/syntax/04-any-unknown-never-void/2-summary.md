@@ -10,14 +10,14 @@ v18.19.1
 > `strictNullChecks` 가 꺼지면 이 문서의 격자가 통째로 달라진다 — **설정 없이 실린 결과는 재현이 안 된다.**
 > **버전** — `any`·`void`·`never` 는 TS 1.x\~2.0, **`unknown` 은 3.0**, `useUnknownInCatchVariables` 는 4.4 부터다.
 
-## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
+## 이 문서에서 실행마다 달라지는 항목과 달라지지 않는 항목
 
 | | 무엇 | 왜 |
 |---|---|---|
-| **안 흔들린다** | 에러 코드·문구·`(행,열)`·종료 코드·`.d.ts` 전문·방출 전문 | 같은 입력·같은 옵션이면 같은 글자다 |
-| **안 흔들린다** | `node` 출력 | 난수·시각을 안 썼다 |
-| **흔들린다** | 절대 경로 | 작업 디렉토리에서 **상대 경로로만** 던졌다 |
-| **흔들린다** | `--pretty` 가 켜졌을 때의 색·소스 발췌·요약 줄 | 기본값이 **`true`** 다. 모든 블록을 **`--pretty false`** 로 고정했다 |
+| **달라지지 않는다** | 에러 코드·문구·`(행,열)`·종료 코드·`.d.ts` 전문·방출 전문 | 같은 입력·같은 옵션이면 같은 글자다 |
+| **달라지지 않는다** | `node` 출력 | 난수·시각을 안 썼다 |
+| **실행마다 달라진다** | 절대 경로 | 작업 디렉토리에서 **상대 경로로만** 실행했다 |
+| **실행마다 달라진다** | `--pretty` 가 켜졌을 때의 색·소스 발췌·요약 줄 | 기본값이 **`true`** 다. 모든 블록을 **`--pretty false`** 로 고정했다 |
 
 > ★ **소스 펜스의 첫 줄 `// 파일명` 은 대조용 배너다** — 실파일에는 없다. **진단의 행 번호는 그 줄을 뺀 기준**이다.
 
@@ -299,7 +299,7 @@ export declare function narrow(v: string | number): "문자열" | "숫자";
 
 - `function fail(msg: string): never` — **명시한 자리.** 정상 반환이 없는 함수다.
 - ★★★ `const arrow = () => { throw … }` 는 **`() => never`** 로 추론됐다.\
-  그런데 `function declared() { throw … }` 는 **`void`** 다 — **같은 몸통인데 갈린다.**\
+  그런데 `function declared() { throw … }` 는 **`void`** 다 — **같은 몸통인데 달라진다.**\
   함수 **선언**은 `void` 로, 함수 **표현식·화살표**는 `never` 로 추론하는 규칙이다.
 - `type Both = { a: string } & { a: number }` 는 `.d.ts` 에 **교차 그대로** 남는다 — 하지만 `Both["a"]` 를 꺼내면 `string & number` 라 값이 없다.
 - `type Empty = Extract<"a" | "b", "c">` 도 그대로 남는다 — 실제로 꺼내면 `never` 다.
@@ -358,7 +358,7 @@ ex.04f.ts(25,19): error TS2322: Type '{ kind: "tri"; b: number; h: number; }' is
 - `area2`(세 갈래인데 둘만 다룬 쪽)는 **`TS2322`** 다 — 문구가 **빠뜨린 갈래를 그대로 적어 준다**.\
   「Type '{ kind: "tri"; b: number; h: number; }' is not assignable to type 'never'.」
 - ★★★ 즉 `const rest: never = sh;` 한 줄이 **「여기 도달하면 안 된다」는 주장을 컴파일러가 검사하게** 만든다.
-- ★ 이것이 [**03번 주제**](../03-basic-type-annotations/)의 `null` 탐침이 **못 하는 일**이다 — `never` 는 `null` 에도 들어가므로 그쪽으로는 안 잡힌다. **방향을 뒤집어야** 한다.
+- ★ 이것이 [**03번 주제**](../03-basic-type-annotations/)의 `null` probe가 **못 하는 일**이다 — `never` 는 `null` 에도 들어가므로 그쪽으로는 안 잡힌다. **방향을 뒤집어야** 한다.
 
 ```text
   switch (sh.kind) {
@@ -564,9 +564,9 @@ ping
 - ★★ **`void` 는 반환 자리 전용**으로 읽는다. 변수 타입으로 쓰면 `undefined` 만 넣을 수 있는 이상한 타입이 된다.
 - ★★★ **`void` 반환 함수 타입에는 값을 돌려주는 함수가 들어간다.** 단 **반환 타입을 직접 `void` 로 적은 함수 몸통에서는 `return 값` 이 막힌다.**
 - ★ **`undefined` → `void` 는 되고 `void` → `undefined` 는 안 된다.**
-- ★ `never` 추론은 **함수 선언과 함수 표현식에서 갈린다** — 선언은 `void`, 표현식·화살표는 `never`.
+- ★ `never` 추론은 **함수 선언과 함수 표현식에서 달라진다** — 선언은 `void`, 표현식·화살표는 `never`.
 
-**금지 사례** — 이 주제에서 던져 받은 것 다섯이다. 전문은 「동작 방식」의 블록에 있다.
+**금지 사례** — 이 주제에서 실행해 받은 것 다섯이다. 전문은 「동작 방식」의 블록에 있다.
 
 ```text
 1) any·unknown·void 를 never 에 대입   ->  TS2322  Type 'any' is not assignable to type 'never'.
@@ -584,8 +584,8 @@ ping
 - ★★ **「`unknown` 은 못 쓰는 타입」** — 아니다. **좁히면 쓸 수 있다.** 좁히기를 **강제**하는 것이 목적이다.
 - ★★ **「`void` 는 `undefined` 의 다른 이름」** — 아니다. **한 방향으로만** 오간다(`undefined` → `void` 만).
 - ★★ **「`throw` 만 있는 함수는 `never` 로 추론되겠지」** — **함수 선언은 `void`** 다. 화살표·함수 표현식만 `never` 다.
-- ★ **「`never` 를 `null` 탐침으로 확인하자」** — 안 잡힌다. `never` 는 `null` 에도 들어간다. **`const x: never = v` 로 뒤집어** 묻는다.
-- ★ **「`catch (e)` 의 `e` 는 `any`」** — `strict` 아래에서는 **`unknown`** 이다(4.4+, 이 판은 `strict` 기본 `true`).
+- ★ **「`never` 를 `null` probe로 확인하자」** — 안 잡힌다. `never` 는 `null` 에도 들어간다. **`const x: never = v` 로 뒤집어** 묻는다.
+- ★ **「`catch (e)` 의 `e` 는 `any`」** — `strict` 아래에서는 **`unknown`** 이다(4.4+, 이 버전은 `strict` 기본 `true`).
 - ★ **「`never[]` 는 쓸모없다」** — 빈 배열의 올바른 타입이다. 문제는 **거기에 `push` 하려 할 때**다([**03번 주제**](../03-basic-type-annotations/)).
 
 ## 구현 세부사항 대 언어 보장
@@ -594,14 +594,14 @@ ping
 
 | 층 | 무엇 | 근거 |
 |---|---|---|
-| **언어 보장** | 16칸 격자의 **O/X 배치** | 핸드북의 할당 가능성 규칙. 이 판의 진단 네 줄이 그 결과다 |
+| **언어 보장** | 16칸 격자의 **O/X 배치** | 핸드북의 할당 가능성 규칙. 이 버전의 진단 네 줄이 그 결과다 |
 | **언어 보장** | `unknown` 은 **좁히기 전에 아무 연산도 허용하지 않는다** | `TS18046` 세 건 |
 | **언어 보장** | `any` 의 프로퍼티·연산 결과는 `any` 다 | `.d.ts` 의 `b: any`·`c: any` |
 | **언어 보장** | `void` 반환 함수 타입은 **반환값을 무시한다** | 핸드북의 「Return type void」 절. `const cb: Cb = () => 42` 가 통과 |
 | **언어 보장** | `never` 대입으로 **완전성**을 검사할 수 있다 | `TS2322` 가 빠뜨린 갈래의 이름을 적는다 |
-| **설정에 달림** | `null`·`undefined` 가 따로 있는 것, `catch` 변수가 `unknown` 인 것 | `strictNullChecks`·`useUnknownInCatchVariables`. 이 판은 `strict` 기본 `true` |
-| **이 판(7.0.2)의 관찰** | `arrow` 가 `() => never`, `declared` 가 `void` 로 갈리는 것 | 추론 규칙의 구현이다. 결론(갈린다)은 안정적이지만 **직접 던져 확인**했다 |
-| **이 판의 관찰** | 진단 문구의 정확한 글자 | 코드(`TS18046`·`TS2322`)가 더 오래 간다 |
+| **설정에 달림** | `null`·`undefined` 가 따로 있는 것, `catch` 변수가 `unknown` 인 것 | `strictNullChecks`·`useUnknownInCatchVariables`. 이 버전은 `strict` 기본 `true` |
+| **이 버전(7.0.2)의 관찰** | `arrow` 가 `() => never`, `declared` 가 `void` 로 나뉘는 것 | 추론 규칙의 구현이다. 결론(달라진다)은 안정적이지만 **직접 던져 확인**했다 |
+| **이 버전의 관찰** | 진단 문구의 정확한 글자 | 코드(`TS18046`·`TS2322`)가 더 오래 간다 |
 | **런타임** | 네 타입 **전부** 방출에 안 남는다 | `ex.04h.js` 전문 |
 
 ★ **`strictNullChecks` 를 끄면 이 문서의 격자가 통째로 달라진다.** 그래서 모든 블록의 배너에 옵션을 적었다.
@@ -663,7 +663,7 @@ ping
 - **`unknown` 을 API 경계에 두는 설계** — 라이브러리의 `parse(raw: unknown)` 는 호출자에게 **좁히기를 강제**한다. `any` 로 받으면 그 의무가 사라진다.
 - **`never` 의 다른 얼굴** — 조건부 타입에서 `never` 는 **유니온에서 빠지는 것**을 뜻한다(`Exclude` 가 그렇게 구현돼 있다). [목록의 **24번 주제**](../24-conditional-types-and-distribution/).
 - **`void` 를 변수 타입으로 쓰는 경우** — 드물지만 `Promise<void>` 처럼 **타입 인자**로는 자주 쓴다. 그때도 뜻은 「반환값을 안 본다」다.
-- **`catch` 변수** — 이 판은 `strict` 가 기본 `true` 라 `catch (e)` 의 `e` 가 `unknown` 이다. 그래서 `e.message` 를 바로 못 읽고 `(e as Error).message` 나 `instanceof Error` 가 필요하다(`ex.04h.ts` 가 그 형태다).
+- **`catch` 변수** — 이 버전은 `strict` 가 기본 `true` 라 `catch (e)` 의 `e` 가 `unknown` 이다. 그래서 `e.message` 를 바로 못 읽고 `(e as Error).message` 나 `instanceof Error` 가 필요하다(`ex.04h.ts` 가 그 형태다).
 
 ## 실행 환경
 
@@ -671,5 +671,5 @@ ping
 [Handbook — Narrowing](https://www.typescriptlang.org/docs/handbook/2/narrowing.html) ·
 [Handbook — More on Functions: Return type `void`](https://www.typescriptlang.org/docs/handbook/2/functions.html#return-type-void) ·
 [TSConfig — `strict`](https://www.typescriptlang.org/tsconfig/#strict).
-핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·`.d.ts` 전문은 전부 이 판에서 직접 던져서 받은 것이다.
-**실행 검증** — 맨 위 판에서 실제로 돌려 얻었다.
+핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·`.d.ts` 전문은 전부 이 버전에서 직접 실행해서 받은 것이다.
+**실행 검증** — 맨 위 버전에서 실제로 돌려 얻었다.

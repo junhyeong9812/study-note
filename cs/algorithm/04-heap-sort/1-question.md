@@ -6,7 +6,7 @@
      과제(A)는 원문 뼈대의 TODO 주석을 코드블록으로 먼저 두고 그 아래에 질문을 단다.
      유형: 왜(why) / 예측(what if) / 경계(어느 계층·모듈의 책임인가) / 연결(다른 주제와의 다리) -->
 
-이 챕터는 응용 문제집(*Problems.java)이 없다. 과제 = 뼈대의 TODO 1~9를 채워 세 판을 완성하는 것 (`BottomUpHeapSort.sink` 를 먼저).
+이 챕터는 응용 문제집(*Problems.java)이 없다. 과제 = 뼈대의 TODO 1~9를 채워 세 버전을 완성하는 것 (`BottomUpHeapSort.sink` 를 먼저).
 
 ### A. 과제 (TODO 1~9 — `src/main/java/com/algo/heap/`)
 

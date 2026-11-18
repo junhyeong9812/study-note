@@ -141,7 +141,7 @@ unit2.c:4:74: error: incompatible type for argument 2 of ‘add_m’
 그림 해설 (한 단계씩):
 
 - **`typedef` 로는 단위를 못 가른다.** `-Wconversion` 까지 켜도 0건이다.
-- **`struct` 로 감싸면 갈린다.** 익명 `struct` 두 개는 멤버가 같아도 **서로 다른 타입**이기 때문이다.
+- **`struct` 로 감싸면 달라진다.** 익명 `struct` 두 개는 멤버가 같아도 **서로 다른 타입**이기 때문이다.
 - 그 대가는 `.v` 를 계속 쓰는 것과, 산술 연산자를 못 쓰는 것이다.
 - 「`typedef` 로 도메인 타입을 만든다」는 **문서 효과**는 있고 **강제력은 없다.** 둘을 갈라서 기대해야 한다.
 
@@ -292,7 +292,7 @@ char * const t 도 같은 타입
 - 텍스트 치환이었다면 `const` 가 `char` 앞으로 들어가서 `const char *` 가 됐을 것이다 — `#define` 이 그렇게 된다.
 - **이 하나가 「`typedef` 는 텍스트 치환이 아니다」의 유일하면서 결정적인 증거**다.
 - 그래서 **포인터를 `typedef` 로 감추지 않는 것**이 관례다. 감추면 `const` 를 읽을 수가 없다.
-- 한 줄에 여럿을 선언할 때도 갈린다.
+- 한 줄에 여럿을 선언할 때도 달라진다.
 
 ```text
 8 8 8 1
@@ -504,7 +504,7 @@ C 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다�
 | **미명시** | 몇 가지 중 하나 | **해당 없음** | — | — |
 | **UB** | 아무 일이나 | **해당 없음** — `typedef` 자체로는 UB 를 만들 수 없다 | — | — |
 
-### 「버전」이 갈리는 자리 — 같은 `typedef` 를 두 번
+### 「버전」이 달라지는 자리 — 같은 `typedef` 를 두 번
 
 ```text
 (비면 0건)
@@ -627,7 +627,7 @@ selfref3.c:2:54: warning: assignment to ‘struct Node *’ from incompatible po
 **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — typedef declaration (C)](https://en.cppreference.com/w/c/language/typedef) · [cppreference — Scope](https://en.cppreference.com/w/c/language/scope) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html)
 **실행 검증** — 이 문서의 모든 출력·경고·에러는 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
 **이 주제의 가장 강한 근거는 「컴파일 에러」다** — `typedef` 는 런타임에 흔적이 없어서 실행 출력으로는 증명이 안 되는 것이 많다.\
-버전이 갈리는 자리는 `-std=c89`·`-std=c17`·`-std=c2x` 로 나눠 돌렸다. 기본 플래그는 `-std=c17 -Wall -Wextra`.
+버전이 달라지는 자리는 `-std=c89`·`-std=c17`·`-std=c2x` 로 나눠 돌렸다. 기본 플래그는 `-std=c17 -Wall -Wextra`.
 **버전** — `typedef` 는 C89 부터 같다. **같은 `typedef` 를 두 번 쓰는 것**은 C11 부터 적법하다.
 
 **경계** — 「선언을 안쪽→바깥으로 읽는 법」은 [01번 형제](../01-declaration-syntax-and-reading/)가 정본이다.\

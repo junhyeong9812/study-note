@@ -125,7 +125,7 @@ CompletableFuture.supplyAsync(() -> 1).thenApply(...);   // executor 없음
 
 - 세 경우에 실행 스레드는 각각 무엇인가?
 - 같은 `thenApply` 라도 **이미 끝난 `CompletableFuture`** 에 붙일 때와 **아직 도는 것**에 붙일 때가 다른가?
-- 30회 반복하면 결과가 흔들리는가?
+- 30회 반복하면 결과가 실행마다 달라지는가?
 - executor 를 안 주면 어느 풀을 쓰는가 — 그것이 왜 위험한가(어느 주제가 그것을 실측했나)?
 
 ### 11. `get()` 과 `join()` 은 무엇이 다른가 (경계)

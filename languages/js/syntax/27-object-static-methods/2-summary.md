@@ -83,7 +83,7 @@ Google Chrome 151.0.7922.173
   ES2026  Array.fromAsync                             yes
 ```
 
-두 node 판 대조기의 집계 줄(이 배치의 모든 node 탐침) — 이 주제의 탐침(`js24b-27?-*.js`)은 전부 `identical` 이다. 전문은 [3-answer.md](3-answer.md) 의 「실행 검증」에 있다.
+두 node 버전 대조기의 집계 줄(이 배치의 모든 node probe) — 이 주제의 probe(`js24b-27?-*.js`)은 전부 `identical` 이다. 전문은 [3-answer.md](3-answer.md) 의 「실행 검증」에 있다.
 
 `identical 26  ·  differs 4  ·  total 30`
 
@@ -140,7 +140,7 @@ Google Chrome 151.0.7922.173
 
 > 이 절이 본문이다. 그림을 먼저 두고 그 그림을 출력으로 읽는다.
 
-### (1) ★★★ `Object.assign` 의 호출 로그 — 이 주제의 본체
+### (1) ★★★ `Object.assign` 의 호출 로그 — 이 주제의 핵심
 
 **언제 쓰나** — 설정 병합 · 기본값 채우기 · 「클래스 인스턴스에 필드를 한꺼번에 넣기」(`Object.assign(this, opts)`) 를 쓸 때.
 ★★★ 결과 객체만 찍어서는 스프레드와 구별이 안 된다. 그래서 **원본에 getter, 대상에 setter** 를 심었다.
@@ -387,13 +387,13 @@ cells whose answer differs from the Object.assign column: 3 / 18
 ```
 
 - ★★★ **집계 줄 — `cells whose answer differs from the Object.assign column: 3 / 18`.** `assign` 과 **완전히 같은 열은 스프레드**(0칸)다.
-  `entries` 열은 **심볼 행 하나**, `clone` 열은 **`inner` 행과 심볼 행 둘**이 갈린다.
+  `entries` 열은 **심볼 행 하나**, `clone` 열은 **`inner` 행과 심볼 행 둘**이 달라진다.
 - ★★★ **첫 행 — `assign`·스프레드·`fromEntries(entries())` 는 전부 `inner` 를 공유한다.** 바깥만 새 객체다. `[3]` 이 그 결과다 —
   복사본에서 `shallow.inner.deep = 99` 를 하면 **원본의 `src.inner.deep` 도 `99`** 이고, 바깥 키 `x` 를 고친 것은 원본에 안 간다(`src.x 1`).
 - ★★ **둘째 행 — getter 를 getter 째 옮기는 도구는 넷 중에 없다.** `[2]` 에서 넷 다 **복사하는 동안 한 번 읽었다**(`1`). 옮기고 싶으면 `Object.defineProperties({}, Object.getOwnPropertyDescriptors(src))` 쪽이다(이 문서는 격자에 넣지 않았다).
 - ★★ **셋째 행 — `Object.entries` 는 심볼 키를 안 센다.** 그래서 `fromEntries(entries(src))` 왕복은 **심볼을 잃는다**(동작 (4)).
 - ★★ **다섯째 행 — 넷 다 프로토타입을 잃는다.** `Point` 인스턴스를 복사하면 **평범한 객체**가 나온다. `structuredClone` 도 마찬가지다.
-- ★ **`structuredClone` 은 ECMA-262 가 아니라 호스트 API** 다(HTML 표준 — 이 판의 node 20 에는 전역으로 있다). 깊은 복사 수단의 비교는 [목록의 **48번 주제**](../48-deep-copy-methods-compared/)가 정본이라 여기서는 **한 열**로만 둔다.
+- ★ **`structuredClone` 은 ECMA-262 가 아니라 호스트 API** 다(HTML 표준 — 이 버전의 node 20 에는 전역으로 있다). 깊은 복사 수단의 비교는 [목록의 **48번 주제**](../48-deep-copy-methods-compared/)가 정본이라 여기서는 **한 열**로만 둔다.
 
 ### (3) ★★★ 쓰기를 거부하는 대상 — 비엄격에서도 던지고, 되돌리지 않는다
 
@@ -672,14 +672,14 @@ for (const [n, r] of [["fromEntries", viaEntries], ["Object.assign", viaAssign]]
 - ★★ **`[1]` 입력은 「쌍의 이터러블」이다** — 배열의 배열도 `Map` 도 된다. 같은 키가 두 번이면 **나중 것**(`{"k":2}`), 쌍의 둘째가 없으면 값이 `undefined` 다.
   원소가 객체가 아니면 **`TypeError 「Iterator value ab is not an entry object」`** — 문자열 `'ab'` 도 **쌍으로 안 쳐 준다.** 평범한 객체 `{ a: 1 }` 은 이터러블이 아니라 `TypeError`(19번의 프로토콜).
 - ★★ **`[3]` 「객체 → `entries` → `map` → `fromEntries`」** 가 객체에 배열 메서드를 쓰는 표준 경로다. 결과는 **새 객체**다.
-- ★★★ **`[4]` `"__proto__"` 라는 키가 둘에서 갈린다.**
+- ★★★ **`[4]` `"__proto__"` 라는 키가 둘에서 달라진다.**
   `fromEntries` 는 **자기 키**로 만든다(`own keys ["__proto__"]`, 프로토타입 그대로) — 명세가 `CreateDataPropertyOrThrow` 로 **정의**하기 때문이다.
   `Object.assign` 은 **대입**이라 `Object.prototype` 의 `__proto__` setter 를 불러 **프로토타입을 바꾼다**(`own keys []`, `marker true`). 원본은 `JSON.parse` 가 만든 **자기 키 `"__proto__"`** 였다.
-  ★ **「정의 대 대입」이 동작 (1)의 setter 에 이어 여기서 한 번 더** 갈린다. 23번 동작 (3)의 `[4]` 가 같은 접근자를 평범한 대입으로 보였다.
+  ★ **「정의 대 대입」이 동작 (1)의 setter 에 이어 여기서 한 번 더** 달라진다. 23번 동작 (3)의 `[4]` 가 같은 접근자를 평범한 대입으로 보였다.
 
 ### (6) ★★★ `Object.groupBy`(ES2024) — 붙박이 없는 창고, 그리고 `Map.groupBy`
 
-**언제 쓰나** — 배열을 종류별로 나눌 때(`reduce` 로 손으로 짜던 것). ★ **두 node 판에 없다** — Chrome 151 로 돌렸다.
+**언제 쓰나** — 배열을 종류별로 나눌 때(`reduce` 로 손으로 짜던 것). ★ **두 node 버전에 없다** — Chrome 151 로 돌렸다.
 
 ```js
 // js24b-27f-groupby.web.js
@@ -871,7 +871,7 @@ Object.assign({}, words, numbers)  keys ["1","2","b"]
 | 정수처럼 생긴 키 | **넣은 순서 그대로**(3.7 부터 언어 보장) | ★★★ **정수 키가 앞으로 간다** — `["1","2","b"]` | JS 객체의 own 키 순서 규칙(13번) · 파이썬 `dict` 는 키 종류로 줄을 안 가른다 |
 | 이터러블을 오른쪽에 | `a \| [("k", 9)]` 는 `TypeError` | `Object.assign({}, [7, 8])` 은 **인덱스 키로 들어간다** | JS 는 원본을 `ToObject` 해 own 키를 읽을 뿐이다(동작 (1)의 `[5]`) |
 
-- ★★★ **「자리는 먼저, 값은 나중」은 두 언어가 같다.** 갈리는 것은 **정수 키** — JS 는 병합 결과조차 `1, 2` 를 글자 키 앞에 세운다.
+- ★★★ **「자리는 먼저, 값은 나중」은 두 언어가 같다.** 달라지는 것은 **정수 키** — JS 는 병합 결과조차 `1, 2` 를 글자 키 앞에 세운다.
 - ★ **파이썬 쪽은 이 배치에서 다시 돌리지 않았다** — 12번 문서에 실린 출력을 인용했다.
 
 ## 문법 — 형태와 규칙
@@ -900,7 +900,7 @@ Object.assign({}, words, numbers)  keys ["1","2","b"]
 
 ### (2) ★★★ `Object.assign` 과 스프레드를 아무 데서나 바꿔 쓴다
 
-대상에 **setter** 가 있으면 갈린다 — `assign` 은 부르고 스프레드는 안 부른다(동작 (1)의 `[1]` 대 `[3]`, 11번의 0회 대 1회).
+대상에 **setter** 가 있으면 달라진다 — `assign` 은 부르고 스프레드는 안 부른다(동작 (1)의 `[1]` 대 `[3]`, 11번의 0회 대 1회).
 그리고 **첫 인자를 바꾼다** — `Object.assign(config, patch)` 는 `config` 자체를 고친다. 새 객체가 필요하면 `{}` 를 첫 인자로.
 
 ### (3) ★★★ 비엄격 코드니까 얼린 객체에 `assign` 해도 조용할 것이라 믿는다
@@ -949,11 +949,11 @@ Object.assign({}, words, numbers)  keys ["1","2","b"]
 - `Map.groupBy` 가 키를 `CanonicalizeKeyedCollectionKey` 로 접는 것(`-0` → `+0`).
 - 예외의 **종류**(`TypeError`).
 
-### 엔진(V8) 구현 · 이 판의 관찰
+### 엔진(V8) 구현 · 이 버전의 관찰
 
 - 예외 **문구 전부** — `Cannot assign to read only property 'a' of object '#<Object>'` · `Cannot convert undefined or null to object` · `Iterator value ab is not an entry object` ·
   `object is not iterable (cannot read property Symbol(Symbol.iterator))` · `g.toString is not a function` · `Cannot convert object to primitive value`.
-- 이 주제에서 두 node 판이 **한 글자도 같았다**는 것 — 관찰이다(판이 같아서 보장이라는 뜻이 아니다).
+- 이 주제에서 두 node 버전이 **한 글자도 같았다**는 것 — 관찰이다(판이 같아서 보장이라는 뜻이 아니다).
 
 ### 호스트가 정하는 것 — ECMA-262 밖
 
@@ -961,7 +961,7 @@ Object.assign({}, words, numbers)  keys ["1","2","b"]
 
 ### 그래서 이렇게 적으면 틀린다
 
-- ✗ 「`Object.assign` 은 스프레드와 같다」 → ○ 「**대상의 setter 와 첫 인자 변경**에서 갈린다 — `assign` 은 **대입**, 스프레드는 **정의**」
+- ✗ 「`Object.assign` 은 스프레드와 같다」 → ○ 「**대상의 setter 와 첫 인자 변경**에서 달라진다 — `assign` 은 **대입**, 스프레드는 **정의**」
 - ✗ 「`Object.assign` 은 엄격 모드에서만 던진다」 → ○ 「**늘 던진다** — `Set(…, true)`」
 - ✗ 「`assign` 이 실패하면 아무것도 안 바뀐다」 → ○ 「**앞의 키는 남는다**」
 - ✗ 「`Object.groupBy` 결과는 `{}` 와 같다」 → ○ 「**프로토타입이 `null`** 이다 — `toString` 이 없다」
@@ -981,7 +981,7 @@ Object.assign({}, words, numbers)  keys ["1","2","b"]
 
 1. ★★★ `Object.assign` 은 원본의 열거 가능한 own 키마다 **getter 를 한 번 부르고 대상에 대입**한다 — 대상의 setter 가 불리고, 비열거 키의 getter 는 안 불린다.
 2. ★★★ 대입은 **`Set(…, true)`** 라서 **비엄격에서도 실패하면 `TypeError`** 이고, **앞서 쓴 키는 남는다**(원자적이지 않다).
-3. ★★★ 복사 도구 넷(`assign`·스프레드·`entries` 왕복·`structuredClone`)의 격자에서 `assign` 과 **3 / 18 칸**이 갈렸고, 앞의 셋은 **전부 얕다.**
+3. ★★★ 복사 도구 넷(`assign`·스프레드·`entries` 왕복·`structuredClone`)의 격자에서 `assign` 과 **3 / 18 칸**이 달라졌고, 앞의 셋은 **전부 얕다.**
 4. ★★★ `keys`/`values`/`entries` 는 **열거 가능한 own 글자 키**만, **13번의 순서**로 낸다 — `keys` 는 값을 안 읽고, 목록은 처음에 한 번 받는다.
 5. ★★★ `Object.groupBy` 는 **프로토타입이 `null`** 인 객체를 돌려준다 — `String()` 이 `TypeError` 이고 키가 정수 키 순서를 따른다. 정체로 묶으려면 `Map.groupBy`.
 
@@ -1020,8 +1020,8 @@ Object.assign({}, words, numbers)  keys ["1","2","b"]
 
 ## 실행 환경
 
-★★★ **이 주제의 본체는 ① 추상 연산에 로그 심기다.**
-`Object.assign({}, src)` 와 `{ ...src }` 는 결과 객체를 찍으면 **한 글자도 같다.** 갈리는 것은 **그 과정에서 무엇을 불렀나**다.
+★★★ **이 주제의 핵심은 ① 추상 연산에 로그 심기다.**
+`Object.assign({}, src)` 와 `{ ...src }` 는 결과 객체를 찍으면 **한 글자도 같다.** 달라지는 것은 **그 과정에서 무엇을 불렀나**다.
 그래서 원본에는 **getter**, 대상에는 **setter**, 뷰 쪽에는 **`Proxy` 트랩**을 심어 호출 순서와 횟수를 찍는다(동작 (1)·(4)).
 ★★ 보조로 **② 전수 격자**(복사 도구 넷 × 성질 여섯 — 동작 (2))와 **④ 예외의 이름·문구**(동작 (3)·(5)·(6))를 쓴다.
 
@@ -1036,40 +1036,40 @@ Object.assign({}, words, numbers)  keys ["1","2","b"]
 
 **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
-★★★ **`Object.groupBy`·`Map.groupBy`(ES2024)는 두 node 판에 없다**(맨 위 판별 블록). 그 탐침은 **Google Chrome 151 을 헤드리스로** 돌렸다 —
+★★★ **`Object.groupBy`·`Map.groupBy`(ES2024)는 두 node 버전에 없다**(맨 위 판별 블록). 그 probe는 **Google Chrome 151 을 헤드리스로** 돌렸다 —
 배너가 `google-chrome --headless` 로 시작하는 블록이 그것이다. 페이지는 `console.log` 를 가로채 줄을 모은다(`js24b-page.html`).
 ★★ **예외는 `try`/`catch` 로 받아 `e.constructor.name` 과 `e.message` 만** `이름 「메시지」` 꼴로 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
-★ **이 주제의 node 탐침 여섯 개는 두 판에서 한 글자도 같았다**(맨 위 대조기의 `identical` 줄들).
+★ **이 주제의 node probe 여섯 개는 두 버전에서 한 글자도 같았다**(맨 위 대조기의 `identical` 줄들).
 
 **버전** — 판별 블록이 세 판(node 18 · node 20 · Chrome 151)에 같은 스크립트를 던진다.
 
 | 무엇 | 판 | 이 머신에서 |
 |---|---|---|
-| `Object.keys` | ES5 | 세 판 다 있다 |
-| `Object.assign` · own 키 순서(정수 키 먼저) | **ES2015** | 세 판 다 있다 |
-| `Object.values` · `Object.entries` | **ES2017** | 세 판 다 있다 |
-| `Object.fromEntries` | **ES2019** | 세 판 다 있다 |
-| `Object.hasOwn` | ES2022 | 세 판 다 있다(탐침이 쓴다) |
-| `Object.groupBy` · `Map.groupBy` | **ES2024** | ★ **두 node 판에 없다** — Chrome 151 로만 돌렸다 |
+| `Object.keys` | ES5 | 세 버전 다 있다 |
+| `Object.assign` · own 키 순서(정수 키 먼저) | **ES2015** | 세 버전 다 있다 |
+| `Object.values` · `Object.entries` | **ES2017** | 세 버전 다 있다 |
+| `Object.fromEntries` | **ES2019** | 세 버전 다 있다 |
+| `Object.hasOwn` | ES2022 | 세 버전 다 있다(probe가 쓴다) |
+| `Object.groupBy` · `Map.groupBy` | **ES2024** | ★ **두 node 버전에 없다** — Chrome 151 로만 돌렸다 |
 
-**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+**★★★ 이 주제가 쓰는 창 — 그리고 해당 없는 창**
 
 | 창 | 이 주제에서 무엇을 보나 |
 |---|---|
-| ★★★ **① 추상 연산에 로그 심기**(본체) | `assign` 이 원본 getter 와 대상 setter 를 **어떤 순서로 몇 번** 부르나(동작 (1)) · `keys`/`values`/`entries` 가 `Proxy` 에 무엇을 묻나(동작 (4)) · `groupBy` 콜백의 인자와 횟수(동작 (6)) |
-| ★★ **② 전수 격자** | 복사 도구 **4개** × 성질 **6개** — `assign` 열과 **갈린 칸을 스크립트가 센다**(동작 (2)) |
+| ★★★ **① 추상 연산에 로그 심기**(핵심) | `assign` 이 원본 getter 와 대상 setter 를 **어떤 순서로 몇 번** 부르나(동작 (1)) · `keys`/`values`/`entries` 가 `Proxy` 에 무엇을 묻나(동작 (4)) · `groupBy` 콜백의 인자와 횟수(동작 (6)) |
+| ★★ **② 전수 격자** | 복사 도구 **4개** × 성질 **6개** — `assign` 열과 **달라진 항목을 스크립트가 센다**(동작 (2)) |
 | ★★ **④ 예외의 `constructor.name` + `message`** | 읽기 전용 대상 · `fromEntries` 의 입력 검사 · ★ **`groupBy` 결과의 `toString`/`String()`**(동작 (6)) |
 | ★ **③ 브랜드 태그** | `groupBy` 결과에 `Object.prototype.toString.call` 이 **`[object Object]`** 라고 답하는 한 줄뿐이다 — 15번에서 쓴 방식 그대로. 이 주제의 질문은 아니다 |
-| ★ **⑤ 두 판 대조기** | 이 주제의 node 탐침은 **전부 `identical`** — 두 판이 갈릴 기능(`groupBy`)은 둘 다 없어서 Chrome 으로 창을 바꿨다 |
-| ★ **부적용 — 진단의 `(행,열)`**(18-C) | `SyntaxError` 가 한 줄도 없다. 전부 런타임 의미다 — **잴 것이 없다** |
+| ★ **⑤ 두 판 대조기** | 이 주제의 node probe는 **전부 `identical`** — 두 버전이 갈릴 기능(`groupBy`)은 둘 다 없어서 Chrome 으로 창을 바꿨다 |
+| ★ **해당 없음 — 진단의 `(행,열)`**(18-C) | `SyntaxError` 가 한 줄도 없다. 전부 런타임 의미다 — **잴 것이 없다** |
 | ★ **안 쟀다 — 성능** | 「`assign` 이 스프레드보다 빠르다」·「`structuredClone` 은 느리다」를 **한 줄도 쓰지 않는다.** 시간도 바이트도 안 쟀다. 센 것은 **호출 횟수**뿐이다 |
 
-**★ 흔들리는 칸 / 안 흔들리는 칸**
+**★ 실행마다 달라지는 항목 / 달라지지 않는 항목**
 
-| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+| 실행마다 달라진다(근거로 쓰지 않는다) | 달라지지 않는다(근거로 쓴다) |
 |---|---|
-| 예외 **문구** — V8 의 것이다(`Cannot assign to read only property 'a' of object '#<Object>'` 의 `#<Object>` 같은 표기). 다른 엔진은 다르게 적는다 | ★★★ **호출 로그의 순서와 개수** · 격자의 y/n 과 「갈린 칸 N / M」 · 키의 **순서** · 예외의 **종류**(`TypeError`) |
-| 대조기 블록의 **다른 주제 줄**(같은 배치가 한 대조기를 공유한다) | ★★ **이 주제의 탐침에는 재실행에서 흔들린 칸이 하나도 없다**(재대조 동일) |
+| 예외 **문구** — V8 의 것이다(`Cannot assign to read only property 'a' of object '#<Object>'` 의 `#<Object>` 같은 표기). 다른 엔진은 다르게 적는다 | ★★★ **호출 로그의 순서와 개수** · 격자의 y/n 과 「달라진 항목 N / M」 · 키의 **순서** · 예외의 **종류**(`TypeError`) |
+| 대조기 블록의 **다른 주제 줄**(같은 배치가 한 대조기를 공유한다) | ★★ **이 주제의 probe에는 재실행에서 달라진 항목이 하나도 없다**(재대조 동일) |
 
 **선행** — [13 — 객체 리터럴과 프로퍼티](../13-object-literals-and-properties/2-summary.md)(직접 선행 — ★★★ **정수 키가 앞서는 열거 순서와 「뷰 일곱 가지」 격자는 거기서 이미 쟀다**) ·
 [11 — 스프레드와 나머지](../11-spread-and-rest/2-summary.md)(★★★ **대상 setter 호출 0회 대 1회**는 거기서 쟀다) ·

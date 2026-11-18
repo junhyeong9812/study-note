@@ -230,7 +230,7 @@ SELECT x.b, x.metric, x.n AS raw_n, r.n AS rollup_n
 - **원인**: 파티션 생성 잡이 멈췄다. 보존 잡과 짝인 "링 버퍼의 다음 칸"이 없다.
 - **대처**: 며칠 앞까지 미리 만든다. 미래 파티션 개수에 경보를 둔다. DEFAULT 파티션은 임시 방편이다. DEFAULT에 행이 들어간 범위로 새 파티션을 만들면 `ERROR: updated partition constraint for default partition "raw_p_def" would be violated by some row`로 거부된다(로컬 재현). 그 행을 먼저 옮겨야 한다.
 
-### 5. 늦게 온 데이터 → 롤업이 원본과 조용히 어긋남
+### 5. 늦게 온 데이터 → 롤업이 원본과 조용히 불일치
 
 - **현상**: 대시보드(롤업)와 원본 드릴다운의 숫자가 다르다.
 - **보이는 형태**: 로컬 재현 00:00 버킷 롤업 3600 / 원본 3601.

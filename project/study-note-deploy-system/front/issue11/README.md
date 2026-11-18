@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
 ## 4. 결정 (3) — 페이지별 대화 + 수동 에스컬레이션
 
 **페이지별 대화:** `docPath`가 바뀌면 이력을 다시 로드한다(문서마다 다른 대화). backend의
-Redis 키가 path별이라 자연스럽게 갈린다. 파일 경로 `src/features/chat/ui/ChatPanel.tsx`:
+Redis 키가 path별이라 자연스럽게 달라진다. 파일 경로 `src/features/chat/ui/ChatPanel.tsx`:
 
 ```tsx
 useEffect(() => {                                    // 페이지(doc)별 이력 로드

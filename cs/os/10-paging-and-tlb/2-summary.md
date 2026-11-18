@@ -258,7 +258,7 @@ perf stat -e dTLB-load-misses,dTLB-loads ./app
   - 로컬 재현: 다른 CPU에서 도는 스레드가 8개일 때 `munmap` 2만 번에 슛다운 인터럽트 약 16만 번, 한 번 비용 3.86 → 11.15 µs(예시).
 - **원인**: 주소 공간을 공유하는 모든 CPU의 TLB를 비워야 매핑 변경이 안전하다. 할당기가 메모리를 자주 반환하거나(`MADV_DONTNEED`), JIT·GC가 권한을 자주 바꾸면 IPI가 쏟아진다.
 - **대처**
-  - 할당기의 반환 빈도를 낮춘다(glibc `M_TRIM_THRESHOLD`·`M_MMAP_THRESHOLD` — 설정하면 동적 문턱이 꺼져 고정된다(11번), jemalloc·tcmalloc의 decay 설정).
+  - 할당기의 반환 빈도를 낮춘다(glibc `M_TRIM_THRESHOLD`·`M_MMAP_THRESHOLD` — 설정하면 동적 임계값이 꺼져 고정된다(11번), jemalloc·tcmalloc의 decay 설정).
   - 짧게 쓰고 버리는 큰 버퍼는 재사용 풀로 바꾼다.
 
 ### 4. 페이지 테이블 자체가 메모리를 먹는다

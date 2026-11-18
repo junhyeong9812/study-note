@@ -71,7 +71,7 @@
 ```
 
 - "Versioning and Compatibility": 협상 핸드셰이크가 없다. 서버는 요청마다 버전을 받아들이거나 거부한다. 미지원이면 `UnsupportedProtocolVersionError`로 지원 버전 목록을 돌려준다(MUST). 클라이언트는 공통 버전을 골라 재시도하거나, 없으면 사용자에게 오류를 보인다(SHOULD).
-- `server/discover`: 서버의 구현 의무 RPC(MUST). 지원 버전·능력·신원(`serverInfo`)을 한 번에 돌려준다. 클라이언트가 부르는 것은 선택이다(MAY). stdio에서 옛·새 서버를 모두 상대하는(dual-era) 클라이언트는 다른 요청보다 먼저 `server/discover`로 탐침하라고 권한다(SHOULD, "Discovery"·"stdio" Backward Compatibility). 새 판만 아는 클라이언트에게도 탐침은 RECOMMENDED다 — 옛 서버가 `tools/call`을 옛 의미로 처리해 버리는 대신 결정적으로 실패하게 한다.
+- `server/discover`: 서버의 구현 의무 RPC(MUST). 지원 버전·능력·신원(`serverInfo`)을 한 번에 돌려준다. 클라이언트가 부르는 것은 선택이다(MAY). stdio에서 옛·새 서버를 모두 상대하는(dual-era) 클라이언트는 다른 요청보다 먼저 `server/discover`로 probe하라고 권한다(SHOULD, "Discovery"·"stdio" Backward Compatibility). 새 판만 아는 클라이언트에게도 probe는 RECOMMENDED다 — 옛 서버가 `tools/call`을 옛 의미로 처리해 버리는 대신 결정적으로 실패하게 한다.
   - `serverInfo`는 서버의 자기 신고라 검증되지 않는다. 동작을 바꾸거나 보안 판단에 쓰지 말라고 적는다(SHOULD NOT, "Discovery").
 - 판 사이 호환표(같은 문서): 새 클라이언트 × 옛 서버 = 실패, 옛 클라이언트 × 새 서버 = 실패, 양쪽을 다 아는 "dual-era" 구현이 끼면 동작한다. 옛 판에 `initialize`를 보내는 옛 클라이언트에게 새 서버는 지원 버전을 오류에 적어 주라고 권한다(SHOULD).
 
@@ -82,7 +82,7 @@
 | `-32700`, `-32600`~`-32603` | JSON-RPC 표준 오류(파싱·잘못된 요청·없는 메서드·잘못된 인자·내부 오류) |
 | `-32000`~`-32019` | 예전 구현이 쓰던 구간. 새로 할당 금지, `-32002`를 빼면 받는 쪽은 의미를 가정하면 안 됨 |
 | `-32020`~`-32099` | MCP 명세 전용. `-32020` HeaderMismatch · `-32021` MissingRequiredClientCapability · `-32022` UnsupportedProtocolVersion |
-| `-32002` | 옛 판의 resource not found. 이 판은 `-32602`를 쓰고 `-32002`를 내보내면 안 됨(받는 쪽은 옛 서버 것으로 계속 받아 줌, SHOULD) |
+| `-32002` | 옛 판의 resource not found. 이 버전은 `-32602`를 쓰고 `-32002`를 내보내면 안 됨(받는 쪽은 옛 서버 것으로 계속 받아 줌, SHOULD) |
 | 그 밖 | 애플리케이션 정의 오류는 JSON-RPC 예약 구간(`-32768`~`-32000`) 밖에 할당(SHOULD) |
 
 - Key Changes 부 변경 12: 이 초안에서 새로 만든 코드를 재번호했다 — `-32001`→`-32020`, `-32003`→`-32021`, `-32004`→`-32022`. 문서·코드에서 옛 번호를 보면 판을 확인한다.
@@ -265,7 +265,7 @@ Done[result={resultType=complete, tools=[]}]
 - 현상: 2026-07-28 서버로 옮긴 뒤 "앞에서 고른 주문"을 다음 도구 호출이 모른다.
 - 보이는 형태: 같은 연결에서 연달아 부른 도구가 서로의 결과를 못 본다. 부하 분산기 뒤에서는 더 자주.
 - 원인: 옛 판의 `Mcp-Session-Id`·연결 문맥에 상태를 뒀다. 새 판은 세션을 없앴고 서버는 이전 요청에 기대면 안 된다.
-- 대처: 상태가 필요하면 서버가 핸들(예: `cartId`)을 발급하고 클라이언트가 도구 인자로 매번 넘긴다(Key Changes 주요 변경 1). 옛·새 서버를 모두 상대해야 하면 dual-era로 만들고 stdio에선 `server/discover`로 탐침.
+- 대처: 상태가 필요하면 서버가 핸들(예: `cartId`)을 발급하고 클라이언트가 도구 인자로 매번 넘긴다(Key Changes 주요 변경 1). 옛·새 서버를 모두 상대해야 하면 dual-era로 만들고 stdio에선 `server/discover`로 probe.
 
 ### 3. 끊긴 스트림의 재개를 기다림 (⚠)
 

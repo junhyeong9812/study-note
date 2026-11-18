@@ -229,7 +229,7 @@ ROLLUP(dept_id, name) 이 만드는 그룹 집합 셋
                                  +---------+------+------+------+------+
 ```
 
-그림 해설 — ★ **`NULL | NULL` 인 행이 둘이고, `gd` 로만 갈린다.**
+그림 해설 — ★ **`NULL | NULL` 인 행이 둘이고, `gd` 로만 달라진다.**
 
 | 행 | `gd` | `gn` | 뜻 |
 |---|---|---|---|
@@ -410,7 +410,7 @@ ERROR 3889 (HY000) at line 1: Secondary engine operation failed. Reason: "No sec
 **에러를 던져 보니 「문서 부재」가 아니라 「파싱은 되고 실행 경로가 없다」였다.** 이 근거로 README 의 해당 칸을 고쳤다.\
 같은 열 조합으로 `CUBE(dept_id, name)` 을 던져도 **같은 `ERROR 3889`** 였다.
 
-**(마) `GROUPING()` 을 `ROLLUP` 없이 쓰면 — 여기서도 갈린다.**
+**(마) `GROUPING()` 을 `ROLLUP` 없이 쓰면 — 여기서도 달라진다.**
 
 ```text
 ### SQL: SELECT dept_id, GROUPING(dept_id) AS g FROM emp GROUP BY dept_id ORDER BY dept_id;
@@ -527,8 +527,8 @@ SELECT dept_id, SUM(salary) FROM emp GROUP BY ROLLUP(dept_id) HAVING GROUPING(de
 | MySQL 의 `CUBE` | **구성 의존** | `ERROR 3889` — 보조 엔진이 있어야 한다. 이 환경에서는 못 쓴다 |
 | 소계 행이 **어디에 놓이나** | 아무도 보장 안 함 | `ORDER BY` 없이는 위치가 안 정해진다. `NULL` 이 둘이면 `ORDER BY dept_id` 로도 부족하다 |
 
-- **값은 두 엔진에서 갈리지 않았다.** `ROLLUP` 이 도는 자리에서는 숫자가 전부 같았다.
-- **갈리는 것은 「무엇이 도느냐」다** — `GROUPING SETS`·`CUBE`·`WITH ROLLUP`·`ROLLUP 없는 GROUPING()`.
+- **값은 두 엔진에서 달라지지 않았다.** `ROLLUP` 이 도는 자리에서는 숫자가 전부 같았다.
+- **달라지는 것은 「무엇이 도느냐」다** — `GROUPING SETS`·`CUBE`·`WITH ROLLUP`·`ROLLUP 없는 GROUPING()`.
 - ★ **에러 번호가 근거다.** `1064`(문법 없음) 와 `3889`(실행 경로 없음) 는 **다른 말**이다.
 
 ## 언제 쓰고 언제 안 쓰나

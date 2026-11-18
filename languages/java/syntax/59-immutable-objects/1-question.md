@@ -66,7 +66,7 @@ List.copyOf(listContainingNull)
 ```
 
 - 첫 줄에서 `copyOf` 가 **복사를 하는가**?
-- 뷰를 넘기면 복사하는가, 왜 그렇게 갈리는가?
+- 뷰를 넘기면 복사하는가, 왜 그렇게 달라지는가?
 - `null` 이 들어 있으면 무엇이 나오는가?
 - `unmodifiableList` 는 `null` 을 어떻게 처리하는가?
 

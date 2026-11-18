@@ -62,8 +62,8 @@ gRPC Deadlines 가이드의 예를 그대로 그리면 이렇다.
 ```
 
 - gRPC는 데드라인을 그대로 보내지 않는다. 이미 흐른 시간을 뺀 **타임아웃으로 바꿔** 보낸다(gRPC Deadlines 가이드 "Deadline Propagation").
-  - 이유: 두 서버의 시계가 맞지 않을 수 있다. 상대 시간으로 보내면 시계 어긋남(clock skew)의 영향을 받지 않는다.
-  - *시계 어긋남(clock skew)*: 서로 다른 기계의 벽시계가 같은 순간에 다른 값을 가리키는 것. [distributed/04-physical-clocks-and-ntp](../../distributed/04-physical-clocks-and-ntp/2-summary.md).
+  - 이유: 두 서버의 시계가 맞지 않을 수 있다. 상대 시간으로 보내면 클럭 스큐(clock skew)의 영향을 받지 않는다.
+  - *클럭 스큐(clock skew)*: 서로 다른 기계의 벽시계가 같은 순간에 다른 값을 가리키는 것. [distributed/04-physical-clocks-and-ntp](../../distributed/04-physical-clocks-and-ntp/2-summary.md).
 - 선로 형식: HTTP/2 헤더 `grpc-timeout`. 값은 8자리 이하 양의 정수 + 단위(H·M·S·m·u·n)다. 예: `grpc-timeout: 1S`(gRPC PROTOCOL-HTTP2.md).
   - 헤더가 없으면 서버는 무한 타임아웃으로 가정한다(같은 문서). 클라이언트 기본도 데드라인 없음이다(gRPC Deadlines 가이드).
 - 자동 전파는 구현마다 다르다. 가이드는 Java·Go는 기본으로 켜져 있고, C++은 명시적으로 켜야 한다고 적는다.
@@ -256,9 +256,9 @@ sum(rate(work_completed_after_deadline_total[5m])) / sum(rate(work_completed_tot
 - 현상: 의존 서비스 하나가 응답하지 않자 전체 서비스가 거의 모든 요청에 실패한다.
 - 보이는 형태: 스레드 덤프(`jcmd <pid> Thread.print`)에 같은 소켓 읽기·connect에서 멈춘 스레드가 풀 크기만큼 있다. 요청 큐 길이·대기 시간이 치솟는다. 평균 지연만 보면 원인이 안 보인다(SRE "Bimodal latency").
 - 원인: 클라이언트 기본값이 무한이다. JDK `HttpClient`는 요청 timeout을 안 걸면 무한히 기다린다(JDK 21 API 문서). gRPC 클라이언트도 기본 데드라인이 없다.
-- 대처: 모든 원격 호출에 타임아웃(4절 계산: 문제 요청 5%가 에러율 80%로 번진다). 끝날 수 없는 요청은 빨리 실패(fail fast). 의존 서비스별 격벽([28-bulkhead](../28-bulkhead/2-summary.md)).
+- 대처: 모든 원격 호출에 타임아웃(4절 계산: 문제 요청 5%가 에러율 80%로 번진다). 끝날 수 없는 요청은 빨리 실패(fail fast). 의존 서비스별 벌크헤드([28-bulkhead](../28-bulkhead/2-summary.md)).
 
-### 3. 절대 시각을 그대로 전파 — 시계 어긋남으로 예산이 늘거나 준다
+### 3. 절대 시각을 그대로 전파 — 클럭 스큐로 예산이 늘거나 준다
 
 - 현상: 특정 서버만 데드라인 초과를 거의 안 내거나, 반대로 받자마자 초과로 거절한다.
 - 보이는 형태: 그 서버의 NTP 오프셋이 크다(`chronyc tracking`의 System time). 5절 absolute처럼 "남은 2851ms"를 믿고 계속 일한다.
@@ -282,9 +282,9 @@ sum(rate(work_completed_after_deadline_total[5m])) / sum(rate(work_completed_tot
 ## 핵심 문장
 
 - 타임아웃은 바깥이 길고 안쪽이 짧게 정렬한다. 그러나 고정값 정렬은 이미 쓴 시간을 모르므로, 남은 시간을 실어 보내는 데드라인 전파가 필요하다.
-- gRPC는 절대 데드라인을 기억하되 선로(`grpc-timeout`)에는 이미 흐른 시간을 뺀 타임아웃을 싣는다. 받는 쪽이 자기 시계로 다시 만들어 시계 어긋남을 피한다.
+- gRPC는 절대 데드라인을 기억하되 선로(`grpc-timeout`)에는 이미 흐른 시간을 뺀 타임아웃을 싣는다. 받는 쪽이 자기 시계로 다시 만들어 클럭 스큐를 피한다.
 - 데드라인이 지나면 gRPC는 호출을 취소하지만, 시작한 일을 멈추는 것은 서버 코드의 책임이다. 단계마다 남은 시간을 확인해야 한다.
-- 실험에서 전파 없음은 클라이언트 포기 뒤 22단계, 절대 시각 전파(시계 2초 어긋남)는 21단계, 남은 시간 전파는 1단계의 헛일을 했다.
+- 실험에서 전파 없음은 클라이언트 포기 뒤 22단계, 절대 시각 전파(시계 2초 불일치)는 21단계, 남은 시간 전파는 1단계의 헛일을 했다.
 - 타임아웃이 없으면 일부 요청의 멈춤이 스레드를 다 먹는다. SRE 예에서 5%의 멈춤이 80.4% 에러가 됐다.
 
 ## 관련 주제·근거
@@ -300,7 +300,7 @@ sum(rate(work_completed_after_deadline_total[5m])) / sum(rate(work_completed_tot
   - [06-retry-backoff-jitter](../06-retry-backoff-jitter/2-summary.md) — 재시도와 데드라인
   - [database/22-database-side-timeouts](../../database/22-database-side-timeouts/2-summary.md) — DB 쪽 한도
 - 문서·글
-  - gRPC "Deadlines" 가이드 — 클라이언트 기본 데드라인 없음, 서버 자동 취소 + 애플리케이션 책임, 경과 시간을 뺀 타임아웃으로 전파(시계 어긋남), Java·Go 기본 자동 전파 <https://grpc.io/docs/guides/deadlines/>
+  - gRPC "Deadlines" 가이드 — 클라이언트 기본 데드라인 없음, 서버 자동 취소 + 애플리케이션 책임, 경과 시간을 뺀 타임아웃으로 전파(클럭 스큐), Java·Go 기본 자동 전파 <https://grpc.io/docs/guides/deadlines/>
   - gRPC PROTOCOL-HTTP2.md — `grpc-timeout` = TimeoutValue(8자리 이하) + TimeoutUnit, 생략 시 무한 <https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-HTTP2.md>
   - Google SRE 책 22장 "Addressing Cascading Failures" — Picking a deadline, Missing deadlines, Deadline propagation(30초 → 23초 → 19초 예, 수백 ms 줄이기), Cancellation propagation, Bimodal latency(19.6%·80.4%) <https://sre.google/sre-book/addressing-cascading-failures/>
   - Go `context` 패키지 문서 `WithDeadline`

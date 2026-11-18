@@ -266,7 +266,7 @@ class Program {
 
 **왜 그런가**
 
-- ★★★ **인자 검사는 호출 때** — XML 문서가 `source`·`predicate` 에 `ArgumentNullException` 조항을 두고, 이 판은 **부르는 줄에서** 던졌다.
+- ★★★ **인자 검사는 호출 때** — XML 문서가 `source`·`predicate` 에 `ArgumentNullException` 조항을 두고, 이 버전은 **부르는 줄에서** 던졌다.
 - ★★★ **람다 안의 예외는 열거 때** — 람다는 열거 때 불린다. `OrderBy` 는 첫 `MoveNext` 에서 **모든 키**를 계산하므로 0 이 어디 있든 첫 `MoveNext` 에서 터진다.
 
 ### 6. ★★★ **C# `둘째 : 2`** · **Java `둘째 : java.lang.IllegalStateException: stream has already been operated upon or closed`**
@@ -319,7 +319,7 @@ class Reuse33 {
 
 ### 9. ★★★ **BCL 구현이다 — 언어 보장이 아니다** · XML `Count` 에는 **예외 두 조항과 반환값뿐** · 약속하는 쪽은 **`TryGetNonEnumeratedCount`**
 
-- ★★★ C# 언어는 `Count()` 가 무엇을 하는지 모른다 — 그것은 **라이브러리 메서드**다. 그 메서드의 문서(XML)에도 `ICollection` 지름길 조항이 없다. 남는 것은 **이 판의 구현**이다.
+- ★★★ C# 언어는 `Count()` 가 무엇을 하는지 모른다 — 그것은 **라이브러리 메서드**다. 그 메서드의 문서(XML)에도 `ICollection` 지름길 조항이 없다. 남는 것은 **이 버전의 구현**이다.
 - ★★ `TryGetNonEnumeratedCount` 의 요약이 「**열거를 강제하지 않고** 개수를 알아내려 시도한다」 — 못 알면 `false` 다.
 
 ### 10. ★★ **BCL 의 LINQ 는 32번 (2)의 `DoubledSplit` 모양이다 — 바깥에서 검사하고 안쪽이 지연** · 4번 `[1]` 은 **람다가 `threshold` 변수를 잡았기** 때문
@@ -327,9 +327,9 @@ class Reuse33 {
 - ★★ [32번](../32-yield-return-iterators-and-deferred-execution/) (2)의 `Doubled` 는 `yield` 가 메서드 전체를 반복자로 만들어 검사가 늦었다. `Enumerable.Where` 는 **호출 때** 던졌으니 **바깥 = 검사**가 따로 있는 모양이다(구현은 열어 보지 않았다 — 관찰은 시점까지).
 - ★ [28번](../28-lambdas-and-closure-capture/) (6) — 람다와 바깥 코드가 **같은 변수**를 본다. 지연 실행은 그 람다를 **나중에** 부를 뿐이다.
 
-### 11. ★★ **Java 46편과 같은 예외 · Java 45편의 `sorted` 와 같은 「다 모은 뒤」** · Python 은 **빈 것** — 세 언어가 **다시 돈다 · 던진다 · 비었다**로 갈린다
+### 11. ★★ **Java 46편과 같은 예외 · Java 45편의 `sorted` 와 같은 「다 모은 뒤」** · Python 은 **빈 것** — 세 언어가 **다시 돈다 · 던진다 · 비었다**로 나뉜다
 
-- ★★ [Java 46번](../../../java/syntax/46-terminal-operations/) — `stream has already been operated upon or closed` 로 같은 문구. [Java 45번](../../../java/syntax/45-intermediate-operations/) — `sorted` 는 **상태 있는 연산**이라 전부 모일 때까지 막힌다 — 1번의 `OrderBy` 줄과 같은 모양이다. ★ 다만 Java 45편은 `distinct` 도 그쪽에 두었고, C# `Distinct` 는 이 판에서 **한 개씩**이었다(Java 쪽은 여기서 재지 않았다).
+- ★★ [Java 46번](../../../java/syntax/46-terminal-operations/) — `stream has already been operated upon or closed` 로 같은 문구. [Java 45번](../../../java/syntax/45-intermediate-operations/) — `sorted` 는 **상태 있는 연산**이라 전부 모일 때까지 막힌다 — 1번의 `OrderBy` 줄과 같은 모양이다. ★ 다만 Java 45편은 `distinct` 도 그쪽에 두었고, C# `Distinct` 는 이 버전에서 **한 개씩**이었다(Java 쪽은 여기서 재지 않았다).
 - ★ [Python 15번](../../../python/syntax/15-generator-expressions-lazy-eval/) §4 — 두 번째 소비가 **예외 없이 빈 결과**.
 
 ## 실행 검증
@@ -346,7 +346,7 @@ class Reuse33 {
 | `cs33b-form.cs` | csc 1회 · 실행 1회 | `kim:31 park:31 lee:25` · `choi kim lee park` |
 | `cs33b-v2.cs` · `cs33b-v2e.cs` | csc 3회(`-langversion:2` 둘 · `3` 하나) | 람다 `CS8023` · 확장 메서드 **호출**은 통과 · **선언**은 `CS8023` |
 
-**구현 의존 항목** — 다음은 **이 판(.NET SDK 10.0.401 · 런타임 10.0.12)에서만** 그렇다.
+**구현 의존 항목** — 다음은 **이 버전(.NET SDK 10.0.401 · 런타임 10.0.12)에서만** 그렇다.
 
 - ★★★ **연산자별로 첫 `MoveNext` 에 읽는 양**(`Distinct` 1 · `Chunk(2)` 2 · `OrderBy`·`Reverse`·`GroupBy` 끝까지) · **`ICollection<T>` 지름길** · **`First()`·`Take(1)` 의 최솟값 지름길(`Compare` 9)** · 돌려준 타입 이름 · Java 예외 문구.
 

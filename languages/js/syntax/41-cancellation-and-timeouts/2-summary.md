@@ -176,7 +176,7 @@ const run = async (label, body) => {
 - ★★★ **`[1]` — `-- abort() called` 뒤에도 `job step 3 > job step 4 > job step 5 > job returns`**, 호출자는 **`fulfilled "job result"`** 를 받았다. `abort()` 는 **쪽지를 붙였을 뿐** 아무것도 멈추지 않는다.
 - ★★★ **`[2]` — `throwIfAborted()` 가 다음 걸음 **전에** 던져 `step 3` 이 없다.** 멈춘 것은 **작업이 스스로 확인했기 때문**이다. DOM 표준이 `throwIfAborted` 를 「**신호를 넘길 수 없는 비동기 작업 사이의 확인 지점**」으로 설명하는 그대로다.
 - ★★★ **`[3]` — 호출자는 `abort()` 직후 `rejected AbortError` 를 받았는데, 그 뒤에 `job step 3 … job returns` 가 찍혔다.** 감싸개는 **기다리기를 그만뒀을 뿐** 작업을 멈추지 못한다. 38번 동작 (2)의 「`all` 이 거부돼도 입력은 끝까지 갔다」와 **같은 성질의 취소판**이다.
-- ★★ **`[0]` — `Promise.prototype` 은 `then, catch, finally` 뿐이고 `'cancel' in it: false`** — 세 판이 같았다.
+- ★★ **`[0]` — `Promise.prototype` 은 `then, catch, finally` 뿐이고 `'cancel' in it: false`** — 세 버전이 같았다.
 
 ### (2) ★★★ `reason` — 무엇이 전달되나, `AbortError` 와 `TimeoutError`
 
@@ -508,9 +508,9 @@ already-aborted         fetch rejected DOMException AbortError 「signal is abor
 ```
 
 - ★★★ **`abort-in-flight` — 호출자는 `rejected DOMException AbortError`(`=== signal.reason true`), 서버는 `requests received 1 · saw the connection close yes`.** 서버는 **요청을 이미 받았다** — 끊은 것은 **연결**이지 서버가 한 일이 아니다. 데드라인 전파 정본의 「**클라이언트가 끊어도 서버는 모른다**」(고아 작업)가 이 줄이다.
-- ★★ **`already-aborted` — `requests received 0`** — 이미 끊긴 신호로는 **요청조차 안 나간다.** 세 판이 같은 종류로 거부했다.
-- ★★★ **`abort-in-flight-reason` 이 판마다 갈렸다**(`differ 1 / 4`) — **node 20 과 Chrome 151 은 `rejected "mine"`**(준 이유 그대로), **node 18 은 `TypeError 「invalid_argument」` · `=== signal.reason false`** 다. node 18 의 `fetch` 가 **문자열 이유를 제 오류로 바꿔치기**한 것이다 — `catch` 에서 `reason` 을 기대하는 코드는 node 18 에서 **조용히 다른 값을** 받는다.
-- ★★ **`timeout-50ms` 는 `TimeoutError`** 로 거부됐다(두 node 판). 서버 쪽 칸은 **요청이 50ms 전에 닿았나가 경쟁**이라 찍지 않았다.
+- ★★ **`already-aborted` — `requests received 0`** — 이미 끊긴 신호로는 **요청조차 안 나간다.** 세 버전이 같은 종류로 거부했다.
+- ★★★ **`abort-in-flight-reason` 이 판마다 달라졌다**(`differ 1 / 4`) — **node 20 과 Chrome 151 은 `rejected "mine"`**(준 이유 그대로), **node 18 은 `TypeError 「invalid_argument」` · `=== signal.reason false`** 다. node 18 의 `fetch` 가 **문자열 이유를 제 오류로 바꿔치기**한 것이다 — `catch` 에서 `reason` 을 기대하는 코드는 node 18 에서 **조용히 다른 값을** 받는다.
+- ★★ **`timeout-50ms` 는 `TimeoutError`** 로 거부됐다(두 node 버전). 서버 쪽 칸은 **요청이 50ms 전에 닿았나가 경쟁**이라 찍지 않았다.
 ```text
    node 프로세스 — 「아직 기다릴 것이 있나」 (이 문서가 관찰로 본 모양)
 
@@ -518,7 +518,7 @@ already-aborted         fetch rejected DOMException AbortError 「signal is abor
    keep  : timeout(10) + setInterval(…)        ─▶ 기다린다 ─▶ abort event: TimeoutError ─▶ clearInterval ─▶ exit 0
 ```
 
-- ★★★ **`AbortSignal.timeout` 은 node 프로세스를 붙잡지 않는다** — `alone` 은 `end of the script` 만 찍고 **`abort event` 없이 `exit 0`**, `keep`(다른 타이머가 있을 때)에서만 `abort event: TimeoutError` 가 왔다. 두 node 판이 같았다. **이것은 node 의 성질이다** — DOM 표준은 「abort 리스너가 있는 동안 **전역이 그 신호를 강하게 참조해야 한다**」고만 적는다(프로세스를 살려 두라는 말은 아니다).
+- ★★★ **`AbortSignal.timeout` 은 node 프로세스를 붙잡지 않는다** — `alone` 은 `end of the script` 만 찍고 **`abort event` 없이 `exit 0`**, `keep`(다른 타이머가 있을 때)에서만 `abort event: TimeoutError` 가 왔다. 두 node 버전이 같았다. **이것은 node 의 성질이다** — DOM 표준은 「abort 리스너가 있는 동안 **전역이 그 신호를 강하게 참조해야 한다**」고만 적는다(프로세스를 살려 두라는 말은 아니다).
 
 ### (5) ★ `{ signal }` 로 단 리스너 — node 의 `EventTarget` 에서도
 
@@ -564,7 +564,7 @@ already-aborted         fetch rejected DOMException AbortError 「signal is abor
 
 **서버는 이미 받았다**(`requests received 1`). 끊은 것은 연결이다 — 서버가 무엇을 했는지는 이쪽이 모른다(데드라인 전파 정본의 고아 작업).
 
-### (5) ★★ `abort(reason)` 의 이유가 어느 판에서나 `fetch` 의 거부값이라 믿는다
+### (5) ★★ `abort(reason)` 의 이유가 어느 버전에서나 `fetch` 의 거부값이라 믿는다
 
 **node 18 은 `TypeError 「invalid_argument」` 로 바꿨다**(동작 (4)). node 20 · Chrome 151 은 그대로였다.
 
@@ -594,7 +594,7 @@ already-aborted         fetch rejected DOMException AbortError 「signal is abor
 - ★★ **node 18 의 `fetch` 는 문자열 `reason` 을 `TypeError 「invalid_argument」` 로 바꿨다** — node 20 에서는 사라졌다.
 - ★ `AbortSignal.any` — v20 문서는 **v20.3.0** 만 적는데 **node 18.19.1 에도 있었다.**
 
-### 구현 · 이 판의 관찰
+### 구현 · 이 버전의 관찰
 
 - ★★ **`message` 문구** — node 와 Chrome 이 다르다(동작 (1)·(2)·(4)).
 - ★ `DOMException` 이 `instanceof Error` 로 `true` — 세 판 같았다.
@@ -648,7 +648,7 @@ already-aborted         fetch rejected DOMException AbortError 「signal is abor
 
 ## 실행 환경
 
-★★★ **이 주제의 본체는 ① 추상 연산에 로그 심기다** — 다섯 걸음짜리 작업의 걸음마다, `abort()` 를 부른 자리에, **호출자가 무엇을 받았나**에 로그를 심는다. 「`abort()` 해도 **이미 시작된 작업은 계속 돈다**」를 **로그 줄로** 보인다(동작 (1)).
+★★★ **이 주제의 핵심은 ① 추상 연산에 로그 심기다** — 다섯 걸음짜리 작업의 걸음마다, `abort()` 를 부른 자리에, **호출자가 무엇을 받았나**에 로그를 심는다. 「`abort()` 해도 **이미 시작된 작업은 계속 돈다**」를 **로그 줄로** 보인다(동작 (1)).
 ★★ 보조로 **② 전수 격자**(`reason` 7행 · 취소 나무 3행의 「`aborted N / 7`」 · `fetch` 4행의 「`node18 and node20 differ N / 4`」)와 **④ 예외의 `constructor.name` + `name` + `message`**(`AbortError` 대 `TimeoutError` · 판마다 다른 문구)를 쓴다.
 
 **기준 소스** — 열어서 확인한 것만.
@@ -660,38 +660,38 @@ already-aborted         fetch rejected DOMException AbortError 「signal is abor
 
 **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다. Chrome 151 은 `./js40b-browser.sh`(소스는 [42번](../42-esm-modules/2-summary.md) 맨 위 부분 · `fetch` 는 `--http` 로 로컬 서버를 띄웠다).
-★★★ **판이 갈린 자리가 둘 있다** — ① **`message` 문구**(node 는 `This operation was aborted`, Chrome 은 `signal is aborted without reason`) · ② **node 18 의 `fetch` 가 `abort("mine")` 을 `TypeError 「invalid_argument」` 로 바꿨다**(node 20 은 `"mine"` 그대로 — 동작 (4)).
+★★★ **판이 달라진 자리가 둘 있다** — ① **`message` 문구**(node 는 `This operation was aborted`, Chrome 은 `signal is aborted without reason`) · ② **node 18 의 `fetch` 가 `abort("mine")` 을 `TypeError 「invalid_argument」` 로 바꿨다**(node 20 은 `"mine"` 그대로 — 동작 (4)).
 ★★ **시간은 한 번도 재지 않았다** — `timeout-50ms` 행은 「**`TimeoutError` 로 거부되나**」만 근거로 쓴다(서버 쪽 칸은 경쟁이라 안 찍었다).
 
 **버전**
 
 | 무엇 | 누구의 것 | 이 머신에서 |
 |---|---|---|
-| 프라미스에 취소가 없다 | **ECMA-262** | 세 판 다 `then, catch, finally` 뿐(동작 (1)) |
-| `AbortController` · `signal.reason` · `AbortSignal.abort` | DOM · node v15.0.0(문서) | 세 판 다 있다 |
-| `AbortSignal.timeout` · `throwIfAborted` | DOM · node v17.3.0(문서) | 세 판 다 있다 |
+| 프라미스에 취소가 없다 | **ECMA-262** | 세 버전 다 `then, catch, finally` 뿐(동작 (1)) |
+| `AbortController` · `signal.reason` · `AbortSignal.abort` | DOM · node v15.0.0(문서) | 세 버전 다 있다 |
+| `AbortSignal.timeout` · `throwIfAborted` | DOM · node v17.3.0(문서) | 세 버전 다 있다 |
 | `AbortSignal.any` | DOM · node **v20.3.0**(v20 문서) | ★ **node 18.19.1 에도 있었다**(판별 블록 — v20 문서는 18 계열 판을 적지 않는다) |
-| `fetch` | fetch 표준 · node v18.0.0 부터 실험 아님(문서) | 세 판 다 있다 — 단 **abort reason 전달이 node 18 에서 달랐다** |
+| `fetch` | fetch 표준 · node v18.0.0 부터 실험 아님(문서) | 세 버전 다 있다 — 단 **abort reason 전달이 node 18 에서 달랐다** |
 
-★★ **판 경계는 TC39 표로 가를 수 없다** — 이 API 들은 TC39 제안이 아니다. 위 판은 **node v20 문서의 「Added in」** 과 판별 블록이다. README 41행은 판을 적지 않는다.
+★★ **판 경계는 TC39 표로 구분할 수 없다** — 이 API 들은 TC39 제안이 아니다. 위 판은 **node v20 문서의 「Added in」** 과 판별 블록이다. README 41행은 판을 적지 않는다.
 
-**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+**★★★ 이 주제가 쓰는 창 — 그리고 해당 없는 창**
 
 | 창 | 이 주제에서 무엇을 보나 |
 |---|---|
-| ★★★ **① 추상 연산에 로그 심기**(본체) | 작업의 걸음 · `-- abort() called` · 호출자가 받은 것 — **`abort()` 뒤에도 `job step 3` 이 찍히나**(동작 (1)) |
+| ★★★ **① 추상 연산에 로그 심기**(핵심) | 작업의 걸음 · `-- abort() called` · 호출자가 받은 것 — **`abort()` 뒤에도 `job step 3` 이 찍히나**(동작 (1)) |
 | ★★ **② 전수 격자** | `reason` 7행(동작 (2)) · 취소 나무 3행 「`aborted N / 7`」(동작 (3)) · `fetch` 4행 「`differ N / 4`」(동작 (4)) |
 | ★★ **④ 예외의 `constructor.name` + `name` + `message`** | `DOMException` · `AbortError`/`TimeoutError` · `code` 20/23 · 판마다 다른 문구 |
 | ★ **창을 바꿔 물었다**(제5의 상태) | 「`fetch` 를 끊으면 **서버는** 무엇을 보나」를 브라우저가 아니라 **node 안의 서버**로 물었다 — 페이지는 서버 쪽을 못 본다(동작 (4)) |
-| ★ **부적용 — ③ 브랜드 태그** | 판정할 객체의 종류가 없다(`reason` 의 종류는 `constructor.name` 으로 충분했다) |
+| ★ **해당 없음 — ③ 브랜드 태그** | 판정할 객체의 종류가 없다(`reason` 의 종류는 `constructor.name` 으로 충분했다) |
 | ★ **못 잰 것** | Chrome 의 `AbortSignal.timeout` + `fetch` — 하네스의 `--virtual-time-budget` 아래에서는 페이지 시계가 가상이라 **`fulfilled 200` 이 나왔다**. 근거가 못 되므로 빼고, 그 행은 node 로만 적었다 |
 
-**★ 흔들리는 칸 / 안 흔들리는 칸**
+**★ 실행마다 달라지는 항목 / 달라지지 않는 항목**
 
-| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+| 실행마다 달라진다(근거로 쓰지 않는다) | 달라지지 않는다(근거로 쓴다) |
 |---|---|
 | 판별 블록의 판 문자열 | ★★★ 로그의 **줄 순서** · `aborted N / 7` · `=== signal.reason` · 종료 코드 — `abort()` 는 **로그를 찍은 그 자리에서** 부르고, 걸음은 `setTimeout` 0 이다 |
-| ★ `timeout-50ms` 에서 **요청이 서버에 닿았나** — 경쟁이라 **찍지 않았다** | ★★ **판 사이의 문구 차이**는 흔들림이 아니라 **판의 차이**다(세 판 모두 재실행에서 같았다) |
+| ★ `timeout-50ms` 에서 **요청이 서버에 닿았나** — 경쟁이라 **찍지 않았다** | ★★ **판 사이의 문구 차이**는 실행 간 차이가 아니라 **판의 차이**다(세 판 모두 재실행에서 같았다) |
 
 **층** — **언어(ECMA-262)** 가 정하는 것은 하나다 — **프라미스에는 취소 연산이 없다.** `AbortController`·`AbortSignal`·`DOMException`·`fetch` 는 **호스트(DOM·fetch 표준, 그리고 node 의 구현)** 다.
 

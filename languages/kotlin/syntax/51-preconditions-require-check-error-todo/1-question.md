@@ -175,7 +175,7 @@ print("exit %d" % run.returncode)
 print("blocked probes: %d / %d" % (blocked, len(probes)))
 ```
 
-- 아홉 탐침은 각각 `ok` 인가 진단인가(진단이면 몇 개 · 첫 문구)? 마지막 줄의 `N / M` 은?
+- 아홉 probe는 각각 `ok` 인가 진단인가(진단이면 몇 개 · 첫 문구)? 마지막 줄의 `N / M` 은?
 
 ### 4. ★★ 메시지를 몇 번 만드나 (예측)
 
@@ -268,11 +268,11 @@ fun main() {
 
 ### 7. `requireNotNull` 과 `checkNotNull` 가르기 (경계)
 
-- 1번에서 두 함수의 메시지를 보고 둘을 가를 수 있나? 무엇으로 갈라야 하나?
+- 1번에서 두 함수의 메시지를 보고 둘을 구분할 수 있나? 무엇으로 갈라야 하나?
 
 ### 8. 계약이 필요한 까닭 (왜)
 
-- 3번의 `ownCheck` 와 `ownCheckC` 는 몸통이 같다. 컴파일러는 왜 한쪽에서만 `s` 를 `String` 으로 좁히나? 이 판에서 계약을 쓰는 데 무엇이 더 필요한가?
+- 3번의 `ownCheck` 와 `ownCheckC` 는 몸통이 같다. 컴파일러는 왜 한쪽에서만 `s` 를 `String` 으로 좁히나? 이 버전에서 계약을 쓰는 데 무엇이 더 필요한가?
 
 ### 9. `assert` 를 운영 검사로 쓰면 (경계)
 
@@ -286,7 +286,7 @@ fun main() {
 
 선행은 [34번 주제](../34-exceptions-nothing-and-try-expression/)(검사 예외 없음·`Nothing`·`try` 식)다.
 
-이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5** 에서 실제로 던져 받은 것이다.
+이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5** 에서 실제로 실행해 받은 것이다.
 
 ## 복습 기록
 

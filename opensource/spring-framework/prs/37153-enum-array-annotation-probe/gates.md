@@ -138,7 +138,7 @@ findings에도 없던 추가 발견이었다.
 > fix 전 red인 이유와, 실패 시 어떤 방식으로 예외가 보고되는지를 1~2문장으로 직접 설명
 > 필요. (인과 사슬 자체 — 플래그 오계산 → probe 스킵 → 조용히 통과 — 는 2번에서
 > 실질적으로 맞게 짚었으니, 위 두 지점만 보완하면 됨. 참고로 probe는 "사전 시험 호출/
-> 탐침" 정도로 번역하면 됨 — 본검사 전에 미리 한 번 찔러보는 호출.)}
+> probe" 정도로 번역하면 됨 — 본검사 전에 미리 한 번 찔러보는 호출.)}
 
 **학습 개입 (게이트 밖)**: 답변에 섞인 용어 질문("probe라는 용어에 대해 어떻게 이해하면
 되는거야?")에 답했다 — probe는 값이 필요해서 읽는 호출이 아니라 "문제가 있는지 미리
@@ -166,7 +166,7 @@ findings에도 없던 추가 발견이었다.
 
 > {fail-통과처리, ① 핵심 누락: mock 예외는 "구버전 enum 상수(BLUE 등)로 컴파일된
 > annotation + 그 상수가 제거된 신버전 enum이 런타임 classpath에 로드된" 컴파일↔런타임
-> 어긋남(부분 업그레이드)을 재현한 것 — 답변은 이를 짚지 못하고 probe 관측/
+> 불일치(부분 업그레이드)을 재현한 것 — 답변은 이를 짚지 못하고 probe 관측/
 > IllegalStateException 얘기(②의 내용)로 대체함. 또한 canLoad 테스트에서는
 > IllegalStateException이 아니라 boolean false로 보고됨 — 예외로 감싸는 쪽은
 > validate뿐. ② 대체로 정확(probe 미수행→red, fix 후 probe 수행→Illegal 오류 보고)하나,
@@ -360,7 +360,7 @@ this.canThrowTypeNotPresentException[i] = (type == Class.class || type == Class[
 - `String[]` 음성 가드(`canThrowTypeNotPresentExceptionWhenHasNonEnumArrayAttributeReturnsFalse`)가
   없으면, 미래에 조건이 실수로 넓어져도(예: `componentType` 검사 누락으로 모든 배열을
   probe) 테스트가 잡지 못한다 — probe가 불필요한 속성까지 리플렉션 호출이 늘어나는 회귀가
-  무음으로 통과한다.
+  조용히 통과한다.
 
 ## 반복된 오해 패턴
 
@@ -379,7 +379,7 @@ this.canThrowTypeNotPresentException[i] = (type == Class.class || type == Class[
 4. **되물음으로 답을 대체 (G1 시도 1, G2 시도 1의 4번, G3 시도 2)**. 세 게이트 모두에서
    판정 워커가 "역질문으로 넘겼다", "추측형 되물음으로 남겼다"를 fail 사유로 명시했다.
    질문 자체는 유익했고 별도로 답을 받았지만, 게이트 판정에서는 설명의 공백으로 계산됐다.
-5. **환경 전제와 프레임워크 결함의 층 혼동 (G2)**. classpath 버전 스큐(어긋남)는 환경이
+5. **환경 전제와 프레임워크 결함의 층 혼동 (G2)**. classpath 버전 스큐(불일치)는 환경이
    만드는 전제 조건이고 JDK의 지연 실패는 정의된 동작이다. Spring 버그는 그 전제에서의
    대응 누락 한 곳이다. 이 층 분리가 안 되면 "JDK가 인식 못 하는데 왜 Spring이 문제냐"는
    질문에서 막힌다.
@@ -392,7 +392,7 @@ this.canThrowTypeNotPresentException[i] = (type == Class.class || type == Class[
   발견됐고, 그것이 PR 본문 Problem 절의 두 번째 항목(silent corruption)이 됐다. 게이트가
   fail이어도 그 과정에서 나온 요구가 산출물을 개선한 사례다.
 - **"그냥 넘기지 말고 알려줘"가 결정적이었다.** G2의 2회차는 규칙상 자동 통과였는데, 사용자가
-  통과를 거부하고 설명을 요구해 컴파일-런타임 어긋남과 두 출구 구조를 제대로 잡았다. 그
+  통과를 거부하고 설명을 요구해 컴파일-런타임 불일치와 두 출구 구조를 제대로 잡았다. 그
   이해가 G4에서 1회 pass로 이어졌다 — 네 게이트 중 유일한 1회차 pass다.
 - **판정 워커의 그라운드 트루스는 메인의 해설이 아니라 실코드였다.** G1 판정 packet은
   `AttributeMethods` 생성자 원문을 싣고 "메인의 해설이 아니라 아래 실제 코드와 대조하라"고

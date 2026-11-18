@@ -170,9 +170,9 @@ span::before { width: 50px; height: 10px; display: inline-block; background: #00
    p::before::after   ✘  의사 요소를 둘 겹쳤다
 ```
 
-던져서 확인한 전수 결과다 (Chrome 151 headless, `cssRules` 에 담겼나).
+실행해서 확인한 전수 결과다 (Chrome 151 headless, `cssRules` 에 담겼나).
 
-| 던진 것 | 결과 | `selectorText` |
+| 실행한 것 | 결과 | `selectorText` |
 |---|---|---|
 | `p::before` | 담김 | `p::before` |
 | `p:before` | 담김 | ★ `p::before` — **콜론이 둘로 바뀌어 나온다** |
@@ -196,12 +196,12 @@ span::before { width: 50px; height: 10px; display: inline-block; background: #00
 - **`:not()` 은 관용적이지 않아서 규칙째 버려진다.** 같은 자리에 넣어도 결과가 반대다.
 - `::before::marker` 가 담기는 것은 명세가 **하위 의사 요소**로 따로 허용했기 때문이다(css-pseudo-4 의 변경 이력에 그 조항이 있다).
 
-#### 의사 요소 뒤의 의사 클래스 — 명세와 Chrome 151 이 갈린다
+#### 의사 요소 뒤의 의사 클래스 — 명세와 Chrome 151 이 달라진다
 
 명세는 「**어떤 의사 요소든 논리 조합 의사 클래스와 사용자 동작 의사 클래스가 뒤따를 수 있다**」고 정한다.\
 그리고 `::first-line:hover` 는 첫 줄에 마우스를 올렸을 때 맞는다고 **예까지 들어 놓았다.**
 
-8종 × 6종 = **48 조합을 전부 던졌다.** 결과는 의사 요소 종류와 무관하게 셋으로 갈렸다.
+8종 × 6종 = **48 조합을 전부 던졌다.** 결과는 의사 요소 종류와 무관하게 셋으로 나뉘었다.
 
 | 뒤에 붙인 것 | Chrome 151 | 명세 |
 |---|---|---|
@@ -209,7 +209,7 @@ span::before { width: 50px; height: 10px; display: inline-block; background: #00
 | `:is(.x)` · `:where(.x)` | 8종 전부 담김 — 단 **인자가 비워진다**(`:is()`) | 허용. 인자에 위치 제약이 전달되고, 관용적이라 조용히 빠진다 |
 | `:not(.x)` | **8종 전부 버림** | 허용하지만 `:not()` 은 관용적이 아니라 무효 인자가 전체를 죽인다 |
 
-- 첫 줄이 **명세와 구현이 갈린 자리**다. 「`::first-line:hover` 를 쓰면 된다」고 적힌 문서를 보고 쓰면 **Chrome 151 에서는 규칙째 사라진다.**
+- 첫 줄이 **명세와 구현이 달라진 자리**다. 「`::first-line:hover` 를 쓰면 된다」고 적힌 문서를 보고 쓰면 **Chrome 151 에서는 규칙째 사라진다.**
 - 여기서 적을 수 있는 것은 **「Chrome 151 에서는 안 된다」까지**다. 다른 엔진은 이 머신에서 확인할 수 없다.
 
 비용 — 없다. 단, **버려진 규칙은 개발자 도구에도 안 보인다.**
@@ -267,7 +267,7 @@ span::before { width: 50px; height: 10px; display: inline-block; background: #00
 | `p:where(#t1)::before` | (0, 0, 2) | `:where()` 는 0 |
 | `section p::before` | (0, 0, 3) | 타입 둘 + 의사 요소 하나 |
 
-**직접 겨뤄 확인한 승부** (앞뒤 순서를 바꿔 두 판씩 — 동점이면 뒤에 쓴 쪽이 이기므로 두 판이 갈리면 동점이 아니다).
+**직접 겨뤄 확인한 승부** (앞뒤 순서를 바꿔 두 판씩 — 동점이면 뒤에 쓴 쪽이 이기므로 두 버전이 갈리면 동점이 아니다).
 
 | 앞 | 뒤 | 이긴 쪽 |
 |---|---|---|
@@ -275,7 +275,7 @@ span::before { width: 50px; height: 10px; display: inline-block; background: #00
 | `section p::before` (0,0,3) | `p.c1::before` (0,1,2) | **`p.c1::before`** |
 | `p::before` (0,0,2) | `section p::before` (0,0,3) | `section p::before` |
 | `p:nth-child(1)::before` (0,1,2) | `p.c1.c2::before` (0,2,2) | `p.c1.c2::before` |
-| `p:before` (0,0,2) | `html body div section p::before` (0,0,5) | 긴 쪽 (두 판 다) |
+| `p:before` (0,0,2) | `html body div section p::before` (0,0,5) | 긴 쪽 (두 버전 다) |
 
 - 첫 두 줄이 요점이다 — **순서를 뒤집어도 `p.c1::before` 가 이긴다.** C 를 아무리 모아도 B 하나를 못 이긴다.
 - 그래서 **「의사 요소를 붙였으니 세졌겠지」가 틀린다.** 붙인 만큼 C 가 1 올라갈 뿐이다.
@@ -465,7 +465,7 @@ p:marker          { }    /* 콜론 하나는 레벨 2 의 넷에만 허용 */
 .c::before { content: ""; }     /* 상자 있음 (빈 상자) */
 ```
 
-- 셋을 눈으로 구분할 수 없다. **`offsetWidth` 로 쟀을 때만 갈린다**(8px / 8px / 58px).
+- 셋을 눈으로 구분할 수 없다. **`offsetWidth` 로 쟀을 때만 달라진다**(8px / 8px / 58px).
 
 ## 어디서 틀리나
 

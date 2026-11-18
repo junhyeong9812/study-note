@@ -189,14 +189,14 @@ MySQL 8.4 매뉴얼의 집계 함수 문법에도 `FILTER` 절이 **없다** —
  COUNT([0,1])    = 2   <- 0 도 센다        COUNT([0])    = 1      <- 0 도 센다
 ```
 
-**갈리는 자리가 둘이다.**
+**달라지는 자리가 둘이다.**
 
 | 자리 | 무엇이 갈렸나 | 왜 |
 |---|---|---|
 | `dept_id=20` | `sum_else0`=**0** 대 `sum_noelse`=**NULL** | 맞는 행 0개 → `SUM` 의 입력이 빈 것 → `NULL`([21번](../21-aggregate-functions-count-forms/)) |
 | `dept_id=10` | `cnt_case`=**1** 대 `cnt_case_else0`=**2** | `ELSE 0` 이 만든 0이 `NULL` 이 아니라서 세어졌다 |
 
-★ **두 엔진의 숫자가 한 자리도 안 갈렸다.** 이것은 방언이 아니라 **`CASE` 와 집계의 정의**다.
+★ **두 엔진의 숫자가 한 자리도 달라지지 않았다.** 이것은 방언이 아니라 **`CASE` 와 집계의 정의**다.
 
 ---
 
@@ -306,7 +306,7 @@ SUM  (CASE WHEN c THEN 1 ELSE 0 END)   -- 0 을 더해 안 늘게 한다
 ★ **그래서 `SUM` 에서 `ELSE 0` 을 쓰는 습관이 생기고, 그 습관이 `AVG` 로 옮겨 가 사고가 난다.**\
 「`SUM` 에서 아무 문제 없었으니 `AVG` 에서도 괜찮겠지」가 정확히 틀린 추론이다.
 
-**단 `SUM` 에서도 한 자리는 갈린다 — 맞는 행이 0개인 그룹이다.**
+**단 `SUM` 에서도 한 자리는 달라진다 — 맞는 행이 0개인 그룹이다.**
 
 ```text
  dept_id=20
@@ -549,7 +549,7 @@ FROM ──> WHERE ──> GROUP BY ──> 집계 계산 (여기서 FILTER 가 
 | `WHERE` + `FILTER` (11번) | PG 18.6 | 1회 | `all_rows`=3 |
 
 **구현 의존 항목** — `AVG` 결과의 소수 자릿수(PG `numeric` · MySQL `DECIMAL`). **값은 같다.**\
-**방언 항목** — **`FILTER` 의 존재 여부 하나다.** `CASE` 형태는 두 엔진에서 숫자가 한 자리도 안 갈렸다.\
+**방언 항목** — **`FILTER` 의 존재 여부 하나다.** `CASE` 형태는 두 엔진에서 숫자가 한 자리도 달라지지 않았다.\
 **언어 보장 항목** — 1·2·4~9·11번. `FILTER` 의 의미, `CASE` 의 `ELSE` 규칙, 빈 입력 규칙은 문서에 있다.
 
 **버전** — `FILTER` 의 PG 도입 버전은 **매뉴얼에서 확인하지 못해 적지 않았다.**\
@@ -559,5 +559,5 @@ FROM ──> WHERE ──> GROUP BY ──> 집계 계산 (여기서 FILTER 가 
 ## 실행 환경
 
 근거는 **실행 결과**다 — 본문의 출력·에러는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+2026-09-21 에 실제로 실행해 받은 것이다. 지어낸 출력은 없다.\
 문서 근거는 [PG 18 Aggregate Expressions](https://www.postgresql.org/docs/18/sql-expressions.html) · [MySQL 8.4 Aggregate Function Descriptions](https://dev.mysql.com/doc/refman/8.4/en/aggregate-functions.html).

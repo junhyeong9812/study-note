@@ -254,7 +254,7 @@ public final class NulKt {
 }
 ```
 
-- **`String?` 은 `append(String)`, `Any?` 는 `append(Object)`** 로 갈린다. 둘 다 `null` 이면 `"null"` 넉 자를 쓴다.
+- **`String?` 은 `append(String)`, `Any?` 는 `append(Object)`** 로 나뉜다. 둘 다 `null` 이면 `"null"` 넉 자를 쓴다.
 - 그래서 **템플릿 안에서는 NPE 가 안 난다** — `?.` 도 `!!` 도 필요 없다. 대신 `"null"` 이라는 글자가 조용히 들어간다.
 - **배열은 `toString()` 을 오버라이드하지 않아** `[I@15db9742` 가 나온다. `contentToString()` 을 써야 한다.
 - ★ **이 함수에는 `checkNotNullParameter` 가 없다** — 두 파라미터가 전부 nullable 이기 때문이다.\

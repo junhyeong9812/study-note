@@ -109,7 +109,7 @@ print("  Counter(a=1) == Counter(a=1, b=0) :", Counter(a=1) == Counter(a=1, b=0)
 print("  {'a': 1} == {'a': 1, 'b': 0}      :", {"a": 1} == {"a": 1, "b": 0})
 ```
 
-### 4. ★★ `dict` 와 `OrderedDict` 에 같은 탐침 (예측)
+### 4. ★★ `dict` 와 `OrderedDict` 에 같은 probe (예측)
 
 ```python
 # e43_ordered.py
@@ -204,7 +204,7 @@ except TypeError as exc:
 
 ### 8. ★★ 보장인가 관찰인가 (경계)
 
-* `Counter("bca" * 2).most_common()` 의 동률 순서는 **문서가 보장하는 것**인가, **이 판에서 그랬을 뿐**인가? 근거 문장은?
+* `Counter("bca" * 2).most_common()` 의 동률 순서는 **문서가 보장하는 것**인가, **이 버전에서 그랬을 뿐**인가? 근거 문장은?
 * 「`deque` 는 `list` 보다 빠르다」 — 이 문서가 **말할 수 있는 것과 없는 것**을 갈라라.
 
 ### 9. 층 가르기 (경계)

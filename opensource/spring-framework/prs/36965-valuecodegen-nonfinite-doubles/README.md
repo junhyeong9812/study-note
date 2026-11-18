@@ -271,7 +271,7 @@ value instanceof ... ?                    그 갈래가 고르는 포맷 문자�
 코드 생성 자체는 조용히 성공한다.\
 `PrimitiveDelegate`는 `Float`를 지원한다고 응답했으므로 `UnsupportedTypeValueCodeGenerationException`도 나지 않는다.
 
-> **무음 실패(silent failure)** — 잘못된 동작이 예외·로그 없이 정상처럼 흘러가는 실패.\
+> **조용한 실패(silent failure)** — 잘못된 동작이 예외·로그 없이 정상처럼 흘러가는 실패.\
 > 예: 여기서는 `NaNF`라는 깨진 소스가 만들어졌는데도 코드 생성 단계는 끝까지 성공으로 보고한다.
 
 문제는 그 뒤 javac 단계에서, 생성된 `*__BeanDefinitions.java` 파일의 알 수 없는 심벌 오류로 드러난다.\

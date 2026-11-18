@@ -51,7 +51,7 @@ Chrome 151 without the flag prints the same as node20 without it: yes
 
 **왜 그런가**
 
-- ★★★ `new WeakRef(t)` 가 `t` 를 `[[KeptAlive]]` 에 넣고, 그 목록은 **마이크로태스크 체크포인트가 끝날 때**에야 비워진다 — 그 전의 `gc()` 는 못 거둔다(6번). `setTimeout` 을 넘기면 목록이 비어 있고, **이 판의** `gc()` 는 한 번에 거뒀다.
+- ★★★ `new WeakRef(t)` 가 `t` 를 `[[KeptAlive]]` 에 넣고, 그 목록은 **마이크로태스크 체크포인트가 끝날 때**에야 비워진다 — 그 전의 `gc()` 는 못 거둔다(6번). `setTimeout` 을 넘기면 목록이 비어 있고, **이 버전의** `gc()` 는 한 번에 거뒀다.
 - ★★ `gc()` 가 없으면 20판 동안 GC 가 한 번도 이 대상을 안 거뒀다 — **「안 거둔다」 가 아니라 「이 시간 안에는 안 했다」** 다.
 
 ### 2. **`20` · `20` · `20` · `20` · `0`** ★★★
@@ -82,7 +82,7 @@ typeof gc: function · 20 rounds
 
 **왜 그런가**
 
-- ★★★ `[3]` 의 `deref()` 가 대상을 **다시 `[[KeptAlive]]` 에 넣어**(`AddToKeptObjects`) `[4]` 의 `gc()` 도 못 거둔다 — 명세 note 「첫 `deref` 가 `undefined` 가 아니었으면 둘째도 그럴 수 없다」. `[5]` 는 목록이 빈 턴에서 `gc()` 를 부른 것이라 이 판은 거뒀다.
+- ★★★ `[3]` 의 `deref()` 가 대상을 **다시 `[[KeptAlive]]` 에 넣어**(`AddToKeptObjects`) `[4]` 의 `gc()` 도 못 거둔다 — 명세 note 「첫 `deref` 가 `undefined` 가 아니었으면 둘째도 그럴 수 없다」. `[5]` 는 목록이 빈 턴에서 `gc()` 를 부른 것이라 이 버전은 거뒀다.
 
 ### 3. `constructor deref` · `constructor register unregister` · `undefined` · `undefined` · **`true`** · **`false`** · **`false`** · **`TypeError 「Invalid unregisterToken ('1')」`** · `undefined` · **`true`** · `TypeError`(같은 문구) · `TypeError 「FinalizationRegistry: cleanup must be callable」` ★
 
@@ -160,9 +160,9 @@ run 5  0 / 10           0 / 10           0 / 10           0 / 10
 runs with deref() undefined in at least one round: 0 / 5 · runs with the callback in at least one round: 5 / 5
 ```
 
-- ★★ 「언제」 는 GC 가 **스스로** 정했다 — 이 탐침이 고정할 수 없는 칸이라 「실행 환경」 표에 흔들리는 칸으로 선언하고, 재대조는 이 줄들을 정규화한다(규칙 17 · 24).
+- ★★ 「언제」 는 GC 가 **스스로** 정했다 — 이 probe가 고정할 수 없는 칸이라 「실행 환경」 표에 실행마다 달라지는 항목으로 선언하고, 재대조는 이 줄들을 정규화한다(규칙 17 · 24).
 
-### 8. **「비워졌다」 는 사실 자체** — `WeakMap` 은 키를 쥔 사람만 물을 수 있게 해서 **비워지는 순간이 프로그램에 안 새지만**(23번 — 들여다볼 창이 없다), `WeakRef.deref()` 는 **`undefined` 로 그 순간을 보인다** · 그래서 명세가 「언제」 를 묶지 않고 "may" 로 둔다 — GC 의 시점이 **관찰 가능해진** 대가다 ★★
+### 8. **「비워졌다」 는 사실 자체** — `WeakMap` 은 키를 잡은 사람만 물을 수 있게 해서 **비워지는 순간이 프로그램에 안 새지만**(23번 — 들여다볼 창이 없다), `WeakRef.deref()` 는 **`undefined` 로 그 순간을 보인다** · 그래서 명세가 「언제」 를 묶지 않고 "may" 로 둔다 — GC 의 시점이 **관찰 가능해진** 대가다 ★★
 
 - ★ 23번 「실행 환경」이 인용한 `WeakMap` 절의 이유 — 그 지연이 보이면 "a source of indeterminacy" 가 된다. `WeakRef` 는 그 비결정성을 **드러내 놓고** 준 API 다(이 연결은 이 문서의 해석이다).
 
@@ -176,11 +176,11 @@ runs with deref() undefined in at least one round: 0 / 5 · runs with the callba
 |---|---|---|
 | `js44b-47a-observe-grid.js` + `.sh` | ★★★ 8칸 × 20판 · 「`0 / 4`」 · 「`1 / 8`」 | node20 · node20 `--expose-gc` · node18 `--expose-gc` · Chrome 151 유무 — 다섯 판 |
 | `js44b-47c-kept-alive.js` | ★★★ 다섯 지점 × 20판 | node20 `--expose-gc` · Chrome 151 `--js-flags` · node18(같음) |
-| `js44b-47b-pressure-grid.js` + `.sh` | ★★ 흔들리는 칸 — 20판 × 다섯 벌 | node20 · Chrome 151 · ★ 재실행마다 수가 바뀐다 |
+| `js44b-47b-pressure-grid.js` + `.sh` | ★★ 실행마다 달라지는 항목 — 20판 × 다섯 벌 | node20 · Chrome 151 · ★ 재실행마다 수가 바뀐다 |
 | `js44b-47d-registry-api.js` | ★ 등록·취소의 반환값 · 문구 | node20 · node18(문구 다름) · Chrome 151(같음) |
 | `js44b-47e-python.py` | ★★ CPython 의 즉시 콜백 · 순환 | python3 3.12.3 · python3.11 3.11.15(같음) |
 
-세 판 대조기(이 묶음의 plain 탐침). 이 주제는 **`47d` 한 줄만** 대조기에 넣었다(나머지는 플래그가 필요하거나 흔들린다 — `.sh` 가 직접 견준다). `47d` 는 **node 18 과 20 이 문구에서 갈렸다.**
+세 판 대조기(이 묶음의 plain probe). 이 주제는 **`47d` 한 줄만** 대조기에 넣었다(나머지는 플래그가 필요하거나 실행마다 달라진다 — `.sh` 가 직접 견준다). `47d` 는 **node 18 과 20 이 문구에서 달라졌다.**
 
 ```sh
 # js44b-vdiff.sh
@@ -224,12 +224,12 @@ js44b-47d-registry-api.js                node18/node20 DIFFERS    node20/Chrome 
 node18 vs node20: identical 7 · differs 2   ·   node20 vs Chrome 151: identical 8 · differs 0 · node only 1
 ```
 
-**구현 의존 항목 — 판이 오르면 다시 돌릴 것** — ★★★ **「비워졌다」·「불렸다」 가 적힌 칸 전부**(1번의 `setTimeout` 행 · 2번 `[5]` · 7번)와 `await` 행(호스트가 목록을 비우는 자리). 명세 보장 칸(같은 턴의 `0/20` · `[3]`·`[4]`)은 판이 올라도 같아야 한다.
+**구현 의존 항목 — 버전이 오르면 다시 돌릴 것** — ★★★ **「비워졌다」·「불렸다」 가 적힌 칸 전부**(1번의 `setTimeout` 행 · 2번 `[5]` · 7번)와 `await` 행(호스트가 목록을 비우는 자리). 명세 보장 칸(같은 턴의 `0/20` · `[3]`·`[4]`)은 판이 올라도 같아야 한다.
 
 ## 실행 환경
 
 이 파일의 출력은 **node v20.19.6 · v18.19.1 · Google Chrome 151 · Python 3.12.3** · x86-64 Linux 에서 실제로 돌려 얻은 것이고, 블록은 **전부 캡처 파일에서 조립**했다.
-★★★ **`gc()` 는 V8 플래그가 여는 함수다** — 이 파일의 「비워졌다」 「불렸다」 는 전부 **이 판에서 `gc()` 를 부른 뒤의 관찰**이고, 「비워지지 않았다」 중 **같은 턴 안의 것만** 명세 보장이다(5번).
+★★★ **`gc()` 는 V8 플래그가 여는 함수다** — 이 파일의 「비워졌다」 「불렸다」 는 전부 **이 버전에서 `gc()` 를 부른 뒤의 관찰**이고, 「비워지지 않았다」 중 **같은 턴 안의 것만** 명세 보장이다(5번).
 
 **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
 `js44b-47a-observe-grid.js` + `.sh`(1번 · 5번 · 6번) · `js44b-47c-kept-alive.js`(2번 · 5번) · `js44b-47d-registry-api.js`(3번) · `js44b-47e-python.py`(4번 · 9번) · `js44b-47b-pressure-grid.js` + `.sh`(7번).

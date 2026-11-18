@@ -62,7 +62,7 @@
 
 **언제 쓰나** — 25 기준 예제를 21 LTS 프로젝트에 붙여 넣기 전에.
 
-최소 예제 하나(`Ex.java` — 50-a-min)를 세 판에서 컴파일했다.
+최소 예제 하나(`Ex.java` — 50-a-min)를 세 버전에서 컴파일했다.
 
 ```java
 import java.util.List;
@@ -639,7 +639,7 @@ Stream.of(1,2,3,4,5).reduce(0, Integer::sum);                                  /
 ```
 
 - `fold` 는 **스트림을 돌려준다.** 최종 연산이 아니다. 값을 꺼내려면 `findFirst()` 를 더 붙인다.
-- 빈 스트림에서 `fold` 는 `[0]`, `scan` 은 `[]` 다((4)) — 여기서 갈린다.
+- 빈 스트림에서 `fold` 는 `[0]`, `scan` 은 `[]` 다((4)) — 여기서 달라진다.
 - `fold` 의 javadoc 이 존재 이유를 적는다: "for scenarios where **no combiner-function can be implemented**, or for reductions which are **intrinsically order-dependent**."
 
 ### 3. 창이 돌려준 `List` 를 고친다
@@ -728,7 +728,7 @@ parallel + scan (앞 4개)   : [1, 3, 6, 10]
                                   <- (5)의 병렬 결과만 실행마다 다르다
 ```
 
-- 50-d 의 (5) 병렬 결과는 **세 판에서 전부 달랐고, 같은 판에서도 매번 다르다.** 순서가 보장되지 않는 코드라 정상이다.
+- 50-d 의 (5) 병렬 결과는 **세 버전에서 전부 달랐고, 같은 버전에서도 매번 다르다.** 순서가 보장되지 않는 코드라 정상이다.
 - 나머지 네 절은 **결정적**이다.
 
 ## 언제 쓰고 언제 안 쓰나
@@ -821,9 +821,9 @@ parallel + scan (앞 4개)   : [1, 3, 6, 10]
 그 앞에 [`../45-intermediate-operations/`](../45-intermediate-operations/)(중간 연산이 무엇을 못 하나)·[`../44-stream-creation/`](../44-stream-creation/)(소스)이 있다.
 **기준 소스** — Temurin **JDK 25.0.1** 표준 라이브러리 소스 `java.base/java/util/stream/Gatherer.java`·`Gatherers.java`·`Stream.java`(`lib/src.zip`) · [`Gatherer` javadoc (Java SE 24)](https://docs.oracle.com/en/java/javase/24/docs/api/java.base/java/util/stream/Gatherer.html) · [`Gatherers` javadoc (Java SE 24)](https://docs.oracle.com/en/java/javase/24/docs/api/java.base/java/util/stream/Gatherers.html)
 **실행 검증** — 이 문서의 모든 출력은 실제로 돌려 얻은 것이다.\
-Gatherers 를 쓰는 프로그램 셋(50-a·50-b·50-c)은 **25.0.1 에서만** 돌아간다 — 17·21 에서는 **컴파일이 안 된다**(본문 「구현 세부사항 대 언어 보장」에 두 판의 출력을 다 실었다).\
+Gatherers 를 쓰는 프로그램 셋(50-a·50-b·50-c)은 **25.0.1 에서만** 돌아간다 — 17·21 에서는 **컴파일이 안 된다**(본문 「구현 세부사항 대 언어 보장」에 두 버전의 출력을 다 실었다).\
 Gatherers 를 안 쓰는 프로그램 하나(50-d)는 17.0.13 · 21.0.5 · 25.0.1 **셋 다** 돌렸다.\
-최소 예제 둘(50-a-min·50-a-min2)은 **세 판에서 컴파일만** 했고, `--release 21/22/23/24` 도 25 의 `javac` 으로 걸어 봤다.
+최소 예제 둘(50-a-min·50-a-min2)은 **세 버전에서 컴파일만** 했고, `--release 21/22/23/24` 도 25 의 `javac` 으로 걸어 봤다.
 **버전** — `Gatherer`·`Gatherers`·`Stream.gather` 전부 `src.zip` 의 **`@since 24`**. 22·23 에서는 **프리뷰**였다(본문에서 `--release` 로 실증).\
 **범위** — 스트림 파이프라인의 평가 시점·단락 평가는 [`../46-terminal-operations/`](../46-terminal-operations/) 가 정본이다.\
 그쪽은 **기존 연산이 언제 도느냐**까지, 여기는 **그 연산 목록에 내가 하나를 더 끼워 넣는 방법**부터다.\

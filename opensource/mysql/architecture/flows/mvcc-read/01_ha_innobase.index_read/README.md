@@ -105,7 +105,7 @@ int ha_innobase::index_read(
   m_last_match_mode = (uint)match_mode;
 ```
 
-InnoDB 로 들어가는 문턱이다. 동시성 제한(`innodb_thread_concurrency`)을 통과한 뒤, 내부 임시 테이블이 아니면 `row_search_mvcc` 로 간다.
+InnoDB 로 들어가는 임계값이다. 동시성 제한(`innodb_thread_concurrency`)을 통과한 뒤, 내부 임시 테이블이 아니면 `row_search_mvcc` 로 간다.
 
 `storage` / `innobase` / `handler` / `ha_innodb.cc` L10537-L10566 ([GitHub](https://github.com/mysql/mysql-server/blob/008e09c2834b98143a8c067d4d225c90953050cf/storage/innobase/handler/ha_innodb.cc#L10537-L10566))
 

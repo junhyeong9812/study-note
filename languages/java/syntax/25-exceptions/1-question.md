@@ -62,7 +62,7 @@ static void replace()    { try { throw new IllegalStateException("원래"); }
 ```
 
 - 다섯의 결과(반환값 또는 밖으로 나오는 예외)는 각각 무엇인가?
-- `mutateAfter` 와 `mutateObject` 의 결과가 갈리는 이유는 무엇인가?
+- `mutateAfter` 와 `mutateObject` 의 결과가 달라지는 이유는 무엇인가?
 - `replace()` 에서 원래 예외는 `getCause` 나 `getSuppressed` 에 남는가?
 - 컴파일러는 이 중 어느 것을 경고하고, 그 경고를 보려면 무엇이 필요한가?
 

@@ -111,7 +111,7 @@ Done 을 받은 노드 2 / 7
 - ★★★ **`a` 취소 — `a`·`a1` 만 `true`, 나머지 `Err=<nil>`, `2 / 7`.** **취소는 아래로만** — 부모(`root`)에도 형제(`b`·`c`)에도 안 간다.
 - ★★ **`c`(`WithValue`)** — `cancel` 이 없는 노드인데 root 의 취소를 **그대로 보이고 `c1` 까지 전했다.** 값 노드는 취소를 **막지도 만들지도 않는다.**
 
-### 2. 순서는 흔들린다 — 「다 받았나」가 근거다
+### 2. 순서는 실행마다 달라진다 — 「다 받았나」가 근거다
 
 ```text
 ===== 소스: t34tree.go =====
@@ -468,7 +468,7 @@ func WithValue(parent Context, key, val any) Context
 - ★★★ **`authstr.User` 가 `"req-42"`** — 두 패키지가 **같은 문자열 `"id"`** 를 키로 썼다. 뒤에 넣은 `tracestr.WithRequest` 가 **가렸다.** 타입도 `string` 이라 **`ok=true`** — 에러 없이 **틀린 사용자로** 진행된다.
 - ★★★ **비공개 타입 키(`type userKey struct{}`)** 는 다른 패키지가 **만들 수 없다** — `"alice"` 가 제대로 나왔다.
 - ★★ 문서 — 「**should not be of type string or any other built-in type to avoid collisions between packages using context. Users of WithValue should define their own types for keys.**」
-- ★★ **`vet` 은 침묵** — 이 판 `vet` 에는 이것을 보는 분석기가 없다.
+- ★★ **`vet` 은 침묵** — 이 버전 `vet` 에는 이것을 보는 분석기가 없다.
 
 ### 6. `5 / 11` · 옳은 침묵 p05·p06·p07·p08·p11, 놓친 것 p03 · 두 줄
 
@@ -682,7 +682,7 @@ recover: key is not comparable
 
 - ★★ **`vet exit=0`, 빌드 통과, 실행 중 `WithValue` 가 패닉** — `recover` 가 `key is not comparable` 을 받았다. 문서 「**The provided key must be comparable**」의 모양이다.
 
-### 9. 관례 — 이 판 `vet` 은 검사 안 한다 · 시그니처에서 사라진다
+### 9. 관례 — 이 버전 `vet` 은 검사 안 한다 · 시그니처에서 사라진다
 
 ```text
 ===== 명령: go doc context | sed -n "12,21p;33,43p" =====
@@ -710,7 +710,7 @@ you are unsure about which Context to use.
 (exit 0)
 ```
 
-- ★★★ 「**Do not store Contexts inside a struct type; instead, pass a Context explicitly to each function that needs it … The Context should be the first parameter, typically named ctx**」 — **문서의 관례**다. 컴파일러도 이 판 `vet` 도 **검사하지 않는다** — 지키는 것은 사람이다.
+- ★★★ 「**Do not store Contexts inside a struct type; instead, pass a Context explicitly to each function that needs it … The Context should be the first parameter, typically named ctx**」 — **문서의 관례**다. 컴파일러도 이 버전 `vet` 도 **검사하지 않는다** — 지키는 것은 사람이다.
 - ★★ 「**Use context Values only for request-scoped data that transits processes and APIs, not for passing optional parameters to functions.**」 — 선택 인자를 `ctx` 에 넣으면 **함수 시그니처에서 사라지고**, 컴파일러가 **타입도 존재도** 확인해 주지 않는다(5번의 `ok=true` 가 그 대가).
 
 ### 10. 「④ 시간 초과 뒤 `cancel()` 한 `Err`: `context deadline exceeded`」 · 자식과 그 자식들이 부모가 취소될 때까지
@@ -731,17 +731,17 @@ you are unsure about which Context to use.
 | ★★★ 나무 (`t34tree`·`t34order`) | `-race` 빌드 · 두 칸 + 200판 | 캡처마다 | **`7 / 7` · `2 / 7`** · 순서는 두 가지 이상 |
 | ★★ `Err`·`Cause`·`AfterFunc`·`WithoutCancel` | 실행 | 캡처마다 | 위 블록 |
 | ★★★ 키 충돌 (`t34key`·`t34nokey`) | 다중 패키지 모듈 · `vet` | 캡처마다 | `"req-42" ok=true` · `vet` 침묵 · `not comparable` |
-| ★★★ `lostcancel` (`t34lost`) | 탐침 11, 줄 번호로 맞춤 | 캡처마다 | **`5 / 11`** · p03 놓침 |
+| ★★★ `lostcancel` (`t34lost`) | probe 11, 줄 번호로 맞춤 | 캡처마다 | **`5 / 11`** · p03 놓침 |
 | ★★ 판 경계 (`t34ver`·`t34stdver`·`t34api`) | `go.mod` 다섯 판 × 빌드·실행·`vet` | 캡처마다 | 전부 빌드 · **`2 / 5`** |
 
 **구현·환경에 달린 항목**
 
 | 항목 | 무엇에 달렸나 |
 |---|---|
-| `Done` 도착 순서 | **스케줄링 — 흔들린다**(가짓수로 접었다) |
-| `lostcancel` 의 판정 범위 | **이 판 `vet`** — `_ = cancel` 을 놓치는 것이 의도인지는 **확인 못 했다** |
-| `stdversion` 의 1.21 미만 침묵 | **이 판 분석기의 정책**(소스 인용) |
-| 문자열 키 경고 | **이 판 `vet` 에는 없다** · 외부 린터는 **이 머신에 없다** |
+| `Done` 도착 순서 | **스케줄링 — 실행마다 달라진다**(가짓수로 접었다) |
+| `lostcancel` 의 판정 범위 | **이 버전 `vet`** — `_ = cancel` 을 놓치는 것이 의도인지는 **확인 못 했다** |
+| `stdversion` 의 1.21 미만 침묵 | **이 버전 분석기의 정책**(소스 인용) |
+| 문자열 키 경고 | **이 버전 `vet` 에는 없다** · 외부 린터는 **이 머신에 없다** |
 
 ★ **다시 찍는 법** — `capture.sh <디렉토리>` 를 그대로 돌리고 `normalize-shaky.py` 로 견준다.
 
@@ -749,5 +749,5 @@ you are unsure about which Context to use.
 
 이 파일의 모든 출력은 **`go version go1.27.1 linux/amd64`** 에서 실제로 돌려
 **파일로 캡처한 것**이다. 소스 펜스도 같은 파일에서 떠 왔다 — 손으로 옮겨 적은 블록은 없다.\
-★ **근거로 읽을 칸** — 노드별 `Done 받았나`·`Err` · `7 / 7`·`2 / 7` · 200판 참거짓 · `답한 탐침 5 / 11` · `vet 이 말한 판 2 / 5` · `Err`/`Cause` 문구.
-**근거로 읽지 않을 칸** — `Done` 의 **도착 순서**(그래서 블록에 안 실었다).
+★ **근거로 읽을 항목** — 노드별 `Done 받았나`·`Err` · `7 / 7`·`2 / 7` · 200판 참거짓 · `답한 탐침 5 / 11` · `vet 이 말한 판 2 / 5` · `Err`/`Cause` 문구.
+**근거로 읽지 않을 항목** — `Done` 의 **도착 순서**(그래서 블록에 안 실었다).

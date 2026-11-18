@@ -137,7 +137,7 @@ fn main() {
 
 ## 실행 환경
 
-답을 모르겠으면 **던져 보라.** `cargo new /tmp/p && cargo run --manifest-path /tmp/p/Cargo.toml` 이면 된다.
+답을 모르겠으면 **실행해 보라.** `cargo new /tmp/p && cargo run --manifest-path /tmp/p/Cargo.toml` 이면 된다.
 
 ## 복습 기록
 

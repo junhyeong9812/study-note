@@ -114,7 +114,7 @@ static boolean mixed(Integer a, int b) {     aload_0
 비용 — 메서드 호출 1회.\
 다만 `Integer` 쪽이 `null` 이면 **여기서 `NullPointerException`** 이 난다.
 
-### (3) 캐시 — `Integer.valueOf` 안에서 갈린다
+### (3) 캐시 — `Integer.valueOf` 안에서 달라진다
 
 **언제 쓰나** — 박싱이 일어나는 모든 순간. 내가 부르지 않아도 (1)에서 이미 불린다.
 
@@ -149,7 +149,7 @@ valueOf(127) 일 때                          valueOf(128) 일 때
 
 - 범위 안이면 **배열에서 꺼내 온다** — 두 번 불러도 같은 객체다.
 - 범위 밖이면 `new Integer(i)` — **부를 때마다 다른 객체**다.
-- 그래서 `==` 의 결과가 **값의 크기에 따라 갈린다.**
+- 그래서 `==` 의 결과가 **값의 크기에 따라 달라진다.**
 
 비용 — 캐시 적중이면 배열 인덱싱 한 번, 객체 할당 0.\
 미적중이면 객체 할당 1회.
@@ -227,7 +227,7 @@ static void tryChange(int n, Integer boxed, int[] arr) {
 Java 에서 **전달은 언제나 값 전달**이다 — 참조 타입은 "참조라는 값"을 전달한다.\
 이 규칙 자체는 [**03번 주제**](../03-variables-and-assignment/)(변수와 대입)가 정본이다.
 
-### `==` 와 `equals` 가 갈리는 표
+### `==` 와 `equals` 가 달라지는 표
 
 | 식 | 컴파일된 비교 | 결과 | 왜 |
 |---|---|---|---|
@@ -271,7 +271,7 @@ static Integer pickSafe(boolean flag, Integer box) {
 }
 ```
 
-두 메서드의 바이트코드가 갈린 자리 (`javap -c` 출력 그대로):
+두 메서드의 바이트코드가 달라진 자리 (`javap -c` 출력 그대로):
 
 ```text
 pick — 숫자 조건식 -> 이항 승격 -> 언박싱     pickSafe — 참조 조건식 -> 언박싱 없음
@@ -316,7 +316,7 @@ p == q       -> false      (new 는 늘 새 객체)
 p.equals(q)  -> true
 ```
 
-컴파일 경고가 21과 25에서 갈린다 — 실제 `javac` 출력이다.
+컴파일 경고가 21과 25에서 달라진다 — 실제 `javac` 출력이다.
 
 ```text
 JDK 21.0.5  javac -Xlint:removal

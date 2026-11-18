@@ -204,7 +204,7 @@ s34b.c:3:5: warning: a function definition without a prototype is deprecated in 
 - ★★ **clang 은 C23 에서 그것을 선언으로 읽다 깨진다** — `unknown type name 'a'`(에러 4건). gcc 는 「있지만 싫은 문법」, clang 은 「없는 문법」.
 - ★ **C17 에서는** gcc 경고 0 · clang 은 「C23 에서 지원하지 않는다」 경고 1(1번 격자).
 
-### 3. 빈 괄호 + `float` 매개변수 정의 — **두 판 다 에러 · 이유가 다르다** ★★
+### 3. 빈 괄호 + `float` 매개변수 정의 — **두 버전 다 에러 · 이유가 다르다** ★★
 
 **출력**
 
@@ -256,7 +256,7 @@ s34c.c:1:8: note: previous declaration is here
 
 - ★★★ **C17 — 승격 때문이다** — gcc 의 `note`: 「**기본 승격이 있는 인자 타입은 빈 매개변수 이름 목록 선언과 맞을 수 없다**」. 빈 괄호로 부르면 `float` 은 `double` 로 넘어오므로, `float` 을 받는 정의는 **그 선언과 호환되지 않는다.**
 - ★★ **C23 — 개수 때문이다** — `previous declaration ... 'double(void)'`. 매개변수 0개 대 1개.
-- ★ **`cc exit=1` 은 같고 이유가 다르다** — 판 격자의 「안 갈린 칸」도 문구를 읽어야 판 경계가 보인다.
+- ★ **`cc exit=1` 은 같고 이유가 다르다** — 판 격자의 「안 달라진 항목」도 문구를 읽어야 판 경계가 보인다.
 
 ### 4. 선언 없이 부르기 — **gcc 12·13 은 모든 판에서 경고(`-pedantic` `exit=0`) · clang 은 C99 이후 에러 · C89 는 합법** ★★★
 
@@ -390,7 +390,7 @@ clang  undefined  run exit=0 리포트 0줄 | half_f(v) == 1.5 ? no|half_d(v) ==
 
 - ★★★ **넘어간 것은 `double`, 받은 쪽은 `float`** — 빈 괄호 선언으로 부르면 `v` 는 **기본 인자 승격**으로 `double` 이 된다. `half_f(float)` 는 **다른 것을 읽는다.** **UB** 다(호환되지 않는 타입으로 부른 것).
 - ★★★ **`half_d(double)` 는 맞는다** — 승격된 타입과 정의가 같다.
-- ★★★ **`-flto` 는 호출 쪽에 서명이 있어야 견준다** — `s34e1`(빈 괄호) 판은 두 컴파일러 **`lto-type-mismatch 0`**. `s34e3`(프로토타입) 판은 gcc 가 **`type mismatch in parameter 1`** 을 낸다 — 그래도 **`cc exit=0`** 이고 실행 값은 여전히 `no` 다. clang `-flto` 는 두 판 다 0.
+- ★★★ **`-flto` 는 호출 쪽에 서명이 있어야 견준다** — `s34e1`(빈 괄호) 판은 두 컴파일러 **`lto-type-mismatch 0`**. `s34e3`(프로토타입) 판은 gcc 가 **`type mismatch in parameter 1`** 을 낸다 — 그래도 **`cc exit=0`** 이고 실행 값은 여전히 `no` 다. clang `-flto` 는 두 버전 다 0.
 - ★★ **ASan·UBSan 네 칸 다 침묵** — 틀린 값을 조용히 낸다.
 - ★ [25번 형제](../25-incomplete-types-and-opaque-struct/)의 「`-flto` 는 서명을 본다」에 「**양쪽에 서명이 있을 때 · gcc 에서**」라는 조건이 붙는다.
 
@@ -538,8 +538,8 @@ s34g2.c:3:1: warning: ISO C does not support ‘[[]]’ attributes before C2X [-
 **왜 그런가**
 
 - ★★★ **암시적 선언이 만든 외부 링크 `helper` 와 뒤의 `static` 정의가 충돌**한다 — gcc 의 `note: previous implicit declaration ... 'int()'`. 처방은 **위에 `static int helper(void);`**([29번 형제](../29-scope-and-linkage-static-extern/)의 링크 규칙).
-- ★★ **`main` 은 두 서명 밖을 「다른 구현 정의 방식」에 맡겼다** — 그래서 gcc 는 `-Wmain` 경고, clang 은 에러로 **구현이 갈렸다.** `int main(int argc, char *argv[])` 는 모든 칸 0건.
-- ★ **`[[noreturn]]`** — C17 에서 `-pedantic` 경고 1(두 컴파일러), C23 에서 0. **`_Noreturn`** — 두 판 다 0(C23 이 구식 기능으로 돌렸는데도).
+- ★★ **`main` 은 두 서명 밖을 「다른 구현 정의 방식」에 맡겼다** — 그래서 gcc 는 `-Wmain` 경고, clang 은 에러로 **구현이 달라졌다.** `int main(int argc, char *argv[])` 는 모든 칸 0건.
+- ★ **`[[noreturn]]`** — C17 에서 `-pedantic` 경고 1(두 컴파일러), C23 에서 0. **`_Noreturn`** — 두 버전 다 0(C23 이 구식 기능으로 돌렸는데도).
 
 ### 9. 34 → 36 — **C17 은 두 자리(빈 괄호 · `...`) · C23 은 한 자리(`...`)** ★★★
 
@@ -570,7 +570,7 @@ s34g2.c:3:1: warning: ISO C does not support ‘[[]]’ attributes before C2X [-
 
 | 소스 | 무엇을 확인했나 | 몇 벌 돌렸나 |
 |---|---|---|
-| `s34v.c`·`s34a.c`·`s34b.c`·`s34c.c` | ★★★ **갈린 칸 3 / 12** · gcc-12 `c2x` 옛 뜻 · gcc 13 옛 정의 경고 · 두 판의 다른 에러 이유 | 격자 24칸 + `-pedantic-errors` 6 · 진단 9 · 실행 2 |
+| `s34v.c`·`s34a.c`·`s34b.c`·`s34c.c` | ★★★ **달라진 항목 3 / 12** · gcc-12 `c2x` 옛 뜻 · gcc 13 옛 정의 경고 · 두 버전의 다른 에러 이유 | 격자 24칸 + `-pedantic-errors` 6 · 진단 9 · 실행 2 |
 | `s34d.c` | ★★★ gcc 12·13 경고 · clang C99 이후 에러 · C89 합법 | 격자 24칸 · 진단 4 · 실행 1 |
 | `s34e1.c`·`s34e2.c`·`s34e3.c` | ★★★ `half_f` `no` · `-flto` 조건 · sanitizer 0 / 4 | 격자 4 · `-flto` 8 · 진단 1 · 실행 1 · sanitizer 4 |
 | `s34f.c` | ★★ `cvtss2sd` · `al` | 어셈블리 2 |
@@ -583,7 +583,7 @@ s34g2.c:3:1: warning: ISO C does not support ‘[[]]’ attributes before C2X [-
 
 - ★★★ **「경고냐 에러냐」 전부** — 표준은 진단만 요구한다. gcc 12·13 · clang 18 의 선택이다.
 - ★★★ **gcc-12 의 `-std=c2x`** — 그 판이 구현한 C23 의 범위다.
-- ★★ **5번의 `no`** — UB 의 이 판 결과다. 결론은 「**호환되지 않는 타입으로 부르면 뜻이 없다**」까지다.
+- ★★ **5번의 `no`** — UB 의 이 버전 결과다. 결론은 「**호환되지 않는 타입으로 부르면 뜻이 없다**」까지다.
 - ★ **6번의 `al`** — x86-64 System V 호출 규약의 것이다.
 
 **빈 괄호의 판별 뜻 · 옛 정의와 암시적 선언이 빠진 판 · 기본 인자 승격 · 빈 괄호 선언과 승격 타입이 아닌 정의가 호환되지 않는 것은 구현 의존이 아니다.**\
@@ -606,4 +606,4 @@ s34g2.c:3:1: warning: ISO C does not support ‘[[]]’ attributes before C2X [-
 **clang 18.1.3** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
 소스는 `s34a.c`\~`s34m2.c` · `s34x.cpp` 이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮긴 출력이 없다).\
 ★★★ **판 격자** — 1·2·3번은 컴파일러 3 × `-std=c17`/`-std=c2x`, 4번은 × 판 4 × 강도 2.
-★★ **흔들리는 칸은 없다** — 5번의 틀린 값은 **참/거짓으로** 찍었다. 정규화 규칙은 기본 넷뿐이고 이 편에서는 걸리는 칸이 없다.
+★★ **실행마다 달라지는 항목은 없다** — 5번의 틀린 값은 **참/거짓으로** 찍었다. 정규화 규칙은 기본 넷뿐이고 이 편에서는 걸리는 칸이 없다.

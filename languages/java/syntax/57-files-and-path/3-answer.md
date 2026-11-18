@@ -383,7 +383,7 @@ Exception in thread "main" java.lang.OutOfMemoryError: Java heap space
 ```
 
 - 마지막 JDK 프레임은 **`java.nio.file.Files.readAllLines(Files.java:3433)`** 이다. 원인이 트레이스에 그대로 적힌다.
-- 줄 번호는 세 판이 달랐다 — 17 은 `String.java:4501`, 21 은 `:4768`, 25 는 `:4842`(+ `StringUTF16.java:161` 대 `:212`).
+- 줄 번호는 세 버전이 달랐다 — 17 은 `String.java:4501`, 21 은 `:4768`, 25 는 `:4842`(+ `StringUTF16.java:161` 대 `:212`).
 
 **경계 수치는 보장인가**
 
@@ -650,7 +650,7 @@ Files.move(tmp, target,
 
 - **목적지와 같은 디렉터리**다. `resolveSibling` 이 그것을 보장한다.
 - 이유: `/tmp` 에 만들면 그게 **다른 파일시스템**(tmpfs)일 수 있고, 그러면 `ATOMIC_MOVE` 가 위에서 본 예외로 실패한다.
-- 이 머신에서 `/tmp` 와 홈은 같은 ext4 였지만(`df -T` 로 확인), **`/dev/shm` 은 tmpfs** 였다. 환경에 따라 갈린다는 뜻이다.
+- 이 머신에서 `/tmp` 와 홈은 같은 ext4 였지만(`df -T` 로 확인), **`/dev/shm` 은 tmpfs** 였다. 환경에 따라 달라진다는 뜻이다.
 
 ### 12. 세 JDK 에서 무엇이 달랐나
 
@@ -818,6 +818,6 @@ if (!file.delete()) {
 ## 실행 환경
 
 이 파일의 모든 출력은 실제로 돌려 얻은 것이다. 프로그램 일곱(57-a~57-g)을 **Temurin 17.0.13 · 21.0.5 · 25.0.1** 에서 각각 돌렸다.\
-★ **세 판이 같았다고 적지 않는다.** 12번에서 실제로 갈렸고, fd 시작값도 17 만 하나 더 컸다.\
+★ **세 버전이 같았다고 적지 않는다.** 12번에서 실제로 달라졌고, fd 시작값도 17 만 하나 더 컸다.\
 javadoc 인용은 JDK 21.0.5 의 `lib/src.zip` — `java.base/java/nio/file/Files.java`·`Path.java` 원문이다.\
 측정 조건: Linux · ext4 · `file.encoding=UTF-8` · 기본 `Locale` `ko_KR`. 실험은 전부 임시 스크래치 디렉터리 안의 `sandbox/` 아래에서 하고 매번 지웠다.

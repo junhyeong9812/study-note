@@ -4,7 +4,7 @@
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
 
-### 1. ★★★ 끔과 갈린 칸 — **isolatedModules 1 / 8 · verbatimModuleSyntax 4 / 8 · erasableSyntaxOnly 0 / 8**
+### 1. ★★★ 끔과 달라진 항목 — **isolatedModules 1 / 8 · verbatimModuleSyntax 4 / 8 · erasableSyntaxOnly 0 / 8**
 
 **출력**
 
@@ -57,7 +57,7 @@
 **왜 그런가**
 
 - ★★★ 기본·`isolatedModules`·`erasableSyntaxOnly` 는 **쓰임새로** 지운다 — 타입만 쓰인 `i36a`·`i36c`, 안 쓰인 값 `i36g` 까지 `export {};` 가 됐다.
-- ★★★ `verbatimModuleSyntax` 는 **`type` 딱지로만** 지운다 — 갈린 넷(`i36a`·`i36c`·`i36f`·`i36g`)이 전부 「딱지 없는데 기본 설정이 지우던」 칸이다.
+- ★★★ `verbatimModuleSyntax` 는 **`type` 딱지로만** 지운다 — 달라진 넷(`i36a`·`i36c`·`i36f`·`i36g`)이 전부 「딱지 없는데 기본 설정이 지우던」 칸이다.
 - ★★ `isolatedModules` 의 1칸은 `i36f` 의 **진단**(`TS1205`)뿐 — 방출은 끔과 같다. `erasableSyntaxOnly` 는 **검사만** 해 한 칸도 안 바꿨다.
 
 ### 2. ★★★ **`import {} from "./lib36.mjs";`** · node **`lib36 evaluated`** — 기본 설정에서는 **줄째 사라지고** 출력 없음
@@ -201,7 +201,7 @@ error TS5102: Option 'importsNotUsedAsValues' has been removed. Please remove it
 | ★★ `import type = require` | 방출 · `--erasableSyntaxOnly` | 흔적 없음 · `TS1294` |
 | ★★ 플래그 판 격자 | `bash ts34b-flags36.sh` · 5.9.3 기본값 대조 | **5 / 6** · `remove` 는 `(exit 0)` |
 
-**구현 의존 항목 — 판이 오르면 다시 돌릴 것**
+**구현 의존 항목 — 버전이 오르면 다시 돌릴 것**
 
 - ★★★ `import { type T }` 의 빈 import(2번) — 문서가 적은 동작이지만 **방출물로** 다시 확인한다.
 - ★★ 기본 설정의 **안 쓰인 값 import 지우기**(3번).
@@ -216,5 +216,5 @@ error TS5102: Option 'importsNotUsedAsValues' has been removed. Please remove it
 
 모든 진단·격자·실행은 `tsc` **7.0.2** · `node` **v18.19.1** 에서 실제로 얻었다. 판 비교는 **5.9.3 · 4.9.5** 를 환경변수(`TSC_OLD`·`TSC_49`)로 받아 **읽기만** 했다.\
 블록은 전부 **캡처 스크립트가 파일로 받은 것**이고 손으로 옮겨 적지 않았다 — 배너의 `(… exit=N)` 도 스크립트가 찍은 값이다.\
-★★★ 이 주제의 **본체 창은 3창(방출된 `.js` + `node`) — 방출 격자다.**\
+★★★ 이 주제의 **핵심 창은 3창(방출된 `.js` + `node`) — 방출 격자다.**\
 ★ 소스 펜스 첫 줄 `// 파일명`·`# 파일명` 은 대조용 배너다 — **진단의 행 번호는 그 줄을 뺀 기준**이다.

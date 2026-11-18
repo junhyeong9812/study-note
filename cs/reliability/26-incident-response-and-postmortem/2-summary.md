@@ -14,7 +14,7 @@
 ```
 
 - *사고(incident)*: 계획에 없던 일로 서비스가 나빠져, 평소 업무가 아니라 **조직된 대응**이 필요한 사건.
-- *IC(Incident Commander, 사고 지휘자)*: 사고의 큰 그림을 쥐고 역할을 나눠 주는 사람. 직접 고치지 않아도 된다.
+- *IC(Incident Commander, 사고 지휘자)*: 사고의 큰 그림을 잡고 역할을 나눠 주는 사람. 직접 고치지 않아도 된다.
 
 쉬운 예: 화재 현장이다.
 - 소방관 모두가 호스를 들고 불로 뛰어들면, 누가 주민을 대피시키고 누가 물을 대는지 아무도 모른다.
@@ -285,7 +285,7 @@ sum(rate(http_server_requests_seconds_count{status=~"5.."}[5m]))
 
 - 선행
   - [43-alerting-and-on-call](../43-alerting-and-on-call/2-summary.md) — 증상 기반 경보·온콜(사고의 입구)
-  - [02-slo-sli-error-budget](../02-slo-sli-error-budget/2-summary.md) — "사용자 가시 저하"의 기준선
+  - [02-slo-sli-error-budget](../02-slo-sli-error-budget/2-summary.md) — "사용자 가시 저하"의 베이스라인
 - 후속·연결
   - [44-runbooks-and-operational-readiness](../44-runbooks-and-operational-readiness/2-summary.md) — 경보마다 런북, 출시 전 PRR
   - [45-chaos-and-resilience-testing](../45-chaos-and-resilience-testing/2-summary.md) — 게임 데이로 사고 대응 연습

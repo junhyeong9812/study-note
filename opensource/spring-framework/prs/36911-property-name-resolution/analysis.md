@@ -9,7 +9,7 @@ PR은 머지됐고(7.1.0-M2), 부수적으로 `isUrgent` 필드를 가진 `isUrg
 > **backing field(뒷받침 필드)** — 접근자 메서드가 실제로 값을 읽어 오는, 값이 저장된 필드.\
 > 예: record `SampleRecord(String issue)`에서 `issue()`의 backing field는 `issue`다.
 
-> **무음 탈락(silent failure)** — 실패했는데 예외도 로그도 없이 넘어가 결과만 조용히 달라지는 실패.\
+> **조용한 탈락(silent failure)** — 실패했는데 예외도 로그도 없이 넘어가 결과만 조용히 달라지는 실패.\
 > 예: 이름이 `"sue"`가 되면 `getField()`가 `null`을 돌려주고 필드 애노테이션이 그냥 빠진다.
 
 ## 1. 무대
@@ -130,7 +130,7 @@ getField() 조회 키        findField("sue") 실패 -> null -> 애노테이션 
 | `writeMethod` :59 | 쓰기 접근자(@Nullable) | — | 생성자 인자 | 이 PR은 손대지 않음(1차 커밋에서 조였다가 원복) |
 | `methodParameter` :63 | 타입 정보 담당 | resolveMethodParameter() :182 | 생성자 :78 — **이름보다 먼저** | 이름이 틀려도 **타입은 정상** — 그래서 오류가 조용하다 |
 | `resolveAnnotations()` :215 | read/write/field 애노테이션 병합 | — -> Annotation[] | `getAnnotations()` 최초 호출 시 | 이름의 유일한 실소비처 |
-| `getField()` :238 | 이름으로 backing field 조회 | name -> Field 또는 null | resolveAnnotations :221 | **무음 실패 지점** — 못 찾으면 null을 돌려주고 끝 |
+| `getField()` :238 | 이름으로 backing field 조회 | name -> Field 또는 null | resolveAnnotations :221 | **조용한 실패 지점** — 못 찾으면 null을 돌려주고 끝 |
 | `hasLength(name)` 가드 :240 | 빈 이름이면 조회 자체를 생략 | String -> boolean | getField 첫 줄 | `budget()`가 빈 이름이 되는 케이스가 여기서 조용히 끝난다 |
 | `ReflectionUtils.findField` :246/:249/:251 | 이름 3변형(원본/uncapitalize/capitalize) 조회 | (Class, String) -> Field | getField 내부 | `sue` 같은 틀린 이름은 세 변형 모두 실패한다 |
 | `declaringClass()` :258 | 조회 대상 클래스 결정 | read 우선, 없으면 write | getField :244 | 결함과 무관하나 조회의 다른 축 |
@@ -158,7 +158,7 @@ getField() 조회 키        findField("sue") 실패 -> null -> 애노테이션 
 | 수정 후 최종 이름 | `"name"` (불변) | `"budget"` | `"issue"` |
 | :221 `getField()` 결과 (수정 전) | `name` 필드 없음 -> null (원래 그렇다) | :240 `hasLength("")` 실패 -> **즉시 null** | `findField("sue")` 3변형 전부 실패 -> **null** |
 | :221 `getField()` 결과 (수정 후) | 동일 | `budget` 필드 발견 | `issue` 필드 발견 |
-| 관측되는 증상 | 없음 | **컴포넌트 애노테이션 무음 탈락** | 동일 |
+| 관측되는 증상 | 없음 | **컴포넌트 애노테이션 조용한 탈락** | 동일 |
 
 두 결함 케이스가 요구하는 수정 축이 서로 다르다는 점이 중요하다.\
 A는 `indexOf -> startsWith` 전환만으로 고쳐지지만, B는 `issue`가 실제로 `is`로 **시작하므로** 전환만으로는 여전히 `sue`가 된다 — `isPlainAccessor` 판별이 반드시 함께 필요하다.\
@@ -166,7 +166,7 @@ A는 `indexOf -> startsWith` 전환만으로 고쳐지지만, B는 `issue`가 �
 
 ## 4. 계약
 
-이 무대가 지키기로 되어 있던 약속과 결함의 관계는 하나씩 대조해 보면 갈린다.\
+이 무대가 지키기로 되어 있던 약속과 결함의 관계는 하나씩 대조해 보면 달라진다.\
 다음 표는 계약별로 출처와 위반 여부를 나란히 놓은 것이다.
 
 > **계약(contract)** — 코드가 호출자에게 지키기로 한 약속. javadoc이나 기존 동작이 그 출처가 된다.\
@@ -179,12 +179,12 @@ A는 `indexOf -> startsWith` 전환만으로 고쳐지지만, B는 `issue`가 �
 | 읽기 메서드가 있으면 그 이름에서 논리 이름을 유도한다 | :136-153 | 예 — 유도 결과가 빈 문자열/틀린 이름이 될 수 있다 |
 | 무접두사 record 스타일 접근자는 이름 전체가 프로퍼티 이름이다 | gh-26029가 추가한 `index = 0` 폴백 + 그 주석 | 예 — 접두사 글자를 품은 이름은 폴백에 도달조차 못 했다 |
 | 애노테이션은 read/write/**field** 셋을 병합한 결과다 | :219-221 | 예 — 이름이 틀리면 field 몫이 조용히 빠진다 |
-| 조회 실패는 예외가 아니라 `null`이다 | :240-242, :255 | 아니오 — 이것은 결함이 아니라 **전제**다. 이 전제 때문에 결함이 무음이 된다 |
+| 조회 실패는 예외가 아니라 `null`이다 | :240-242, :255 | 아니오 — 이것은 결함이 아니라 **전제**다. 이 전제 때문에 결함이 드러나지 않게 된다 |
 | `name`은 `equals`/`hashCode`의 구성요소다 | :275, :282 | 간접 — 틀린 이름이 캐시 키 동일성까지 오염시킨다 |
 | 기존 테스트가 고정하던 것 | 이 PR 이전 `PropertyTests`는 **존재하지 않았다**(파일 신규 생성, diff 기준 208줄 추가) | 그래서 회귀 그물이 없었고 결함이 오래 숨었다 |
 
 새 판별식이 **새로 만든** 계약도 있다.\
-"같은 이름의 인스턴스 필드가 있으면 접두사를 벗기지 않는다"는 규칙은 `java.beans.Introspector`와 갈리는 지점이며(`isUrgent` 필드 + `isUrgent()` getter -> `isUrgent`), PR 본문 `## Note on impact`에 공개하고 `resolveNameForBooleanGetterBackedByFieldOfSameName` 테스트로 못박았다.
+"같은 이름의 인스턴스 필드가 있으면 접두사를 벗기지 않는다"는 규칙은 `java.beans.Introspector`와 달라지는 지점이며(`isUrgent` 필드 + `isUrgent()` getter -> `isUrgent`), PR 본문 `## Note on impact`에 공개하고 `resolveNameForBooleanGetterBackedByFieldOfSameName` 테스트로 못박았다.
 
 ## 5. 수정안
 
@@ -290,7 +290,7 @@ read 분기 교체 — `Property.java:135-153`:
   무접두사 이름(`name()`)도 전후 모두 :151 폴백으로 간다.
 - **하위호환 — 바뀌는 쪽.**\
   (1) 접두사 글자를 이름 중간에 품은 접근자는 결과가 바뀌지만 이전 값이 빈 문자열/무의미 문자열이었으므로 실질 회귀 위험이 낮다.\
-  (2) `isUrgent` 필드로 뒷받침되는 `isUrgent()`는 `urgent` -> `isUrgent`로 바뀐다 — `java.beans.Introspector`와 갈리는 유일한 지점이고, PR 본문에 공개해 메인테이너 판단을 받았다.
+  (2) `isUrgent` 필드로 뒷받침되는 `isUrgent()`는 `urgent` -> `isUrgent`로 바뀐다 — `java.beans.Introspector`와 달라지는 유일한 지점이고, PR 본문에 공개해 메인테이너 판단을 받았다.
 - **영향 범위가 좁은 구조적 이유.**\
   현재 프레임워크 내부의 `new Property(...)` 넷은 모두 이름을 명시하므로 `resolveName()`에 도달하지 않는다.\
   즉 이 수정은 공개 API 표면의 정확성을 고치는 것이지, 내부 동작 경로를 바꾸는 것이 아니다.

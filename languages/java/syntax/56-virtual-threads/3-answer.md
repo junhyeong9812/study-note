@@ -179,7 +179,7 @@ a/Ex.java:8: error: cannot find symbol
 
 - 풀 50 대비 **9.7배**지만 **풀 500 과는 거의 차이가 없다**(366 대 315 ms).\
   이 실험에서는 **연결 수립과 서버 쪽이 병목**이라 클라이언트 스레드 모델을 바꿔도 더 못 줄인다.\
-  **흔들림도 크다**(183\~326 ms).
+  **실행 간 차이도 크다**(183\~326 ms).
 - ★ **결론** — 가상 스레드의 이득은 **"내 스레드가 병목일 때"** 나온다.
 
 ### 6. 가상 스레드를 풀링해도 되나
@@ -251,7 +251,7 @@ try (ExecutorService es = Executors.newVirtualThreadPerTaskExecutor()) {
 - **21 과 25 를 가른 것은 [JEP 491](https://openjdk.org/jeps/491)**(JDK 24) 이다 —\
   모니터를 캐리어가 아니라 가상 스레드에 귀속시켜 **`synchronized` 고정을 없앴다.**
 - **JDK 21 에서의 처방은 `ReentrantLock`** 이다. 21 에서도 200 ms 로 나온다.
-- **흔들림이 거의 없다**(1601\~1605, 200\~215). 이 결론은 흔들리지 않는다.
+- **실행 간 차이가 거의 없다**(1601\~1605, 200\~215). 이 결론은 달라지지 않는다.
 
 ```text
 JDK 21                                     JDK 25
@@ -385,7 +385,7 @@ jdk.VirtualThreadPinned {
 
 - **21 의 `-Djdk.tracePinnedThreads=full` 은 콘솔에 스택과 `reason:` 을 찍는다.**\
   `reason:` 값 두 가지를 실제로 봤다 — **`MONITOR`**(`synchronized`) 와 **`NATIVE`**(클래스 초기화).\
-  `<== monitors:1` 이 **어느 프레임이 모니터를 쥐고 있는지** 짚어 준다.
+  `<== monitors:1` 이 **어느 프레임이 모니터를 잡고 있는지** 짚어 준다.
 - **25 에서는 같은 플래그가 아무것도 안 찍는다.** 고정이 실제로 있는 상황(클래스 초기화, 809 ms)에서도 침묵했다.\
   `jdk.traceVirtualThreadPinnedEvents` 도 콘솔 출력이 없었다.
 - **25 에서 보는 방법은 JFR 이다.**
@@ -596,20 +596,20 @@ jfr print --events jdk.VirtualThreadPinned p.jfr
 | `Ex.java` (56-a) | 만드는 법 셋, 데몬·우선순위·스레드그룹, `setDaemon(false)` 예외, 캐리어 수와 이름 | 1회 | **21 · 25** (스레드 id 말고 동일) + **17 컴파일 에러** 확인 |
 | `Ex.java` (56-b) | 가상 1만·100만 / 플랫폼 1만·10만 생성 시간, `ulimit -u 6000` 에서의 `OutOfMemoryError` | 각 1회 | **21 · 25**(가상 100만·플랫폼 1만만 재실행 — 자릿수 동일) |
 | `Ex.java` (56-c) | 블로킹 1만 건·CPU 1만 건에서 풀 3종 대 가상 스레드 | **워밍업 2 + 측정 5의 중앙값** | **21 · 25** (블로킹 결론 동일, **CPU 승패는 뒤집힘**) |
-| `Ex.java` (56-e) | ★ `plain`/`synchronized`/`ReentrantLock` 의 고정, `-Djdk.tracePinnedThreads` 출력 | **각 5회** | **21 · 25** (**갈렸다**) |
-| `Ex.java` (56-f) | `synchronized`·`Object.wait`·블록 안 I/O·리플렉션 프레임의 고정 | **각 5회** | **21 · 25** (**갈렸다**) |
+| `Ex.java` (56-e) | ★ `plain`/`synchronized`/`ReentrantLock` 의 고정, `-Djdk.tracePinnedThreads` 출력 | **각 5회** | **21 · 25** (**달라졌다**) |
+| `Ex.java` (56-f) | `synchronized`·`Object.wait`·블록 안 I/O·리플렉션 프레임의 고정 | **각 5회** | **21 · 25** (**달라졌다**) |
 | `Ex.java` (56-g) | 클래스 초기화 블록 안 블로킹의 고정, `reason:NATIVE` 출력, JFR 이벤트 | 1회 | **21 · 25** (**둘 다 고정**) |
 | `Ex.java` (56-h) | `ThreadLocal` 힙 사용(1천·1만·10만), 풀링 시 스레드 수, 생성 비용 3종, `InheritableThreadLocal` | 힙 각 1회 / 시간은 워밍업 2 + 5회의 중앙값 | 21 |
 | `Ex.java` (56-i) | 플랫폼 고정 풀(200·2000)에서의 `ThreadLocal` 사본 힙 | 각 1회 | 21 |
 | `Ex.java` (56-k) | 진짜 TCP 소켓 3,000건에서 풀 2종 대 가상 스레드 | 워밍업 1 + 측정 3의 중앙값 | 21 |
-| `jfr` 도구 | `jdk.VirtualThreadPinned` 이벤트의 유무와 **필드 차이** | 1회 | **21 · 25** (**필드가 갈렸다**) |
+| `jfr` 도구 | `jdk.VirtualThreadPinned` 이벤트의 유무와 **필드 차이** | 1회 | **21 · 25** (**필드가 달라졌다**) |
 | `src.zip` 열람 | `ofVirtual`·`startVirtualThread`·`isVirtual`·`newVirtualThreadPerTaskExecutor` 의 `@since 21`, `StructuredTaskScope`·`ScopedValue` 의 `@PreviewFeature` | — | **21 · 25** |
 
 **측정 방법의 한계 (반드시 같이 읽을 것)**
 
 - **JMH 가 아니다.** 워밍업이 1\~2회뿐이다.
 - **머신 의존**이다 — 24코어. 코어가 적으면 CPU 실험의 차이가 더 작아지고, 고정 실험은 캐리어를 1로 묶었으므로 영향이 적다.
-- **흔들린다** — 소켓 실험이 **183\~326 ms**(1.8배). **고정 실험만 흔들림이 거의 없다**(1601\~1605 / 200\~215).\
+- **실행마다 달라진다** — 소켓 실험이 **183\~326 ms**(1.8배). **고정 실험만 실행 간 차이가 거의 없다**(1601\~1605 / 200\~215).\
   그 실험은 "**줄서나 안 서나**"를 8배 차이로 설계했기 때문이다.
 - **힙 수치는 정확한 측정이 아니다** — `System.gc()` 두 번 뒤의 `totalMemory - freeMemory` 다. **자릿수용.**
 - **`sleep` 은 블로킹 I/O 의 대역이다.** 진짜 소켓으로도 재 봤고(56-k) **결과가 덜 극적이었다** — 그 사실을 본문에 적었다.
@@ -618,7 +618,7 @@ jfr print --events jdk.VirtualThreadPinned p.jfr
 
 **구현 의존 항목** (버전이 오르면 다시 돌려야 하는 것)
 
-- ★ **`synchronized`·`Object.wait` 의 고정 — 21 과 25 가 실제로 갈렸다**(1,601 대 200 ms).
+- ★ **`synchronized`·`Object.wait` 의 고정 — 21 과 25 가 실제로 나뉘었다**(1,601 대 200 ms).
 - ★ **`-Djdk.tracePinnedThreads` — 25 에서는 아무것도 안 찍는다.**
 - ★ **JFR `jdk.VirtualThreadPinned` 의 필드 — 25 에만 `pinnedReason`·`blockingOperation`·`carrierThread`.**
 - **클래스 초기화 고정은 21·25 모두 남아 있다** — 24 이후 판에서 또 바뀔 수 있다.
@@ -631,11 +631,11 @@ jfr print --events jdk.VirtualThreadPinned p.jfr
 ## 실행 환경
 
 이 파일의 모든 출력·에러·수치는 Temurin **21.0.5** 와 **25.0.1** 에서 실제로 돌려 얻은 것이다.\
-★ **고정(pinning) 실험은 두 버전에서 각각 돌렸고 결과가 갈렸다** — 7·8·9번.
+★ **고정(pinning) 실험은 두 버전에서 각각 돌렸고 결과가 달라졌다** — 7·8·9번.
 ⚠️ **측정 조건** — **JMH 가 아니다.** 벽시계이고 **워밍업 1\~2 + 측정 3\~5회의 중앙값**이다(문항마다 적었다).\
 머신 **24코어**(Linux x86-64), `ulimit -n` = 1,048,576.\
 고정 실험은 캐리어를 **1개로 묶어**(`-Djdk.virtualThreadScheduler.parallelism=1 -Djdk.virtualThreadScheduler.maxPoolSize=1`)\
-**"줄서면 1600ms / 안 줄서면 200ms"** 로 **두 자리가 갈리게** 설계했다 — 그래서 이 실험만은 흔들림이 결론을 안 흔든다.\
-다른 실험은 흔들린다 — 소켓 실험이 **183\~326 ms**(1.8배)였다. **자릿수만** 읽는다.\
+**"줄서면 1600ms / 안 줄서면 200ms"** 로 **두 자리가 갈리게** 설계했다 — 그래서 이 실험만은 실행 간 차이가 결론을 안 흔든다.\
+다른 실험은 실행마다 달라진다 — 소켓 실험이 **183\~326 ms**(1.8배)였다. **자릿수만** 읽는다.\
 힙 수치는 `System.gc()` 두 번 뒤 `totalMemory - freeMemory` — **자릿수용**이다.
 `@since` 와 프리뷰 상태는 `lib/src.zip` 의 애너테이션을 **직접 읽어** 확인했다.

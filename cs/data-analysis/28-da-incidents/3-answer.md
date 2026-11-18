@@ -5,7 +5,7 @@
 ### 1. 응답이 많아도 틀린 이유
 
 - 표집 오차: 무작위로 뽑았을 때 우연히 생기는 흔들림이다. n이 커지면 줄어든다.
-- 편향: 뽑히거나 응답할 확률이 사람마다 다르고, 그 차이가 답과 관련 있을 때 생기는 체계적 어긋남이다. n을 키워도 줄지 않는다([02](../02-sampling-and-bias/2-summary.md) · [08-4](../08-confidence-intervals/2-summary.md)).
+- 편향: 뽑히거나 응답할 확률이 사람마다 다르고, 그 차이가 답과 관련 있을 때 생기는 체계적 불일치이다. n을 키워도 줄지 않는다([02](../02-sampling-and-bias/2-summary.md) · [08-4](../08-confidence-intervals/2-summary.md)).
 - Digest의 응답 수(2차 출처 약 238만 `[?]`)는 표집 오차를 아주 작게 만들었지만 편향은 그대로 남겼다.
 - Squire 초록: 잡지의 표본과 응답이 **둘 다** 편향돼 함께("jointly") 크게 틀린 추정을 만들었다. 표본에 든 사람이 모두 응답했다면 적어도 승자(Roosevelt)는 맞혔을 것이다.
 
@@ -30,8 +30,8 @@
 
 ### 4. MAE가 같아도 다른 것
 
-- 시험 2: MAE 모형 0.307, 기준선 0.310으로 비슷했다.
-- 달랐던 것: **오차의 부호**. 모형은 52주 중 43주를 과대 추정했고 평균 오차가 +0.251이었다. 기준선은 22주, 평균 오차 거의 0이었다.
+- 시험 2: MAE 모형 0.307, 베이스라인 0.310으로 비슷했다.
+- 달랐던 것: **오차의 부호**. 모형은 52주 중 43주를 과대 추정했고 평균 오차가 +0.251이었다. 베이스라인은 22주, 평균 오차 거의 0이었다.
 - 놓치는 것: MAE는 크기만 보고 방향을 버린다. 측정 도구가 바뀌어 생긴 체계적 과대(편향)는 MAE로는 "비슷한 성능"으로 보인다. 평균 부호 오차, 과대 추정 주의 연속 횟수, 오차의 자기상관을 같이 본다([13-3](../13-linear-regression/2-summary.md)). 실제 GFT(2009년 갱신판)도 오차가 자기상관·계절성을 보였고 2011-08 ~ 2013-09의 108주 중 100주가 과대였다.
 
 ### 5. Reinhart–Rogoff의 세 문제
@@ -52,14 +52,14 @@
 - (가) 추세: 덜 가파르게 보였을 것이다(해석). 빠진 건이 최근 날짜에 몰렸다 — 표의 처음 네 칸 합 2,458, 마지막 세 칸 합 11,968. 근거: "The majority of these cases occurred in most recent days", "over 75% (11,968) relate to cases that should have been reported between 30 September and 2 October".
 - (나) 머리 숫자: 밀린 건이 보고일로 한꺼번에 들어와 급등했다. 근거: "Today and yesterday's headline number are large due to the backlog of cases flowing through the total reporting process." 검체 날짜로 다시 붙이면 지난 며칠이 조금씩 늘어난다("the correct number of cases by specimen date is shown").
 - (다) 지역 비교: 상대적으로 덜 흔들렸을 것이다(해석). 근거: "The increase in cases are spread proportionally across the country as per the current levels of the virus." 수준(전국 총량)은 틀리고 구성(지역 비율)은 덜 틀렸다는 뜻이다.
-- 대처: 추세 판단은 검체 날짜로, 최근 며칠은 미완 표시([17-3](../17-sql-for-analysis/2-summary.md)), 복구일은 주석·기준선 학습 제외([23-4](../23-time-series-basics/2-summary.md)), 원천 건수와 날마다 대조([18-3](../18-data-cleaning-and-quality/2-summary.md)).
+- 대처: 추세 판단은 검체 날짜로, 최근 며칠은 미완 표시([17-3](../17-sql-for-analysis/2-summary.md)), 복구일은 주석·베이스라인 학습 제외([23-4](../23-time-series-basics/2-summary.md)), 원천 건수와 날마다 대조([18-3](../18-data-cleaning-and-quality/2-summary.md)).
 
 ### 8. 네 사건의 축
 
 | 사건 | 틀린 축 | 막았을 장치(하나 고르면 됨) | 27의 절 |
 |---|---|---|---|
 | Literary Digest | 누구를 쟀나(표본) | 확률 표집, 응답자 구성을 알려진 모집단 값과 대조 | 10절(표본이 대표하지 못함) |
-| Google Flu Trends | 무엇으로 쟀나(대리 지표·모형) | 시간 분할 평가 + 단순 기준선 비교, 오차 부호 감시 | 3-2절·11절(모델이 운영에서 깨짐) |
+| Google Flu Trends | 무엇으로 쟀나(대리 지표·모형) | 시간 분할 평가 + 단순 베이스라인 비교, 오차 부호 감시 | 3-2절·11절(모델이 운영에서 깨짐) |
 | Reinhart–Rogoff | 어떻게 합쳤나(범위·제외·가중) | 수식이 덮는 행 수 대조, 가중 정의 명시·민감도 표 | 2절(합계가 안 맞음)·4절(구성이 평균을 움직임) |
 | PHE 2020-10 | 언제로 셌나(누락과 날짜 축) | 원천 건수 대조, 검체 날짜 기준 추세·미완 표시 | 2절·6절(날짜 경계) |
 

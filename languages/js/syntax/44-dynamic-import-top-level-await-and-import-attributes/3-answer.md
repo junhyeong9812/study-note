@@ -57,7 +57,7 @@ throws44c.mjs: body runs
 
 - ★★ 파싱은 본문보다 먼저라 `broken44c.mjs` 의 첫 줄도 안 돈다. 평가 중에 던진 모듈은 레코드에 **그 예외를 남기고**, 다음 요청에 **그것을 그대로** 돌려준다(9번).
 
-### 4. node 20 **막힌 행 `7 / 12`** · node 18 **`10 / 12`** · Chrome **`9 / 12`** · 세 판이 다 같지는 않은 행 **`8 / 12`** — **세 판 다 통과한 행은 없다** ★★★
+### 4. node 20 **막힌 행 `7 / 12`** · node 18 **`10 / 12`** · Chrome **`9 / 12`** · 세 버전이 다 같지는 않은 행 **`8 / 12`** — **세 버전 다 통과한 행은 없다** ★★★
 
 **출력**
 
@@ -116,8 +116,8 @@ rows where the three do not all agree: 8 / 12
 **왜 그런가**
 
 - ★★★ **`with` 는 ES2025 문법**이라 node 18.19.1(V8 10.2)의 파서가 모른다 — 그 파일의 모든 `with` 행이 `SyntaxError 「Unexpected token 'with'」`. node 문서 이력상 전환은 **v18.20.0** 이다.
-- ★★★ **`assert` 는 표준이 아니다** — node 두 판은 옛 제안을 남겨 두어 받았고(경고), Chrome 151 은 `SyntaxError 「Unexpected identifier 'assert'」`. 동적 쪽도 **읽는 키가 판마다 달라** 같은 방향으로 갈렸다(node 18 은 `with` 를, Chrome 은 `assert` 를 못 읽는다).
-- ★★ 속성 없음(행 3·10)은 세 판 다 막았다 — **호스트의 선택**(7번). 이름 있는 가져오기(행 6)는 JSON 모듈의 내보내기가 `default` 하나라 막힌다. 키 중복(행 11)은 명세의 조기 오류다.
+- ★★★ **`assert` 는 표준이 아니다** — node 두 버전은 옛 제안을 남겨 두어 받았고(경고), Chrome 151 은 `SyntaxError 「Unexpected identifier 'assert'」`. 동적 쪽도 **읽는 키가 판마다 달라** 같은 방향으로 나뉘었다(node 18 은 `with` 를, Chrome 은 `assert` 를 못 읽는다).
+- ★★ 속성 없음(행 3·10)은 세 버전 다 막았다 — **호스트의 선택**(7번). 이름 있는 가져오기(행 6)는 JSON 모듈의 내보내기가 `default` 하나라 막힌다. 키 중복(행 11)은 명세의 조기 오류다.
 
 ### 5. `pending44b.mjs: before await` **한 줄**, **`exit 13`**, 표준 오류 **0 줄** — `importer44b.mjs: body` 는 안 찍힌다 ★★
 
@@ -147,12 +147,12 @@ pending44b.mjs: before await
 
 ### 7. **명세는 요구하지 않는다** — note 가 「`type: "json"` 없이 JSON 모듈을 지원하는 것을 금하지 않는다」고 적는다 · 막은 것은 **호스트** · 모르는 키는 명세상 **`SyntaxError`** — Chrome 이 그 모양이고 node 20 은 `TypeError ERR_IMPORT_ATTRIBUTE_UNSUPPORTED` ★★★
 
-- ★★★ 명세가 **`type: "json"` 이면 JSON 으로 해석하라**는 것만 못 박고, 나머지(속성 없는 JSON · 어느 키를 받나)는 `HostLoadImportedModule`·`HostGetSupportedImportAttributes` 로 호스트에 맡겼다. 이 머신의 세 판은 **셋 다 명시를 요구하는 쪽**이었다(행 3·10). 왜 그쪽을 골랐는지는 이 문서가 확인하지 않았다.
+- ★★★ 명세가 **`type: "json"` 이면 JSON 으로 해석하라**는 것만 못 박고, 나머지(속성 없는 JSON · 어느 키를 받나)는 `HostLoadImportedModule`·`HostGetSupportedImportAttributes` 로 호스트에 맡겼다. 이 머신의 세 버전은 **셋 다 명시를 요구하는 쪽**이었다(행 3·10). 왜 그쪽을 골랐는지는 이 문서가 확인하지 않았다.
 - ★★ `AllImportAttributesSupported` 가 거짓이면 「a newly created **SyntaxError** object」 — node 20 은 다른 이름으로 막았다.
 
 ### 8. `with` 문법 · 형제를 안 기다리는 평가 순서 — **ECMA-262** · `type` 만 받는 것 · 속성 없는 JSON 거절 · 종료 코드 13 — **호스트** · `assert` — **어느 표준에도 없다**(엔진이 남겨 둔 옛 제안) ★★
 
-- ★★ 평가 순서가 **세 판 한 글자도 같았던 것**(1\~3번)과 attributes 가 **8 / 12 행 갈린 것**(4번)이 그 층의 차이다.
+- ★★ 평가 순서가 **세 판 한 글자도 같았던 것**(1\~3번)과 attributes 가 **8 / 12 행 달라진 것**(4번)이 그 층의 차이다.
 
 ### 9. **안 돈다** — 레코드가 **`evaluated` 상태 + `[[EvaluationError]]`** 를 들고 있어, 다음 평가 요청에 그 예외를 **그대로** 돌려준다(`same error object true` · `1 time(s)`) ★★
 
@@ -171,7 +171,7 @@ pending44b.mjs: before await
 | `js44b-44c/*` | ★★ 파싱 실패 · 평가 실패 · 같은 에러 객체 | node20 1벌 + node18 대조(같음) + Chrome 151 1벌(같음) |
 | `js44b-44d-attributes-grid.js` + `.web.js` + `.sh` | ★★★ 12행 × 세 판 · 「`7 / 12`·`10 / 12`·`9 / 12`」 · 「`8 / 12`」 | 행마다 새 디렉토리 · node 는 새 프로세스 |
 
-세 판 대조기(이 묶음의 plain 탐침). 이 주제의 줄은 `44d` 하나이고 **`DIFFERS`**(node 판 차이 — 4번) · Chrome 은 `.web.js` 로 따로 돌렸다.
+세 판 대조기(이 묶음의 plain probe). 이 주제의 줄은 `44d` 하나이고 **`DIFFERS`**(node 버전 차이 — 4번) · Chrome 은 `.web.js` 로 따로 돌렸다.
 
 ```sh
 # js44b-vdiff.sh
@@ -215,17 +215,17 @@ js44b-47d-registry-api.js                node18/node20 DIFFERS    node20/Chrome 
 node18 vs node20: identical 7 · differs 2   ·   node20 vs Chrome 151: identical 8 · differs 0 · node only 1
 ```
 
-**구현 의존 항목 — 판이 오르면 다시 돌릴 것**
+**구현 의존 항목 — 버전이 오르면 다시 돌릴 것**
 
 - ★★★ **import attributes 격자 전부** — node 18.20+ · node 22 · Chrome 의 다음 판에서 `with`/`assert` 칸이 바뀐다(node 20 경고가 「future version」에서 `assert` 를 없앤다고 적는다).
 - ★★ node 의 에러 **코드 이름**(`ERR_IMPORT_ASSERTION_…`) · 키 중복 문구의 `assertion`/`attribute`.
-- ★ 끝내 안 풀린 최상위 `await` 의 **경고 유무**(이 두 판은 0 줄).
+- ★ 끝내 안 풀린 최상위 `await` 의 **경고 유무**(이 두 버전은 0 줄).
 
 ## 실행 환경
 
 이 파일의 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Google Chrome 151**(로컬 HTTP 서버) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
 블록은 **전부 캡처 파일에서 조립**했다.
-★★★ **평가 순서(1\~3번)는 세 판이 한 글자도 같았고, import attributes(4번)는 세 판이 `8 / 12` 행에서 갈렸다.**
+★★★ **평가 순서(1\~3번)는 세 버전이 한 글자도 같았고, import attributes(4번)는 세 버전이 `8 / 12` 행에서 달라졌다.**
 
 **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다(격자를 세 판에 돌리는 `.sh` 와 Chrome 쪽 스크립트는 [2-summary.md](2-summary.md) 동작 (4), 끝내 안 풀리는 `await` 를 돌리는 `.sh` 는 동작 (2)).
 `js44b-44a/`(1번 · 10번) · `js44b-44b/`(2번 · 5번 · 6번) · `js44b-44c/`(3번 · 9번) · `js44b-44d-attributes-grid.js` + `.web.js` + `.sh`(4번 · 7번 · 8번).

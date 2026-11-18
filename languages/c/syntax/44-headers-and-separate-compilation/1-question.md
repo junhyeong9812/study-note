@@ -99,7 +99,7 @@ int main(void) { return use_a() + use_b() == 0; }
 `K` 1·2 는 헤더가 같고 2 만 `s44a.c` 에 `hf` 정의가 있다. `K` 6·7 도 같다(7 만 `int hv = 0;`).
 
 - ★★★ `K` = 1\~14 의 gcc 칸은 각각 무엇인가? **깨지는 행**은 몇 개이고 두 종류로 나누면?
-- ★★★ gcc · gcc-12 · clang 이 **서로 갈리는 행**이 있는가?
+- ★★★ gcc · gcc-12 · clang 이 **서로 나뉘는 행**이 있는가?
 - ★★ `-fcommon` 칸과 g++ 칸이 gcc 칸과 **다른 행**은 각각 어느 것인가?
 - ★★ gcc `-O0` 의 `nm s44a.o` / `nm s44b.o` 에서 `hf`·`hv` 의 글자는 행마다 무엇인가?
 
@@ -201,7 +201,7 @@ int main(void) {
 칸 = `$CC -std=c17 -DFIRST="d1/<헤더>" -DSECOND="<디렉토리>/<헤더>" -c s44m.c` 의 결과(통과 / 재정의 에러).
 
 - ★★★ 헤더 셋 × 경로 여섯 × (gcc · gcc-12 · clang) 54칸은?
-- ★★★ gcc 와 clang 이 **갈리는 행**이 있다면 어느 것인가?
+- ★★★ gcc 와 clang 이 **달라지는 행**이 있다면 어느 것인가?
 - ★★ `gcc -H` 로 보면 `#pragma once` 사본(같은 mtime)과 guard 사본은 각각 **몇 개의 파일을 여나**?
 
 ### 5. 서로를 include 하는 두 헤더 (예측) ★★★
@@ -312,7 +312,7 @@ size_t fa_size(void) { return sizeof(struct fa); }
 ### 10. 명세에 없는 것 · 명세가 허용하는데 안 되는 것 (경계) ★★
 
 - `#pragma once` 는 N3220 에 있는가? 그래서 4번의 `s44p.h` 행들의 결과는 어느 층인가?
-- ★★ C23 은 같은 내용의 `struct` 재정의를 어떻게 다루나? 이 판의 gcc · clang `-std=c2x` 는?
+- ★★ C23 은 같은 내용의 `struct` 재정의를 어떻게 다루나? 이 버전의 gcc · clang `-std=c2x` 는?
 
 ### 11. 다섯 층과 도구가 못 보는 것 (연결) ★★★
 
@@ -328,7 +328,7 @@ size_t fa_size(void) { return sizeof(struct fa); }
 
 **환경** — gcc 13.3.0 · gcc-12 12.4.0 · clang 18.1.3 · g++ 13.3.0 · x86-64 Linux · 기본 `-std=c17 -Wall -Wextra -pedantic`.
 
-★★★ **본체 창은 링크 결과 + `nm`** — 1번은 **칸마다 「링크 성공 / `multiple definition` / `undefined reference`」** 와 `nm` 글자를 적어야 답이다.
+★★★ **핵심 창은 링크 결과 + `nm`** — 1번은 **칸마다 「링크 성공 / `multiple definition` / `undefined reference`」** 와 `nm` 글자를 적어야 답이다.
 선행 — [29번 형제](../29-scope-and-linkage-static-extern/) · [41번 형제](../41-preprocessor-directives-and-conditional-compilation/).
 
 ## 복습 기록

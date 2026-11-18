@@ -15,7 +15,7 @@
  새 등급 추가 → 어느 가지에 넣지?
 ```
 
-- *분기(branch)*: 조건에 따라 실행 경로가 갈리는 지점. `if`·`switch`·삼항 연산자·`&&`/`||`.
+- *분기(branch)*: 조건에 따라 실행 경로가 달라지는 지점. `if`·`switch`·삼항 연산자·`&&`/`||`.
 - *결정 테이블(decision table)*: 조건 조합을 행으로, 결과를 열로 둔 표. 분기를 데이터로 바꾼다.
 
 쉬운 예: 택배 요금표다. 무게 × 지역을 `if`로 외우지 않고 표를 본다. 표에 없는 칸이면 "문의"라고 적혀 있다.\
@@ -101,7 +101,7 @@ IfLadder.java:3:	CyclomaticComplexity:	The method 'rateBp(String, String, boolea
 
 ### 실험 B: 복제된 `switch`에 새 타입 추가
 
-`PayType`에 `GIFT`를 추가하고 `Fee`만 고쳤다(`Points`·`Label`은 깜빡함). 세 판을 비교했다.
+`PayType`에 `GIFT`를 추가하고 `Fee`만 고쳤다(`Points`·`Label`은 깜빡함). 세 버전을 비교했다.
 
 ```java
 // v1: switch 문 + default (세 파일에 복제)

@@ -1,15 +1,15 @@
 # rust/syntax/50 — `Send`/`Sync` 가 코드에 나타나는 방식 — 정리 (힌트)
 
-★★★ **본체 창 — ① 경계 격자(타입 × 「보내기 / 함께 보기」 → 컴파일되나)다.** 두 마커는 실행 중에 아무 일도 하지 않는다 — **판정은 전부 컴파일 시점**이고, 그래서 창도 실행 결과가 아니라 **컴파일러 진단**이다.
+★★★ **핵심 창 — ① 경계 격자(타입 × 「보내기 / 함께 보기」 → 컴파일되나)다.** 두 마커는 실행 중에 아무 일도 하지 않는다 — **판정은 전부 컴파일 시점**이고, 그래서 창도 실행 결과가 아니라 **컴파일러 진단**이다.
 
-## 흔들리는 칸 / 안 흔들리는 칸
+## 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| 안 흔들린다 | ★★★ **격자의 통과/에러 칸과 「compiling cells N / M」** | 트레이트 구현은 std 와 컴파일러가 정한다 — **이 주제의 본체** |
-| 안 흔들린다 | E0277 · E0658 번호 · `파일:줄:칸` · `note:` 사슬의 순서 · 종료 코드 | 같은 rustc 판에서 고정이다 |
-| 안 흔들린다 — 단 **rustc 판의 문구** | ★★ `cannot be sent between threads safely` / `cannot be shared between threads safely` · `required because it appears within the type` | ★ **진단 문구는 rustc 구현**이다. 판이 바뀌면 바뀔 수 있다 — **「E0277 로 막힌다」가 계약, 문구는 구현** |
-| 흔들린다 | ★ **없다** — 실행 출력은 `r50_auto`·`r50_unsafe_impl` 두 줄뿐이고 스레드 id 도 안 찍힌다 | 정규화 규칙은 기본 넷만 쓴다(걸리는 칸이 없다) |
+| 달라지지 않는다 | ★★★ **격자의 통과/에러 칸과 「compiling cells N / M」** | 트레이트 구현은 std 와 컴파일러가 정한다 — **이 주제의 핵심** |
+| 달라지지 않는다 | E0277 · E0658 번호 · `파일:줄:칸` · `note:` 사슬의 순서 · 종료 코드 | 같은 rustc 버전에서 고정이다 |
+| 달라지지 않는다 — 단 **rustc 버전의 문구** | ★★ `cannot be sent between threads safely` / `cannot be shared between threads safely` · `required because it appears within the type` | ★ **진단 문구는 rustc 구현**이다. 판이 바뀌면 바뀔 수 있다 — **「E0277 로 막힌다」가 계약, 문구는 구현** |
+| 실행마다 달라진다 | ★ **없다** — 실행 출력은 `r50_auto`·`r50_unsafe_impl` 두 줄뿐이고 스레드 id 도 안 찍힌다 | 정규화 규칙은 기본 넷만 쓴다(걸리는 칸이 없다) |
 
 ## 한눈에 — 쉽게 말하면
 
@@ -59,17 +59,17 @@
 
 ## 동작 방식
 
-### (0) 이 주제가 쓰는 창 — 본체는 ① 경계 격자다
+### (0) 이 주제가 쓰는 창 — 핵심은 ① 경계 격자다
 
 | 창 | 무엇을 보여 주나 | 이 주제에서 |
 |---|---|---|
-| ① ★★★ **경계 격자**(타입 × send/sync 로 소스를 만들어 **컴파일**) | 어느 칸이 E0277 로 막히나 · 문구가 `sent` 인가 `shared` 인가 | ★ **본체**((1)) |
+| ① ★★★ **경계 격자**(타입 × send/sync 로 소스를 만들어 **컴파일**) | 어느 칸이 E0277 로 막히나 · 문구가 `sent` 인가 `shared` 인가 | ★ **핵심**((1)) |
 | ② ★★★ **E0277 전문의 `note:` 사슬** | 어느 필드가 원인인가 | 쓴다((2)·(5)) |
 | ③ ★★ **에디션 대조**(2018 × 2021) | 클로저가 무엇을 잡느냐가 **사슬의 모양**을 바꾸나 | 쓴다((3)) |
 | ④ ★★ **로컬 std 문서 grep** | 구현 목록에 `!Send`·`!Sync`·조건부 `impl` 이 있나 | 쓴다((4)) |
 | ⑤ 실행 출력 | 통과한 칸이 **정말 돈다** | 두 곳만((4)의 `r50_auto` · (6)) |
-| 실행 시간 · 원자 연산 비용 | 「`Arc` 는 `Rc` 보다 느리다」 | ★ **부적용 — 재지 않는다.** 이 주제의 판정은 컴파일에서 끝난다 |
-| 런타임 데이터 레이스 탐지(TSan · Miri) | — | ★ **잴 것이 없다** — 막힌 칸은 **실행 파일이 안 생긴다.** 레이스를 일으킬 프로그램 자체가 없다 |
+| 실행 시간 · 원자 연산 비용 | 「`Arc` 는 `Rc` 보다 느리다」 | ★ **해당 없음 — 재지 않는다.** 이 주제의 판정은 컴파일에서 끝난다 |
+| 런타임 데이터 레이스 탐지(TSan · Miri) | — | ★ **잴 것이 없다** — 막힌 항목은 **실행 파일이 안 생긴다.** 레이스를 일으킬 프로그램 자체가 없다 |
 
 ★★ **제5의 상태 — 「같은 질문을 다른 창으로」.** 「`Arc<T>` 는 언제 `Send` 인가」는 원래 **std 의 `impl` 선언**이 답한다. 그 선언은 로컬 문서에서 태그가 쪼개져 grep 으로 온전히 못 읽었다(④에서 `Arc` 줄만 빠진 이유) — 그래서 같은 질문을 **컴파일러의 `note:` 창**으로 물었다: `Arc<RefCell<i32>>` 를 보내는 칸이 「`` `RefCell<i32>` cannot be shared ``」로 막힌다((1)).
 ★ 바꾼 창이 **못 보는 것** — `note:` 는 **막힌 이유 하나**만 말한다. `Arc<T>: Send` 의 **전체 조건**(`T: Send + Sync`)은 [41번 주제](../41-rc-arc-shared-ownership-and-weak-cycles/) (3)과 42번 (7)의 `= note: required for Arc<RefCell<i32>> to implement Send` 두 조각으로 맞춘 것이다.
@@ -136,7 +136,7 @@ compiling cells: 11 / 20
 (exit 0)
 ```
 
-- ★★★ **「compiling cells: 11 / 20」.** 막힌 아홉 칸이 전부 **E0277** 이고, 문구가 둘로 갈린다 — **`send` 열은 `cannot be sent`**, **`sync` 열은 `cannot be shared`**. 문구가 곧 **어느 트레이트가 빠졌나**다.
+- ★★★ **「compiling cells: 11 / 20」.** 막힌 아홉 칸이 전부 **E0277** 이고, 문구가 둘로 나뉜다 — **`send` 열은 `cannot be sent`**, **`sync` 열은 `cannot be shared`**. 문구가 곧 **어느 트레이트가 빠졌나**다.
 - ★★★ **`Cell`·`RefCell` 은 보낼 수는 있고 함께 볼 수는 없다** — 값을 통째로 넘기면 원래 스레드에는 **아무것도 안 남으니** 괜찮고, 두 스레드가 `&` 로 같이 보면 **둘 다 `&self` 로 고칠 수 있으니** 안 된다(42번의 내부 가변성).
 - ★★★ **`Rc` 는 둘 다 막힌다** — 복제본끼리 카운트를 **원자적이지 않게** 나눠 쓰므로, 한 복제본을 넘겨도(보내기) 같이 봐도(`&Rc` 로 `clone` 가능) 카운트가 깨질 수 있다. 언어-특성 §5 가 원리를 말한다.
 - ★★★ **`Arc<RefCell<i32>>` 의 `send` 칸이 `cannot be shared` 다** — `Arc` 를 넘기는데 `Send` 가 아니라 **`RefCell` 의 `Sync`** 가 빠졌다고 한다. `Arc` 는 **넘긴 뒤에도 원래 스레드에 복제본이 남아** 두 스레드가 같은 `RefCell` 을 보게 되므로, `Arc<T>: Send` 가 `T: Sync` 를 요구한다(42번 (7)의 `required for Arc<RefCell<i32>> to implement Send`).
@@ -392,7 +392,7 @@ found     impl<T: ?Sized + Send> Sync for Mutex<T>
 ```
 
 - ★★ **`impl<T> Send for &T` (조건 `T: Sync`)** — (1)의 `sync` 열이 이 한 줄이다. `&x` 를 가진 클로저가 `Send` 이려면 `x: Sync`.
-- ★★ **`!Send for Rc` · `!Send for *const T` · `!Sync for Cell` · `!Sync for RefCell`** — 자동 계산에 맡기지 않고 **std 가 부정 구현으로 못 박은** 자리다. (1)의 막힌 칸들이 여기서 온다.
+- ★★ **`!Send for Rc` · `!Send for *const T` · `!Sync for Cell` · `!Sync for RefCell`** — 자동 계산에 맡기지 않고 **std 가 부정 구현으로 못 박은** 자리다. (1)의 막힌 항목들이 여기서 온다.
 - ★★ **`MutexGuard` 는 `!Send` 이고, `T: Sync` 이면 `Sync`** · **`Mutex<T>` 는 `T: Send` 이면 `Sync`** — `Mutex` 는 안쪽이 `Sync` 가 아니어도(예: `Mutex<Cell<_>>`) 함께 볼 수 있다. 한 번에 한 스레드만 안을 만지기 때문이다.
 
 ### (5) ★ 일부러 끄기 — `PhantomData<*const ()>`
@@ -570,7 +570,7 @@ For more information about this error, try `rustc --explain E0277`.
 ```
 
 - ★★ **E0277 — `` `std::sync::MutexGuard<'_, Vec<i32>>` cannot be sent between threads safely ``.** `static` 뮤텍스라 `'static` 문제는 없다 — **순수하게 `Send` 가 빠진 것**이다.
-- ★★★ **왜 `!Send` 인가** — 이 판의 로컬 std 문서에서 **이유를 찾지 못했고, 실행으로도 확인하지 않았다.** 확인한 것은 (4)의 **`impl<T: ?Sized> !Send for MutexGuard<'_, T>`** 한 줄이다 — 「막힌다」는 사실까지만 적는다.
+- ★★★ **왜 `!Send` 인가** — 이 버전의 로컬 std 문서에서 **이유를 찾지 못했고, 실행으로도 확인하지 않았다.** 확인한 것은 (4)의 **`impl<T: ?Sized> !Send for MutexGuard<'_, T>`** 한 줄이다 — 「막힌다」는 사실까지만 적는다.
 - ★★ **그런데 `Sync` 는 된다**((1) 마지막 행) — 여러 스레드가 `&MutexGuard` 로 **안을 읽기만** 하는 것은 `T: Sync` 면 안전하다.
 - ★ 가드가 **`await` 를 가로지르면** 같은 `!Send` 가 async 의 `Send` 경계에 걸린다 — [목록의 **55번 주제**](../55-async-in-practice-runtime-send-and-pin/).
 
@@ -631,7 +631,7 @@ For more information about this error, try `rustc --explain E0277`.
 | `T: Sync` ⟺ `&T: Send` | ★ **std 의 정의 + `impl<T> Send for &T`** | (4) `r50_impls` |
 | `Rc`·`*const T` 가 `!Send`, `Cell`·`RefCell` 이 `!Sync` | ★ **std 의 부정 구현** | (1) · (4) |
 | `MutexGuard` 가 `!Send`, `T: Sync` 면 `Sync` | ★ **std 의 구현** — **이유는 이 문서가 확인하지 못했다** | (7) · (4) |
-| 막힌 칸이 **E0277** 이다 | ★ **rustc** — 트레이트 경계 불만족 | (1) |
+| 막힌 항목이 **E0277** 이다 | ★ **rustc** — 트레이트 경계 불만족 | (1) |
 | 진단 **문구**(`cannot be sent`/`shared` · `appears within the type`) | ★ **rustc 구현** — 판이 바뀌면 바뀔 수 있다 | (1)·(2) |
 | 정밀 포착이면 **사슬 줄이 사라진다** | ★ **언어(2021 캡처 규칙)의 결과 + rustc 진단 모양** — 사슬을 몇 줄 찍나는 구현 | (3) |
 | 사용자 코드의 `impl !Trait` 불가 | ★ **언어 기능 미안정**(E0658 · issue #68318) | (5) |

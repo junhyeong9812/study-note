@@ -213,4 +213,4 @@ function createDynamicRequestTree(
 
 ## 다루지 않는 것
 
-`isNavigatingToNewRootLayout`(`is-navigating-to-new-root-layout.ts`, 70줄)의 루트 레이아웃 비교 규칙, `convertReusedFlightRouterStateToRouteTree`(segment-cache/cache.ts)가 재사용 트리를 RouteTree 로 바꾸는 과정, `patchRouterStateWithNewChildren`(L828-846)이 칸을 복사하는 세부, `accumulateScrollRef`(L643-668)의 freshness 갈래([02]의 표에 한 줄로만 적었다)와 스크롤 핸들러, `getRenderedSearchFromVaryPath` · `urlSearchParamsToParsedUrlQuery` 의 직렬화, 서버가 `refetch` 표시와 어긋남을 보고 렌더 시작점을 고르는 쪽([중간부터 그리기](../../partial-tree/README.md))은 이 문서의 범위 밖이다.
+`isNavigatingToNewRootLayout`(`is-navigating-to-new-root-layout.ts`, 70줄)의 루트 레이아웃 비교 규칙, `convertReusedFlightRouterStateToRouteTree`(segment-cache/cache.ts)가 재사용 트리를 RouteTree 로 바꾸는 과정, `patchRouterStateWithNewChildren`(L828-846)이 칸을 복사하는 세부, `accumulateScrollRef`(L643-668)의 freshness 갈래([02]의 표에 한 줄로만 적었다)와 스크롤 핸들러, `getRenderedSearchFromVaryPath` · `urlSearchParamsToParsedUrlQuery` 의 직렬화, 서버가 `refetch` 표시와 불일치를 보고 렌더 시작점을 고르는 쪽([중간부터 그리기](../../partial-tree/README.md))은 이 문서의 범위 밖이다.

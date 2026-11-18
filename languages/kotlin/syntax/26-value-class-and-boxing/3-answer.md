@@ -342,7 +342,7 @@ named#-1
 
 ### 8. **박싱 위치**에 — 그래서 언어가 질문 자체를 막았다
 
-- 같은 값이 `site0` 에서는 `double`, `site4` 에서는 **그때 만든 상자**다. 참조 비교를 허용하면 **컴파일러가 어디서 박싱했느냐**에 따라 `true`/`false` 가 갈린다.
+- 같은 값이 `site0` 에서는 `double`, `site4` 에서는 **그때 만든 상자**다. 참조 비교를 허용하면 **컴파일러가 어디서 박싱했느냐**에 따라 `true`/`false` 가 달라진다.
 - 공식 문서 — 「referential equality is pointless for them and is therefore prohibited」. 3번의 「`identity equality ... is prohibited.`」가 그 결과다.
 
 ### 9. **시간과 할당을 안 쟀다** — 유무는 말할 수 있고 비용은 못 말한다
@@ -353,7 +353,7 @@ named#-1
 
 ### 10. `equals`/`hashCode`/`toString` 이 자동인 것은 같다 — `value class` 는 프로퍼티 **하나**·`val` 만·`===` 금지
 
-- `toString` 모양(`Percent(v=40)`)과 값 동등성은 [22번 주제](../22-data-class-generated-members/)의 `data class` 와 같다. `copy`·`componentN` 은 이 문서에서 **안 던졌다.**
+- `toString` 모양(`Percent(v=40)`)과 값 동등성은 [22번 주제](../22-data-class-generated-members/)의 `data class` 와 같다. `copy`·`componentN` 은 이 문서에서 **실행하지 않았다.**
 - 필드가 **둘**이면 3번의 「`exactly one primary constructor parameter`」 — **`data class`** 로 간다.
 
 ### 11. C# 는 제네릭에서 **안** 박싱되고 Rust 는 **개념이 없다** — `typealias` 였다면 두 `lookup` 이 **충돌한다**
@@ -384,9 +384,9 @@ javac 21.0.5
 (exit 0)
 ```
 
-★ **흔들리는 칸과 안 흔들리는 칸**
+★ **실행마다 달라지는 항목과 달라지지 않는 항목**
 
-| 흔들린다 | 안 흔들린다 |
+| 실행마다 달라진다 | 달라지지 않는다 |
 |---|---|
 | **없다** — 기본 `toString`·해시코드를 찍지 않았다 | `javap` 출력 **전체**(뭉개진 이름의 해시 글자까지) · `box-impl` **개수** |
 | | 컴파일 에러·`javac` 에러의 **문구와 `파일:줄:칸`** · 예외 트레이스(사용자 프레임뿐) |
@@ -395,7 +395,7 @@ javac 21.0.5
 > 근거 — 캡처 스크립트를 처음부터 다시 돌려 **블록 전체를 바이트 단위로 대조**했다. 결과는 배치 전체 수치로 아래에 적는다.
 >
 > 실측 — `capture.sh blocks` 와 `capture.sh blocks-recheck` 를 처음부터 따로 돌려 `normalize-shaky.py` 로 대조했다 —\
-> **블록 101개 · 동일 101 · 흔들린 칸 0 · ★고칠 것 0**(26\~29 네 주제를 한 캡처로 받았다). `diff -rq` 도 차이 0 이다.\
+> **블록 101개 · 동일 101 · 달라진 항목 0 · ★고칠 것 0**(26\~29 네 주제를 한 캡처로 받았다). `diff -rq` 도 차이 0 이다.\
 > ★ **정규화 규칙은 하나도 안 썼다** — 기본 넷(주소·PID·스레드 id·시간)에 걸리는 칸이 애초에 없었다.
 
 | 프로그램 | 무엇을 확인했나 | 돌린 방법 |
@@ -408,10 +408,10 @@ javac 21.0.5
 | `vcexpose.kt` · `vcexpose2.kt` | `@JvmExposeBoxed` 의 **옵트인** · 상자 받는 오버로드 | `kotlinc`(실패 1벌) · `kotlinc` → `javap` |
 | `form26.kt` | 형태 한 벌(`Z`·`Y`·`X`) | `kotlinc` → `java` |
 
-**구현 의존 항목** — 파라미터가 **알맹이 타입으로 내려가는 것**, **이름 뭉개기와 해시 글자**, **박싱 네 자리와 nullable 의 조건**, `box-impl`·`unbox-impl`·`constructor-impl`·`equals-impl0` 이라는 이름, `@JvmExposeBoxed` 의 옵트인 상태 — 전부 **JVM 백엔드와 이 판**의 산출물이다.\
+**구현 의존 항목** — 파라미터가 **알맹이 타입으로 내려가는 것**, **이름 뭉개기와 해시 글자**, **박싱 네 자리와 nullable 의 조건**, `box-impl`·`unbox-impl`·`constructor-impl`·`equals-impl0` 이라는 이름, `@JvmExposeBoxed` 의 옵트인 상태 — 전부 **JVM 백엔드와 이 버전**의 산출물이다.\
 반면 **「프로퍼티 하나·`val` 만」「backing field 금지」「`===` 금지」「`init` 허용」「`==` 는 알맹이 비교」** 는 **언어의 계약**이다.
 
-**★ 던져 봤더니 예상과 달랐던 것 — 세 건**
+**★ 실행해 봤더니 예상과 달랐던 것 — 세 건**
 
 1. ★★★ **nullable 이 늘 박싱되지는 않았다.** 공식 문서의 예(`Foo?` 는 boxed)를 그대로 믿으면 `Name?` 도 상자일 텐데, **알맹이가 `String` 이면 `box-impl` 이 0** 이었다(2번).
 2. ★★★ **`@JvmName` 으로 연 길로 들어온 값은 `init` 을 안 거쳤다.** 「이름만 바꾸는 애너테이션」으로 알았는데 **`named#-1`** 이 예외 없이 찍혔다(5번).

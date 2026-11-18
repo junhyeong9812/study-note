@@ -24,7 +24,7 @@ LLM 호출의 실패는 예외로 보이지 않는 경우가 많다. HTTP는 200
 
 실무 예:
 - 고객 상담 요약이 가끔 DB에 끊긴 채 저장된다는 신고가 왔다.
-- 이때 프롬프트부터 고치지 않는다. 그 행의 중단 사유, 스트림이 종료 이벤트로 끝났는지, 어느 모델이 응답했는지를 먼저 본다. 셋 중 무엇이 걸리는지에 따라 [11](../11-llm-api-client-contract/2-summary.md)·[14](../14-structured-output-and-tool-calling/2-summary.md)·[13](../13-model-routing-and-fallback/2-summary.md)로 갈린다.
+- 이때 프롬프트부터 고치지 않는다. 그 행의 중단 사유, 스트림이 종료 이벤트로 끝났는지, 어느 모델이 응답했는지를 먼저 본다. 셋 중 무엇이 걸리는지에 따라 [11](../11-llm-api-client-contract/2-summary.md)·[14](../14-structured-output-and-tool-calling/2-summary.md)·[13](../13-model-routing-and-fallback/2-summary.md)로 나뉜다.
 
   - *역색인*: "leaf → 증상" 목록을 "증상 → leaf" 목록으로 뒤집은 것([data-structure/32-inverted-index](../../data-structure/32-inverted-index/2-summary.md)).
   - *leaf 표기 `NN-k`*: 이 영역 NN번 노트의 「장애 시나리오와 대처」 k번째 시나리오다. 예: `11-2` = [11](../11-llm-api-client-contract/2-summary.md)의 시나리오 2(중단 사유를 확인하지 않아 잘린 응답을 저장). `NN 「…」`은 그 노트의 해당 제목 절이다.
@@ -192,7 +192,7 @@ FROM llm_call GROUP BY 1 ORDER BY 1;
 - 관찰
   - (6) 입력 토큰 총량은 이틀이 거의 같다(1,800,000 vs 1,792,000). 비용(예시 단가)은 2.45 → 4.10으로 1.7배다. "토큰 그래프는 평평한데 청구서가 뛰었다"의 모양이다. 토큰을 **종류별로** 나눠야 보인다.
     - 계산: 10-08 = 입력 336,000 × 1.0 + 캐시 쓰기 1,456,000 × 1.25 + 출력 388,000 × 5.0 = 4,096,000 → 4.10. 10-07은 캐시 읽기 1,500,000 × 0.1이 그 자리에 있었다.
-  - (3) 원인은 프롬프트 버전으로 갈렸다. v2의 캐시 읽기 비율이 0이고, 쓰기만 있는 호출이 728건이다. 이 비율을 지표로 두면 배포 당일에 잡힌다([12-1](../12-prompt-and-semantic-caching/2-summary.md)).
+  - (3) 원인은 프롬프트 버전으로 나뉘었다. v2의 캐시 읽기 비율이 0이고, 쓰기만 있는 호출이 728건이다. 이 비율을 지표로 두면 배포 당일에 잡힌다([12-1](../12-prompt-and-semantic-caching/2-summary.md)).
   - (2) 하루 평균 "요청당 호출 수"는 1.120이라 눈에 덜 띈다. 429를 겪은 요청만 보면 5.00이다. 평균은 증폭을 희석한다. 429를 겪은 요청 단위로 다시 센다([11-4](../11-llm-api-client-contract/2-summary.md) · [13-2](../13-model-routing-and-fallback/2-summary.md)).
   - (4) 폴백 응답 19건은 이틀 200 응답 1,970건의 약 1%(사고 날만 보면 970건의 약 2%)이다. 품질·파싱 지표를 응답 모델로 나누지 않으면 평균에 묻힌다([13-3](../13-model-routing-and-fallback/2-summary.md)).
   - (1) 잘림은 summary 기능에서만 난다. 기능별로 나누면 "출력 한도가 그 기능에 작다"는 후보가 바로 선다([11-2](../11-llm-api-client-contract/2-summary.md)).
@@ -241,7 +241,7 @@ FROM llm_call GROUP BY 1 ORDER BY 1;
 
 | 보이는 형태 | 1차 확인 | 원인 후보 | leaf |
 |---|---|---|---|
-| CI 스냅샷 테스트가 간헐 실패, 재실행하면 통과 | 같은 요청 N회의 서로 다른 출력 수, 갈리는 위치 | 서버 배치 구성에 따른 수치 차이로 동점 근처 1위가 바뀜 | [07-1](../07-decoding-and-nondeterminism/2-summary.md) · [testing/09](../../testing/09-flaky-tests/2-summary.md) |
+| CI 스냅샷 테스트가 간헐 실패, 재실행하면 통과 | 같은 요청 N회의 서로 다른 출력 수, 달라지는 위치 | 서버 배치 구성에 따른 수치 차이로 동점 근처 1위가 바뀜 | [07-1](../07-decoding-and-nondeterminism/2-summary.md) · [testing/09](../../testing/09-flaky-tests/2-summary.md) |
 | 같은 문의가 매번 "새 항목"으로 저장 | 키가 입력(모델·프롬프트 버전·파라미터·입력 해시)에서 나오는가 | 출력 문자열을 키로 사용 | [07-2](../07-decoding-and-nondeterminism/2-summary.md) |
 | 긴 답 뒷부분에만 무관한 단어·다른 문자 | 요청 파라미터(T·top-p), 출력 길이별 이상 문자 비율 | 확률 꼬리를 자르지 않은 샘플링 | [07-3](../07-decoding-and-nondeterminism/2-summary.md) |
 | 비슷한 질문에 뜻이 반대인 답 | 의미 캐시 적중 로그의 (질문, 저장 질문, 유사도) | 임계값이 뜻의 차이를 못 가름 | [12-2](../12-prompt-and-semantic-caching/2-summary.md) |
@@ -284,7 +284,7 @@ FROM llm_call GROUP BY 1 ORDER BY 1;
 | 프롬프트 수정 뒤 E2E 회귀 | 출력 토큰 수 분포 | 출력 길이 증가 | [10-5](../10-inference-latency-metrics/2-summary.md) |
 
 - 처방의 방향: 타임아웃은 첫 토큰·토큰 사이·전체로 나눈다([11](../11-llm-api-client-contract/2-summary.md) 「타임아웃 층위」). 대시보드 이름에 정의와 측정 위치를 붙인다(`ttft_client`·`ttft_server`).
-- 이 절은 "모델이 느리다"를 호출하는 쪽 증상으로 다룬다. 큐잉 일반(리틀 법칙)은 [math/10](../../math/10-queueing-and-littles-law/2-summary.md), 꼬리 지연 일반은 [reliability/34](../../reliability/34-tail-latency-and-stragglers/2-summary.md)가 정본이다.
+- 이 절은 "모델이 느리다"를 호출하는 쪽 증상으로 다룬다. 큐잉 일반(리틀 법칙)은 [math/10](../../math/10-queueing-and-littles-law/2-summary.md), 테일 레이턴시 일반은 [reliability/34](../../reliability/34-tail-latency-and-stragglers/2-summary.md)가 정본이다.
 
 ### 4. 429가 끝나지 않는다
 
@@ -335,7 +335,7 @@ FROM llm_call GROUP BY 1 ORDER BY 1;
 | 보이는 형태 | 1차 확인 | 원인 후보 | leaf |
 |---|---|---|---|
 | 토큰 그래프는 평평한데 청구서가 뜀 | 토큰 종류별 합(0-2 SQL (5)·(6)), 프롬프트 버전별 캐시 읽기 비율 | 접두 앞 가변값으로 캐시 미적중, 최소 길이 미달·TTL 만료 | [12-1](../12-prompt-and-semantic-caching/2-summary.md) · [12-5](../12-prompt-and-semantic-caching/2-summary.md) |
-| 대시보드와 청구서가 어긋남, 음수 비용 | 제공자별 정규화 규칙(입력 토큰에 캐시가 들어 있나) | 캐시 토큰 규칙 혼동 | [23-1](../23-llm-observability-and-cost/2-summary.md) |
+| 대시보드와 청구서가 불일치, 음수 비용 | 제공자별 정규화 규칙(입력 토큰에 캐시가 들어 있나) | 캐시 토큰 규칙 혼동 | [23-1](../23-llm-observability-and-cost/2-summary.md) |
 | 비용이 청구서보다 크게 작음 | 비용을 스팬 속성에서 합산하는가, 트레이스 샘플링 비율 | 샘플링된 스팬 합계 | [23-5](../23-llm-observability-and-cost/2-summary.md) |
 | 긴 생성 기능의 비용이 성공 건수보다 빨리 늚 | 요청 ID별 시도 수·시도별 출력 토큰 | 처음부터 재시도로 출력 토큰 재과금 | [11-3](../11-llm-api-client-contract/2-summary.md) |
 | 모델만 바꿨는데 비용 증가 | 같은 요청의 모델별 입력 토큰 | 토크나이저가 다름 | [04-3](../04-tokenization-and-token-cost/2-summary.md) |
@@ -425,7 +425,7 @@ FROM llm_call GROUP BY 1 ORDER BY 1;
 - 처방의 방향: 교체는 **고정 평가셋 + 버전 열 + 한 번에 전환**의 세 장치로 한다. 임베딩은 이중 색인 후 전환([18](../18-index-freshness-and-reembedding/2-summary.md) 「이중 색인 후 전환」), 생성 모델은 짝 비교 게이트([19](../19-llm-evaluation/2-summary.md)), 어댑터는 베이스 ID 대조([24](../24-fine-tuning-vs-rag-decision/2-summary.md)).
 - 이 증상의 함정은 **오류가 없다**는 점이다. 같은 차원이면 계산은 되고 값만 무의미하다. 크게 실패하는 쪽(차원 오류)이 오히려 빨리 드러난다([18-5](../18-index-freshness-and-reembedding/2-summary.md)).
 
-### 8. 평가 점수가 흔들린다
+### 8. 평가 점수가 실행마다 달라진다
 
 ```text
   "점수가 올랐다 / 내렸다 / 날마다 다르다"

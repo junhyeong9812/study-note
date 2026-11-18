@@ -59,7 +59,7 @@ func main() {
 
 <!-- 모듈 vis 에서 go build -gcflags=-e ./app 을 돌리고, 스크립트가 // pNN 주석의 줄에 떨어진 진단을 네 꼴(통과 · unexported · undefined: · no field or method)로 가른다. 마지막 줄에 소문자 칸 중 p12 와 같은 꼴로 답한 칸 수. -->
 
-- 통과하는 탐침은? `p11` 의 `Ärger` 와 `p10` 의 `한글` 은 각각 어떻게 되나?
+- 통과하는 probe는? `p11` 의 `Ärger` 와 `p10` 의 `한글` 은 각각 어떻게 되나?
 - 필드·메서드(`p02`·`p04`·`p05`)와 패키지 수준 이름(`p06`\~`p10`)은 **같은 꼴**의 진단을 받나?
 - 마지막 줄의 수는?
 
@@ -82,7 +82,7 @@ t40int/
 └── plugin/                  (module corp/a/plugin) → corp/a/internal/x
 ```
 
-- 여덟 칸 각각 막히나? 막힌 칸 수는?
+- 여덟 칸 각각 막히나? 막힌 항목 수는?
 - `plugin` 은 `corp` 와 **다른 모듈**이다. 결과는?
 
 ### 3. `internal` 의 기준 (왜)
@@ -237,7 +237,7 @@ func TestAddOutside(t *testing.T) {
 
 ★★★ **모든 문제에서 「이 경계를 긋는 것은 명세인가, `go` 명령인가, 컴파일러의 구현인가」를 먼저 적어라.**
 ★★ **진단 문구보다 `exit` 를 먼저 읽어라** — 문구는 흔들릴 수 있다.
-실험마다 모듈 이름이 다르다 — 이름 탐침 `vis`, 인라인 탐침 `leak`, `internal` 격자 `corp`·`other`·`corp/a/plugin`, 테스트 `calc`, JSON `ex`. `go.mod` 는 전부 `go 1.27` 이다.
+실험마다 모듈 이름이 다르다 — 이름 probe `vis`, 인라인 probe `leak`, `internal` 격자 `corp`·`other`·`corp/a/plugin`, 테스트 `calc`, JSON `ex`. `go.mod` 는 전부 `go 1.27` 이다.
 
 ## 복습 기록
 

@@ -64,7 +64,7 @@ public void testEqualsAndHashCodeConsiderSize() {
 - `smallCopy`는 `small`과 **같은 인자로 다시 만든** 별개 인스턴스다.\
   `small` 자신을 다시 비교하면 `this == o` 단축 경로에 걸려 아무것도 검증하지 못한다.
 
-> **flaky 테스트** — 코드가 그대로인데도 돌릴 때마다 통과·실패가 갈리는 테스트.\
+> **flaky 테스트** — 코드가 그대로인데도 돌릴 때마다 통과·실패가 달라지는 테스트.\
 > 예: 랜덤 두 값을 뽑아 "다르다"를 단언하면, 두 값이 우연히 같아지는 날 실패한다.
 
 > **단축 경로(short circuit)** — 본 비교에 들어가기 전에 즉시 결론을 내는 첫 줄.\
@@ -134,7 +134,7 @@ protected TimeSeriesAggregationBuilder createTestAggregatorBuilder() {
 > **변이 함수(mutation function)** — 원본에서 필드 하나를 바꾼 사본을 만들어 주는 함수.\
 > 예: `size`만 바꾼 사본을 만들어 "원본과 같지 않다"를 단언해야 필드 누락이 드러난다 - 이 함수가 null이면 그 단언 자체가 실행되지 않는다.
 
-여기서 방향이 갈린다.\
+여기서 방향이 달라진다.\
 같은 프레임워크 테스트가 **역방향 결함**(equals에는 있는데 직렬화가 안 되는 경우)에서는 즉시 실패한다.\
 형제 PR [#151796](../151796-variable-width-histogram-shard-size/tests.md)에서 45건 중 31건이 그렇게 깨졌다.
 

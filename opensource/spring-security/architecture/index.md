@@ -10,7 +10,7 @@ Spring Security의 동작을 호출 흐름 단위로 위에서 아래로 따라�
 | [security-context](security-context/README.md) | `SecurityContextHolderFilter.doFilter` | "지금 누가 요청했는가"가 ThreadLocal에 얹히고 지워지기까지. 읽기와 쓰기가 갈라진 구조. 메서드 폴더 3개와 SPI 3종 |
 | [form-login](form-login/README.md) | `AbstractAuthenticationProcessingFilter.doFilter` | POST /login이 사용자 조회와 비밀번호 대조를 거쳐 인증이 되기까지. 책임이 네 겹으로 나뉜다. 메서드 폴더 7개와 SPI 4종 |
 | [authorization](authorization/README.md) | `AuthorizationFilter.doFilter` | 설정이 자료구조가 되고 첫 매칭 규칙이 통과 여부를 정하기까지. 메서드 폴더 4개와 SPI 3종 |
-| [exception-translation](exception-translation/README.md) | `ExceptionTranslationFilter.doFilter` | 같은 접근 거부가 신뢰 수준에 따라 로그인 요구와 403으로 갈리는 자리. 메서드 폴더 3개와 SPI 3종 |
+| [exception-translation](exception-translation/README.md) | `ExceptionTranslationFilter.doFilter` | 같은 접근 거부가 신뢰 수준에 따라 로그인 요구와 403으로 나뉘는 자리. 메서드 폴더 3개와 SPI 3종 |
 | [csrf](csrf/README.md) | `CsrfFilter.doFilterInternal` | 토큰이 두 값으로 존재하고 매번 다르게 나가는 방어. 메서드 폴더 3개와 SPI 3종 |
 | [logout](logout/README.md) | `LogoutFilter.doFilter` | 핸들러들이 줄지어 세션과 컨텍스트를 정리하기까지. 인증을 만드는 흐름의 반대편. 메서드 폴더 3개와 SPI 2종 |
 | [config-dsl](config-dsl/README.md) | `HttpSecurity.build` (빌드 시점) | DSL 한 줄이 설정자가 되고, init/configure/performBuild를 거쳐 체인 하나로 조립되기까지. 메서드 폴더 4개와 SPI 2종 |

@@ -296,7 +296,7 @@ sock.on('error', (e) => console.error(e.code)); // UNABLE_TO_GET_ISSUER_CERT_LOC
   - 체인 속 **모든** 인증서의 notAfter를 감시한다.
   - 오래된 클라이언트 라이브러리(경로 구축이 약한 것)를 올린다.
 
-### 3. 시계 어긋남 — `not yet valid`
+### 3. 클럭 스큐 — `not yet valid`
 
 - **현상**: 새로 띄운 VM·임베디드 장비·컨테이너 호스트에서만 방금 발급한 인증서가 거부된다.
 - **보이는 형태**

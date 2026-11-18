@@ -101,11 +101,11 @@ e07/names/src/OrderManager.java:11:	ShortVariable:	Avoid variables with short na
 [INFO] Found 7 violations.
 ```
 
-- 잡힌 것 — **형식과 타입의 어긋남**: 이름은 boolean인데 int(`isPaid`), getter인데 void, setter인데 반환값, 길이(짧음: 3자 미만, 긺: 17자 초과 — PMD 7.28.0 규칙 XPath와 기본값 `minimum`).
+- 잡힌 것 — **형식과 타입의 불일치**: 이름은 boolean인데 int(`isPaid`), getter인데 void, setter인데 반환값, 길이(짧음: 3자 미만, 긺: 17자 초과 — PMD 7.28.0 규칙 XPath와 기본값 `minimum`).
 - 못 잡은 것 — **뜻**: `OrderManager`(모호어), `isNotDisabled`(이중 부정), `processData`·`flag`(무엇을 하는지 모름). 커리큘럼 ⚠ 칸의 세 사례가 모두 도구를 통과했다.
 - `customerShippingAddressLine`은 길이 규칙에 걸렸다. 그러나 범위가 넓은 필드라면 이 길이가 맞을 수 있다. 길이 규칙은 범위를 모른다.
 - 해석 — 이름 검사 도구는 리뷰의 하한선이다. 뜻을 묻는 질문("이 이름만 보고 동작을 맞힐 수 있나?")은 사람이 한다.
-- *LinguisticNaming*: Arnaoudova 외 "Linguistic Antipatterns: What They Are and How Developers Perceive Them"(Empirical Software Engineering, doi 10.1007/s10664-014-9350-8) 연구를 근거로 이름과 타입·반환의 언어적 어긋남을 찾는 PMD 규칙(PMD 문서).
+- *LinguisticNaming*: Arnaoudova 외 "Linguistic Antipatterns: What They Are and How Developers Perceive Them"(Empirical Software Engineering, doi 10.1007/s10664-014-9350-8) 연구를 근거로 이름과 타입·반환의 언어적 불일치를 찾는 PMD 규칙(PMD 문서).
 
 ### 실험 B: 한 개념, 세 이름 — 검색이 놓치는 곳
 
@@ -228,7 +228,7 @@ pmd check -d src/main/java -R category/java/codestyle.xml/LinguisticNaming,categ
 - 정확한 이름이 떠오르지 않으면 이름이 아니라 대상의 책임이 흐린 것이다(APOSD "Hard to Pick Name").
 - 한 개념에는 한 단어를 쓴다. 실험에서 같은 고객을 세 이름으로 부르자 검색이 셋 중 하나만 찾았고, 화면마다 할인액이 달랐다.
 - 선언과 사용이 멀수록 이름은 길어야 한다.
-- PMD 이름 규칙은 형식·타입 어긋남(7건)을 잡았지만 `processData`·`isNotDisabled`·`Manager`는 통과시켰다. 뜻은 사람이 리뷰한다.
+- PMD 이름 규칙은 형식·타입 불일치(7건)을 잡았지만 `processData`·`isNotDisabled`·`Manager`는 통과시켰다. 뜻은 사람이 리뷰한다.
 
 ## 관련 주제·근거
 

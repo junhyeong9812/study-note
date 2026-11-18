@@ -41,7 +41,7 @@
 - **Jakarta EE 기준**: **Jakarta EE 11** (Jakarta Servlet 6.1, Jakarta Persistence 3.2)
 - **그 외 baseline**: Kotlin 2.2+, 네이티브 이미지는 GraalVM 25+, 빌드는 **Gradle 9 지원**(Gradle 8.x는 8.14+ 유지)
 
-> **baseline(기준선)** — 이 버전을 쓰려면 최소한 맞춰 두어야 하는 주변 환경의 선.\
+> **baseline(베이스라인)** — 이 버전을 쓰려면 최소한 맞춰 두어야 하는 주변 환경의 선.\
 > 예: 원문이 이 절에 적은 선들이 Java 17, Jakarta EE 11, Kotlin 2.2+, GraalVM 25+, Gradle 9(또는 8.14+)이다.
 
 > **1급 지원과 최소 버전은 다른 칸이다** — 원문은 최소 자바를 Java 17로 적고 "(호환 유지)"라는 단서를 붙인 뒤, 그와 별개로 "최신 LTS **Java 25를 1급(first-class) 지원**"이라고 적는다.\
@@ -216,7 +216,7 @@ import org.jspecify.annotations.NullMarked;
 ## 용어 풀이
 
 - **GA / 4.0.x 라인** — 정식 출시 / 그 뒤로 이어지는 패치 번호대. 4.0 GA는 2025-11-20, 4.0.1은 2025-12-18이다.
-- **baseline(기준선)** — 이 버전을 쓰려면 최소한 맞춰 두어야 하는 주변 환경의 선. 4.0은 Java 17, Jakarta EE 11, Kotlin 2.2+, GraalVM 25+, Gradle 9(8.x는 8.14+)이다.
+- **baseline(베이스라인)** — 이 버전을 쓰려면 최소한 맞춰 두어야 하는 주변 환경의 선. 4.0은 Java 17, Jakarta EE 11, Kotlin 2.2+, GraalVM 25+, Gradle 9(8.x는 8.14+)이다.
 - **1급(first-class) 지원** — 공식 선택지로 받아들이는 것. 원문은 최소 자바 17과 별개로 Java 25를 1급 지원이라 적는다.
 - **모놀리식(monolithic)** — 여럿으로 나뉘지 않고 한 덩어리인 상태. 원문이 `spring-boot-autoconfigure`에 붙인 말이다.
 - **자동 설정 jar / 기술별 모듈** — 자동 설정이 담겨 있던 한 덩어리 / 4.0이 그것을 쪼갠 단위. 2차 출처 기준 약 47개이고, 각 모듈이 자체 스타터를 갖는다.

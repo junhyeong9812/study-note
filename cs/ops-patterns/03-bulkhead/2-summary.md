@@ -150,11 +150,11 @@ Bulkhead 인터페이스: tryAcquire(key) / release(key) / call(key, task) — �
 `src/main/java/com/ops/bulkhead/` 의 TODO 10개를 채워 82개 테스트를 전부 통과시킨다
 (`./run.sh 03` — 시작 시점엔 73개가 실패하는 게 정상이다).\
 계약 테스트 71개는 세 구현이
-전부 통과해야 한다 — 갈리는 것은 한 이름이 자리를 물고 안 놓을 때다.
+전부 통과해야 한다 — 달라지는 것은 한 이름이 자리를 물고 안 놓을 때다.
 
 채울 TODO (권장 순서대로):
 
-- `SharedPool` (TODO 1~4) — 기준선(칸 없음).\
+- `SharedPool` (TODO 1~4) — 베이스라인(칸 없음).\
   tryAcquire 둘 + release + call(try/finally가 여기서 나온다).
 - `FixedBulkhead` (TODO 5~7) — 이름마다 자기 칸.\
   tryAcquire + release(초과 반납 검사) + semaphoreOf(모르는 이름은 던진다).
@@ -164,7 +164,7 @@ Bulkhead 인터페이스: tryAcquire(key) / release(key) / call(key, task) — �
 아래 서머리는 이 문제(README)를 분석·정리한 것이다.
 
 실제 시스템에 붙일 때 정하는 순서는 ① **격리 단위**(무엇을 같은 칸에 넣을지 — 중요도·장애 상관관계로) → ② 방식(고정 vs 탄력) → ③ 쿼터(보장 기준으로 합해서 계획, 공용은 없다고 치고) → ④ 거절(`BulkheadFullException`)을 어떻게 분류하고 응답할지.\
-①이 코드가 아니라 설계이고, 잘못 잡으면 나머지가 성실히 틀린다. 위 「문제」절의 TODO는 ②의 세 방식을 기준선부터 순서대로 만든다.
+①이 코드가 아니라 설계이고, 잘못 잡으면 나머지가 성실히 틀린다. 위 「문제」절의 TODO는 ②의 세 방식을 베이스라인부터 순서대로 만든다.
 
 ## 장애 시나리오와 대처
 

@@ -84,7 +84,7 @@
 
 ## 실제 코드
 
-노드 데이터 루트 아래에서 인덱스와 샤드 경로가 갈리는 곳이다.
+노드 데이터 루트 아래에서 인덱스와 샤드 경로가 달라지는 곳이다.
 
 `server` / `org.elasticsearch.env` / `NodeEnvironment.java` L122-L140 ([GitHub](https://github.com/elastic/elasticsearch/blob/60bb239edb99f0e002eb620e4e82a6f2b15a49b0/server/src/main/java/org/elasticsearch/env/NodeEnvironment.java#L122-L140))
 
@@ -111,7 +111,7 @@
         }
 ```
 
-샤드 하나 안의 두 디렉터리는 여기서 갈린다.
+샤드 하나 안의 두 디렉터리는 여기서 달라진다.
 
 `server` / `org.elasticsearch.index.shard` / `ShardPath.java` L32-L33 ([GitHub](https://github.com/elastic/elasticsearch/blob/60bb239edb99f0e002eb620e4e82a6f2b15a49b0/server/src/main/java/org/elasticsearch/index/shard/ShardPath.java#L32-L33))
 

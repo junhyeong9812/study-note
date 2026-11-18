@@ -274,7 +274,7 @@ fun main() = runBlocking {
 
 선행은 [53번 주제](../53-structured-concurrency-job-cancellation-exceptions/)(구조적 동시성 — 취소와 예외 전파)이고, 짝은 [47번 주제](../47-sequences-lazy-evaluation/)(`Sequence` — 같은 지연 평가의 동기판)다.
 
-이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5 · kotlinx-coroutines 1.11.0** 에서 실제로 던져 받은 것이다.
+이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5 · kotlinx-coroutines 1.11.0** 에서 실제로 실행해 받은 것이다.
 
 ## 복습 기록
 

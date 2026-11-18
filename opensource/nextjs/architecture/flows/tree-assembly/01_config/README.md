@@ -12,7 +12,7 @@
 
 ## 실제 코드
 
-`dynamic` 문자열 하나가 갈래 셋으로 갈린다.
+`dynamic` 문자열 하나가 갈래 셋으로 나뉜다.
 
 ```tsx
 // create-component-tree.tsx L266-L290

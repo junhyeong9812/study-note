@@ -34,7 +34,7 @@
       +-- 아니면 cloneChildFibers 후 => return child        L3827
 ```
 
-1. [beginWork](01_beginWork/README.md)가 바이아웃할지 정하고 타입별로 갈린다.
+1. [beginWork](01_beginWork/README.md)가 바이아웃할지 정하고 타입별로 나뉜다.
 2. [attemptEarlyBailoutIfNoScheduledUpdate](02_attemptEarlyBailoutIfNoScheduledUpdate/README.md)가 스택만 맞춰 두고 건너뛴다.
 3. [bailoutOnAlreadyFinishedWork](03_bailoutOnAlreadyFinishedWork/README.md)가 서브트리를 건너뛸지 정한다.
 

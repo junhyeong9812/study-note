@@ -40,7 +40,7 @@
 
 **해법.** 실패를 "미전환이 보증됨 / 실상태 불명"으로 나눈다. 불명이면 아무것도 정리하지 않고 사람을 부른다.
 
-**실례.** 블루-그린 전환 실패를 게이트웨이의 보증 수준(ROLLED_BACK / INDETERMINATE / 409 소유권 상실)으로 3분기해, 보증 없는 실패에는 어느 슬롯도 내리지 않는다([pr-27](../../../../infra/docs/devlog/pr-27-blue-green.md)). 정리(down) 실패는 green이 남았을 수 있으니 UNKNOWN으로 락을 쥔 채 올린다([pr-22](../../../../infra/docs/devlog/pr-22-local-dispatch.md)). false-UNKNOWN 사건에서 fail-closed가 옳게 작동해 잘못된 "완료" 위장을 막은 것도 이 패턴의 실증이다([pr-25](../../../../infra/docs/devlog/pr-25-false-unknown.md)).
+**실례.** 블루-그린 전환 실패를 게이트웨이의 보증 수준(ROLLED_BACK / INDETERMINATE / 409 소유권 상실)으로 3분기해, 보증 없는 실패에는 어느 슬롯도 내리지 않는다([pr-27](../../../../infra/docs/devlog/pr-27-blue-green.md)). 정리(down) 실패는 green이 남았을 수 있으니 UNKNOWN으로 락을 잡은 채 올린다([pr-22](../../../../infra/docs/devlog/pr-22-local-dispatch.md)). false-UNKNOWN 사건에서 fail-closed가 옳게 작동해 잘못된 "완료" 위장을 막은 것도 이 패턴의 실증이다([pr-25](../../../../infra/docs/devlog/pr-25-false-unknown.md)).
 
 ## 패턴 6 — 이름이 아니라 내용으로 고정한다
 
@@ -52,7 +52,7 @@
 
 ## 패턴 7 — 판정 소스를 하나로 둔다
 
-**문제.** 같은 것을 두 곳에서 판정하면, 둘이 갈리는 순간 어느 쪽이 이겼는지가 침묵으로 결정된다.
+**문제.** 같은 것을 두 곳에서 판정하면, 둘이 달라지는 순간 어느 쪽이 이겼는지가 침묵으로 결정된다.
 
 **해법.** 검증·정규화·상태의 정본을 한 곳에만 둔다. 그 한 곳이 곧 계약이다.
 
@@ -62,9 +62,9 @@
 
 **문제.** 방어선이 무언가를 못 막으면, 그 사실이 조용히 묻혀 "다 막았다"로 오인된다.
 
-**해법.** 미완·한계·이연을 코드 주석·이슈·검증 대장에 명시한다. 무음 이연을 금지한다.
+**해법.** 미완·한계·이연을 코드 주석·이슈·검증 대장에 명시한다. 조용한 이연을 금지한다.
 
-**실례.** dispatch의 orphan 완전 방어를 못 하면서 "무음 이연 아님"과 함께 이슈 #21로 분리했다([pr-22](../../../../infra/docs/devlog/pr-22-local-dispatch.md)). identity 결박이 못 닫는 축(엉뚱한 서비스를 가리키는 오설정)을 주석에 적고 #19가 닫는다고 남겼다([pr-30](../../../../infra/docs/devlog/pr-30-outcome-identity.md)). JWKS 재페치 창의 kid 거절이 fail-open이 아니라 가용성 대가임을 주석으로 구분했다([pr-24](../../../../infra/docs/devlog/pr-24-jwks.md)). 구현 접촉에서만 판정 가능한 수치는 `[구현 검증]` 태그로 중앙 대장에 등재한다.
+**실례.** dispatch의 orphan 완전 방어를 못 하면서 "조용한 이연 아님"과 함께 이슈 #21로 분리했다([pr-22](../../../../infra/docs/devlog/pr-22-local-dispatch.md)). identity 결박이 못 닫는 축(엉뚱한 서비스를 가리키는 오설정)을 주석에 적고 #19가 닫는다고 남겼다([pr-30](../../../../infra/docs/devlog/pr-30-outcome-identity.md)). JWKS 재페치 창의 kid 거절이 fail-open이 아니라 가용성 대가임을 주석으로 구분했다([pr-24](../../../../infra/docs/devlog/pr-24-jwks.md)). 구현 접촉에서만 판정 가능한 수치는 `[구현 검증]` 태그로 중앙 대장에 등재한다.
 
 ## 패턴 9 — 그린이 안전을 뜻하지 않는다 (검증의 검증)
 
@@ -80,7 +80,7 @@
 
 **해법.** 서로 다른 방법을 겹친다 — 논증과 실행, 구현을 본 리뷰와 안 본 리뷰(blind), 도구 A와 도구 B.
 
-**실례.** 배포 창 락에서 Opus는 SQL 의미를 논증해 clean으로 읽었고 codex는 실 MySQL로 익스플로잇해 High 3건을 실증했다 — 정반대 판정이 갈린 이유가 방법의 차이였다([pr-16](../../../../infra/docs/devlog/pr-16-window-lock.md)). 여러 PR에서 codex가 Opus의 누락을 단독으로 보완했다(빈 requestId·malformed nbf). 구현을 열람하지 않고 불변식만 보고 테스트를 설계하는 blind 워커가 명세 공백을 되돌려줬다([pr-29](../../../../infra/docs/devlog/pr-29-oidc-allowlist.md)·[pr-31](../../../../infra/docs/devlog/pr-31-compose-embed.md)). 이 프로젝트의 결론 — 리뷰어를 늘리는 것보다 방법을 겹치는 것이 결함을 잡는다.
+**실례.** 배포 창 락에서 Opus는 SQL 의미를 논증해 clean으로 읽었고 codex는 실 MySQL로 익스플로잇해 High 3건을 실증했다 — 정반대 판정이 달라진 이유가 방법의 차이였다([pr-16](../../../../infra/docs/devlog/pr-16-window-lock.md)). 여러 PR에서 codex가 Opus의 누락을 단독으로 보완했다(빈 requestId·malformed nbf). 구현을 열람하지 않고 불변식만 보고 테스트를 설계하는 blind 워커가 명세 공백을 되돌려줬다([pr-29](../../../../infra/docs/devlog/pr-29-oidc-allowlist.md)·[pr-31](../../../../infra/docs/devlog/pr-31-compose-embed.md)). 이 프로젝트의 결론 — 리뷰어를 늘리는 것보다 방법을 겹치는 것이 결함을 잡는다.
 
 ## 이 패턴들이 함께 그리는 태도
 

@@ -143,7 +143,7 @@ rows where node18 and node20 differ: 0 / 6
 
 - ★★★ **same-tick · next-microtask · 3rd-microtask** — `catch ran` · `0` · `0 · no`. node 는 **마이크로태스크를 다 비운 뒤에** 처리기 없는 거부를 본다.
 - ★★★ **setTimeout-0 · setImmediate** — 훅이 있으면 `unhandledRejection(R) catch ran rejectionHandled` · `0`, 없으면 `1 · yes`(그리고 `catch` 는 못 돈다). **never** — `unhandledRejection(R)` · `0` / `1 · yes`.
-- ★★ **훅이 있으면 `exit 0`** — 기본 모드 `throw` 는 「훅이 없을 때만」 미처리 예외로 올린다. **두 판이 같다**(`0 / 6`).
+- ★★ **훅이 있으면 `exit 0`** — 기본 모드 `throw` 는 「훅이 없을 때만」 미처리 예외로 올린다. **두 버전이 같다**(`0 / 6`).
 
 ### 6. `catch ran` 셋 → **`unhandledrejection(setTimeout-0-twice)`** · **`unhandledrejection(never)`** → `catch ran(setTimeout-0-twice)` → **`rejectionhandled(setTimeout-0-twice)`** — 플래그 없이는 **이벤트 줄이 전부 빠진다** ★★★
 
@@ -170,7 +170,7 @@ catch ran(setTimeout-0-twice)
 
 **왜 그런가**
 
-- ★★★ **`setTimeout-0` 은 보고되지 않았다** — HTML 은 알림을 **태스크 하나로** 미루는데, 이 판에서는 `setTimeout` 0 의 `catch` 가 그 태스크보다 먼저 돌았다(node 는 보고했다 — 5번).
+- ★★★ **`setTimeout-0` 은 보고되지 않았다** — HTML 은 알림을 **태스크 하나로** 미루는데, 이 버전에서는 `setTimeout` 0 의 `catch` 가 그 태스크보다 먼저 돌았다(node 는 보고했다 — 5번).
 - ★★ `setTimeout` 을 두 번 거친 것은 **보고된 뒤** 달려 `rejectionhandled` 가 따라왔다.
 - ★★★ **플래그 없이**는 `file://` 스크립트가 **muted** 라서 HTML 의 훅이 첫 단계에서 돌아간다 — `catch ran` 네 줄만 남는다.
 
@@ -236,7 +236,7 @@ Node.js v20.19.6
 | `js36b-37e-unhandled-stderr.sh` | ★★ 기본 모드 표준 오류 · `warn` 모드 | node20 1벌씩 |
 | `js36b-37f-unhandled.web.js` | ★★★ Chrome 의 보고 순서 · muted 면 0 줄 | Chrome 151 플래그 있음·없음 1벌씩 |
 
-두 node 판 · Chrome 대조기(이 묶음 전체의 node 탐침). `DIFFERS` 가 한 줄도 없다.
+두 node 버전 · Chrome 대조기(이 묶음 전체의 node probe). `DIFFERS` 가 한 줄도 없다.
 
 ```sh
 # js36b-vdiff.sh
@@ -283,9 +283,9 @@ js36b-39g-generator-runner.js        node18/node20 identical  node20/Chrome iden
 node18 vs node20: identical 13 · differs 0   ·   node20 vs Chrome 151: identical 12 · differs 0 · node only 1
 ```
 
-**구현 의존 항목 — 판이 오르면 다시 돌릴 것**
+**구현 의존 항목 — 버전이 오르면 다시 돌릴 것**
 
-- ★★★ **미처리 거부의 보고 시점과 종료 코드** — node 의 모드와 Chrome 의 태스크 순서. 판이 오르면 5번·6번을 다시 돌린다.
+- ★★★ **미처리 거부의 보고 시점과 종료 코드** — node 의 모드와 Chrome 의 태스크 순서. 버전이 오르면 5번·6번을 다시 돌린다.
 - ★★ `--unhandled-rejections=warn` 블록의 **`(node:PID)`** 는 실행마다 바뀐다 — 재대조에서 정규화한 유일한 칸이다.
 - ★ 예외 문구(`Chaining cycle detected …`)와 node 의 경고 문구.
 
@@ -293,7 +293,7 @@ node18 vs node20: identical 13 · differs 0   ·   node20 vs Chrome 151: identic
 
 이 파일의 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Chrome 151**(헤드리스) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
 블록은 **전부 캡처 파일에서 조립**했다.
-★★ **이 주제에서 두 node 판이 갈린 탐침은 없다**(대조기의 `identical` · 5번의 `0 / 6`).
+★★ **이 주제에서 두 node 버전이 달라진 probe는 없다**(대조기의 `identical` · 5번의 `0 / 6`).
 
 **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
 `js36b-37a-transitions.js`(1번 · 7번) · `js36b-37b-ticks.js`(2번 · 8번) · `js36b-37c-chain.js`(3번 · 4번 · 9번) ·

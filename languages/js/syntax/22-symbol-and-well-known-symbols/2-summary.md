@@ -246,9 +246,9 @@ differing cells (string key vs symbol key) 6 / 10
 
 - ★★★ **집계 줄이 `6 / 10`** 이다 — 글자 키와 심볼 키가 **열 개 중 여섯 열에서 반대로** 답한다.
   `for-in`·`keys`·`entries`·`JSON`·`gOPN` 다섯은 **글자만**, `gOPS` 하나는 **심볼만** 본다.
-- ★★★ **안 갈린 네 열이 「심볼은 비공개가 아니다」의 증거다.** `Reflect.ownKeys`·스프레드·`Object.assign`·`Object.hasOwn` 은 심볼 키를 **그대로** 본다.
+- ★★★ **안 달라진 네 열이 「심볼은 비공개가 아니다」의 증거다.** `Reflect.ownKeys`·스프레드·`Object.assign`·`Object.hasOwn` 은 심볼 키를 **그대로** 본다.
   스프레드와 `assign` 은 **심볼 키를 복사해 간다** — 「심볼로 숨겼다」는 복사 한 번에 무너진다.
-- ★★ **`Symbol.for` 줄도 `Symbol.iterator` 줄도 보통 심볼 줄과 같다**(`[2]` 의 두 `true`). **키로서는 심볼 종류를 안 가린다.** 종류가 갈리는 곳은 약한 참조뿐이다(동작 (6)).
+- ★★ **`Symbol.for` 줄도 `Symbol.iterator` 줄도 보통 심볼 줄과 같다**(`[2]` 의 두 `true`). **키로서는 심볼 종류를 안 가린다.** 종류가 달라지는 곳은 약한 참조뿐이다(동작 (6)).
 - ★★ **비열거 심볼 줄**은 스프레드·`assign` 에서도 `.` 이다 — 그 둘은 「**own ∧ 열거 가능**」을 본다(18편의 결론과 같다). 심볼이냐는 그 둘의 기준에 **없다.**
 - ★★ **`[3]` — 넣은 순서가 `sym1, b, 2, sym2, a, 1` 인데 나온 순서는 `["1","2","b","a","Symbol(sym1)","Symbol(sym2)"]`** 다.
   13편의 세 덩어리(정수 오름차순 → 문자열 삽입순 → **심볼 삽입순**) 그대로다 — **심볼을 먼저 넣어도 끝으로 간다.**
@@ -420,12 +420,12 @@ console.log("  own descriptor on Date.prototype: " + JSON.stringify(Object.getOw
 - ★★ **`BigInt(x)` 는 `"number"`** 이고 결과가 `7n` 이다 — `BigInt` 도 숫자 쪽으로 묻는다.
 - ★★★ **안 부른 넷** — `===` 는 변환을 **아예 안 한다.** `!x` 와 `x ? :` 는 **ToBoolean** 이라 객체면 무조건 참이다 — **진릿값에는 훅이 없다.**
   `JSON.stringify(x)` 는 `toJSON` 을 볼 뿐 `toPrimitive` 를 안 읽어 `"{}"` 이다.
-- ★ **집계 줄 `{"default":5,"number":9,"string":6,"(no call)":4}`** — 이 수는 **탐침이 고른 24가지의 분포**이지 언어의 성질이 아니다. 성질은 **줄마다의 hint** 다.
+- ★ **집계 줄 `{"default":5,"number":9,"string":6,"(no call)":4}`** — 이 수는 **probe가 고른 24가지의 분포**이지 언어의 성질이 아니다. 성질은 **줄마다의 hint** 다.
 
 **`[3]` — 메서드가 이상한 것을 돌려주거나, 메서드가 아니면.**
 
 - ★★★ **`null`·`undefined` 면 「없는 셈」** 이다 — `valueOf` 로 넘어가 `2` 가 나왔다. 명세의 `GetMethod` 가 둘을 **없음**으로 읽기 때문이다.
-  ★ **`1` 이면 `TypeError 「number 1 is not a function」`** 이다 — 「없음」이 아니라 「**잘못 있음**」이다. **`null` 과 `1` 이 반대로 갈린다.**
+  ★ **`1` 이면 `TypeError 「number 1 is not a function」`** 이다 — 「없음」이 아니라 「**잘못 있음**」이다. **`null` 과 `1` 이 반대로 나뉜다.**
 - ★★ **객체를 돌려주면 `TypeError 「Cannot convert object to primitive value」`** — 02편 `[4]` 의 「둘 다 객체」와 **같은 문구**다. `valueOf`/`toString` 으로 **재시도하지 않는다.**
 - ★★ **심볼을 돌려주면 변환 자체는 통과한다** — 심볼도 원시값이다. 터지는 것은 **그다음**이다: `+ 1` 은 숫자로, `` `${}` `` 는 문자열로 만들려다
   `Cannot convert a Symbol value to a number` / `to a string` 이 된다(동작 (3) 과 같은 문구).
@@ -436,7 +436,7 @@ console.log("  own descriptor on Date.prototype: " + JSON.stringify(Object.getOw
   "Dates are unique among built-in ECMAScript object in that they treat "default" as being equivalent to "string"".
   **다른 내장 객체는 `default` 를 `number` 처럼** 다룬다(02편 `[3]` 의 기본 객체가 그랬다).
 - ★ **`d - 1` 과 `d < 1` 은 `"number"`** — 산술·대소 비교는 `Date` 여도 숫자다.
-- ★ **그 메서드는 `Date.prototype` 에 `writable: false` · `configurable: true`** 로 붙어 있다. 그래서 탐침은 대입이 아니라 `defineProperty` 로 **인스턴스에** 감쌌다.
+- ★ **그 메서드는 `Date.prototype` 에 `writable: false` · `configurable: true`** 로 붙어 있다. 그래서 probe는 대입이 아니라 `defineProperty` 로 **인스턴스에** 감쌌다.
 
 ### (3) ★★ 심볼 자신의 변환 — 「명시적이면 된다」가 아니다
 
@@ -562,14 +562,14 @@ throwing cells 5 / 6
 
 - ★★★ **집계 줄 `throwing cells 5 / 6`** — 여섯 변환 중 **`String(s)` 하나만** 된다.
   ★★★ **「명시적 변환은 되고 암묵적 변환만 막힌다」는 틀린 요약이다** — `Number(s)` 는 명시적인데 **던진다.**
-  갈리는 기준은 「명시적이냐」가 아니라 「**`String` 함수가 심볼을 따로 챙기느냐**」다(명세: "If NewTarget is undefined and value is a Symbol, return SymbolDescriptiveString(value).").
+  달라지는 기준은 「명시적이냐」가 아니라 「**`String` 함수가 심볼을 따로 챙기느냐**」다(명세: "If NewTarget is undefined and value is a Symbol, return SymbolDescriptiveString(value).").
 - ★★ **`` `${s}` `` 가 던진다** — 템플릿 리터럴은 `ToString` 을 부른다. **로그 문자열에 심볼을 끼워 넣는 것은 `String(s)` 이나 `s.description` 으로** 해야 한다.
 - ★★ **`[s].join()` 도 던진다** — 원소마다 `ToString` 이다. 02편의 「배열은 원소마다 `String()` 을 부른다」는 **문자 그대로는 틀린 줄**이 여기서 드러난다:
   원소에는 함수 `String` 이 아니라 **추상 연산 `ToString`** 이 붙는다(그래서 심볼 샛길이 없다).
 - ★★ **`s == 'Symbol(k)'` 는 던지지 않고 `false`** 다. 느슨한 같음에서 한쪽이 심볼이면 **변환 없이 다르다**고 답한다. 대소 비교(`s < 1`)는 숫자로 바꾸려다 던진다.
 - ★ **`new Symbol('a')` 는 `TypeError 「Symbol is not a constructor」`** — 명세의 `Symbol` 함수 첫 줄이 "If NewTarget is not undefined, throw a TypeError exception." 이다.
   ★ 그런데 **`Object(Symbol('a'))` 는 된다**(`"object"`) — 래퍼 객체를 **`new` 없이** 만드는 길이다. 01편의 임시 래핑과 같은 래퍼다.
-- ★ **`description`** — `Symbol()` 과 `Symbol(undefined)` 는 `undefined`, `Symbol('')` 은 `""` 다. **없음과 빈 문자열이 갈린다.**
+- ★ **`description`** — `Symbol()` 과 `Symbol(undefined)` 는 `undefined`, `Symbol('')` 은 `""` 다. **없음과 빈 문자열이 달라진다.**
   인자는 `ToString` 을 거치므로 `Symbol(42)` 는 `"42"`, `Symbol({})` 는 `"[object Object]"` 다.
 
 ### (4) ★★★ `Symbol.toStringTag` — 브랜드 태그 창 ③이 얼마나 믿을 만한가
@@ -902,7 +902,7 @@ methods that read species 7 / 14
 ```
 
 - ★★★ **집계 줄 `7 / 14`.** ES2015 계열의 일곱은 species 를 **정확히 한 번** 읽고, **ES2023 복사 메서드 넷은 한 번도 안 읽는다** — 늘 `Array` 다.
-  ★ **이 줄은 node18 에서 다르다** — 네 메서드가 **없어서** `TypeError 「a.toSorted is not a function」` 이다(판이 갈린 블록, 실행 검증 표).
+  ★ **이 줄은 node18 에서 다르다** — 네 메서드가 **없어서** `TypeError 「a.toSorted is not a function」` 이다(판이 달라진 블록, 실행 검증 표).
 - ★★ **`[2]` — species 가 `undefined`·`null` 이면 `Array`** 로 돌아간다(`ArraySpeciesCreate`: "If C is null, set C to undefined." → `ArrayCreate`).
   **`42` 면 `TypeError`**, **아무 객체나 돌려주는 함수면 결과가 배열이 아니다**(`Object {"0":1,"1":2}`) — 명세 문장 그대로 "It does not enforce that the constructor function returns an Array."
 - ★ **`[3]` — `Promise` 도 species 를 읽는다.** `then` 은 한 번, `finally` 는 **두 번**(`finally` 가 species 를 읽고, 안에서 `then` 을 불러 또 읽는다).
@@ -1008,7 +1008,7 @@ attempt("strict: compile a with statement", () => { new Function('"use strict"; 
 - ★★ **`[4]` — `Symbol.match` 는 「이것이 정규식인가」의 판별 키**다(명세 `IsRegExp`). `startsWith(/a/)` 는 던지는데, 그 정규식의 `Symbol.match` 를 `false` 로 두면 **문자열 `"/a/"` 로 취급돼** `true` 가 된다.
   거꾸로 **평범한 객체에 `Symbol.match: true`** 만 붙여도 `includes` 가 「정규식을 주지 마라」로 던진다. ★ **브랜드 태그와 같은 꼴** — 판별이 슬롯이 아니라 **키 하나**에 걸려 있다.
 - ★ **`[5]` — `Symbol.unscopables`** 는 `with` 문이 **어느 이름을 객체에서 찾지 말지**를 정한다. `with ([1, 2])` 안에서 `keys` 는 **바깥 변수**(`"string"`)를, `length` 는 배열의 것(`2`)을 읽었다.
-  ★ **그 `with` 는 엄격 모드에서 `SyntaxError 「Strict mode code may not include a with statement」`** — 모듈·`class` 몸통은 늘 엄격이므로 **현대 코드에서 이 심볼이 일할 자리는 거의 없다.** 창 표에서 「반쯤 부적용」으로 둔 이유다.
+  ★ **그 `with` 는 엄격 모드에서 `SyntaxError 「Strict mode code may not include a with statement」`** — 모듈·`class` 몸통은 늘 엄격이므로 **현대 코드에서 이 심볼이 일할 자리는 거의 없다.** 창 표에서 「반쯤 해당 없음」으로 둔 이유다.
 
 ### (6) ★★ `Symbol.for` 전역 레지스트리 — 그리고 약한 키가 될 수 있나
 
@@ -1101,13 +1101,13 @@ symbol kinds accepted as a WeakMap key 2 / 3
   심볼이 아닌 것을 넣으면 `TypeError 「app is not a symbol」`.
 - ★★ **`[3]` — `node:vm` 의 새 realm 에서 만든 `Symbol.for('app')` 도, 거기서 읽은 `Symbol.iterator` 도 이쪽 것과 `===`** 이고, `Symbol('app')` 은 아니다.
   ★ **창을 바꿔 물은 자리다**(제5의 상태) — 브라우저의 iframe 대신 Node 호스트의 `vm` 으로 물었다. `vm` 이 만든 것이 명세의 realm 과 같은 것인지는 **이 문서가 확인하지 않았다.**
-- ★★★ **`[4]` — 집계 줄이 node20 은 `2 / 3`, node18 은 `0 / 3`** 이다. **판이 갈린 블록**이다(ES2023 이 node18 에 없다 — 판별 블록의 `symbols as WeakMap keys` 줄과 같다).
+- ★★★ **`[4]` — 집계 줄이 node20 은 `2 / 3`, node18 은 `0 / 3`** 이다. **판이 달라진 블록**이다(ES2023 이 node18 에 없다 — 판별 블록의 `symbols as WeakMap keys` 줄과 같다).
   node20 에서 **장부 심볼만 거절된다**(`Invalid value used as weak map key`). 명세 `CanBeHeldWeakly` 의 둘째 줄 그대로이고, 그 note 가 이유를 적는다 —
   "A Symbol value produced by Symbol.for, unlike other Symbol values, does not have language identity and is unsuitable for use as a weak reference."
   **누구나 `Symbol.for("k")` 로 다시 만들 수 있으니 「더 이상 아무도 못 가리킨다」가 성립하지 않는다**는 뜻이다. 수명의 의미 자체는 23편이 잇는다.
   ★ **잘 알려진 심볼은 허용된다** — 명세 note 는 "likely to never be collected, but are nonetheless treated as" 약한 대상으로 적는다.
 
-node18 판 — 다른 곳은 한 글자도 같고 `[4]` 만 갈린다.
+node18 판 — 다른 곳은 한 글자도 같고 `[4]` 만 달라진다.
 
 ```text
 ===== node18 js20b-22h-registry.js (exit=0) =====
@@ -1217,11 +1217,11 @@ node20 에서 **`TypeError`** 다. 약한 키가 될 수 있는 심볼은 **장�
 - **`ArraySpeciesCreate` 를 쓰는 메서드와 안 쓰는 메서드의 구분 · species 가 `null`/`undefined` 면 `Array`.**
 - **`Symbol.for` 가 같은 문자열에 같은 심볼을 주는 것 · 장부 심볼이 약한 키가 될 수 없는 것**(ES2023 `CanBeHeldWeakly`).
 
-### 엔진(V8) 구현 · 이 판의 관찰
+### 엔진(V8) 구현 · 이 버전의 관찰
 
 - **예외 문구 전부** — `Cannot convert a Symbol value to a string` · `Symbol is not a constructor` · `Right-hand side of 'instanceof' is not callable` ·
   `Invalid value used as weak map key` · `WeakRef: invalid target`(node20) / `WeakRef: target must be an object`(node18) 등. **종류만 명세가 정한다.**
-- **`Array.prototype[Symbol.unscopables]` 객체의 키 순서** — 두 판이 다르게 찍었다(두 판 대조기).
+- **`Array.prototype[Symbol.unscopables]` 객체의 키 순서** — 두 버전이 다르게 찍었다(두 판 대조기).
 - **node18 에 ES2023 기능(배열 복사 메서드 · 심볼 약한 키)이 없는 것** — 그 판의 사정이다.
 
 ### 호스트가 정하는 것 — ECMA-262 밖
@@ -1248,7 +1248,7 @@ node20 에서 **`TypeError`** 다. 약한 키가 될 수 있는 심볼은 **장�
 
 ## 핵심 문장
 
-1. **심볼은 만들 때마다 다른 원시값이고, 키로 쓰면 글자 이름과 겹치지 않는다** — 격자에서 글자 키와 **`6 / 10` 열이 갈린다.**
+1. **심볼은 만들 때마다 다른 원시값이고, 키로 쓰면 글자 이름과 겹치지 않는다** — 격자에서 글자 키와 **`6 / 10` 열이 달라진다.**
 2. **심볼 키는 숨겨진 게 아니다** — `Reflect.ownKeys`·스프레드·`assign`·`hasOwn` 이 본다.
 3. **잘 알려진 심볼은 「언어가 연산 도중에 읽는 키」다** — `+` 앞의 `toPrimitive`, `instanceof` 앞의 `hasInstance`, `map` 앞의 `species`.
 4. **`toPrimitive` 의 hint 는 연산자가 정한다** — `+`·`==` 는 `default`, 산술·대소는 `number`, 템플릿·키·`String()` 은 `string`, `===`·`!` 는 부르지도 않는다.
@@ -1282,21 +1282,21 @@ node20 에서 **`TypeError`** 다. 약한 키가 될 수 있는 심볼은 **장�
 
 ## 더 들어가면
 
-**이 판의 잘 알려진 심볼 목록 — 세 판이 같다**(블록은 [3-answer.md](3-answer.md) 11번 — node20 · node18 · Chrome 151 이 **15개 한 글자도 같다**).
+**이 버전의 잘 알려진 심볼 목록 — 세 버전이 같다**(블록은 [3-answer.md](3-answer.md) 11번 — node20 · node18 · Chrome 151 이 **15개 한 글자도 같다**).
 
 - ★★ **15개 중 `dispose`·`asyncDispose` 둘은 ES2026 명세 본문에 없다** — 내려받은 ES2026 본문에서 `dispose` 가 **한 번도** 안 나오고, finished proposals 표는 Explicit Resource Management 를 **2027** 로 적는다.
-  그런데 **세 판 다 그 심볼을 갖고 있다.** ★★★ **「심볼이 있다」와 「문법이 있다」는 다른 질문이다** — `using` 선언은 **node 두 판에서 `SyntaxError`** 이고 **Chrome 151 만 컴파일한다.**
+  그런데 **세 버전 다 그 심볼을 갖고 있다.** ★★★ **「심볼이 있다」와 「문법이 있다」는 다른 질문이다** — `using` 선언은 **node 두 버전에서 `SyntaxError`** 이고 **Chrome 151 만 컴파일한다.**
   이 문법의 정본은 [목록의 **51번 주제**](../51-explicit-resource-management-and-using/)다.
-- ★ **`using` 의 문구가 두 판에서 갈린다**(`Unexpected identifier` / `Unexpected identifier 'r'`) — 이 주제에서 **문구만** 갈린 블록이다.
+- ★ **`using` 의 문구가 두 버전에서 달라진다**(`Unexpected identifier` / `Unexpected identifier 'r'`) — 이 주제에서 **문구만** 달라진 블록이다.
 - ★ `Symbol.iterator` 자신은 `Symbol` 에 **`writable: false` · `configurable: false`** 로 붙어 있다 — 잘 알려진 심볼은 **바꿀 수 없는 상수**다. 바꿀 수 있는 것은 **각 객체의 그 키에 무엇을 두느냐**다.
 
-**두 판 대조기** — 이 배치의 node 탐침이 두 판에서 갈렸나를 스크립트가 센다(전문은 [3-answer.md](3-answer.md) 의 실행 검증). 이 주제의 것은 `22f`·`22g`·`22h`·`22i` 넷이고, 배치 전체의 집계 줄은 다음과 같다.
+**두 판 대조기** — 이 배치의 node probe가 두 버전에서 갈렸나를 스크립트가 센다(전문은 [3-answer.md](3-answer.md) 의 실행 검증). 이 주제의 것은 `22f`·`22g`·`22h`·`22i` 넷이고, 배치 전체의 집계 줄은 다음과 같다.
 
 `identical 18  ·  differs 6  ·  total 24`
 
 ## 실행 환경
 
-★★★ **이 주제의 본체는 ① 추상 연산에 로그 심기다.**
+★★★ **이 주제의 핵심은 ① 추상 연산에 로그 심기다.**
 `Symbol.toPrimitive`·`Symbol.hasInstance`·`Symbol.species` 는 **언어가 연산 도중에 몰래 읽는 키**다.
 연산의 결과(`8`·`true`·`Array`)만 보면 그 키가 **읽혔는지, 무슨 인자로 불렸는지** 한 글자도 안 남는다.
 그래서 세 자리에 로그를 심고 연산자·내장 메서드를 차례로 들이댔다. **hint 가 무엇으로 오나는 오직 그 로그로만 보인다.**
@@ -1314,7 +1314,7 @@ node20 에서 **`TypeError`** 다. 약한 키가 될 수 있는 심볼은 **장�
 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
 브라우저 블록은 **Google Chrome 151** 의 `--headless --dump-dom` 으로 받았다(맨 위 판별 블록 끝).
 ★★ **예외는 `try`/`catch` 로 받아 `이름 「메시지」` 꼴로만** 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
-★ **이 주제의 블록에는 주소도 시간도 난수도 없다.** 같은 판에서 다시 돌리면 한 글자도 안 변한다.
+★ **이 주제의 블록에는 주소도 시간도 난수도 없다.** 같은 버전에서 다시 돌리면 한 글자도 안 변한다.
 
 **버전 — 판 경계**
 
@@ -1324,29 +1324,29 @@ node20 에서 **`TypeError`** 다. 약한 키가 될 수 있는 심볼은 **장�
 | `Symbol.prototype.description` | **ES2019** | 세 판 전부 있다 |
 | 배열 복사 메서드(`toSorted`·`toReversed`·`with`·`toSpliced`) — species 를 **안 읽는** 쪽 | **ES2023** | ★ **node18 에 없다**(동작 (5)) |
 | 심볼을 `WeakMap` 키·`WeakRef` 대상으로(Symbols as WeakMap keys) | **ES2023** | ★ **node18 에 없다**(판별 블록 · 동작 (6)) |
-| `Symbol.dispose`·`Symbol.asyncDispose` · `using` 선언(Explicit Resource Management) | **ES2027**(finished proposals 표) | ★ 심볼은 **세 판 다** 있는데 `using` 문법은 **Chrome 151 만** 컴파일한다(더 들어가면) |
+| `Symbol.dispose`·`Symbol.asyncDispose` · `using` 선언(Explicit Resource Management) | **ES2027**(finished proposals 표) | ★ 심볼은 **세 버전 다** 있는데 `using` 문법은 **Chrome 151 만** 컴파일한다(더 들어가면) |
 
-**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+**★★★ 이 주제가 쓰는 창 — 그리고 해당 없는 창**
 
 | 창 | 이 주제에서 무엇을 보나 |
 |---|---|
-| ★★★ **① 추상 연산에 로그 심기**(본체) | `[Symbol.toPrimitive](hint)` 가 받는 **hint** 를 연산 24가지에서 · `static [Symbol.hasInstance](v)` 가 받는 인자 · `static get [Symbol.species]()` 를 **읽은 메서드** 14가지 · `Date` 의 자체 `toPrimitive` 를 감싸서 |
-| ★★★ **② 전수 격자** | 키 종류 5 × 키를 늘어놓는 문법 10 — 「**갈린 칸 N / M**」을 스크립트가 센다 · 변환 여섯 가지 중 던지는 칸 · 「브랜드 태그 대 슬롯 판별」이 어긋나는 칸 |
+| ★★★ **① 추상 연산에 로그 심기**(핵심) | `[Symbol.toPrimitive](hint)` 가 받는 **hint** 를 연산 24가지에서 · `static [Symbol.hasInstance](v)` 가 받는 인자 · `static get [Symbol.species]()` 를 **읽은 메서드** 14가지 · `Date` 의 자체 `toPrimitive` 를 감싸서 |
+| ★★★ **② 전수 격자** | 키 종류 5 × 키를 늘어놓는 문법 10 — 「**달라진 항목 N / M**」을 스크립트가 센다 · 변환 여섯 가지 중 던지는 칸 · 「브랜드 태그 대 슬롯 판별」이 어긋나는 칸 |
 | ★★★ **③ 브랜드 태그** — ★ **이 주제에서는 창 자체가 과녁이다** | `Object.prototype.toString.call(v)` 가 **`Symbol.toStringTag` 한 프로퍼티로 바꿔치기된다.** 이 창을 다른 편에서 판별 도구로 썼다면, 여기서 그 창이 **어디까지 믿을 만한지**를 잰다(동작 (4)) |
 | ★★ **④ 예외의 `constructor.name` + `message`** | 심볼의 암묵 변환 · `new Symbol` · `instanceof` 우변 · species 가 생성자가 아닐 때 · 레지스트리 심볼을 `WeakMap` 키로 |
-| ★★ **⑤ 두 판 대조기** | 이 주제의 탐침 넷이 **두 판에서 갈린다** — 전부 **ES2023 기능의 유무**와 문구 한 줄이다(실행 검증 표) |
+| ★★ **⑤ 두 판 대조기** | 이 주제의 probe 넷이 **두 버전에서 달라진다** — 전부 **ES2023 기능의 유무**와 문구 한 줄이다(실행 검증 표) |
 | ★ **창을 바꿔 물었다**(제5의 상태) | 「레지스트리 심볼은 판 경계를 넘나?」 — 브라우저 iframe 을 쓰는 대신 **`node:vm` 의 새 realm** 으로 물었다(동작 (6) `[3]`). ★ **`vm` 은 호스트 API** 라 ECMA-262 가 보장하는 「realm」 과 같은 것인지는 이 문서가 확인하지 않았다 |
-| ★ **부적용 — 진단의 `(행,열)`**(18-C) | `SyntaxError` 는 두 줄(`with`·`using`)뿐이고 **어느 쪽으로 묶이나**를 가를 일이 없다 — 잴 것이 없다 |
-| ★ **반쯤 부적용 — `Symbol.unscopables`** | 그 심볼이 바꾸는 것은 **`with` 문 하나**인데 `with` 는 **엄격 모드에서 컴파일조차 안 된다**(동작 (5) `[5]`). 비엄격 한 줄로 동작만 확인하고 문항은 (경계) 하나로 줄였다 |
+| ★ **해당 없음 — 진단의 `(행,열)`**(18-C) | `SyntaxError` 는 두 줄(`with`·`using`)뿐이고 **어느 쪽으로 묶이나**를 가를 일이 없다 — 잴 것이 없다 |
+| ★ **반쯤 해당 없음 — `Symbol.unscopables`** | 그 심볼이 바꾸는 것은 **`with` 문 하나**인데 `with` 는 **엄격 모드에서 컴파일조차 안 된다**(동작 (5) `[5]`). 비엄격 한 줄로 동작만 확인하고 문항은 (경계) 하나로 줄였다 |
 | ★ **안 쟀다 — 성능** | 「심볼 키는 느리다/빠르다」류의 말을 **한 줄도 쓰지 않는다.** 안 쟀다 |
 
-**★ 흔들리는 칸 / 안 흔들리는 칸**
+**★ 실행마다 달라지는 항목 / 달라지지 않는 항목**
 
-| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+| 실행마다 달라진다(근거로 쓰지 않는다) | 달라지지 않는다(근거로 쓴다) |
 |---|---|
-| 예외 **문구** — `using` 의 `Unexpected identifier` 는 **판마다 실제로 갈렸다** | ★★★ **hint 문자열**(`default`·`number`·`string`)과 **불렸나/안 불렸나** |
+| 예외 **문구** — `using` 의 `Unexpected identifier` 는 **판마다 실제로 나뉘었다** | ★★★ **hint 문자열**(`default`·`number`·`string`)과 **불렸나/안 불렸나** |
 | `unscopables` 객체의 **키 순서** — 판마다 다르다(두 판 대조기 참고) | ★★★ **예외의 종류**(`TypeError`·`SyntaxError`) |
-| 판마다 있는 메서드가 달라지는 줄(ES2023 이전 판) | ★★ 격자의 `o`/`.` 과 「갈린 칸 N / M」 · `Reflect.ownKeys` 의 **순서** |
+| 판마다 있는 메서드가 달라지는 줄(ES2023 이전 판) | ★★ 격자의 `o`/`.` 과 「달라진 항목 N / M」 · `Reflect.ownKeys` 의 **순서** |
 
 **선행** — [19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md)(★★★ 직접 선행 — `Symbol.iterator` 하나의 계약) ·
 [02 — 강제 변환과 `==` 대 `===`](../02-coercion-and-loose-equality/2-summary.md)(★★ `ToPrimitive`) ·

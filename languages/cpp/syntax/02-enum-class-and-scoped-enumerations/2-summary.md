@@ -92,7 +92,7 @@ C 의 `enum` 은 **이름이 붙은 정수 상수 묶음**이었다 — C 갈래
 
 ### (1) C 의 `enum` 이 안 막는 세 자리 — 먼저 C 로 던진다
 
-**언제 쓰나** — 「C++ 가 무엇을 새로 막나」의 기준선을 세울 때.
+**언제 쓰나** — 「C++ 가 무엇을 새로 막나」의 베이스라인을 세울 때.
 
 ```text
 ===== 소스: ex.c =====
@@ -290,7 +290,7 @@ ex.cpp:2:15: note: previous declaration ‘Color RED’
       |               ^~~
 ```
 
-- ★ **`note:` 가 말하는 타입이 갈린다** — C 는 `previous definition of 'RED' with type 'enum Color'`,\
+- ★ **`note:` 가 말하는 타입이 달라진다** — C 는 `previous definition of 'RED' with type 'enum Color'`,\
   C++ 은 `previous declaration 'Color RED'`. **C++ 에서 열거자의 타입은 그 열거형 자체**다.\
   C 에서는 **`int`** 다(정본은 C 갈래 [`07번`](../../../c/syntax/07-enum-and-enumeration-constants/)).
 
@@ -362,7 +362,7 @@ ScopedFixed  sizeof=1  underlying: int=0 unsigned=0 uchar=1
 | `enum class Scoped { ... }` | **4** | **`int`** | ★ **표준** — 범위 있는 열거형의 기본은 `int` 다 |
 | `enum class ScopedFixed : unsigned char` | **1** | `unsigned char` | 적어 준 대로 |
 
-- ★★ **여기가 C 와 갈리는 두 번째 자리다.** C 에서는 `sizeof(enum E)` 도 부호도 **전부 구현 정의**였다\
+- ★★ **여기가 C 와 달라지는 두 번째 자리다.** C 에서는 `sizeof(enum E)` 도 부호도 **전부 구현 정의**였다\
   (C 갈래 [`07번`](../../../c/syntax/07-enum-and-enumeration-constants/)이 `-fshort-enums` 하나로 4→1 을 뒤집어 보였다).\
   **범위 있는 열거형은 표준이 `int` 로 못 박는다** — 그래서 **뒤집히지 않는다.**
 - ★ **`Plain` 이 `unsigned int` 인 것**은 gcc 의 선택이고 **보장이 아니다.** C 편과 같은 결론이다.\
@@ -516,14 +516,14 @@ ex.cpp:3:12: error: ISO C++ forbids forward references to 'enum' types
 ★ C 갈래 [`07번`](../../../c/syntax/07-enum-and-enumeration-constants/)은 불완전 열거 타입이 **C23부터**라고 적고
 「**던져 보지 않았다**」고 밝혀 뒀다. C++ 에서는 **C++11부터 위 세 줄의 갈림이 그대로** 성립한다.
 
-### (8) ★★ 범위 밖 값 — C 편의 결론이 여기서 갈린다
+### (8) ★★ 범위 밖 값 — C 편의 결론이 여기서 달라진다
 
 **언제 쓰나** — 파일·네트워크에서 읽은 정수를 열거형으로 바꿀 때. **실무에서 가장 위험한 자리다.**
 
 C 갈래 [`07번`](../../../c/syntax/07-enum-and-enumeration-constants/)은 이 자리를 이렇게 결론지었다 —
 **「범위 밖 값을 넣는 것은 UB 가 아니다. 이 주제에서 만들 수 있는 UB 는 열거 타입 자체로는 없다.」**
 
-**C++ 에서는 갈린다.** 기저 타입이 **고정된 쪽**과 **안 된 쪽**이 다르다.
+**C++ 에서는 달라진다.** 기저 타입이 **고정된 쪽**과 **안 된 쪽**이 다르다.
 
 ```text
 ===== 소스: ex.cpp =====
@@ -747,7 +747,7 @@ C++ 에서도 **「돌아갔다」가 아무것도 증명하지 못한다.** C �
 | **조건부 표준** | 매크로·옵션이 있을 때만 | **해당 없음** | — | — |
 | **구현 정의** | 문서화 의무가 있다 | **범위 없고 기저 타입도 없는 열거형의 기저 타입**(여기선 `unsigned int`) · 그래서 그 `sizeof`(여기선 4) · 진단 문구 · `-std=c++23` 에서 `__cplusplus` 가 `202100L` 인 것 | `is_same_v` 3벌 · `sizeof` | **`-Wall -Wextra -pedantic` 이 한 건도 말하지 않는다** |
 | **미명시** | 몇 가지 중 하나 | **해당 없음** | — | — |
-| **UB** | 아무 일이나 | ★★ **고정 기저 타입이 없는 열거형에 그 값 범위 밖 정수를 캐스트해 넣고 읽는 것** — C 편은 「**UB 아님**」으로 결론지은 자리다 | **clang UBSan 이 `not a valid value for type 'Plain'`** · `-O0`·`-O2` 값은 같았다 | ★★ **gcc 의 UBSan 은 한 줄도 안 낸다** · 경고도 0건 · **최적화 수준으로는 안 갈린다** |
+| **UB** | 아무 일이나 | ★★ **고정 기저 타입이 없는 열거형에 그 값 범위 밖 정수를 캐스트해 넣고 읽는 것** — C 편은 「**UB 아님**」으로 결론지은 자리다 | **clang UBSan 이 `not a valid value for type 'Plain'`** · `-O0`·`-O2` 값은 같았다 | ★★ **gcc 의 UBSan 은 한 줄도 안 낸다** · 경고도 0건 · **최적화 수준으로는 안 달라진다** |
 
 **「도구가 못 보는 것」을 층마다 — 전용 표**
 
@@ -762,7 +762,7 @@ C++ 에서도 **「돌아갔다」가 아무것도 증명하지 못한다.** C �
 | 기저 타입이 무엇으로 정해졌나 | 0건 | 0건 | — | — |
 
 - ★★ **이 주제의 유일한 런타임 위험이 「gcc 가 못 보는 것」이다.** C 갈래 [`07번`](../../../c/syntax/07-enum-and-enumeration-constants/)은 「UB 가 없어서 sanitizer 가 할 일이 없다」로 끝났는데, **C++ 에서는 UB 가 생겼고 gcc 쪽 도구가 그것을 못 본다.**
-- ★ **최적화 수준을 바꿔도 값이 안 갈렸다**(`-O0`·`-O2` 가 `Plain=200` 으로 같다). **「안 터졌다」가 「안전하다」가 아니다.**
+- ★ **최적화 수준을 바꿔도 값이 달라지지 않았다**(`-O0`·`-O2` 가 `Plain=200` 으로 같다). **「안 터졌다」가 「안전하다」가 아니다.**
 
 ## 문법 — 형태와 규칙
 
@@ -807,7 +807,7 @@ int main() {
 - **`using enum E;`**(C++20)는 그 스코프에서 **이름만** 풀어 준다.
 - 값의 유효 범위는 **고정 기저 타입이면 그 타입 전체**, 아니면 **열거자를 담는 최소 비트 폭**까지다.
 
-### 금지 사례 — 던져서 받은 여섯
+### 금지 사례 — 실행해서 받은 여섯
 
 | 쓴 것 | 컴파일러 | 무엇이 나오나 |
 |---|---|---|
@@ -963,7 +963,7 @@ C 갈래 [`07번`](../../../c/syntax/07-enum-and-enumeration-constants/)에 있�
 > **`std::to_underlying(e)`**(C++23) — `static_cast<std::underlying_type_t<E>>(e)` 에 붙인 이름.
 
 > **UBSan(UndefinedBehaviorSanitizer)** — 미정의 동작을 실행 중에 잡는 도구.\
-> ★ **gcc 판과 clang 판이 보는 것이 다르다**((8)).
+> ★ **gcc 버전과 clang 버전이 보는 것이 다르다**((8)).
 
 ## 더 들어가면
 
@@ -994,13 +994,13 @@ C 갈래 [`07번`](../../../c/syntax/07-enum-and-enumeration-constants/)에 있�
 **경계** — 「C 의 `enum` 이 무엇을 안 막나」의 정본은 C 갈래의\
 [`07-enum-and-enumeration-constants/`](../../../c/syntax/07-enum-and-enumeration-constants/)다.\
 그쪽은 **크기·부호·`-fshort-enums`·C23 고정 기반 타입**까지 다 결론지었다.\
-여기는 **C++ 가 새로 하는 것**만 쓴다 — 이름을 가두는 것 · 암묵 변환을 끊는 것 · **범위 밖 값의 판정이 C 와 갈리는 것**.\
+여기는 **C++ 가 새로 하는 것**만 쓴다 — 이름을 가두는 것 · 암묵 변환을 끊는 것 · **범위 밖 값의 판정이 C 와 달라지는 것**.\
 「`static_cast` 자체」는 [**03번 형제**](../03-four-cast-operators/), 「오버로드 후보가 줄어드는 것」은 [**01번 형제**](../01-function-overloading-and-overload-resolution/)가 정본이다.\
 「`switch` 문법」은 C 갈래의 [`12-control-flow-and-switch/`](../../../c/syntax/12-control-flow-and-switch/)가 정본이다.
 
-★★ **흔들리는 칸 / 안 흔들리는 칸**
+★★ **실행마다 달라지는 항목 / 달라지지 않는 항목**
 
-| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+| 실행마다 달라진다(근거로 쓰지 않는다) | 달라지지 않는다(근거로 쓴다) |
 |---|---|
 | 컴파일 시간 | **진단 본문** · `파일:줄:칸` · **종료 코드**(`cc exit`·`run exit` 을 갈라 적었다) |
 | — | `sizeof` 값 · `std::is_same_v` 판정 · **경고 건수**(`grep -c 'warning:'`) |

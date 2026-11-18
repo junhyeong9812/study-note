@@ -132,7 +132,7 @@ id 정렬상 B가 앞 (실제 순서와 반대)
 - 관찰
   - 실행 중 역행은 예외로 막혔다. 그러나 재시작한 프로세스는 `lastTs`를 잃어 되돌아간 구간의 ID를 **전부** 다시 냈다.
   - 같은 worker ID 두 개는 같은 ms·같은 순번에서 정확히 같은 ID를 낸다. 6000개 중 3000개가 중복이었다.
-  - 시계가 3ms 어긋나면 나중에 만든 ID가 더 작다. Snowflake의 "시간 순"은 노드 사이에서는 시계 어긋남만큼 흐트러진다.
+  - 시계가 3ms 어긋나면 나중에 만든 ID가 더 작다. Snowflake의 "시간 순"은 노드 사이에서는 클럭 스큐만큼 흐트러진다.
   - 출력 1번(비트 배치 확인)은 `41비트 시각 한계(년): 69.7, twepoch 기준 소진 시각: Wed Jul 10 17:30:30 UTC 2080`이었다.
 
 ### 실험 2: PostgreSQL 18 — bigint·UUIDv4·UUIDv7 기본 키 인덱스
@@ -341,6 +341,6 @@ docker exec sn-dw-redis redis-cli GET w05:order_seq   # 블록 카운터 현재 
   - Jakarta Persistence `SequenceGenerator.allocationSize` 기본 50 (jakartaee/persistence 소스)
 - 교재: DDIA 1판 9장 "Sequence Number Ordering"(노드별 번호·블록 할당·물리 시각 타임스탬프가 인과와 맞지 않는 이유)
 - 실험 목록
-  - `Snow.java` — 41|5|5|12 Snowflake, 가짜 시계로 역행·재시작·worker 중복·시계 어긋남·순번 고갈. eclipse-temurin 21 JDK 컨테이너.
+  - `Snow.java` — 41|5|5|12 Snowflake, 가짜 시계로 역행·재시작·worker 중복·클럭 스큐·순번 고갈. eclipse-temurin 21 JDK 컨테이너.
   - `pk.sql` — PostgreSQL 18.6 전용 일회용 컨테이너, bigint·`uuidv4()`·`uuidv7()` PK 20만 행, `pgstatindex`.
   - `block.js` — 공용 Redis 7.4.9 `INCRBY` 구간 할당(키 `w05:order_seq`, 실험 후 삭제), Node 18 `JSON.parse` 정밀도.

@@ -411,7 +411,7 @@ ROLLBACK;
 > "**Trying to update the same row twice in a single statement is not supported. Only one of the modifications takes place, but it is not easy (and sometimes not possible) to reliably predict which one.**"\
 > — [PostgreSQL 18 · WITH Queries](https://www.postgresql.org/docs/18/queries-with.html)
 
-★ **세 판을 돌려 봤고 모두 `u1` 이 이겼다.**
+★ **세 버전을 돌려 봤고 모두 `u1` 이 이겼다.**
 
 ```text
 판 1:  u1_rows=1 · u2_rows=0 · qty=100
@@ -563,7 +563,7 @@ MySQL : INSERT INTO t (...) VALUES (...), (...);
 | ★★ 가시성 (5번) | PG 18.6 | **5회** | `a_before` → `WITH` 문 → `a_after` → 두 표 확인 |
 | 두 번 참조 (7번) | PG 18.6 | 2회 | **`c1=1, c2=1`, 한 행만 삭제** |
 | ★ 참조 안 해도 실행 (8번) | PG 18.6 | 2회 | **`id=4` 가 지워졌다** |
-| 같은 행 두 조각 (10번) | PG 18.6 | **3판** | **세 판 다 `u1` 이 이겼다 — 그러나 문서는 「예측 불가」** |
+| 같은 행 두 조각 (10번) | PG 18.6 | **3판** | **세 버전 다 `u1` 이 이겼다 — 그러나 문서는 「예측 불가」** |
 | 삭제 대 갱신 충돌 (10번) | PG 18.6 | 2회 | `deleted=1, updated=0` |
 | MySQL 의 변경 CTE (11번) | MySQL 8.4.10 | 1회 | `ERROR 1064` |
 | ★ MySQL 의 읽기 CTE + `DELETE` (11번) | MySQL 8.4.10 | 2회 | **통과했다 — 「CTE 를 DML 에 못 쓴다」는 틀린 요약** |
@@ -663,7 +663,7 @@ MySQL 은 **DDL 이 암묵 커밋이라 롤백이 안 되므로**([51 번 2절](
 ## 실행 환경
 
 근거는 **실행 결과**다 — 본문의 출력·에러는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+2026-09-21 에 실제로 실행해 받은 것이다. 지어낸 출력은 없다.\
 ★ **한쪽에서만 결론이 서는 주제다.** MySQL 쪽 출력은 **`ERROR 1064` 세 개와 「읽기 CTE 는 된다」는 통과 하나**뿐이고,\
 동작 근거는 전부 **PostgreSQL 18.6** 이다.\
 **버전** — `OLD`/`NEW` 별칭은 **PG 18 부터**다([18.0 릴리스 노트](https://www.postgresql.org/docs/release/18.0/)).\

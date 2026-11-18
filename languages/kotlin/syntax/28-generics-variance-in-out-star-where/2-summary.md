@@ -1,6 +1,6 @@
 # kotlin/syntax/28 — 제네릭: 선언 지점 변성 `in`/`out`·star projection·`where` — 정리 (힌트)
 
-★ **본체는 둘째 창이다** — 「**변성 위반을 컴파일러가 말하게** 하는 창」.
+★ **핵심은 둘째 창이다** — 「**변성 위반을 컴파일러가 말하게** 하는 창」.
 변성은 **컴파일 타임에만 있는 규칙**이다. 런타임에는 타입 인자가 지워지므로((9)) 실행 출력으로는 **원리상 못 본다** — 에러 문구가 곧 교재다.
 
 ## 이 주제가 쓰는 세 층
@@ -9,7 +9,7 @@
 |---|---|---|
 | **언어 보장** | 명세·공식 문서가 약속한 것 | ★★★ **`out` 은 `in` 위치에 못 나온다** 등 변성 검사 전부 — **컴파일 에러로** 확인된다 |
 | **구현(JVM 백엔드)** | kotlinc 가 JVM 으로 내리는 방식 | ★★ 선언 지점 변성이 **`? extends`·`? super`** 로 번역되는 것 · 그것이 **`Signature` 속성에만** 사는 것 |
-| **이 판의 관찰** | kotlinc 2.4.20 · JDK 21.0.5 에서 이번에 본 것 | 진단 문구 · stdlib 소스의 줄 번호 |
+| **이 버전의 관찰** | kotlinc 2.4.20 · JDK 21.0.5 에서 이번에 본 것 | 진단 문구 · stdlib 소스의 줄 번호 |
 
 ## 이 판
 
@@ -25,15 +25,15 @@ javac 21.0.5
 (exit 0)
 ```
 
-## 흔들리는 칸 / 안 흔들리는 칸
+## 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| **흔들린다** | (이 주제에는 없다) | 해시코드·주소를 **하나도 안 찍었다** |
-| 안 흔들린다 | ★★★ 컴파일 에러의 **문구·`파일:줄:칸`** — `javac`·`csc` 포함 | 이 주제의 답 자체다 |
-| 안 흔들린다 | `javap` 의 **제네릭 서명**(`? extends`)과 descriptor | 같은 소스·같은 판이면 같다 |
-| 안 흔들린다 | stdlib 소스를 뽑은 **줄 번호** | ★ **이 판(2.4.20)의 소스 jar** 에 매인다 — 판이 바뀌면 줄 번호가 움직일 수 있다 |
-| 안 흔들린다 | 종료 코드 · 출력 · 스크립트가 센 **표기 개수** | 결정적이다 |
+| **실행마다 달라진다** | (이 주제에는 없다) | 해시코드·주소를 **하나도 안 찍었다** |
+| 달라지지 않는다 | ★★★ 컴파일 에러의 **문구·`파일:줄:칸`** — `javac`·`csc` 포함 | 이 주제의 답 자체다 |
+| 달라지지 않는다 | `javap` 의 **제네릭 서명**(`? extends`)과 descriptor | 같은 소스·같은 판이면 같다 |
+| 달라지지 않는다 | stdlib 소스를 뽑은 **줄 번호** | ★ **이 버전(2.4.20)의 소스 jar** 에 매인다 — 판이 바뀌면 줄 번호가 움직일 수 있다 |
+| 달라지지 않는다 | 종료 코드 · 출력 · 스크립트가 센 **표기 개수** | 결정적이다 |
 
 ★ 근거 — 캡처 스크립트를 처음부터 두 번 돌려 **블록 전체를 바이트 단위로 대조**했다(수치는 3-answer 의 「실행 검증」).
 
@@ -79,17 +79,17 @@ javac 21.0.5
 
 ## 동작 방식
 
-### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「부적용인 창」
+### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「해당 없는 창」
 
 | 창 | 무엇을 보여 주나 | 어디서 왔나 |
 |---|---|---|
 | **실행 출력** | 선언 지점 변성 덕에 **통과한 호출이 제대로 돈다**((1)) | 이 갈래의 기본 창 |
-| ★★★ **컴파일 진단** | 변성 위반 **세 종류**(`in`·`out`·`invariant` 위치) · projection 이 막는 멤버 · `private to this` | ★ **본체 창** |
+| ★★★ **컴파일 진단** | 변성 위반 **세 종류**(`in`·`out`·`invariant` 위치) · projection 이 막는 멤버 · `private to this` | ★ **핵심 창** |
 | ★★ **stdlib 소스 뽑기** | `List<out E>` 와 `MutableList<E>` 의 **실제 선언** | ★ 이 주제의 고유 창 |
 | ★★ **javac 로 같은 모양 던지기** | Java 는 **사용 지점마다** `?` 가 필요하다((8)) | [Java 18번](../../../java/syntax/18-wildcards-pecs/)의 창 |
 | ★ **스크립트로 표기 세기** | Java `?` 몇 곳 대 Kotlin `out` 몇 곳 — 사람이 안 센다 | ★ 이 주제의 고유 창 |
 | ★★ **`javap` 의 제네릭 서명 대 descriptor** | 변성이 **`Signature` 속성에만** 남는 것((9)) | [26번 주제](../26-value-class-and-boxing/)에서 쓰던 `javap -s` |
-| **부적용 — 런타임 값** | 변성은 **실행 중에 아무것도 아니다** — 타입 인자가 지워진다. 「재 봤더니 같았다」가 아니라 **「잴 것이 없다」** | [12번 주제](../12-reified-type-parameters/) |
+| **해당 없음 — 런타임 값** | 변성은 **실행 중에 아무것도 아니다** — 타입 인자가 지워진다. 「재 봤더니 같았다」가 아니라 **「잴 것이 없다」** | [12번 주제](../12-reified-type-parameters/) |
 
 ★★ **제4의 상태 — 「잴 것이 없다」.** (9)에서 descriptor 가 **`(Ljava/util/List;)D` 로 변성과 무관**하게 나온다. JVM 이 메서드를 가르고 부르는 데 **변성은 한 글자도 안 쓰인다** — 그것 자체가 「변성은 컴파일러의 규칙이다」의 증명이다.
 
@@ -194,7 +194,7 @@ class Box<out T>(var item: T)
 
 ### (3) ★★ 표준 라이브러리 선언 — `List<out E>` 와 `MutableList<E>`
 
-**언제 쓰나** — 「왜 `List` 는 되고 `MutableList` 는 안 되나」를 **소스로** 답할 때. 기억이 아니라 **이 판의 stdlib 소스 jar** 에서 뽑았다.
+**언제 쓰나** — 「왜 `List` 는 되고 `MutableList` 는 안 되나」를 **소스로** 답할 때. 기억이 아니라 **이 버전의 stdlib 소스 jar** 에서 뽑았다.
 
 ```text
 ===== unzip -p kotlin-stdlib-sources.jar commonMain/kotlin/Collections.kt | grep -n -E '^public expect interface|UnsafeVariance' =====
@@ -596,7 +596,7 @@ public final class VarwildKt {
 - ★★★ **선언 지점 변성이 파라미터 자리에서 `? extends`/`? super` 로 번역된다** — Java 호출자가 `List<Integer>` 를 넘길 수 있게 하려는 것이다.
 - ★★ **반환 자리에는 안 붙인다**(`makeList`). 공식 문서 — 「When it's a return value, wildcards are not generated, because otherwise Java clients will have to deal with them」. 필요하면 **`@JvmWildcard`** 로 켠다(`yesWild`).
 - ★ `names(List<String>)` — `String` 은 **`final`** 이라 생략됐다. 공식 문서 — 「When the argument type is final, there's usually no point in generating the wildcard」.
-  ★ 다만 `feed(WSink<? super Integer>)` 는 `Integer` 도 `final` 인데 **`? super` 가 붙었다** — 생략 규칙은 **`? extends` 쪽에서 본** 것이다(이 판의 관찰).
+  ★ 다만 `feed(WSink<? super Integer>)` 는 `Integer` 도 `final` 인데 **`? super` 가 붙었다** — 생략 규칙은 **`? extends` 쪽에서 본** 것이다(이 버전의 관찰).
 - ★ `copyUse` — `Array<in Number>` 는 **`Object[]`** 가 됐다. Java 배열은 원래 공변이라 **변성을 표현할 자리가 없다** — 받을 수 있는 가장 넓은 배열로 내렸다.
 
 **Java 에서 불러 보면**
@@ -736,10 +736,10 @@ X got pear
 | `private` 멤버의 **private to this** · `@UnsafeVariance` | **언어 보장** | (7) |
 | `List<out E>` · `MutableList<E>` · `Map<K, out V>` | **stdlib 의 선언**(API 계약) | (3) |
 | 파라미터에 **`? extends`/`? super`** 가 붙는 것 · 반환에는 안 붙는 것 | ★★ **JVM 백엔드의 상호운용 규칙**(공식 문서에 적혀 있다) | (9) |
-| `final` 타입(`String`)에서 `? extends` 를 **생략**하는 것 | **상호운용 규칙**(공식 문서) · `? super Integer` 는 남은 것은 **이 판의 관찰** | (9) |
+| `final` 타입(`String`)에서 `? extends` 를 **생략**하는 것 | **상호운용 규칙**(공식 문서) · `? super Integer` 는 남은 것은 **이 버전의 관찰** | (9) |
 | 변성이 **descriptor 에 없고 `Signature` 에만** 있는 것 | **JVM 의 성질**(소거) | (9) |
 | C# 의 변성이 인터페이스·델리게이트 **한정**인 것 | **C# 언어 규칙** | (10) |
-| 진단 **문구 그 자체** · stdlib 소스의 줄 번호 | **이 판의 산출물** | 전부 |
+| 진단 **문구 그 자체** · stdlib 소스의 줄 번호 | **이 버전의 산출물** | 전부 |
 
 ## 언제 쓰고 언제 안 쓰나
 
@@ -811,8 +811,8 @@ X got pear
 `kotlinc` 9회(컴파일 실패 5벌) · `javac` 3회(실패 2벌) · `java` 4회 · `javap` 3회 · `unzip` 1회 · `csc` 1회(실패가 결과).\
 ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. 소스 펜스의 첫 줄 배너도 캡처가 찍었다.
 ★ C# 블록의 `csc` 는 [C# 03번](../../../csharp/syntax/03-boxing-and-unboxing/) 「실행 환경」의 셸 함수와 같다(`.NET SDK 10.0.401` · `-preferreduilang:en-US`).
-**버전** — `in`/`out`·`*`·`where`·`@UnsafeVariance` 는 전부 **1.0** 이다. 이 문서에 버전으로 갈리는 항목은 없다.
+**버전** — `in`/`out`·`*`·`where`·`@UnsafeVariance` 는 전부 **1.0** 이다. 이 문서에 버전으로 나뉘는 항목은 없다.
 **경계** — `reified` 와 소거는 [12번 주제](../12-reified-type-parameters/)가 정본이다(여기는 **경계만** — 변성은 런타임에 아무것도 아니라는 것까지).\
 인터페이스 선언 자체는 [20번 주제](../20-interfaces-default-impl-and-super/), 컬렉션의 읽기 전용 뷰는 [목록의 **40번 주제**](../40-read-only-collections-and-runtime-types/)가 정본이다.
 **대비** — ★★★ Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **18번**([`18-wildcards-pecs/`](../../../java/syntax/18-wildcards-pecs/)) — [README](../README.md) 가 짝으로 지정했다. **같은 변성을 쓰는 쪽(Java)과 선언하는 쪽(Kotlin)** 이다.\
-TS 갈래 목록([`ts/syntax/README.md`](../../../ts/syntax/README.md))의 **17번**([`17-variance-and-parameter-compatibility/`](../../../ts/syntax/17-variance-and-parameter-compatibility/)) — TS 4.7 도 **`in`/`out`** 을 쓴다. C# 는 이 문서가 직접 던졌다((10)).
+TS 갈래 목록([`ts/syntax/README.md`](../../../ts/syntax/README.md))의 **17번**([`17-variance-and-parameter-compatibility/`](../../../ts/syntax/17-variance-and-parameter-compatibility/)) — TS 4.7 도 **`in`/`out`** 을 쓴다. C# 는 이 문서가 직접 실행했다((10)).

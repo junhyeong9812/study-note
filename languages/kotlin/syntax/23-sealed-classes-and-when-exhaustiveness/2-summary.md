@@ -1,8 +1,8 @@
 # kotlin/syntax/23 — `sealed class`/`sealed interface` 와 `when` 완결성 — 정리 (힌트)
 
-★ **흔들리는 칸 / 안 흔들리는 칸** — 제출 전 재대조에서 「고칠 것」과 「설계상 다른 것」을 가르는 선언이다.
+★ **실행마다 달라지는 항목 / 달라지지 않는 항목** — 제출 전 재대조에서 「고칠 것」과 「설계상 다른 것」을 가르는 선언이다.
 
-| 흔들린다 | 안 흔들린다 |
+| 실행마다 달라진다 | 달라지지 않는다 |
 |---|---|
 | (이 주제에는 없다 — 해시코드·시간·주소를 **하나도 찍지 않았다**) | 컴파일 에러의 **문구·`파일:줄:칸`·캐럿 줄·에러 개수** |
 | | `javap` 출력 **전체**(`major version`·플래그·`PermittedSubclasses`) |
@@ -575,7 +575,7 @@ sealflowbad.kt:7:12: error: 'when' expression must be exhaustive. Add the 'Scrol
                                Add the 'Scroll' branch or an 'else' branch.
 ```
 
-- ★★ **같은 `when`, 같은 가지인데 앞줄 한 줄에 따라 통과와 에러가 갈린다.** 완결성 판정이 **가지 목록만 보는 것이 아니라 그 지점까지의 데이터 흐름을 본다**는 뜻이다.
+- ★★ **같은 `when`, 같은 가지인데 앞줄 한 줄에 따라 통과와 에러가 달라진다.** 완결성 판정이 **가지 목록만 보는 것이 아니라 그 지점까지의 데이터 흐름을 본다**는 뜻이다.
 - ★ `Boolean` 주체도 같은 갈래다 — `flag(b)` 는 `true`/`false` **둘만 덮고 `else` 가 없는데** 통과한다(`C 켜짐 꺼짐`). **`Boolean` 의 값 공간이 둘뿐이라는 것을 컴파일러가 안다.**
 - ★★ **판 확인** — Kotlin 목록의 판 이력표가 「23 `when` 완결성 — 데이터 흐름 기반 검사 = Stable **2.3.0**(2.2.20 도입)」이라고 적어 뒀고, **2.4.20 에서 경고 한 줄 없이 통과**하는 것을 직접 던져 확인했다.\
   ★ 다만 이 실행이 증명한 것은 「**2.4.20 에서는 된다**」뿐이다. 「2.2 이전에는 안 됐다」는 **이 환경에서 못 잰다** — `-language-version` 으로 옛 판을 되살리는 길이 2.4.20 에서 막혀 있기 때문이다(Kotlin 목록 「실행 환경」).
@@ -719,7 +719,7 @@ Intruder.java:2: error: constructor Shape in class Shape cannot be applied to gi
 - ★★ **1.8 판에서는 에러가 1건, 17 판에서는 2건**이다. 늘어난 한 줄이 바로 「`class is not allowed to extend sealed class: Shape (as it is not listed in its 'permits' clause)`」 — **JVM 층의 규칙**이다.
 - 1.8 판에서도 막히기는 한다. 다만 막는 근거가 다르다 — **`private` 생성자**에 걸려 「`constructor Shape in class Shape cannot be applied to given types;`」가 난다. 합성 생성자(`Shape(DefaultConstructorMarker)`)는 `ACC_SYNTHETIC` 이라 **javac 가 아예 안 본다.**
 - ★ 그래서 정확히 적으면 — 「**같은 규칙을 두 층이 각각 다른 방식으로 막는다**」이고, 어느 층이 도는지는 **`-jvm-target` 이 정한다.**
-- ★ [`../../../java/syntax/15-sealed-classes/`](../../../java/syntax/15-sealed-classes/)와 겹치는 것이 `PermittedSubclasses` 다. **Java 쪽이 그 속성의 정본**이고 여기서는 **Kotlin 이 어느 판에서 그것을 내보내는지**까지만 본다.
+- ★ [`../../../java/syntax/15-sealed-classes/`](../../../java/syntax/15-sealed-classes/)와 겹치는 것이 `PermittedSubclasses` 다. **Java 쪽이 그 속성의 정본**이고 여기서는 **Kotlin 이 어느 버전에서 그것을 내보내는지**까지만 본다.
 
 ## 문법 — 형태와 규칙
 
@@ -836,7 +836,7 @@ Z [ok:hi, err:404, empty] 3
 - [6번 주제](../06-when-expression/) — `when` 식. **가지의 형태·guard·바이트코드 분기와 런타임 예외**가 거기가 정본이고, 여기는 **하위 타입을 늘렸을 때의 파급**부터다.
 - [20번 주제](../20-interfaces-default-impl-and-super/) — 인터페이스. `sealed interface` 가 그 위에 선다.
 - [22번 주제](../22-data-class-generated-members/) — `data class`·`data object`. **변형을 무엇으로 만들 것인가**가 거기다.
-- [24번 주제](../24-enum-class-vs-sealed/) — `enum` 과의 선택 기준. **완결성은 둘 다 되고, 갈리는 것은 데이터와 인스턴스 수**다.
+- [24번 주제](../24-enum-class-vs-sealed/) — `enum` 과의 선택 기준. **완결성은 둘 다 되고, 달라지는 것은 데이터와 인스턴스 수**다.
 - [`../../../rust/syntax/18-match-and-exhaustiveness/`](../../../rust/syntax/18-match-and-exhaustiveness/) — **같은 격자로 같은 실험**을 한 편. (3)의 대비가 거기서 나왔다.
 - [`../../../java/syntax/15-sealed-classes/`](../../../java/syntax/15-sealed-classes/) — Java `sealed`. **`PermittedSubclasses` 속성의 정본**이 거기다.
 - [`../../../java/syntax/23-switch-pattern-matching/`](../../../java/syntax/23-switch-pattern-matching/) — Java 21 패턴 `switch`. **Java 가 같은 자리에 도착한 방식**이 거기다.
@@ -875,7 +875,7 @@ Z [ok:hi, err:404, empty] 3
 `kotlinc` 12회(컴파일 실패 5벌 · 그중 1벌은 `-jvm-target 17`) · `java` 5회 · `javac` 2회(둘 다 실패가 결과) · `javap` 4회.\
 ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다.
 ⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 주제는 **기본값 1.8 과 `-jvm-target 17` 이 서로 다른 클래스 파일을 낸다** — (6)이 그것이다.
-**버전** — `sealed class` 는 **1.0**, **`sealed interface` 는 1.5**, **데이터 흐름 기반 완결성 검사는 2.3.0 Stable**(2.2.20 도입)이다. 뒤의 둘은 이 판에서 직접 던져 확인했다((2)·(5)).
+**버전** — `sealed class` 는 **1.0**, **`sealed interface` 는 1.5**, **데이터 흐름 기반 완결성 검사는 2.3.0 Stable**(2.2.20 도입)이다. 뒤의 둘은 이 버전에서 직접 던져 확인했다((2)·(5)).
 **경계** — `when` 의 가지 형태·guard·바이트코드 분기는 [6번 주제](../06-when-expression/)가 정본이다. **거기는 「`when` 이 무엇으로 컴파일되나」까지, 여기는 「하위 타입을 늘렸을 때 어디가 깨지나」부터**다.\
 인터페이스의 기본 구현·충돌 해소는 [20번 주제](../20-interfaces-default-impl-and-super/), `data class` 가 변형이 되는 것은 [22번 주제](../22-data-class-generated-members/)가 정본이다.\
 Java 쪽 짝은 [`../../../java/syntax/15-sealed-classes/`](../../../java/syntax/15-sealed-classes/)와 [`../../../java/syntax/23-switch-pattern-matching/`](../../../java/syntax/23-switch-pattern-matching/) — **Kotlin 이 먼저 한 것을 Java 가 어떻게 따라왔나**가 대비 축이다.\

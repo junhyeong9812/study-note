@@ -330,7 +330,7 @@ google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars \
 | demo 「바꿔 볼 것」 ① `@starting-style` 을 앞으로 | 1 | demo |
 | demo 「바꿔 볼 것」 ② `allow-discrete` 제거 | 1 | demo · A6 |
 | Baseline 조회(`@starting-style`·`transition-behavior`·`overlay`) | 1 | 「실행 환경」 · A9 |
-| **제출 직전 demo 재추출·재실행 대조** | 1 | 어긋남 0건 |
+| **제출 직전 demo 재추출·재실행 대조** | 1 | 불일치 0건 |
 
 **구현에 달린 항목**
 

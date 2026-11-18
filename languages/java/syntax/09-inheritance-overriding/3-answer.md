@@ -408,7 +408,7 @@ null 참조로: Sup.who
 
 **구현 의존 항목**
 
-- `private` 메서드 호출 명령(`invokevirtual` / `invokespecial`) — **컴파일 대상 버전에 따라 갈린다.**\
+- `private` 메서드 호출 명령(`invokevirtual` / `invokespecial`) — **컴파일 대상 버전에 따라 달라진다.**\
   17·21·25 기본 릴리스는 전부 `invokevirtual`, `--release 8` 은 `invokespecial` 이었다.
 - `javap` 의 오프셋·상수 풀 번호(`#n`) — 컴파일러 버전에 따라 달라질 수 있다.
 - **브리지 메서드가 생기는 것** — 결과(디스패치가 성립하는 것)는 언어 보장이고, 브리지라는 수단은 javac 의 선택이다.

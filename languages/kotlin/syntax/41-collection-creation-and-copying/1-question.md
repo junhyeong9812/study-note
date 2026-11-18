@@ -161,7 +161,7 @@ fun main() {
 
 선행은 [40번 주제](../40-read-only-collections-and-runtime-types/)(`List` 는 읽기 전용 뷰 · `as MutableList` 로 뚫린다)다.
 
-이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5** 에서 실제로 던져 받은 것이다.
+이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5** 에서 실제로 실행해 받은 것이다.
 
 ## 복습 기록
 

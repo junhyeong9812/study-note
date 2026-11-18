@@ -151,7 +151,7 @@ fun main() {
 
 ### 7. `getOrDefault` 와 `getOrElse` 는 무엇을 보나 (왜)
 
-- `{k=null}` 칸에서 두 함수가 갈리는 이유는 무엇인가? `getOrDefault` 는 어디서 온 함수인가?
+- `{k=null}` 칸에서 두 함수가 달라지는 이유는 무엇인가? `getOrDefault` 는 어디서 온 함수인가?
 
 ### 8. `withDefault` 의 기본값이 닿는 범위 (경계)
 
@@ -169,7 +169,7 @@ fun main() {
 
 선행은 [41번 주제](../41-collection-creation-and-copying/)(만드는 꼴과 복사)다.
 
-이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5** 에서 실제로 던져 받은 것이다.
+이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5** 에서 실제로 실행해 받은 것이다.
 
 ## 복습 기록
 

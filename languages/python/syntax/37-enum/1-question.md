@@ -248,7 +248,7 @@ print("   Size.SMALL == Rank.LOW      :", Size.SMALL == Rank.LOW)
 print("   hash(Shape.SQUARE) == hash('SQUARE') :", hash(Shape.SQUARE) == hash("SQUARE"))
 ```
 
-### 5. ★ 같은 소스를 두 판에서 (예측)
+### 5. ★ 같은 소스를 두 버전에서 (예측)
 
 아래 소스를 `python3`(3.12)와 `python3.11` 로 **각각** 던진다. 두 출력을 따로 적는다.
 

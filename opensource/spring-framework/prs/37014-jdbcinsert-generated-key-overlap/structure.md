@@ -364,7 +364,7 @@ createMetaDataProvider(dataSource, context)       TableMetaDataProviderFactory.j
 
 ### 3-3. 컬럼 확정 분기 — 버그가 살던 자리
 
-이 메서드는 선언 경로와 메타데이터 경로 둘로 갈리는데, 키 제외 로직이 후자에만 있었다.
+이 메서드는 선언 경로와 메타데이터 경로 둘로 나뉘는데, 키 제외 로직이 후자에만 있었다.
 
 ```text
 reconcileColumnsToUse(declaredColumns, generatedKeyNames)   TableMetaDataContext.java:204
@@ -435,7 +435,7 @@ matchInParameterValuesWithInsertColumns(SqlParameterSource)             :228
        └─ 아무것도 없음                              ──→ null 추가       :254
 ```
 
-세 소비자의 순회 기준을 나란히 놓으면 어긋남의 위치가 분명해진다.
+세 소비자의 순회 기준을 나란히 놓으면 불일치의 위치가 분명해진다.
 
 ```text
                       순회 대상                 필터              수정 전 개수(시나리오 B)
@@ -536,7 +536,7 @@ auto-increment PK나 시퀀스 기본값처럼 INSERT 시점에 DB가 값을 만
 `SimpleJdbcInsert`는 스레드 안전한 재사용 객체다.\
 설정을 마친 뒤 첫 실행에서 `compile()`이 한 번 돌아 `insertString`·`insertTypes`·`tableColumns`를 확정하고, 그 뒤로는 설정 변경이 금지된다(`checkIfConfigurationModificationIsAllowed`, `AbstractJdbcInsert.java:342-347`).\
 이 모델의 장점은 메타데이터 조회 비용을 한 번만 치른다는 것이고, 단점은 **잘못 계산된 산출물도 그대로 굳는다**는 것이다.\
-시나리오 B의 어긋남이 매 실행마다 재현되는 이유이며, 반대로 수정이 compile 시점 한 곳에서 끝나는 이유이기도 하다.
+시나리오 B의 불일치가 매 실행마다 재현되는 이유이며, 반대로 수정이 compile 시점 한 곳에서 끝나는 이유이기도 하다.
 
 ### 5-3. 식별자 대소문자 — 왜 어디서나 `toUpperCase(Locale.ROOT)`인가
 

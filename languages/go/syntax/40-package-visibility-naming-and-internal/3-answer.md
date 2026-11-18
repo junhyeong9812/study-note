@@ -108,7 +108,7 @@ All other identifiers are not exported.
 - ★★★ **필드·메서드는 `cannot refer to unexported field/method`** — 「있는데 못 쓴다」. 대조군 `p13` 은 `has no field or method` 로 **다른 꼴**이다.
 - ★★★ **패키지 수준 이름은 `undefined: shop.discount`** — 대조군 `p12`(`undefined: shop.nothere`)와 **같은 꼴**. 소문자 여덟 칸 중 **다섯**이 「없다」로 답했다.
 
-### 2. 막힌 칸 `4 / 8` — `plugin` 은 다른 모듈인데 통과한다
+### 2. 막힌 항목 `4 / 8` — `plugin` 은 다른 모듈인데 통과한다
 
 **출력**
 
@@ -302,14 +302,14 @@ shop/t40leakshopni.go:10:40: inlining call to discount
 
 **왜 그런가**
 
-- ★★ `-gcflags=-m` — **기본 판은 `can inline Price`**, `noinl` 판은 `Price` 에 그 줄이 없다(`discount` 는 두 판 다 `Price` 안으로 인라인됐다).
+- ★★ `-gcflags=-m` — **기본 판은 `can inline Price`**, `noinl` 판은 `Price` 에 그 줄이 없다(`discount` 는 두 버전 다 `Price` 안으로 인라인됐다).
 - ★★★ **`[기본]` `name discount not exported by package shop`** · **`[noinl]`·`[인라인끔]` `undefined: shop.discount`** — `app` 의 소스는 **한 글자도 안 바뀌었다.**
 
 ### 5. 인라인되는 `Price` 의 본문이 내보내기 데이터에 실리며 `discount` 도 따라 실린다 · 문구는 근거가 못 된다 — `exit=1` 을 쓴다
 
 - ★★★ `app` 을 컴파일할 때 컴파일러는 `shop` 의 **소스가 아니라 내보내기 데이터**를 읽는다. `Price` 가 인라인될 수 있으면 **그 본문이 실리고**, 본문이 부르는 `discount` 도 **이름째 실린다** → 「있는데 비공개」. `Price` 가 인라인 안 되면 `discount` 가 **안 실린다** → 「없다」.
   ★ 이것은 **`-m` 출력과 세 결과를 잇는 추론**이다 — 내보내기 데이터 파일을 **직접 열어 보지는 않았다.**
-- ★★★ 그러니 **문구는 다른 함수의 최적화 판정에 흔들린다**(규칙 27). 근거는 **`exit=1`(막혔다)** 이고, 문구는 **이 판·이 플래그의 관찰**로만 적는다.
+- ★★★ 그러니 **문구는 다른 함수의 최적화 판정에 실행마다 달라진다**(규칙 27). 근거는 **`exit=1`(막혔다)** 이고, 문구는 **이 판·이 플래그의 관찰**로만 적는다.
 
 ### 6. `vet` 은 `token` 만(`has json tag but is not exported`) — `email` 은 침묵 · `{"Name":"kim","age":30}` · 소문자 필드 안 채워짐 · `err` 는 둘 다 `<nil>`
 
@@ -438,9 +438,9 @@ exit=1
 | 무엇을 | 어떻게 | 몇 번 | 결과 |
 |---|---|---|---|
 | 이 문서의 모든 블록 | `capture.sh <디렉토리>` 가 소스 배너 + 명령 배너 + 출력 + `(exit N)` 을 파일로 받고 `assemble-blocks.py` 가 원고에 꽂는다 | 배치 내내 + **제출 전 전수 재실행** | `normalize-shaky.py` 로 **★고칠 것 0** |
-| ★★★ 이름 탐침 (`t40names`) | `-gcflags=-e` · `// pNN` 줄 번호로 맞춤 | 캡처마다 | **`5 / 8`** |
+| ★★★ 이름 probe (`t40names`) | `-gcflags=-e` · `// pNN` 줄 번호로 맞춤 | 캡처마다 | **`5 / 8`** |
 | ★★★ `internal` 격자 (`t40int`) | 세 모듈 · 여덟 자리 · `replace` | 캡처마다 | **`4 / 8`** · `plugin` 통과 |
-| ★★★ 문구 흔들림 (`t40leak`) | `-m` · 빌드 태그 · `-l` | 캡처마다 | `not exported` 대 `undefined:` |
+| ★★★ 문구 실행 간 차이 (`t40leak`) | `-m` · 빌드 태그 · `-l` | 캡처마다 | `not exported` 대 `undefined:` |
 | ★★ `json` (`t40json`) | `vet` · 실행 | 캡처마다 | 소문자 필드 빠짐 · `vet` 은 태그만 |
 | ★★ 외부 테스트 (`t40test`) | `go test` × 태그 × `-l` | 캡처마다 | `ok` · `FAIL` · `FAIL` |
 
@@ -450,7 +450,7 @@ exit=1
 |---|---|
 | 소문자 이름 진단의 문구 | **gc 의 내보내기 데이터·인라인 판정** |
 | `internal` 규칙 | **`go` 명령** — 명세가 아니다 |
-| `vet structtag` 의 범위 | **이 판 `vet` 의 휴리스틱** |
+| `vet structtag` 의 범위 | **이 버전 `vet` 의 휴리스틱** |
 
 ★ **다시 찍는 법** — `capture.sh <디렉토리>` 를 그대로 돌리고 `normalize-shaky.py` 로 견준다.
 
@@ -458,5 +458,5 @@ exit=1
 
 이 파일의 모든 출력은 **`go version go1.27.1 linux/amd64`** 에서 실제로 돌려
 **파일로 캡처한 것**이다. 소스 펜스도 같은 파일에서 떠 왔다 — 손으로 옮겨 적은 블록은 없다.\
-★ **근거로 읽을 칸** — `exit` · 탐침별 꼴 · `5 / 8` · `막힌 칸 4 / 8` · `json` 출력과 `err` · `ok`/`FAIL`.
+★ **근거로 읽을 항목** — `exit` · probe별 꼴 · `5 / 8` · `막힌 칸 4 / 8` · `json` 출력과 `err` · `ok`/`FAIL`.
 **플래그를 타는 칸** — 소문자 이름 진단의 **문구**(4번 — 인라인에 달렸다).

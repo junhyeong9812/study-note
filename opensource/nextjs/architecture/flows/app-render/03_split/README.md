@@ -2,7 +2,7 @@
 
 상위: [App Router 가 페이지를 만드는 길](../README.md)
 
-`renderToHTMLOrFlightImpl` 의 뒤 302줄(L2787-3088)이다. **`isStaticGeneration` 한 값이 파일을 반으로 가른다.** 그리고 요청 쪽은 다시 네 갈래로 갈린다.
+`renderToHTMLOrFlightImpl` 의 뒤 302줄(L2787-3088)이다. **`isStaticGeneration` 한 값이 파일을 반으로 가른다.** 그리고 요청 쪽은 다시 네 갈래로 나뉜다.
 
 ## 위치
 

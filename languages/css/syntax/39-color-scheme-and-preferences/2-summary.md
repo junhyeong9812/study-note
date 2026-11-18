@@ -331,7 +331,7 @@ matchMedia("(prefers-color-scheme: dark)").matches   // 선호를 읽는다
 getComputedStyle(el).colorScheme                     // 선언된 색 구성표
 ```
 
-### 금지 사례 — 던져서 확인한 것
+### 금지 사례 — 실행해서 확인한 것
 
 ```css
 :root { color-scheme: dark; }
@@ -415,7 +415,7 @@ html { filter: invert(1); }
 |---|---|---|
 | 다크 모드를 지원한다 | `color-scheme: light dark` **+** 내 팔레트 두 벌 | 둘 중 하나만 |
 | 폼·스크롤바가 안 따라온다 | `color-scheme` | 미디어 쿼리 안에서 입력칸 색을 손으로 칠하기 |
-| 값 하나만 둘로 갈린다 | `light-dark()` | `@media` 블록을 통째로 하나 더 |
+| 값 하나만 둘로 나뉜다 | `light-dark()` | `@media` 블록을 통째로 하나 더 |
 | 테마가 셋 이상이다 | 커스텀 속성 + `data-theme` | `light-dark()` |
 | 사용자가 직접 고른 테마가 있다 | 루트에 `color-scheme` 도 같이 토글 | 색만 토글 |
 | 급하게 어둡게만 하고 싶다 | 팔레트 두 벌 | `filter: invert(1)` |
@@ -438,8 +438,8 @@ html { filter: invert(1); }
 </style>
 ```
 
-> **보이는 것** — 아래 판의 **입력칸과 버튼만** 어두운 회색 바탕에 흰 글씨로 바뀐다. 이 블록에는 색 선언이 **한 글자도 없다** — 바뀐 것은 전부 브라우저가 그리는 부분이다. 반대로 **두 문단의 글자색과 두 판의 배경은 똑같다**(둘 다 검정 글씨 · 투명 배경). 서브트리에 건 `color-scheme` 은 이미 상속돼 내려온 `color` 를 되돌리지 않기 때문이다.\
-> **바꿔 볼 것** — `.dark` 의 `color-scheme: dark` 를 지우면 → **두 판이 완전히 똑같아진다** · 같은 선언을 `:root` 에 걸면 → **페이지 바탕과 스크롤바까지 어두워진다**
+> **보이는 것** — 아래 판의 **입력칸과 버튼만** 어두운 회색 바탕에 흰 글씨로 바뀐다. 이 블록에는 색 선언이 **한 글자도 없다** — 바뀐 것은 전부 브라우저가 그리는 부분이다. 반대로 **두 문단의 글자색과 두 버전의 배경은 똑같다**(둘 다 검정 글씨 · 투명 배경). 서브트리에 건 `color-scheme` 은 이미 상속돼 내려온 `color` 를 되돌리지 않기 때문이다.\
+> **바꿔 볼 것** — `.dark` 의 `color-scheme: dark` 를 지우면 → **두 버전이 완전히 똑같아진다** · 같은 선언을 `:root` 에 걸면 → **페이지 바탕과 스크롤바까지 어두워진다**
 
 *(Chrome 151 headless 실측: `input` 배경 `rgb(255, 255, 255)` → `rgb(59, 59, 59)` · `input` 글자색 `rgb(0, 0, 0)` → `rgb(255, 255, 255)` · `button` 배경 `rgb(239, 239, 239)` → `rgb(107, 107, 107)` · 두 `<p>` 의 `color` 는 **둘 다** `rgb(0, 0, 0)` · 두 `.pane` 의 `background-color` 는 **둘 다** `rgba(0, 0, 0, 0)`. `:root` 판은 스크린샷 픽셀로 페이지 바탕 `(255,255,255)` → `(18,18,18)`, 스크롤바 트랙 `(252,252,252)` → `(44,44,44)`.)*
 
@@ -460,7 +460,7 @@ html { filter: invert(1); }
   `and`/`not`/쉼표·경계값·명시도 이야기는 거기, 여기는 **`prefers-*` 기능이 무엇을 재고 `color-scheme` 과 어떻게 갈리나**만.
 - [`../40-container-and-style-queries/2-summary.md`](../40-container-and-style-queries/2-summary.md) — 조상 상자를 재는 쪽. `@container style(--theme: dark)` 로 **테마를 조상에서 읽는** 방법이 거기 있다.
 - [`../03-inheritance-and-global-keywords/2-summary.md`](../03-inheritance-and-global-keywords/2-summary.md) — 상속의 정본.\
-  `color-scheme` 이 상속되는 것과 `color` 가 **이미 내려와 버린 것**이 여기서 갈린다.
+  `color-scheme` 이 상속되는 것과 `color` 가 **이미 내려와 버린 것**이 여기서 달라진다.
 - [`../01-cascade-and-priority/2-summary.md`](../01-cascade-and-priority/2-summary.md) — UA 스타일이 **출처 사다리의 맨 아래**에 있다는 것. `color-scheme` 이 바꾸는 것이 바로 그 층이다.
 - [`../41-supports-feature-queries/2-summary.md`](../41-supports-feature-queries/2-summary.md) — `CSS.supports('color', 'light-dark(red,blue)')` 로 지원을 묻는 방법.
 - [목록의 **42번 주제**](../42-color-notation-and-spaces/)(색 표기와 색 공간) — 팔레트를 두 벌 만들 때의 색 선택. `oklch` 로 명도만 바꾸는 방법이 거기.
@@ -484,7 +484,7 @@ html { filter: invert(1); }
 
 - **`color-scheme` 은 메타 태그로도 줄 수 있다** — `<meta name="color-scheme" content="light dark">`.
   실측: `content="dark"` 는 선호가 light 여도 페이지 바탕이 `(18,18,18)` 이었고, `content="light dark"` 는
-  선호를 따라 `(255,255,255)` ↔ `(18,18,18)` 로 갈렸다 — **CSS 한 줄 없이 속성 선언과 같은 효과**다.
+  선호를 따라 `(255,255,255)` ↔ `(18,18,18)` 로 나뉘었다 — **CSS 한 줄 없이 속성 선언과 같은 효과**다.
   ★ 다만 **`getComputedStyle(root).colorScheme` 은 그때도 `normal`** 이었다. 메타는 UA 에게 알릴 뿐
   CSS 속성값을 만들지 않는다 — **진단할 때 속성만 읽으면 못 본다.**
   CSS 파일이 도착하기 전에 첫 페인트가 이뤄지는 점 때문에 흰 화면 번쩍임을 줄이는 용도로 쓰이는데,

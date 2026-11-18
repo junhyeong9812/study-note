@@ -121,7 +121,7 @@ ctad02.cpp:8:27: note: candidate function template not viable: requires 1 argume
 
 **왜 그런가**
 
-- ★★★ **c++14 열은 전부 `error`**(CTAD 가 없다), **c++17 열은 `Box x{1, 2.0}` 만 `error`** — 두 판이 같은 두 칸이 그 행이다.
+- ★★★ **c++14 열은 전부 `error`**(CTAD 가 없다), **c++17 열은 `Box x{1, 2.0}` 만 `error`** — 두 버전이 같은 두 칸이 그 행이다.
 - ★★★ **`std::vector x{v2}` 는 감싸지 않고 복사한다** — 복사 추론 후보가 이긴다(7번). **`{v2, v2}` 만** `initializer_list` 생성자로 감싼다.
 - ★★ **`Box x{"hi"}` 는 값 매개변수라 감쇠**, **`Box x{1, 2.0}` 은 `Box(T, T)` 에서 충돌** — 8번.
 
@@ -147,7 +147,7 @@ sizeof(x)   = 32
 **왜 그런가**
 
 - ★★ **가이드는 「이 인자면 이 타입」만 정한다** — 생성자는 그대로이고, `Box<std::string>` 의 `Box(std::string)` 이 `"hi"` 를 변환해 받는다.
-- ★ 8 은 이 판의 포인터 크기, **32 는 libstdc++ 의 `std::string` 크기**다 — 표준은 둘 다 정하지 않는다.
+- ★ 8 은 이 버전의 포인터 크기, **32 는 libstdc++ 의 `std::string` 크기**다 — 표준은 둘 다 정하지 않는다.
 
 ### 4. ★★ **`8 8`** · ★★★ **g++ `wrong number of template arguments (1, should be 2)` · clang `too few template arguments for class template 'Duo'`**
 
@@ -329,7 +329,7 @@ ctad06.cpp:14:7: note: in instantiation of member function 'Box<int>::odd' reque
 **안 돌려 본 것 / 못 잰 것**
 
 - **안 돌려 본 것** — ★ **템플릿인 추론 가이드 · `explicit` 가이드 · 별칭 템플릿 CTAD(C++20)** · ★ **libc++ 로 표준 컨테이너 행**.
-- ★ **「부적용인 창」** — ASan · 경고 격자.
+- ★ **「해당 없는 창」** — ASan · 경고 격자.
 
 **버전이 올랐을 때 다시 돌려야 하는 것**
 
@@ -341,5 +341,5 @@ ctad06.cpp:14:7: note: in instantiation of member function 'Box<int>::odd' reque
 이 파일의 모든 출력·진단·덤프는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
 **Ubuntu clang version 18.1.3 (1ubuntu1)** · libstdc++ 13 · GNU nm 2.42 · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
 소스는 질문 파일과 같다(출력 블록의 배너에 파일 이름이 있다). 블록은 캡처 스크립트가 받은 것이다 — 손으로 옮긴 줄은 없다.
-**읽는 법** — 흔들리는 칸은 **진단 문구 · 타입 이름의 철자 · `sizeof(std::string)`** 이다.\
-근거로 쓰는 것은 다음이다 — **`cc exit` · 격자 칸의 타입 · 「갈린 칸 N / M」 · `nm` 의 글자와 기호의 유무**.
+**읽는 법** — 실행마다 달라지는 항목은 **진단 문구 · 타입 이름의 철자 · `sizeof(std::string)`** 이다.\
+근거로 쓰는 것은 다음이다 — **`cc exit` · 격자 칸의 타입 · 「달라진 항목 N / M」 · `nm` 의 글자와 기호의 유무**.

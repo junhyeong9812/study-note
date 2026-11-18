@@ -770,7 +770,7 @@ except TypeError as ex:
 * ★★★ `default` 는 **나가는 길만** 고친다 — 되읽은 JSON 에는 「원래 `datetime` 이었다」가 없다. 되살리려면 **양쪽이 약속**(키 이름·형식)하고 읽는 쪽이 `object_hook` 으로 바꾼다.
 * ★ `Decimal` 을 `float` 로 실으면 `0.1` — 끝의 0 이 사라진다. `str` 로 실으면 `"0.10"` 이지만 **숫자가 아니라 글자**로 나간다.
 
-### 10. 보장 · 관찰 · 구현(문구) · 구현 — 3.11 과 3.12 는 파이썬 인코더의 `RecursionError` 문구 한 칸에서만 갈렸다
+### 10. 보장 · 관찰 · 구현(문구) · 구현 — 3.11 과 3.12 는 파이썬 인코더의 `RecursionError` 문구 한 칸에서만 달라졌다
 
 **출력**
 
@@ -845,13 +845,13 @@ print("[4] 판", sys.version_info[:2])
 | 사실 | 층 | 근거 |
 |---|---|---|
 | 키는 **늘 `str`** | **라이브러리 보장** | `dumps` 의 주석 |
-| `object_hook` 이 **안쪽 객체부터** | **이 판의 관찰** | 문서는 *"every JSON object decoded"* 까지 — 순서는 안 적는다 |
+| `object_hook` 이 **안쪽 객체부터** | **이 버전의 관찰** | 문서는 *"every JSON object decoded"* 까지 — 순서는 안 적는다 |
 | `Circular reference detected` | **CPython 구현**(문구) | 실행 — 문서는 `check_circular` 의 뜻만 적는다 |
-| `indent` 를 주면 **파이썬 인코더** | **CPython 구현** | 설치본 `json/encoder.py` 247\~248행의 조건 + 문구가 갈린 실행 |
+| `indent` 를 주면 **파이썬 인코더** | **CPython 구현** | 설치본 `json/encoder.py` 247\~248행의 조건 + 문구가 달라진 실행 |
 
-* ★★ **갈린 칸** — `indent=1` + `check_circular=False` 의 `RecursionError` 문구(3.11 `while calling a Python object` · 3.12 문구 없음). **C 인코더 쪽 문구**(`while encoding a JSON object`)와 **`Circular reference detected`** 는 두 판이 같았다.
-* ★ **안 갈린 것** — 1번의 타입 격자 전체(배너 줄을 빼고 한 글자도 같다).
-* ★ 「C 인코더가 빠르다」는 **재지 않았다**(부적용) — 잰 것은 **어느 경로가 도나**뿐이다.
+* ★★ **달라진 항목** — `indent=1` + `check_circular=False` 의 `RecursionError` 문구(3.11 `while calling a Python object` · 3.12 문구 없음). **C 인코더 쪽 문구**(`while encoding a JSON object`)와 **`Circular reference detected`** 는 두 버전이 같았다.
+* ★ **안 달라진 것** — 1번의 타입 격자 전체(배너 줄을 빼고 한 글자도 같다).
+* ★ 「C 인코더가 빠르다」는 **재지 않았다**(해당 없음) — 잰 것은 **어느 경로가 도나**뿐이다.
 
 ### 11. 후위 순서(뿌리가 마지막)는 같다 · 파이썬은 객체에만(3 번) JS 는 값마다(7 번) / 파이썬은 경로 없는 한 줄, V8 은 닫힌 경로까지 · 큰 정수는 JS 가 double 로 뭉갠다
 
@@ -876,7 +876,7 @@ print("[4] 판", sys.version_info[:2])
 | `default` | `python3 - <e47_default.py` | 3 | 세 타입 · 키 0 번 |
 | 구현 | `python3 - <e47_impl.py` · `python3.11 - <e47_impl_py311.py` | 3씩 | 파이썬 인코더 문구만 갈림 |
 
-**구현 의존 항목** — 판이 오르면 다시 돌려야 하는 것.
+**구현 의존 항목** — 버전이 오르면 다시 돌려야 하는 것.
 
 | 항목 | 왜 |
 |---|---|
@@ -884,8 +884,8 @@ print("[4] 판", sys.version_info[:2])
 | `object_hook` 순서 · DEL 이스케이프 | 문서가 적지 않은 관찰이다 |
 | 인코더 선택 조건(`indent`) | 설치본 소스의 조건이다 |
 
-★ **안 흔들리는 칸** — 격자의 **「14 / 26」·「3 / 26」·「10 / 11」·「5 / 5」·「7 / 7」·「2 / 3」** · `dumps` 글자 · 훅 순서 · `(exit N)`.
-★★ **이 주제가 한 번도 안 잰 것** — **시간·메모리 바이트**(부적용) · **JS 쪽 읽기**(JS 31번 인용).
+★ **달라지지 않는 항목** — 격자의 **「14 / 26」·「3 / 26」·「10 / 11」·「5 / 5」·「7 / 7」·「2 / 3」** · `dumps` 글자 · 훅 순서 · `(exit N)`.
+★★ **이 주제가 한 번도 안 잰 것** — **시간·메모리 바이트**(해당 없음) · **JS 쪽 읽기**(JS 31번 인용).
 
 ## 실행 환경
 

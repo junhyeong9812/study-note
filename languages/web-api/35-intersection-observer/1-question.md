@@ -107,7 +107,7 @@ new IntersectionObserver(첫알림, { rootMargin: "200px" }).observe(요소);
 ## 실행 환경
 
 ★ **이웃 주제와의 경계** — `getBoundingClientRect()` 로 「화면 안에 있나」를 직접 재는 것은 [09번 주제](../09-element-geometry/1-question.md), `scroll` 리스너와 passive 는 [19번 주제](../19-passive-and-scroll/1-question.md)가 물었다. 마크업 쪽 `loading="lazy"` 는 **HTML 갈래 34번**(폴더는 아직 없다)이다. 여기는 **콜백이 언제 · 무엇을 들고 오나**와 **root·여백이 무엇을 바꾸나**를 묻는다.
-★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰이다(`innerHeight` 713). **명세 원문은 이 판에서 열지 못했다. 비용은 재지 않았다.** 이식성은 주장 범위 밖이다.
+★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰이다(`innerHeight` 713). **명세 원문은 이 버전에서 열지 못했다. 비용은 재지 않았다.** 이식성은 주장 범위 밖이다.
 ★ 본문의 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
 
 ## 복습 기록

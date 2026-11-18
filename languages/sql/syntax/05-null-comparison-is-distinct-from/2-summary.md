@@ -400,7 +400,7 @@ HINT:  No function matches the given name and argument types. You might need to 
 
 ---
 
-### 6. 탐침 값 쪽이 `NULL` 이어도 사라진다
+### 6. probe 값 쪽이 `NULL` 이어도 사라진다
 
 **언제 쓰나** — 목록에는 `NULL` 이 없는데 결과가 이상할 때. **방향이 반대인 같은 사고**다.
 
@@ -505,7 +505,7 @@ SQL 은 형태가 아니라 **「어느 연산자가 어떤 답을 낼 수 있�
 
 #### 방언 — 인덱스를 타나
 
-`NULL` 안전 비교가 **얼마나 비싼가**는 두 엔진에서 갈린다.\
+`NULL` 안전 비교가 **얼마나 비싼가**는 두 엔진에서 달라진다.\
 10만 행 임시 표에 `v` 인덱스를 걸고 계획을 찍은 것이다(`study` 안의 세션 임시 표 — 롤백·삭제로 잔재 없음).
 
 ```text
@@ -548,7 +548,7 @@ WHERE NOT (v <=> 5)    ->  type=index  key=v      rows=100649  Using where; Usin
   결과가 **항상 0행**이다. 그리고 `NULL` 이 들어오기 전까지는 잘 돌았다.
 - **`IN` 이 잘 도니까 `NOT IN` 도 괜찮다고 본다.**\
   `IN` 은 `TRUE` 하나로 확정되고 `NOT IN` 은 전부 확인해야 한다. 안전성이 다르다.
-- **탐침 쪽 `NULL` 을 잊는다.**\
+- **probe 쪽 `NULL` 을 잊는다.**\
   목록이 깨끗해도 `dan.dept_id` 가 `NULL` 이면 `dan` 이 사라진다. 위에서 `IN` 3행 + `NOT IN` 0행 = 3 ≠ 4 를 봤다.
 - **`<=>` 와 `IS DISTINCT FROM` 이 양쪽에서 다 되는 줄 안다.**\
   서로를 문법 오류로 거부한다. 이식 코드에는 둘 다 못 쓴다.
@@ -587,7 +587,7 @@ WHERE NOT (v <=> 5)    ->  type=index  key=v      rows=100649  Using where; Usin
 - `= NULL` 은 **에러가 아니라 0행**이다. 그래서 위험하다.
 - `IS NULL` 은 **값을 견주지 않고 상태를 묻는다.** 그래서 `UNKNOWN` 이 없다.
 - `NULL` 안전 등호는 **PG `IS NOT DISTINCT FROM` · MySQL `<=>`** 이고 **양쪽에서 다 도는 표현은 없다.**
-- **`NOT IN` 목록에 `NULL` 이 하나라도 있으면 결과는 항상 0행이다.** 탐침 쪽이 `NULL` 이어도 그 행이 사라진다.
+- **`NOT IN` 목록에 `NULL` 이 하나라도 있으면 결과는 항상 0행이다.** probe 쪽이 `NULL` 이어도 그 행이 사라진다.
 - `IN` 은 멀쩡한데 `NOT IN` 만 터진다 — **`TRUE` 하나로 끝나는 쪽과 전부 확인해야 하는 쪽**의 차이다.
 - 처방은 셋 — **`NOT EXISTS`** · 목록에서 `NULL` 제거 · **`NOT NULL` 제약**. 마지막이 가장 강하다.
 
@@ -623,7 +623,7 @@ WHERE NOT (v <=> 5)    ->  type=index  key=v      rows=100649  Using where; Usin
   예: 사원이 없는 부서 `hr` 을 찾는 것. `NOT EXISTS` 가 안전한 형태다.
 - **`NOT EXISTS`** — 서브질의가 한 행도 안 낼 때 `TRUE` 인 술어.\
   예: `NOT IN` 이 0행을 줄 자리에서 `hr` 을 제대로 찾아낸다.
-- **탐침 값(probe value)** — `IN`/`NOT IN` 에서 목록과 견주는 왼쪽 값.\
+- **probe 값(probe value)** — `IN`/`NOT IN` 에서 목록과 견주는 왼쪽 값.\
   예: `dept_id NOT IN (10,20,30)` 의 `dept_id`. 이쪽이 `NULL` 이어도 행이 사라진다.
 
 ## 더 들어가면
@@ -636,6 +636,6 @@ WHERE NOT (v <=> 5)    ->  type=index  key=v      rows=100649  Using where; Usin
 
 **기준 소스** — [PostgreSQL 18 · Comparison Functions and Operators](https://www.postgresql.org/docs/18/functions-comparison.html) · [MySQL 8.4 · Comparison Functions and Operators](https://dev.mysql.com/doc/refman/8.4/en/comparison-operators.html)\
 **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-본문에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-**버전** — 비교 연산자 자체는 두 엔진 모두 오래전부터 있다. 이 주제에서 버전에 갈리는 것은 없다.\
+본문에 실린 출력은 **전부 이 두 서버에 실제로 실행해서 받은 것**이다. 지어낸 출력은 없다.\
+**버전** — 비교 연산자 자체는 두 엔진 모두 오래전부터 있다. 이 주제에서 버전에 달라지는 것은 없다.\
 **선행** — [04 NULL 의 3값 논리](../04-null-three-valued-logic/). 왜 `UNKNOWN` 이 생기는지는 그쪽이 정본이고, **여기는 그래서 무슨 연산자를 쓰나**를 다룬다.

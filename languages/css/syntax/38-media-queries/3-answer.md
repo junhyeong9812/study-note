@@ -223,7 +223,7 @@ matchMedia("all").matches = true
 
 **명시도가 같을 때**
 
-- **등장 순서**가 정한다. 실측 두 판이 이렇다.
+- **등장 순서**가 정한다. 실측 두 버전이 이렇다.
 
 ```text
   @media (min-width: 1px) { .c1 { 빨강 } }     .c2 { 파랑 }
@@ -394,7 +394,7 @@ google-chrome --headless --disable-gpu --no-sandbox --dump-dom http://127.0.0.1:
 | `<link media>` 두 개의 다운로드 여부 (HTTP, 서버 로그) | 1 | A9 · 더 들어가면 |
 | 환경 기능 12종(`hover`·`pointer`·`scripting`·`update` 등) | 1 | 어디서 틀리나 6 · A10 |
 | 소수 폭 실험(`--force-device-scale-factor` 1 / 1.25 / 1.5) | 3 | A2 — **못 잰 것** |
-| **제출 직전 demo 재추출·재실행 대조** | 1 | 어긋남 0건 |
+| **제출 직전 demo 재추출·재실행 대조** | 1 | 불일치 0건 |
 
 **구현에 달린 항목**
 

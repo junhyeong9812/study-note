@@ -110,7 +110,7 @@ const row = (label, r) => {
 })();
 ```
 
-- ★★★ `[1]` 일곱 행 각각의 종류 · `name` · `code` 는? (`message` 는 판마다 다를 수 있다 — node 판으로 적어 보라)
+- ★★★ `[1]` 일곱 행 각각의 종류 · `name` · `code` 는? (`message` 는 판마다 다를 수 있다 — node 버전으로 적어 보라)
 - ★★ `[2]`·`[3]` 의 네 줄은?
 - ★ `[4]` 의 세 숫자는?
 
@@ -184,7 +184,7 @@ console.log("end of the script");
 ```
 
 - ★★★ 네 행 각각 — node 20 에서 `fetch` 는 무엇으로 거부되나? 서버는 요청을 받았나?
-- ★★ node 18 과 갈리는 행이 있나? 있다면 무엇으로 갈리나?
+- ★★ node 18 과 달라지는 행이 있나? 있다면 무엇으로 갈리나?
 - ★★ `js40b-41-h-timeout-alone.js` 를 `alone` 과 `keep` 으로 돌리면 각각 몇 줄이 찍히나?
 
 ### 5. 「취소」라는 말이 가리키는 것 (왜) ★★★
@@ -220,7 +220,7 @@ console.log("end of the script");
 
 **환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · Google Chrome 151(헤드리스) · x86-64 Linux. 배너의 `node20` 은 v20.19.6 이다.
 
-★★★ **이 주제의 본체는 로그 심기다** — 작업의 걸음마다, `abort()` 를 부른 자리에, 호출자가 받은 것에 로그를 심었다. **1번 문항이 이 주제의 중심이다.**
+★★★ **이 주제의 핵심은 로그 심기다** — 작업의 걸음마다, `abort()` 를 부른 자리에, 호출자가 받은 것에 로그를 심었다. **1번 문항이 이 주제의 중심이다.**
 
 **선행** — [39](../39-async-await/2-summary.md) · [38](../38-promise-combinators/2-summary.md) · [32](../32-error-handling-and-error/2-summary.md) · [40](../40-async-iteration-and-for-await/2-summary.md).
 

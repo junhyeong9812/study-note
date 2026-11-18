@@ -15,7 +15,7 @@
 | "키가 같다고 잰 둘은 제3자와도 똑같이 재진다" | **동치의 일관성** |
 | 키가 같으면 **같은 사람으로 친다** | **`equals` 와의 일관성**(권고) |
 | 줄 세우는 사람 | `List.sort` / `Arrays.sort` / `TreeSet` / `TreeMap` |
-| 자가 흔들리는 것을 줄 세우다 들킨 순간 | `IllegalArgumentException: Comparison method violates its general contract!` |
+| 자가 실행마다 달라지는 것을 줄 세우다 들킨 순간 | `IllegalArgumentException: Comparison method violates its general contract!` |
 
 - 줄 세우기는 **자를 믿고** 한다. 자를 매번 다시 검사하지 않는다 — 그러면 정렬이 느려진다.
 - 그래서 **자가 흔들려도 대개는 아무 말 없이 끝난다.** 줄이 엉켜 있을 뿐이다.
@@ -189,7 +189,7 @@ FUZZY(0, 20)  = -1  (그런데 다르다고 한다)
   n=10000  IllegalArgumentException: Comparison method violates its general contract!
 ```
 
-★ **세 구간으로 갈린다.**
+★ **세 구간으로 나뉜다.**
 
 ```text
   n 작다            n 중간                        n 크다
@@ -293,7 +293,7 @@ n = 32~61, seed 0~1999 -> 시도 60000회
 
 그림 해설 (한 단계씩):
 
-- ★ **31개 이하에서는 6만 번을 돌려도 한 번도 안 던졌다.** 병합 코드에 도달조차 안 하기 때문이다.
+- ★ **31개 이하에서는 6만 번을 돌려도 한 번도 실행하지 않았다.** 병합 코드에 도달조차 안 하기 때문이다.
 - 그런데 **같은 6만 번 중 54,097번이 오름차순이 아니었다.** 조용히 틀린 것이다.
 - 32개부터 던지기 시작하지만 **던지는 비율은 5%(3,012/60,000)** 다. **대부분은 여전히 조용히 틀린다.**
 - 결론: **`IllegalArgumentException` 은 계약 위반의 "일부"만 잡는 안전망**이지 검사기가 아니다.
@@ -423,7 +423,7 @@ dept.reversed() then name   : [영업/김/25, 영업/이/25, 개발/김/40, 개�
 - 한 키만 뒤집고 싶으면 **그 키에 붙인다** — `thenComparing(P::age, reverseOrder())`.
 - 읽기 헷갈리면 중간 변수로 끊는다. `var byDept = comparing(P::dept).reversed();`
 
-`null` 이 섞이면 이렇게 갈린다(같은 프로그램).
+`null` 이 섞이면 이렇게 달라진다(같은 프로그램).
 
 ```text
 --- 4. null 이 섞이면 ---
@@ -552,7 +552,7 @@ Integer::compare       : [-10, 0, 2147483647]
 
 ### 3. ★ `compareTo` 와 `equals` 를 다른 필드로 쓴다
 
-(5)에서 본 그대로다. **`HashSet` 과 `TreeSet` 의 `size()` 가 갈린다.**
+(5)에서 본 그대로다. **`HashSet` 과 `TreeSet` 의 `size()` 가 달라진다.**
 
 JDK 안의 대표 사례가 `BigDecimal` 이다(`Ex.java (28-b)`).
 
@@ -583,7 +583,7 @@ a.equals(null)    -> false
 
 - **`equals` 와 정반대다.** `equals(null)` 은 `false` 를 돌려줘야 하고, `compareTo(null)` 은 **NPE 를 던져야 한다.**
 - `Comparable` 의 javadoc 원문: "`e.compareTo(null)` should throw a `NullPointerException` even though `e.equals(null)` returns `false`."
-- 위 NPE 는 **일부러 던진 것이 아니라 필드를 읽다가 난 것**이다 — 결과적으로 계약에 맞지만, 의도를 밝히려면
+- 위 NPE 는 **일부러 실행한 것이 아니라 필드를 읽다가 난 것**이다 — 결과적으로 계약에 맞지만, 의도를 밝히려면
   `Objects.requireNonNull(o)` 로 먼저 막는 편이 낫다([**60번 주제**](../60-null-handling/)).
 
 ### 5. `reversed()` 를 체인 끝에 붙여 놓고 한 키만 뒤집힌 줄 안다

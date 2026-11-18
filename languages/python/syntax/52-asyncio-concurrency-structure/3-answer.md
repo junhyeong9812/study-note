@@ -2,7 +2,7 @@
 
 ## 정답
 
-### 1. 갈린 칸 `4 / 9` — 예외 하나에 `gather` 는 형제 `finished`, `TaskGroup` 은 `cancelled` + `ExceptionGroup` · 자식 취소에 `gather` 는 `CancelledError`(`cancelling()` `0`) · 바깥 취소에는 둘 다 전부 `cancelled`
+### 1. 달라진 항목 `4 / 9` — 예외 하나에 `gather` 는 형제 `finished`, `TaskGroup` 은 `cancelled` + `ExceptionGroup` · 자식 취소에 `gather` 는 `CancelledError`(`cancelling()` `0`) · 바깥 취소에는 둘 다 전부 `cancelled`
 
 **출력**
 
@@ -147,7 +147,7 @@ gather vs TaskGroup, cells that differ (A, C, seen x 3 scenarios): 4 / 9
   `TaskGroup` 은 형제를 **취소하고**(`cancelled`) 다 멈춘 뒤 **하나여도** `ExceptionGroup[ValueError('b')]` 로 올린다. → 이 사건에서 **3칸** 갈림.
 * ★★ **`one child cancelled`** — `gather` 는 자식의 취소를 **예외처럼** 넘겨 기다리던 코드가 `CancelledError` 를 받는다. 그런데 **그 태스크는 취소 요청을 안 받았다**(`cancelling()` `0`). 형제는 `finished`.
   `TaskGroup` 은 `CancelledError` 를 실패로 안 쳐 **블록이 정상으로** 끝난다. → **1칸**.
-* ★★★ **`outer cancelled`** — **`gather` 도 자식을 전부 취소한다**(*"If `gather()` is cancelled, all submitted awaitables … are also cancelled."*). 두 구조가 **한 칸도 안 갈린다.** → **0칸**. 합해서 **4 / 9**.
+* ★★★ **`outer cancelled`** — **`gather` 도 자식을 전부 취소한다**(*"If `gather()` is cancelled, all submitted awaitables … are also cancelled."*). 두 구조가 **한 칸도 안 달라진다.** → **0칸**. 합해서 **4 / 9**.
 * ★ `return_exceptions=True` 는 형제 운명을 안 바꾸고 예외를 **결과 칸**으로 만들 뿐이다 — 바깥이 취소되면 여전히 `CancelledError`.
 
 ### 2. `await` 두 줄은 하나 끝나고 하나 · 태스크 둘은 `main: both tasks created` 가 먼저, 그 뒤 번갈아 · 기다리지 않은 태스크도 끝까지 돈다 · 결과는 인자 순서 `['slow', 'fast']`
@@ -304,7 +304,7 @@ asyncio.run(main())
   문서 — *"While a Task is running in the event loop, no other Tasks can run in the same thread."*
 * ★★ **`await asyncio.sleep` 은 양보다** — 그동안 `tick` 셋이 전부 들어온다.
 * ★★ **`to_thread` 는 조는 일을 다른 스레드로 옮긴다** — 루프 스레드는 `await` 에서 양보하므로 `asyncio.sleep` 과 **같은 로그**가 나온다.
-* ★ 세 경우 모두 다섯 판이 **한 가지 순서**(`distinct log orders over 5 runs: 1`)였다.
+* ★ 세 경우 모두 다섯 버전이 **한 가지 순서**(`distinct log orders over 5 runs: 1`)였다.
 
 ### 4. 안쪽은 두 방식 모두 `CancelledError` + `finally` · `timeout` 블록 안에서도 `CancelledError`, 밖에서야 `TimeoutError` · `wait_for` 바깥은 `TimeoutError` · `asyncio.TimeoutError is TimeoutError` `True` · `CancelledError` 는 `Exception` 이 아니다
 
@@ -583,7 +583,7 @@ body raised -> ExceptionGroup ["RuntimeError('body')"] | ['walker cancelled']
 * ★ 둘이 **같은 걸음에서** 실패해 **둘 다** 봉투에 들어갔다.
 * ★ **몸통의 예외도 한 자식의 실패와 같게** 다룬다 — 자식을 취소하고 몸통의 예외를 봉투에 담는다.
 
-### 7. 루프의 **타이머**가 `sleep` 중인 태스크를 쥐고 있어서다 — **혼자만 아는 퓨처**를 기다리면 `20 / 20` 사라진다 · 한 경우의 관찰은 문서의 「언제든」을 못 이긴다
+### 7. 루프의 **타이머**가 `sleep` 중인 태스크를 잡고 있어서다 — **혼자만 아는 퓨처**를 기다리면 `20 / 20` 사라진다 · 한 경우의 관찰은 문서의 「언제든」을 못 이긴다
 
 ```python
 # e52_gc.py
@@ -648,8 +648,8 @@ count: 20
 ```
 
 * ★★ **`asyncio.sleep` 은 루프에 타이머를 건다** — 그 타이머 핸들이 태스크를 깨울 콜백을 쥐므로 **루프에서 닿는 길**이 있다. 참조를 버려도 `0 / 20`.
-* ★★ **혼자만 아는 퓨처**를 기다리면 퓨처와 태스크가 **서로만** 쥔다 — 루프는 약한 참조뿐이라 `gc.collect()` 한 번에 `20 / 20` 사라지고 `Task was destroyed but it is pending!` 가 20번 온다.
-* ★★★ **「해 봤는데 안 사라지더라」는 기다리는 대상이 무엇이었느냐에 달린 관찰**이다. 이것은 구현의 사정이고, 문서는 *"may get garbage collected at any time"* 이라 적었다 — 규칙은 **늘 쥔다**(쥐면 두 경우 모두 `0 / 20`).
+* ★★ **혼자만 아는 퓨처**를 기다리면 퓨처와 태스크가 **서로만** 잡는다 — 루프는 약한 참조뿐이라 `gc.collect()` 한 번에 `20 / 20` 사라지고 `Task was destroyed but it is pending!` 가 20번 온다.
+* ★★★ **「해 봤는데 안 사라지더라」는 기다리는 대상이 무엇이었느냐에 달린 관찰**이다. 이것은 구현의 사정이고, 문서는 *"may get garbage collected at any time"* 이라 적었다 — 규칙은 **늘 잡는다**(쥐면 두 경우 모두 `0 / 20`).
 
 ### 8. `asyncio.current_task().cancelling()` 이 `0` 이면 나에 대한 취소가 아니다 — 1번의 `its cancelling()` 열
 
@@ -733,11 +733,11 @@ coroutine passed to wait(): TypeError Passing coroutines is forbidden, use tasks
 * ★ `wait()` 에 코루틴을 직접 주면 `TypeError` — `Passing coroutines is forbidden, use tasks explicitly.`(3.11 판도 같은 문구). 3.10 이하는 **이 머신에 없어** 그 판의 동작은 못 잰 것이다.
 * ★ 3.12 가 더한 것 하나 — `eager_task_factory`(2번의 순서를 뒤집는다 — 2-summary 「더 들어가면」).
 
-### 11. 보장 · CPython 구현 · 이 판의 관찰(구현의 사정) · CPython 구현
+### 11. 보장 · CPython 구현 · 이 버전의 관찰(구현의 사정) · CPython 구현
 
 * 「`gather` 는 자식 하나의 예외에 형제를 안 취소한다」 — **라이브러리 보장**(`gather` 문서의 굵은 *won't be cancelled*).
 * 「격자의 걸음 수 칸」 — **CPython 구현.** 문서는 콜백이 몇 차례에 도는지 말하지 않는다. 그래서 격자는 **운명 칸만** 셌다.
-* 「`sleep` 을 기다리는 참조 없는 태스크가 안 사라진다」 — **이 판의 관찰**이고 그 까닭(타이머 핸들)은 **구현**이다. 보장은 반대쪽 — 「언제든 수거될 수 **있다**」.
+* 「`sleep` 을 기다리는 참조 없는 태스크가 안 사라진다」 — **이 버전의 관찰**이고 그 까닭(타이머 핸들)은 **구현**이다. 보장은 반대쪽 — 「언제든 수거될 수 **있다**」.
 * 「`Task was destroyed but it is pending!`」 — **CPython 구현**의 문구.
 
 ### 12. Go 는 자식을 끊으면 `2 / 7`(아래로만) · `TaskGroup` 은 자식의 **실패가 위로 올라가 형제 전부**를 취소한다 · `wait` 는 Go 30번의 「타임아웃이 났으니 일도 멈췄다」와 같은 함정 · `Promise.all` 은 `gather;one raises` 행
@@ -761,17 +761,17 @@ coroutine passed to wait(): TypeError Passing coroutines is forbidden, use tasks
 | `wait` | `python3 - <e52_wait.py` | 3 | `pending` 이 돈다 · `TypeError` |
 | 잊은 태스크의 예외 · eager | `python3 - <e52_leftover.py` · `python3.11 - <e52_leftover_py311.py` | 3씩 | `Task exception was never retrieved` · 3.11 은 eager 없음 |
 
-**구현 의존 항목** — 판이 오르면 다시 돌려야 하는 것.
+**구현 의존 항목** — 버전이 오르면 다시 돌려야 하는 것.
 
 | 항목 | 왜 |
 |---|---|
 | ★★ 격자의 **걸음 수** 칸 | 콜백을 몇 차례에 나눠 돌리나는 구현이다 — 운명 칸(`4 / 9`)은 문서가 정한다 |
 | ★ 참조 없는 태스크의 수거 | 무엇이 태스크를 쥐나는 구현이다 |
 | 예외 **문구** · 루프 예외 처리기의 메시지 | 구현이다 |
-| ★ 타이머를 쓴 세 탐침 | 머신이 아주 바쁘면 「끼어들었나」 칸이 움직일 수 있다(세 번 다 안 움직였다) |
+| ★ 타이머를 쓴 세 probe | 머신이 아주 바쁘면 「끼어들었나」 칸이 움직일 수 있다(세 번 다 안 움직였다) |
 
-★ **안 흔들리는 칸** — 격자의 **「4 / 9」** · `finished`/`cancelled`/`raised` · 예외 타입 · `cancelling()` 값 · 「N / M 판」 · `(exit N)`.
-★★ **이 주제가 한 번도 안 찍은 것** — **경과 시간**(질문 밖 — 부적용) · **3.10 이하**(판 없음 — 못 잰 것).
+★ **달라지지 않는 항목** — 격자의 **「4 / 9」** · `finished`/`cancelled`/`raised` · 예외 타입 · `cancelling()` 값 · 「N / M 판」 · `(exit N)`.
+★★ **이 주제가 한 번도 안 찍은 것** — **경과 시간**(질문 밖 — 해당 없음) · **3.10 이하**(판 없음 — 못 잰 것).
 
 ## 실행 환경
 

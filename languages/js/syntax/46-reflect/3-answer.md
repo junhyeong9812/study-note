@@ -111,7 +111,7 @@ rows that differ: 14 / 19
 
 ### 7. `f.apply(null, [1, 2])` 대 `Reflect.apply` — **같다**(`3`) · 자기 `apply` 가 있는 함수 — `g.apply` 는 **그 프로퍼티를 조회**해 `"own apply property"`, `Reflect.apply` 는 조회하지 않아 `3` · 목록 없음 — `f.apply(null)` 은 **인자 0개**(09번의 `apply(t, null)` 과 같은 규칙)로 `NaN`, `Reflect.apply(f, null)` 은 **`TypeError`** ★★
 
-### 8. **없다** — 19행 전부 명세가 정하는 칸이고 세 판이 같았다 · `getOwnPropertyNames(Reflect)` 의 **순서**는 명세가 정하지 않는다(V8 의 정의 순서로 보인다 — 근거로는 개수 13 만 쓴다) ★
+### 8. **없다** — 19행 전부 명세가 정하는 항목이고 세 버전이 같았다 · `getOwnPropertyNames(Reflect)` 의 **순서**는 명세가 정하지 않는다(V8 의 정의 순서로 보인다 — 근거로는 개수 13 만 쓴다) ★
 
 ### 9. 14번 — **비엄격에서는 실패한 대입·`delete` 가 조용히 버려진다** — 비엄격이면 그 두 행이 「`false` 대 조용함」이 되어 「던지나」를 못 가른다 · 22번 — **`Reflect.ownKeys` 는 심볼 키를 본다**(`Object.keys` 는 안 본다) ★★
 
@@ -123,7 +123,7 @@ rows that differ: 14 / 19
 | `js44b-46b-object-vs-reflect.js` | ★★★ 19행 · 「`11 / 19`」 · 「`3 / 19`」 | 〃 |
 | `js44b-46c-receiver.js` | ★★ `receiver` 의 `this` · 쓰기 · 트랩에서 넘길 때 | 〃 |
 
-세 판 대조기(이 묶음의 plain 탐침). 이 주제의 줄 셋(`46a`·`46b`·`46c`)은 **전부 `identical · identical`** 이다.
+세 판 대조기(이 묶음의 plain probe). 이 주제의 줄 셋(`46a`·`46b`·`46c`)은 **전부 `identical · identical`** 이다.
 
 ```sh
 # js44b-vdiff.sh
@@ -167,12 +167,12 @@ js44b-47d-registry-api.js                node18/node20 DIFFERS    node20/Chrome 
 node18 vs node20: identical 7 · differs 2   ·   node20 vs Chrome 151: identical 8 · differs 0 · node only 1
 ```
 
-**구현 의존 항목 — 판이 오르면 다시 돌릴 것** — 격자 칸은 **명세**가 정한다. 다시 볼 것은 `getOwnPropertyNames(Reflect)` 의 **순서** 정도다.
+**구현 의존 항목 — 버전이 오르면 다시 돌릴 것** — 격자 칸은 **명세**가 정한다. 다시 볼 것은 `getOwnPropertyNames(Reflect)` 의 **순서** 정도다.
 
 ## 실행 환경
 
 이 파일의 출력은 **node v20.19.6** · x86-64 Linux 에서 실제로 돌려 얻은 것이고, 블록은 **전부 캡처 파일에서 조립**했다.
-★★★ **node 18.19.1 · Chrome 151 도 세 탐침 전부 한 글자도 같았다**(위 「실행 검증」의 세 판 대조기).
+★★★ **node 18.19.1 · Chrome 151 도 세 probe 전부 한 글자도 같았다**(위 「실행 검증」의 세 판 대조기).
 
 **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
 `js44b-46a-reflect-and-traps.js`(1번 · 6번 · 8번) · `js44b-46b-object-vs-reflect.js`(2번 · 4번 · 7번 · 9번) · `js44b-46c-receiver.js`(3번 · 5번 · 6번).

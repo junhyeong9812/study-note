@@ -13,7 +13,7 @@
 ```
 
 - *조용한 실패(silent failure)*: 에러 없이 틀린 값을 남기는 실패. 정합성이 중요한 시스템(원장·정산·재고)에서는 크래시보다 비싸다. 크래시는 알림이 오지만, 조용한 오답은 대사(reconciliation)나 고객 민원으로 늦게 발견된다.
-- 원고 [languages/README.md](../../../languages/README.md) 축 ①의 한 문장: 언어는 "얼마나 빠른가"가 아니라 "틀렸을 때 어떻게 틀리는가", "그 도메인의 지식이 어디에 쌓여 있는가", "5년 뒤 누가 고치는가"로 갈린다. 성능은 넷째 축이 아니라 이 셋 안에 흩어져 있다.
+- 원고 [languages/README.md](../../../languages/README.md) 축 ①의 한 문장: 언어는 "얼마나 빠른가"가 아니라 "틀렸을 때 어떻게 틀리는가", "그 도메인의 지식이 어디에 쌓여 있는가", "5년 뒤 누가 고치는가"로 나뉜다. 성능은 넷째 축이 아니라 이 셋 안에 흩어져 있다.
 
 쉬운 예: 체중계 세 대.
 - A는 고장 나면 "Err"를 띄운다.
@@ -72,7 +72,7 @@ A = 예외를 던지는 언어·연산, B = 정의된 엉뚱한 값을 내는 �
 - 런타임 탐지기의 비용(원 출처 확인)
   - Clang ASan 문서: 일반적 감속 약 2배.
   - Go race detector 문서: 메모리 5~10배, 실행 시간 2~20배까지 늘 수 있다. 실행된 경로의 레이스만 찾는다.
-- 참고: 원고 [languages/README.md](../../../languages/README.md) 비교표와 rust 원고 §9의 "Go·JVM — 데이터 레이스는 정의되나 값이 어긋남"은 Go에 대해 너무 약하다. Go 메모리 모델은 기계어 한 워드보다 큰 값(인터페이스·맵·슬라이스·문자열)의 경쟁이 "단일 쓰기에 대응하지 않는 값"을 낼 수 있고, 그것이 "임의의 메모리 손상"으로 이어질 수 있다고 적는다(<https://go.dev/ref/mem>).
+- 참고: 원고 [languages/README.md](../../../languages/README.md) 비교표와 rust 원고 §9의 "Go·JVM — 데이터 레이스는 정의되나 값이 불일치"은 Go에 대해 너무 약하다. Go 메모리 모델은 기계어 한 워드보다 큰 값(인터페이스·맵·슬라이스·문자열)의 경쟁이 "단일 쓰기에 대응하지 않는 값"을 낼 수 있고, 그것이 "임의의 메모리 손상"으로 이어질 수 있다고 적는다(<https://go.dev/ref/mem>).
 - 참고: 원고 [languages/README.md](../../../languages/README.md) 비교표의 Rust "경계 위반의 결과 = 컴파일 거부"는 일반적으로 틀리다. The Rust Book 3.2 "Invalid Array Element Access"는 사용자 입력 인덱스가 범위를 넘으면 "런타임 오류"로 panic하는 예를 보이고, "컴파일러가 사용자가 넣을 값을 알 수 없으므로 이 검사는 런타임에 일어나야 한다"고 적는다. 컴파일에서 막히는 것은 소유권·차용·수명(시간 축)이고, 경계(공간 축)는 런타임 panic이다.
 
 ### 3. 실행 모형과 기동 — 층이 요구하는 조건
@@ -88,7 +88,7 @@ A = 예외를 던지는 언어·연산, B = 정의된 엉뚱한 값을 내는 �
 
 ### 실험 2: hello world 기동 시간 (`e21/hello`)
 
-컨테이너 안에서 프로세스 시작~종료 벽시계(ms), 7회 × 2라운드를 집필·점검에서 한 번씩(합 28회), `--cpus=2`. 같은 컨테이너의 `true`를 기준선으로 같이 쟀다(`date` 호출 비용 포함). C·Go·Python은 `python:3.12-slim`, node는 `node:22-bookworm-slim`(alpine의 busybox `date`는 나노초를 주지 않아 0으로 찍혔다), Java는 `eclipse-temurin:21-jdk`. 호스트는 다른 작업이 돌던 24코어 기계라 범위는 이 호스트·이 부하에 한정된다.
+컨테이너 안에서 프로세스 시작~종료 벽시계(ms), 7회 × 2라운드를 집필·점검에서 한 번씩(합 28회), `--cpus=2`. 같은 컨테이너의 `true`를 베이스라인으로 같이 쟀다(`date` 호출 비용 포함). C·Go·Python은 `python:3.12-slim`, node는 `node:22-bookworm-slim`(alpine의 busybox `date`는 나노초를 주지 않아 0으로 찍혔다), Java는 `eclipse-temurin:21-jdk`. 호스트는 다른 작업이 돌던 24코어 기계라 범위는 이 호스트·이 부하에 한정된다.
 
 ```text
   기준선 true               : 1~4ms (Debian 계열 이미지), 8~15ms (temurin 이미지)
@@ -112,7 +112,7 @@ A = 예외를 던지는 언어·연산, B = 정의된 엉뚱한 값을 내는 �
 
 ### 5. 같은 진영 안에서는 생태계가 가른다
 
-- 원고 [languages/c-cpp-csharp.md](../../../languages/c-cpp-csharp.md): C#/.NET은 실행 모형(중간 언어 → JIT, 세대별 이동 GC)이 JVM과 사실상 같다. 기술로 갈리지 않으면 결정은 **그 도메인에 쌓인 코드·사람·문서**로 넘어간다. 생태계는 낯섦을 줄여 위험(stakes)을 낮추는 요인이지, 기술 판단을 생략해도 되는 근거는 아니다.
+- 원고 [languages/c-cpp-csharp.md](../../../languages/c-cpp-csharp.md): C#/.NET은 실행 모형(중간 언어 → JIT, 세대별 이동 GC)이 JVM과 사실상 같다. 기술로 달라지지 않으면 결정은 **그 도메인에 쌓인 코드·사람·문서**로 넘어간다. 생태계는 낯섦을 줄여 위험(stakes)을 낮추는 요인이지, 기술 판단을 생략해도 되는 근거는 아니다.
 - C가 커널·임베디드에 남는 이유는 "빠르다"가 아니라 "의지할 런타임이 아래에 없다"이다(같은 원고). 배제 사유는 "나쁘다"가 아니라 "요구가 겹치지 않는다"이다.
 
 ### 6. 층별 배치 — 결론은 한 시스템 안에서도 층마다 다르다
@@ -228,4 +228,4 @@ if (!Number.isSafeInteger(n)) throw new Error(`invalid integer: ${input}`);
   - Clang AddressSanitizer("Typical slowdown … 2x") · CISA 외 "The Case for Memory Safe Roadmaps"(2023-12)
 - 실험(로컬 컨테이너 `--cpus=2`·`--network none` + 호스트 gcc 13.3.0)
   - `e21/Fail.java`·`fail.go`·`unused.go`·`constov.go`·`fail.py`·`fail.js`·`fail.c` — 넘침·검사 연산·범위 밖 인덱스·파싱 실패·에러 무시·처리 안 한 거부·부동소수
-  - `e21/hello` — C·Go·Python·node·Java(CDS 기본/끔) 기동 7회 × 2라운드(집필·점검 각 1벌), 이미지별 `true` 기준선
+  - `e21/hello` — C·Go·Python·node·Java(CDS 기본/끔) 기동 7회 × 2라운드(집필·점검 각 1벌), 이미지별 `true` 베이스라인

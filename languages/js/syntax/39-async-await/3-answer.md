@@ -212,7 +212,7 @@ caller: before f() > f: line 1 > caller: after f() -- got Promise
 | `js36b-39g-generator-runner.js` | ★★ `identical: true` | node20 1벌 + node18 대조 + Chrome(대조기) |
 | `js36b-39-h-lazy.py` · `js36b-39-h-eager.js` + `js36b-39h-python-contrast.sh` | ★★ 코루틴은 부르기만 해서는 안 돈다 | Python 3.12 · node20 1벌씩 |
 
-두 node 판 · Chrome 대조기(이 묶음 전체의 node 탐침). `DIFFERS` 가 한 줄도 없다.
+두 node 버전 · Chrome 대조기(이 묶음 전체의 node probe). `DIFFERS` 가 한 줄도 없다.
 
 ```sh
 # js36b-vdiff.sh
@@ -259,17 +259,17 @@ js36b-39g-generator-runner.js        node18/node20 identical  node20/Chrome iden
 node18 vs node20: identical 13 · differs 0   ·   node20 vs Chrome 151: identical 12 · differs 0 · node only 1
 ```
 
-**구현 의존 항목 — 판이 오르면 다시 돌릴 것**
+**구현 의존 항목 — 버전이 오르면 다시 돌릴 것**
 
-- ★★ **4번의 보고와 종료 코드** — node 의 모드(37번). 판이 오르면 다시 돌린다.
-- ★★ **모듈 판정**(`--input-type` · `.mjs`) — node 의 것이다. node 판이 모듈 판정 규칙을 바꾸면 7번을 다시 돌린다.
+- ★★ **4번의 보고와 종료 코드** — node 의 모드(37번). 버전이 오르면 다시 돌린다.
+- ★★ **모듈 판정**(`--input-type` · `.mjs`) — node 의 것이다. node 버전이 모듈 판정 규칙을 바꾸면 7번을 다시 돌린다.
 - ★ 예외 문구 — `await is only valid in async functions and the top level bodies of modules`.
 
 ## 실행 환경
 
 이 파일의 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Chrome 151**(헤드리스) · Python 3.12 · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
 블록은 **전부 캡처 파일에서 조립**했다.
-★★ **이 주제에서 두 node 판이 갈린 탐침은 없다**(대조기의 `identical` · 4번의 `2 / 2`).
+★★ **이 주제에서 두 node 버전이 달라진 probe는 없다**(대조기의 `identical` · 4번의 `2 / 2`).
 
 **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다(7번 · 8번 · 9번은 [2-summary.md](2-summary.md) 동작 (7)·(8)·(9)).
 `js36b-39a-async-basics.js`(1번 · 2번 · 10번) · `js36b-39b-seq-vs-par.js`(3번 · 11번) · `js36b-39-h-early-reject.js` + `js36b-39c-early-reject.sh`(4번) ·

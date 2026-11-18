@@ -403,7 +403,7 @@ grep으로 확인한 `NativeConfigurationWriter` 계층의 프로덕션 호출�
 `AbstractAotProcessor`의 클래스 javadoc이 `@see FileNativeConfigurationWriter`(`:45`)로 이 관계를 명시한다.
 
 좁은 진입점이라는 사실이 이 PR의 성격을 규정한다.\
-인코딩 결정권이 한 곳에 모여 있으므로 한 줄 수정으로 전체 파이프라인의 출력이 고정되고, 반대로 그 한 줄이 환경 의존적이면 모든 AOT 산출물이 함께 흔들린다.
+인코딩 결정권이 한 곳에 모여 있으므로 한 줄 수정으로 전체 파이프라인의 출력이 고정되고, 반대로 그 한 줄이 환경 의존적이면 모든 AOT 산출물이 함께 실행마다 달라진다.
 
 `resourceOutput` 아래에 놓인다는 점도 의미가 있다.\
 생성 소스가 `sourceOutput`으로 가서 javac를 거치는 것과 달리, 이 JSON은 리소스로서 그대로 아티팩트에 실려 나간다.\

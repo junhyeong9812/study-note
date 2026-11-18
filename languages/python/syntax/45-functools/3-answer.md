@@ -751,7 +751,7 @@ except (TypeError, RuntimeError) as ex:
 
 * ★★ 3.12 가 **문서화되지 않았던 잠금**을 뺐다 — 문서: 잠금이 *"per-property, not per-instance"* 라 경합이 컸다. 그 결과 *"The getter function could run more than once on the same instance, with the latest run setting the cached value."* ★ **경쟁은 재지 않았다** — 속성의 있고 없음(`True`/`False`)만 봤다.
 * ★★ `__set_name__` 이 던진 예외를 3.11 은 **`RuntimeError` 로 쌌고**(`__cause__` 가 `TypeError`), 3.12 는 **안 싸고** 같은 문장을 **노트**로 붙인다(What's New 3.12). 그래서 **`except RuntimeError` 는 3.12 에서 그 예외를 놓친다.**
-* ★ 유니온 등록과 `functools.cache` 는 **두 판 다** 된다.
+* ★ 유니온 등록과 `functools.cache` 는 **두 버전 다** 된다.
 
 ### 10. 보장 · 구현 · 구현 · 보장 — 「약한 참조가 아직 가리키나」(참/거짓)로 보였다 · 바이트는 안 쟀다
 
@@ -793,7 +793,7 @@ except (TypeError, RuntimeError) as ex:
 | `cmp_to_key` | `python3 - <e45_cmp.py` | 3 | `KeyWrapper` 해시 불가 |
 | 판 격자 | `python3 - <e45_version.py` · `python3.11 - <e45_version_py311.py` | 3씩 | `lock` `False` / `True` |
 
-**구현 의존 항목** — 판이 오르면 다시 돌려야 하는 것.
+**구현 의존 항목** — 버전이 오르면 다시 돌려야 하는 것.
 
 | 항목 | 왜 |
 |---|---|
@@ -801,8 +801,8 @@ except (TypeError, RuntimeError) as ex:
 | ★ 판 격자 | `cached_property`·`__set_name__` 이 3.12 에서 바뀌었다 |
 | 예외 **문구** | 구현이다 |
 
-★ **안 흔들리는 칸** — 몸통 실행 수 · `CacheInfo(...)` · `True`/`False` · **「6 / 8」·「2 / 8」** · 불린 구현 이름 · `(exit N)`.
-★★ **이 주제가 한 번도 안 잰 것** — **시간·메모리 바이트·스레드 경쟁**(부적용).
+★ **달라지지 않는 항목** — 몸통 실행 수 · `CacheInfo(...)` · `True`/`False` · **「6 / 8」·「2 / 8」** · 불린 구현 이름 · `(exit N)`.
+★★ **이 주제가 한 번도 안 잰 것** — **시간·메모리 바이트·스레드 경쟁**(해당 없음).
 
 ## 실행 환경
 

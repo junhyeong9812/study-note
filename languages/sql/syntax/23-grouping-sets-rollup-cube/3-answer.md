@@ -48,7 +48,7 @@ PG 문서가 확장 규칙을 그대로 적는다 — `ROLLUP(e1, e2, e3)` 은 *
 
 ---
 
-### 2. 하나는 **`dan` 의 그룹**, 하나는 **총계**다 — `GROUPING()` 으로만 갈린다
+### 2. 하나는 **`dan` 의 그룹**, 하나는 **총계**다 — `GROUPING()` 으로만 달라진다
 
 **출력**
 
@@ -118,7 +118,7 @@ MySQL 문서도 같은 목적으로 적는다: *"to test whether `NULL` values i
 ```
 
 ★ **`COALESCE`·`IFNULL`·`IS NULL` 은 전부 「값이 `NULL` 인가」만 본다.**\
-소계 `NULL` 과 데이터 `NULL` 은 **값으로는 같은 것**이라 이 도구들로 가를 수 없다.\
+소계 `NULL` 과 데이터 `NULL` 은 **값으로는 같은 것**이라 이 도구들로 구분할 수 없다.\
 **`GROUPING()` 은 값이 아니라 「이 행이 어느 그룹 집합에서 왔나」를 본다.** 그래서 갈 수 있다.
 
 「(all)」이 둘이 되어 **같은 라벨에 400 과 1200 이 붙었다.** 표를 읽는 사람은 이것을 오류로 읽지 않는다 — **조용한 오답**이다.
@@ -318,7 +318,7 @@ PG 문서가 그대로 적는다 — `CUBE(e1, e2, ...)` 는 *"the given list an
 「소속 없음」은 `GROUP BY` 가 만드는 **정상적인 한 그룹**이고([22번](../22-group-by-nonaggregated-columns/)), `ROLLUP` 은 **그 그룹에도 소계 줄을 만든다.**\
 그래서 `NULL / NULL` 이 두 번 나오고, 둘의 `s` 는 400 과 1200 으로 다르다.
 
-★ **두 엔진의 값이 한 자리도 안 갈렸다.** 갈린 것은 줄 순서뿐이다(`ORDER BY` 키가 `NULL` 로 겹치는 자리).
+★ **두 엔진의 값이 한 자리도 달라지지 않았다.** 달라진 것은 줄 순서뿐이다(`ORDER BY` 키가 `NULL` 로 겹치는 자리).
 
 ---
 
@@ -579,13 +579,13 @@ SELECT NULL AS dept_id, SUM(salary) AS s FROM emp;
 
 | 무엇을 | 어디서 | 몇 번 | 비고 |
 |---|---|---|---|
-| `ROLLUP(dept_id)` (1번) | PG 18.6 · MySQL 8.4.10 | 각 2회 | `ORDER BY dept_id` 로도 줄 순서가 갈렸다 |
+| `ROLLUP(dept_id)` (1번) | PG 18.6 · MySQL 8.4.10 | 각 2회 | `ORDER BY dept_id` 로도 줄 순서가 달라졌다 |
 | `GROUPING()` 으로 가르기 (2번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | `COUNT(*)` 까지 같이 |
 | `COALESCE` 라벨링 (3번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | **「(all)」이 둘** — 조용한 오답 |
 | 틀린 `CASE` · 맞는 `CASE` (4번) | PG 18.6 · MySQL 8.4.10 | 각 2회 | 순서만 바꿔 양쪽 다 |
 | `GROUPING SETS` = `ROLLUP` (5번) | PG 18.6 | 1회 | 1번 출력과 문자 단위 대조 |
 | ★ `CUBE` 의 구분 불가 두 행 (6번) | PG 18.6 | 2회 | `GROUPING` 열 유무로 두 번 |
-| 2단 `ROLLUP` (7번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | **값은 한 자리도 안 갈렸다** |
+| 2단 `ROLLUP` (7번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | **값은 한 자리도 달라지지 않았다** |
 | `GROUPING()` 비트마스크 (8번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | 0·1·3 이 양쪽 같음 |
 | `WHERE`/`HAVING` 가부 (9번) | PG 18.6 · MySQL 8.4.10 | 각 2회 | **`WHERE` 는 양쪽 에러** |
 | ★ MySQL 지원 범위 (10·11번) | PG 18.6 · MySQL 8.4.10 | 각 5회 | `WITH ROLLUP`·`ROLLUP()`·`GROUPING SETS`·`CUBE(a)`·`CUBE(a,b)` |
@@ -605,5 +605,5 @@ SELECT NULL AS dept_id, SUM(salary) AS s FROM emp;
 ## 실행 환경
 
 근거는 **실행 결과**다 — 본문의 출력·에러는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+2026-09-21 에 실제로 실행해 받은 것이다. 지어낸 출력은 없다.\
 문서 근거는 [PG 18 GROUPING SETS, CUBE, ROLLUP](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [MySQL 8.4 GROUP BY Modifiers](https://dev.mysql.com/doc/refman/8.4/en/group-by-modifiers.html).

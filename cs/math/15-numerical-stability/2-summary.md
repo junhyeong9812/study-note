@@ -262,7 +262,7 @@ for (int i = 0; i < n; i++) { double y = x[i] - c; double t = k + y; c = (t - k)
    - 누적합의 크기 S와 항 수 n을 본다. 단순 합 최악 오차 ≈ `n · u · Σ|x|`(u ≈ 1.1×10⁻¹⁶). 실제는 대개 이보다 작다.
    - `double` 누적값이 2⁵³(약 9×10¹⁵)을 넘거나 `float` 누적값이 2²⁴(약 1,677만)을 넘으면 정수 1 단위가 사라진다.
    - 거의 같은 두 수를 빼는 식(`1 − cos x`, `E[X²] − E[X]²`, `a − b` 비교)이 있는지 본다.
-3. **확인**: 같은 데이터를 `BigDecimal`(저장된 double 값을 `new BigDecimal(double)`로 옮기면 정확한 합)이나 Python `math.fsum`(정확도가 높은 부동소수 합 — 결과도 float라 마지막 반올림이 있다)으로 더해 차이를 잰다. 순서를 셔플해 결과가 흔들리는지 본다.
+3. **확인**: 같은 데이터를 `BigDecimal`(저장된 double 값을 `new BigDecimal(double)`로 옮기면 정확한 합)이나 Python `math.fsum`(정확도가 높은 부동소수 합 — 결과도 float라 마지막 반올림이 있다)으로 더해 차이를 잰다. 순서를 셔플해 결과가 실행마다 달라지는지 본다.
 
 ### 2. 고르는 법
 
@@ -323,7 +323,7 @@ static long sumCents(long[] cents) {
 ### 3. 분산·표준편차가 음수·NaN
 
 - 현상: 지연 시간 표준편차 대시보드가 비거나 `NaN`이다. 이상 탐지 알람이 안 울린다.
-- 보이는 형태: `NaN` 값, 또는 `Math.sqrt` 이전 분산이 음수(실험: −128). `NaN`과의 대소·`==` 비교는 거짓이라 문턱 알람이 조용히 꺼진다.
+- 보이는 형태: `NaN` 값, 또는 `Math.sqrt` 이전 분산이 음수(실험: −128). `NaN`과의 대소·`==` 비교는 거짓이라 임계값 알람이 조용히 꺼진다.
 - 원인: `E[X²] − E[X]²` 공식의 파국적 상쇄. 값이 크고(예: 에포크 나노초 타임스탬프) 분산이 작을 때 일어난다.
 - 대처: 웰퍼드 갱신을 쓰거나, 값에서 대표값(첫 값·기준 시각)을 빼고 계산한다. 결과가 음수·`NaN`이면 에러로 드러낸다(조용히 0으로 바꾸지 않는다).
 
@@ -359,7 +359,7 @@ static long sumCents(long[] cents) {
   - [08-expectation-variance-tails](../08-expectation-variance-tails/2-summary.md) — 분산의 정의
   - [domain-modeling/14-money-arithmetic-rounding-allocation](../../domain-modeling/14-money-arithmetic-rounding-allocation/2-summary.md) — 금액 반올림·배분, `BigDecimal`
   - [algorithm/24-divide-conquer](../../algorithm/24-divide-conquer/2-summary.md) · [algorithm/09-sorting-in-practice](../../algorithm/09-sorting-in-practice/2-summary.md)
-  - [testing/09-flaky-tests](../../testing/09-flaky-tests/2-summary.md) — 환경에 따라 흔들리는 테스트
+  - [testing/09-flaky-tests](../../testing/09-flaky-tests/2-summary.md) — 환경에 따라 실행마다 달라지는 테스트
 - 후속(AI 엔지니어링): [ai-engineering/03-cross-entropy-and-perplexity](../../ai-engineering/03-cross-entropy-and-perplexity/2-summary.md) — log-sum-exp로 안정한 log-softmax · [ai-engineering/07-decoding-and-nondeterminism](../../ai-engineering/07-decoding-and-nondeterminism/2-summary.md) — 부동소수 연산 순서가 만드는 LLM 출력 비결정성
 - 근거
   - D. Goldberg, "What Every Computer Scientist Should Know About Floating-Point Arithmetic", ACM Computing Surveys, 1991년 3월 — "Cancellation"(파국적·양성 상쇄, 이차방정식 70 ulp 예, 식 (5)), 정리 8(Kahan 합산 공식 `|δⱼ| ≤ 2ε`)과 그 바로 뒤의 단순 합 비교 `|δⱼ| < (n − j)ε`, 재결합 최적화 경고 <https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html>

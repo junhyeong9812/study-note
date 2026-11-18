@@ -50,5 +50,5 @@ silent failure다. 이름이 두 표현(메서드 <-> 필드)을 잇는 결합 �
 
 - `../../prs/36911-property-name-resolution/README.md` — 읽기 메서드 이름 유도 결함과 isPlainAccessor 해법
 - `../../prs/37139-property-setter-prefix/README.md` — 쓰기 메서드(setter) 판별 강화
-- `annotation-all-or-nothing-contract.md` — "무음 소실보다 명시적 실패"라는 같은
+- `annotation-all-or-nothing-contract.md` — "조용한 소실보다 명시적 실패"라는 같은
   설계 원칙의 annotation 격리 버전

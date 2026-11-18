@@ -32,7 +32,7 @@ GC 설계·기동 시간·단일 바이너리·"작은 언어"의 찬반은 **�
 | 13 | [클로저와 변수 캡처, 루프 변수 의미 변경(1.22)](13-closures-variable-capture-and-loop-variable-change/) | 문법 | 클로저가 값이 아니라 변수를 잡는다는 사실로 출력 결과를 예측하고, 같은 코드가 1.21과 1.22에서 왜 다른지 말할 수 있다 | 12 | — | A |
 | 14 | [`for`의 네 형태 · 정수 range(1.22) · 함수 range(1.23)](14-for-four-forms-range-over-int-and-func/) | 문법 | `range`가 복사를 만드는 자리를 짚고, `for i := range 10`과 반복자 함수 순회가 어느 버전부터인지 말할 수 있다 | 13 | — | A |
 | 15 | [`switch`·타입 스위치·`fallthrough`·라벨·`goto`](15-switch-type-switch-fallthrough-labels-and-goto/) | 문법 | Go의 `switch`가 왜 기본으로 안 흘러내리는지, 라벨 `break`/`continue`가 필요한 중첩 루프를 골라낼 수 있다 | 14 | — | B |
-| 16 | [포인터와 값 복사 의미론, `new`와 `make`](16-pointers-value-copy-semantics-new-and-make/) | 문법 | 어떤 대입이 복사이고 어떤 것이 공유인지 판단하고, `new`와 `make`가 갈리는 이유를 타입으로 설명할 수 있다 | 05 | [`../../../cs/foundations/variables-and-memory/`](../../../cs/foundations/variables-and-memory/) — 포인터 개념 자체는 거기 | A |
+| 16 | [포인터와 값 복사 의미론, `new`와 `make`](16-pointers-value-copy-semantics-new-and-make/) | 문법 | 어떤 대입이 복사이고 어떤 것이 공유인지 판단하고, `new`와 `make`가 달라지는 이유를 타입으로 설명할 수 있다 | 05 | [`../../../cs/foundations/variables-and-memory/`](../../../cs/foundations/variables-and-memory/) — 포인터 개념 자체는 거기 | A |
 | 17 | 구조체: 리터럴·비교 가능성·필드 태그·정렬 | 문법 | 구조체가 `==`로 비교되는 조건을 말하고, 필드 순서가 크기에 미치는 영향을 설명할 수 있다 | 16 | [`../../../cs/foundations/data-representation/`](../../../cs/foundations/data-representation/) — 정렬·패딩 일반은 거기 | A |
 | 18 | 임베딩과 필드·메서드 승격 | 문법 | 임베딩이 상속이 아니라 승격임을 예로 보이고, 이름이 충돌할 때 어느 쪽이 이기는지 예측할 수 있다 | 17 | [`../../../cs/foundations/oop-basics/`](../../../cs/foundations/oop-basics/) — 상속·합성 논의는 거기, 여기는 Go 승격 규칙으로 좁힘 | A |
 | 19 | ★ 메서드 집합: 값 리시버 대 포인터 리시버 | 문법 | 어떤 타입이 어떤 인터페이스를 만족하는지 메서드 집합 규칙으로 판정하고, 값으로 담았더니 인터페이스 대입이 안 되는 에러를 해석할 수 있다 | 18 | — | A |

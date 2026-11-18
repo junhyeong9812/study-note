@@ -145,7 +145,7 @@ new ObjectOutputStream(out).writeObject(td);
 S5에서 `capturedArgs[0]`이 `null`(애너테이션 배열)이라 직렬화가 통과하고, 그래서 **기존 테스트 `serializable()`은 수정 전에도 green**이었다.\
 회귀가 릴리스를 여럿 건너 살아남은 원인이 이 한 칸에 있다.
 
-S5 한 칸에서 두 케이스가 어떻게 갈리는지만 떼어 보면 이렇다.
+S5 한 칸에서 두 케이스가 어떻게 달라지는지만 떼어 보면 이렇다.
 
 ```text
 결함 케이스: new TypeDescriptor(field)     정상 케이스: forObject("")
@@ -242,7 +242,7 @@ S5 한 칸에서 두 케이스가 어떻게 갈리는지만 떼어 보면 이렇
 > **정적 팩토리(static factory)** — 생성자 대신 객체를 만들어 주는 static 메서드. 캐싱이나 싱글턴 재사용 같은 판단을 안에 넣을 수 있다.\
 > 예: `AnnotatedElementAdapter.from(null)`은 새 객체를 만들지 않고 `EMPTY`를 돌려준다.
 
-세 조각 중 하나씩 빼 보면 어떤 실패가 되돌아오는지가 갈린다.
+세 조각 중 하나씩 빼 보면 어떤 실패가 되돌아오는지가 달라진다.
 
 ```text
 transient   writeObject   readObject          결과

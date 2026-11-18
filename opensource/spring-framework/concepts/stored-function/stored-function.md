@@ -53,7 +53,7 @@ given(procedureColumnsResultSet.getInt("COLUMN_TYPE")).willReturn(5, 1, 4);
 | 4 | `procedureColumnOut` | `functionReturn` |
 | 5 | `procedureColumnReturn` | `functionColumnResult` |
 
-1·2(IN·INOUT)만 일치하고 3·4·5가 어긋난다. 이 어긋남 때문에 `CallParameterMetaData`는 자신이 어느 계열에서 왔는지를 `function`
+1·2(IN·INOUT)만 일치하고 3·4·5가 어긋난다. 이 불일치 때문에 `CallParameterMetaData`는 자신이 어느 계열에서 왔는지를 `function`
 플래그로 들고 다니며 판정을 갈라 쓴다 — `isReturnParameter()`는 플래그가 true면
 `functionReturn`(4)을, false면 `procedureColumnReturn`(5) 또는 `procedureColumnResult`(3)를
 본다(`CallParameterMetaData.java:91-95`). 이 플래그는 `withFunctionName()` 여부가 아니라 **메타데이터를 어느 API로 읽었는지**에서 온다.

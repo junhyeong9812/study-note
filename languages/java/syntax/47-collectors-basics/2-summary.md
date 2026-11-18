@@ -285,7 +285,7 @@ toMap(name, score, (a, b) -> null)   에서  [kim 10] [kim 30]
   javadoc 도 merge 함수를 "as supplied to `Map.merge(Object, Object, BiFunction)`" 라고 설명한다.
 - `Map.merge` 는 **결과가 `null` 이면 그 항목을 지운다.**
 - 그래서 merge 함수에서 `null` 을 돌려주면 **예외도 경고도 없이 데이터가 사라진다.**
-- 전형적인 무음 실패다. "버리고 싶다"를 `null` 로 표현하지 않는다.
+- 전형적인 조용한 실패다. "버리고 싶다"를 `null` 로 표현하지 않는다.
 
 비용 — 없음(그것이 문제다). 방어는 **merge 함수가 `null` 을 절대 안 돌려주게 쓰는 것**뿐이다.
 

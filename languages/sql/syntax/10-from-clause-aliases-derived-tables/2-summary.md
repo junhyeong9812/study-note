@@ -231,7 +231,7 @@ ERROR 1066 (42000) at line 1: Not unique table/alias: 'emp'
                                  +------+
 ```
 
-그림 해설 — 파생 테이블은 **이름 공간의 격벽**이다. 안쪽에서 만든 별칭(`e1`)은 안쪽에서만 쓰이고, 바깥은 `e2` 의 **출력 열**만 본다.\
+그림 해설 — 파생 테이블은 **이름 공간의 벌크헤드**이다. 안쪽에서 만든 별칭(`e1`)은 안쪽에서만 쓰이고, 바깥은 `e2` 의 **출력 열**만 본다.\
 비용 — 엔진이 평탄화할 수 있으면 공짜에 가깝고, 못 하면 중간 결과를 물질화한다(아래 「구현 세부사항 대 언어 보장」).
 
 ---
@@ -279,7 +279,7 @@ ERROR 1248 (42000) at line 1: Every derived table must have its own alias
 
 ---
 
-### 5. 상수 행 목록 — `VALUES` 의 문법이 크게 갈린다
+### 5. 상수 행 목록 — `VALUES` 의 문법이 크게 달라진다
 
 **언제 쓰나** — 표에 없는 값 목록을 조인 대상으로 삼을 때(등급표·기준표·테스트 입력).
 
@@ -405,7 +405,7 @@ ERROR 1054 (42S22) at line 1: Unknown column 'e1.name' in 'field list'
 ```
 
 그림 해설 — 별칭의 유효 범위는 **그 별칭이 선언된 질의 블록 안**이다. 괄호를 나가면 사라진다.\
-비용 — 없다. 오히려 이 격벽 덕분에 안쪽 이름을 바깥과 겹치게 지어도 안전하다.
+비용 — 없다. 오히려 이 벌크헤드 덕분에 안쪽 이름을 바깥과 겹치게 지어도 안전하다.
 
 ---
 
@@ -498,7 +498,7 @@ SELECT d.name, q.q FROM dept d CROSS JOIN (SELECT 1 AS q UNION ALL SELECT 2) AS 
 
 ## 구현 세부사항 대 언어 보장
 
-파생 테이블에는 **결과의 정의**와 **엔진이 실제로 하는 일**이 크게 갈리는 자리가 있다.
+파생 테이블에는 **결과의 정의**와 **엔진이 실제로 하는 일**이 크게 달라지는 자리가 있다.
 
 | | 무엇인가 | 누가 보장하나 |
 |---|---|---|
@@ -533,7 +533,7 @@ SELECT d.name, q.q FROM dept d CROSS JOIN (SELECT 1 AS q UNION ALL SELECT 2) AS 
 
 ★ 재미있는 것은 **바깥의 `WHERE t.cnt >= 2` 가 `HashAggregate` 의 `Filter` 가 됐다**는 점이다 — 내가 `HAVING COUNT(*) >= 2` 라고 쓴 것과 같은 자리다([03번](../03-where-vs-having/)).
 
-MySQL 쪽도 두 경우가 갈린다.
+MySQL 쪽도 두 경우가 달라진다.
 
 ```text
 ### SQL: EXPLAIN FORMAT=TREE SELECT t.name FROM (SELECT * FROM emp WHERE salary >= 400) AS t WHERE t.id = 2;
@@ -615,6 +615,6 @@ MySQL 쪽도 두 경우가 갈린다.
 **기준 소스** — [PostgreSQL 18 · Table Expressions](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [PostgreSQL 18 · SELECT](https://www.postgresql.org/docs/18/sql-select.html) · [MySQL 8.4 · Derived Tables](https://dev.mysql.com/doc/refman/8.4/en/derived-tables.html)\
 **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
 본문에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 에러 메시지도 실행 계획도 실제로 받은 것이고, 지어낸 출력은 없다.\
-**버전** — 테이블 별칭·파생 테이블 자체는 두 엔진 모두 오래전부터 있다. 본문에서 갈리는 것은 **별칭 의무**와 **`VALUES` 리스트 문법**이고, 두 매뉴얼 어느 쪽도 「몇 버전부터」를 적지 않아 **도입 버전은 적지 않는다.**\
+**버전** — 테이블 별칭·파생 테이블 자체는 두 엔진 모두 오래전부터 있다. 본문에서 달라지는 것은 **별칭 의무**와 **`VALUES` 리스트 문법**이고, 두 매뉴얼 어느 쪽도 「몇 버전부터」를 적지 않아 **도입 버전은 적지 않는다.**\
 **선행** — [01 논리적 질의 처리 순서](../01-logical-query-processing-order/). `FROM` 이 **1번 칸**이라는 것이 이 주제의 전부다.\
 **경계** — 바깥 행을 참조하는 서브쿼리(상관 서브쿼리)는 [목록의 **11번 주제**](../11-subquery-scalar-correlated-any-all/), `FROM` 안에서 그것을 하는 `LATERAL` 은 [목록의 **20번 주제**](../20-lateral-join/)다. 여기서는 **경계선이 어디인지**까지만 보여 준다.

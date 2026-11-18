@@ -96,7 +96,7 @@ cs.convert(Optional.of(42), Optional<Integer>카드, LocalDate카드)           
    |                  -> ConverterNotFoundException(Optional<Integer>, LocalDate)
 ```
 
-데이터 흐름의 어긋남이 그래프에 그대로 보인다.\
+데이터 흐름의 불일치가 그래프에 그대로 보인다.\
 **질의는 선언 카드**(`Optional<Integer>`)를 보고 답하는데 **실행은 벗겨낸 값**(`42`)으로 다시 질의한다.\
 두 질문이 같은 근거를 쓰지 않으면 답이 갈릴 수 있고, 수정 전에는 `matches()`가 선언 카드를 아예 읽지 않아 갈림이 상시화됐다.
 
@@ -208,7 +208,7 @@ cs.convert(Optional.of(42), Optional<Integer>카드, LocalDate카드)           
 (1)과 (2)는 컬렉션·배열·Stream 컨버터 전체가 공유하는 공용 코드라 한 컨버터의 버그를 고치려고 공용 계약을 흔들게 된다.\
 (3)은 **한 컨버터 안에 갇힌 변경**이고, 마침 반대 방향 형제(`ObjectToOptionalConverter`)가 이미 같은 통로를 쓰고 있어 대칭도 회복된다.
 
-> **blast radius** — 한 변경이 영향을 미치는 범위. 같은 결함이라도 어디서 고치느냐에 따라 흔들리는 코드의 폭이 달라진다.\
+> **blast radius** — 한 변경이 영향을 미치는 범위. 같은 결함이라도 어디서 고치느냐에 따라 실행마다 달라지는 코드의 폭이 달라진다.\
 > 예: `canConvertElements`를 고치면 컬렉션·배열·Stream 컨버터 전체가 영향권에 들어간다.
 
 **가드(`resolve() == null -> true`)는 동작 중립이다.**\
@@ -258,7 +258,7 @@ cs.convert(Optional.of(42), Optional<Integer>카드, LocalDate카드)           
   PR 본문의 "Impact is bounded"가 이 구조를 가리킨다.
 - **캐시와의 상호작용.** 수정 후 false 판정은 `converterCache`에 `NO_MATCH`(:74)로 저장되므로(:236-241), 같은 타입쌍의 후속 질의·실행이 일관되게 컨버터 미선택 경로를 탄다.\
   질의와 실행이 같은 `getConverter`를 공유한다는 점이 이 수정으로 "질의 = 실행" 일관성을 얻는 메커니즘이다.
-- **다루지 않은 것.** `convert()`가 `forObject(unwrappedSource)`(:72)로 값 카드를 만들어 재질의하는 구조 자체는 그대로다 — 즉 `Optional<Number>` 선언에 실제로 `Integer`가 담긴 경우처럼 선언과 값이 갈리는 상황의 근사는 남아 있다.\
+- **다루지 않은 것.** `convert()`가 `forObject(unwrappedSource)`(:72)로 값 카드를 만들어 재질의하는 구조 자체는 그대로다 — 즉 `Optional<Number>` 선언에 실제로 `Integer`가 담긴 경우처럼 선언과 값이 달라지는 상황의 근사는 남아 있다.\
   `Converters.find`의 계층 조합 탐색, `ConvertersForPair`의 2패스 폴백(:628-635), `addFirst` 등록 순서(:616-618)도 범위 밖이다.
 
 ## 출처

@@ -34,7 +34,7 @@ keepalive는 **조용할 때** 확인하고, user timeout은 **보낸 게 확인
 
 ## 동작·원리
 
-### 1. TCP keepalive — 조용한 연결에 탐침을 보낸다
+### 1. TCP keepalive — 조용한 연결에 probe를 보낸다
 
 ```text
   A (keepalive 켬)                                  B
@@ -301,7 +301,7 @@ nstat -az TcpExtTCPKeepAlive
 
 ## 핵심 문장
 
-- TCP keepalive는 **조용한 연결**에 탐침을 보내 상대 소멸을 찾고, 중간 장비의 연결 기록을 살려 둔다. RFC상 선택 기능이고 기본은 꺼짐, 기본 간격은 2시간 이상이다.
+- TCP keepalive는 **조용한 연결**에 probe를 보내 상대 소멸을 찾고, 중간 장비의 연결 기록을 살려 둔다. RFC상 선택 기능이고 기본은 꺼짐, 기본 간격은 2시간 이상이다.
 - 리눅스 기본(7200초 + 75초 × 9)은 약 2시간 11분이라, 수 분 단위인 NAT·LB idle timeout 앞에서는 쓸모가 없다. KEEPIDLE을 경로의 가장 짧은 idle timeout보다 짧게 둔다.
 - 데이터를 **보내는 중**에는 keepalive가 돌지 않는다. `write()` 성공은 커널 버퍼에 넣었다는 뜻일 뿐이고, 상대가 사라지면 재전송 한도(약 15분 이상) 뒤에야 `ETIMEDOUT`이다.
 - `TCP_USER_TIMEOUT`은 "ACK 없이(또는 zero window로) 버틸 최대 시간"을 연결별로 정해 그 포기를 앞당긴다. keepalive의 실패 판정도 덮어쓴다.

@@ -107,7 +107,7 @@ dig +tcp example.com                 # TCP로
    13.|-- 1.1.1.1                  0.0%     3    3.6   3.7   3.6   3.8   0.1    <- 목적지는 손실 0%
 ```
 
-- `mtr`은 traceroute와 ping을 합친 도구다. 홉마다 탐침을 반복해 손실률과 지연 통계를 낸다.
+- `mtr`은 traceroute와 ping을 합친 도구다. 홉마다 probe를 반복해 손실률과 지연 통계를 낸다.
 - 위 예시처럼 **중간 홉만 100%이고 목적지는 0%** 면 경로에는 문제가 없다. 그 라우터가 ICMP 응답을 안 하거나 속도 제한을 건 것이다(09번). 손실은 **그 홉부터 끝까지 이어질 때만** 진짜다.
 - 주요 옵션(mtr(8)): `-r` 보고서 모드, `-w` 넓은 보고서, `-c` 반복 횟수, `-n` 이름 풀이 안 함, `-z` AS 번호, `-T` ICMP Echo 대신 TCP SYN, `-P` 포트, `-u` UDP.
   - `-T -P 443`은 ICMP가 막힌 경로에서 실제 서비스 포트로 경로를 본다.
@@ -134,7 +134,7 @@ ss -tnm                                 # 소켓 메모리(skmem)
 
 - 주요 옵션(ss(8)): `-t`/`-u` TCP/UDP, `-l` 리슨만, `-a` 전부, `-n` 숫자, `-p` 프로세스, `-i` TCP 내부 정보, `-m` 메모리, `-o` 타이머, `-s` 요약, `-K` 소켓 강제 종료.
 - 상태 필터는 `state`/`exclude` 뒤에 `established`, `syn-sent`, `syn-recv`, `time-wait`, `close-wait` 등을 쓴다. 식은 `dport`·`sport`·`dst`·`src`를 `and`·`or`·`not`으로 묶는다(ss(8) STATE-FILTER·EXPRESSION).
-- `-o`의 타이머 이름은 `on`(재전송 계열), `keepalive`, `timewait`, `persist`(zero window 탐침) 등이다(ss(8)). `persist`가 보이면 상대 수신 윈도가 0이다(17번).
+- `-o`의 타이머 이름은 `on`(재전송 계열), `keepalive`, `timewait`, `persist`(zero window probe) 등이다(ss(8)). `persist`가 보이면 상대 수신 윈도가 0이다(17번).
 - 리슨 소켓의 Recv-Q·Send-Q는 accept 큐 현재 길이·최대 길이다(15번). 연결 소켓에서는 읽지 않은·확인받지 않은 바이트다.
 
 ### 6. `tcpdump`·Wireshark — 선 위의 패킷 (25번)
@@ -301,7 +301,7 @@ openssl s_client -connect api.example.com:443 -status </dev/null      # OCSP sta
 1. **증상을 문장으로 적는다.** 누가, 어디서 어디로, 언제부터, 항상인가 가끔인가.
 2. **재현 명령을 만든다.** 대부분 `curl -v`나 `dig` 한 줄이다. 앱 없이 재현되면 앱은 무죄다.
 3. **바깥에서 안으로, 또는 아래에서 위로** 한 구간씩 좁힌다. 정상인 마지막 구간과 비정상인 첫 구간 사이가 범인이다(26번).
-4. **양 끝에서 동시에 본다.** 클라이언트 tcpdump와 서버 tcpdump를 같이 뜨면 "보냈는데 안 왔다"와 "왔는데 답을 안 했다"가 갈린다.
+4. **양 끝에서 동시에 본다.** 클라이언트 tcpdump와 서버 tcpdump를 같이 뜨면 "보냈는데 안 왔다"와 "왔는데 답을 안 했다"가 달라진다.
 5. **재시작 전에 증거를 뜬다.** `ss -s`, 상태별 소켓 목록, 짧은 pcap을 먼저 저장한다.
 
 ### 3. 환경별 주의

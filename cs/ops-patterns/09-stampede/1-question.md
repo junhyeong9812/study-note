@@ -8,7 +8,7 @@
 
 ### A. 문제 (NaiveCache · SingleFlightCache · RefreshAheadCache 의 TODO)
 
-1. TODO 1 — NaiveCache.get (기준선: 막지 않는다)
+1. TODO 1 — NaiveCache.get (베이스라인: 막지 않는다)
 
 ```java
 public V get(String key) throws Exception {
@@ -24,12 +24,12 @@ public V get(String key) throws Exception {
 }
 ```
 
-- 이 기준선에 잠금을 걸면 왜 존재 이유가 사라지는가?
+- 이 베이스라인에 잠금을 걸면 왜 존재 이유가 사라지는가?
 - 동시 요청 100개가 만료된 키를 읽으면 loader 는 몇 번 불리는가?
 - miss 수만 세면 이 사고가 왜 아예 안 보이는가?
 - 이 상자의 자(측정 지표)는 무엇인가?
 
-2. TODO 2 — SingleFlightCache.get (본체)
+2. TODO 2 — SingleFlightCache.get (핵심)
 
 ```java
 // TODO 2: 같은 키는 하나만 계산하고 나머지는 그 결과를 기다린다.

@@ -60,9 +60,9 @@ object Reg { @JvmStatic fun ping(): String = "ping" }
 
 - 이번엔 몇 번째 줄이 막히는가? 1번에서 통과했던 줄 중에 막히게 되는 것이 있는가?
 
-### 3. ★★★ 두 판의 `javap -p` (예측)
+### 3. ★★★ 두 버전의 `javap -p` (예측)
 
-- 1·2번 두 판의 `Box` · `Box$Companion` · `Reg` · `Api` 를 `javap -p` 로 보면, 애너테이션마다 **무엇이 생기고 무엇이 사라지는가**? 특히 `make()` 와 `ping()` 은 각 판에서 **몇 개**이고 정적인가?
+- 1·2번 두 버전의 `Box` · `Box$Companion` · `Reg` · `Api` 를 `javap -p` 로 보면, 애너테이션마다 **무엇이 생기고 무엇이 사라지는가**? 특히 `make()` 와 `ping()` 은 각 판에서 **몇 개**이고 정적인가?
 
 ### 4. ★★ 기본값 위치와 오버로드 (예측)
 
@@ -132,7 +132,7 @@ interface I3 { @JvmOverloads fun f(x: Int = 1): Int }
 
 선행은 [25번 주제](../25-object-declaration-companion-and-object-expression/)(`object`·`companion object` 가 JVM 에서 무엇인가)와 [34번 주제](../34-exceptions-nothing-and-try-expression/)(`@Throws`)다.
 
-이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5** 에서 실제로 던져 받은 것이다.
+이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5** 에서 실제로 실행해 받은 것이다.
 
 ## 복습 기록
 

@@ -184,7 +184,7 @@ counts.merge(word, 1, Integer::sum);        // 없으면 1, 있으면 옛값+1
 
 `computeIfAbsent` 로 같은 일을 하면 두 줄이 되고, `get`+`put` 으로 하면 세 줄에 경쟁 조건이 생긴다.
 
-### (3) ★ `null` 값의 의미가 갈리는 자리 — `getOrDefault`
+### (3) ★ `null` 값의 의미가 달라지는 자리 — `getOrDefault`
 
 **언제 쓰나** — "없으면 기본값" 을 쓸 때. 즉 거의 언제나.
 
@@ -272,7 +272,7 @@ computeIfAbsent -> null               null / {}                 1 / {k=1}       
     computeIfAbsent  -> 아무것도 안 한다    키가 없으면 없는 채로
 ```
 
-- 전형적인 무음 실패다. **"버림"을 `null` 로 표현하지 않는다.**
+- 전형적인 조용한 실패다. **"버림"을 `null` 로 표현하지 않는다.**
 
 비용 — 없다(그것이 문제다). 방어는 **재매핑 함수가 `null` 을 절대 안 돌려주게 쓰는 것**뿐이다.\
 버려야 하면 `remove` 를 명시적으로 부른다.
@@ -708,7 +708,7 @@ m.merge(k, maybeNull, (a, b) -> b);     // NullPointerException
 - `Map` 의 키 상태는 **셋**이다 — 키 없음 / 값 있음 / **값이 `null`**. `get` 만으로는 첫째와 셋째를 구분할 수 없고, **`containsKey` 만이 구분한다.**
 - **`putIfAbsent`·`computeIfAbsent`·`computeIfPresent`·`merge` 는 "값이 `null`" 을 "키 없음" 으로 취급한다.** 넷 다 `oldValue == null` 하나로 판정한다.
 - **`getOrDefault` 는 "값이 없으면"이 아니라 "키가 없으면" 기본값을 준다** — 값이 `null` 이면 그 `null` 을 그대로 돌려준다.
-- **재매핑 함수가 `null` 을 돌려주면 `compute`·`computeIfPresent`·`merge` 는 그 키를 지운다.** `computeIfAbsent` 만 안 넣고 끝낸다. 예외도 경고도 없는 무음 실패다.
+- **재매핑 함수가 `null` 을 돌려주면 `compute`·`computeIfPresent`·`merge` 는 그 키를 지운다.** `computeIfAbsent` 만 안 넣고 끝낸다. 예외도 경고도 없는 조용한 실패다.
 - **`entrySet`·`keySet`·`values` 는 뷰다.** 거기서 지우면 맵이 바뀌고, `Entry.setValue` 는 맵에 쓴다. 그리고 `computeIfAbsent` 안에서 맵을 고치면 `ConcurrentModificationException` 이 나지만 **그것은 보장이 아니라 best-effort 다.**
 
 ## 관련 자료

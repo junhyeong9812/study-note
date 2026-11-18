@@ -105,10 +105,10 @@ ai.incrementAndGet()                       ai.set(ai.get() + 1)
 
 - **스레드 1개면 `AtomicLong` 이 빠르다**(12 대 19 ms). `LongAdder` 의 칸 관리 비용이 손해다.
 - **스레드 24개면 `LongAdder` 가 55배 빠르다**(2,758 대 50 ms).\
-  갈리는 지점은 이미 **스레드 2개**다(172 대 26 ms).
+  달라지는 지점은 이미 **스레드 2개**다(172 대 26 ms).
 - **`synchronized` 는 24스레드에서 14,548 ms** — `LongAdder` 의 **291배**다.\
   단일 스레드에서도 가장 느렸다(43 ms).
-- **흔들림 폭** — `AtomicLong` 8스레드가 **377\~997 ms** 로 2.6배 벌어졌다.\
+- **실행 간 차이 폭** — `AtomicLong` 8스레드가 **377\~997 ms** 로 2.6배 벌어졌다.\
   ★ 그래서 이 표는 "**어느 쪽이 이기나"와 "자릿수**"만 읽는다. **"55배"를 외우지 마라.**
 - javadoc 이 방향만 보장한다 — "Under low update contention, the two classes have similar characteristics.\
   But under high contention, expected throughput of this class is significantly higher, at the expense of higher space consumption."
@@ -491,7 +491,7 @@ ref.updateAndGet(p -> new Pair(p.a() + 1, p.b() + 1));   // 두 값이 한 번�
 | `Ex.java` (55-b) | `AtomicLong`·`LongAdder`·`synchronized` 의 처리 시간(스레드 1·2·8·24) | **워밍업 3 + 측정 7의 중앙값** | 21 |
 | `Ex.java` (55-c) | 맵 카운팅 5종의 정답률, `AtomicInteger` 값 조합, `putIfAbsent` 대 `computeIfAbsent`, `null` 금지, `merge` 의 `null` 반환 | 정확성 각 10회 | **17 · 21 · 25** (0/10 과 10/10 이 세 버전 모두 같음) |
 | `Ex.java` (55-d) | `Recursive update` 4경로 + `HashMap` 대조, 같은 버킷 키 탐색 | 1회 | **17 · 21 · 25** (**출력이 한 글자도 다르지 않았다**) |
-| `Ex.java` (55-e) | `size()` 대 `mappingCount()` 어긋남, 순회 중 수정, 스냅샷 반복자, 리스트 3종의 쓰기·읽기 비용, 8스레드 `add` | 크기 10회 / 반복자 100회 / 시간 3회의 중앙값 | 21 |
+| `Ex.java` (55-e) | `size()` 대 `mappingCount()` 불일치, 순회 중 수정, 스냅샷 반복자, 리스트 3종의 쓰기·읽기 비용, 8스레드 `add` | 크기 10회 / 반복자 100회 / 시간 3회의 중앙값 | 21 |
 | `Ex.java` (55-f) | 경합 겪은 `sum()` 비용, CAS 연산 5종, `updateAndGet` 람다 호출 수, 두 변수 불일치, `AtomicReference` 해법 | 관찰 50만 회 | 21 |
 | `Ex.java` (55-g) | 맵 구현 3종의 쓰기 위주·읽기 위주 처리 시간 | 워밍업 2 + 측정 5의 중앙값 | 21 |
 | `Ex.java` (55-h) | 동시 순회 3형태(락 없음 / 락 걸고 / COW)의 처리 시간(스레드 1·8·24) | 워밍업 2 + 측정 5의 중앙값 | 21 |
@@ -501,7 +501,7 @@ ref.updateAndGet(p -> new Pair(p.a() + 1, p.b() + 1));   // 두 값이 한 번�
 
 - **JMH 가 아니다.** 워밍업이 3회(리스트는 2회)뿐이고 DCE·JIT 편향을 완전히 막지 못한다.
 - **머신 의존**이다 — 24코어. 코어가 적으면 `LongAdder` 의 이득 배수가 줄어든다.
-- **흔들림이 크다** — `AtomicLong` 8스레드가 **377\~997 ms**(2.6배). **자릿수만** 읽는다.
+- **실행 간 차이가 크다** — `AtomicLong` 8스레드가 **377\~997 ms**(2.6배). **자릿수만** 읽는다.
 - **정확성 수치와 성능 수치를 섞어 읽지 마라.** 앞의 것은 10회 반복의 정답 횟수, 뒤의 것은 7회의 중앙값이다.
 - **측정하지 않은 것** — ① ABA 문제의 재현, ② `ConcurrentHashMap` 의 병렬 대량 연산(`forEach`·`reduce`),\
   ③ 동시 큐(`ConcurrentLinkedQueue`·`LinkedBlockingQueue`).
@@ -516,7 +516,7 @@ ref.updateAndGet(p -> new Pair(p.a() + 1, p.b() + 1));   // 두 값이 한 번�
 - 순회 중 넣은 키가 100/100회 보인 것 — **보장 아님.**
 - **CAS 재시도 횟수가 버전마다 크게 달랐다** — 16스레드 기준 17 에서 **4.30회**, 21 에서 **1.77회**, 25 에서 **1.31회**.\
   같은 프로그램·같은 머신이다. **이 수치를 절대 외우지 마라.**
-- 일반 `int++` 의 정답 횟수도 갈렸다 — 17 **7/10**, 21 **3/10**, 25 **8/10**.\
+- 일반 `int++` 의 정답 횟수도 달라졌다 — 17 **7/10**, 21 **3/10**, 25 **8/10**.\
   ★ **25 에서 가장 "안전해 보였다."** 「안 터졌다」가 안전의 증거가 아닌 이유다.
 - **55-b(성능)·55-e·55-f 는 21 에서만 돌렸다** — 시간이 오래 걸리는 측정이라 교차 실행을 안 했다.
 - `@since` 는 세 버전 `src.zip` 중 21 의 것을 읽었다.
@@ -527,5 +527,5 @@ ref.updateAndGet(p -> new Pair(p.a() + 1, p.b() + 1));   // 두 값이 한 번�
 ⚠️ **측정 조건 — 수치가 두 종류다.**\
 ① **정확성**(정답 횟수) — 스레드를 직접 띄워 **각 10회 반복**, 「정답 횟수 / 10」과 「관측 합의 최소\~최대」.\
 ② **성능**(ms) — **JMH 가 아니다.** 워밍업 3회 + **측정 7회의 중앙값**(리스트 실험만 워밍업 2 + 3회의 중앙값).\
-머신 **24코어**(Linux x86-64). 흔들림 폭이 커서(`AtomicLong` 8스레드 377\~997 ms) **자릿수만** 읽는다.\
+머신 **24코어**(Linux x86-64). 실행 간 차이 폭이 커서(`AtomicLong` 8스레드 377\~997 ms) **자릿수만** 읽는다.\
 javadoc 인용은 `lib/src.zip` 의 `java.base/java/util/concurrent/*.java` 원문이다.

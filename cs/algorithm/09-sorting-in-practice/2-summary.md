@@ -100,7 +100,7 @@ TimSort의 뼈대:
 
 - *run*: 입력에 이미 있는 오름차순(또는 엄격한 내림차순) 연속 구간.
 - *minRun*: 짧은 run을 이진 삽입 정렬로 늘려 맞추는 최소 길이. OpenJDK는 `MIN_MERGE = 32`이고, 길이가 32 미만인 배열은 병합 없이 이진 삽입 정렬로 끝낸다(`TimSort.sort`의 `nRemaining < MIN_MERGE` 분기).
-- *갤럽 모드(galloping)*: 한쪽 run이 계속 이기면 1칸씩 비교하는 대신 지수 탐색으로 경계를 찾는다. 시작 문턱 `MIN_GALLOP = 7`(Java·CPython 둘 다).
+- *갤럽 모드(galloping)*: 한쪽 run이 계속 이기면 1칸씩 비교하는 대신 지수 탐색으로 경계를 찾는다. 시작 임계값 `MIN_GALLOP = 7`(Java·CPython 둘 다).
 - 정렬 중에 run 경계·병합 결과가 불가능한 상태를 만나면 `IllegalArgumentException("Comparison method violates its general contract!")`를 던진다(`TimSort.java`의 `mergeLo`·`mergeHi`). **비교자 계약 위반을 우연히 발견했을 때만** 던진다 — 검사기가 아니다.
 
 참고 — TimSort 자체의 버그와 수정:

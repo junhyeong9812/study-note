@@ -593,5 +593,5 @@ re.c:1:13: note: previous declaration of ‘T’ with type ‘T’ {aka ‘int�
 ## 실행 환경
 
 이 파일의 모든 출력·경고·에러는 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-기본 플래그는 `-std=c17 -Wall -Wextra`. 표준 버전이 갈리는 답은 그 자리에 어느 `-std` 인지 밝혔다.
+기본 플래그는 `-std=c17 -Wall -Wextra`. 표준 버전이 달라지는 답은 그 자리에 어느 `-std` 인지 밝혔다.
 ★ **이 주제의 관측값은 대개 「에러가 난 줄 번호」다.** `typedef` 는 기계어에 흔적을 안 남긴다.

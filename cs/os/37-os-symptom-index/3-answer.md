@@ -94,13 +94,13 @@
 
 - 출처: `pthread_create`의 `EAGAIN`이다(pthread_create(3), 07번).
 - 힙과 무관한 이유: 막힌 것은 **스레드 개수 한도**나 스레드 스택 같은 native 자원이다. `-Xmx`는 Java 힙만 정한다. "OutOfMemoryError"라는 클래스 이름이 오해를 부른다.
-- 스택 메모리를 못 받은 경우도 glibc는 `ENOMEM`을 `EAGAIN`으로 바꿔 돌려준다(glibc `nptl/pthread_create.c`, 13번). 그래서 errno만으로는 개수 한도와 메모리 부족을 가를 수 없다.
+- 스택 메모리를 못 받은 경우도 glibc는 `ENOMEM`을 `EAGAIN`으로 바꿔 돌려준다(glibc `nptl/pthread_create.c`, 13번). 그래서 errno만으로는 개수 한도와 메모리 부족을 구분할 수 없다.
 - 확인할 한도
   - `RLIMIT_NPROC`(`ulimit -u`) — 실사용자 ID 단위라 같은 사용자의 다른 프로세스 스레드까지 합산된다.
   - `/proc/sys/kernel/threads-max`
   - `/proc/sys/kernel/pid_max`
   - cgroup `pids.max`(컨테이너)
-- 그다음 `jstack`으로 스레드 수·이름을 세어 누수 풀을 찾는다. 좀비가 PID를 쥐고 있지 않은지도 본다.
+- 그다음 `jstack`으로 스레드 수·이름을 세어 누수 풀을 찾는다. 좀비가 PID를 잡고 있지 않은지도 본다.
 
 ### 10. 조용한 실패 넷
 

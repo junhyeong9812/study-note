@@ -1,14 +1,14 @@
 # rust/syntax/54 — `async`/`await` 와 `Future` — 정리 (힌트)
 
-★★★ **본체 창 — ① 게으름 로그(「몸통이 찍는 줄이 있나」)와 ② 상태 기계 크기 격자(`size_of_val`)다.** 「future 는 상태 기계다」는 **바이트 수가 await 너머의 지역 변수를 따라 움직이는 것**으로 본다 — 컴파일러가 만든 타입을 직접 열어 볼 도구가 이 판(stable)에 없기 때문이다.
+★★★ **핵심 창 — ① 게으름 로그(「몸통이 찍는 줄이 있나」)와 ② 상태 기계 크기 격자(`size_of_val`)다.** 「future 는 상태 기계다」는 **바이트 수가 await 너머의 지역 변수를 따라 움직이는 것**으로 본다 — 컴파일러가 만든 타입을 직접 열어 볼 도구가 이 버전(stable)에 없기 때문이다.
 
-## 흔들리는 칸 / 안 흔들리는 칸
+## 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| 안 흔들린다 | ★★★ **게으름 로그** — 몸통이 찍는 줄의 **있음·없음과 순서** | 언어가 정한다(Reference — Async functions) · 마커는 전부 **표준 오류**로 찍어 순서를 고정했다(규칙 18) |
-| 안 흔들린다 | ★★★ **poll 횟수 로그** · `timeout` 의 종료 코드 `124` | 실행기가 결정적이다(스레드 하나 · 깨우는 쪽이 자기 자신) |
-| ★ **구현이 정한다(재현은 된다)** | ★★ **`size_of_val` 의 바이트 수** | 상태 기계 **배치는 rustc 가 정한다** — 언어는 크기를 약속하지 않는다. 이 판에서 **디버그·`-O3` 두 판이 한 글자도 같았다** |
+| 달라지지 않는다 | ★★★ **게으름 로그** — 몸통이 찍는 줄의 **있음·없음과 순서** | 언어가 정한다(Reference — Async functions) · 마커는 전부 **표준 오류**로 찍어 순서를 고정했다(규칙 18) |
+| 달라지지 않는다 | ★★★ **poll 횟수 로그** · `timeout` 의 종료 코드 `124` | 실행기가 결정적이다(스레드 하나 · 깨우는 쪽이 자기 자신) |
+| ★ **구현이 정한다(재현은 된다)** | ★★ **`size_of_val` 의 바이트 수** | 상태 기계 **배치는 rustc 가 정한다** — 언어는 크기를 약속하지 않는다. 이 버전에서 **디버그·`-O3` 두 버전이 한 글자도 같았다** |
 | ★ **구현이 정한다** | `type_name_of_val` 의 문자열 `…::{{closure}}` | std 문서가 「형식은 보장하지 않는다」고 적는 함수다 |
 
 ★ 정규화 규칙은 **기본 넷**만 쓴다. 이 편의 블록에는 걸리는 칸이 없었다(재대조 전부 동일).
@@ -62,12 +62,12 @@
 
 ## 동작 방식
 
-### (0) 이 주제가 쓰는 창 — 본체는 ① 게으름 로그와 ② 크기 격자다
+### (0) 이 주제가 쓰는 창 — 핵심은 ① 게으름 로그와 ② 크기 격자다
 
 | 창 | 무엇을 보여 주나 | 이 주제에서 |
 |---|---|---|
-| ① ★★★ **게으름 로그**(표준 출력·오류 줄) | 부른 순간 몸통이 **도나** | ★ **본체**((1)) |
-| ② ★★★ **`size_of_val` 격자** | await 를 가로지르는 지역 변수가 **future 안에 들어가나** | ★ **본체**((4)) |
+| ① ★★★ **게으름 로그**(표준 출력·오류 줄) | 부른 순간 몸통이 **도나** | ★ **핵심**((1)) |
+| ② ★★★ **`size_of_val` 격자** | await 를 가로지르는 지역 변수가 **future 안에 들어가나** | ★ **핵심**((4)) |
 | ③ ★★ **컴파일러 경고** `unused_must_use` | 버린 future 를 **컴파일러가 잡나** | 쓴다((1)) |
 | ④ ★★★ **직접 만든 실행기의 poll 로그** | `poll` 횟수 · `Waker` 가 불린 자리 | 쓴다((2)·(3)) |
 | ⑤ ★ **`timeout` 종료 코드** | 벨이 안 울리면 **끝나지 않는다** | 쓴다((3)) |
@@ -287,7 +287,7 @@ fn main() {
 ```
 
 - ★★★ **`poll` 은 3번** — `await` 가 두 개라 **멈출 자리가 둘**이고, 매번 한 번 멈췄다가 한 번 더 불렸다. **`[body] start` 는 한 번만** 찍힌다 — 두 번째 poll 은 몸통을 **처음부터 다시 돌지 않고 멈춘 자리부터** 이어 간다. 이것이 「상태 기계」다(Reference — Await expressions: `Pending` 이면 「suspending its state so that, when the surrounding async context is re-polled, execution returns to step 3」 — 3단계는 안쪽 future 를 poll 하는 자리다).
-- ★★ **`[exec] waker called` 가 `[leaf] Pending` 보다 먼저** — 잎 future 가 `Pending` 을 돌려주기 **전에** 깨웠다. 그래도 실행기는 `park` 에서 **바로 깨어난다** — std `thread::park`: `unpark` 가 **토큰**을 먼저 놓아 두면 `park` 는 「blocks … unless or until the token is available」이라 막히지 않는다. ★ 같은 문서가 「**It may also return spuriously**」라고 적으므로 이 실행기는 가끔 **한 번 더 poll 할 수도** 있다 — 이 판의 3번에서는 그런 일이 없었다.
+- ★★ **`[exec] waker called` 가 `[leaf] Pending` 보다 먼저** — 잎 future 가 `Pending` 을 돌려주기 **전에** 깨웠다. 그래도 실행기는 `park` 에서 **바로 깨어난다** — std `thread::park`: `unpark` 가 **토큰**을 먼저 놓아 두면 `park` 는 「blocks … unless or until the token is available」이라 막히지 않는다. ★ 같은 문서가 「**It may also return spuriously**」라고 적으므로 이 실행기는 가끔 **한 번 더 poll 할 수도** 있다 — 이 버전의 3번에서는 그런 일이 없었다.
 - ★★ **잎(leaf)만 `Waker` 를 만진다** — `two_steps` 의 몸통(`async fn`)에는 `Waker` 가 한 글자도 없다. `.await` 가 **자기가 받은 `Context` 를 잎에게 그대로 넘긴다**(Reference — Await expressions 의 「task context」).
 
 **`Waker` 를 안 부르는 판.**
@@ -388,7 +388,7 @@ pub fn block_on<F: Future>(fut: F) -> F::Output {
 ```
 
 - ★★★ **`poll #1 returned Pending -- park` 에서 멈췄고 `timeout 2` 가 죽였다(`exit 124`)** — `[body] between…` 도 `[main] done` 도 없다. **`Pending` 은 「나중에 깨워 주겠다」는 약속**이고, 약속을 안 지키면 **실행기는 다시 묻지 않는다.** std `Future::poll` 문서가 이것을 계약으로 적는다 — 「When a future is not ready yet, poll returns `Poll::Pending` and **stores a clone of the `Waker`** copied from the current `Context`」 · 「The poll function should not be called repeatedly in a tight loop – instead, it should **only be called when the future indicates that it is ready** to make progress (by calling `wake()`)」.
-- ★ 그래서 이 판은 **에러도 경고도 없이 조용히 멈춘다**(18-A — 침묵이 결론). 바쁜 루프로 계속 poll 하는 실행기라면 멈추지 않았을 것이다 — **이 실행기는 계약대로 깨울 때만 poll 한다.**
+- ★ 그래서 이 버전은 **에러도 경고도 없이 조용히 멈춘다**(18-A — 침묵이 결론). 바쁜 루프로 계속 poll 하는 실행기라면 멈추지 않았을 것이다 — **이 실행기는 계약대로 깨울 때만 poll 한다.**
 - ★ 이 블록만 마커를 **표준 오류**로 찍은 것이 결정적이었다 — `timeout` 이 SIGTERM 으로 죽이면 **표준 출력 버퍼는 flush 되지 않는다**(규칙 19-A).
 
 ### (4) ★★★ 상태 기계의 크기 — await 를 가로지르는 지역 변수
@@ -505,7 +505,7 @@ type: r54_size::a_no_buffer::{{closure}}
 
 - ★★★ **`a_no_buffer` 2 · `d_used_after` 1026** — 1024바이트 배열을 **await 앞에서 만들고 뒤에서 쓰면** 그 배열이 **future 안에** 들어간다. 멈춘 동안에도 남아 있어야 하기 때문이다.
 - ★★★ **`e_created_after` 2** — 같은 배열을 **await 뒤에서 만들면** 안 커진다. 멈추는 순간에는 **아직 없는** 값이라 담을 필요가 없다(poll 이 도는 동안 **스택**에 있다가 사라진다).
-- ★★★ **`b_used_before_only` 1032 대 `b2_indexed_before_only` 8** — 둘 다 await **앞에서만** 배열을 썼는데 갈렸다. **`b` 는 `&buf` 로 빌렸고 `b2` 는 `buf[0]` 으로 원소만 읽었다.** 빌린 적이 있는 지역 변수는 **스코프가 끝날 때까지** 상태 기계에 남았다 — 그 뒤에 안 써도.
+- ★★★ **`b_used_before_only` 1032 대 `b2_indexed_before_only` 8** — 둘 다 await **앞에서만** 배열을 썼는데 달라졌다. **`b` 는 `&buf` 로 빌렸고 `b2` 는 `buf[0]` 으로 원소만 읽었다.** 빌린 적이 있는 지역 변수는 **스코프가 끝날 때까지** 상태 기계에 남았다 — 그 뒤에 안 써도.
   **`c_inner_block_before` 8** — 빌렸더라도 **안쪽 블록에서 끝내면** 안 들어간다. 스코프가 await 앞에서 닫히기 때문이다.
 - ★★ **`h_two_buffers_two_blocks` 1026 대 `f_two_buffers_two_awaits` 2050** — 두 배열이 **서로 다른 멈출 자리**에만 걸쳐 있으면 **한 자리를 나눠 쓴다**(`h` — 각각 블록에 가뒀다). `f` 는 `a` 가 **함수 끝까지 스코프에 있어** 두 번째 await 도 가로질렀다 → 둘 다 들어간다(`g` 와 같은 2050).
 - ★★ **`tick` 1 · `a_no_buffer` 2** — 아무것도 안 들어도 **「몇 번째 상태인가」를 적을 칸**이 있다. 기다리는 future(`tick()`)를 품으면 그만큼 더해진다.
@@ -622,7 +622,7 @@ type: r54_size::a_no_buffer::{{closure}}
 ```
 
 - ★★★ **디버그 판과 한 글자도 같다** — 이 크기는 **최적화가 줄여 주는 값이 아니다**(규칙 24 의 판 격자 — 2판). 「상태 기계에 무엇을 담나」는 최적화 **전에** 정해진다.
-- ★★ **층 가르기** — 「await 너머로 살아 있어야 하는 값은 future 안에 있어야 한다」는 **의미상 필연**이다. 그런데 「**빌린 적이 있으면 스코프 끝까지 담는다**」·「두 자리가 칸을 나눠 쓴다」는 **rustc 의 분석이 이 판에서 그렇게 한 것**이다(Reference 는 크기를 말하지 않는다). 판이 오르면 **다시 찍을 칸**이다.
+- ★★ **층 가르기** — 「await 너머로 살아 있어야 하는 값은 future 안에 있어야 한다」는 **의미상 필연**이다. 그런데 「**빌린 적이 있으면 스코프 끝까지 담는다**」·「두 자리가 칸을 나눠 쓴다」는 **rustc 의 분석이 이 버전에서 그렇게 한 것**이다(Reference 는 크기를 말하지 않는다). 버전이 오르면 **다시 찍을 칸**이다.
 
 ### (5) ★★ 버리면 — 취소는 「멈춘 자리에서 끝」이다
 
@@ -688,7 +688,7 @@ fn main() {
 - ★★★ **한 번도 poll 안 된 `a` 는 버려도 `drop a` 가 없다** — 몸통이 안 돌았으니 `Noisy("a")` 가 **만들어진 적이 없다.** future 안에는 인자만 있었다.
 - ★★★ **한 번 poll 되어 멈춘 `b` 는 버리는 순간 `drop b`** — 상태 기계가 await 너머로 **들고 있던** `_held` 가 정리된다((4)의 「future 안에 들어간 값」이 바로 이것). `finished` 줄은 **영영** 없다.
 - ★★ **Rust 의 취소는 「future 를 버리는 것」 하나다** — 별도의 취소 신호가 없다. 그래서 **await 사이에서 중간 상태를 남기는 코드**(반쯤 쓴 파일 등)는 거기서 끊길 수 있다.
-- ★ `Waker::noop()`(1.85.0) — 아무것도 안 하는 `Waker`. 한 번만 poll 하는 이 탐침에는 깨울 일이 없다.
+- ★ `Waker::noop()`(1.85.0) — 아무것도 안 하는 `Waker`. 한 번만 poll 하는 이 probe에는 깨울 일이 없다.
 
 ### (6) ★★ 네 언어 — 부른 순간 몸통이 도나
 
@@ -701,8 +701,8 @@ fn main() {
 | **JavaScript `async function`** | ★★★ **첫 `await` 까지 지금 돈다** — 프라미스가 나온다 | (이미 돌고 있다) | 경고 없음 — 거부되면 처리기 없는 거부로 도착한다 | [JS 39번](../../../js/syntax/39-async-await/) (1)·(9) |
 | **Kotlin `suspend fun`** | ★★ **일반 함수에서는 부를 수 없다**(컴파일 에러) · 코루틴 안에서는 **보통 호출** — 몸통이 끝까지 돈다(중단점에서 부른 쪽이 같이 멈춘다) | 따로 돌리려면 `launch`/`async`(라이브러리) | — | [Kotlin 52번](../../../kotlin/syntax/52-coroutine-basics-suspend-scope-launch-async/) (2)·(4) |
 
-- ★★★ **Rust 와 Python 이 같은 편이고, JS 가 반대편이다** — 「부르면 몸통이 도나」가 갈린다. JS 39 가 같은 탐침을 Python 과 나란히 돌려 `caller: before f() > f: line 1 > caller: after f()`(JS)와 `f: line 1` 없음(Python)을 얻었다.
-- ★★ **Rust 와 Python 이 갈리는 칸은 「버린 것을 누가 알려 주나」다** — Rust 는 **컴파일러**가 (1)에서, Python 은 **런타임**이 버리는 순간에. Rust 는 실행 중에는 **아무 말이 없다**((1)의 `drop(fut)` 뒤에 아무 줄도 없다).
+- ★★★ **Rust 와 Python 이 같은 편이고, JS 가 반대편이다** — 「부르면 몸통이 도나」가 달라진다. JS 39 가 같은 probe를 Python 과 나란히 돌려 `caller: before f() > f: line 1 > caller: after f()`(JS)와 `f: line 1` 없음(Python)을 얻었다.
+- ★★ **Rust 와 Python 이 달라지는 항목은 「버린 것을 누가 알려 주나」다** — Rust 는 **컴파일러**가 (1)에서, Python 은 **런타임**이 버리는 순간에. Rust 는 실행 중에는 **아무 말이 없다**((1)의 `drop(fut)` 뒤에 아무 줄도 없다).
 - ★★ **Kotlin 은 질문 자체가 다르다** — `suspend` 함수는 부를 수 있는 **자리**가 정해져 있고(52 (2)의 격자), 부르면 **보통 함수처럼** 끝까지 간다. Kotlin 의 「상태 기계」(`label`)는 `javap` 로 **필드째** 보였고, Rust 의 그것은 (4)의 **바이트 수**로만 보인다.
 - ★ **C#** — C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **40번**(`async`/`await` 와 `Task`)이 서면 이 표의 칸이 하나 는다. **이 문서는 C# 을 재지 않았다.**
 
@@ -744,7 +744,7 @@ fn main() {
 
 ### 5. ★★ 「await 앞에서만 쓴 변수는 future 에 안 들어간다」
 
-(4) — **빌린 적이 있으면 들어간다**(`b` 1032). 안쪽 블록으로 가두면 빠진다(`c` 8). ★ 이 규칙은 **55번의 `Send` 에러**에서 한 번 더 나온다 — 같은 분석이 「`Rc` 를 쥐고 await 했나」를 판정한다.
+(4) — **빌린 적이 있으면 들어간다**(`b` 1032). 안쪽 블록으로 가두면 빠진다(`c` 8). ★ 이 규칙은 **55번의 `Send` 에러**에서 한 번 더 나온다 — 같은 분석이 「`Rc` 를 잡고 await 했나」를 판정한다.
 
 ### 6. ★ 「future 의 크기는 최적화가 줄여 준다」
 
@@ -758,7 +758,7 @@ fn main() {
 | `.await` 는 안쪽을 poll 하고, `Pending` 이면 바깥도 `Pending` 으로 멈춘다 | ★ **언어**(Reference — Await expressions) | (3) |
 | `Pending` 을 돌려줄 때 `Waker` 를 챙겨 두고, 실행기는 깨워졌을 때만 poll 한다 | ★ **std 의 계약**(`Future::poll` 문서) | (3) |
 | 버린 future 에 대한 경고 | ★ **rustc 린트**(`unused_must_use` — `Future` 의 `#[must_use]`) | (1) |
-| future 의 **바이트 크기**와 「빌린 변수는 스코프 끝까지」 | ★ **rustc 의 분석·배치**(이 판의 관찰 — 두 최적화 판에서 같음) | (4) |
+| future 의 **바이트 크기**와 「빌린 변수는 스코프 끝까지」 | ★ **rustc 의 분석·배치**(이 버전의 관찰 — 두 최적화 판에서 같음) | (4) |
 | `type_name_of_val` 의 문자열 | ★ **구현**(std 가 형식을 보장하지 않는다고 적는다) | (4) |
 | `thread::park` 가 먼저 온 `unpark` 로 즉시 돌아온다 · 까닭 없이 돌아올 수도 있다 | ★ **std 의 계약**(`thread::park` 문서) | (3) |
 

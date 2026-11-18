@@ -27,7 +27,7 @@
 
 - CertificateRequest는 EncryptedExtensions 바로 뒤에 온다(RFC 8446 §4.3.2).
 - 클라이언트 Certificate는 요청받았을 때만 보낸다.
-- CertificateVerify가 "그 인증서의 개인키를 지금 쥐고 있다"를 증명한다.
+- CertificateVerify가 "그 인증서의 개인키를 지금 잡고 있다"를 증명한다.
 
 ### 3. 인증서가 없을 때
 

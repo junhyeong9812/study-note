@@ -90,7 +90,7 @@ React 19.2.8의 `renderToPipeableStream`이 `<Suspense>` 안의 데이터를 기
 ```
 
 - 경계 표시는 HTML 주석이다. `<!--$?-->`는 "아직 대기 중인 경계", `<!--$-->`는 "완료된 경계"다(교체 스크립트가 `g.data="$"`로 바꾼다).
-- 이 판의 `$RC`는 교체를 즉시 하지 않는다. 출력된 코드를 보면 `requestAnimationFrame`이나 `setTimeout`으로 미뤄 여러 경계를 모아 적용한다(코드상 직전 공개 뒤 약 300ms, 로드 2.0~2.3초 사이면 2.3초에 맞춤). React 19.2 블로그 "Batching Suspense Boundaries for SSR": 19.2부터 서버 렌더 경계의 공개를 잠깐 모아서 한다. 그 전에는 내용이 오는 즉시 대체 UI를 바꿨다. 페이지 로드가 2.5초(LCP "good" 기준)에 가까워지면 모으기를 멈춘다.
+- 이 버전의 `$RC`는 교체를 즉시 하지 않는다. 출력된 코드를 보면 `requestAnimationFrame`이나 `setTimeout`으로 미뤄 여러 경계를 모아 적용한다(코드상 직전 공개 뒤 약 300ms, 로드 2.0~2.3초 사이면 2.3초에 맞춤). React 19.2 블로그 "Batching Suspense Boundaries for SSR": 19.2부터 서버 렌더 경계의 공개를 잠깐 모아서 한다. 그 전에는 내용이 오는 즉시 대체 UI를 바꿨다. 페이지 로드가 2.5초(LCP "good" 기준)에 가까워지면 모으기를 멈춘다.
 - `onShellReady`는 셸이 준비되면 호출된다. `onAllReady`는 경계까지 전부 끝나면 호출된다. react.dev는 크롤러·정적 생성에 `onAllReady`를 권한다.
 
 ### 실험: 같은 페이지를 네 방식으로 — FCP·반응 시작·TBT

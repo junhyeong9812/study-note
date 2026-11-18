@@ -126,7 +126,7 @@ I typeText<String?>()          : kotlin.String?
 
 **왜 그런가**
 
-- ★ **`D` 와 `F` 가 갈리는 이유** — `T::class` 는 **`KClass`** 이고 `simpleName` 은 **Kotlin 이름**(`Int`)을 답한다.
+- ★ **`D` 와 `F` 가 달라지는 이유** — `T::class` 는 **`KClass`** 이고 `simpleName` 은 **Kotlin 이름**(`Int`)을 답한다.
   거기에 `.java` 를 붙이는 순간 **JVM `Class` 로 내려가고**, 타입 파라미터 자리의 `Int` 는 **참조 타입이라 박싱**된다 →
   `java.lang.Integer`. 호출 자리의 바이트코드가 그대로 보여 준다 — `ldc class java/lang/Integer`.
 - ★★ **`G` 가 두 번 달랐다면 바꾼 것은 클래스패스다.** `kotlin-reflect.jar` 가 없으면 `KType.toString()` 이
@@ -275,7 +275,7 @@ R castR<String>(1) 를 Any 로 받기 : java.lang.ClassCastException
 S val a: String 로 받기 : java.lang.ClassCastException
 ```
 
-- ★ **한 줄 요약** — **`reified` 는 무음 실패를 그 자리의 에러로 바꾼다.** 그것이 실무에서 가장 큰 값어치다.
+- ★ **한 줄 요약** — **`reified` 는 조용한 실패를 그 자리의 에러로 바꾼다.** 그것이 실무에서 가장 큰 값어치다.
 
 ### 7. ★★ 인라인이 **몸통을 호출 자리에 복사**하기 때문에, 그 자리에서 `T` 를 안다
 
@@ -501,15 +501,15 @@ OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sha
 | `bad8.kt` | 소거된 `T` 로 `Array(n) { }` 를 못 만드는 것 | `kotlinc` (컴파일 실패가 결과) |
 | `warn1.kt` | `reified` 가 「의미 없다」 경고를 **끄는 것** | `kotlinc` (경고 1건 · `exit 0`) |
 | `icode.kt` | `is T`·`T::class`·`typeOf<T>()` 가 호출 자리에서 펼쳐지는 것 + 선언 쪽 자리표 | `kotlinc` → `javap -c -p` |
-| `icode.kt` (타깃 21) | 결론이 `-jvm-target` 에 안 흔들리는 것 | `kotlinc -jvm-target 21` → `javap -c -p` → `diff` |
+| `icode.kt` (타깃 21) | 결론이 `-jvm-target` 에 달라지지 않는 것 | `kotlinc -jvm-target 21` → `javap -c -p` → `diff` |
 | `ex.kt` | `A`\~`I` — 타입 인자가 안 살아나는 것·박싱·`typeOf` | `kotlinc` → `java` **2벌**(reflect 유·무) |
 | `nul2.kt` | null 가능성은 **살아나는 것**(`ifnull` 대 `instanceof`) | `kotlinc` → `java` + `javap -c -p` |
 | `api.kt` + `UseReified.java` | `javac` 가 `reified` 함수를 **못 보는 것** | `kotlinc` → `javac` (컴파일 실패가 결과) |
 | `api.kt` + `UseRefl.java` | 리플렉션으로 찾을 수는 있으나 **부르면 예외** | `javac` → `java` |
 | `mk.kt` | 리플렉션 우회가 **런타임으로 밀리는 것** | `kotlinc` → `java` |
 | `arr.kt` | `reified` 로 만든 배열의 **런타임 원소 타입** | `kotlinc` → `java` |
-| `use.kt` | `T::class` 와 `typeOf<T>()` 가 갈리는 지점 · 실무 2단 API | `kotlinc` → `java` **2벌**(reflect 유·무) |
-| `cast2.kt` · `cast3.kt` | 소거된 `as T` 가 **무음 통과**하는 것과 검사가 밀리는 자리 | `kotlinc` → `java` + `javap -c -p` |
+| `use.kt` | `T::class` 와 `typeOf<T>()` 가 달라지는 지점 · 실무 2단 API | `kotlinc` → `java` **2벌**(reflect 유·무) |
+| `cast2.kt` · `cast3.kt` | 소거된 `as T` 가 **조용한 통과**하는 것과 검사가 밀리는 자리 | `kotlinc` → `java` + `javap -c -p` |
 | `arr2.kt` | `Array<Any?>` 를 `Array<String?>` 로 **못 속이는 것** | `kotlinc` → `java` |
 
 **구현 의존 항목** — `javap` 의 명령 이름·상수 풀 번호, `Intrinsics.reifiedOperationMarker` 라는 이름과 그 정수 코드(3/4/6),
@@ -518,7 +518,7 @@ OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sha
 반면 **「`reified` 는 `inline` 에만 붙는다」·「`is T`/`as T`/`T::class`/`typeOf<T>()` 가 열린다」·「타입 인자는 안 살아난다」·
 「`T()` 는 못 쓴다」·「Java 에서 못 부른다」·「재귀 불가」·「전염되지 않는다」** 는 **언어 규칙**이라 타깃과 무관하다.
 
-**★ 던져 봤더니 예상과 달랐던 것 — 네 건**
+**★ 실행해 봤더니 예상과 달랐던 것 — 네 건**
 
 1. ★★ **`isA<List<String>>(listOf(1))` 이 `true` 인데 경고가 한 줄도 없다.**
    `reified` 없이 같은 것을 쓰면 **에러**인데, `reified` 를 붙이면 **조용한 반쪽 검사**가 된다.
@@ -527,7 +527,7 @@ OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sha
    **문법 차원의 거부**다. 「소거 때문에 생성자를 못 부른다」고 적었으면 틀릴 뻔했다.
 3. ★★ **같은 클래스 파일이 클래스패스에 따라 다른 답을 냈다.** `typeOf<T>().toString()` 이
    `kotlin-reflect.jar` 유무로 `kotlin.collections.List<kotlin.Int>` ↔
-   `java.util.List<java.lang.Integer> (Kotlin reflection is not available)` 로 갈린다.
+   `java.util.List<java.lang.Integer> (Kotlin reflection is not available)` 로 나뉜다.
    **환경을 안 밝히면 이 절은 통째로 검증 불가**였다.
 4. ★ **`reified` 가 11번의 「의미 없다」 경고를 끈다.** 람다를 안 받는데도 조용하다 —
    컴파일러가 보는 인라인의 정당한 사유가 **하나가 아니라 둘**이었다.

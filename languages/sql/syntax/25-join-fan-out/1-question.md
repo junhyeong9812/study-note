@@ -93,7 +93,7 @@ FROM two t JOIN asg a ON a.emp_id = t.id;
 
 ### 12. 방언 (경계)
 
-- 이 주제에서 PostgreSQL 18.6 과 MySQL 8.4.10 의 값이 갈리는 자리가 있는가?
+- 이 주제에서 PostgreSQL 18.6 과 MySQL 8.4.10 의 값이 달라지는 자리가 있는가?
 
 ### 13. 첫 습관 (왜)
 

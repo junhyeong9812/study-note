@@ -241,7 +241,7 @@ Vec<i32>                     24
 ```
 
 - ★★ **std 보장** — `Box<i32>`·`Box<[i32; 100]>`·`Box<List>` 가 **포인터 하나**(`T: Sized` — boxed 모듈 문서) · `Option<Box<i32>>`·`Option<Box<List>>`·`Option<Box<dyn Display>>` 가 **`Box` 와 같은 크기**(Option Representation).
-- ★★ **이 판의 구현** — **8 이라는 수**(64비트 포인터) · **`Box<[i32]>`·`Box<str>`·`Box<dyn Display>` 의 16**(Reference Type layout 「기대지 마라」 — 10번) · `List` 16 · `(i32, Box<List>)` 16 · `Vec<i32>` 24(38번 — 「셋」은 보장, 24 는 타깃).
+- ★★ **이 버전의 구현** — **8 이라는 수**(64비트 포인터) · **`Box<[i32]>`·`Box<str>`·`Box<dyn Display>` 의 16**(Reference Type layout 「기대지 마라」 — 10번) · `List` 16 · `(i32, Box<List>)` 16 · `Vec<i32>` 24(38번 — 「셋」은 보장, 24 는 타깃).
 - ★ **`Option<i32>` 8** — `i32` 4 보다 크다. 9번.
 
 ### 4. ★★ `[stack] [stack] [heap] (anonymous)` · `true false false`
@@ -299,7 +299,7 @@ same region as local — box variable true · box data false · 1 MiB data false
 
 - ★★ **`local i32` `[stack]` · `the Box variable` `[stack]` · `*b` `[heap]` · `1 MiB Box<[u8]>` `(anonymous)`** — `same region as local — box variable true · box data false · 1 MiB data false`.
 - ★★ **보관증(`Box` 변수)은 스택, 물건은 힙.** 1 MiB 는 glibc 가 `[heap]` 이 아닌 **익명 매핑**으로 줬다 — 이름은 환경의 관찰이고, **「스택이 아니다」** 가 결론이다.
-- ★ **주소를 안 찍은 이유** — ASLR 로 **실행마다 흔들린다.** 흔들리는 수 대신 **「어느 매핑에 속하나」** 로 질문을 바꿔 **결정적인 답**을 얻었다.
+- ★ **주소를 안 찍은 이유** — ASLR 로 **실행마다 달라진다.** 실행마다 달라지는 수 대신 **「어느 매핑에 속하나」** 로 질문을 바꿔 **결정적인 답**을 얻었다.
 
 ### 5. ★★ `Box::new` 판의 `opt-level=0` 만 `134 134 134` · `1 / 8`
 
@@ -362,8 +362,8 @@ fatal runtime error: stack overflow, aborting
 (exit 134)
 ```
 
-- ★★★ **`r40_big` `-C opt-level=0` 만 `134 134 134`**(SIGABRT) — 나머지 일곱 칸은 `0 0 0`. **`vec!` 판은 네 판 다 0.** 마지막 줄 **`1 / 8`**. 세 번씩 돌려 **칸마다 같았다**(흔들리는 칸이 아니다).
-- ★★ 표준 오류 — **「thread 'main' (…) has overflowed its stack」 · 「fatal runtime error: stack overflow, aborting」 · exit 134.** 스레드 id 는 흔들리는 칸이다.
+- ★★★ **`r40_big` `-C opt-level=0` 만 `134 134 134`**(SIGABRT) — 나머지 일곱 칸은 `0 0 0`. **`vec!` 판은 네 버전 다 0.** 마지막 줄 **`1 / 8`**. 세 번씩 돌려 **칸마다 같았다**(실행마다 달라지는 항목이 아니다).
+- ★★ 표준 오류 — **「thread 'main' (…) has overflowed its stack」 · 「fatal runtime error: stack overflow, aborting」 · exit 134.** 스레드 id 는 실행마다 달라지는 항목이다.
 
 ### 6. ★★ `Box` 는 통과 · `Rc` 는 E0507 — 그 `help:` 둘은 둘 다 E0308
 
@@ -582,7 +582,7 @@ sum 3  size_of::<List>() = 16
 
 - ★★★ **`pub fn new(x: T) -> Box<T>`** — `x` 는 **인자**다. 인자는 **호출 전에 평가되어 값으로 넘어간다**(언어 규칙). 최적화 없는 판에서 `[7u8; N]` 16 MiB 가 **먼저 스택에 만들어져** 스택(8 MiB)을 넘었다 — 5번의 `134`.
 - ★★ std 의 말도 순서가 그렇다 — 「**힙에 메모리를 잡은 다음 `x` 를 그 안에 둔다**」.
-- ★★ **최적화 판이 안 터진 것은 컴파일러가 스택 경유 복사를 없앤 결과**다 — **보장이 아니다.** 판을 타지 않으려면 **처음부터 힙에** 채우는 `vec![…; N].into_boxed_slice()` 로(5번 — 네 판 다 0).
+- ★★ **최적화 판이 안 터진 것은 컴파일러가 스택 경유 복사를 없앤 결과**다 — **보장이 아니다.** 판을 타지 않으려면 **처음부터 힙에** 채우는 `vec![…; N].into_boxed_slice()` 로(5번 — 네 버전 다 0).
 
 ### 9. ★★ 「절대 안 쓰는 비트 패턴」이 있느냐 — std 가 `Box`·`&`·`fn`·`NonZero`·`NonNull` 에 보장한다
 
@@ -593,7 +593,7 @@ sum 3  size_of::<List>() = 16
 ### 10. ★★ 보장하지 않는다 — DST 절 「두 배」 · Type layout 절 「적어도 포인터 크기, 지금은 두 배, 기대지 마라」
 
 - ★★ **보장하지 않는다.** 33번이 짚은 대로 Reference **DST 절**은 「**두 배 크기**」라고 적고, **Type layout 절**은 「**적어도 포인터 크기**이다. 지금은 모든 DST 포인터가 `usize` 두 배이지만 **기대지 마라**」라고 적는다.
-- ★ **뒤쪽이 더 정확하다** — 16 은 **이 판의 구현**이다. 보장은 「`T: Sized` 인 `Box<T>` 는 포인터 하나」와 「`Option<Box<_>>` 는 안 커진다」까지다(3번).
+- ★ **뒤쪽이 더 정확하다** — 16 은 **이 버전의 구현**이다. 보장은 「`T: Sized` 인 `Box<T>` 는 포인터 하나」와 「`Option<Box<_>>` 는 안 커진다」까지다(3번).
 
 ### 11. ★ `Box<dyn Trait>` — 원소 하나 16 · `leak` 은 `'static` 참조를 주고 메모리를 돌려받을 길을 잃는다
 
@@ -683,7 +683,7 @@ mode=3
 | ★★ **큰 배열 판 격자** | `r40_big_grid.sh` — 소스 둘 × `opt-level` 넷 × 실행 세 번 | 8 컴파일 · 24 실행 | **`1 / 8`** — `Box::new` 의 `opt-level=0` 만 134 |
 | 옮겨 꺼내기 | `r40_move_out` · `r40_move_out_rc` · `r40_rc_help1`·`2`·`3` · `r40_rc_ways` | 6 | 통과 · **E0507** · **E0308** · **E0308** · 통과(복사) · 세 길 |
 | `dyn` 담기 · `leak` | `r40_hetero` · `r40_leak` | 2 | 원소 16 · `mode=3` |
-| **안 던진 것** — 속도 · `Box::new_uninit` · `Box::from_raw` · 다른 `ulimit -s` · 다른 할당기 | — | 0 | ★ 「안 던졌다」로 표시했다 |
+| **실행하지 않은 것** — 속도 · `Box::new_uninit` · `Box::from_raw` · 다른 `ulimit -s` · 다른 할당기 | — | 0 | ★ 「실행하지 않았다」로 표시했다 |
 
 **구현 의존 항목**(버전·환경이 바뀌면 **다시 찍어야 하는** 것).
 

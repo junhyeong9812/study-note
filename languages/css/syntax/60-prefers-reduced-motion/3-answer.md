@@ -167,7 +167,7 @@
 
 **앵커 링크 이동**
 
-- **선호를 켜도 부드럽게 간다.** 약 0.7초가 걸렸고 **두 판이 구별되지 않았다.**
+- **선호를 켜도 부드럽게 간다.** 약 0.7초가 걸렸고 **두 버전이 구별되지 않았다.**
 
 **`scrollTo({ behavior: 'smooth' })`**
 
@@ -257,7 +257,7 @@ if (matchMedia('(prefers-reduced-motion: reduce)').matches) video.pause();
 
 **조용히 틀린 결론이 나오는 함정**
 
-- ★ **두 판을 같은 디버깅 포트로 돌리는 것**이다.
+- ★ **두 버전을 같은 디버깅 포트로 돌리는 것**이다.
 
 ```text
   판 ①  chrome --remote-debugging-port=9334  (플래그 없음)  -> 측정 -> 종료 요청
@@ -268,7 +268,7 @@ if (matchMedia('(prefers-reduced-motion: reduce)').matches) video.pause();
 ```
 
 - 실제로 이 사고를 냈다. 판마다 **포트를 갈랐더니** 곧바로 `reduce=true` 가 나왔다.
-- **두 판 비교 실험에서는 「두 판이 정말 다른 브라우저인가」를 먼저 증명해야 한다** — 여기서는 `matchMedia` 값이 서로 다르다는 것이 그 증명이다.
+- **두 판 비교 실험에서는 「두 버전이 정말 다른 브라우저인가」를 먼저 증명해야 한다** — 여기서는 `matchMedia` 값이 서로 다르다는 것이 그 증명이다.
 
 ### 10. 다른 주제와 잇기
 
@@ -329,7 +329,7 @@ google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars \
 | 명세 원문 확인(mediaqueries-5 §12.1) | 1 | 한눈에 · A2 |
 | WCAG 2.3.3 · 2.2.2 원문 확인 | 1 | A8 |
 | Baseline 조회 | 1 | 「실행 환경」 |
-| **제출 직전 demo 재추출·재실행 대조** | 1 | 어긋남 0건 |
+| **제출 직전 demo 재추출·재실행 대조** | 1 | 불일치 0건 |
 
 **구현에 달린 항목**
 
@@ -343,7 +343,7 @@ google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars \
 | 이 환경의 기본값 | `no-preference` | **환경.** 사람의 브라우저 값이 아니다 |
 | Baseline | widely (2022-07-15) | 2026-09-23 조회. `api.webstatus.dev` 는 **2차 집계**다 |
 
-**한 번 틀린 결론을 낸 것** — 첫 판에서 **두 브라우저를 같은 디버깅 포트(9334)로** 띄웠다. 앞 브라우저가 포트를 놓기 전에 뒤 브라우저의 `/json` 조회가 **앞 브라우저에 붙어**, 두 판이 같은 값을 냈다. 그 결과 「`--force-prefers-reduced-motion` 이 안 먹는다」는 **틀린 결론**을 한 번 적었다. 판마다 포트를 갈랐더니 곧바로 `reduce=true` 가 나왔다. **틀린 값을 지우지 않고 A9 에 함정으로 남겼다.**
+**한 번 틀린 결론을 낸 것** — 첫 판에서 **두 브라우저를 같은 디버깅 포트(9334)로** 띄웠다. 앞 브라우저가 포트를 놓기 전에 뒤 브라우저의 `/json` 조회가 **앞 브라우저에 붙어**, 두 버전이 같은 값을 냈다. 그 결과 「`--force-prefers-reduced-motion` 이 안 먹는다」는 **틀린 결론**을 한 번 적었다. 판마다 포트를 갈랐더니 곧바로 `reduce=true` 가 나왔다. **틀린 값을 지우지 않고 A9 에 함정으로 남겼다.**
 
 **안 돌려 본 것** — ① Firefox·Safari 에서의 재현(엔진이 없다). ② 실제 OS 의 「동작 줄이기」 설정(이 환경에 데스크톱 설정이 없다 — 플래그와 CDP 로 대신했다). ③ `prefers-reduced-transparency`·`prefers-reduced-data`(「더 들어가면」에 **존재만** 적었고 값을 주장하지 않았다).
 

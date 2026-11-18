@@ -448,7 +448,7 @@ print("   ★ 29번이 「제5의 상태」라 부른 자리를 이 창은 없�
 ```
 
 * ②에서 `vars(n)['computed']`·`n.computed`·`getattr_static(n,'computed')` 이 각각 무엇을 답하는가?
-* ★ ③에서 `hasattr(g,'zzz')` 와 `getattr_static(g,'zzz')` 의 답이 **왜 갈리는가**?
+* ★ ③에서 `hasattr(g,'zzz')` 와 `getattr_static(g,'zzz')` 의 답이 **왜 달라지는가**?
 
 ### 7. `property` 가 클래스 칸에 놓여야 먹는 이유 (왜)
 

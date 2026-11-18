@@ -280,7 +280,7 @@ func main() {
 
 ### 9. 세 언어의 호루라기 (연결)
 
-- 4번의 결과를 Java([Java 28번](../../../java/syntax/28-comparable-comparator/))·Python([Python 31번](../../../python/syntax/31-comparison-protocol-and-sortability/))과 나란히 놓아라. 갈린 것은 무엇인가?
+- 4번의 결과를 Java([Java 28번](../../../java/syntax/28-comparable-comparator/))·Python([Python 31번](../../../python/syntax/31-comparison-protocol-and-sortability/))과 나란히 놓아라. 달라진 것은 무엇인가?
 
 ### 10. 안정성에 기대지 않는 길 (연결)
 

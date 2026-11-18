@@ -576,7 +576,7 @@ length 287 에서 capacity 286 -> 574
   여기는 「여러 조각을 이어 붙일 때 컴파일러가 무엇을 하나」부터다.**\
   상수 풀과 `intern()` 은 전부 35번이고, `ldc` 가 왜 같은 객체를 주는지도 거기다.
 - [`../02-numeric-operations/`](../02-numeric-operations/) — **경계: `1 + 2 + "x"` 에서 `1 + 2` 가 `3` 이 되는 규칙(이항 수치 승격)은 거기,
-  `+` 가 문자열 연결로 갈리는 자리부터가 여기다.**
+  `+` 가 문자열 연결로 나뉘는 자리부터가 여기다.**
 - [`../../../../cs/data-structure/01-dynamic-array/`](../../../../cs/data-structure/01-dynamic-array/) — **경계: "왜 2배씩 늘리나"라는 상환 분석 원리는 거기,
   "`StringBuilder` 가 실제로 몇 배로 늘리나"는 여기.**
 - [**37번 주제**](../37-regex/)(정규식) — `String.format` 이 아니라 `replaceAll` 쪽 조립

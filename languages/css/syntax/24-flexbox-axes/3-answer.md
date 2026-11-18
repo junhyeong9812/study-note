@@ -144,7 +144,7 @@ row-reverse 의 좌표계
 **`justify-self` 를 flex 아이템에 주면**
 
 - **아무 일도 일어나지 않는다.** 에러도 경고도 없고 계산값은 남지만 배치가 안 바뀐다.
-- 실측: `justify-self: end` 를 준 아이템의 left 가 전혀 변하지 않았다(같은 판에서 `align-self: center` 는 정상 동작).
+- 실측: `justify-self: end` 를 준 아이템의 left 가 전혀 변하지 않았다(같은 버전에서 `align-self: center` 는 정상 동작).
 
 **비대칭이 생기는 이유**
 
@@ -210,7 +210,7 @@ align-items: baseline        -> 계산값 baseline   (정상 값)
 
 - **아무 일도 일어나지 않는다.** 선언은 유효해서 버려지지 않고 계산값도 남는다.
 - ★ **경계는 「줄이 둘 이상이냐」가 아니라 `flex-wrap` 값이다.** 명세가 `flex-wrap: nowrap` 인 컨테이너를 **single-line flex container** 라 부르고 「그때 `align-content` 는 효과가 없다」고 적는다(css-flexbox-1 §6·§8.4).\
-  `wrap` 이면 **줄이 하나뿐이어도 「줄」이 있으므로** 그 줄이 교차축에서 움직인다 — 실측: 200×200 컨테이너·항목 하나에서 `wrap` 은 y = 90, `nowrap` 은 y = 0 이었다(계산값은 두 판 다 `center`).
+  `wrap` 이면 **줄이 하나뿐이어도 「줄」이 있으므로** 그 줄이 교차축에서 움직인다 — 실측: 200×200 컨테이너·항목 하나에서 `wrap` 은 y = 90, `nowrap` 은 y = 0 이었다(계산값은 두 버전 다 `center`).
 - 정본은 [목록의 **26번 주제**](../26-flex-wrap-gap-order/).
 
 **`margin-left: auto` 가 있으면 `justify-content: center` 는**
@@ -306,7 +306,7 @@ writing-mode: vertical-rl + row          1: T1     2: T16     (세로로 쌓인�
 
 ## 실행 검증
 
-**이 표는 2026-09-23 재검증에서 실제로 던진 것만 적는다.** 이 문서를 처음 쓴 판이 몇 번 돌렸는지는 **기록이 없어 모른다.**
+**이 표는 2026-09-23 재검증에서 실제로 실행한 것만 적는다.** 이 문서를 처음 쓴 판이 몇 번 돌렸는지는 **기록이 없어 모른다.**
 
 | 무엇을 | 어떻게 | 결과 |
 |---|---|---|
@@ -317,7 +317,7 @@ writing-mode: vertical-rl + row          1: T1     2: T16     (세로로 쌓인�
 | (3) `row-reverse` + `flex-start` | 창 804 | `1: L762  2: L722  3: L683` — 아이템 1 의 오른쪽이 794 |
 | (4) `align-self: flex-end` | 창 804 | `1: L10 T10` · `2(.odd): L50 T98` · `3: L90 T10` |
 | ★ `justify-self: end` | demo (6) 과 같은 판에 `.odd { justify-self: end }` 를 얹고 좌표와 계산값을 같이 읽었다 · 1판 | **`left` 는 50 그대로**인데 **계산값은 `end`** — 세 창이 전부 정상인데 배치만 안 바뀐다 |
-| ★ `align-content` 의 경계 | 200×200 컨테이너에 높이 20 짜리 항목 하나, `align-content: center` 를 `wrap`/`nowrap` 두 판 · 1판 | `wrap` → **y = 90** · `nowrap` → **y = 0** · **계산값은 두 판 다 `center`** |
+| ★ `align-content` 의 경계 | 200×200 컨테이너에 높이 20 짜리 항목 하나, `align-content: center` 를 `wrap`/`nowrap` 두 판 · 1판 | `wrap` → **y = 90** · `nowrap` → **y = 0** · **계산값은 두 버전 다 `center`** |
 | `align-items: space-between` | 계산값 + `cssRules[i].style.cssText` · 1판 | 계산값 `normal` · **`cssText` 에서 선언이 통째로 사라졌다**(버려졌다) |
 | `justify-content: stretch` | 계산값 + 아이템 rect · 1판 | 계산값 `stretch` · 아이템은 `left 0` 으로 `flex-start` 와 같고 **안 늘어났다**(버려지지 않았다) |
 | 초기값 | 아무 정렬도 안 준 `display: flex` 의 계산값 · 1판 | `align-items: normal` · `justify-content: normal` · `align-content: normal` |

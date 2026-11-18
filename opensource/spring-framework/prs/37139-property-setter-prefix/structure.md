@@ -264,7 +264,7 @@ spring-expression (SpEL — ReflectivePropertyAccessor)
 그림 해설: 살아 있는 두 경로 모두 프레임워크 바깥에서 오는 호출이다.
 
 `Property`는 `public final class`이고 두 생성자 모두 `public`이므로, 이 분기는 프레임워크 내부에서 죽어 있어도 **공개 API 표면으로는 살아 있다**.\
-이 PR이 "무음 오탐"을 "생성 시점 예외"로 바꾸는 동작 강화(behavior change)로 분류되는 이유이자, blast radius가 실질적으로 작다고 말할 수 있는 근거가 바로 이 그림이다.
+이 PR이 "조용한 오탐"을 "생성 시점 예외"로 바꾸는 동작 강화(behavior change)로 분류되는 이유이자, blast radius가 실질적으로 작다고 말할 수 있는 근거가 바로 이 그림이다.
 
 > **공개 API 표면(public API surface)** — 라이브러리 바깥에서 부를 수 있도록 열어 둔 타입·메서드·생성자의 전체.\
 > 예: `Property`의 3-인자 생성자는 `public`이므로 내부에서 안 쓰여도 사용자에게는 여전히 열려 있다.

@@ -128,7 +128,7 @@ ex.03c.ts(12,7): error TS2322: Type '[string]' is not assignable to type '[strin
 | `ro[0] = 9` | readonly 배열에 인덱스 대입 | **TS2542** | 배열의 인덱스는 **인덱스 시그니처**라 「읽기만 허용」이라고 말한다 |
 | `const mutable: number[] = ro` | readonly → 가변 | **TS4104** | 방향이 막혀 있다. ★ **반대 방향은 된다** |
 | `rt[0] = "b"` | readonly 튜플에 인덱스 대입 | **TS2540** | 튜플의 칸은 **이름 있는 프로퍼티**(`0`·`1`)라 「읽기 전용 프로퍼티」라고 말한다 |
-| `tooMany` · `tooFew` | 튜플 길이 불일치 | **TS2322** | 둘째 줄 문구가 갈린다 — 「allows only 2」와 「requires 2」 |
+| `tooMany` · `tooFew` | 튜플 길이 불일치 | **TS2322** | 둘째 줄 문구가 달라진다 — 「allows only 2」와 「requires 2」 |
 
 - ★★ 배열과 튜플이 **다른 코드**인 이유는 **모델이 다르기 때문**이다 — 배열의 칸은 인덱스 시그니처, 튜플의 칸은 고정된 프로퍼티다.
 - ★ 「readonly 에러」를 한 덩어리로 외우면 고치는 법을 못 고른다. 다섯은 각각 처방이 다르다.
@@ -277,9 +277,9 @@ ex.03g.ts(12,7): error TS2322: Type '(x: number) => string' is not assignable to
 - ★ 5번의 `.d.ts` 와 **같은 답**이다. 두 창이 서로를 검증한다.
 - ★★ **못 잡는 타입이 있다** — `never` 는 **모든 타입에 대입되므로** `null` 에도 들어가 **에러가 안 난다**.\
   `any` 도 마찬가지다. 그때는 방향을 뒤집어 `const x: never = v` 로 묻는다([**04번 주제**](../04-any-unknown-never-void/)의 완전성 검사가 그 형태다).
-- ★ `.d.ts` 쪽 한계는 **`export` 된 것만** 나온다는 것이다. 지역 변수는 탐침이 낫다.
+- ★ `.d.ts` 쪽 한계는 **`export` 된 것만** 나온다는 것이다. 지역 변수는 probe가 낫다.
 
-| | `.d.ts` 덤프 | `null` 탐침 |
+| | `.d.ts` 덤프 | `null` probe |
 |---|---|---|
 | 대상 | `export` 된 것만 | **아무 표현식이나** |
 | 형식 | 선언 전문 · 여러 줄 | 한 줄 문구 |
@@ -364,8 +364,8 @@ ex.03h.ts(6,10): error TS2339: Property 'click' does not exist on type '{}'.
 
 - 6번의 표가 그 답이다. 요점은 셋이다.
 - ★ **`.d.ts` 는 「모듈이 밖에 약속하는 것」을 보여 준다** — 그래서 지역 변수가 안 나오고, 대신 **계약이 의도대로 잡혔나**를 검토하기에 좋다.
-- ★ **`null` 탐침은 「지금 이 표현식」을 보여 준다** — 지역 변수·중간 결과·좁혀진 타입에 쓴다.
-- ★★ **둘 다 못 보는 것이 있다** — `never`·`any` 는 탐침을 통과하고, 지역 변수는 `.d.ts` 에 없다. 그럴 때는 **방향을 뒤집어** `const x: never = v` 처럼 묻는다.
+- ★ **`null` probe는 「지금 이 표현식」을 보여 준다** — 지역 변수·중간 결과·좁혀진 타입에 쓴다.
+- ★★ **둘 다 못 보는 것이 있다** — `never`·`any` 는 probe를 통과하고, 지역 변수는 `.d.ts` 에 없다. 그럴 때는 **방향을 뒤집어** `const x: never = v` 처럼 묻는다.
 - ★ 두 창이 **같은 답을 내는지 대조하는 것** 자체가 검증이다. 이 주제에서 5번과 6번이 그렇게 맞물린다.
 
 ### 11. ★★ 세 층
@@ -374,7 +374,7 @@ ex.03h.ts(6,10): error TS2339: Property 'click' does not exist on type '{}'.
 |---|---|
 | **언어 보장** | `T[]` 와 `Array<T>` 는 같은 타입 · `const` 는 굳고 `let` 은 넓혀진다 · `as const` 는 **리터럴 고정 + 튜플화 + `readonly`** 를 재귀 적용한다 · `readonly` 는 **검사 시각에만** 막는다 |
 | **설정에 달린 것** | `TS7006`(암시적 `any`) · `export const exported = []` 의 `never` — **둘 다 `--strict false` 면 사라진다** · `noUncheckedIndexedAccess` 를 켜면 `arr[0]` 의 타입부터 달라진다 |
-| **이 판(7.0.2)의 관찰** | `.d.ts` 가 `Array<number>`·`ReadonlyArray<number>` 표기를 **보존**하는 것 · 진단 문구의 정확한 글자 · 지역 `const evolving = []` 이 **진화하는 `any[]`** 인 것 · `Symbol("k")` 가 `unique symbol` 로 잡히는 것 |
+| **이 버전(7.0.2)의 관찰** | `.d.ts` 가 `Array<number>`·`ReadonlyArray<number>` 표기를 **보존**하는 것 · 진단 문구의 정확한 글자 · 지역 `const evolving = []` 이 **진화하는 `any[]`** 인 것 · `Symbol("k")` 가 `unique symbol` 로 잡히는 것 |
 
 - ★ **에러 코드가 문구보다 오래 간다.** 인용할 때 코드를 먼저 적는 이유다.
 
@@ -389,11 +389,11 @@ ex.03h.ts(6,10): error TS2339: Property 'click' does not exist on type '{}'.
 | 튜플 네 모양 | `--declaration --emitDeclarationOnly ex.03d.ts` | exit 0 · **에러 0건** · 이름표 보존 |
 | 객체·함수 타입 | `--declaration --emitDeclarationOnly ex.03e.ts` · `--module esnext ex.03e.ts` | exit 0 · 선택·`readonly` 보존 · 방출에 표기 없음 |
 | `as const` | `--declaration --emitDeclarationOnly ex.03f.ts` | exit 0 · `readonly [1, 2, 3]` · 중첩까지 `readonly` |
-| `null` 탐침 | `--noEmit ex.03g.ts` | exit 1 · **5건** · 문구에 타입 5개 |
+| `null` probe | `--noEmit ex.03g.ts` | exit 1 · **5건** · 문구에 타입 5개 |
 | 표기 누락 | `--noEmit ex.03h.ts` | exit 1 · **3건**(`TS7006`·`TS2339`·`TS2345`) |
 | 같은 파일 비엄격 | `--noEmit --strict false ex.03h.ts` | exit 1 · **1건**(`TS2339`만) |
 
-**구현 의존 항목 — 판이 오르면 다시 돌릴 것**
+**구현 의존 항목 — 버전이 오르면 다시 돌릴 것**
 
 - `.d.ts` 가 `Array<T>`·`ReadonlyArray<T>` 표기를 보존하는 것 — 선언 방출기의 구현이다.
 - 진단 문구의 정확한 글자 — 코드(`TS2542` 등)가 더 오래 간다.
@@ -402,11 +402,11 @@ ex.03h.ts(6,10): error TS2339: Property 'click' does not exist on type '{}'.
 
 **안 돌려 본 것**
 
-- `noUncheckedIndexedAccess`·`exactOptionalPropertyTypes` 를 켠 판 — `tsc --init` 이 그 둘을 권하는 것은 확인했지만(이 판), 이 주제의 블록은 전부 **명령줄로 파일을 직접 준 기본 설정**이다. 그 플래그의 효과는 [목록의 **41번 주제**](../41-index-and-optional-property-strict-flags/)에서 던진다.
+- `noUncheckedIndexedAccess`·`exactOptionalPropertyTypes` 를 켠 판 — `tsc --init` 이 그 둘을 권하는 것은 확인했지만(이 버전), 이 주제의 블록은 전부 **명령줄로 파일을 직접 준 기본 설정**이다. 그 플래그의 효과는 [목록의 **41번 주제**](../41-index-and-optional-property-strict-flags/)에서 던진다.
 
 ## 실행 환경
 
 모든 진단·`.d.ts` 전문·방출 전문은 `tsc` **7.0.2** 에서 실제로 얻었다.\
 블록은 전부 **캡처 스크립트가 파일로 받은 것**이고 손으로 옮겨 적지 않았다 — 배너의 `(tsc exit=N)` 도 스크립트가 찍은 값이다.\
-★★ **옵션이 결과를 바꾸는 주제다.** 배너에 적힌 옵션이 곧 그 블록의 전제다 — `strict` 는 이 판에서 **기본 `true`** 다.\
+★★ **옵션이 결과를 바꾸는 주제다.** 배너에 적힌 옵션이 곧 그 블록의 전제다 — `strict` 는 이 버전에서 **기본 `true`** 다.\
 ★ 소스 펜스 첫 줄 `// 파일명` 은 대조용 배너다 — **진단의 행 번호는 그 줄을 뺀 기준**이다.

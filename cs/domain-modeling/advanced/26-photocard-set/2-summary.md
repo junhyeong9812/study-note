@@ -254,7 +254,7 @@ b(3 장)는? 어떤 규칙으로도 세트 불가 → 분모에서 뺀다
 - 같은 구조 — [25-lottery-draw](../25-lottery-draw/2-summary.md): seed로 재현 가능한 무작위 뽑기와 중복 당첨 규칙.
 - 후속 — [27-ab-assign](../27-ab-assign/2-summary.md): "같은 사람은 늘 같은 결과"를 랜덤 대신 해시로 만드는 결정적 배정.
 - 분모 정의 — [19-leaderboard-recount](../19-leaderboard-recount/2-summary.md) · [21-throttle](../21-throttle/2-summary.md): 누구를 셀지가 비율을 바꾸는 자리.
-- 조합 전수 측정 — [basic/01-parking-fee](../../basic/01-parking-fee/2-summary.md): 정책을 값으로 올려 갈리는 건수를 세는 방식의 출발점.
+- 조합 전수 측정 — [basic/01-parking-fee](../../basic/01-parking-fee/2-summary.md): 정책을 값으로 올려 달라지는 건수를 세는 방식의 출발점.
 - 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `26-advanced-modeling-exercises`.
 - myway 원본 — `/home/jun/project/myway/domain-modeling-advanced/26-photocard-set/` (README.md · impl/com/domain/photocard/Distributor.java · src/main/java/com/domain/photocard/Stock.java).
 

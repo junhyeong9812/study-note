@@ -7,7 +7,7 @@ v18.19.1
 Python 3.12.3
 ```
 
-> ★★★ **본체 창 선언 — 이 주제의 본체는 3창(방출된 `.js` + `node`)이다 — 방출 격자로 센다.**
+> ★★★ **핵심 창 선언 — 이 주제의 핵심은 3창(방출된 `.js` + `node`)이다 — 방출 격자로 센다.**
 > 파일 여덟 × 플래그 넷에서 **방출물에 남은 import/export 줄**과 **그 방출물을 node 로 돌린 출력**을 한 칸에 담았다(1절). 「타입 전용 import 가 무엇을 줄이나」는 **방출물의 줄로만** 말한다 — 번들 크기는 재지 않았다.
 > ★★★ **36 은 35 에서 온다.** [**35번 주제**](../35-module-resolution/)는 「import 가 **풀리나**」를 물었다 — 여기는 「풀린 import 가 **방출물에 남나**」다.
 > ★★★ **이미 잰 것은 다시 안 잰다** — [**02번 주제**](../02-type-checking-vs-emit/) 6절이 `verbatimModuleSyntax` 에서 타입을 값 import 하면 **`TS1484` + 방출물에 그대로 남아 node 가 `SyntaxError`** 인 것을 쟀고, 5절이 `isolatedModules` 의 **`TS1205`** 를 쟀다.
@@ -15,16 +15,16 @@ Python 3.12.3
 > ★ 소스 펜스 첫 줄 `// 파일명` 은 대조용 배너다 — 실파일에는 없다. **진단의 행 번호는 그 줄을 뺀 기준**이다.
 > ★★ 표 안의 `\|` 는 이스케이프이고 **뜻은 `|` 다.**
 
-## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
+## 이 문서에서 실행마다 달라지는 항목과 달라지지 않는 항목
 
 | | 무엇 | 왜 |
 |---|---|---|
-| **안 흔들린다** | 에러 코드(`TS####`)·`(행,열)` | 같은 입력·같은 옵션이면 같은 글자다 |
-| **안 흔들린다** | ★★★ 방출 격자의 칸(남은 줄 · 진단 · node)과 마지막 줄의 **수** | 스크립트가 세어 찍는다 |
-| **안 흔들린다** | node 출력 | 파일마다 **node 프로세스를 따로** 띄웠다 — ESM 은 한 프로세스에서 모듈을 **한 번만** 평가하므로 섞으면 칸끼리 샌다(규칙 22) |
-| **안 흔들린다** | ★★ 판 격자 둘의 칸 | 세 판 대조 |
+| **달라지지 않는다** | 에러 코드(`TS####`)·`(행,열)` | 같은 입력·같은 옵션이면 같은 글자다 |
+| **달라지지 않는다** | ★★★ 방출 격자의 칸(남은 줄 · 진단 · node)과 마지막 줄의 **수** | 스크립트가 세어 찍는다 |
+| **달라지지 않는다** | node 출력 | 파일마다 **node 프로세스를 따로** 띄웠다 — ESM 은 한 프로세스에서 모듈을 **한 번만** 평가하므로 섞으면 칸끼리 샌다(규칙 22) |
+| **달라지지 않는다** | ★★ 판 격자 둘의 칸 | 세 판 대조 |
 | **판에 매인다** | 종료 코드 | 격자는 **진단 코드로** 갈랐다 |
-| **★ 부적용 — 5창(`.d.ts` 방출)** | 선언 방출은 안 물었다 | 질문은 **`.js` 에 import 줄이 남나**다 |
+| **★ 해당 없음 — 5창(`.d.ts` 방출)** | 선언 방출은 안 물었다 | 질문은 **`.js` 에 import 줄이 남나**다 |
 | **안 잰 것** | ★★★ **번들 크기** — 「`import type` 이 번들을 줄인다」 | **재지 않았다** — 방출 **줄**만 셌다(1절: 기본 설정에서는 **줄 수도 안 줄었다**) |
 
 ## 한눈에 — 쉽게 말하면
@@ -66,10 +66,10 @@ Python 3.12.3
 
 | 창 | 무엇을 보여 주나 | 성질 | 이 주제에서 |
 |---|---|---|---|
-| ★★★ **3창 — 방출된 `.js` + `node`(방출 격자)** | 파일 여덟 × 플래그 넷 — 남은 줄 · 진단 · node 출력 | 실행 결과 | **본체**(1절) |
+| ★★★ **3창 — 방출된 `.js` + `node`(방출 격자)** | 파일 여덟 × 플래그 넷 — 남은 줄 · 진단 · node 출력 | 실행 결과 | **핵심**(1절) |
 | ★★ **판 격자** | import/export 꼴 여섯 × 세 판(`--erasableSyntaxOnly`) · 플래그 여섯 × 세 판 | 세 판 대조 | 2·4절 |
 | ★★ **3창 단독** | `import type X = require()` 의 방출물 | 방출물 | 3절 |
-| ★ **부적용 — 5창(`.d.ts` 방출)** · **2창(`null` 탐침)** | 이 주제는 타입의 모양이 아니라 **줄이 남나**를 묻는다 | — | — |
+| ★ **해당 없음 — 5창(`.d.ts` 방출)** · **2창(`null` probe)** | 이 주제는 타입의 모양이 아니라 **줄이 남나**를 묻는다 | — | — |
 
 비용 — 방출 격자(방출 넷 · `node` 32) + 판 격자 둘(꼴 여섯 × 세 판 · 플래그 여섯 × 세 판) + 방출 한 번.
 
@@ -238,7 +238,7 @@ echo "끔과 갈린 칸 -- isolatedModules ${diff_count[1]} / $total · verbatim
 - ★★ **`[i36b] import type`·`[i36e] export type`** — 네 설정 다 **`export {};`**, node 출력 없음. 딱지가 **줄 전체**에 붙어 있으면 모든 설정이 지운다.
 - ★★ **`[i36d] import "./lib36.mjs"`**(부작용 import)·**`[i36h] { type Shape, version }`**(섞음) — 네 설정 다 **같다.** 섞은 쪽은 `type` 붙은 것만 빠진 **`import { version }`** 이 남는다.
 - ★★ **`export {};`** — 지워서 import 가 하나도 안 남아도 tsc 는 **파일이 모듈로 남도록** 이 한 줄을 넣었다(`i36h`·`i36d` 처럼 import 가 남으면 안 넣는다).
-- ★★★ 마지막 줄 — **끔과 갈린 칸 isolatedModules 1 / 8 · verbatimModuleSyntax 4 / 8 · erasableSyntaxOnly 0 / 8**.
+- ★★★ 마지막 줄 — **끔과 달라진 항목 isolatedModules 1 / 8 · verbatimModuleSyntax 4 / 8 · erasableSyntaxOnly 0 / 8**.
   `isolatedModules` 의 1칸은 **진단만**(`i36f` 의 `TS1205`) 다르다. **`erasableSyntaxOnly` 는 방출을 하나도 안 바꿨다** — 이 플래그는 **검사만** 한다(31편 4절과 같은 성질).
 - ★★★ **「`import type` 이 방출을 줄인다」는 이 격자에서 참이 아니다** — 기본 설정에서 `i36a`(일반 import)와 `i36b`(`import type`)의 방출물이 **한 글자도 같다**(`export {};`). 기본 설정은 **이미** 지우고 있었다. `import type` 이 방출을 가르는 것은 **`verbatimModuleSyntax` 에서만**이다.
 
@@ -335,7 +335,7 @@ export-equals                (1,14) TS1294    (1,14) TS1294    TS5023
 - ★★★ **`import type Box = require(…)` 도 `TS1294`** — `type` 이 붙었는데도 막혔다. 3절이 그 방출물을 본다.
 - ★★ 4.9.5 는 **전부 `TS5023`**(플래그가 5.8 부터). 7.0.2 와 5.9.3 이 **여섯 칸 다 같다.**
 - ★ 34편 3절의 `import V = N.v`(namespace 별칭)도 같은 `import =` 꼴이라 `TS1294` 였다 — 거기서 쟀다.
-- ★★ 마지막 줄 **7.0.2 에서 TS1294 가 난 탐침 3 / 6**.
+- ★★ 마지막 줄 **7.0.2 에서 TS1294 가 난 probe 3 / 6**.
 
 비용 — `erasableSyntaxOnly` 를 켜면 **CJS 식 TS 문법은 `type` 을 붙여도** 못 쓴다. `.d.cts` 의 `export = Box` 는 **선언 파일이라** 안 걸렸다(이 격자의 가져올 곳이 그것이다).
 
@@ -436,12 +436,12 @@ rewriteRelativeImportExtensions    OK         OK         TS5023
 
 그림 해설 — 한 단계에 한 문장.
 
-- ★★★ **`importsNotUsedAsValues`·`preserveValueImports` — 4.9.5 `OK` · 5.9.3 `TS5102` · 7.0.2 `TS5023`.** 세 판이 **세 답**이다.
+- ★★★ **`importsNotUsedAsValues`·`preserveValueImports` — 4.9.5 `OK` · 5.9.3 `TS5102` · 7.0.2 `TS5023`.** 세 버전이 **세 답**이다.
   5.9.3 은 「**제거된 옵션**」(`TS5102` — 「Option … has been removed … Use 'verbatimModuleSyntax' instead.」), 7.0.2 는 「**모르는 옵션**」(`TS5023`) — **이름조차 모른다.** 제거 안내가 사라진 것이다.
 - ★★ **`verbatimModuleSyntax`·`erasableSyntaxOnly`·`rewriteRelativeImportExtensions` — 4.9.5 `TS5023`** · 5.9.3·7.0.2 `OK`.
-- ★ `isolatedModules` 만 **세 판 다 `OK`**(1.5 부터 — 02편).
-- ★★ 마지막 줄 **세 판이 한 답이 아닌 행 5 / 6**.
-- ★ 격자는 **기본값이 아닌 값**(`preserve`)으로 던졌다 — 5.9.3 은 기본값을 주면 **조용히 받는다**:
+- ★ `isolatedModules` 만 **세 버전 다 `OK`**(1.5 부터 — 02편).
+- ★★ 마지막 줄 **세 버전이 한 답이 아닌 행 5 / 6**.
+- ★ 격자는 **기본값이 아닌 값**(`preserve`)으로 실행했다 — 5.9.3 은 기본값을 주면 **조용히 받는다**:
 
 ```ts
 // lib36.mts
@@ -490,7 +490,7 @@ error TS5102: Option 'importsNotUsedAsValues' has been removed. Please remove it
   import type X = require("m");          방출 0줄 — 그래도 erasable 에서 TS1294         (3절)
 ```
 
-**금지 사례** — 이 주제에서 던져 받은 것이다.
+**금지 사례** — 이 주제에서 실행해 받은 것이다.
 
 | 쓴 꼴 | 진단 | 어느 절 |
 |---|---|---|
@@ -524,12 +524,12 @@ error TS5102: Option 'importsNotUsedAsValues' has been removed. Please remove it
 |---|---|---|
 | **컴파일러 보장(TSConfig 문서)** | `verbatimModuleSyntax` — 타입 전용 import 는 지우고 값 import 는 그대로 · `import { type A }` → `import {} from "a"` | TSConfig · 1절 `i36c` |
 | **컴파일러 보장(5.8 릴리스 노트)** | `erasableSyntaxOnly` 는 지우기만 해서 JS 가 안 되는 문법(`import =`·`export =` 포함)을 막는다 | 릴리스 노트 · 2절 |
-| **★ 이 판(7.0.2)의 관찰** | 기본 설정이 **안 쓰인 값 import** 를 지운다 | 1절 `i36g` |
-| **★ 이 판의 관찰** | `import type X = require()` 가 **방출 0줄인데 `TS1294`** | 3절 |
-| **★ 이 판의 관찰** | `isolatedModules` 가 `i36f` 에 `TS1205` 를 내며 **방출은 지운다** | 1절 |
+| **★ 이 버전(7.0.2)의 관찰** | 기본 설정이 **안 쓰인 값 import** 를 지운다 | 1절 `i36g` |
+| **★ 이 버전의 관찰** | `import type X = require()` 가 **방출 0줄인데 `TS1294`** | 3절 |
+| **★ 이 버전의 관찰** | `isolatedModules` 가 `i36f` 에 `TS1205` 를 내며 **방출은 지운다** | 1절 |
 | **호스트(node v18)** | 빈 `import {} from "m"` 도 **모듈을 평가한다** · 없는 이름 import 는 링크 단계 `SyntaxError` | 1절 node 칸 |
 | **★ 판 격자** | 옛 두 옵션 — 4.9.5 `OK` · 5.9.3 `TS5102` · 7.0.2 `TS5023` | 4절 — **세 번의 관찰** |
-| **★ 부적용 — 5창(`.d.ts` 방출)** | 선언 방출은 안 물었다 | — |
+| **★ 해당 없음 — 5창(`.d.ts` 방출)** | 선언 방출은 안 물었다 | — |
 | **안 잰 것** | 번들 크기 · 번들러의 트리 셰이킹 | **재지 않았다** |
 
 ## 언제 쓰고 언제 안 쓰나
@@ -544,7 +544,7 @@ error TS5102: Option 'importsNotUsedAsValues' has been removed. Please remove it
 
 ## 핵심 문장
 
-1. **기본 설정은 import 를 쓰임새로 지우고, `verbatimModuleSyntax` 는 `type` 딱지로만 지운다** — 방출 격자에서 끔과 갈린 칸 **4 / 8**(`isolatedModules` 1 / 8 · `erasableSyntaxOnly` 0 / 8).
+1. **기본 설정은 import 를 쓰임새로 지우고, `verbatimModuleSyntax` 는 `type` 딱지로만 지운다** — 방출 격자에서 끔과 달라진 항목 **4 / 8**(`isolatedModules` 1 / 8 · `erasableSyntaxOnly` 0 / 8).
 2. **`import { type T }` 는 `verbatimModuleSyntax` 에서 `import {} from` 을 남겨 모듈을 평가한다** — 빈 import 는 부작용을 살린다. 반대로 기본 설정은 **안 쓰인 값 import 를 지워 부작용을 잃는다.**
 3. **`import type` 이 방출을 가르는 것은 `verbatimModuleSyntax` 에서다** — 기본 설정에서는 일반 import 와 방출물이 같았다. 번들 크기는 재지 않았다.
 4. **`erasableSyntaxOnly` 는 방출이 아니라 꼴을 본다** — `import type X = require()` 는 방출 0줄인데 `TS1294` 다.
@@ -591,6 +591,6 @@ error TS5102: Option 'importsNotUsedAsValues' has been removed. Please remove it
 
 **기준 소스** — [TSConfig — `verbatimModuleSyntax`](https://www.typescriptlang.org/tsconfig/#verbatimModuleSyntax)(타입 전용 import 는 지우고 값 import 는 그대로 둔다 · `import { type A } from "a"` 는 **`import {} from "a"`** 로 다시 쓰인다 · `importsNotUsedAsValues`·`preserveValueImports` 를 대체) ·
 [TypeScript 5.8 릴리스 노트 — `--erasableSyntaxOnly`](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-8.html).
-위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·방출물·출력은 **전부 직접 던져 받은 것**이다. 핸드북 예제를 옮기지 않았다.
+위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·방출물·출력은 **전부 직접 실행해 받은 것**이다. 핸드북 예제를 옮기지 않았다.
 **실행 검증** — 본판은 맨 위 블록이다. ★ 판 격자에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 5.9.3 · 4.9.5** 를 **읽기만** 해서 썼다 — 환경변수 **`TSC_OLD`·`TSC_49`**.
 **버전** — `import { type T }`(이름 앞 `type`)는 **4.5**, `verbatimModuleSyntax` 는 **5.0**, `erasableSyntaxOnly` 는 **5.8**(각 릴리스 노트). ★ 이 머신에서 판 경계를 던져 본 것은 **4.9.5 · 5.9.3 · 7.0.2 세 판뿐이다** — 4.5·5.0·5.8 그 자체는 없다.

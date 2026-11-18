@@ -256,7 +256,7 @@ Node.js v20.19.6
 **왜 그런가**
 
 - ★★★ **node 20 — `typeof Error.isError` 는 `undefined`**, 부르면 `TypeError 「Error.isError is not a function」`. 다른 realm 의 오류는 `instanceof Error`·`instanceof TypeError`·`constructor === TypeError` 가 **전부 `false`** 인데 브랜드는 `[object Error]`, 호스트 함수 `util.types.isNativeError` 는 `true`.
-- ★★★ **Chrome `[1]` — 두 열이 갈린 행은 셋** — iframe 오류(`true`/`false`) · `Object.create(Error.prototype)`(`false`/`true`) · `Proxy`(`false`/`true`).
+- ★★★ **Chrome `[1]` — 두 열이 달라진 행은 셋** — iframe 오류(`true`/`false`) · `Object.create(Error.prototype)`(`false`/`true`) · `Proxy`(`false`/`true`).
 - ★★ **`Proxy` 는 `Error.isError` 가 `false`** — 슬롯은 대상에 있다. **`DOMException` 은 `true`/`true`**(호스트 객체 — Chrome 의 관찰). **브랜드를 위조한 객체는 `false`/`false`** — 브랜드 열만 `[object Error]` 로 속았다.
 - ★ **`[3]` 접근자**(`accessor, enumerable false`) — node 20 의 데이터와 다르다.
 
@@ -304,7 +304,7 @@ python3.11: Python 3.11.15
 
 ### 10. `AggregateError` **ES2021** · `cause` **ES2022** · `Error.isError` **ES2026(Chrome 151 에만)** · 비동기는 **37·39번** · 판정은 **34번** · 정리 예외는 **51번** ★★
 
-- ★★★ TC39 finished proposals — `Promise.any`(와 `AggregateError`) **2021**, Error Cause **2022**, `Error.isError` **2026**. 판별 블록에서 앞의 둘은 **세 판 다 `yes`**, `Error.isError` 는 **node 18·20 `no`, Chrome 151 `yes`**.
+- ★★★ TC39 finished proposals — `Promise.any`(와 `AggregateError`) **2021**, Error Cause **2022**, `Error.isError` **2026**. 판별 블록에서 앞의 둘은 **세 버전 다 `yes`**, `Error.isError` 는 **node 18·20 `no`, Chrome 151 `yes`**.
 - ★★ 프로미스 거부는 [목록의 **37번 주제**](../37-promise-state-model/), `await` 의 `try`/`catch` 는 [목록의 **39번 주제**](../39-async-await/).
 - ★★ [34 — 타입 검사 관용구](../34-type-checking-idioms/2-summary.md) — realm 격자의 정본.
 - ★ **`SuppressedError`**(`using` 의 정리 중 예외) — [목록의 **51번 주제**](../51-explicit-resource-management-and-using/).
@@ -321,9 +321,9 @@ python3.11: Python 3.11.15
 | `js32b-32g-iserror-node.js` | `Error.isError` 가 node 에 있나 · `vm` realm 의 오류 | node20 1벌 + node18 대조 1벌 |
 | `js32b-32h-iserror.web.js` | ★★★ `Error.isError` 대 `instanceof Error` · iframe realm · Chrome 의 `stack` | **Chrome 151 만** |
 | `js32b-32f-python-contrast.sh` · `js32b-32-h-pyerr.py` | 파이썬 대비 · 파이썬 판 목록 | python3.12 1벌 |
-| `js32b-vdiff.sh` · `js32b-versions.sh` | 두 판이 갈린 탐침 수 · 판별 기능 표 | 1벌씩 |
+| `js32b-vdiff.sh` · `js32b-versions.sh` | 두 버전이 달라진 probe 수 · 판별 기능 표 | 1벌씩 |
 
-두 node 판 대조기(이 배치 전체의 node 탐침). `DIFFERS` 가 한 줄도 없다.
+두 node 버전 대조기(이 배치 전체의 node probe). `DIFFERS` 가 한 줄도 없다.
 
 ```sh
 # js32b-vdiff.sh
@@ -368,7 +368,7 @@ js32b-35b-directive.js                   identical
 identical 12  ·  differs 0  ·  total 12
 ```
 
-**구현 의존 항목 — 판이 오르면 다시 돌릴 것**
+**구현 의존 항목 — 버전이 오르면 다시 돌릴 것**
 
 - ★★★ **`Error.isError`** — node 가 ES2026 을 받으면 `js32b-32g-iserror-node.js` 가 `function` 을 답할 것이다. 그때 `js32b-32h-iserror.web.js` 의 `[1]` 을 node 로도 돌린다.
 - ★★ **`stack` 의 자리**(데이터 대 접근자) — 이미 node 20 과 Chrome 151 이 다르다.
@@ -381,7 +381,7 @@ identical 12  ·  differs 0  ·  total 12
 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮긴 출력이 하나도 없다).
 
 ★★ **예외는 `이름 「메시지」` 꼴로** 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다. 5번의 둘째 블록만 `node -e` 의 표준 오류 전문이다(경로 대신 `[eval]`).
-★★ **이 주제에서 두 node 판이 갈린 탐침은 없다**(대조기의 `identical`).
+★★ **이 주제에서 두 node 버전이 달라진 probe는 없다**(대조기의 `identical`).
 
 **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
 `js32b-32a-finally-grid.js`(1번 · 7번) · `js32b-32b-finally-details.js`(2번 · 7번) · `js32b-32c-cause-chain.js`(3번 · 8번) · `js32b-32d-hierarchy.js`(4번) ·

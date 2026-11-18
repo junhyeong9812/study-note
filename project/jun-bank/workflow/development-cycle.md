@@ -38,7 +38,7 @@ gh api repos/jun-bank/<repo>/milestones -f title='S0 기반' -f state=open -f de
 
 ## 6. 버전을 찍는다 — 릴리스 단위에서
 
-마일스톤이 릴리스 단위면 태그를 찍는다. SemVer(`vMAJOR.MINOR.PATCH`)·`v` 접두·annotated 태그(GC-30·31). fix는 PATCH, feat는 MINOR, 호환 깨짐은 MAJOR다. 릴리스 노트는 `release.yml`이 PR 라벨을 읽어 자동 생성한다(그래서 라벨이 정확해야 한다 — GC-23의 무음 실패가 여기서 드러난다). Changelog는 Keep a Changelog 형식.
+마일스톤이 릴리스 단위면 태그를 찍는다. SemVer(`vMAJOR.MINOR.PATCH`)·`v` 접두·annotated 태그(GC-30·31). fix는 PATCH, feat는 MINOR, 호환 깨짐은 MAJOR다. 릴리스 노트는 `release.yml`이 PR 라벨을 읽어 자동 생성한다(그래서 라벨이 정확해야 한다 — GC-23의 조용한 실패가 여기서 드러난다). Changelog는 Keep a Changelog 형식.
 
 ⚠️ 커밋에서 버전을 자동 도출하는 정평 있는 Gradle 경로가 없다(리서치 발견 — release-please는 Gradle 전략이 없고 axion은 커밋을 안 읽는다). 그래서 v1은 **수동 태그 + 자동 노트**다. common을 한 번 태깅·발행해보면 이 수동 절차가 감당되는지가 드러난다 — 안 되면 그때 자동화 도입 조건이 관찰된 것이다.
 

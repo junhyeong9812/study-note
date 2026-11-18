@@ -296,7 +296,7 @@ Execute 가 불린 단계 9 / 12
 - ★★★ `Queryable.Where` 는 공급자의 **`CreateQuery`** 를 부를 뿐이다 — 결과를 요구하는 연산(`ToList` · `Count` · `First` · `foreach`)이 와야 **`Execute`** 로 식 트리 **전체**가 넘어간다. 그래서 두 `Where` 가 **한 번역문**(`WHERE x > 1 AND x < 5`)으로 합쳐지고, `Count`·`First` 까지 번역에 들어간다.
 - ★★★ `[7]` 은 번역 때 **지금의 `min`** 을 읽었다 · `[8]` 은 정적 타입 `IEnumerable<int>` 라 **거르기가 메모리로** · `[11]` 은 `AsEnumerable` 앞만 번역.
 
-### 4. ★★★ **막힌 칸 8 / 20** — `Func` 열 전부 `ok` · `Expression` 열에서 **`CS0834`·`CS0832`·`CS8072`·`CS8514`·`CS8122`·`CS8188`·`CS8143`·`CS8110`** · 보간 문자열과 `&&` 비교는 `ok`
+### 4. ★★★ **막힌 항목 8 / 20** — `Func` 열 전부 `ok` · `Expression` 열에서 **`CS0834`·`CS0832`·`CS8072`·`CS8514`·`CS8122`·`CS8188`·`CS8143`·`CS8110`** · 보간 문자열과 `&&` 비교는 `ok`
 
 **출력**
 
@@ -397,7 +397,7 @@ x => (x > 2) · True
 
 ### 8. ★★★ **계약의 모양** — 「`Where` 를 이을 때는 `CreateQuery` 뿐 · 결과를 요구할 때 식 트리 전체가 넘어간다 · 정적 타입이 `IEnumerable` 이면 `Queryable` 을 안 탄다」 · **장난감의 규칙** — 번역문의 모양 · 무엇을 번역하고 무엇을 거부하나 · `GetEnumerator` 에서 `Execute` 를 부르는 것 · ★ **EF Core 에 대해서는 말할 수 있는 것이 없다**
 
-- ★★★ `Execute` 안에서 SQL 을 만들지 · 거부할지 · 메모리에서 돌릴지는 **공급자마다 다르다.** 이 문서의 공급자는 **내가** 그렇게 짰다. `CreateQuery`/`Execute` 가 **언제 불리나**는 `Queryable` 쪽 코드가 정한 것이라 장난감과 무관하게 관찰된다(★ 그것도 이 판의 구현 관찰이다).
+- ★★★ `Execute` 안에서 SQL 을 만들지 · 거부할지 · 메모리에서 돌릴지는 **공급자마다 다르다.** 이 문서의 공급자는 **내가** 그렇게 짰다. `CreateQuery`/`Execute` 가 **언제 불리나**는 `Queryable` 쪽 코드가 정한 것이라 장난감과 무관하게 관찰된다(★ 그것도 이 버전의 구현 관찰이다).
 - ★ EF Core 는 **설치하지도 문서를 열지도 않았다.** 「번역 못 하면 실행 지점에서 알린다」는 **장난감의 규칙**이지 EF Core 의 확인된 동작이 아니다 — 확인할 것으로 남는다.
 
 ### 9. ★★ **`AsEnumerable` 은 소스 그 자체를 돌려줬다(33번 `<Src>d__1`)** — 객체는 그대로이고 **정적 타입만** `IEnumerable<int>` 로 바뀌므로, 그 뒤의 `Where(IsOdd)` 가 **`Enumerable.Where`** 로 골라진다
@@ -416,10 +416,10 @@ x => (x > 2) · True
 | `cs36b-il.cs` | csc 1회(`-optimize`) · 실행 1회 | ★★★ `ldftn`·`newobj Func` 대 `Expression::…` 사슬 · `Enumerable::Where` 대 `Queryable::Where` |
 | `cs36b-tree.cs` | csc 1회 · 실행 1회 | 노드 다섯 · ``EnumerableQuery`1`` · `Queryable.Select`/`Where` |
 | `cs36b-toy.cs` | csc 1회 · 실행 1회 | ★★★ **Execute 가 불린 단계 9 / 12** · `[8]` `WHERE` 없음 · `[10]`·`[12]` 거부 |
-| `cs36b-ban.cs` | csc 1회(`sort`) + cellgrid 1회 | ★★★ **막힌 칸 8 / 20** |
+| `cs36b-ban.cs` | csc 1회(`sort`) + cellgrid 1회 | ★★★ **막힌 항목 8 / 20** |
 | `cs36b-form.cs` | csc 1회 · 실행 1회 | `Add` · `5` · `True` · `3,4` |
 
-**구현 의존 항목** — 다음은 **이 판(.NET SDK 10.0.401 · 런타임 10.0.12)에서만** 그렇다.
+**구현 의존 항목** — 다음은 **이 버전(.NET SDK 10.0.401 · 런타임 10.0.12)에서만** 그렇다.
 
 - ★★ 식 트리 람다의 **조립 사슬 모양 · 캐시 없음**(Roslyn) · `Queryable` 연산자가 `CreateQuery`/`Execute` 를 부르는 **방식** · 진단 코드 배정.
 

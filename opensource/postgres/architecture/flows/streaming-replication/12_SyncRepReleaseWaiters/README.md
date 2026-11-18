@@ -306,7 +306,7 @@ SyncRepWakeQueue(bool all, int mode)
  L1502, L1508, L1557, L2389 는 access/transam/xact.c, L250 L252 L285 L331 L556 은 replication/syncrep.c 의 줄이다
 ```
 
-기다리는 동안 이 트랜잭션은 이미 로컬에서 커밋되었다. L1553-L1554 주석대로 CLOG 에는 커밋이 적혔지만 ProcArray 에는 아직 실행 중으로 남아 잠금도 쥐고 있다. 그래서 취소 요청이 와도 되돌릴 수 없고, 경고만 남기고 대기를 끝낸다(L300-L325).
+기다리는 동안 이 트랜잭션은 이미 로컬에서 커밋되었다. L1553-L1554 주석대로 CLOG 에는 커밋이 적혔지만 ProcArray 에는 아직 실행 중으로 남아 잠금도 잡고 있다. 그래서 취소 요청이 와도 되돌릴 수 없고, 경고만 남기고 대기를 끝낸다(L300-L325).
 
 ```text
  동기 standby 가 여럿일 때 기준 위치 (SyncRepGetSyncRecPtr L586)

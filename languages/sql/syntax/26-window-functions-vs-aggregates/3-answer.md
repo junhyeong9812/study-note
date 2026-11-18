@@ -217,7 +217,7 @@ emp8 8행
 `SUM(COUNT(*)) OVER ()` 는 **윈도우 안에 집계를 넣은 것**이다. 바깥의 `SUM ... OVER ()` 는 접힌 3행의 `c` 값을 더한다.\
 MySQL 문서가 그 순서를 적는다: *"Query result rows are determined from the `FROM` clause, after `WHERE`, `GROUP BY`, and `HAVING` processing, and windowing execution occurs before `ORDER BY`, `LIMIT`, and `SELECT DISTINCT`."*
 
-출력 행의 **순서**가 두 엔진에서 다른 것은 `ORDER BY dept_id` 의 `NULL` 규칙 때문이다 — 값은 한 자리도 안 갈렸다([08번](../08-order-by-null-position-stability/)).
+출력 행의 **순서**가 두 엔진에서 다른 것은 `ORDER BY dept_id` 의 `NULL` 규칙 때문이다 — 값은 한 자리도 달라지지 않았다([08번](../08-order-by-null-position-stability/)).
 
 ---
 
@@ -323,7 +323,7 @@ hr 의 창
 ★ **「행이 있다」와 「사원이 있다」가 다른 질문이다.** 윈도우로 바꿔도 이 함정은 그대로다 —\
 [21번](../21-aggregate-functions-count-forms/) 4번에서 집계로 본 것과 **같은 자리이고 같은 답**이다.
 
-두 엔진의 출력이 한 자리도 안 갈렸다.
+두 엔진의 출력이 한 자리도 달라지지 않았다.
 
 > **조인이 만든 `NULL`(join-generated NULL)** — 원본에 없었는데 외부 조인이 채워 넣은 `NULL`.\
 > 예: `hr` 행의 `e.id`. `emp.id` 는 기본키라 원본에는 `NULL` 이 없다.
@@ -442,7 +442,7 @@ MySQL 에는 `FILTER` 문법이 아예 없어 **파서 단계에서 `ERROR 1064`
 | 부서별 창 (본문 3번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | 값 동일, `dan` 행 위치만 다름 |
 
 **구현 의존 항목** — `AVG` 결과의 소수 자릿수(PG `numeric` · MySQL `DECIMAL`)와 **에러 메시지 문구**.\
-**값은 두 엔진에서 한 자리도 안 갈렸다.**
+**값은 두 엔진에서 한 자리도 달라지지 않았다.**
 
 **방언 항목** — **10번 하나다.** `FILTER` 는 PG 에만 있다.\
 **언어 보장 항목** — 1~9·12번. 「접지 않는다」·`OVER ()` 의 의미·중첩 금지·쓸 수 있는 절은 두 문서가 같은 모양으로 적는다.
@@ -455,6 +455,6 @@ MySQL 에는 `FILTER` 문법이 아예 없어 **파서 단계에서 `ERROR 1064`
 ## 실행 환경
 
 근거는 **실행 결과**다 — 본문의 출력·에러는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+2026-09-21 에 실제로 실행해 받은 것이다. 지어낸 출력은 없다.\
 모든 질의는 [1-question.md](1-question.md) 머리의 `WITH emp8 AS (...)` CTE 를 앞에 붙여 돌렸다.\
 문서 근거는 [PG 18 Window Functions](https://www.postgresql.org/docs/18/tutorial-window.html) · [PG 18 Window Function Calls](https://www.postgresql.org/docs/18/sql-expressions.html) · [MySQL 8.4 Window Functions](https://dev.mysql.com/doc/refman/8.4/en/window-functions.html).

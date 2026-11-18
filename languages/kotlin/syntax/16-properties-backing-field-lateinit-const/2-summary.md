@@ -583,7 +583,7 @@ const val computed: Int get() = 1
 - ★ 셋 다 **`ConstantValue` 를 쓸 수 없는 조건**이다 — 인스턴스마다 다르면(클래스 안), 값이 객체면(`List`),\
   계산이면(게터) **컴파일 타임에 복사할 값이 없다.**
 
-### (6) ★ explicit backing fields — **이 판에서 직접 확인했다**
+### (6) ★ explicit backing fields — **이 버전에서 직접 확인했다**
 
 **언제 쓰나** — 바깥에는 `List` 로 내고 안에서는 `MutableList` 로 쓰고 싶을 때.
 
@@ -699,7 +699,7 @@ val items: List<String>        // 2.4+ explicit backing field
 | `lateinit` 의 **다섯 제약** | **언어 보장** | (3) — 에러 |
 | `UninitializedPropertyAccessException` 이 나는 것 | **언어 보장** | (4) |
 | `const val` 이 **호출부에 복사되는 것** | **언어 보장**(JVM `ConstantValue` 계약) | (5) — 두 번 실행 |
-| `lateinit` 필드가 **`public`** 인 것 | ★ **이 판의 관찰** | (4) |
+| `lateinit` 필드가 **`public`** 인 것 | ★ **이 버전의 관찰** | (4) |
 | `isInitialized` 가 **`getfield; ifnull`** 로 내려가는 것 | **JVM 구현** | (4) |
 | 예외·에러 문구의 정확한 낱말 | ★ **이 컴파일러 버전** | 전부 |
 | `= 0` 대입 생략 같은 최적화 | ★ **이 컴파일러** | [15번 주제](../15-class-declaration-constructors-and-init/) |
@@ -709,7 +709,7 @@ val items: List<String>        // 2.4+ explicit backing field
   `const` 의 **뜻 자체**가 「**컴파일 타임 상수**」라서 복사가 정상 동작이다.\
   그래서 「버전 올리면 고쳐지겠지」가 아니라 **설계 단계에서 `const` 를 안 쓰는 것**이 유일한 해법이다.
 - ★ **`lateinit` 필드가 `public` 인 것은 관찰이다.** 「`lateinit` 은 캡슐화를 깬다」고 외우지 말고\
-  **이 판에서 그렇더라**로 두고, 필요하면 다시 찍어 확인한다.
+  **이 버전에서 그렇더라**로 두고, 필요하면 다시 찍어 확인한다.
 
 ## 언제 쓰고 언제 안 쓰나
 
@@ -778,9 +778,9 @@ val items: List<String>        // 2.4+ explicit backing field
 **실행 검증** — 이 문서의 모든 출력·에러·예외·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
 `kotlinc` 15회(컴파일 실패 7벌) · `java` 5회 · `javap` 7회. **라이브러리와 앱을 따로 컴파일해 「라이브러리만 다시 빌드」를 실제로 재현했다.**
 ⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 전부 **기본값 1.8**(`major version: 52`)이다.
-⚠️ **다시 돌리면 달라지는 블록은 없다** — 예외는 잡아서 타입과 메시지만 찍었다. 재대조 근거는 3-answer 의 「흔들리는 칸」 표다.
+⚠️ **다시 돌리면 달라지는 블록은 없다** — 예외는 잡아서 타입과 메시지만 찍었다. 재대조 근거는 3-answer 의 「실행마다 달라지는 항목」 표다.
 **버전** — `field`·커스텀 접근자·`lateinit`(프로퍼티)·`const` 는 **1.0**, `lateinit` **지역 변수**는 **1.2**,\
-★ **explicit backing fields(`field = …`)는 이 판에서 확인했다 — `-language-version 2.3` 이 「only available since language version 2.4」로 거부한다.**\
+★ **explicit backing fields(`field = …`)는 이 버전에서 확인했다 — `-language-version 2.3` 이 「only available since language version 2.4」로 거부한다.**\
 2.4.20 에서는 **플래그 없이·경고 없이** 컴파일된다.
 **경계** — 초기화가 **언제** 도는지는 [15번 주제](../15-class-declaration-constructors-and-init/)가, 위임(`by lazy`·`observable`)은 [17번 주제](../17-delegated-properties/)가,\
 확장 프로퍼티에 backing field 가 **없다**는 사실은 [13번 주제](../13-extension-functions-and-properties/)가,\

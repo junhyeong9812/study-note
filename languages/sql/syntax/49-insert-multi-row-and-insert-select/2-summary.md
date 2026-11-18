@@ -126,7 +126,7 @@ INSERT 0 3
 
 ### 2. ★★ 부분 실패 — **앞의 행이 남나**
 
-**언제 쓰나** — 배치 적재를 설계할 때. **「어디까지 들어갔지?」를 물어야 하는지 아닌지가 여기서 갈린다.**
+**언제 쓰나** — 배치 적재를 설계할 때. **「어디까지 들어갔지?」를 물어야 하는지 아닌지가 여기서 달라진다.**
 
 세 행 중 **가운데 행만** 기본키를 어기게 만들어 던졌다.
 
@@ -268,7 +268,7 @@ MySQL 매뉴얼이 후자를 그대로 적는다.
 > "If both the column list and the `VALUES` list are empty, `INSERT` creates a row with each column set to its default value: `INSERT INTO tbl_name () VALUES();`"\
 > — [MySQL 8.4 · INSERT Statement](https://dev.mysql.com/doc/refman/8.4/en/insert.html)
 
-★ **값 개수를 덜 적으면 여기서도 갈린다.**
+★ **값 개수를 덜 적으면 여기서도 달라진다.**
 
 ```text
 ### SQL: INSERT INTO t49_p VALUES (3);          (t49_p 는 열이 둘: id, name)

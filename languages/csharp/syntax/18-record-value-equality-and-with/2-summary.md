@@ -17,7 +17,7 @@ javac 25.0.1
 |---|---|---|
 | **언어 명세(ECMA-334 · 레코드 기능 명세)** | C# 언어가 약속한 것 | ★★★ **무엇이 생성되나의 목록** — `Equals(R)`·`Equals(object)`·`GetHashCode`·`ToString`·`PrintMembers`·`Deconstruct`·`==`/`!=`·복제 메서드·복사 생성자·`EqualityContract` · 위치 속성이 `init` 인지 `set` 인지 |
 | **컴파일러·런타임 구현(Roslyn · CoreCLR)** | 그렇게 만든 것 | ★★★ **그 멤버들의 IL 모양** — 복제 메서드의 이름 `<Clone>$` · `Equals` 첫머리의 참조 비교 · 해시 섞는 상수 |
-| **이 판의 관찰** | .NET 10.0.12 · linux-x64 | 진단 문구 · 할당 바이트 · `-warn:9` 가 답한 탐침 수 |
+| **이 버전의 관찰** | .NET 10.0.12 · linux-x64 | 진단 문구 · 할당 바이트 · `-warn:9` 가 답한 probe 수 |
 
 ★★★ **이 주제의 선 — 「생성되는 멤버의 목록은 명세, 그 IL 모양은 구현」.**\
 Learn 도 「복제 메서드의 **실제 이름은 컴파일러가 만든다**」고 적는다 — **`<Clone>$` 라는 이름은 약속이 아니다.**
@@ -42,7 +42,7 @@ Learn 도 「복제 메서드의 **실제 이름은 컴파일러가 만든다**�
 | 첨부 폴더는 같은 폴더 | ★★ **`with` 는 얕다** · 배열 멤버는 **참조로 비교** | (6) |
 | 원본 한 장 대 복사본 | ★★ **record class 는 `with` 마다 힙 할당** · record struct 는 0 | (5) |
 
-★★★ **이 주제의 본체 — 「무엇이 생성되나」 격자.** (1)의 리플렉션 출력을 옮긴 것이다.
+★★★ **이 주제의 핵심 — 「무엇이 생성되나」 격자.** (1)의 리플렉션 출력을 옮긴 것이다.
 
 | 생성 멤버 | `record`(class) | `record struct` | `readonly record struct` | 평범한 `class`(대조) |
 |---|---|---|---|---|
@@ -74,14 +74,14 @@ Learn 도 「복제 메서드의 **실제 이름은 컴파일러가 만든다**�
 
 ### (0) 이 주제가 쓰는 창
 
-★★★ **본체 창은 ③ 리플렉션이다** — 「무엇이 생성되나」는 **소스에 한 글자도 없다.** 리플렉션만이 그 목록을 읽는다.
+★★★ **핵심 창은 ③ 리플렉션이다** — 「무엇이 생성되나」는 **소스에 한 글자도 없다.** 리플렉션만이 그 목록을 읽는다.
 
 | 창 | 무엇을 보여 주나 | 이 주제에서 |
 |---|---|---|
 | ★★★ **③ 리플렉션** | ★★★ **생성 멤버 목록**(이름·접근성·`virtual`·`modreq`) — 본체 | (1)(4) |
 | ★★★ **① IL 덤프** | ★★★ **`with` → `<Clone>$`** · 생성된 `Equals` 의 **참조 비교 지름길**과 **`EqualityContract` 비교** | (2)(3) |
 | ★★ **④ 할당 바이트** | `with` 가 **새 객체를 만드나** — record class 대 struct · **2×2 판 격자** | (5) |
-| ★★ **② 진단 격자** | `CS8852`(init 에 대입) · `CS0111`(생성 멤버를 손으로) · `CS8851`(`Equals` 만 손으로) · **탐침 N 중 답한 것** | (5)(8) |
+| ★★ **② 진단 격자** | `CS8852`(init 에 대입) · `CS0111`(생성 멤버를 손으로) · `CS8851`(`Equals` 만 손으로) · **probe N 중 답한 것** | (5)(8) |
 
 - ★★★ **① 과 ③ 이 짝이다** — ③ 은 「**있다**」를, ① 은 「**무엇을 한다**」를 말한다.\
   ★ ③ 만 보면 `<Clone>$` 가 **있다**는 것만 알고, `with` 가 **그것을 부른다**는 것은 ① 이 말한다.
@@ -330,7 +330,7 @@ class Program {
   ★★ 목록의 **19번 주제**에서 **`HashSet` 은 이런 지름길을 안 쓴다**는 것을 본다 — **지름길은 record 의 `Equals` 안에** 있다.
 - ★★★ **그다음이 `EqualityContract` 둘을 `Type::op_Equality` 로 비교** — **실제 타입이 같아야** 같다((4)).
 - ★★★ **필드마다 `EqualityComparer<int>.Default.Equals`** — ★ 그래서 `double` 멤버는 **`double.Equals`** 로 비교되고\
-  **`NaN` 이 `NaN` 과 같다**((8) 탐침 5). 배열 멤버는 **`EqualityComparer<int[]>.Default`** — **참조 비교**다((6)).
+  **`NaN` 이 `NaN` 과 같다**((8) probe 5). 배열 멤버는 **`EqualityComparer<int[]>.Default`** — **참조 비교**다((6)).
 - ★★ **`GetHashCode` 도 `EqualityContract` 를 섞는다** — `-1521134295` 를 곱해 필드 해시를 더한다.\
   ★★★ **이 상수와 섞는 방식은 구현이다** — 명세는 「**같은 값이면 같은 해시**」만 약속한다.
 - ★★ **`op_Equality` 는 참조가 같으면 `true`, 왼쪽이 널이면 `false`, 아니면 `Equals` 를 부른다** — **`==` 와 `Equals` 가 원리상 안 어긋난다.**\
@@ -372,9 +372,9 @@ Pt 변수로 받은 Pt3(1,9) == Pt3(1,7) : False
 
 - ★★★ **`Pt(1)` 과 `Tagged(1)` 은 멤버가 하나도 안 다른데 `a == b` 가 `False`** 다.\
   **`a.Equals(b)` 도 `b.Equals(a)` 도 `False`** — ★★★ **대칭이다.**
-- ★★★ **`EqualityContract` 가 `Pt` 대 `Tagged`** — (3)의 `Type::op_Equality` 에서 갈렸다.
+- ★★★ **`EqualityContract` 가 `Pt` 대 `Tagged`** — (3)의 `Type::op_Equality` 에서 달라졌다.
 - ★★★ **왜 이렇게 설계했나 — 대칭성 때문이다.** 계약형 `Equals` 를 손으로 쓰면 흔히\
-  「`Pt` 는 `X` 만 보고 `Tagged` 는 `X` 와 타입을 본다」가 되어 **`a.Equals(b)` 와 `b.Equals(a)` 가 갈린다** — 목록의 **19번 주제**의 `R5` 모양이다.\
+  「`Pt` 는 `X` 만 보고 `Tagged` 는 `X` 와 타입을 본다」가 되어 **`a.Equals(b)` 와 `b.Equals(a)` 가 달라진다** — 목록의 **19번 주제**의 `R5` 모양이다.\
   record 는 **양쪽이 똑같이 「실제 타입 + 멤버」를 본다**.
 ```text
    Pt a = new Pt(1)                    Pt b = new Tagged(1)
@@ -421,7 +421,7 @@ cs18b-mut.cs(7,9): error CS8852: Init-only property or indexer 'RC.X' can only b
 
 - ★★★ **`RC.X` 와 `RR.X` 에 대입하면 `CS8852`**(init 전용), **`RS.X` 는 조용히 통과**한다(8번 줄에 진단이 없다).\
   ★★★ **`record struct` 는 가변이다** — (1)의 `set_Age` 에 `modreq` 가 없던 그것이다.\
-  ★ [02번](../02-struct-vs-class-choosing/)은 `readonly record struct` 만 던졌다 — **이 판이 `record struct` 의 가변을 처음 찍었다.**
+  ★ [02번](../02-struct-vs-class-choosing/)은 `readonly record struct` 만 던졌다 — **이 버전이 `record struct` 의 가변을 처음 찍었다.**
 
 할당 바이트를 2×2 판 격자로 쟀다(규칙 24).
 
@@ -496,7 +496,7 @@ RS.Equals(object) 1000회 : 24000 바이트
 - ★★★ **`with RS`·`with RR` 은 0** — 스택의 사본이다((2)의 그림).
 - ★★ **`==` 는 셋 다 0** — 생성된 `op_Equality` 가 **`Equals(R)`**(`IEquatable<R>`)를 부르니 박싱이 없다.
 - ★★ **`RS.Equals(object)` 는 24000** — `(object)s2` 로 넘기는 순간 **인자가 박싱**된다. **`Equals(RS)` 를 쓰면 0**(`==` 줄).
-- ★★★ **네 판에서 갈린 줄 0 / 7.** 근거로 쓸 수 있다.
+- ★★★ **네 버전에서 달라진 줄 0 / 7.** 근거로 쓸 수 있다.
 
 | 판 | `with RC` | `with RS`·`RR` | `==` 셋 | `RS.Equals(object)` | 움직였나 |
 |---|---|---|---|---|---|
@@ -597,12 +597,12 @@ Pt[x=1, y=2] -> Pt[x=9, y=2] · p.equals(new Pt(1, 2)) = true
 ```
 
 - ★★★ **javac 21 은 `with` 를 문법으로 모른다** — `';' expected` · `not a statement`. **파서 단계에서** 막혔다.
-- ★★★ **javac 25 에 `--enable-preview` 를 줘도 같다** — 이 판에서 Java 에는 `with` 에 해당하는 문법이 **미리보기로도 없다.**
+- ★★★ **javac 25 에 `--enable-preview` 를 줘도 같다** — 이 버전에서 Java 에는 `with` 에 해당하는 문법이 **미리보기로도 없다.**
 - ★★ **Java 는 손으로 `withX` 를 쓴다**(`Pt[x=9, y=2]`). 동등성은 **같다**(`p.equals(new Pt(1, 2)) = true`).
 - ★ Java record 의 `equals`/`hashCode`/`toString` 이 **`invokedynamic` 한 줄**이라는 것은 [Java 14번](../../../java/syntax/14-records/)이 잰 것이다.\
-  **C# 은 (3)에서 본 대로 IL 로 풀어서 박는다** — 같은 기능을 **컴파일 때 짜느냐 런타임에 짜느냐**가 갈린다.
+  **C# 은 (3)에서 본 대로 IL 로 풀어서 박는다** — 같은 기능을 **컴파일 때 짜느냐 런타임에 짜느냐**가 달라진다.
 - ★ Kotlin `data class` 의 `copy` 는 **본문 프로퍼티를 초기값으로 되돌린다**는 것이 [Kotlin 22번](../../../kotlin/syntax/22-data-class-generated-members/)의 결론이다.\
-  C# `with` 는 **복사 생성자가 모든 필드를 복사**하므로 그 모양이 아니다((형태)의 `Label` 이 `민수(31)` 로 따라 바뀐 것은 **계산 속성**이라서다). ★ **본문의 `init` 속성**으로는 **이 판에서 던지지 않았다.**
+  C# `with` 는 **복사 생성자가 모든 필드를 복사**하므로 그 모양이 아니다((형태)의 `Label` 이 `민수(31)` 로 따라 바뀐 것은 **계산 속성**이라서다). ★ **본문의 `init` 속성**으로는 **이 버전에서 던지지 않았다.**
 
 ```text
                          C# record               Java record              Kotlin data class
@@ -613,9 +613,9 @@ Pt[x=1, y=2] -> Pt[x=9, y=2] · p.equals(new Pt(1, 2)) = true
    위치 속성 불변          class·readonly struct     ✔ final                  val 이면
 ```
 
-- ★ **표의 Java·Kotlin 칸 중 「비파괴 변경」 Java 만 이 판에서 던졌다** — 나머지는 각 갈래 문서의 결론을 옮겼다.
+- ★ **표의 Java·Kotlin 칸 중 「비파괴 변경」 Java 만 이 버전에서 던졌다** — 나머지는 각 갈래 문서의 결론을 옮겼다.
 
-### (8) ★★ 컴파일러가 무엇을 안 보나 — 탐침 일곱
+### (8) ★★ 컴파일러가 무엇을 안 보나 — probe 일곱
 
 ```text
 ===== 소스: cs18b-probe.cs =====
@@ -664,9 +664,9 @@ cs18b-probe.cs(5,40): warning CS8851: 'R1' defines 'Equals' but not 'GetHashCode
 1
 ```
 
-- ★★★ **탐침 일곱 중 진단이 붙은 줄은 하나**다(`CS8851`, 탐침 1).
+- ★★★ **probe 일곱 중 진단이 붙은 줄은 하나**다(`CS8851`, probe 1).
 
-| 탐침 | 무엇을 심었나 | 답했나 | 실행하면 |
+| probe | 무엇을 심었나 | 답했나 | 실행하면 |
 |---|---|---|---|
 | 1 | `Equals(R1)` 를 손으로 · `GetHashCode` 는 안 씀 | **답함** — `CS8851` | — |
 | 2 | ★★ **위치 매개변수가 배열** | ★★★ **침묵** | 내용이 같아도 **`False`** |
@@ -676,13 +676,13 @@ cs18b-probe.cs(5,40): warning CS8851: 'R1' defines 'Equals' but not 'GetHashCode
 | 6 | ★★ **위치 밖의 가변 속성** | ★★★ **침묵** | 넣은 뒤 바꾸면 **`Contains` 가 `False`** |
 | 7 | `GetHashCode` 만 손으로(상수 `0`) | **침묵** | — (규약은 지킨다 — 느려질 뿐) |
 
-- ★★★ **탐침 4 가 재미있다** — **셋 안의 것은 사본**이다. `k.X = 2` 는 **내 변수 `k`** 만 바꿨고 셋 안의 `R4(1)` 은 그대로다.\
+- ★★★ **probe 4 가 재미있다** — **셋 안의 것은 사본**이다. `k.X = 2` 는 **내 변수 `k`** 만 바꿨고 셋 안의 `R4(1)` 은 그대로다.\
   그래서 `Contains(new R4(1))` 이 `True` 다. ★★ **클래스 키였다면 셋 안의 객체가 바뀌어 길을 잃는다**(목록의 **19번 주제**의 `R3`).\
   **struct 키는 「길을 잃는」 대신 「내가 들고 있는 것과 셋 안의 것이 달라진다」.**
-- ★★★ **탐침 5** — 생성된 `Equals` 는 필드를 **`double.Equals`** 로 비교하고(`EqualityComparer<double>`), 그것은 **`NaN` 을 같다고 본다.**\
+- ★★★ **probe 5** — 생성된 `Equals` 는 필드를 **`double.Equals`** 로 비교하고(`EqualityComparer<double>`), 그것은 **`NaN` 을 같다고 본다.**\
   **`==` 연산자(IEEE)와 답이 반대다.** ★ Java record 도 같은 선택을 했다([Java 14번](../../../java/syntax/14-records/) — 「`NaN` 은 같다」).
-- ★★★ **탐침 6** — **위치 밖의 멤버도 동등성에 들어간다**(Learn: 「**선언한 모든 필드**」). 가변이면 **키로 쓰는 순간 위험**하다.
-- ★ 탐침 1 의 `CS8851` 은 Learn 의 권고 문장(「`Equals(R)` 를 쓰면 `GetHashCode` 도」)이 **진단으로 강제된** 자리다.
+- ★★★ **probe 6** — **위치 밖의 멤버도 동등성에 들어간다**(Learn: 「**선언한 모든 필드**」). 가변이면 **키로 쓰는 순간 위험**하다.
+- ★ probe 1 의 `CS8851` 은 Learn 의 권고 문장(「`Equals(R)` 를 쓰면 `GetHashCode` 도」)이 **진단으로 강제된** 자리다.
 
 ```text
 ===== 소스: cs18b-dup.cs =====
@@ -695,7 +695,7 @@ cs18b-dup.cs(2,26): error CS0111: Type 'R' already defines a member called 'Equa
 ```
 
 - ★★★ **`Equals(object)` 는 손으로 못 쓴다** — `CS0111`(이미 같은 매개변수의 `Equals` 가 있다).\
-  Learn — 「**`Equals(object)` 를 명시적으로 선언하면 에러다**」. **`Equals(R)` 는 쓸 수 있다**(탐침 1).
+  Learn — 「**`Equals(object)` 를 명시적으로 선언하면 에러다**」. **`Equals(R)` 는 쓸 수 있다**(probe 1).
 - ★ 즉 record 에서 동등성을 바꾸는 **유일한 문이 `Equals(R)` + `GetHashCode`** 다 — 그래서 `==` 와 `Equals(object)` 가 **자동으로 따라온다**((3)).
 
 ## 문법 — 형태와 규칙
@@ -762,8 +762,8 @@ Money { Won = 1000, Currency = KRW } / Money { Won = 2000, Currency = KRW }
 3. ★★★ **「같은 값이면 파생 record 와 기반 record 도 같다」** — **`EqualityContract` 가 달라 `!=`** 다((4)).
 4. ★★★ **「`with` 는 깊은 복사다」** — **얕다.** 리스트는 공유된다((6)).
 5. ★★ **「record 는 배열 내용을 비교한다」** — **배열은 참조로 비교**된다((6)(8)).
-6. ★★ **「record 의 `==` 는 IEEE 비교다」** — 필드마다 **`Equals`** 라 **`NaN` 이 같다**((8) 탐침 5).
-7. ★★ **「동등성은 위치 매개변수만 본다」** — **모든 필드**를 본다. 위치 밖의 가변 속성도 들어간다((8) 탐침 6).
+6. ★★ **「record 의 `==` 는 IEEE 비교다」** — 필드마다 **`Equals`** 라 **`NaN` 이 같다**((8) probe 5).
+7. ★★ **「동등성은 위치 매개변수만 본다」** — **모든 필드**를 본다. 위치 밖의 가변 속성도 들어간다((8) probe 6).
 8. ★ **「`<Clone>$` 를 부르면 된다 / `Clone` 을 재정의하면 된다」** — 이름은 **구현**이고, `Clone` 멤버는 **만들 수조차 없다**(Learn).
 9. ★ **「Java record 에도 `with` 가 있다」** — **javac 25 preview 에서도 없다**((7)).
 
@@ -779,14 +779,14 @@ Money { Won = 1000, Currency = KRW } / Money { Won = 2000, Currency = KRW }
 | **복제 메서드의 이름 `<Clone>$`** | ★★ **구현(Roslyn)** — Learn 도 「컴파일러가 만든 이름」 | (1)(2) |
 | **`Equals` 첫머리의 참조 비교 지름길** | ★★ **구현(Roslyn)** | (3) |
 | **해시 섞는 상수 `-1521134295` · `EqualityComparer<T>.Default` 경유** | ★★ **구현(Roslyn)** | (3) |
-| **`with RC` 가 호출당 24바이트** | ★ **이 판의 관찰**(2×2 에서 안 움직임) | (5) |
-| **`-warn:9` 에서 탐침 일곱 중 하나만 답한 것** | ★ **이 판의 관찰** | (8) |
+| **`with RC` 가 호출당 24바이트** | ★ **이 버전의 관찰**(2×2 에서 안 움직임) | (5) |
+| **`-warn:9` 에서 probe 일곱 중 하나만 답한 것** | ★ **이 버전의 관찰** | (8) |
 
 ## 언제 쓰고 언제 안 쓰나
 
 - ★★★ **「내용이 같으면 같은 것」인 데이터 — DTO·메시지·설정값·값 객체 — 에 `record` 를 쓴다.**
 - ★★★ **정체성이 있는 것(엔터티) 에는 쓰지 마라** — Learn 도 「EF Core 엔터티에 **적절하지 않다**」(참조 동등이 필요하다)고 적는다.
-- ★★ **키로 쓸 record 는 모든 멤버를 불변으로** — 위치 밖 가변 속성 하나가 셋을 깨뜨린다((8) 탐침 6).
+- ★★ **키로 쓸 record 는 모든 멤버를 불변으로** — 위치 밖 가변 속성 하나가 셋을 깨뜨린다((8) probe 6).
 - ★★ **배열·리스트를 담을 거면** `Equals(R)`·`GetHashCode` 를 손으로 쓰거나(`CS8851` 짝을 지켜라) **불변 컬렉션**을 담아라((6)).
 - ★ **`record struct` 는 `readonly` 와 함께** — 가변 struct 의 함정을 그대로 갖는다([02번](../02-struct-vs-class-choosing/)).
 - ★ **상속은 얕게** — `EqualityContract` 때문에 **기반 타입 변수로 섞어 비교**하면 늘 다르다((4)). 봉인(`sealed record`)이 기본값으로 무난하다.
@@ -825,21 +825,21 @@ Money { Won = 1000, Currency = KRW } / Money { Won = 2000, Currency = KRW }
 
 ## 더 들어가면
 
-- ★ **`sealed` record 의 생성 멤버** — `EqualityContract`·`PrintMembers` 의 한정자가 달라진다(Learn 에 표가 있다). **이 판에서 안 찍었다.**
-- ★ **사용자 정의 복사 생성자** — 직접 쓰면 컴파일러가 안 만든다(Learn). **깊은 복사**를 넣는 자리다. **안 던졌다.**
+- ★ **`sealed` record 의 생성 멤버** — `EqualityContract`·`PrintMembers` 의 한정자가 달라진다(Learn 에 표가 있다). **이 버전에서 안 찍었다.**
+- ★ **사용자 정의 복사 생성자** — 직접 쓰면 컴파일러가 안 만든다(Learn). **깊은 복사**를 넣는 자리다. **실행하지 않았다.**
 - ★ **`record struct` 의 매개변수 없는 생성자** — 모든 필드를 기본값으로(Learn). **안 찍었다.**
-- ★ **C# 15 의 `closed` record** — Learn 이 「직접 파생을 선언 어셈블리로 제한한다」고 적는다. **이 판(`latest`)의 범위 밖**이다.
+- ★ **C# 15 의 `closed` record** — Learn 이 「직접 파생을 선언 어셈블리로 제한한다」고 적는다. **이 버전(`latest`)의 범위 밖**이다.
 
 ## 실행 환경
 
 **기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
 [Learn — Records](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/record)(열어서 확인: 합성 멤버 목록 · 「위치 속성은 `record class`·`readonly record struct` 에서 `init`, `record struct` 에서 읽기·쓰기」 ·\
 「`Equals(object)` 를 직접 선언하면 에러」 · 「`Equals(R)` 를 직접 쓰면 `GetHashCode` 도 써라」 · 「`with` 는 복제 메서드를 부른 뒤 속성을 설정한다」 · 「복제 메서드의 실제 이름은 컴파일러가 만든다」)
-**실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 맨 위 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
+**실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 맨 위 「이 버전」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
 ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
 ★★★ **진단 언어를 영어로 고정했다**(`DOTNET_CLI_UI_LANGUAGE=en` + `-preferreduilang:en-US`).\
 **대비는 실측이다** — **javac 21.0.5 · 25.0.1** 로 `with` 를 던졌다((7)).
-**버전** — **`record`(class) 는 C# 9** · **`record struct`·`readonly record struct` 는 C# 10** 이다. `-langversion:latest` 로 던졌다.
+**버전** — **`record`(class) 는 C# 9** · **`record struct`·`readonly record struct` 는 C# 10** 이다. `-langversion:latest` 로 실행했다.
 **경계** — **`init` 접근자와 `modreq(IsExternalInit)`** 는 [13번](../13-properties-init-required-field/)이 정본이다 — 여기서는 **record 가 그것을 만든다는 것**만 본다.\
 ★ **`record struct` 를 고르는 기준·방어적 복사**는 [02번](../02-struct-vs-class-choosing/)이 정본이다.\
 ★★★ **동등성 계약 자체**(`Equals`/`GetHashCode`/`==` 가 어긋날 때)는 목록의 **19번 주제**가 정본이다 — **18→19 는 한 사슬이다.**\
@@ -847,12 +847,12 @@ Money { Won = 1000, Currency = KRW } / Money { Won = 2000, Currency = KRW }
 ★★★ **대비** — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **14번**([`14-records/`](../../../java/syntax/14-records/)) ·\
 Kotlin 갈래 목록([`kotlin/syntax/README.md`](../../../kotlin/syntax/README.md))의 **22번**([`22-data-class-generated-members/`](../../../kotlin/syntax/22-data-class-generated-members/)).
 
-★★ **흔들리는 칸 / 안 흔들리는 칸**
+★★ **실행마다 달라지는 항목 / 달라지지 않는 항목**
 
-| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+| 실행마다 달라진다(근거로 쓰지 않는다) | 달라지지 않는다(근거로 쓴다) |
 |---|---|
 | 진단 **문구** | ★★★ **진단 코드**(`CS8852`·`CS0111`·`CS8851`)와 **`(행,열)`** |
 | ★★★ **생성된 멤버의 IL 모양**(순서·상수 `-1521134295`·`EqualityComparer<T>` 경유) — **Roslyn 의 구현** | ★★★ **생성된 멤버의 목록**(이름·접근성·`virtual`) — **명세가 정한 것** |
 | **IL 오프셋 폭** | ★★ **옵코드와 호출 대상**(`callvirt RC::<Clone>$`) |
-| ★ **증분의 절댓값 일부** — 한 판에서 잰 바이트 | ★★★ **네 판에서 갈린 줄 수**(스크립트가 센 마지막 줄) |
+| ★ **증분의 절댓값 일부** — 한 판에서 잰 바이트 | ★★★ **네 버전에서 달라진 줄 수**(스크립트가 센 마지막 줄) |
 | `GetHashCode()` 의 **값** — 이 문서는 **한 번도 안 찍었다** | 두 값의 해시가 **같나 다르나**(목록의 **19번 주제**에서) |

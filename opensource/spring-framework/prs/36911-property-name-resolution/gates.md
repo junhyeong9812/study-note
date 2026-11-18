@@ -168,7 +168,7 @@ return StringUtils.uncapitalize(methodName.substring(index));
 
 **정답 정리** (판정 워커 보강)
 
-핵심 두 축을 모두 짚었다. (a) 프리픽스 없는 이름은 get/is 분기에 걸리지 않아 그대로 else로 흘러 index=0이 되므로 plain 체크를 건너뛰어도 결과가 같고, (b) 결과가 실제로 갈리는 프리픽스 있는 이름에서는 여전히 분기 안에서 `isPlainAccessor()`가 0이냐 3(또는 2)이냐를 결정한다. 보강: 변경 전에도 `budget()`은 plain=true면 0, false여도 else의 0이라 어느 쪽이든 0이었으므로 그 구간의 리플렉션은 결과에 영향 없는 순수 비용이었고, 이번 이동은 그 비용만 제거한다.
+핵심 두 축을 모두 짚었다. (a) 프리픽스 없는 이름은 get/is 분기에 걸리지 않아 그대로 else로 흘러 index=0이 되므로 plain 체크를 건너뛰어도 결과가 같고, (b) 결과가 실제로 나뉘는 프리픽스 있는 이름에서는 여전히 분기 안에서 `isPlainAccessor()`가 0이냐 3(또는 2)이냐를 결정한다. 보강: 변경 전에도 `budget()`은 plain=true면 0, false여도 else의 0이라 어느 쪽이든 0이었으므로 그 구간의 리플렉션은 결과에 영향 없는 순수 비용이었고, 이번 이동은 그 비용만 제거한다.
 
 ## G5 — diff D: 테스트 5건 추가 (R1 / R3 / R4 / R7)
 

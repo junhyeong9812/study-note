@@ -17,13 +17,13 @@ JS 는 **값의 의미(강제 변환)·함수(스코프·`this`·클로저)·객
 | 03 | [숫자와 `BigInt`](03-numbers-and-bigint/) | 문법 | 배정밀도 부동소수점이 만드는 `0.1 + 0.2`·안전 정수 한계·`NaN` 의 성질을 설명하고 `BigInt` 를 숫자와 섞었을 때의 `TypeError` 를 예측할 수 있다 | 01 | `cs/foundations/data-representation/` | A |
 | 04 | [문자열과 UTF-16](04-strings-and-utf16/) | 문법 | `length` 가 코드 유닛이라는 것과 서로게이트 페어·이모지 처리, `codePointAt`·well-formed 메서드(ES2024)·`Intl.Segmenter` 를 설명할 수 있다 | 01 | `cs/foundations/data-representation/` | A |
 | 05 | `var`·`let`·`const` 와 TDZ | 문법 | 호이스팅과 TDZ 를 구분해 선언 전 참조가 `undefined` 인지 `ReferenceError` 인지 예측하고 `const` 가 무엇을 고정하는지 설명할 수 있다 | — | `history/js/02-ES6-모던.md` (도입 역사) | A |
-| 06 | [스코프와 클로저](06-scope-and-closures/) | 문법 | 함수가 생성 시점의 환경을 붙들고 있다는 것을 설명하고 루프 변수 캡처가 `var` 와 `let` 에서 갈리는 이유를 예측할 수 있다 | 05 | — | A |
+| 06 | [스코프와 클로저](06-scope-and-closures/) | 문법 | 함수가 생성 시점의 환경을 붙들고 있다는 것을 설명하고 루프 변수 캡처가 `var` 와 `let` 에서 달라지는 이유를 예측할 수 있다 | 05 | — | A |
 | 07 | [`this` 바인딩 네 규칙](07-this-binding-four-rules/) | 문법 | 기본·암시적·명시적·`new` 바인딩과 화살표 함수의 렉시컬 `this` 로 임의의 호출식에서 `this` 가 무엇인지 판정할 수 있다 | 06 | — | A |
 | 08 | 함수 정의 형태와 매개변수 | 문법 | 선언·표현식·화살표의 호이스팅·`this`·`arguments` 차이를 설명하고 기본값·나머지 매개변수·`length` 의 규칙을 예측할 수 있다 | 07 | — | A |
 | 09 | `call`·`apply`·`bind` | 표준 API | 세 메서드로 `this` 와 인자를 바꿔 호출하고 `bind` 가 만든 함수의 성질(재바인딩 불가)을 설명할 수 있다 | 07 | — | B |
-| 10 | 구조 분해 할당 | 문법 | 배열·객체·중첩·기본값·이름 바꾸기를 읽고 쓰며, `undefined` 와 `null` 에서 갈리는 실패를 예측할 수 있다 | 01 | — | A |
+| 10 | 구조 분해 할당 | 문법 | 배열·객체·중첩·기본값·이름 바꾸기를 읽고 쓰며, `undefined` 와 `null` 에서 달라지는 실패를 예측할 수 있다 | 01 | — | A |
 | 11 | 스프레드와 나머지 | 문법 | 배열·객체·호출 세 자리의 의미를 구분하고 얕은 복사라는 사실이 중첩 구조에서 만드는 결과를 예측할 수 있다 | 10 | — | A |
-| 12 | 옵셔널 체이닝·널 병합·논리 할당 | 문법 | `?.`·`??`(ES2020)·`??=`(ES2021)가 단축 평가하는 지점과 `\|\|` 와 갈리는 falsy 케이스를 설명할 수 있다 | 2 | — | A |
+| 12 | 옵셔널 체이닝·널 병합·논리 할당 | 문법 | `?.`·`??`(ES2020)·`??=`(ES2021)가 단축 평가하는 지점과 `\|\|` 와 달라지는 falsy 케이스를 설명할 수 있다 | 2 | — | A |
 | 13 | 객체 리터럴과 프로퍼티 | 문법 | 계산된 키·단축 표기·`get`/`set`·정수 키가 앞서는 열거 순서 규칙을 설명할 수 있다 | 01 | — | A |
 | 14 | 프로퍼티 디스크립터와 동결 | 표준 API | `writable`·`enumerable`·`configurable` 을 읽고 `freeze`·`seal` 이 어디까지(얕게) 막는지 판단할 수 있다 | 13 | — | B |
 | 15 | 프로토타입 체인 | 문법 | 프로퍼티 조회가 체인을 타는 경로를 그리고 `Object.create`·`__proto__`·`instanceof` 의 관계를 설명할 수 있다 | 13 | — | A |
@@ -37,14 +37,14 @@ JS 는 **값의 의미(강제 변환)·함수(스코프·`this`·클로저)·객
 | 23 | `Map`·`Set` 과 약한 컬렉션 | 표준 API | 객체 키·삽입 순서·SameValueZero 비교를 근거로 `Map` 과 객체를 고르고 `WeakMap` 의 수명 의미를 설명할 수 있다. 집합 연산 메서드는 ES2025, `getOrInsert` 계열(Upsert)은 ES2026 | 22 | `cs/data-structure/05-hashmap/` | A |
 | 24 | 배열 변형 메서드 | 표준 API | `push`·`splice`·`sort`·`reverse`·`fill` 이 원본을 바꾼다는 것과 `sort` 의 기본 문자열 비교·안정 정렬 보장을 설명할 수 있다 | 01 | `cs/foundations/data-structures-basics/` | A |
 | 25 | 배열 비변형·복사 메서드 | 표준 API | `map`·`filter`·`reduce`·`slice`·`concat` 과 ES2023 `toSorted`·`toReversed`·`toSpliced`·`with` 를 구분해 불변 변환을 쓸 수 있다 | 24 | — | A |
-| 26 | 배열 탐색·평탄화·생성 | 표준 API | `indexOf` 와 `includes` 가 `NaN` 에서 갈리는 것, `find`/`findLast`·`at`·`flat`/`flatMap`·`Array.from`·`fromAsync`(ES2026)를 골라 쓸 수 있다 | 24 | — | B |
+| 26 | 배열 탐색·평탄화·생성 | 표준 API | `indexOf` 와 `includes` 가 `NaN` 에서 달라지는 것, `find`/`findLast`·`at`·`flat`/`flatMap`·`Array.from`·`fromAsync`(ES2026)를 골라 쓸 수 있다 | 24 | — | B |
 | 27 | `Object` 정적 메서드 | 표준 API | `keys`/`values`/`entries`·`assign`·`fromEntries`·`Object.groupBy`(ES2024)로 객체를 변환하고 `assign` 의 얕은 복사와 getter 호출을 설명할 수 있다 | 13 | — | A |
 | 28 | `String` 메서드와 템플릿 리터럴 | 표준 API | 자주 쓰는 문자열 메서드와 태그 템플릿·`String.raw` 를 쓰고 `replace` 의 `$` 치환 규칙을 설명할 수 있다 | 04 | — | A |
 | 29 | 정규식 기본 | 표준 API | 리터럴·플래그·`match`/`matchAll`/`replace`/`replaceAll` 을 쓰고 `g` 플래그와 `lastIndex` 가 만드는 상태 버그를 설명할 수 있다 | 28 | `cs/algorithm/25-string-matching/` (알고리즘 쪽) | A |
 | 30 | 정규식 심화 | 표준 API | 캡처·명명 그룹·룩어라운드·유니코드 속성 이스케이프·`v` 플래그(ES2024)·`RegExp.escape`(ES2025)를 쓰고 백트래킹 폭발을 판단할 수 있다 | 29 | — | B |
 | 31 | `JSON` | 표준 API | `stringify` 의 타입 매핑(`undefined`·함수·순환 참조)과 `replacer`/`reviver`·`toJSON` 을 설명하고 깊은 복사 대용으로 쓸 때의 손실을 판단할 수 있다 | 27 | — | A |
 | 32 | 오류 처리와 `Error` | 문법 | `throw`/`try`/`catch`/`finally` 흐름과 `Error` 계층·`cause`(ES2022)·`Error.isError`(ES2026)를 설명하고 `finally` 의 `return` 이 예외를 삼키는 경우를 예측할 수 있다 | 01 | — | A |
-| 33 | 동등성 세 종류 | 관용구 | `===`·`Object.is`·SameValueZero 가 `NaN`·`±0` 에서 갈리는 것을 설명하고 `includes`/`indexOf`·`Map` 키 비교 결과를 예측할 수 있다 | 02 | — | B |
+| 33 | 동등성 세 종류 | 관용구 | `===`·`Object.is`·SameValueZero 가 `NaN`·`±0` 에서 달라지는 것을 설명하고 `includes`/`indexOf`·`Map` 키 비교 결과를 예측할 수 있다 | 02 | — | B |
 | 34 | 타입 검사 관용구 | 관용구 | `Array.isArray`·`Object.prototype.toString`·`instanceof`·덕 타이핑 중 어느 검사가 realm·프로토타입 조작에서 깨지는지 판단할 수 있다 | 15 | — | B |
 | 35 | 엄격 모드 | 문법 | strict 가 바꾸는 규칙(암시적 전역 금지·`this` 가 `undefined`·중복 매개변수)과 모듈이 항상 strict 라는 것을 설명할 수 있다 | 05 | — | B |
 | 36 | 이벤트 루프와 마이크로태스크 | 관용구 | 동기 코드·마이크로태스크·매크로태스크의 실행 순서를 출력 순서로 예측하고 마이크로태스크 기아를 설명할 수 있다 | 32 | `history/js/04-비동기-진화.md` · `cs/foundations/process-thread/` | A |
@@ -103,5 +103,5 @@ JS 는 **값의 의미(강제 변환)·함수(스코프·`this`·클로저)·객
 
 (2026-09-25 기준 **4 / 52** — 01\~04). 나머지는 아직 없다.
 기준 소스: [ECMA-262 최신 초안](https://tc39.es/ecma262/) (2026-09-20 확인 시점 ES2027 초안) · [ECMA-262 판별 아카이브](https://262.ecma-international.org/) · [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) · 호스트 API 한정으로 [MDN](https://developer.mozilla.org/)
-실행 검증: **가능**(2026-09-25 갱신). 이 머신에 Node `v18.19.1`(기본 PATH)과 `v20.19.6`(nvm), 그리고 Google Chrome `151.0.7922.173` 이 있어 **두 판과 브라우저**로 돌려 차이를 확인한다. 01\~04 의 블록은 전부 캡처 스크립트가 파일로 받아 조립했고(손으로 옮겨 적지 않았다), ★ **두 판이 갈린 자리는 04번의 `isWellFormed`/`toWellFormed`(ES2024) 하나뿐**이었다 — v18 에는 없고 v20·Chrome 151 에는 있다. ★★ 예외는 스택트레이스에 **절대 경로**가 박히므로 `e.constructor.name` 과 `e.message` 만 싣는다. 다만 **ES2025~ES2027 기능 일부는 Node 18/20 에 없어 실행 검증이 불가**하고, 그런 행은 「미실행 — 명세로만 접지」로 표기한다. 브라우저 전용 API 는 실행하지 않는다.
+실행 검증: **가능**(2026-09-25 갱신). 이 머신에 Node `v18.19.1`(기본 PATH)과 `v20.19.6`(nvm), 그리고 Google Chrome `151.0.7922.173` 이 있어 **두 버전과 브라우저**로 돌려 차이를 확인한다. 01\~04 의 블록은 전부 캡처 스크립트가 파일로 받아 조립했고(손으로 옮겨 적지 않았다), ★ **두 버전이 달라진 자리는 04번의 `isWellFormed`/`toWellFormed`(ES2024) 하나뿐**이었다 — v18 에는 없고 v20·Chrome 151 에는 있다. ★★ 예외는 스택트레이스에 **절대 경로**가 박히므로 `e.constructor.name` 과 `e.message` 만 싣는다. 다만 **ES2025~ES2027 기능 일부는 Node 18/20 에 없어 실행 검증이 불가**하고, 그런 행은 「미실행 — 명세로만 접지」로 표기한다. 브라우저 전용 API 는 실행하지 않는다.
 기준일 2026-09-20.

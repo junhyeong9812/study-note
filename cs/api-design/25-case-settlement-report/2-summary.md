@@ -97,7 +97,7 @@
 ```
 
 > **커서(cursor/keyset) 페이지네이션** — "몇 번째부터"가 아니라 "이 값 다음부터"로 페이지를 넘기는 방식.\
-> 앞쪽 변동에 흔들리지 않고, 깊은 페이지도 빠르다.\
+> 앞쪽 변동에 달라지지 않고, 깊은 페이지도 빠르다.\
 > 예: `WHERE (settled_at, settlement_id) > (마지막으로 본 값) LIMIT 50`.
 
 - `total_count`를 매 페이지 다시 세면 값이 페이지마다 달라질 수 있다 — 허용할지 정해야 한다.
@@ -167,7 +167,7 @@
 ## 쓰이는 자료구조·알고리즘
 
 - **커서(keyset) 페이지네이션 = 복합 인덱스 범위 스캔(MySQL InnoDB · PostgreSQL의 기본 인덱스는 B-tree 계열)** — `(settled_at, settlement_id)` 인덱스에서 "마지막으로 본 값 다음"으로 바로 내려간다. OFFSET은 앞의 N행을 읽고 버린다 → [data-structure/15-b-tree](../../data-structure/15-b-tree/2-summary.md).
-- **유일한 정렬 키** — 동률을 `settlement_id`로 깨서 정렬을 전순서로 만든다. 전순서가 아니면 페이지 경계가 실행마다 흔들린다.
+- **유일한 정렬 키** — 동률을 `settlement_id`로 깨서 정렬을 전순서로 만든다. 전순서가 아니면 페이지 경계가 실행마다 달라진다.
   - *전순서(total order)*: 어떤 두 원소도 앞뒤가 유일하게 정해지는 순서. 동률이 없다.
 - **스냅샷 격리(MVCC)** — 격리 수준이 REPEATABLE READ(스냅샷) 이상이면 한 트랜잭션 안의 두 쿼리가 같은 시점의 버전을 본다. 합계와 상세를 같은 세상에서 읽는 수단. PostgreSQL 기본값인 READ COMMITTED에서는 문장마다 새 스냅샷을 잡으므로 트랜잭션으로 묶기만 해서는 안 된다(MySQL InnoDB 기본값은 REPEATABLE READ).
   - *MVCC*: 행의 여러 버전을 보관해 읽는 쪽이 자기 시작 시점의 버전을 보게 하는 방식.

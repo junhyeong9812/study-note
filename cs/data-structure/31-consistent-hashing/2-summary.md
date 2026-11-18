@@ -557,7 +557,7 @@ jumpHash(key, numBuckets) : 지역 변수 둘과 반복문 하나. 자료구조�
 
 ## 적용 — 풀어나가는 법
 
-분산 배정 문제는 속도가 아니라 **노드가 바뀔 때 몇 개가 움직이는가**를 세는 데서 갈린다.\
+분산 배정 문제는 속도가 아니라 **노드가 바뀔 때 몇 개가 움직이는가**를 세는 데서 달라진다.\
 순서: ① 노드 증감이 있는지 본다(없으면 모듈로로 충분) → ② 아무 노드나 죽을 수 있으면 링, 맨 뒤에서만 늘고 줄면 점프 해시 → ③ 가상 노드 수를 정하되 해시가 섞이는지 먼저 확인한다(안 섞이면 자리 수는 소용없다) → ④ 서버 성능이 다르면 가중치 → ⑤ 이동량을 실측해 "죽은 노드 몫만 움직였는가"를 등식으로 확인한다.\
 아래 과제가 네 구현을 그 축으로 나란히 잰다.
 
@@ -570,8 +570,8 @@ jumpHash(key, numBuckets) : 지역 변수 둘과 반복문 하나. 자료구조�
 
 과제 목록 — `src/main/java/com/datastructure/conshash/`의 TODO 8개:
 
-- `ModuloSharding`(기준선) — TODO 1(`getNode` — `bucketHash(key) % nodes.size()`)
-- `ConsistentHashRing`(본체) — TODO 2(`addSlots` — 가상 이름으로 count 곳에 올리기) · TODO 3(`removeNode` — 그 노드의 자리만 지우기) · TODO 4(`getNode` — `ceilingEntry` + 되감기 한 줄)
+- `ModuloSharding`(베이스라인) — TODO 1(`getNode` — `bucketHash(key) % nodes.size()`)
+- `ConsistentHashRing`(핵심) — TODO 2(`addSlots` — 가상 이름으로 count 곳에 올리기) · TODO 3(`removeNode` — 그 노드의 자리만 지우기) · TODO 4(`getNode` — `ceilingEntry` + 되감기 한 줄)
 - `WeightedConsistentHashRing` — TODO 5(`addNode(node, weight)` — 자리를 weight 배로)
 - `JumpConsistentHash` — TODO 6(`jumpHash` — 논문 의사코드) · TODO 7(`removeNode` — 맨 뒤만, 아니면 `UnsupportedOperationException`) · TODO 8(`getNode`)
 

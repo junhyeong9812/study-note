@@ -36,7 +36,7 @@
 | `AnnotationUtils.validateAnnotation` | `AnnotationUtils.java:775` | `ConfigurationClassParser`가 `@Configuration` 클래스를 리플렉션으로 읽어도 되는지 판단할 때 | `validate`가 `IllegalStateException` -> ASM 파싱으로 폴백 |
 
 즉 결함이 사는 자리는 특정 기능이 아니라 **annotation을 읽는 모든 상위 기능이 공유하는 최하단 게이트**다.\
-게이트가 "통과"로 오판하면 컴포넌트 스캔, 조건 평가, `@Qualifier` 매칭이 전부 같은 오염된 값을 손에 쥔다.
+게이트가 "통과"로 오판하면 컴포넌트 스캔, 조건 평가, `@Qualifier` 매칭이 전부 같은 오염된 값을 손에 잡는다.
 
 ## 2. 전체 메서드 그래프 — 진입점부터 결함 지점까지
 
@@ -117,7 +117,7 @@
 | `foundDefaultValueMethod` (지역 :72) / `hasDefaultValueMethod` (필드 :63) | 기본값을 가진 속성이 있는가 | :77-79 | 무관. 같은 루프에 있을 뿐 |
 | `cache` (static :47) | annotation 타입 -> `AttributeMethods` 캐시(`ConcurrentReferenceHashMap`) | `forAnnotationType` :260 | 플래그 계산이 타입당 1회로 제한되는 근거. 잘못된 플래그도 이 캐시에 그대로 눌러앉는다 |
 | `NONE` (static :45) | 속성이 0개인 경우의 공유 인스턴스 | :257(타입 null), :274(속성 0개) | 결함 경로에 들어오지 않는 조기 탈출구 |
-| `methodComparator` (static :49) | 속성 메서드 이름 오름차순 비교자 | `compute` :277 | 인덱스 안정성의 근거 - 플래그 배열과 메서드 배열의 대응이 실행 간에 흔들리지 않는다 |
+| `methodComparator` (static :49) | 속성 메서드 이름 오름차순 비교자 | `compute` :277 | 인덱스 안정성의 근거 - 플래그 배열과 메서드 배열의 대응이 실행 간에 달라지지 않는다 |
 
 **(b) 플래그를 쓰는 쪽.**\
 다음은 probe의 두 출구와 그 안에서 쓰이는 이름들이다.

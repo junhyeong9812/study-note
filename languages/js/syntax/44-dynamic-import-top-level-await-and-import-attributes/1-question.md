@@ -1,4 +1,4 @@
-# js/syntax/44 — 동적 `import`·최상위 `await`·import attributes: 「본문은 언제 도나, 누가 누구를 기다리나, 딱지는 어느 판에서 읽히나」 — 질문
+# js/syntax/44 — 동적 `import`·최상위 `await`·import attributes: 「본문은 언제 도나, 누가 누구를 기다리나, 딱지는 어느 버전에서 읽히나」 — 질문
 
 ## 이 파일을 푸는 법
 
@@ -160,7 +160,7 @@ fs.writeFileSync(path.join(root, "rows.json"), JSON.stringify(rows.map((r) => r[
 ```
 
 - ★★★ 12행 각각 — node 20 에서 `ok` 인가 `blocked` 인가? 막히면 무슨 이름·코드인가?
-- ★★★ node 18.19.1 에서 달라지는 행은? Chrome 151 에서는? 세 판이 **다 같이 통과하는** 행이 있나?
+- ★★★ node 18.19.1 에서 달라지는 행은? Chrome 151 에서는? 세 버전이 **다 같이 통과하는** 행이 있나?
 
 ### 5. 끝내 안 풀리는 최상위 `await` (경계) ★★
 
@@ -201,13 +201,13 @@ console.log("importer44b.mjs: body");
 ### 10. 42번 · 43번과 이어 보기 (연결) ★★
 
 - ★★ 42번이 이미 잰 `import()` 의 성질 둘은 무엇이고, 이 주제는 거기서 무엇을 넓혔나?
-- ★ 43번에서 최상위 `await` 가 든 ESM 을 CommonJS 가 `require` 하면 두 node 판은 각각 무엇을 냈나?
+- ★ 43번에서 최상위 `await` 가 든 ESM 을 CommonJS 가 `require` 하면 두 node 버전은 각각 무엇을 냈나?
 
 ## 실행 환경
 
 **환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · Google Chrome 151(로컬 HTTP 서버) · x86-64 Linux. 배너의 `node20` 은 v20.19.6 이다.
 
-★★★ **이 주제의 본체는 평가 순서 로그다** — 모듈 본문 첫 줄에 로그를 심고 **줄의 순서**로 읽는다. 보조로 import attributes **판 격자** 12행 × 세 판. **1번 · 2번 · 4번 문항이 이 주제의 중심이다.**
+★★★ **이 주제의 핵심은 평가 순서 로그다** — 모듈 본문 첫 줄에 로그를 심고 **줄의 순서**로 읽는다. 보조로 import attributes **판 격자** 12행 × 세 판. **1번 · 2번 · 4번 문항이 이 주제의 중심이다.**
 
 **선행** — [42](../42-esm-modules/2-summary.md) · [43](../43-cjs-and-esm-interop/2-summary.md) · [39](../39-async-await/2-summary.md) · [31](../31-json/2-summary.md).
 

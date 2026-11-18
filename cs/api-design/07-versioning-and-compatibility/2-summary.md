@@ -124,7 +124,7 @@ Jackson3 version=3.0.0 FAIL_ON_UNKNOWN_PROPERTIES=false
 - Jackson 2.19.2 기본값에서는 서버의 **필드 추가**도 클라이언트 예외가 된다(`FAIL_ON_UNKNOWN_PROPERTIES=true`).
 - **enum 값 추가**는 Jackson 2.19.2와 3.0.0 모두 기본값에서 실패했다. 커리큘럼 ⚠ 칸의 "엄격 역직렬화 클라이언트 실패"가 이것이다.
 - **필드 삭제**는 어느 설정에서도 예외가 나지 않았다. 원시 `long`은 0, `Long`은 null이 된다. 엄격한 설정도 삭제를 잡아 주지 않는다. 금액 0원이 화면에 조용히 나간다.
-- Jackson 3.0.0은 `FAIL_ON_UNKNOWN_PROPERTIES` 기본값이 false였다(이 실행에서 확인). 의도된 변경이다 — jackson-databind 3.0.0 소스의 `DeserializationFeature`는 `FAIL_ON_UNKNOWN_PROPERTIES(false)`이고 주석에 "disabled by default as of Jackson 3.0 (in 2.x it was enabled)"라고 적는다(3.0 릴리스 노트 "Config default changes" #493). 같은 코드라도 메이저 버전에 따라 결과가 갈린다.
+- Jackson 3.0.0은 `FAIL_ON_UNKNOWN_PROPERTIES` 기본값이 false였다(이 실행에서 확인). 의도된 변경이다 — jackson-databind 3.0.0 소스의 `DeserializationFeature`는 `FAIL_ON_UNKNOWN_PROPERTIES(false)`이고 주석에 "disabled by default as of Jackson 3.0 (in 2.x it was enabled)"라고 적는다(3.0 릴리스 노트 "Config default changes" #493). 같은 코드라도 메이저 버전에 따라 결과가 달라진다.
   - 같은 3.0에서 `FAIL_ON_NULL_FOR_PRIMITIVES`는 반대로 기본 true가 됐다(같은 소스). 원시 타입 필드에 JSON `null`이 **명시적으로** 오면 3.0은 실패한다. 이 실험의 "필드 삭제"는 필드가 아예 없는 경우라 0이 됐다.
 - Spring Framework의 `Jackson2ObjectMapperBuilder`는 `FAIL_ON_UNKNOWN_PROPERTIES`를 끈다(javadoc). 이 빌더는 Spring Framework 7.0에서 폐기 예정(deprecated for removal)으로 표시됐다. Spring을 쓰면 직접 `new ObjectMapper()`한 코드와 동작이 다를 수 있다.
 

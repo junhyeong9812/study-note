@@ -50,7 +50,7 @@
 - 게으름 정의에는 "document what you wrote so you don't have to answer so many questions about it"이 들어 있다. 문서화가 게으름에 속한다는 원본의 해석은 이 구절로 확인된다.
     - 흔한 오해: 프로그래밍의 *지연 평가(lazy evaluation)* 와 같은 뜻이다. 지연 평가는 값이 필요할 때까지 계산을 미루는 평가 전략이고, Wall의 게으름은 전체 수고를 줄이려 지금 수고를 들이는 태도다. 이름만 같다.
 
-### 실험: 원문 대조 — 두 판의 perlglossary
+### 실험: 원문 대조 — 두 버전의 perlglossary
 
 원본 노트는 원문을 옮기지 않고 요지만 풀었다. 그래서 원문 자체를 받아 비교했다.
 - 옛 판: perl 5.8.8 배포판의 `pod/perlglossary.pod`(끝에 "Based on the Glossary of Programming Perl, Third Edition"이라고 적혀 있다).
@@ -75,7 +75,7 @@ git diff --no-index --word-diff=plain old.txt new.txt
 ```
 
 - 관찰
-  - 두 판의 차이는 "then" 한 단어와 "Zeus zaps you for" → "for which Zeus zaps you" 어순뿐이다. 세 정의의 뜻은 판이 바뀌어도 같다.
+  - 두 버전의 차이는 "then" 한 단어와 "Zeus zaps you for" → "for which Zeus zaps you" 어순뿐이다. 세 정의의 뜻은 판이 바뀌어도 같다.
   - 게으름 항목 끝에 "Also hence, this book."이 있다. 책을 쓴 것 자체가 게으름(같은 질문에 답하지 않으려고 문서를 씀)의 산물이라는 농담이다.
   - 조급함 항목의 "Or at least that pretend to."는 원본 노트의 "(최소한 예측하는 척이라도 하는)"과 맞는다.
 - 확인 못 한 것: 세 미덕이 『Programming Perl』 몇 판에 처음 실렸는지. 원본 「더 알면 좋은 것」의 "초판(1991)부터 등장"은 이번에 확인하지 못했다 `[?]`. 웹의 2차 글에는 "첫 줄은 1판, 나머지는 2판"이라는 말도 있으나 1차 출처로 확인하지 못했다.
@@ -211,7 +211,7 @@ System.out.printf("build %.1fs, test %.1fs%n", (t1 - t0) / 1e9, (t2 - t1) / 1e9)
 ## 핵심 문장
 
 - 세 미덕의 과녁은 원문 정의 문장 안에 있다: 게으름은 "overall", 조급함은 "the computer", 오만은 "other people"과 "(and maintain)".
-- 두 판의 perlglossary를 단어 단위로 비교하면, 정의의 뜻은 판이 바뀌어도 같다(어순·"then" 한 단어 차이).
+- 두 버전의 perlglossary를 단어 단위로 비교하면, 정의의 뜻은 판이 바뀌어도 같다(어순·"then" 한 단어 차이).
 - 게으름의 판별은 계산으로 할 수 있다. 자주 하는 일의 자동화·문서화는 몇 주 만에 이득이고, 드문 일은 1년 안에 본전을 못 찾을 수 있다.
 - Wall은 공동체의 미덕(근면·인내·겸손)이 개인의 미덕과 반대처럼 들리지만, 동시에 할 수 있다고 썼다.
 - 세 단어는 정의와 함께 쓸 때만 미덕이다. 단어만 떼면 그냥 악덕의 핑계가 된다.

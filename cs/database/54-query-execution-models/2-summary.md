@@ -97,7 +97,7 @@
 ### 4. 표현식 JIT — 반복자 모델 안에서 행 비용 줄이기 (PostgreSQL)
 
 - PostgreSQL은 LLVM으로 식 평가와 튜플 해체(deforming)를 기계어로 컴파일할 수 있다(30장). `jit` 기본값 `on`, `jit_above_cost` 기본 100000이다(19.7).
-- 컴파일 자체에 시간이 든다. 계획의 **추정 비용**이 문턱을 넘으면 켜진다. 실제 실행 시간으로 정하지 않는다.
+- 컴파일 자체에 시간이 든다. 계획의 **추정 비용**이 임계값을 넘으면 켜진다. 실제 실행 시간으로 정하지 않는다.
 
 ```text
   로컬 재현 (예시, PostgreSQL 17.11): SELECT count(*), sum(amount) FROM ev WHERE amount > 10
@@ -207,7 +207,7 @@ FROM pg_stat_activity WHERE backend_type = 'parallel worker';
 - `PARALLEL SAFE`는 정말로 안전할 때만 붙인다. 문서는 실제로는 restricted·unsafe인 함수를 safe로 표시하면 병렬 쿼리에서 오류를 내거나 틀린 답을 낼 수 있다고 한다(15.4).
 - OLTP 커넥션에는 병렬을 끄는 것도 방법이다. 짧은 쿼리는 작업자를 띄우는 비용이 더 클 수 있다.
 
-### 3. JIT는 OLTP에서 끄거나 문턱을 올린다
+### 3. JIT는 OLTP에서 끄거나 임계값을 올린다
 
 ```sql
 SET jit = off;                                   -- 세션 단위
@@ -242,7 +242,7 @@ ALTER ROLE app_oltp SET jit = off;               -- 역할 단위
 ### 3. JIT 때문에 짧은 쿼리가 느려졌다
 
 - **현상**: 수십 ms이던 쿼리가 두 배 이상으로 늘었다. 데이터가 늘어 비용 추정이 커진 뒤부터다.
-- **보이는 형태**: `EXPLAIN ANALYZE` 끝의 `JIT: … Timing: … Total …` 시간이 실행 시간의 큰 부분을 차지한다(로컬 재현: 문턱을 낮추자 29.8 ms → 58.3 ms, JIT Total 14.7 ms).
+- **보이는 형태**: `EXPLAIN ANALYZE` 끝의 `JIT: … Timing: … Total …` 시간이 실행 시간의 큰 부분을 차지한다(로컬 재현: 임계값을 낮추자 29.8 ms → 58.3 ms, JIT Total 14.7 ms).
 - **원인**: JIT는 **추정 비용**(`jit_above_cost` 100000)으로 켜진다. 추정이 부풀었거나, 실행 자체가 짧아 컴파일 비용을 회수하지 못했다.
 - **대처**: OLTP 역할은 `jit = off`. 분석 역할은 `jit_above_cost`·`jit_inline_above_cost`·`jit_optimize_above_cost`를 측정으로 맞춘다. 추정이 부푼 원인(12번)도 본다.
 
@@ -270,7 +270,7 @@ ALTER ROLE app_oltp SET jit = off;               -- 역할 단위
 - Sort·해시 build·해시 집계는 파이프라인 차단 연산자다. 그 위의 `LIMIT`은 입력 전체 읽기를 막지 못한다.
 - 벡터화 모델은 행 묶음을 넘겨 호출 수를 줄이고 SIMD를 쓰기 쉽게 한다. 대량 스캔 OLAP에 맞다.
 - PostgreSQL 병렬 실행은 주로 작업자 프로세스가 같은 연산자를 나눠 하고 `Gather`/`Gather Merge`가 모은다. 작업자를 못 얻으면 리더 혼자 돈다. 쓰기·커서·UNSAFE 함수·fetch count는 병렬을 막는다.
-- JIT는 추정 비용 문턱으로 켜진다. 짧은 쿼리에서는 컴파일 비용이 이득보다 클 수 있다.
+- JIT는 추정 비용 임계값으로 켜진다. 짧은 쿼리에서는 컴파일 비용이 이득보다 클 수 있다.
 
 ## 관련 주제·근거
 

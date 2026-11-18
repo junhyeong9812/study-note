@@ -102,7 +102,7 @@ RED - 1 < 0 인가: 1
                                     -> 4294967295 < 0 은 ★ 거짓
 ```
 
-- 갈린 것은 「**상수냐 변수냐**」다. 상수는 `int`, 변수는 `unsigned int`(1번).
+- 달라진 것은 「**상수냐 변수냐**」다. 상수는 `int`, 변수는 `unsigned int`(1번).
 - [03번 형제](../03-integer-promotion-and-usual-arithmetic-conversions/)의 `-1 < 1u` 와 **완전히 같은 사고**다.\
   거기서는 `unsigned` 리터럴이 원인이었고, 여기서는 **`enum` 이 조용히 `unsigned` 를 끌고 온다.**
 
@@ -256,7 +256,7 @@ red green ?
 **어떤 진단 · 어느 플래그**
 
 - **`-Wswitch`** 이고 **`-Wall`** 에 있다. `-Wextra` 만으로는 0건이다.
-- ★ 2번의 `-Wtype-limits` 는 `-Wextra` 였다. **같은 주제 안에서도 소속이 갈린다** — 세어 보는 수밖에 없다.
+- ★ 2번의 `-Wtype-limits` 는 `-Wextra` 였다. **같은 주제 안에서도 소속이 달라진다** — 세어 보는 수밖에 없다.
 
 **`default:` 를 넣으면**
 
@@ -643,6 +643,6 @@ ABI 확인
 ## 실행 환경
 
 이 파일의 모든 출력·경고·에러는 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-기본 플래그는 `-std=c17 -Wall -Wextra`. **표준 버전·`-pedantic`·`-fshort-enums` 가 갈리는 답은 그 자리에 밝혔다.**\
+기본 플래그는 `-std=c17 -Wall -Wextra`. **표준 버전·`-pedantic`·`-fshort-enums` 가 달라지는 답은 그 자리에 밝혔다.**\
 `gdb`·`clang 18.1.3` 을 쓴 자리도 그 자리에 밝혔다.
 ★ **이 주제에는 UB 가 없다.** 그래서 sanitizer 출력이 한 줄도 안 나온다 — 그것도 결과다.

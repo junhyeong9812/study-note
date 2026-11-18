@@ -60,10 +60,10 @@ ex.10a.ts(24,7): error TS2322: Type 'string' is not assignable to type 'null'.
 | `const putExtra: … , email: "e" }` | 초과 프로퍼티 | **TS2353** | 그 검사는 교차에서도 돈다 |
 | `const widen: Named = p` | 교차 → 조각 | ★ **통과** | 교차한 값은 **각 조각 자리에 들어간다** |
 | `const narrow: Person = onlyNamed` | 조각 → 교차 | **TS2322** | 조각은 **교차 자리에 못 들어간다** |
-| `const probe: null = p` | 탐침 | **TS2322** | `p` 는 **`Person`** |
-| `const probeName: null = p.name` | 탐침 | **TS2322** | `p.name` 은 **`string`** |
+| `const probe: null = p` | probe | **TS2322** | `p` 는 **`Person`** |
+| `const probeName: null = p.name` | probe | **TS2322** | `p.name` 은 **`string`** |
 
-- ★★★ 11·12행이 09 와 갈리는 자리다. `string | number` 였다면 `.toFixed` 도 `.length` 도 막혔다.\
+- ★★★ 11·12행이 09 와 달라지는 자리다. `string | number` 였다면 `.toFixed` 도 `.length` 도 막혔다.\
   `Named & Aged` 는 **둘 다 준다.** 「**꺼내는 쪽은 합집합**」이다.
 - ★★★ 20·21행이 그 대가다. 꺼내는 쪽이 넓어진 만큼 **넣는 쪽이 좁아진다** — 「**넣는 쪽은 교집합**」이다.
 - ★★ 16행 진단의 들여쓴 줄이 **`Aged`** 라는 이름을 부른다. **어느 조각이 모자란지**까지 말해 준다.
@@ -116,20 +116,20 @@ ex.10b.ts(26,7): error TS2322: Type '"lit"' is not assignable to type 'null'.
 
 | 줄 | 무엇 | 결과 | 읽는 법 |
 |---|---|---|---|
-| 5 `const probePrim: null = prim` | 탐침 | ★★★ **침묵** | `never` 는 `null` 에도 들어간다 |
-| 6 `const asString: string = prim` | 탐침 | ★ **침묵** | `never` 는 `string` 에도 들어간다 |
-| 7 `const asNumber: number = prim` | 탐침 | ★ **침묵** | `never` 는 `number` 에도 들어간다 |
+| 5 `const probePrim: null = prim` | probe | ★★★ **침묵** | `never` 는 `null` 에도 들어간다 |
+| 6 `const asString: string = prim` | probe | ★ **침묵** | `never` 는 `string` 에도 들어간다 |
+| 7 `const asNumber: number = prim` | probe | ★ **침묵** | `never` 는 `number` 에도 들어간다 |
 | 8 `const putPrim: PrimClash = "x"` | **역방향** | **TS2322** | 「Type '"x"' … to type **'never'**」 ← 여기서 드러난다 |
-| 13 `const probeObj: null = obj` | 탐침 | **TS2322** | `obj` 는 **`PropClash`** — **타입은 살아 있다** |
-| 14 `const probeProp: null = obj.p` | 탐침 | ★★★ **침묵** | `obj.p` 만 **`never`** 다 |
-| 15·16 `obj.p` 를 `string`·`number` 에 | 탐침 | **침묵** | 같은 이유 |
+| 13 `const probeObj: null = obj` | probe | **TS2322** | `obj` 는 **`PropClash`** — **타입은 살아 있다** |
+| 14 `const probeProp: null = obj.p` | probe | ★★★ **침묵** | `obj.p` 만 **`never`** 다 |
+| 15·16 `obj.p` 를 `string`·`number` 에 | probe | **침묵** | 같은 이유 |
 | 17 `const putObj: PropClash = { p: "x" }` | **역방향** | **TS2322** | 「Type 'string' … to type 'never'」 |
-| 21 `const probeOpt: null = opt.q` | 탐침 | **침묵** | `{ q?: string } & { q: number }` 의 `q` 도 `never` |
+| 21 `const probeOpt: null = opt.q` | probe | **침묵** | `{ q?: string } & { q: number }` 의 `q` 도 `never` |
 | 22 `const putOpt: OptClash = { q: 1 }` | **역방향** | **TS2322** | 「Type 'number' … to type 'never'」 |
-| 26 `const probeNar: null = nar.r` | 탐침 | **TS2322** | **`"lit"`** — 호환되면 **좁아진다**(충돌이 아니다) |
+| 26 `const probeNar: null = nar.r` | probe | **TS2322** | **`"lit"`** — 호환되면 **좁아진다**(충돌이 아니다) |
 
 - ★★★ **이 블록의 값은 진단 다섯 줄이 아니라 침묵한 일곱 줄이다.** `never` 는 **어디로든 들어가므로**\
-  탐침을 그대로 통과한다([**04번 주제**](../04-any-unknown-never-void/)). 「에러가 없으니 멀쩡하다」가 여기서 무너진다.
+  probe를 그대로 통과한다([**04번 주제**](../04-any-unknown-never-void/)). 「에러가 없으니 멀쩡하다」가 여기서 무너진다.
 - ★★★ **묻는 법은 역방향 대입이다** — `const back: 그타입 = <아무 값>;` 을 한 줄 두면 컴파일러가 `'never'` 라고 말한다.
 - ★★ **충돌은 두 얼굴이다.** 13행과 14행을 붙여 읽어라 —
 
@@ -223,7 +223,7 @@ ex.10c.ts(34,7): error TS2322: Type '"a"' is not assignable to type 'never'.
 | 순서 | ★ **재정렬한다** | ★ **안 바꾼다** |
 | `any` · 중복 · 중첩 | 삼킴 · 제거 · 평탄화 | 같다 |
 
-- ★ **순서를 지키는 것은 이 판의 관찰이지 보장이 아니다.** 대조할 것은 「**같은 조각 집합으로 정리된다**」는 성질이다.
+- ★ **순서를 지키는 것은 이 버전의 관찰이지 보장이 아니다.** 대조할 것은 「**같은 조각 집합으로 정리된다**」는 성질이다.
 
 ### 4. ★★★ 진단 **7건** — 교차한 함수는 **오버로드와 같은 것**이 된다
 
@@ -291,7 +291,7 @@ ex.10d.ts(23,7): error TS2322: Type 'CrossFn' is not assignable to type '(a: boo
 - ★★★ **19행이 이 주제와 09 를 잇는 못이다.** 같은 두 함수 타입을 `|` 로 묶으면 **아무것도 못 넣는다**(매개변수가 `never`),\
   `&` 로 묶으면 **둘 다 부를 수 있다**(오버로드).
 - ★★ 이유는 7·8번과 같다 — 「**둘 다인 함수**」이므로 어느 시그니처로 불러도 되고, 「**둘 중 하나인 함수**」이므로 어느 쪽에도 안전한 인자만 받아야 한다.
-- ★ 5·6행은 **탐침 때문에** 진단이 난 것이다. **호출 자체는 통과했다** — 그 사실이 반환 타입을 알려 준다.
+- ★ 5·6행은 **probe 때문에** 진단이 난 것이다. **호출 자체는 통과했다** — 그 사실이 반환 타입을 알려 준다.
 
 ### 5. ★★★ 진단 **9건** — `(A | B) & C` 는 **분배되고**, 진단이 그 조각 이름을 부른다
 
@@ -359,7 +359,7 @@ ex.10e.ts(32,15): error TS2322: Type 'Square & Tagged' is not assignable to type
 
 | 줄 | 무엇 | 답 |
 |---|---|---|
-| `const probeAll: null = shape` | 전체 탐침 | 겉은 `(Circle \| Square) & Tagged`, ★ **들여쓴 줄이 `Circle & Tagged`** |
+| `const probeAll: null = shape` | 전체 probe | 겉은 `(Circle \| Square) & Tagged`, ★ **들여쓴 줄이 `Circle & Tagged`** |
 | `const probeKind: null = shape.kind` | 판별 칸 | **`"circle" \| "square"`** |
 | `const probeId: null = shape.id` | 공통 칸 | **`string`** |
 | `shape.r` | 한쪽에만 있는 칸 | **TS2339** — 들여쓴 줄이 **`Square & Tagged`** |
@@ -461,7 +461,7 @@ a / b     : hi / 7
 
 **왜 그런가**
 
-| 선언 | `.d.ts` | 3번의 탐침 |
+| 선언 | `.d.ts` | 3번의 probe |
 |---|---|---|
 | `Dup = A & A` | **그대로** | `A` |
 | `WithNever = A & never` | **그대로** | `never` |
@@ -472,7 +472,7 @@ a / b     : hi / 7
 | `export const made = { … } as A & B` | ★ **`: A & B`** | — |
 
 - ★★★ **같은 선언이 두 창에서 다르게 보인다.** 09 에서 유니온으로 본 것과 **같은 성질**이다 —\
-  `.d.ts` 는 「**무엇을 적었나**」, 탐침은 「**무엇이 됐나**」를 답한다.
+  `.d.ts` 는 「**무엇을 적었나**」, probe는 「**무엇이 됐나**」를 답한다.
 - ★★ 그래서 **`.d.ts` 만 보고 「충돌이 없다」고 믿으면 틀린다.** `string & number` 가 그대로 실려 있어도 그 타입에는 값이 없다.
 - ★ 값 선언은 다르다 — `made` 는 추론 결과(`A & B`)로 적힌다. **타입 별칭만 표기를 옮긴다.**
 - ★★★ 방출된 `.js` 에는 `interface`·`type` 이 **통째로 없다.** 합치는 일을 하는 것은 **JS 스프레드 `{ ...x, ...y }`** 뿐이다.
@@ -511,7 +511,7 @@ a / b     : hi / 7
 
 **왜 그런가**
 
-| 탐침 결과 | 가능한 것 | 왜 통과하나 |
+| probe 결과 | 가능한 것 | 왜 통과하나 |
 |---|---|---|
 | `const probe: null = x` 가 **침묵** | **`never`** | `never` 는 **모든 타입에 들어간다** |
 | 〃 | **`any`** | `any` 는 **모든 타입에 들어간다** |
@@ -524,17 +524,17 @@ a / b     : hi / 7
 
 - ★★ 3번이 그 대조를 실제로 실었다. `A & never`(23행 침묵 → 32행 **말함**) 과 `A & any`(24행 침묵 → 33행 **침묵**).
 - ★ 이 수법은 [**08번 주제**](../08-interface-vs-type/)에서 처음 썼고 여기서 정식 도구가 됐다.\
-  「**탐침이 침묵하면 더 물어라**」가 이 갈래의 규칙이다.
-- ★ 탐침을 `null` 로 잡는 이유도 같다 — `null` 은 받는 것이 거의 없어 **거의 모든 타입이 걸린다.** 안 걸리는 것이 `never`·`any` 다.
+  「**probe가 침묵하면 더 물어라**」가 이 갈래의 규칙이다.
+- ★ probe를 `null` 로 잡는 이유도 같다 — `null` 은 받는 것이 거의 없어 **거의 모든 타입이 걸린다.** 안 걸리는 것이 `never`·`any` 다.
 
-### 10. ★★ `.d.ts` 는 「**적은 것**」, 탐침은 「**계산된 것**」 — 09 와 같은 말이다
+### 10. ★★ `.d.ts` 는 「**적은 것**」, probe는 「**계산된 것**」 — 09 와 같은 말이다
 
 **왜 그런가**
 
 | 창 | 무엇을 말하나 | 6번의 예 |
 |---|---|---|
 | `.d.ts` 덤프 | **소스에 적힌 타입 표기** | `type PrimClash = string & number` 그대로 |
-| `null` 탐침 | **계산된 타입** | `never`(침묵 → 역방향으로 확인) |
+| `null` probe | **계산된 타입** | `never`(침묵 → 역방향으로 확인) |
 
 - ★★ 교차에서는 이 갈림이 **더 위험하다.** 유니온에서는 `.d.ts` 가 좀 지저분해 보이는 정도였지만,\
   교차에서는 `.d.ts` 에 멀쩡히 적힌 타입이 **값이 하나도 없는 타입**일 수 있다.
@@ -562,7 +562,7 @@ a / b     : hi / 7
 |---|---|
 | **언어 보장** | 꺼내는 쪽은 **합집합**, 넣는 쪽은 **교집합** · 프로퍼티는 **교차**되고 충돌하면 `never` · 평탄화·중복 제거·흡수로 정규화 · 함수 교차는 **오버로드** · `(A \| B) & C` 는 **분배** · 방출에 안 남는다 |
 | **설정에 달린 것** | ★ **없다**. 다섯 파일을 `--strict false` 로 다시 던져 **종료 코드와 출력이 전부 같은 것**을 확인했다(아래 블록) |
-| **이 판(7.0.2)의 관찰** | ★★ 교차가 **적은 순서를 지키는 것**(`B & A`) · `TS2769` 가 「The last overload」로 **어느 시그니처를 고르는가** · `.d.ts` 가 괄호까지 그대로 싣는 것 · 진단 문구 전문 |
+| **이 버전(7.0.2)의 관찰** | ★★ 교차가 **적은 순서를 지키는 것**(`B & A`) · `TS2769` 가 「The last overload」로 **어느 시그니처를 고르는가** · `.d.ts` 가 괄호까지 그대로 싣는 것 · 진단 문구 전문 |
 
 ```text
 ===== 같은 파일을 기본값과 --strict false 로 각각 던져 글자 단위로 대조한다 =====
@@ -590,7 +590,7 @@ ex.10e.ts    exit 1 = exit 1 · 출력 한 글자도 같다
 | 방출·실행 | `tsc ex.10g.ts` + `node ex.10g.js` | tsc exit 0 · node exit 0 · `{"a":"hi","b":7}` · 키 `a,b` |
 | `strict` 대조 | 다섯 파일을 `--strict false` 로 재실행 | ★ **전부 동일** — 종료 코드도 출력도 같다 |
 
-**구현 의존 항목 — 판이 오르면 다시 돌릴 것**
+**구현 의존 항목 — 버전이 오르면 다시 돌릴 것**
 
 - ★★ **교차가 적은 순서를 지키는 것** — 09 의 유니온은 재정렬했다. **이 문서의 대조 기준으로 쓰지 않는다.**
 - `TS2769` 가 「The last overload gave the following error.」로 **어느 시그니처를 고르는가** — 선언 순서를 따른다.

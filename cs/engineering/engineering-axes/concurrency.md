@@ -237,5 +237,5 @@
 
 ## 출처
 
-출처: `jun-bank/docs/study/notes/axes/concurrency.md` (본체) + `08-engineering-axes-deep.md` §1 (「사고의 순서」 흡수) · 이관일 2026-09-16.\
+출처: `jun-bank/docs/study/notes/axes/concurrency.md` (핵심) + `08-engineering-axes-deep.md` §1 (「사고의 순서」 흡수) · 이관일 2026-09-16.\
 본문 표·절은 **원고**를 고쳐 쓴 것이다(문체·순서 유지, 프로젝트 고유 상황을 일반 상황으로). 「한눈에」의 비유·그림과 맨 끝 `[Claude 추가]`는 **Claude가 원고 이해를 돕기 위해 보탠 것**이다.

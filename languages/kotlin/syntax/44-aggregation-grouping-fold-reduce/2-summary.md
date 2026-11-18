@@ -1,14 +1,14 @@
 # kotlin/syntax/44 — 집계·그룹핑 — `groupBy`/`partition`/`fold`/`reduce`/`sumOf` — 정리 (힌트)
 
-★★★ **본체는 첫째 창이다** — 「**빈 입력 갈림 격자 — 집계 12연산 × (빈 · 하나 · 여럿) → 값 / 예외**」. `fold` 와 `reduce` 는 원소가 있을 때 **같은 답**을 준다(`5`·`10`). 둘이 갈리는 것은 **빈 입력 한 칸**이다 — 거기를 넣어 봐야 보인다.
+★★★ **핵심은 첫째 창이다** — 「**빈 입력 갈림 격자 — 집계 12연산 × (빈 · 하나 · 여럿) → 값 / 예외**」. `fold` 와 `reduce` 는 원소가 있을 때 **같은 답**을 준다(`5`·`10`). 둘이 달라지는 것은 **빈 입력 한 칸**이다 — 거기를 넣어 봐야 보인다.
 
 ## 이 주제가 쓰는 세 층
 
 | 층 | 뜻 | 근거로 쓰는 것 |
 |---|---|---|
 | **언어 보장 / API 계약** | 서명·KDoc 이 약속한 것 | ★★★ `fold` KDoc 「빈 컬렉션이면 **`initial`** 을 돌려준다」 · `reduce` KDoc 「빈 컬렉션이면 **던진다** — `reduceOrNull` 을 써라」 · `partition` 은 **`Pair<List<T>, List<T>>`** · ★ `Int` 덧셈은 **감긴다**(언어 — 01) |
-| **구현(stdlib)** | 이 판의 stdlib 가 실제로 하는 것 | ★★ `reduce` 가 **`UnsupportedOperationException`** 을 고른 것과 그 문장 · `average()` 가 빈 입력에서 **`Double.NaN`** 을 돌려주는 `if` 한 줄 · `sumOf { Int }` 가 **`Int` 누산기**로 더하는 것 · `groupBy` 결과가 `LinkedHashMap` |
-| **이 판의 관찰** | 이번 실행에서 본 것 | ★ Rust `sum` 은 최적화 **끔**에서 패닉, **켬**에서 감김 |
+| **구현(stdlib)** | 이 버전의 stdlib 가 실제로 하는 것 | ★★ `reduce` 가 **`UnsupportedOperationException`** 을 고른 것과 그 문장 · `average()` 가 빈 입력에서 **`Double.NaN`** 을 돌려주는 `if` 한 줄 · `sumOf { Int }` 가 **`Int` 누산기**로 더하는 것 · `groupBy` 결과가 `LinkedHashMap` |
+| **이 버전의 관찰** | 이번 실행에서 본 것 | ★ Rust `sum` 은 최적화 **끔**에서 패닉, **켬**에서 감김 |
 
 ## 이 판
 
@@ -30,14 +30,14 @@ Python 3.12.3
 (exit 0)
 ```
 
-## 흔들리는 칸 / 안 흔들리는 칸
+## 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| **흔들린다** | Rust 패닉 첫 줄의 **스레드 id**(`thread 'main' (NNN) panicked`) | 실행마다 바뀐다 — 재대조기가 정규화한다 |
-| 안 흔들린다 | 격자 12행 × 3열 · 마지막 줄의 칸 수 | 결정적이다 |
-| 안 흔들린다 | 오버플로 값(`-2147483648`) · `groupBy` 의 키 순서 | 2의 보수 · `LinkedHashMap` 삽입 순서 |
-| 안 흔들린다 | stdlib 소스 발췌 · Rust 패닉의 **메시지·위치**(`accum.rs:204:1`) · 모든 종료 코드 | 판이 같으면 같다 |
+| **실행마다 달라진다** | Rust 패닉 첫 줄의 **스레드 id**(`thread 'main' (NNN) panicked`) | 실행마다 바뀐다 — 재대조기가 정규화한다 |
+| 달라지지 않는다 | 격자 12행 × 3열 · 마지막 줄의 칸 수 | 결정적이다 |
+| 달라지지 않는다 | 오버플로 값(`-2147483648`) · `groupBy` 의 키 순서 | 2의 보수 · `LinkedHashMap` 삽입 순서 |
+| 달라지지 않는다 | stdlib 소스 발췌 · Rust 패닉의 **메시지·위치**(`accum.rs:204:1`) · 모든 종료 코드 | 판이 같으면 같다 |
 
 ★ 근거 — 캡처 스크립트를 처음부터 두 번 돌려 **블록 전체를 대조**했다(수치는 3-answer 의 「실행 검증」).
 
@@ -74,19 +74,19 @@ Python 3.12.3
 
 ## 동작 방식
 
-### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「부적용인 창」
+### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「해당 없는 창」
 
 | 창 | 무엇을 보여 주나 | 어디서 왔나 |
 |---|---|---|
-| ★★★ **빈 입력 갈림 격자(실행 + `try`)** | 12연산 × 3입력 → 값 / 예외((1)) | ★ **본체 창** |
+| ★★★ **빈 입력 갈림 격자(실행 + `try`)** | 12연산 × 3입력 → 값 / 예외((1)) | ★ **핵심 창** |
 | ★★ **오버플로 로그** | `sumOf { it }` 대 `sumOf { it.toLong() }` 대 `Math.addExact`((2)) | — |
 | ★★ **stdlib 소스 jar 발췌** | `fold`·`reduce` 의 KDoc 계약 · `sumOf`·`sum`·`average` 의 누산기((3)(4)) | [41번 주제](../41-collection-creation-and-copying/) (2)와 같은 창 |
 | ★ **런타임 클래스** | `groupBy` 결과 · `partition` 결과의 실체((5)) | [40번 주제](../40-read-only-collections-and-runtime-types/)의 창 |
 | ★ **다른 언어 둘** | Rust `reduce` 는 `Option` · Rust `sum` 은 최적화에 따라 **패닉/감김** · Python `sum` 은 **안 넘친다**((6)) | 대비 |
 | **인용 — 다시 안 잰다** | Python `functools.reduce` 의 빈 입력 `TypeError` · JS `[].reduce(f)` 의 `TypeError` · Java 스트림 `reduce` 의 `Optional` | [Python 45번](../../../python/syntax/45-functools/) · [JS 25번](../../../js/syntax/25-array-non-mutating-and-copy-methods/) · [Java 46번](../../../java/syntax/46-terminal-operations/) |
-| **부적용 — 실행 시간** | 「`sumOf` 가 `fold` 보다 빠르다」·「`groupBy` 가 비싸다」는 **재지 않았다** | — |
+| **해당 없음 — 실행 시간** | 「`sumOf` 가 `fold` 보다 빠르다」·「`groupBy` 가 비싸다」는 **재지 않았다** | — |
 
-### (1) ★★★ 빈 입력 갈림 격자 — `fold` 와 `reduce` 가 갈리는 한 칸
+### (1) ★★★ 빈 입력 갈림 격자 — `fold` 와 `reduce` 가 달라지는 한 칸
 
 **언제 쓰나** — 입력이 비어 있을 **수도** 있는 자리에서 합계·최댓값·그룹을 낼 때.
 
@@ -193,7 +193,7 @@ on empty (12 ops): threw 2 · null 2 · NaN 1 · value 7 | threw on one or many:
 ```
 
 - ★★★ **던진 것은 빈 입력의 두 칸뿐이다** — `reduce{+}`(`UnsupportedOperationException: Empty collection can't be reduced.`)와 `maxBy{it}`(`NoSuchElementException`, 메시지 `null`). 원소가 하나라도 있는 24칸은 **한 칸도 안 던졌다.**
-- ★★★ **`fold(0)` 은 빈 입력에서 `0`** — 초기값을 그대로 돌려준다. 원소가 있는 두 칸(`5`·`10`)은 `reduce` 와 **같다.** 둘이 갈리는 곳은 **빈 입력 한 칸**이다.
+- ★★★ **`fold(0)` 은 빈 입력에서 `0`** — 초기값을 그대로 돌려준다. 원소가 있는 두 칸(`5`·`10`)은 `reduce` 와 **같다.** 둘이 달라지는 곳은 **빈 입력 한 칸**이다.
 - ★★★ **`average()` 는 빈 입력에서 `NaN`** — 예외가 아니다. 「평균을 못 낸다」가 **값으로** 온다. 비교(`== NaN`)로는 못 잡는다 — `isNaN()`.
 - ★★ **빈 입력 12칸의 꼴** — 던짐 2 · `null` 2(`reduceOrNull` · `maxByOrNull`) · `NaN` 1 · 값 7. 「값」 7칸도 **서로 다른 값**이다 — `0`(`fold`·`sumOf`·`sum`) · `{}` · `([], [])` · `[0]`(`runningFold` — **초기값 하나가 든 리스트**) · `[]`(`runningReduce`).
 - ★★ **`runningFold` 와 `runningReduce` 는 빈 입력에서도 안 던진다** — 같은 `fold`/`reduce` 짝인데 **리스트를 돌려주니** 「비어 있음」을 `[]` 로 표현할 수 있다. `runningFold` 는 **초기값을 첫 원소로** 싣는다(`[0, 5]` · `[0, 1, 3, 6, 10]`).
@@ -509,7 +509,7 @@ empty    max=null  fold=0
 | `sumOf { Int }` 가 감긴다 | ★★ **언어(`Int` 덧셈) + stdlib 구현(`Int` 누산기)** | (2)(4) · [01번 주제](../01-val-var-and-basic-types/) |
 | `groupBy` 가 `LinkedHashMap` · 삽입 순서 | ★ **stdlib 구현**(런타임 클래스) | (5) |
 | `partition` 이 `Pair<List, List>` | ★★ **API 계약(서명)** | (5) |
-| Rust `sum` 이 디버그에서 패닉 | **rustc 빌드 설정의 관찰** — 이 판에서 두 번 돌렸다 | (6) |
+| Rust `sum` 이 디버그에서 패닉 | **rustc 빌드 설정의 관찰** — 이 버전에서 두 번 돌렸다 | (6) |
 
 ★★ **가장 조심할 자리** — `average()` 의 `NaN` 과 `sumOf` 의 감김은 **둘 다 예외가 없다.** 격자의 「던진 칸」에 안 잡히는 실패가 이 주제의 절반이다.
 
@@ -528,7 +528,7 @@ empty    max=null  fold=0
 
 ## 핵심 문장
 
-1. `fold` 와 `reduce` 는 원소가 있으면 같고 **빈 입력에서만 갈린다** — `fold` 는 초기값, `reduce` 는 **`UnsupportedOperationException("Empty collection can't be reduced.")`**.
+1. `fold` 와 `reduce` 는 원소가 있으면 같고 **빈 입력에서만 달라진다** — `fold` 는 초기값, `reduce` 는 **`UnsupportedOperationException("Empty collection can't be reduced.")`**.
 2. 집계 12연산의 빈 입력 칸 — **던짐 2 · `null` 2 · `NaN` 1 · 값 7**, 원소가 있는 24칸은 **던짐 0** 이다.
 3. **`average()` 는 빈 입력에서 `NaN`** 이다 — 예외가 아니다.
 4. **`sumOf { it }` 의 `Int` 합은 조용히 감긴다** — `Long` 을 돌려주는 셀렉터라야 `Long` 누산기가 골라진다.
@@ -568,9 +568,9 @@ empty    max=null  fold=0
 
 ## 실행 환경
 
-**기준 소스** — [Aggregate operations](https://kotlinlang.org/docs/collection-aggregate.html)(`sum`·`average`·`sumOf`·`maxBy` · `fold`·`reduce` · `runningFold`·`runningReduce` · `…OrNull`) · [Grouping](https://kotlinlang.org/docs/collection-grouping.html)(`groupBy`) · [Filtering](https://kotlinlang.org/docs/collection-filtering.html)(`partition`) — 이 문서는 그 페이지들의 **목록**을 따르되, 문장은 인용하지 않고 **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 구현을 근거로 삼는다((3)(4)).
+**기준 소스** — [Aggregate operations](https://kotlinlang.org/docs/collection-aggregate.html)(`sum`·`average`·`sumOf`·`maxBy` · `fold`·`reduce` · `runningFold`·`runningReduce` · `…OrNull`) · [Grouping](https://kotlinlang.org/docs/collection-grouping.html)(`groupBy`) · [Filtering](https://kotlinlang.org/docs/collection-filtering.html)(`partition`) — 이 문서는 그 페이지들의 **목록**을 따르되, 문장은 인용하지 않고 **이 버전의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 구현을 근거로 삼는다((3)(4)).
 **실행 검증** — 이 문서의 모든 출력·에러는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java` 에서 실제로 얻었다. 대비 둘은 **rustc 1.92.0** · **Python 3.12.3** 이다.\
 `kotlinc` 4회 · `java` 3회 + 격자 스크립트 안에서 1회 · stdlib 소스 jar 에서 5곳 · `rustc` 2회(최적화 끔/켬) + 실행 2회 · `python3` 1회.\
 ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **격자 마지막 줄의 칸 수는 스크립트가 스스로 센 것**이다.
-**버전** — `fold`·`reduce`·`groupBy`·`partition`·`sum`·`average` 는 **1.0** — 이 판의 소스에서 선언 위에 `@SinceKotlin` 이 **없다**(확인만 했고 발췌하지 않았다). `reduceOrNull`·`runningFold`·`runningReduce`·`maxByOrNull` 은 stdlib 소스에 **`@SinceKotlin("1.4")`**((3)) · `sumOf` 도 **1.4**((4)). ★ **새 `maxBy` 는 `@SinceKotlin("1.7")` · `@JvmName("maxByOrThrow")`**((3)) — [43번 주제](../43-filter-search-and-empty-collections/) (4)의 `max()` 와 같은 모양이다(옛 `maxBy` 의 애너테이션은 **발췌하지 않았다**).
+**버전** — `fold`·`reduce`·`groupBy`·`partition`·`sum`·`average` 는 **1.0** — 이 버전의 소스에서 선언 위에 `@SinceKotlin` 이 **없다**(확인만 했고 발췌하지 않았다). `reduceOrNull`·`runningFold`·`runningReduce`·`maxByOrNull` 은 stdlib 소스에 **`@SinceKotlin("1.4")`**((3)) · `sumOf` 도 **1.4**((4)). ★ **새 `maxBy` 는 `@SinceKotlin("1.7")` · `@JvmName("maxByOrThrow")`**((3)) — [43번 주제](../43-filter-search-and-empty-collections/) (4)의 `max()` 와 같은 모양이다(옛 `maxBy` 의 애너테이션은 **발췌하지 않았다**).
 **경계** — 빈 입력에서 **검색 연산**(`first`·`single`·`max`)이 던지는 것은 [43번 주제](../43-filter-search-and-empty-collections/)가 정본이다. 여기는 **접기(fold)와 묶기(group)** 다. `Int` 덧셈이 넘치면 **감긴다**는 언어 규칙은 [01번 주제](../01-val-var-and-basic-types/)가 정본이다 — 여기서는 `sumOf` 가 그 규칙을 **그대로 물려받는다**는 것만 본다. `partition` 결과를 `val (a, b) =` 로 받는 것은 [30번 주제](../30-destructuring-declarations-and-componentn/)다.

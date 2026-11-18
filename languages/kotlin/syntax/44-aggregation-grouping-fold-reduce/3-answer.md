@@ -190,7 +190,7 @@ fun main() {
 - ★★ `partition` 의 `first` 는 **조건을 만족한 쪽**(`[4]`), `second` 는 나머지다.
 - ★ 빈 `groupBy` 결과에 `0` 을 물으면 **`null`** — 칸이 **아예 없다.** `partition` 은 빈 입력에서도 두 칸(`[]`·`[]`)이 있다.
 
-### 4. ★★ `7` 줄 — 기본 빌드는 **`attempt to add with overflow` 패닉(`exit 101`, `7` 줄이 안 찍힌다)** · `-O` 는 **`7 sum of big   = -2147483648`** · `1` 은 두 판 다 **`None`**, `4` 는 **`0`**
+### 4. ★★ `7` 줄 — 기본 빌드는 **`attempt to add with overflow` 패닉(`exit 101`, `7` 줄이 안 찍힌다)** · `-O` 는 **`7 sum of big   = -2147483648`** · `1` 은 두 버전 다 **`None`**, `4` 는 **`0`**
 
 **출력**
 
@@ -244,7 +244,7 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 **왜 그런가**
 
 - ★★★ Rust `Iterator::reduce` 는 **`Option`** 을 돌려준다 — 빈 입력은 `None`. **타입으로 「없을 수 있음」을 적는다**(Kotlin 의 `reduceOrNull` 자리).
-- ★★ `sum` 의 넘침은 **빌드가 결정한다** — 이 판의 `rustc` 기본(최적화 끔)은 넘침 검사가 켜져 **패닉**, `-O` 는 감긴다. **같은 소스**다.
+- ★★ `sum` 의 넘침은 **빌드가 결정한다** — 이 버전의 `rustc` 기본(최적화 끔)은 넘침 검사가 켜져 **패닉**, `-O` 는 감긴다. **같은 소스**다.
 - ★ `try_fold` + `checked_add` 는 넘치면 **`None`** 이다(`6`) — Kotlin 의 `Math.addExact`(2번 `6`)와 같은 역할을 **예외 대신 값**으로 한다.
 
 ### 5. `runningFold(0){+}` — `empty` **`[0]`** · `one` **`[0, 5]`** · `runningReduce{+}` — `empty` **`[]`** · `one` **`[5]`**
@@ -282,7 +282,7 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 **왜 그런가**
 
 - ★★ Kotlin·Rust 는 이 문서가 돌렸다(1번 · 4번). Python 은 [45번](../../../python/syntax/45-functools/) (6)이 `TypeError: reduce() of empty iterable with no initial value`, JS 는 [25번](../../../js/syntax/25-array-non-mutating-and-copy-methods/)이 `TypeError 「Reduce of empty array with no initial value」`, Java 는 [46번](../../../java/syntax/46-terminal-operations/)이 `Optional` 을 실측했다 — **다시 돌리지 않았다.**
-- ★ 다섯 다 「초기값 없는 접기의 빈 입력」을 **특별 취급**한다. 갈리는 것은 **던지느냐(Kotlin·Python·JS) 타입으로 적느냐(Rust·Java)** 다.
+- ★ 다섯 다 「초기값 없는 접기의 빈 입력」을 **특별 취급**한다. 달라지는 것은 **던지느냐(Kotlin·Python·JS) 타입으로 적느냐(Rust·Java)** 다.
 
 ### 10. **말할 수 없다** — 소스는 「`sumOf` 가 무엇을 하나」를 말할 뿐이다 · 빠르다고 하려면 **같은 입력에서 둘의 시간을 반복 측정**해야 한다
 
@@ -319,9 +319,9 @@ Python 3.12.3
 (exit 0)
 ```
 
-★ **흔들리는 칸과 안 흔들리는 칸**
+★ **실행마다 달라지는 항목과 달라지지 않는 항목**
 
-| 흔들린다 | 안 흔들린다 |
+| 실행마다 달라진다 | 달라지지 않는다 |
 |---|---|
 | Rust 패닉 첫 줄의 **스레드 id** | 격자 12행 × 3열 · 마지막 줄의 칸 수 · 오버플로 값 · `groupBy` 키 순서 |
 | | 패닉의 메시지·위치(`accum.rs:204:1`) · stdlib 소스 발췌 |
@@ -330,7 +330,7 @@ Python 3.12.3
 > 근거 — 캡처 스크립트를 처음부터 다시 돌려 **블록 전체를 대조**했다.
 >
 > 실측 — `capture.sh blocks` 와 `capture.sh blocks-recheck` 를 처음부터 따로 돌려 `normalize-shaky.py` 로 대조했다 —\
-> **블록 60개 · 동일 59 · 흔들린 칸 1 · ★고칠 것 0**(42\~45 네 주제를 한 캡처로 받았다). 흔들린 1블록은 44번의 Rust 패닉 블록(`a44-rs`)이고, 원문 차이는 **패닉 첫 줄의 스레드 id** 하나였다 — 기본 정규화 규칙(스레드 id)이 그것을 지웠다.\
+> **블록 60개 · 동일 59 · 달라진 항목 1 · ★고칠 것 0**(42\~45 네 주제를 한 캡처로 받았다). 흔들린 1블록은 44번의 Rust 패닉 블록(`a44-rs`)이고, 원문 차이는 **패닉 첫 줄의 스레드 id** 하나였다 — 기본 정규화 규칙(스레드 id)이 그것을 지웠다.\
 > ★ 추가한 정규화 규칙은 **없다**.
 
 | 프로그램 | 무엇을 확인했나 | 돌린 방법 |
@@ -346,10 +346,10 @@ Python 3.12.3
 **구현 의존 항목** — `reduce` 의 예외 **클래스와 문장** · `average()` 의 `NaN` 분기 · `sumOf { Int }` 의 `Int` 누산기 · `groupBy` 의 `LinkedHashMap` — 이 stdlib 판의 산출물이다. Rust 의 패닉/감김은 **rustc 빌드 설정**이다.\
 반면 **`fold` 의 초기값 반환** · **`reduce` 가 빈 입력에서 던진다** 는 **KDoc 계약**, `Int` 덧셈이 감기는 것은 **언어 규칙**이다.
 
-**★ 던져 봤더니 예상과 달랐던 것 — 세 건**
+**★ 실행해 봤더니 예상과 달랐던 것 — 세 건**
 
 1. ★★ **`maxBy` 의 빈 입력 예외는 `reduce` 와 클래스가 달랐다** — `NoSuchElementException`(메시지 `null`) 대 `UnsupportedOperationException`. 「빈 입력 예외」가 한 종류가 아니다(1번).
-2. ★★ **`runningReduce` 는 빈 입력에서 안 던졌다** — `reduce` 의 이름을 달고도 `[]` 다(5번).
+2. ★★ **`runningReduce` 는 빈 입력에서 실행하지 않았다** — `reduce` 의 이름을 달고도 `[]` 다(5번).
 3. ★ **Rust `sum` 은 같은 소스가 빌드에 따라 패닉하기도 감기기도 했다** — Kotlin 은 한 빌드에서 감겼다(4번).
 
 ## 실행 환경

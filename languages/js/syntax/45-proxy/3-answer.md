@@ -152,7 +152,7 @@
 | `js44b-45d-internal-slots.js` | ★★ 내부 슬롯 · 프라이빗 이름 · bind 고침 | 〃 |
 | `js44b-45e-what-a-proxy-looks-like.js` | ★★ `typeof` · 배열 판별 · 취소 | 〃 |
 
-세 판 대조기(이 묶음의 plain 탐침). 이 주제의 줄 넷(`45a`·`45c`·`45d`·`45e`)은 **전부 `identical · identical`** 이다.
+세 판 대조기(이 묶음의 plain probe). 이 주제의 줄 넷(`45a`·`45c`·`45d`·`45e`)은 **전부 `identical · identical`** 이다.
 
 ```sh
 # js44b-vdiff.sh
@@ -196,12 +196,12 @@ js44b-47d-registry-api.js                node18/node20 DIFFERS    node20/Chrome 
 node18 vs node20: identical 7 · differs 2   ·   node20 vs Chrome 151: identical 8 · differs 0 · node only 1
 ```
 
-**구현 의존 항목 — 판이 오르면 다시 돌릴 것** — 격자의 칸은 **명세**가 정하므로 판이 올라도 같아야 한다. 다시 볼 것은 **문구**다(1번 `[3]`의 12줄 · 3번 · 4번의 `Cannot perform …`).
+**구현 의존 항목 — 버전이 오르면 다시 돌릴 것** — 격자의 칸은 **명세**가 정하므로 판이 올라도 같아야 한다. 다시 볼 것은 **문구**다(1번 `[3]`의 12줄 · 3번 · 4번의 `Cannot perform …`).
 
 ## 실행 환경
 
 이 파일의 출력은 **node v20.19.6** · x86-64 Linux 에서 실제로 돌려 얻은 것이고, 블록은 **전부 캡처 파일에서 조립**했다.
-★★★ **node 18.19.1 · Chrome 151 도 네 탐침 전부 한 글자도 같았다**(위 「실행 검증」의 세 판 대조기) — 예외 문구까지.
+★★★ **node 18.19.1 · Chrome 151 도 네 probe 전부 한 글자도 같았다**(위 「실행 검증」의 세 판 대조기) — 예외 문구까지.
 
 **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
 `js44b-45a-invariant-grid.js`(1번 · 5번 · 6번 · 7번) · `js44b-45c-falsish.js`(2번 · 6번 · 9번) · `js44b-45d-internal-slots.js`(3번 · 7번) · `js44b-45e-what-a-proxy-looks-like.js`(4번 · 7번 · 8번).

@@ -1,14 +1,14 @@
 # kotlin/syntax/47 — `Sequence` — 지연 평가, 언제 `List` 보다 싼가 — 정리 (힌트)
 
-★★★ **본체는 첫째 창이다** — 「**호출 수 격자 — 사슬 다섯 × (`List` · `asSequence()`) × 입력 크기(10 · 1000) → 람다 호출 수 · 끝 단계 앞에서 만들어진 컬렉션 수**」. 「싸다」를 **시간으로 재지 않는다** — 시간은 판을 타고, **호출 수와 컬렉션 수는 결정적**이다.
+★★★ **핵심은 첫째 창이다** — 「**호출 수 격자 — 사슬 다섯 × (`List` · `asSequence()`) × 입력 크기(10 · 1000) → 람다 호출 수 · 끝 단계 앞에서 만들어진 컬렉션 수**」. 「싸다」를 **시간으로 재지 않는다** — 시간은 판을 타고, **호출 수와 컬렉션 수는 결정적**이다.
 
 ## 이 주제가 쓰는 세 층
 
 | 층 | 뜻 | 근거로 쓰는 것 |
 |---|---|---|
 | **언어 보장 / API 계약** | 서명·KDoc 이 약속한 것 | ★★ KDoc 의 분류 「`_intermediate_ and _stateless_`」(`map`·`filter`) · 「`_intermediate_ and _stateful_`」(`sorted`·`distinct`) · ★★ `Sequence` KDoc 「`Sequences can be iterated multiple times, however some … constrain themselves to be iterated only once`」 · `generateSequence(nextFunction)` 「`constrained to be iterated only once`」 |
-| **구현(stdlib)** | 이 판의 stdlib 가 실제로 하는 것 | `Iterable.map` 이 **`ArrayList(collectionSizeOrDefault(10))`** · `filter` 가 **`ArrayList()`** · `Sequence.sorted` 가 **`toMutableList()` 후 `sort()`** · `distinct` 가 **`HashSet` 을 쥐고 원소마다** 흘린다 · 한 번 제한이 **`AtomicReference.getAndSet(null)`** · 래퍼 클래스 이름(`TransformingSequence`·`FilteringSequence`) |
-| **이 판의 관찰** | kotlinc 2.4.20 에서 이번에 본 것 | 격자의 수 · `javap` 에 박힌 `new java/util/ArrayList` 개수 · 로그 순서 |
+| **구현(stdlib)** | 이 버전의 stdlib 가 실제로 하는 것 | `Iterable.map` 이 **`ArrayList(collectionSizeOrDefault(10))`** · `filter` 가 **`ArrayList()`** · `Sequence.sorted` 가 **`toMutableList()` 후 `sort()`** · `distinct` 가 **`HashSet` 을 잡고 원소마다** 흘린다 · 한 번 제한이 **`AtomicReference.getAndSet(null)`** · 래퍼 클래스 이름(`TransformingSequence`·`FilteringSequence`) |
+| **이 버전의 관찰** | kotlinc 2.4.20 에서 이번에 본 것 | 격자의 수 · `javap` 에 박힌 `new java/util/ArrayList` 개수 · 로그 순서 |
 
 ## 이 판
 
@@ -18,14 +18,14 @@ info: kotlinc-jvm 2.4.20 (JRE 21.0.5+11-LTS)
 (exit 0)
 ```
 
-## 흔들리는 칸 / 안 흔들리는 칸
+## 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| **흔들린다** | (이 주제에는 없다) | ★★ **실행 시간을 찍지 않았다** — 한 판 시간은 근거가 아니고(규칙 24) 판 격자도 돌리지 않았다 |
-| 안 흔들린다 | 격자 10행 · 호출 수 · 컬렉션 수 · 줄인 칸 수 | 람다 호출 횟수는 입력과 사슬만으로 정해진다 |
-| 안 흔들린다 | 순서 로그 · 두 번 돌기 결과 · 래퍼 클래스 이름 | 단일 스레드 · 고정 입력 |
-| 안 흔들린다 | stdlib 소스 발췌 · `javap` 의 명령·상수 풀 번호 · 종료 코드 | jar·컴파일러가 같으면 같다 |
+| **실행마다 달라진다** | (이 주제에는 없다) | ★★ **실행 시간을 찍지 않았다** — 한 판 시간은 근거가 아니고(규칙 24) 판 격자도 돌리지 않았다 |
+| 달라지지 않는다 | 격자 10행 · 호출 수 · 컬렉션 수 · 줄인 칸 수 | 람다 호출 횟수는 입력과 사슬만으로 정해진다 |
+| 달라지지 않는다 | 순서 로그 · 두 번 돌기 결과 · 래퍼 클래스 이름 | 단일 스레드 · 고정 입력 |
+| 달라지지 않는다 | stdlib 소스 발췌 · `javap` 의 명령·상수 풀 번호 · 종료 코드 | jar·컴파일러가 같으면 같다 |
 
 ★ 근거 — 캡처 스크립트를 처음부터 두 번 돌려 **블록 전체를 대조**했다(수치는 3-answer 의 「실행 검증」).
 
@@ -60,23 +60,23 @@ info: kotlinc-jvm 2.4.20 (JRE 21.0.5+11-LTS)
 ## 이 주제가 답하려는 질문
 
 1. 사슬마다 **람다가 몇 번 불리고 중간 컬렉션이 몇 개 생기나** — `Sequence` 로 바꾸면 무엇이 줄고 무엇이 안 주나.
-2. **순서가 어떻게 다른가** — 그리고 `sorted`·`distinct` 처럼 **상태를 쥐는** 단계는 그 순서를 어떻게 바꾸나.
+2. **순서가 어떻게 다른가** — 그리고 `sorted`·`distinct` 처럼 **상태를 잡는** 단계는 그 순서를 어떻게 바꾸나.
 3. `Sequence` 는 **두 번 돌 수 있나** — 누가 그것을 정하나.
 
 ## 동작 방식
 
-### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「부적용인 창」
+### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「해당 없는 창」
 
 | 창 | 무엇을 보여 주나 | 어디서 왔나 |
 |---|---|---|
-| ★★★ **호출 수 격자(실행 · 결정적)** | 사슬 × 모양 × 크기 → 람다 호출 수 · 끝 단계 앞 컬렉션 수((1)) | ★ **본체 창** |
+| ★★★ **호출 수 격자(실행 · 결정적)** | 사슬 × 모양 × 크기 → 람다 호출 수 · 끝 단계 앞 컬렉션 수((1)) | ★ **핵심 창** |
 | ★★ **순서 로그** | 단계별 대 원소별 · `sorted`·`distinct` 가 끼면((2)) | — |
 | ★★ **stdlib 소스 jar 발췌** | 중간 컬렉션을 **누가 어디서** 만드나 · 상태 있음/없음 분류((3)) | [41번 주제](../41-collection-creation-and-copying/) (2)와 같은 창 |
 | ★★ **`javap -c`** | `List` 사슬 본문에 박힌 **`new java/util/ArrayList`** 개수((3)) | — |
 | ★ **런타임 클래스** | 단계마다 무엇이 만들어지나 — 리스트인가 래퍼인가((4)) | — |
 | **인용 — 다시 안 잰다** | `Sequence` 연산의 결과 **타입** | [42번 주제](../42-transformations-map-flatmap-associate-zip/) (1) |
 | ★ **제5의 상태 — 창을 바꿔 물었다** | 「중간 컬렉션이 몇 개인가」를 **할당 계측**이 아니라 **단계 출력의 클래스 + 소스 발췌 + 바이트코드**로 물었다 | (1)(3) — 이 창은 **단계 안에 숨은** 컬렉션(`sorted` 의 내부 리스트·`distinct` 의 `HashSet`)을 **못 센다** — 그것은 소스 창이 맡는다 |
-| **부적용 — 실행 시간** | ★★★ 「`Sequence` 가 빠르다/느리다」는 **재지 않았다** — 이 문서의 「싸다」는 **호출 수와 객체 수**뿐이다 | — |
+| **해당 없음 — 실행 시간** | ★★★ 「`Sequence` 가 빠르다/느리다」는 **재지 않았다** — 이 문서의 「싸다」는 **호출 수와 객체 수**뿐이다 | — |
 
 ### (1) ★★★ 호출 수 격자 — `Sequence` 가 무엇을 줄이나
 
@@ -366,7 +366,7 @@ private class DistinctIterator<T, K>(private val source: Iterator<T>, private va
 ```
 
 - ★★★ **`map`·`filter` 는 「`_intermediate_ and _stateless_`」, `sorted`·`distinct` 는 「`_intermediate_ and _stateful_`」** — KDoc 이 분류를 **글자로** 적는다. 구현은 `TransformingSequence`·`FilteringSequence` **래퍼를 돌려줄 뿐** 아무것도 돌지 않는다.
-- ★★★ **「상태 있음」의 뜻이 둘이다** — `sorted` 는 `iterator()` 를 부르는 순간 **`toMutableList()` 로 전부 모은다.** `distinct` 는 **`HashSet` 하나(`observed`)** 를 쥐고 **원소마다** `add` 가 참이면 내보낸다. 둘 다 「상태 있음」이지만 **앞쪽을 끝까지 당기는 것은 `sorted` 뿐**이다((2)의 `C` 대 `D`).
+- ★★★ **「상태 있음」의 뜻이 둘이다** — `sorted` 는 `iterator()` 를 부르는 순간 **`toMutableList()` 로 전부 모은다.** `distinct` 는 **`HashSet` 하나(`observed`)** 를 잡고 **원소마다** `add` 가 참이면 내보낸다. 둘 다 「상태 있음」이지만 **앞쪽을 끝까지 당기는 것은 `sorted` 뿐**이다((2)의 `C` 대 `D`).
 
 ```kotlin
 // code47.kt
@@ -588,7 +588,7 @@ fib     [0, 1, 1, 2, 3, 5, 8, 13]
 
 1. ★★★ **「`Sequence` 가 `List` 보다 빠르다」를 규칙으로 쓴다.** 이 문서가 말할 수 있는 것은 **호출 수**다 — 끝이 `toList` 면 같고((1)), 래퍼 객체는 더 든다((4)). 시간은 재야 안다.
 2. ★★★ **`Sequence` 사슬에 `sorted` 를 넣고 `first` 가 앞쪽을 조금만 본다고 믿는다.** `sorted` 앞은 전부 돈다((1)(2)).
-3. ★★ **`distinct` 도 `sorted` 처럼 전부 모은다고 본다.** 원소별로 흐른다 — `HashSet` 만 쥔다((2)(3)).
+3. ★★ **`distinct` 도 `sorted` 처럼 전부 모은다고 본다.** 원소별로 흐른다 — `HashSet` 만 잡는다((2)(3)).
 4. ★★ **`List` 와 `Sequence` 의 부작용 순서가 같다고 본다.** 단계별 대 원소별이다 — 로그·외부 호출 순서가 바뀐다((2)).
 5. ★★ **끝 연산 없이 `Sequence` 를 만들어 두고 일이 끝났다고 본다.** 아무것도 안 돌았다((2)).
 6. ★★ **`sequence { }` 를 두 번 돌리고 한 번 계산된다고 본다.** 블록이 **다시** 돈다((5)).
@@ -654,16 +654,16 @@ fib     [0, 1, 1, 2, 3, 5, 8, 13]
 
 ## 더 들어가면
 
-- **할당 바이트** — 래퍼·반복자·중간 리스트의 바이트를 JFR 이나 할당 계수기로 세면 (4)의 저울을 수치로 볼 수 있다. 이 판은 **재지 않았다.**
+- **할당 바이트** — 래퍼·반복자·중간 리스트의 바이트를 JFR 이나 할당 계수기로 세면 (4)의 저울을 수치로 볼 수 있다. 이 버전은 **재지 않았다.**
 - **`sortedBy`·`sortedDescending` 의 `Sequence` 판** — 같은 `_stateful_` 이고 같은 방식으로 모을 것으로 보이지만 **발췌하지 않았다.**
 - **`Sequence.chunked`·`windowed`** — 상태 있음이면서 **창 크기만큼만** 모은다. [45번 주제](../45-sorting-and-partial-operations/)의 `List` 판과 견줄 자리 — 돌리지 않았다.
 
 ## 실행 환경
 
-**기준 소스** — [Sequences](https://kotlinlang.org/docs/sequences.html)(만들기 `sequenceOf`·`asSequence`·`generateSequence`·`sequence { }` · 연산의 **상태 없음/상태 있음 · 중간/끝** 분류 · 처리 순서) — 이 문서는 그 페이지의 **목록**을 따르되, 문장은 인용하지 않고 **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 구현을 근거로 삼는다((3)(5)).
+**기준 소스** — [Sequences](https://kotlinlang.org/docs/sequences.html)(만들기 `sequenceOf`·`asSequence`·`generateSequence`·`sequence { }` · 연산의 **상태 없음/상태 있음 · 중간/끝** 분류 · 처리 순서) — 이 문서는 그 페이지의 **목록**을 따르되, 문장은 인용하지 않고 **이 버전의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 구현을 근거로 삼는다((3)(5)).
 **실행 검증** — 이 문서의 모든 출력·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java`·`javap` 에서 실제로 얻었다.\
 `kotlinc` 6회 · `java` 6회 · `javap` 1회 · stdlib 소스 jar 에서 발췌 16곳.\
 ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「호출을 줄인 칸 N / M」은 격자 프로그램이 스스로 센 것**이다.
-**버전** — `Sequence`·`asSequence`·`generateSequence`·`constrainOnce` 는 **1.0**. `sequence { }` 빌더는 stdlib 소스에 **`@SinceKotlin("1.3")`**(이 판에서 읽었고 **발췌는 선언 한 줄만** — (5)).
+**버전** — `Sequence`·`asSequence`·`generateSequence`·`constrainOnce` 는 **1.0**. `sequence { }` 빌더는 stdlib 소스에 **`@SinceKotlin("1.3")`**(이 버전에서 읽었고 **발췌는 선언 한 줄만** — (5)).
 **경계** — ★★ **결과 타입**(`Sequence` 의 연산이 대부분 `Sequence` 로 남고 `unzip`·`associate*` 에서 끝난다)은 [42번 주제](../42-transformations-map-flatmap-associate-zip/) (1)이 격자로 쟀다 — 여기서는 인용만 한다. `List.sorted()` 가 `Arrays$ArrayList` 인 것은 [45번 주제](../45-sorting-and-partial-operations/) (1), `toList()` 가 원소 수로 클래스를 고르는 것은 [41번 주제](../41-collection-creation-and-copying/) (2)가 정본이다.\
 ★★ **같은 지연 평가의 Java 판**(`Stream` — 원소별 처리 · `sorted` 에서 막힘)은 [Java 45번](../../../java/syntax/45-intermediate-operations/)이, 만들기와 「한 번만 쓸 수 있다」는 [Java 44번](../../../java/syntax/44-stream-creation/)이, 끝 연산은 [Java 46번](../../../java/syntax/46-terminal-operations/)이 정본이다. **C# 의 지연 실행과 「두 번 열거하면 두 번 돈다」** 는 [C# 32번](../../../csharp/syntax/32-yield-return-iterators-and-deferred-execution/)이 쟀다.

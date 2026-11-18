@@ -1,4 +1,4 @@
-# sql/60-`EXPLAIN ANALYZE` — 추정과 실측의 어긋남 — 정리 (힌트)
+# sql/60-`EXPLAIN ANALYZE` — 추정과 실측의 불일치 — 정리 (힌트)
 
 ## 한눈에 — 쉽게 말하면
 
@@ -83,7 +83,7 @@ INSERT INTO t60_skew SELECT 1000+g, 7 FROM generate_series(1,190000) g;
  합계 1,000                             합계 191,000
 ```
 
-**통계는 1단계를 기억하고, 데이터는 2단계다.** 이 어긋남이 이 편의 실험대다.
+**통계는 1단계를 기억하고, 데이터는 2단계다.** 이 불일치가 이 편의 실험대다.
 
 ## 동작 방식
 
@@ -97,7 +97,7 @@ Bitmap Heap Scan on t60_skew  (cost=146.44..1126.94 rows=10600 width=0) (actual 
                                                     추정 (예보)           실측 (실황)          몇 번 돌았나
 ```
 
-**기존 `emp` 하나만 읽어도 이미 어긋남이 보인다.** 이 표는 한 번도 `ANALYZE` 된 적이 없다.
+**기존 `emp` 하나만 읽어도 이미 불일치가 보인다.** 이 표는 한 번도 `ANALYZE` 된 적이 없다.
 
 ```text
 ### SQL: EXPLAIN ANALYZE SELECT * FROM emp WHERE salary > 100;
@@ -116,8 +116,8 @@ Bitmap Heap Scan on t60_skew  (cost=146.44..1126.94 rows=10600 width=0) (actual 
 `reltuples = -1`(=아직 센 적 없음)이라 옵티마이저가 **기본 가정**으로 예보했고, 125배 빗나갔다.\
 `Rows Removed by Filter: 1` 은 `salary IS NULL` 인 `cho` 를 버린 것이다([04번](../04-null-three-valued-logic/)).
 
-비용 — 4행짜리 표에서는 어떤 계획을 골라도 같으므로 **이 어긋남은 무해하다.**\
-**무해한 어긋남과 해로운 어긋남을 가르는 것이 2절의 주제다.**
+비용 — 4행짜리 표에서는 어떤 계획을 골라도 같으므로 **이 불일치는 무해하다.**\
+**무해한 불일치와 해로운 불일치를 가르는 것이 2절의 주제다.**
 
 ---
 
@@ -256,7 +256,7 @@ MySQL 에서 같은 세 장면을 찍었다.
 > `Comment`·`Index_comment`·`Visible`·`Expression` 칸을 지웠다. 남긴 칸의 값은 원본 그대로다.
 
 그림 해설 — **서로 다른 값의 개수(9)는 거의 맞다**(실제 10). **그런데 한 값의 행 수 추정이 절반이다.**\
-★ **왜 절반인지는 이 실측만으로 단정하지 않는다.** 확인된 것은 「**`ANALYZE TABLE` 을 돌려도 2배 어긋남이 남았다**」는 사실이다.\
+★ **왜 절반인지는 이 실측만으로 단정하지 않는다.** 확인된 것은 「**`ANALYZE TABLE` 을 돌려도 2배 불일치가 남았다**」는 사실이다.\
 표본 페이지 수를 `STATS_SAMPLE_PAGES=200` 으로 열 배 늘려 다시 돌려도 **95,256 으로 거의 같았다.**
 
 대가 — 그래서 MySQL 쪽에서는 **「`ANALYZE TABLE` 을 돌렸으니 이제 맞겠지」가 성립하지 않는다.**\
@@ -418,9 +418,9 @@ EXPLAIN ANALYZE DELETE …    ★ 진짜로 지운다
 
 ---
 
-### 7. ★ MySQL 의 `EXPLAIN ANALYZE` 는 변경문을 돌리지 않는다 — 던져서 확인한다
+### 7. ★ MySQL 의 `EXPLAIN ANALYZE` 는 변경문을 돌리지 않는다 — 실행해서 확인한다
 
-**언제 쓰나** — PG 습관을 MySQL 로 가져갈 때. **여기서 두 엔진이 갈린다.**
+**언제 쓰나** — PG 습관을 MySQL 로 가져갈 때. **여기서 두 엔진이 달라진다.**
 
 ```text
 ### SQL: EXPLAIN ANALYZE UPDATE t59_small SET ref = 1 WHERE id = 1;
@@ -541,7 +541,7 @@ SELECT table_rows FROM information_schema.tables WHERE table_name='…';
 - **`ANALYZE` 는 트랜잭션 안에서도 돈다.** 이 편의 PG 실험이 전부 `BEGIN … ROLLBACK` 안인 이유가 그것이다.
 - MySQL 의 `ANALYZE TABLE` 은 결과를 **표 형태로 돌려준다**(`Op=analyze`·`Msg_type=status`·`Msg_text=OK`).
   실패하면 그 칸에 사유가 찍히므로 **출력을 보고 넘어간다.**
-- **`EXPLAIN ANALYZE` 는 변경문에서 PG 와 MySQL 이 갈린다**(6·7절). 낱말은 같은데 동작이 다르다.
+- **`EXPLAIN ANALYZE` 는 변경문에서 PG 와 MySQL 이 달라진다**(6·7절). 낱말은 같은데 동작이 다르다.
 
 ## 어디서 틀리나
 
@@ -550,7 +550,7 @@ SELECT table_rows FROM information_schema.tables WHERE table_name='…';
 | `rows=` 를 사실로 읽는다 | **추정이다.** `emp` 는 4행인데 `rows=377` 이었다 | 1절 |
 | 추정이 틀려도 결과만 맞으면 된다고 본다 | **연산자 선택이 틀린다** — 장면 2 가 그것이다 | 2절 |
 | 대량 적재 뒤 `ANALYZE` 를 안 돌린다 | 적재 전 분포로 계획을 짠다 | 2절 |
-| `ANALYZE TABLE` 을 돌렸으니 맞겠지 | **MySQL 은 2배 어긋남이 남았다** | 3절 |
+| `ANALYZE TABLE` 을 돌렸으니 맞겠지 | **MySQL 은 2배 불일치가 남았다** | 3절 |
 | `actual rows=1.00` 을 「1행 읽었다」로 읽는다 | **한 번 돌 때의 평균**이다. `loops` 를 곱한다 | 4절 |
 | 시간(`actual time`)으로 계획을 비교한다 | 캐시 상태에 달렸다. **`Buffers`·`actual rows` 를 본다** | 5절 |
 | ★ `EXPLAIN ANALYZE DELETE` 를 그냥 던진다 | **PG 에서는 진짜로 지워진다** | 6절 |
@@ -575,7 +575,7 @@ SELECT table_rows FROM information_schema.tables WHERE table_name='…';
 | `Sort Method`·`Buffers` | **PG 의 계측 항목** — MySQL 출력에는 없다 | 5·8절 |
 
 ★ **이 편의 모든 계획은 「관찰」이다.** [19번](../19-semi-anti-join/)과 [59번](../59-scan-join-sort-operators/)에\
-같은 조건에서 계획이 갈린 실측이 있다. 제출 직전 재확인 결과는 3-answer 의 「실행 검증」에 있다.
+같은 조건에서 계획이 달라진 실측이 있다. 제출 직전 재확인 결과는 3-answer 의 「실행 검증」에 있다.
 
 ## 언제 쓰고 언제 안 쓰나
 
@@ -599,8 +599,8 @@ SELECT table_rows FROM information_schema.tables WHERE table_name='…';
 
 1. **`rows=` 는 예보, `actual rows=` 는 실황이다** — `EXPLAIN ANALYZE` 는 둘을 한 줄에 놓는다.
 2. **추정이 틀리면 숫자가 아니라 「선택」이 틀린다** — 통계가 낡으면 연산자까지 잘못 고른다.
-3. **통계를 낡게 만드는 법은 간단하다** — 대량으로 넣고 `ANALYZE` 를 안 돌리면 된다. 18배 어긋남이 났다.
-4. **MySQL 은 `ANALYZE TABLE` 로도 2배 어긋남이 남았다** — 「돌렸으니 맞겠지」가 성립하지 않는다.
+3. **통계를 낡게 만드는 법은 간단하다** — 대량으로 넣고 `ANALYZE` 를 안 돌리면 된다. 18배 불일치가 났다.
+4. **MySQL 은 `ANALYZE TABLE` 로도 2배 불일치가 남았다** — 「돌렸으니 맞겠지」가 성립하지 않는다.
 5. **`actual rows` 는 한 번 돌 때의 평균이다** — `loops` 를 곱해야 총 행 수다.
 6. **PG 의 `EXPLAIN ANALYZE` 는 `DELETE` 도 진짜로 돈다** — 트랜잭션으로 감싼다. MySQL 은 안 돈다.
 7. **근거로 쓸 칸은 시간이 아니라 `actual rows`·`loops`·`Buffers`·`Rows Removed by Filter` 다.**
@@ -648,10 +648,10 @@ SELECT table_rows FROM information_schema.tables WHERE table_name='…';
 
 **기준 소스** — [PostgreSQL 18 · EXPLAIN](https://www.postgresql.org/docs/18/sql-explain.html) · [PostgreSQL 18 · ANALYZE](https://www.postgresql.org/docs/18/sql-analyze.html) · [MySQL 8.4 · Obtaining Information with EXPLAIN ANALYZE](https://dev.mysql.com/doc/refman/8.4/en/explain.html#explain-analyze) · [MySQL 8.4 · ANALYZE TABLE](https://dev.mysql.com/doc/refman/8.4/en/analyze-table.html)\
 **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-본문에 실린 계획·출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 숫자는 없다.\
+본문에 실린 계획·출력은 **전부 이 두 서버에 실제로 실행해서 받은 것**이다. 지어낸 숫자는 없다.\
 **이 편이 만든 객체와 그 뒷정리** — 표 `t60_skew`(19만 행) · `t60_big`(20만 행) · `t60_out`(10행) · `t60_tx` · `t60_s`.
 PG 는 전부 `BEGIN … ROLLBACK` 안에서 만들었고, MySQL 은 DDL 이 암묵 커밋이라 `DROP TABLE IF EXISTS` 로 직접 지웠다.\
-★ **`emp` 에 `EXPLAIN ANALYZE DELETE` 를 실제로 던졌다** — 4행이 3행이 되는 것까지 확인하고 **`ROLLBACK` 으로 되돌렸다.**
+★ **`emp` 에 `EXPLAIN ANALYZE DELETE` 를 실제로 실행했다** — 4행이 3행이 되는 것까지 확인하고 **`ROLLBACK` 으로 되돌렸다.**
 그 편의 끝에서 `emp` 가 4행인 것을 다시 확인했다(3-answer 의 「실행 검증」).\
 **측정 조건** — PG 계획은 전부 `max_parallel_workers_per_gather = 0`(병렬 끔). 시간(`actual time`)은 근거로 쓰지 않는다 —
 **근거로 쓰는 칸은 `actual rows`·`loops`·`Rows Removed by Filter` 다.**\

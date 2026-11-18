@@ -774,7 +774,7 @@ for (String s : l) { }              // 이 안에서 l.set(0, "z") 는 CME 가 �
   그쪽은 **`for` 가 무엇 위에서 돌고 배열과 어떻게 다른가**까지(설명에 필요한 만큼 `hasNext`/`next`/`remove` 셋을 다룬다),\
   여기는 **`Iterator` 인터페이스 자체의 계약·`ListIterator`·삭제 셋·fail-fast 의 구현과 한계**부터
 - [`../39-collections-framework-map/`](../39-collections-framework-map/) — **이 주제의 선행.** `Collection` 이 `Iterable` 이고 `Map` 은 아니라는 것
-- [`../40-list-set-and-immutable-factories/`](../40-list-set-and-immutable-factories/) — `removeIf` 가 불변 컬렉션에서 갈리는 것. `subList` 뷰가 죽는 것도 같은 `modCount` 다
+- [`../40-list-set-and-immutable-factories/`](../40-list-set-and-immutable-factories/) — `removeIf` 가 불변 컬렉션에서 달라지는 것. `subList` 뷰가 죽는 것도 같은 `modCount` 다
 - [`../41-map-api-merge-compute/`](../41-map-api-merge-compute/) — 맵의 뷰에서 지우기, `compute*` 안에서 맵을 고쳤을 때의 CME. **그쪽도 같은 best-effort 다**
 - [`../42-sequenced-collections/`](../42-sequenced-collections/) — `reversed()` 로 역순 순회하기. `removeFirst()` 의 기본 구현이 `Iterator.remove()` 를 쓴다
 - [`../46-terminal-operations/`](../46-terminal-operations/) — 스트림이 순회를 대신하는 길. **고치지 말고 새로 만드는** 접근

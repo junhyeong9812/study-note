@@ -95,7 +95,7 @@ isinstance 가 값을 낸 행 5 / 10
 * ★★★ **`TypeAlias` 행이 `int | str` 행과 한 칸도 다르지 않다** — `TypeAlias` 는 대입문의 어노테이션이라 **값만 남는다.**
 * ★★ **`type` 문 행은 `TypeAliasType`** — `get_args` 가 `()` 이고 `isinstance` 가 `TypeError` 다. 유니온이 **봉투 안**에 있다.
 * ★★ `__type_params__` — `Pair`·`f`·`C` 가 **`1`**(`(T,)`), `type X` 와 **`list[int]` 가 `0`**, 유니온·`Literal` 은 `AttributeError`.
-  ★ `list[int]` 의 `0` 은 3.12 에서 **모든 클래스가 `__type_params__ = ()` 를 얻은** 결과다(3번에서 갈린다).
+  ★ `list[int]` 의 `0` 은 3.12 에서 **모든 클래스가 `__type_params__ = ()` 를 얻은** 결과다(3번에서 달라진다).
 * ★ `Optional[int]` 의 `type` 은 **`_UnionGenericAlias`**, `int | str` 은 **`UnionType`** — 다른 객체다(5번).
 
 ### 2. 정의는 통과 · 읽을 때 `NameError` · `TypeAlias` 는 대입 자리에서 `NameError` · 평가는 `0 → 1`(두 번 읽어도) · 경계도 읽을 때
@@ -181,7 +181,7 @@ print("  T.__bound__ :", T.__bound__, "· 평가 횟수", len(calls))
 * ★★★ **`[1]`** — `type` 문은 값 식을 **만들 때 평가하지 않는다.** `Later.__value__` 를 읽는 순간 평가되어 `NameError`, 이름을 만든 뒤 다시 읽으면 `list[str]`.
 * ★★★ **`[2]`** — `TypeAlias` 는 **보통 대입문**이라 오른쪽이 곧바로 평가된다 → `NameError: name 'Missing' is not defined`.
 * ★★ **`[3]`** — `type 문 직전`·`직후` 사이에 `<평가됨>` 이 **없다**(`0`). `__value__` 를 두 번 읽었는데 `<평가됨>` 은 **한 줄**, 횟수 `1`.
-  ★ 「늦게」는 문서의 말, 「**한 번만**」은 **이 판의 관찰**이다.
+  ★ 「늦게」는 문서의 말, 「**한 번만**」은 **이 버전의 관찰**이다.
 * ★★ **`[4]`** — 서로를 가리키는 두 별칭이 **둘 다 선언되고** `__value__` 도 나온다.
 * ★★ **`[5]`** — 경계 `tag("T 의 경계")` 는 `def` 때 안 돌고(`1` 그대로) **`T.__bound__` 를 읽을 때** 돈다(`2`).
 
@@ -247,7 +247,7 @@ isinstance 가 값을 낸 행 4 / 10
 **왜 그런가**
 
 * ★★★ **PEP 695 네 행**(`type X`·`type Pair[T]`·`def f[T]`·`class C[T]`)은 3.11 파서가 **모르는 문법**이라 `SyntaxError` 다.
-* ★★ **`list[int]` 는 문법이 같은데 갈렸다** — `type_params` 칸 하나가 3.11 `AttributeError`, 3.12 `0`. **판이 객체의 속성을 바꾼다.**
+* ★★ **`list[int]` 는 문법이 같은데 달라졌다** — `type_params` 칸 하나가 3.11 `AttributeError`, 3.12 `0`. **판이 객체의 속성을 바꾼다.**
 * ★ 나머지 다섯(유니온 셋·`Literal`·`TypeAlias`)은 **한 글자도 같다** — 3.10 부터 있던 것들이다.
 * ★ 3.11 의 마지막 줄은 `4 / 10` — `class C[T]` 가 만들어지지 않아 한 행이 빠졌다.
 
@@ -459,7 +459,7 @@ print("  제약 :", clamp.__type_params__[0].__constraints__, "| clamp('s') :", 
 | `type` 문의 값은 **늦게 평가된다** | **언어 보장** | 실행 모델 — Lazy evaluation |
 | `__value__` 는 **두 번 읽어도 한 번** 평가 | **CPython 구현** | 실행(2번 `[3]`) — 문서는 「늦게」까지만 말한다 |
 | `isinstance(x, T)` 는 **`TypeError`** | **언어 보장** | `typing` 문서 `TypeVar` 절 |
-| `TypeVar(default=)` 의 **오류 문구** | **이 판의 관찰** | 3.11(`TypeVar.__init__()`)과 3.12(`typevar()`)가 이미 다르다 |
+| `TypeVar(default=)` 의 **오류 문구** | **이 버전의 관찰** | 3.11(`TypeVar.__init__()`)과 3.12(`typevar()`)가 이미 다르다 |
 
 * ★★★ 첫 블록이 `mypy`·`pyright` 를 물어 **`None`**, [35번](../35-abc-and-protocol/2-summary.md)·[38번](../38-namedtuple-and-typeddict/2-summary.md)이 다섯 도구를 물어 **전부 `None`** 이었다.
   **검사기가 `Literal` 에서 `"x"` 를 잡는다**는 문장은 이 머신에서 **확인할 수단이 없는 주장**이라 쓰지 않았다.
@@ -479,14 +479,14 @@ print("  제약 :", clamp.__type_params__[0].__constraints__, "| clamp('s') :", 
 |---|---|---|---|
 | 판 + `TypeIs`·3.13·검사기 유무 | `python3 - <e41_version.py` · `python3.11 - <e41_version_py311.py` | 3씩(캡처 + 재대조 + `PYTHONHASHSEED` 바꾼 재캡처) | 두 판 모두 없음 · **3.13·검사기는 못 잰 것** |
 | 런타임에 남는 것 격자 | `python3 - <e41_grid.py` · `python3.11 - <e41_grid_py311.py` | 3씩 | **5 / 10** · 3.11 은 4 / 10 |
-| 판 격자 | `python3 - <e41_versions.py` | 3 | **판이 갈린 행 5 / 10** |
+| 판 격자 | `python3 - <e41_versions.py` | 3 | **판이 달라진 행 5 / 10** |
 | 늦은 평가 | `python3 - <e41_lazy.py` | 3 | 정의 통과 · 읽을 때 `NameError` · 평가 1회 |
 | `SyntaxError` 셋 | `python3.11 - <e41_stmt_py311.py` · `<e41_generic_py311.py` · `python3 - <e41_default.py` | 3씩 | 3.12 의 `[T = int]` 가 3.11 의 `[T]` 와 같은 오류 |
 | `isinstance` 전문 | `python3 - <e41_isinstance.py` | 3 | `TypeError` |
 | 리터럴·두 표기·제네릭 | `python3 - <e41_literal.py` · `<e41_pitfalls.py` · `<e41_generic.py` | 3씩 | 검사 없음 |
 | 백포트 | `python3 - <e41_backport.py` | 3 | `typing_extensions` 4.10.0 — **3.13 이 아니다** |
 
-**구현 의존 항목** — 판이 오르면 다시 돌려야 하는 것.
+**구현 의존 항목** — 버전이 오르면 다시 돌려야 하는 것.
 
 | 항목 | 왜 |
 |---|---|
@@ -494,8 +494,8 @@ print("  제약 :", clamp.__type_params__[0].__constraints__, "| clamp('s') :", 
 | `__value__` 1회 평가 · 모든 클래스의 `__type_params__` | 구현이다 |
 | 예외 **문구** | 종류는 계약, 문구는 아니다 |
 
-★ **안 흔들리는 칸** — 격자 칸 · **「5 / 10」 둘** · `<평가됨>` 줄의 유무와 순서 · `SyntaxError` 의 줄·캐럿 · `(exit N)`.
-★★ **이 주제가 한 번도 안 잰 것** — **3.13**(판 없음) · **타입 검사기**(도구 없음) — 둘 다 못 잰 것 · **속도**(부적용).
+★ **달라지지 않는 항목** — 격자 칸 · **「5 / 10」 둘** · `<평가됨>` 줄의 유무와 순서 · `SyntaxError` 의 줄·캐럿 · `(exit N)`.
+★★ **이 주제가 한 번도 안 잰 것** — **3.13**(판 없음) · **타입 검사기**(도구 없음) — 둘 다 못 잰 것 · **속도**(해당 없음).
 
 ## 실행 환경
 

@@ -8,7 +8,7 @@
 
 ### A. 문제 (RandomIdGenerator · Snowflake 의 TODO)
 
-1. TODO 1 — RandomIdGenerator.nextId (기준선: 순서가 없다)
+1. TODO 1 — RandomIdGenerator.nextId (베이스라인: 순서가 없다)
 
 ```java
 // TODO 1: 무작위 번호 하나. **양수여야 한다.**
@@ -19,7 +19,7 @@
 
 - 맨 앞 비트를 비우는 것을 코드 한 줄로 어떻게 쓰는가?
 - 음수 id 가 나오면 정확히 무엇이 어긋나는가?
-- 이 기준선이 잃는 것 셋은 무엇인가?
+- 이 베이스라인이 잃는 것 셋은 무엇인가?
 - 그 셋 중 실무에서 제일 아픈 것은 무엇이고 왜인가?
 - 무작위를 쓰면서 seed 를 받는 이유는 무엇인가?
 

@@ -1,14 +1,14 @@
 # kotlin/syntax/50 — `kotlin.time` — `Duration`·시간 측정 — 정리 (힌트)
 
-★★★ **본체는 첫째 창이다** — 「**단위 실수 격자 — 단위를 `Long` 으로 받는 API 와 `Duration` 으로 받는 API 에 같은 실수를 던져 → 컴파일되나 · 값**」. 이 주제의 결론은 값이 아니라 **「어느 칸에서 컴파일러가 막았나」** 다.
+★★★ **핵심은 첫째 창이다** — 「**단위 실수 격자 — 단위를 `Long` 으로 받는 API 와 `Duration` 으로 받는 API 에 같은 실수를 던져 → 컴파일되나 · 값**」. 이 주제의 결론은 값이 아니라 **「어느 칸에서 컴파일러가 막았나」** 다.
 
 ## 이 주제가 쓰는 세 층
 
 | 층 | 뜻 | 근거로 쓰는 것 |
 |---|---|---|
 | **언어 보장 / API 계약** | 서명·KDoc 이 약속한 것 | ★★★ `Duration` 은 **`@JvmInline value class`**(선언) · KDoc 「**±146 years with nanosecond precision** … **±146 million years with millisecond precision** … 넘치면 **infinite**」 · `Clock.now()` KDoc 「**not guaranteed to return a larger [Instant]**」 |
-| **구현(컴파일러·stdlib)** | 이 판이 실제로 하는 것 | ★★ `Duration` 의 알맹이는 `private val rawValue: Long` · JVM 단조 시계는 **`System.nanoTime()`** · 이름 뭉개기(`pauseFor-LRDsOJo(long)`) |
-| **이 판의 관찰** | kotlinc 2.4.20 에서 이번에 본 것 | 격자 값 · 진단 문구 · `javap` 이름 · 시간은 **참/거짓**으로만 |
+| **구현(컴파일러·stdlib)** | 이 버전이 실제로 하는 것 | ★★ `Duration` 의 알맹이는 `private val rawValue: Long` · JVM 단조 시계는 **`System.nanoTime()`** · 이름 뭉개기(`pauseFor-LRDsOJo(long)`) |
+| **이 버전의 관찰** | kotlinc 2.4.20 에서 이번에 본 것 | 격자 값 · 진단 문구 · `javap` 이름 · 시간은 **참/거짓**으로만 |
 
 ## 이 판
 
@@ -18,15 +18,15 @@ info: kotlinc-jvm 2.4.20 (JRE 21.0.5+11-LTS)
 (exit 0)
 ```
 
-## 흔들리는 칸 / 안 흔들리는 칸
+## 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| **흔들린다 — 칸으로 안 만들었다** | ★★★ **걸린 시간의 절댓값** | 전부 **참/거짓**(「`>= 100ms`」)이나 **넓은 구간 이름**(`under 5ms` · `5ms..1s` · `1s or more`)으로만 찍었다 — 규칙 24 |
-| 안 흔들린다 | 단위 격자 25행 · 막은 칸 수 · 진단 문구 · `Duration` 의 `toString()` | 컴파일러 진단과 `Duration` 산술은 결정적이다 |
-| 안 흔들린다 | ★ 「`5ms..1s`」 구간 이름 | 5ms 를 재우고 **1초 미만**인지를 묻는다 — 폭이 200배라 이 머신에서 두 번 다 같았다. ★ **부하가 큰 머신이면 이 칸이 움직일 수 있다**(구간을 넘는 지연) |
-| 안 흔들린다 | `javap` 출력 — 뭉개진 이름의 해시 글자(`-LRDsOJo`)까지 | 같은 소스·같은 판이면 같다. ★ 해시 글자는 **판이 바뀌면 달라질 수 있어** 모양(`이름-해시`)만 근거로 쓴다([26번 주제](../26-value-class-and-boxing/)와 같은 선언) |
-| 안 흔들린다 | `Instant` 판 격자 2행 × 5판 · 고정 시각(`fromEpochSeconds(0)` 등)의 출력 | `now()` 는 **「2026-01-01 뒤인가」 참/거짓**으로만 찍었다 |
+| **실행마다 달라진다 — 칸으로 안 만들었다** | ★★★ **걸린 시간의 절댓값** | 전부 **참/거짓**(「`>= 100ms`」)이나 **넓은 구간 이름**(`under 5ms` · `5ms..1s` · `1s or more`)으로만 찍었다 — 규칙 24 |
+| 달라지지 않는다 | 단위 격자 25행 · 막은 칸 수 · 진단 문구 · `Duration` 의 `toString()` | 컴파일러 진단과 `Duration` 산술은 결정적이다 |
+| 달라지지 않는다 | ★ 「`5ms..1s`」 구간 이름 | 5ms 를 재우고 **1초 미만**인지를 묻는다 — 폭이 200배라 이 머신에서 두 번 다 같았다. ★ **부하가 큰 머신이면 이 칸이 움직일 수 있다**(구간을 넘는 지연) |
+| 달라지지 않는다 | `javap` 출력 — 뭉개진 이름의 해시 글자(`-LRDsOJo`)까지 | 같은 소스·같은 판이면 같다. ★ 해시 글자는 **판이 바뀌면 달라질 수 있어** 모양(`이름-해시`)만 근거로 쓴다([26번 주제](../26-value-class-and-boxing/)와 같은 선언) |
+| 달라지지 않는다 | `Instant` 판 격자 2행 × 5판 · 고정 시각(`fromEpochSeconds(0)` 등)의 출력 | `now()` 는 **「2026-01-01 뒤인가」 참/거짓**으로만 찍었다 |
 
 ★ 근거 — 캡처 스크립트를 처음부터 두 번 돌려 **블록 전체를 대조**했다(수치는 3-answer 의 「실행 검증」).
 
@@ -63,18 +63,18 @@ info: kotlinc-jvm 2.4.20 (JRE 21.0.5+11-LTS)
 
 ## 동작 방식
 
-### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「부적용인 창」
+### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「해당 없는 창」
 
 | 창 | 무엇을 보여 주나 | 어디서 왔나 |
 |---|---|---|
-| ★★★ **단위 격자(컴파일 → 남은 칸만 실행)** | 컴파일되나 · 값((1)) | ★ **본체 창** — 막힌 줄을 지운 사본을 다시 컴파일해 **나머지 칸의 값**까지 한 블록에 받는다 |
+| ★★★ **단위 격자(컴파일 → 남은 칸만 실행)** | 컴파일되나 · 값((1)) | ★ **핵심 창** — 막힌 줄을 지운 사본을 다시 컴파일해 **나머지 칸의 값**까지 한 블록에 받는다 |
 | ★★ **`javap -p`** | `Duration` 이 `long` 으로 다니나 · 이름이 뭉개지나((2)) | [26번 주제](../26-value-class-and-boxing/)와 같은 창 |
 | ★★ **참/거짓 측정 로그** | `measureTime` · 단조 마크((3)) | 절대 시간은 **안 찍는다** |
 | ★★ **판 격자(`-language-version`·`-api-version` × 파일)** | `Instant` 가 opt-in 을 요구하나((4)) | 49편의 판 격자와 같은 꼴 |
 | ★★ **stdlib 소스 jar 발췌** | 선언·KDoc 계약((5)) | — |
 | ★ **제5의 상태** | 「`Instant` 가 **2.1 에 들어왔나**」를 **2.1 로 컴파일해 물으면** 답이 안 나온다 — `@WasExperimental` 때문에 2.0 도 2.1 도 같은 진단이다. **소스의 주석(annotation)** 으로 창을 바꿨다((4)(5)) | 그 창은 「**언제 Stable 이 됐나**」(2.3)만 말하고 「**언제 들어왔나**」는 **못 본다** |
 | **인용 — 다시 안 잰다** | `Int`→`Long` 암묵 변환 없음 | [01번 주제](../01-val-var-and-basic-types/) |
-| **부적용 — 실행 시간 비교** | 「`Duration` 은 비용 0」은 **재지 않았다** — `javap` 의 `long` 까지만 말한다 | (2) |
+| **해당 없음 — 실행 시간 비교** | 「`Duration` 은 비용 0」은 **재지 않았다** — `javap` 의 `long` 까지만 말한다 | (2) |
 
 ### (1) ★★★ 단위 실수 격자 — 컴파일러가 막는 칸
 
@@ -442,9 +442,9 @@ blocked cells: 3 / 10
 (exit 0)
 ```
 
-- ★★★ **opt-in 없는 파일은 2.0·2.1·2.2 에서 막히고 2.3·2.4 에서 통과한다** — 막힌 칸의 진단은 **「없다」가 아니라 「opt-in 이 필요하다」**(`this declaration needs opt-in. Its usage must be marked with '@kotlin.time.ExperimentalTime' …`) 다.
+- ★★★ **opt-in 없는 파일은 2.0·2.1·2.2 에서 막히고 2.3·2.4 에서 통과한다** — 막힌 항목의 진단은 **「없다」가 아니라 「opt-in 이 필요하다」**(`this declaration needs opt-in. Its usage must be marked with '@kotlin.time.ExperimentalTime' …`) 다.
 - ★★★ **opt-in 을 단 파일은 다섯 판 모두 통과한다** — **2.0 에서도**. 그래서 「2.1.0 에 들어왔다」는 이 격자로는 **안 보인다**. `@WasExperimental(ExperimentalTime::class)` 가 붙은 선언은 **Stable 이 된 판(2.3) 이전의 `-api-version` 에서 「실험적」으로 보일 뿐 「없음」으로 보이지 않는다** — 그 판 경계는 이 창 밖이다(제5의 상태).
-- ★ 막힌 칸의 **오류 개수가 21** 인 것은 `Instant`·`Clock`·`toJavaInstant`·`toKotlinInstant` 를 쓰는 **자리마다** 진단이 나서다 — 한 파일이 한 번 막히는 것이 아니다.
+- ★ 막힌 항목의 **오류 개수가 21** 인 것은 `Instant`·`Clock`·`toJavaInstant`·`toKotlinInstant` 를 쓰는 **자리마다** 진단이 나서다 — 한 파일이 한 번 막히는 것이 아니다.
 
 ```text
 ===== kotlinc inst50.kt -d o50n =====
@@ -526,7 +526,7 @@ commonMain/kotlin/time/TimeSources.kt
 - ★★★ **범위 계약** — 「`The type can store duration values up to ±146 years with nanosecond precision, and up to ±146 million years with millisecond precision.`」 · 「`… doesn't fit into the above range, the returned Duration is infinite.`」 — (1)의 「584년이 무한이 아니다」가 이 두 줄이다(나노초 범위는 넘었지만 밀리초 범위 안이다).
 - ★★ **선언** — `@SinceKotlin("1.6")` · `@JvmInline` · `value class Duration` · 알맹이 `rawValue: Long`(생성자는 `@Deprecated(level = ERROR)` 로 막혀 있다 — 직접 못 만든다).
 - ★★ **단조 시계의 실체** — `MonotonicTimeSource` 가 **`System.nanoTime()`** 을 읽는다(`@SinceKotlin("1.3")`).
-- ★★★ **`Instant`·`Clock` 은 `@SinceKotlin("2.3")` + `@WasExperimental(ExperimentalTime::class)`** — (4)의 격자가 **2.3 에서 갈린 이유**다.
+- ★★★ **`Instant`·`Clock` 은 `@SinceKotlin("2.3")` + `@WasExperimental(ExperimentalTime::class)`** — (4)의 격자가 **2.3 에서 달라진 이유**다.
 - ★★ **`Clock` KDoc 은 두 가지를 말한다** — 구현 안에서 `Clock.System` 을 직접 부르지 말고 **`Clock` 을 넘기라**(테스트를 결정적으로) · `now()` 를 나중에 불러도 **더 큰 `Instant` 를 보장하지 않는다.**
 - ★★ **아직 `@ExperimentalTime` 이 붙은 것은 두 자리뿐**이다 — `Duration.convert(value, sourceUnit, targetUnit)` 와 `TimeSources.kt` 의 `AbstractDoubleTimeSource`(이쪽은 `@Deprecated` 가 바로 뒤따른다). `Duration`·`measureTime`·`TimeSource.Monotonic`·`Instant`·`Clock` 은 **opt-in 이 필요 없다**(이 판).
 
@@ -600,7 +600,7 @@ polled until the deadline: true, elapsed >= 250ms: true
 | `Thread.sleep(Long)` · `delay(Long)` 이 밀리초 | ★★ **API 계약**(JDK · kotlinx-coroutines) — 언어가 아니다 | (1) |
 | 범위 ±146년(나노초) · ±146백만 년(밀리초) · 넘치면 무한 | ★★★ **API 계약(KDoc)** | (5) |
 | `Duration` 이 `value class` | ★★ **API 계약(선언)** | (5) |
-| JVM 서명이 `long` · 이름 뭉개기 해시 | ★ **JVM 백엔드 구현** — 이 판의 관찰 | (2) |
+| JVM 서명이 `long` · 이름 뭉개기 해시 | ★ **JVM 백엔드 구현** — 이 버전의 관찰 | (2) |
 | 단조 시계가 `System.nanoTime()` | ★ **stdlib 구현**(JVM) | (3)(5) |
 | `Instant`·`Clock` Stable 2.3 · 그 전 판은 opt-in | ★★ **stdlib 선언의 주석**(`@SinceKotlin` + `@WasExperimental`) — 컴파일러가 `-api-version` 으로 읽는다 | (4)(5) |
 | 「`Duration` 은 비용 0」 | **재지 않았다** | — |
@@ -636,7 +636,7 @@ polled until the deadline: true, elapsed >= 250ms: true
 > **`Duration`** — 시간의 길이. 단위를 타입 안에 품은 `value class`.\
 > 예: `5.seconds + 300.milliseconds` → `5.3s`.
 
-> **단조 시계(monotonic clock)** — 뒤로 가지 않는 시계. 벽시계 조정에 흔들리지 않아 **경과 시간**을 잴 때 쓴다. JVM 에서는 `System.nanoTime()`.
+> **단조 시계(monotonic clock)** — 뒤로 가지 않는 시계. 벽시계 조정에 달라지지 않아 **경과 시간**을 잴 때 쓴다. JVM 에서는 `System.nanoTime()`.
 
 > **벽시계(wall clock)** — 달력의 시각. 사람이·NTP 가 고칠 수 있어 **뒤로 갈 수 있다.** `Clock.System.now()`.
 
@@ -651,15 +651,15 @@ polled until the deadline: true, elapsed >= 250ms: true
 ## 더 들어가면
 
 - **`Duration` 의 알맹이 한 비트** — `rawValue` 의 **맨 아래 비트가 단위(나노초/밀리초)를 가른다**(`unitDiscriminator` — 소스 41행). (1)의 「밀리초로 옮겨 탄다」의 실체일 것이다 — **돌려서 확인하지는 않았다.**
-- **`TestTimeSource`** — 테스트에서 시간을 손으로 흘리는 `TimeSource`. 이 판의 소스에 있으나 돌리지 않았다.
+- **`TestTimeSource`** — 테스트에서 시간을 손으로 흘리는 `TimeSource`. 이 버전의 소스에 있으나 돌리지 않았다.
 - **`kotlinx-datetime`** — 달력 계산(날짜·시간대)은 stdlib 밖 라이브러리의 몫이다. 이 머신에 없어 보지 않았다.
 
 ## 실행 환경
 
-**기준 소스** — **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 선언(`Duration.kt`·`Instant.kt`·`Clock.kt`·`MonoTimeSource.kt`)((5)). ★ 공식 문서 페이지([Time measurement](https://kotlinlang.org/docs/time-measurement.html))는 **이 작업에서 열지 못했다**(외부 네트워크를 쓰지 않았다) — 문장을 인용하지 않는다.
+**기준 소스** — **이 버전의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 선언(`Duration.kt`·`Instant.kt`·`Clock.kt`·`MonoTimeSource.kt`)((5)). ★ 공식 문서 페이지([Time measurement](https://kotlinlang.org/docs/time-measurement.html))는 **이 작업에서 열지 못했다**(외부 네트워크를 쓰지 않았다) — 문장을 인용하지 않는다.
 **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java`·`javap` 에서 실제로 얻었다.\
 `kotlinc` 17회(단위 격자 스크립트 안의 2회 · 판 격자 스크립트 안의 10회 포함) · `java` 5회 · `javap` 2회 · stdlib 소스 jar 발췌 5곳 · JDK `src.zip` 발췌 1곳.\
-★ 단위 격자의 `delay` 두 칸만 **kotlinx-coroutines 1.11.0** 을 쓴다(gradle 캐시에 있던 판 — [목록의 **54번 주제**](../54-coroutine-context-dispatchers-and-withcontext/)까지 이 판을 쓴다). 그 밖은 stdlib 만 쓴다.\
+★ 단위 격자의 `delay` 두 칸만 **kotlinx-coroutines 1.11.0** 을 쓴다(gradle 캐시에 있던 판 — [목록의 **54번 주제**](../54-coroutine-context-dispatchers-and-withcontext/)까지 이 버전을 쓴다). 그 밖은 stdlib 만 쓴다.\
 ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「막은 칸 N / M」은 스크립트가 스스로 센 것**이다.
 **버전** — `Duration` 은 stdlib 소스에 **`@SinceKotlin("1.6")`** · 단조 시계 `MonotonicTimeSource` 는 **`@SinceKotlin("1.3")`**((5)). ★★★ **`kotlin.time.Instant`·`Clock` 은 소스에 `@SinceKotlin("2.3")` + `@WasExperimental(ExperimentalTime::class)`** 이다 — README 의 「2.1.0 도입」은 **이 소스에서 안 보인다**(4).
 **경계** — `Int` 를 `Long` 에 그냥 못 넣는 **암묵 변환 없음**은 [01번 주제](../01-val-var-and-basic-types/)가 정본이다. `value class` 의 박싱·이름 뭉개기 규칙은 [26번 주제](../26-value-class-and-boxing/)가 정본이다 — 여기서는 **`Duration` 이 그 규칙대로 도는지**만 본다. 코루틴의 `delay` 는 [52번 주제](../52-coroutine-basics-suspend-scope-launch-async/)의 몫이다 — 여기서는 **인자의 단위**만 본다.\

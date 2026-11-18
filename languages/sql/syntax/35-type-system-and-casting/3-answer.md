@@ -294,7 +294,7 @@ SHOW WARNINGS;
 +---------+------+-----------------------------------------+
 ```
 
-**변환이 성공하는 경우는 두 엔진이 같다** — 이것까지 갈린다고 외우면 과잉이다.
+**변환이 성공하는 경우는 두 엔진이 같다** — 이것까지 달라진다고 외우면 과잉이다.
 
 ```text
 ### SQL: SELECT 1 + '1' AS r;
@@ -354,7 +354,7 @@ EXPLAIN SELECT * FROM t35 WHERE code = 'C000123';
 
 (폭에 맞춰 `partitions`·`filtered` 칸을 뺀 것 말고는 서버가 낸 그대로다.)
 
-(b) 는 이렇게 갈린다.
+(b) 는 이렇게 달라진다.
 
 ```text
 (A) PostgreSQL 18.6                        (B) MySQL 8.4.10
@@ -685,7 +685,7 @@ PG 쪽에서 봐야 할 것은 경고가 아니라 **`EXPLAIN` 의 `Index Cond` 
 
 ### 11. 그래서 어떻게 고치나
 
-**살리는 처방과 못 살리는 처방이 갈린다. 기준은 8번과 같다 — 열을 건드렸나.**
+**살리는 처방과 못 살리는 처방이 달라진다. 기준은 8번과 같다 — 열을 건드렸나.**
 
 ```text
 (나쁨) 열을 바꾼다                      (좋음) 값을 바꾼다
@@ -729,7 +729,7 @@ MySQL -> PG 로 옮긴다
 | `DECIMAL(10,2)` 캐스트 (1번) | PG 18.6 · MySQL 8.4.10 | 각 1회 | 유일하게 같은 이름 |
 | `'abc' + 1` · `1 = 'abc'` (3번) | PG 18.6 · MySQL 8.4.10 | 각 2회 | **PG 에러 메시지가 근거다** |
 | 경고 1292 (3·10번) | MySQL 8.4.10 | 1회 | `SHOW WARNINGS` |
-| `1 + '1'` · `1 = '1'` (3번) | PG 18.6 · MySQL 8.4.10 | 각 2회 | **같은 결과** — 갈리는 것은 실패할 때뿐 |
+| `1 + '1'` · `1 = '1'` (3번) | PG 18.6 · MySQL 8.4.10 | 각 2회 | **같은 결과** — 달라지는 것은 실패할 때뿐 |
 | `EXPLAIN` 4종 (4·8번) | PG 18.6 · MySQL 8.4.10 | 각 4회 | 20,000행 `t35`, `ANALYZE` 직후 |
 | 경고 1739 (4번) | MySQL 8.4.10 | 1회 | `SHOW WARNINGS` |
 | `code = 123` 의 행 수 (4번) | MySQL 8.4.10 | 1회 | **0행이 근거다** |
@@ -756,6 +756,6 @@ MySQL -> PG 로 옮긴다
 ## 실행 환경
 
 근거는 **실행 결과**다 — 본문의 출력·에러·경고는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+2026-09-21 에 실제로 실행해 받은 것이다. 지어낸 출력은 없다.\
 표를 만든 실험은 전부 **끝나고 지웠다**(`t35`·`t35b`). `emp`·`dept` 는 읽기만 했다.\
 문서 근거는 [PG 18 Type Conversion](https://www.postgresql.org/docs/18/typeconv.html) · [MySQL 8.4 Type Conversion](https://dev.mysql.com/doc/refman/8.4/en/type-conversion.html) · [MySQL 8.4 Cast Functions](https://dev.mysql.com/doc/refman/8.4/en/cast-functions.html).

@@ -266,7 +266,7 @@ file main.o                                                            # LLVM IR
   - GNU ld `--gc-sections`·`--gc-keep-exported`(뿌리 집합) <https://sourceware.org/binutils/docs/ld/Options.html> · GNU `size`(Berkeley 형식 text에 읽기 전용 데이터 포함) <https://sourceware.org/binutils/docs/binutils/size.html>
   - Clang "ThinLTO" — monolithic LTO의 시간·메모리 확장성 문제, 요약·결합 인덱스·병렬 백엔드, `-flto=thin`, gold 플러그인 <https://clang.llvm.org/docs/ThinLTO.html>
   - LLVM "How To Build Clang and LLVM with Profile-Guided Optimizations" — 'benchmark' 선택: 프로파일이 실제 사용을 대표해야 한다 <https://llvm.org/docs/HowToBuildWithPGO.html>
-- 실험 목록(i7-13700HX 호스트, 컨테이너 없이 호스트 gcc 13.3.0·clang 18.1.3·binutils — CPU 제한 없음, 시간 값은 호스트 부하에 따라 흔들린다)
+- 실험 목록(i7-13700HX 호스트, 컨테이너 없이 호스트 gcc 13.3.0·clang 18.1.3·binutils — CPU 제한 없음, 시간 값은 호스트 부하에 따라 실행마다 달라진다)
   - 실험 1: `main.c`+`util.c` — `-O2` vs `-O2 -flto` objdump·nm·실행 시간 3회, clang `-flto=thin -fuse-ld=gold`, `-ffunction-sections --gc-sections`
   - 실험 2: 생성 C 파일 61개 — `-O2 -g` vs `-O2 -g -flto`(링크 `-flto=2`) 컴파일·링크 시간과 최대 RSS(`/usr/bin/time`), 1회
   - 실험 3: `pgo.c` — PGO 없음 / 대표 훈련 / 비대표 훈련 / 비대표 + `-fprofile-partial-training`, 각 3회 + objdump 명령 수

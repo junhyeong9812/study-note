@@ -205,7 +205,7 @@ fn main() {
   `for` 가 `IntoIterator` 규약으로 돈다는 사실이 **에러 메시지에 적혀 나온다.**\
   규약 전수는 [목록의 **37번 주제**](../37-intoiterator-three-forms-iter-iter-mut-into-iter/)가 정본이고, 여기서는 **이 현상까지**다.
 - `help:` 가 제안하는 수정은 **글자 하나** — `for x in &v` 의 `&` 다.
-- ★ **두 쪽이 갈리는 근거는 `for` 에 있지 않다.**
+- ★ **두 쪽이 달라지는 근거는 `for` 에 있지 않다.**
 
 ```text
         규칙은 하나다: for x in <값> 은 그 값을 가져간다
@@ -383,9 +383,9 @@ fn main() {
             통과 — 값 23 이 나온다                                  E0571 거부
 ```
 
-- **`break` 의 위치는 둘 다 `for` 안으로 같다.** 갈린 것은 **라벨이 붙은 루프의 종류**뿐이다.
+- **`break` 의 위치는 둘 다 `for` 안으로 같다.** 달라진 것은 **라벨이 붙은 루프의 종류**뿐이다.
 - `continue 'row` 는 **그 라벨 루프의 다음 바퀴**로 간다 — 안쪽을 끝내는 것이 아니라 바깥을 한 바퀴 넘긴다.\
-  위 실측에서 `hit3` 가 `hit` 와 같아 보이는 것은 **우연**이다. 안쪽 `for` 뒤에 문장을 하나 두면 갈린다.
+  위 실측에서 `hit3` 가 `hit` 와 같아 보이는 것은 **우연**이다. 안쪽 `for` 뒤에 문장을 하나 두면 달라진다.
 
 ```text
 ===== 소스: ex.rs =====
@@ -707,7 +707,7 @@ For more information about this error, try `rustc --explain E0308`.
 - ★★ **출력은 같다.** 양쪽 다 `sum = 60` 이고 **한 글자도 다르지 않다.**
 - 2018 에서만 나는 경고의 린트 이름은 **`array_into_iter`** 다(`rust_2021_compatibility` 묶음).
 - `x` 의 타입은 **2018 에서 `&{integer}`**, **2021 에서 `integer`** 다.\
-  확인하는 법은 **`let _: () = x;` 로 일부러 틀린 타입을 주는 것**이다 — 실행 결과로는 안 갈린다.
+  확인하는 법은 **`let _: () = x;` 로 일부러 틀린 타입을 주는 것**이다 — 실행 결과로는 안 달라진다.
 - 원소가 `String` 이었다면 **컴파일 여부가 갈렸을 것**이다.\
   2018 은 `&String` 을 주므로 소유권이 필요한 연산이 막히고, 2021 은 `String` 자체를 준다.\
   여기서는 원소가 `i32`(`Copy`)라 합이 우연히 같았다.
@@ -782,13 +782,13 @@ For more information about this error, try `rustc --explain E0502`.
 - **`iter`/`iter_mut`/`into_iter` 규약 전수** — [목록의 **37번 주제**](../37-intoiterator-three-forms-iter-iter-mut-into-iter/)(`IntoIterator` 세 형태).
 - **순회 결과를 모으는 관용** — [목록의 **36번 주제**](../36-iterator-adapters-laziness-and-collect/)(`Iterator` 와 어댑터·`collect`).
 - **`Copy` 판정** — [목록의 **09번 주제**](../09-copy-clone-and-drop/)(`Copy`와 `Clone`, `Drop` 시점).\
-  3번에서 배열과 `Vec` 이 갈린 근거가 그것이다.
+  3번에서 배열과 `Vec` 이 달라진 근거가 그것이다.
 - **에러가 아니라 경고로만 드러나는 자리** — 둘이다.
   - **`unused_labels`**(6번) — 라벨만 남기고 아무도 안 가리킬 때.
   - **`array_into_iter`**(10번) — 2018 에서 `배열.into_iter()` 를 쓸 때.
 - ★ **그중 출력까지 같았던 것은 `array_into_iter`(10번)다.**\
   `sum = 60` 이 두 에디션에서 한 글자도 같아서, **실행 결과만 보면 아무 차이가 없다.**\
-  타입 탐침(`let _: () = x;`)을 던져야만 `&{integer}` ↔ `integer` 로 갈린다.
+  타입 probe(`let _: () = x;`)을 던져야만 `&{integer}` ↔ `integer` 로 나뉜다.
 
 ---
 
@@ -803,11 +803,11 @@ For more information about this error, try `rustc --explain E0502`.
 | `for x in v` (`Vec<String>`) 뒤 `v` 사용 | **E0382** + `implicit call to .into_iter()` + `help: &v` | 3 |
 | `rustc --explain E0382` | 「a value cannot be owned by more than one variable」 | 3 |
 | `for x in a` (`[i32; 3]`) 뒤 `a` 사용 | **통과** — `a = [10, 20, 30]` | 3 |
-| `for x in &v` / `&mut v` / `v` 타입 탐침 | `&{integer}` / `&mut {integer}` / `integer` | 4 |
+| `for x in &v` / `&mut v` / `v` 타입 probe | `&{integer}` / `&mut {integer}` / `integer` | 4 |
 | 같은 셋을 제대로 실행 | `[10,20,30]` → `[11,21,31]` → 합 `63` | 4 |
 | `v.iter()` 와 `&v` | 둘 다 통과, `v = [1, 2, 3]` 남음 | 4 |
 | 라벨 4종(`break`/`break 'outer`/`continue 'row`/`break 'search a`) | `[(0,0),(1,0),(2,0)]` · `[(0,0),(0,1),(0,2),(1,0)]` · 같은 값 · **23** | 5 |
-| 안쪽 `for` 뒤 문장을 둔 `break` ↔ `continue 'row` | `[0, 1, 2]` ↔ `[]` — **둘이 갈린다** | 5 |
+| 안쪽 `for` 뒤 문장을 둔 `break` ↔ `continue 'row` | `[0, 1, 2]` ↔ `[]` — **둘이 달라진다** | 5 |
 | 라벨이 `for` 에 붙은 `break 'outer a` | **E0571** — 목표 루프가 `for` 라서 | 5 |
 | `break;` / `'a:` 미사용 / `break 'nope` | **E0268** · **E0426** · **`unused_labels` 경고** | 6 |
 | `rustc --explain E0268` | 루프 밖 `break`/`continue` 공식 설명 | 6 |
@@ -817,7 +817,7 @@ For more information about this error, try `rustc --explain E0502`.
 | `continue 'blk;` (라벨 블록) | **E0696** `labeled blocks cannot be continue'd` | 8 |
 | `continue 5;` | **번호 없는 파서 에러** + `unreachable_code` 경고 | 9 |
 | `a.into_iter()` 를 2018·2021 에서 실행 | **양쪽 `sum = 60`** · 2018 에만 `array_into_iter` 경고 | 10 |
-| `a.into_iter()` 를 2018·2021 에서 타입 탐침 | `&{integer}` ↔ `integer` | 10 |
+| `a.into_iter()` 를 2018·2021 에서 타입 probe | `&{integer}` ↔ `integer` | 10 |
 | `for x in &v { v.push(99); }` | **E0502** | 11 |
 | `releases.md` 의 1.41.0·1.53.0·1.65.0 절 | `unused_labels` · 배열 `IntoIterator` · 라벨 있는 블록 | 6·8·10 |
 
@@ -825,13 +825,13 @@ For more information about this error, try `rustc --explain E0502`.
 
 | 항목 | 무엇에 달렸나 |
 |---|---|
-| **`a.into_iter()` 가 `&T` 를 주나 `T` 를 주나** | **에디션.** 2015·2018 ↔ 2021 이후. **이 주제에서 답이 갈리는 유일한 축이다** |
+| **`a.into_iter()` 가 `&T` 를 주나 `T` 를 주나** | **에디션.** 2015·2018 ↔ 2021 이후. **이 주제에서 답이 달라지는 유일한 축이다** |
 | 에러·경고 **문구와 화살표 배치** | rustc 구현. `for` 에만 붙는 `note` 가 대표다. **에러 번호**가 더 안정적이다 |
 | `unused_labels` 가 **경고**인 것 | 린트 설정. `-D warnings`·`#[deny]` 로 에러가 된다 |
 | `array_into_iter` 가 **경고**인 것 | 린트 설정(`rust_2021_compatibility` 묶음) |
 | `{integer}` 라는 타입 표기 | rustc의 추론 변수 표시. 확정 뒤에는 `i32` 로 보인다 |
 | 라벨 있는 블록·`unused_labels`·배열 `IntoIterator` 의 **도입 버전** | **rustc 버전.** 1.65.0 · 1.41.0 · 1.53.0 — `releases.md` 가 정본 |
-| **`loop`/`while`/`for` 의 타입 규칙과 `break 값` 규칙** | **전부 언어 보장.** 빌드 프로필(디버그/릴리스)·플랫폼에 흔들리지 않는다 |
+| **`loop`/`while`/`for` 의 타입 규칙과 `break 값` 규칙** | **전부 언어 보장.** 빌드 프로필(디버그/릴리스)·플랫폼에 달라지지 않는다 |
 
 ## 실행 환경
 

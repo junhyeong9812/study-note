@@ -343,7 +343,7 @@ CSS.supports("(display: grid) or (display: zzgrid)")   // 조건 문자열 하�
 CSS.supports("at-rule(@container)")        // Baseline limited 인데 Chrome 151 은 true
 ```
 
-### 금지 사례 — 던져서 확인한 것
+### 금지 사례 — 실행해서 확인한 것
 
 ```css
 @supports (--x: anything) { … }              /* 항상 참 — 게이트로 못 쓴다 */
@@ -391,7 +391,7 @@ CSS.supports("at-rule(@container)")        // Baseline limited 인데 Chrome 151
 
 반대 사고다. 실측에서 `display: zzgrid` 만 버려지고 **`grid-template-columns: 1fr 1fr` 은 살아남았다**\
 (계산값이 `1fr 1fr` 이었다). `@supports` 로 가른 쪽은 `none` 으로 깨끗했다.\
-**「한 줄이 무시돼도 나머지가 성립하는가」** 로 갈린다.
+**「한 줄이 무시돼도 나머지가 성립하는가」** 로 나뉜다.
 
 ### 4. `@supports not (…)` 로 폴백을 쓴다
 

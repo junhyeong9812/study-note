@@ -266,7 +266,7 @@ static <T> List<T> castAll(List<?> raw, Class<T> type) {
 
 ### 4. 암묵 변환 → 조용히 틀린 비교
 
-- 현상: 길이 검사가 음수 길이 입력에서 엉뚱하게 동작한다. `if (n < sizeof(buf))`는 `n = -1`에서 거짓이 되어 의도와 반대로 갈린다(실험 A). 반대로 `int` 상수와 비교하는 검사(`if (n < BUF_LEN)`)는 `-1`을 통과시킨다. 그 뒤 `memcpy(dst, src, n)`처럼 `size_t` 매개변수로 넘기면 `n`이 큰 수로 바뀌어 버퍼 밖 접근(UB)으로 이어질 수 있다.
+- 현상: 길이 검사가 음수 길이 입력에서 엉뚱하게 동작한다. `if (n < sizeof(buf))`는 `n = -1`에서 거짓이 되어 의도와 반대로 나뉜다(실험 A). 반대로 `int` 상수와 비교하는 검사(`if (n < BUF_LEN)`)는 `-1`을 통과시킨다. 그 뒤 `memcpy(dst, src, n)`처럼 `size_t` 매개변수로 넘기면 `n`이 큰 수로 바뀌어 버퍼 밖 접근(UB)으로 이어질 수 있다.
 - 보이는 형태: 경고 `-Wsign-compare`(무시된 상태), 크래시 또는 잘못된 데이터.
 - 원인: 부호 있는 값과 `size_t`가 만나는 곳(비교·인자 전달)에서 `-1`이 `18446744073709551615`로 변환(실험 A, x86-64).
 - 대처: 경고를 오류로. 길이는 처음부터 부호 없는 타입으로 받고, 외부 입력은 범위를 먼저 검사한다. 메모리 안전 쪽 결과는 [20-undefined-behavior-and-memory-safety](../20-undefined-behavior-and-memory-safety/2-summary.md).

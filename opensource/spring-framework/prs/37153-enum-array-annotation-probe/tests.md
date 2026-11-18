@@ -59,7 +59,7 @@ void isValidWhenHasEnumConstantNotPresentExceptionReturnsFalse() {
 ```
 
 - **주장**: `value()` 호출이 터지는 annotation은 `canLoad`가 false(필터링 대상).
-- **mock의 의미**: `willThrow(EnumConstantNotPresentException)`는 "구버전 enum 상수로 컴파일된 annotation + 그 상수가 제거된 신버전 enum이 로드된" 컴파일<->런타임 어긋남(버전 스큐)을 한 줄로 시뮬레이션한 것.\
+- **mock의 의미**: `willThrow(EnumConstantNotPresentException)`는 "구버전 enum 상수로 컴파일된 annotation + 그 상수가 제거된 신버전 enum이 로드된" 컴파일<->런타임 불일치(버전 스큐)을 한 줄로 시뮬레이션한 것.\
   단위 테스트에서 enum 2버전 컴파일과 클래스로더 조작을 매번 할 수 없으므로, 그 상황에서 JDK가 던지는 바로 그 예외를 Mockito로 흉내 낸다.
 - **fix 전**: 플래그가 false라 canLoad가 `value()`를 **아예 호출하지 않고** true 반환 -> 단언 실패(red).\
   예외가 "안 터져서"가 아니라 **터질 기회조차 없어서** 오판.

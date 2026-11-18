@@ -126,7 +126,7 @@ int main() {
 - **gcc 의 UBSan** 은 몇 줄을 말하는가?
 - **clang 의 UBSan** 은 몇 줄을 말하는가? 그리고 **둘 중 어느 열거형**을 지목하는가?
 - 지목되지 않은 쪽은 **왜** 안 지목되는가?
-- C 갈래 [`07번`](../../../c/syntax/07-enum-and-enumeration-constants/)은 같은 자리를 무엇이라고 결론지었는가? 여기서 갈리는가?
+- C 갈래 [`07번`](../../../c/syntax/07-enum-and-enumeration-constants/)은 같은 자리를 무엇이라고 결론지었는가? 여기서 달라지는가?
 
 ### 6. ★ `using enum` 을 `-std=c++17` 로 던지면 (예측)
 

@@ -156,7 +156,7 @@ fn main() {
 
 ## 실행 환경
 
-★ 답을 모르겠으면 **던져 보라.** `rustc --edition 2021 ex.rs -o /tmp/ex && /tmp/ex`.
+★ 답을 모르겠으면 **실행해 보라.** `rustc --edition 2021 ex.rs -o /tmp/ex && /tmp/ex`.
 ★ **`--edition` 을 빼면 에디션 2015 로 돌아간다.** 반드시 붙인다.
 ★ 해제 시점이 궁금하면 **`impl Drop` 에 `println!` 을 넣어라** — [**08번 주제**](../08-ownership-and-move/)가 세운 창이다.
 

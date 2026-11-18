@@ -140,9 +140,9 @@ Console.WriteLine($"ReferenceEquals(5, 5)   : {ReferenceEquals(boxed1, boxed2)}"
 ```
 
 - 여덟 줄을 **각각** 맞힐 수 있는가?
-- `a == c` 와 `ReferenceEquals(a, c)` 가 **갈리는** 이유는?
+- `a == c` 와 `ReferenceEquals(a, c)` 가 **달라지는** 이유는?
 - `a = a.ToUpper()` 뒤에 `e` 가 무엇을 담고 있는가 — **왜**인가?
-- **마지막 줄**이 Java 와 갈리는 자리다 — Java 였다면 무엇이 나왔겠는가?
+- **마지막 줄**이 Java 와 달라지는 자리다 — Java 였다면 무엇이 나왔겠는가?
 
 ### 6. ★ `int?` 는 무엇인가 (경계)
 

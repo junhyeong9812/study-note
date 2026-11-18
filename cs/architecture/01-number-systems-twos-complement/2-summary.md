@@ -94,7 +94,7 @@
 - 4비트 덧셈기는 결과의 하위 4비트만 남긴다. 그 결과가 무부호로도, 2의 보수로도 "2⁴로 나눈 나머지" 의미에서 맞다.
 - 그래서 x86-64 같은 CPU는 부호 있는 덧셈과 부호 없는 덧셈에 **같은 명령**을 쓴다. 다른 것은 "넘쳤는지"를 알려 주는 플래그뿐이다.
   - 넘침 처리는 ISA마다 다르다. MIPS32는 넘치면 예외를 내는 `ADD`와 같은 덧셈을 하되 예외를 내지 않는 `ADDU`를 따로 둔다(MIPS32 Architecture for Programmers Vol. II, ADD 항목). 결과 하위 비트는 둘이 같다.
-  - x86-64(gcc 13.3 `-O2`)에서 `__builtin_add_overflow`를 부호 있는 `int`와 `unsigned`로 각각 쓰면 둘 다 `add` 명령 하나다. 넘침 판정만 `seto`(부호 있는 넘침, OF)와 `setb`(자리올림, CF)로 갈린다. 자세한 것은 [02-integer-overflow-and-truncation](../02-integer-overflow-and-truncation/2-summary.md) 실험.
+  - x86-64(gcc 13.3 `-O2`)에서 `__builtin_add_overflow`를 부호 있는 `int`와 `unsigned`로 각각 쓰면 둘 다 `add` 명령 하나다. 넘침 판정만 `seto`(부호 있는 넘침, OF)와 `setb`(자리올림, CF)로 나뉜다. 자세한 것은 [02-integer-overflow-and-truncation](../02-integer-overflow-and-truncation/2-summary.md) 실험.
 - 원고 §1(48행)의 "+ 연산이 효율이 좋기 때문에, 두 수를 합칠 때 맨 앞의 1은 버릴 수 있도록" 설명이 이 그림이다.
 
 다른 표현과 비교:
@@ -273,7 +273,7 @@ boolean b = Integer.compareUnsigned(a, c) < 0;     // 무부호 비교
 - **원인**: `int len = buf[i];`가 `byte` 0xC8을 부호 확장해 −56이 되었다(6절, 실험).
 - **대처**: `Byte.toUnsignedInt`/`& 0xFF`. 테스트에 경계값 127·128·255를 넣는다.
 
-### 3. 언어마다 다른 해시 — 비ASCII 바이트에서만 어긋남
+### 3. 언어마다 다른 해시 — 비ASCII 바이트에서만 불일치
 
 - **현상**: Java 서비스와 C 확장 모듈이 같은 키로 다른 샤드를 고른다. ASCII 키에서는 같다.
 - **보이는 형태**: 캐시 적중률 하락, "키가 없다" 오류가 한글·악센트 키에만 몰림.

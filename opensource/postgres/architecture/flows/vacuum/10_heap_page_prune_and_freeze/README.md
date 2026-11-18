@@ -2,7 +2,7 @@
 
 상위: [vacuum](../README.md)
 
-**힙 페이지 하나에서 죽은 튜플을 걷어내고, 필요하면 남은 튜플을 얼린다.** 먼저 페이지의 모든 튜플에 대해 가시성 판정(HTSV)을 한 번씩만 해서 배열에 적고, HOT 체인마다 운명을 정해 "redirect 할 것, LP_DEAD 로 만들 것, LP_UNUSED 로 만들 것, 얼릴 것" 목록을 만든다. 페이지는 그동안 건드리지 않는다. 그다음 freeze 를 할지 결정하고, critical section 안에서 목록을 한꺼번에 적용하고 WAL 레코드 하나를 남긴다. 레코드 이름은 호출 이유에 따라 `XLOG_HEAP2_PRUNE_VACUUM_SCAN`·`PRUNE_ON_ACCESS` 등으로 갈린다(pruneheap.c L2156-L2164). VACUUM 은 `HEAP_PAGE_PRUNE_FREEZE` 로 부르고, 일반 읽기의 `heap_page_prune_opt` 는 freeze 없이(options = 0) 부른다.
+**힙 페이지 하나에서 죽은 튜플을 걷어내고, 필요하면 남은 튜플을 얼린다.** 먼저 페이지의 모든 튜플에 대해 가시성 판정(HTSV)을 한 번씩만 해서 배열에 적고, HOT 체인마다 운명을 정해 "redirect 할 것, LP_DEAD 로 만들 것, LP_UNUSED 로 만들 것, 얼릴 것" 목록을 만든다. 페이지는 그동안 건드리지 않는다. 그다음 freeze 를 할지 결정하고, critical section 안에서 목록을 한꺼번에 적용하고 WAL 레코드 하나를 남긴다. 레코드 이름은 호출 이유에 따라 `XLOG_HEAP2_PRUNE_VACUUM_SCAN`·`PRUNE_ON_ACCESS` 등으로 나뉜다(pruneheap.c L2156-L2164). VACUUM 은 `HEAP_PAGE_PRUNE_FREEZE` 로 부르고, 일반 읽기의 `heap_page_prune_opt` 는 freeze 없이(options = 0) 부른다.
 
 ## 위치
 
@@ -261,7 +261,7 @@ heap_prune_satisfies_vacuum(PruneState *prstate, HeapTuple tup, Buffer buffer)
 }
 ```
 
-HOT 체인 하나의 끝맺음이다. 체인 앞쪽의 DEAD 개수(`ndeadchain`)로 세 갈래가 갈린다.
+HOT 체인 하나의 끝맺음이다. 체인 앞쪽의 DEAD 개수(`ndeadchain`)로 세 갈래가 달라진다.
 
 `access` / `heap` / `pruneheap.c` L1153-L1196 ([GitHub](https://github.com/postgres/postgres/blob/724edf9bde9d356724ad384a2e196edc3c9f80f7/src/backend/access/heap/pruneheap.c#L1153-L1196))
 

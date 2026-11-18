@@ -634,7 +634,7 @@ bf.c:3:46: error: attempt to take address of bit-field structure member ‘f’
 | gcc `-fsanitize=undefined` | **조용하다** |
 | clang `-fsanitize=undefined` | **`member access within null pointer` 로 잡는다** |
 
-- ★ **컴파일러에 따라 갈린다.** [05번 형제](../05-explicit-casts-and-pointer-conversions/)의 `-fsanitize=function`(gcc 에 없음)과 같은 종류의 차이다.
+- ★ **컴파일러에 따라 달라진다.** [05번 형제](../05-explicit-casts-and-pointer-conversions/)의 `-fsanitize=function`(gcc 에 없음)과 같은 종류의 차이다.
 - **「sanitizer 로 돌렸다」가 컴파일러마다 다른 의미**라는 것을 이 주제에서도 한 번 더 확인한 셈이다.
 - 그래서 **표준 `offsetof` 를 쓴다.** 직접 만들 이유가 없다.
 

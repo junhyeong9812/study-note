@@ -93,7 +93,7 @@ differing cells (string key vs symbol key) 6 / 10
 
 **왜 그런가**
 
-- ★★★ **`for-in`·`keys`·`entries`·`JSON`·`gOPN` 은 문자열 키만**, **`gOPS` 는 심볼 키만** 늘어놓는다 — 그 여섯 열이 갈린다.
+- ★★★ **`for-in`·`keys`·`entries`·`JSON`·`gOPN` 은 문자열 키만**, **`gOPS` 는 심볼 키만** 늘어놓는다 — 그 여섯 열이 달라진다.
   **`ownKeys`·`{...}`·`assign`·`hasOwn` 은 키 종류를 안 가린다** — 그래서 **심볼 키는 비공개가 아니다.** 스프레드가 복사해 간다.
 - ★★ **비열거 심볼**은 스프레드·`assign` 에서도 빠진다. 그 둘의 기준은 「own ∧ 열거 가능」이고(18편), 심볼이냐는 기준에 없다.
 - ★★ **`Symbol.for` 심볼·잘 알려진 심볼도 키로서는 보통 심볼과 같다**(두 `true`).
@@ -327,7 +327,7 @@ methods that read species 7 / 14
 
 - ★★★ 명세의 함수 `String ( value )` 가 **「`NewTarget` 이 없고 값이 심볼이면 `SymbolDescriptiveString`」** 을 **`ToString` 보다 먼저** 한다. 그 샛길이 **문자열 쪽에만** 있다.
   템플릿 리터럴·`+ ''`·`concat`·`join` 은 추상 연산 **`ToString`** 을 부르고, `ToString` 은 심볼이면 던진다. **`Number()` 는 `ToNumber` 를 곧장 부른다** — 샛길이 없다.
-- ★★ 그래서 「명시적 변환은 된다」는 틀리다 — **`Number(s)` 는 명시적인데 던진다.** 갈리는 곳은 「명시적이냐」가 아니라 「**그 함수가 심볼을 따로 챙기느냐**」다.
+- ★★ 그래서 「명시적 변환은 된다」는 틀리다 — **`Number(s)` 는 명시적인데 던진다.** 달라지는 곳은 「명시적이냐」가 아니라 「**그 함수가 심볼을 따로 챙기느냐**」다.
 - ★ 로그에 심볼 키를 끼우려면 **`String(k)`** 이나 **`k.description`** 이다. `` `${k}` `` 는 **로그 자체가 예외를 낸다.**
 
 ### 8. `Symbol.for` — **같은 문자열이면 realm 을 넘어 같은 심볼이고, 그래서 약한 키가 못 된다**
@@ -365,7 +365,7 @@ methods that read species 7 / 14
 symbol kinds accepted as a WeakMap key 2 / 3
 ```
 
-node18 판 — `[4]` 만 갈린다(심볼 약한 키가 ES2023).
+node18 판 — `[4]` 만 달라진다(심볼 약한 키가 ES2023).
 
 ```text
 ===== node18 js20b-22h-registry.js (exit=0) =====
@@ -418,7 +418,7 @@ symbol kinds accepted as a WeakMap key 0 / 3
 - ★★★ 언어가 잘 알려진 심볼 키를 읽을 때는 대개 명세의 `GetMethod` 를 쓴다 — 값이 `undefined`·`null` 이면 **「없음」으로 돌려주고**, 함수가 아니면 **`TypeError` 로 던진다.**
   그래서 `toPrimitive: null` 은 `valueOf` 로 넘어가고, `toPrimitive: 1` 과 `hasInstance: 1` 은 **같은 문구**(`number 1 is not a function`)로 던진다.
 - ★★ `Symbol.iterator` 에도 같은 「없음」이 선다 — 10번 `[2]` 에서 `undefined` 로 지운 배열을 **`Array.from` 은 「이터레이터 없음」으로 읽고 유사 배열 경로로** 갔다.
-  `for...of`·스프레드는 없으면 **이터러블이 아니라고 던진다** — 「없음」을 받은 **소비자가 무엇을 하느냐**가 갈린 것이다.
+  `for...of`·스프레드는 없으면 **이터러블이 아니라고 던진다** — 「없음」을 받은 **소비자가 무엇을 하느냐**가 달라진 것이다.
 
 ### 10. `Symbol.iterator` 교체 — **이터러블 소비자 넷만 따라가고 인덱스로 읽는 쪽은 그대로; 지우면 `Array.from` 은 유사 배열로 우회**
 
@@ -508,10 +508,10 @@ a `using` declaration: compiled
 **왜 그런가**
 
 - ★★ **`Symbol.unscopables` 는 `with` 문이 객체에서 찾지 않을 이름**을 정한다(`with ([1, 2])` 안의 `keys` 가 바깥 변수). **그런데 `with` 는 엄격 모드에서 `SyntaxError` 이고 모듈·`class` 몸통은 늘 엄격**이라 효과를 볼 자리가 거의 없다.
-  ★ 그 객체의 **프로토타입이 `null`** 인 것은 `Object.prototype` 의 이름이 섞이지 않게 하려는 모양새다. 키 **순서**는 두 판이 다르게 찍었다(흔들리는 칸).
-- ★★★ **잘 알려진 심볼은 세 판 다 15개이고 목록이 같다.** 그중 **`dispose`·`asyncDispose` 는 ES2026 본문에 없다**(finished proposals 표로 ES2027).
-  ★★★ **그런데 `using` 선언은 node 두 판에서 `SyntaxError`, Chrome 151 에서만 `compiled`** 다. **「심볼이 있다」는 「문법이 있다」가 아니다.** [목록의 **51번 주제**](../51-explicit-resource-management-and-using/)가 이어받는다.
-- ★ `using` 의 문구가 node 두 판에서 다르다(`Unexpected identifier` / `... 'r'`) — **문구만** 갈린 블록이다.
+  ★ 그 객체의 **프로토타입이 `null`** 인 것은 `Object.prototype` 의 이름이 섞이지 않게 하려는 모양새다. 키 **순서**는 두 버전이 다르게 찍었다(실행마다 달라지는 항목).
+- ★★★ **잘 알려진 심볼은 세 버전 다 15개이고 목록이 같다.** 그중 **`dispose`·`asyncDispose` 는 ES2026 본문에 없다**(finished proposals 표로 ES2027).
+  ★★★ **그런데 `using` 선언은 node 두 버전에서 `SyntaxError`, Chrome 151 에서만 `compiled`** 다. **「심볼이 있다」는 「문법이 있다」가 아니다.** [목록의 **51번 주제**](../51-explicit-resource-management-and-using/)가 이어받는다.
+- ★ `using` 의 문구가 node 두 버전에서 다르다(`Unexpected identifier` / `... 'r'`) — **문구만** 달라진 블록이다.
 
 ### 12. 파이썬은 **이름**, JS 는 **심볼** — 그리고 진릿값 훅은 JS 에 없다 (연결)
 
@@ -534,16 +534,16 @@ a `using` declaration: compiled
 | 소스 | 무엇을 고정하나 | 몇 번 · 어디서 |
 |---|---|---|
 | `js20b-22c-toprimitive-hints.js` | ★★★ **연산 24가지의 hint** · 메서드 자리의 `null`/`1`/객체/심볼 · `Date` 의 자체 `toPrimitive` | node20 1벌 + node18 대조 1벌(같음) |
-| `js20b-22b-key-grid.js` | ★★★ 키 종류 5 × 문법 10 격자 · 「갈린 칸 `6 / 10`」 · own 키 순서 | node20 1벌 + node18 대조 1벌(같음) |
+| `js20b-22b-key-grid.js` | ★★★ 키 종류 5 × 문법 10 격자 · 「달라진 항목 `6 / 10`」 · own 키 순서 | node20 1벌 + node18 대조 1벌(같음) |
 | `js20b-22a-basics.js` | ★★ `new Symbol` · `description` · 변환 여섯 가지 「`5 / 6`」 · JSON | node20 1벌 + node18 대조 1벌(같음) |
 | `js20b-22e-tostringtag.js` | ★★★ 태그 대 슬롯 판별 「`7 / 7`」 · 태그의 출처 · 지우기 | node20 1벌 + node18 대조 1벌(같음) |
 | `js20b-22d-hasinstance.js` | ★★ `hasInstance` 의 인자·`ToBoolean` · 우변 문구 셋 · 대입 대 `defineProperty` | node20 1벌 + node18 대조 1벌(같음) |
-| `js20b-22f-species.js` | ★★ species 를 읽는 메서드 「`7 / 14`」 · species 값 넷 · `Promise` | node20 1벌 + **node18 판도 싣는다**(갈린 블록) |
+| `js20b-22f-species.js` | ★★ species 를 읽는 메서드 「`7 / 14`」 · species 값 넷 · `Promise` | node20 1벌 + **node18 판도 싣는다**(달라진 블록) |
 | `js20b-22g-other-hooks.js` | ★★ `iterator` 교체·삭제 · `isConcatSpreadable` · `match` · `unscopables` | node20 1벌 + node18 대조(갈림 — `unscopables` 키 목록 한 줄) |
-| `js20b-22h-registry.js` | ★★ 레지스트리 같음 · `keyFor` · `vm` realm · 약한 키 「`2 / 3`」 | node20 1벌 + **node18 판도 싣는다**(갈린 블록 · `0 / 3`) |
+| `js20b-22h-registry.js` | ★★ 레지스트리 같음 · `keyFor` · `vm` realm · 약한 키 「`2 / 3`」 | node20 1벌 + **node18 판도 싣는다**(달라진 블록 · `0 / 3`) |
 | `js20b-22i-wellknown.js` · `js20b-22j-wellknown-chrome.web.js` | 잘 알려진 심볼 목록 · `using` 컴파일 여부 | node20 · **node18**(갈림 — 문구) · Chrome 151 각 1벌 |
-| `js20b-versions.sh` · `js20b-features.js` | 이 문서의 모든 출력이 **어느 판에서 나왔나** · 판별 기능 표 | 1벌 |
-| `js20b-vdiff.sh` | **두 판이 갈린 탐침 수** — 이 주제의 것은 넷 | 1벌(아래) |
+| `js20b-versions.sh` · `js20b-features.js` | 이 문서의 모든 출력이 **어느 버전에서 나왔나** · 판별 기능 표 | 1벌 |
+| `js20b-vdiff.sh` | **두 버전이 달라진 probe 수** — 이 주제의 것은 넷 | 1벌(아래) |
 
 ```sh
 # js20b-vdiff.sh
@@ -664,7 +664,7 @@ identical 18  ·  differs 6  ·  total 24
   `object.constructor[Symbol.species] is not a constructor` · `First argument to String.prototype.startsWith must not be a regular expression` · `arr is not iterable` ·
   `Invalid value used as weak map key` · `WeakRef: invalid target`(node20) / `WeakRef: target must be an object`(node18) · `Unexpected identifier` 계열.
   **종류(`TypeError`·`SyntaxError`)만 명세가 정한다.**
-- ★★ **`unscopables` 객체의 키 순서** — 두 판이 다르다.
+- ★★ **`unscopables` 객체의 키 순서** — 두 버전이 다르다.
 - ★★ **node18 에 ES2023 기능(배열 복사 메서드 · 심볼 약한 키)이 없는 것** · **`Symbol.dispose` 가 세 판에 있는 것**(ES2026 본문에 없다) · **`using` 을 Chrome 151 만 컴파일하는 것.**
 - ★ **`node:vm` 의 realm** — 호스트 API 다.
 
@@ -672,19 +672,19 @@ identical 18  ·  differs 6  ·  total 24
 `instanceof` 의 `ToBoolean` · `Function.prototype[Symbol.hasInstance]` 의 `writable: false` · 태그가 슬롯을 덮는 것 · species 를 쓰는 메서드 목록 · 장부 심볼이 약한 키가 될 수 없는 것은 구현 의존이 아니다.**
 어느 엔진에서도 같아야 한다.
 
-**안 돌려 본 것 / 못 잰 것 / 부적용인 창**
+**안 돌려 본 것 / 못 잰 것 / 해당 없는 창**
 
 - **안 돌려 본 것** — Chrome 에서 22a\~22h(브라우저는 목록·`using` 한 블록만) · 브라우저 **iframe realm**(대신 `vm`) · `Symbol.asyncIterator`(40번) ·
   `Symbol.matchAll`·`replace`·`search`·`split`(정규식 29·30번) · `RegExp` 의 species · 다른 엔진(SpiderMonkey·JavaScriptCore)의 문구.
 - ★ **못 잰 것** — **없다.**
 - ★★★ **안 쟀다** — **성능 전부.** 심볼 키 접근이 빠르다/느리다는 말을 **한 줄도 쓰지 않았다.**
-- ★★ **부적용인 창** — **진단의 `(행,열)`**(`SyntaxError` 두 줄은 결합 방향을 가를 일이 없다). **`Symbol.unscopables` 는 반쯤 부적용** — 엄격 모드에 `with` 가 없다.
+- ★★ **해당 없는 창** — **진단의 `(행,열)`**(`SyntaxError` 두 줄은 결합 방향을 가를 일이 없다). **`Symbol.unscopables` 는 반쯤 해당 없음** — 엄격 모드에 `with` 가 없다.
 - ★★ **창을 바꿔 물은 자리** — realm 을 넘는 같음을 **`vm`** 으로(8번).
 
-**판이 올랐을 때 다시 돌려야 하는 것**
+**버전이 올랐을 때 다시 돌려야 하는 것**
 
 - ★★★ **예외 문구 전부** — `WeakRef` 문구는 **이 주제 안에서 실제로 바뀌었다**(8번).
-- ★★ **`using` 컴파일 여부**(11번) — ES2027 을 들인 node 판에서는 답이 바뀐다.
+- ★★ **`using` 컴파일 여부**(11번) — ES2027 을 들인 node 버전에서는 답이 바뀐다.
 - ★ **`unscopables` 목록**(10번 `[5]`) — 배열 메서드가 늘면 키가 는다(node18 → node20 에서 셋 늘었다).
 - **hint · 격자 · 태그 · species 목록은 다시 돌릴 필요가 없다** — ES2015(복사 메서드는 ES2023)부터의 계약이다.
 
@@ -694,7 +694,7 @@ identical 18  ·  differs 6  ·  total 24
 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮긴 출력이 하나도 없다).
 
 ★★ **예외는 `이름 「메시지」` 꼴로만 찍었다** — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
-★★★ **이 주제는 두 판이 갈린 블록을 넷 갖고 있다**(`22f`·`22g`·`22h`·`22i`) — 6번·8번·11번 답에 node18 판을 나란히 싣는다.
+★★★ **이 주제는 두 버전이 달라진 블록을 넷 갖고 있다**(`22f`·`22g`·`22h`·`22i`) — 6번·8번·11번 답에 node18 판을 나란히 싣는다.
 ★ **표준 출력과 표준 오류를 한 블록에도 안 섞었다** — 모든 예외를 `catch` 해 표준 출력으로 찍었다.
 
 **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.

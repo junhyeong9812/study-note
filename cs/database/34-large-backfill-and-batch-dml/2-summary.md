@@ -220,7 +220,7 @@ SELECT count(*) FILTER (WHERE won_v2 IS NULL)         AS missing,
   - MySQL: `ERROR 1205 (HY000): Lock wait timeout exceeded; try restarting transaction`(로컬 재현). `Seconds_Behind_Source`가 커밋 직후 급등.
   - PostgreSQL: `pg_stat_activity`에 `wait_event_type = Lock`인 세션이 쌓인다. `replay_lag` 증가. 테이블 크기가 두 배 가까이 된다(로컬 재현 28 MB → 57 MB).
 - **원인**
-  - 한 트랜잭션이 바꾼 행 전부의 락을 커밋까지 쥔다.
+  - 한 트랜잭션이 바꾼 행 전부의 락을 커밋까지 잡는다.
   - 옛 버전(undo·dead tuple)이 한꺼번에 생긴다.
   - MySQL은 트랜잭션을 binlog 캐시에 모았다가 커밋할 때 binlog에 쓴다(`binlog_cache_size` 문서). 그래서 레플리카는 커밋 뒤에야 거대한 트랜잭션을 받아 적용한다.
 - **대처**
@@ -237,7 +237,7 @@ SELECT count(*) FILTER (WHERE won_v2 IS NULL)         AS missing,
 ### 3. 중단 후 재실행 → 이미 처리한 행을 다시 변환
 
 - **현상**: 백필이 중간에 죽어 다시 돌렸더니 앞쪽 고객의 금액만 두 배로 올랐다.
-- **보이는 형태**: 값 분포가 둘로 갈린다. 로컬 재현 2000원 5000행 / 4000원 5000행.
+- **보이는 형태**: 값 분포가 둘로 나뉜다. 로컬 재현 2000원 5000행 / 4000원 5000행.
 - **원인**: 변환이 비멱등이다(`won = won * 2`). 체크포인트 없이 처음부터 다시 돌렸다.
 - **대처**
   - 복구: 원본(백업·변경 이력·원본 컬럼)에서 해당 범위를 다시 계산한다. 원본을 덮어썼다면 복구 근거부터 찾는다.
@@ -257,7 +257,7 @@ SELECT count(*) FILTER (WHERE won_v2 IS NULL)         AS missing,
 
 - **현상**: 청크로 잘 나눴는데도 InnoDB undo 공간이 계속 커지고 읽기가 느려진다.
 - **보이는 형태**: `SHOW ENGINE INNODB STATUS`의 `History list length`가 계속 증가. `information_schema.innodb_trx`에 몇 시간 된 트랜잭션.
-- **원인**: 어딘가 열린 채인 긴 트랜잭션(리포트·백업·잊힌 세션)이 옛 스냅샷을 쥐고 있다. 그 스냅샷이 필요로 하는 undo는 지울 수 없다(17.3).
+- **원인**: 어딘가 열린 채인 긴 트랜잭션(리포트·백업·잊힌 세션)이 옛 스냅샷을 잡고 있다. 그 스냅샷이 필요로 하는 undo는 지울 수 없다(17.3).
 - **대처**: 긴 트랜잭션을 찾아 끝낸다. 백필 중에는 history list length를 멈춤 기준 지표에 넣는다.
 
 ## 핵심 문장

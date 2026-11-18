@@ -356,7 +356,7 @@ false -> true   TypeError Cannot redefine property: p
 
 **그림 해설.**
 
-- ★★★ **막힌 칸은 27칸 중 11칸**이다(마지막 줄을 스크립트가 직접 셌다). 나머지 16칸은 **통과한다.**
+- ★★★ **막힌 항목은 27칸 중 11칸**이다(마지막 줄을 스크립트가 직접 셌다). 나머지 16칸은 **통과한다.**
   「설정 불가로 만들면 아무것도 못 한다」가 절반도 안 맞는 셈이다.
 - ★★★ **가장 반직관적인 칸** — `w=true c=false` 에서 **`defineProperty` 로 `value: 2` 를 주는 것이 통과한다.**
   「설정 불가인데 값이 바뀐다」로 보이지만, 그 자리에서 **값을 바꿀 권한은 `writable` 이 이미 주고 있다.**
@@ -518,7 +518,7 @@ fa.sort()       TypeError Cannot assign to read only property '0' of object '[ob
 fa.toSorted()   OK  [1,2,3]  returned [1,2,3]
 ```
 
-★★★ **이 블록이 이 배치에서 두 판이 갈린 유일한 블록이다.** 아래가 같은 소스의 node18 판이다.
+★★★ **이 블록이 이 배치에서 두 버전이 달라진 유일한 블록이다.** 아래가 같은 소스의 node18 판이다.
 
 ```text
 ===== node18 js12b-14c-freeze.js (exit=0) =====
@@ -600,12 +600,12 @@ fa.toSorted()   OK  [1,2,3]
   `fa[0] = 9` 와 `fa.sort()` 는 **같은 문구**(`read only property '0'`)로 막힌다 — **`sort` 가 제자리 연산**이기 때문이다.
   `fa.push(4)` 는 **다른 문구**(`Cannot add property 3, object is not extensible`)다 — 길이를 늘리려 한 것이라서다.
   `fa.length = 0` 은 **`length` 가 읽기 전용**이 됐다고 답한다.
-- ★★★ **다섯째 줄이 두 판에서 갈린 줄**이다.
+- ★★★ **다섯째 줄이 두 버전에서 달라진 줄**이다.
   node20 은 `OK  [1,2,3]  returned [1,2,3]` 이고 node18 은 `OK  [1,2,3]` 이다.
   ★★ **node18 의 `OK` 를 「`toSorted` 가 통과했다」로 읽으면 안 된다.**
   소스가 `fa.toSorted && fa.toSorted()` 이므로 **v18 에서는 `fa.toSorted` 가 `undefined` 라 `&&` 가 단락 평가**했고,
   그래서 돌려받은 값이 `undefined` 이라 `returned …` 꼬리가 안 붙은 것이다.
-  **근거의 종류가 두 판에서 다르다** — node20 줄은 **「동결된 배열에서도 비변형 메서드는 된다」의 근거**이고,
+  **근거의 종류가 두 버전에서 다르다** — node20 줄은 **「동결된 배열에서도 비변형 메서드는 된다」의 근거**이고,
   node18 줄은 **「그 메서드가 이 판에 없다」의 근거**일 뿐이다. ★ 12번에서 본 단축 평가가 여기서 되돌아온다.
 
 ```text
@@ -633,9 +633,9 @@ fa.toSorted()   OK  [1,2,3]
 
 **언제 쓰나** — 「동결했는데 코드가 멀쩡히 돈다」가 나올 때. **돈 게 아니라 조용히 버려진 것**일 수 있다.
 
-> ★★★ **엄격을 먼저 돌렸다. 그리고 탐침마다 전역 이름을 다르게 줬다.**
-> 이 배치 직전에 실제 사고가 있었다 — **비엄격 탐침을 먼저 돌리면 암시적 전역이 만들어지고**,
-> 뒤에 도는 엄격 탐침이 그것을 읽어 **두 모드가 「같다」는 거짓 결과**가 난다.
+> ★★★ **엄격을 먼저 돌렸다. 그리고 probe마다 전역 이름을 다르게 줬다.**
+> 이 배치 직전에 실제 사고가 있었다 — **비엄격 probe를 먼저 돌리면 암시적 전역이 만들어지고**,
+> 뒤에 도는 엄격 probe가 그것을 읽어 **두 모드가 「같다」는 거짓 결과**가 난다.
 > 값도 그럴듯하고 예외도 안 나서 **모든 검사기를 통과한다.**
 > 아래 블록은 **엄격 열을 먼저 채우고**, 마지막에 **무엇이 실제로 전역에 샜는지**를 찍는다.
 
@@ -729,11 +729,11 @@ any js12b14StrictG* leaked?    -> false
 **그림 해설.**
 
 - ★★★ **설정에 달린 칸은 13칸 중 9칸**이다(`mode-dependent cells 9 / 13` — 스크립트가 직접 셌다).
-  이 배치 네 주제 중 **가장 크게 갈린다**. 12번이 11칸 중 6칸, 13번은 잴 칸 자체가 없었다.
-- ★★★ **갈린 아홉 칸의 모양이 전부 같다** — 엄격은 `TypeError`, 비엄격은 **`OK` 인데 값이 안 바뀌어 있다.**
+  이 배치 네 주제 중 **가장 크게 달라진다**. 12번이 11칸 중 6칸, 13번은 잴 칸 자체가 없었다.
+- ★★★ **달라진 아홉 칸의 모양이 전부 같다** — 엄격은 `TypeError`, 비엄격은 **`OK` 인데 값이 안 바뀌어 있다.**
   `frozen.a = 2` 의 비엄격 답이 **`OK a=1`** 인 것이 그 전형이다. **던지지 않고, 쓰지도 않는다.**
   ★★ **그래서 「에러가 없다」로는 절대 못 가른다.** 이것이 이 주제의 가장 비싼 사고다.
-- ★★★ **SAME 인 네 칸이 두 종류로 갈린다 — 뭉뚱그리면 결론이 틀린다.**
+- ★★★ **SAME 인 네 칸이 두 종류로 나뉜다 — 뭉뚱그리면 결론이 틀린다.**
   - **`sealed.a = 2` 는 양쪽 다 `OK a=2`** — **애초에 아무것도 안 막혔다.** `seal` 이 `writable` 을 안 건드리기 때문이고,
     (1)의 `[2]` 에서 `seal .a` 가 `w=true` 인 것이 그 증거다. **두 블록이 서로를 설명한다.**
   - **나머지 셋은 양쪽 다 `TypeError`** — **그 문들은 모드와 무관하게 던진다.**
@@ -745,8 +745,8 @@ any js12b14StrictG* leaked?    -> false
   비엄격 답이 **`OK a=1 own=false`** 다 — **own 프로퍼티가 아예 안 생겼다.**
   ★ 쓰기가 체인을 어떻게 보는지는 15번이 정본이다. 여기서는 **막는 것이 디스크립터라는 사실**까지다.
 - ★★★ `[2]` — **전역에 남은 이름은 하나**(`js12b14SloppyG11`)이고 **`js12b14StrictG*` 는 하나도 안 샜다.**
-  샌 하나는 열두 번째 탐침(`assign to undeclared G`)의 **비엄격** 판이 만든 것이다.
-  ★★ **이름을 공유했다면** 그 값을 다른 탐침이 읽어 **갈린 칸이 하나 줄었을** 자리다.
+  샌 하나는 열두 번째 probe(`assign to undeclared G`)의 **비엄격** 판이 만든 것이다.
+  ★★ **이름을 공유했다면** 그 값을 다른 probe가 읽어 **달라진 항목이 하나 줄었을** 자리다.
   「0 이 결론인 격자일수록 그 0 이 진짜인지 따로 물어야 한다」의 짝이 **이 두 줄**이다.
 
 ```text
@@ -772,7 +772,7 @@ any js12b14StrictG* leaked?    -> false
    ★ 단 defineProperty · push · Object.assign 은 양쪽 다 왼쪽 길로 간다.
 ```
 
-### (5) ★ 두 판이 갈린 한 줄 — 19블록 중 1개
+### (5) ★ 두 버전이 달라진 한 줄 — 19블록 중 1개
 
 ```text
 ===== ./js12b-vdiff.sh (exit=0) =====
@@ -803,9 +803,9 @@ js12b-15e-pycontrast.js      identical
 identical 18  ·  differs 1  ·  total 19
 ```
 
-★★ **이 배치 19블록 중 갈린 것은 하나**이고, **그 하나가 이 주제의 것**이다(`js12b-14c-freeze.js`).
-★ 갈린 것은 **디스크립터나 동결의 규칙이 아니라 `Array.prototype.toSorted` 의 존재 여부**다(ES2023).
-**동결의 규칙 쪽은 두 판이 한 글자도 안 갈렸다** — 위 목록의 `js12b-14a-dump.js`·`js12b-14b-configurable.js`·`js12b-14s-strict.js` 가 전부 `identical` 이다.
+★★ **이 배치 19블록 중 달라진 것은 하나**이고, **그 하나가 이 주제의 것**이다(`js12b-14c-freeze.js`).
+★ 달라진 것은 **디스크립터나 동결의 규칙이 아니라 `Array.prototype.toSorted` 의 존재 여부**다(ES2023).
+**동결의 규칙 쪽은 두 버전이 한 글자도 달라지지 않았다** — 위 목록의 `js12b-14a-dump.js`·`js12b-14b-configurable.js`·`js12b-14s-strict.js` 가 전부 `identical` 이다.
 
 ### (6) ★ 같은 질문을 브라우저에 던지면
 
@@ -914,7 +914,7 @@ document.documentElement.appendChild(document.createElement("pre")).textContent 
   15  Symbol.hasInstance overrides      true
 ```
 
-★★ **호스트가 정하는 칸이 하나도 없었다.** `14` 로 시작하는 네 줄이 Node 쪽과 전부 같다 —
+★★ **호스트가 정하는 항목이 하나도 없었다.** `14` 로 시작하는 네 줄이 Node 쪽과 전부 같다 —
 디스크립터 두 벌도, **`isFrozen {} / prevExt {}` 가 `[false,true]` 인 것도**, 얕음도, 엄격 쓰기의 `TypeError` 도 같다.
 ★★★ **빈 객체가 안 얼어 있다는 실측이 두 번째 엔진 자리에서도 재확인된다** — 브리핑의 전제가 판이나 호스트 때문에 뒤집힌 것이 아니다.
 ★ **예외 문구까지 같은 것은 둘 다 V8 이기 때문**이지 명세가 정한 것이 아니다.
@@ -980,7 +980,7 @@ document.documentElement.appendChild(document.createElement("pre")).textContent 
 
 ### (3) ★★★ 비엄격에서 「에러가 안 났으니 통과했다」로 읽는다
 
-갈린 아홉 칸이 전부 이 모양이다 — **예외도 경고도 없고 반환값도 없는데 값이 안 바뀌어 있다.**
+달라진 아홉 칸이 전부 이 모양이다 — **예외도 경고도 없고 반환값도 없는데 값이 안 바뀌어 있다.**
 ★ 발견하는 법은 셋 — **엄격 모드(또는 모듈)로 돌려 본다** · **쓴 뒤에 다시 읽는다** · **`isFrozen`/디스크립터를 찍어 본다.**
 
 ### (4) ★★★ `defineProperty` 로 만들고 `Object.keys` 에 안 나온다고 당황한다
@@ -1036,7 +1036,7 @@ document.documentElement.appendChild(document.createElement("pre")).textContent 
   ★★ 판별은 **[ECMA-262 아카이브](https://262.ecma-international.org/)** 로만 접지했다 — **조항 번호는 인용하지 않는다.**
   ★ 13번의 「열거 순서가 ES2015·ES2020 에 못 박혔다」와 **같은 집안이고, 이쪽이 먼저 일어난 일**이다.
 
-### 엔진(V8) 구현 · 이 판의 관찰
+### 엔진(V8) 구현 · 이 버전의 관찰
 
 - **예외 문구 전부** — `Cannot redefine property: p` · `Cannot delete property 'p' of #<Object>` ·
   `Cannot assign to read only property 'a' of object '#<Object>'` ·
@@ -1050,7 +1050,7 @@ document.documentElement.appendChild(document.createElement("pre")).textContent 
 
 ### 호스트가 정하는 것 — ECMA-262 밖
 
-- **없다.** 브라우저 대조에서 호스트가 정하는 칸이 0개였다.
+- **없다.** 브라우저 대조에서 호스트가 정하는 항목이 0개였다.
   ★ 다만 **호스트 객체**(DOM 요소 등)는 자기만의 디스크립터를 가질 수 있다 — **그것은 안 던져 봤다.**
 
 ### 그래서 이렇게 적으면 틀린다
@@ -1061,7 +1061,7 @@ document.documentElement.appendChild(document.createElement("pre")).textContent 
 - 「`seal` 은 값을 고정한다」 — **아니다.** `writable` 을 안 건드린다.
 - 「`defineProperty` 로 만든 프로퍼티도 `Object.keys` 에 보인다」 — **아니다.** 기본이 `enumerable: false` 다.
 - 「비엄격에서 안 터졌으니 쓰기가 성공했다」 — **아니다.** 조용히 버려진 것이다.
-- 「원시값에 `isFrozen` 을 부르면 터진다」 — **이 판에서는 아니다.** `true` 를 돌려준다.
+- 「원시값에 `isFrozen` 을 부르면 터진다」 — **이 버전에서는 아니다.** `true` 를 돌려준다.
 - 「동결하면 느려진다(또는 빨라진다)」 — **이 문서는 안 쟀다.** 어느 쪽도 적지 않는다.
 
 ## 언제 쓰고 언제 안 쓰나
@@ -1083,7 +1083,7 @@ document.documentElement.appendChild(document.createElement("pre")).textContent 
 2. **리터럴은 `true,true,true`, `defineProperty` 의 기본은 `false,false,false` — 세 칸이 전부 뒤집혀 있다.**
 3. **`writable` 은 대입을, `configurable` 은 삭제와 재정의를, `enumerable` 은 보이기를 정한다 — 셋은 서로 상관없다.**
 4. **세 봉인 함수는 계단이고 셋 다 얕다 — 그리고 접근자는 `freeze` 로도 안 잠긴다.**
-5. **엄격에서는 `TypeError` 로 보이고 비엄격에서는 아무 흔적도 없다 — 갈린 칸이 13칸 중 9칸이다.**
+5. **엄격에서는 `TypeError` 로 보이고 비엄격에서는 아무 흔적도 없다 — 달라진 항목이 13칸 중 9칸이다.**
 
 ## 관련 자료
 
@@ -1092,9 +1092,9 @@ document.documentElement.appendChild(document.createElement("pre")).textContent 
 - [12 — 옵셔널 체이닝·널 병합·논리 할당](../12-optional-chaining-nullish-and-logical-assignment/2-summary.md) — **그쪽이 「막혔을 때 무엇이 보이나」까지** 갔다. 여기는 **왜 막히나**부터.
 - [11 — 스프레드와 나머지](../11-spread-and-rest/2-summary.md) — **그쪽이 `{ ...o }` 의 정본**이다. 여기는 **그것이 보는 `enumerable` 의 정본**이다.
 - [목록의 **18번 주제**](../18-for-in-and-enumeration/) 「`for...in` 과 열거」 — **그쪽이 열거와 체인 순회의 정본**이다.
-- [목록의 **25번 주제**](../25-array-non-mutating-and-copy-methods/) 「배열 비변형·복사 메서드」 — **그쪽이 `toSorted`(ES2023)의 정본**이다. 여기는 **동결된 배열에서 갈린 한 줄**까지.
+- [목록의 **25번 주제**](../25-array-non-mutating-and-copy-methods/) 「배열 비변형·복사 메서드」 — **그쪽이 `toSorted`(ES2023)의 정본**이다. 여기는 **동결된 배열에서 달라진 한 줄**까지.
 - [목록의 **27번 주제**](../27-object-static-methods/) 「`Object` 정적 메서드」 — **그쪽이 `Object.assign`·`entries` 의 정본**이다. 여기는 **그것들이 이 플래그를 본다는 사실**까지.
-- [목록의 **35번 주제**](../35-strict-mode/) 「엄격 모드」 — **그쪽이 모드가 바꾸는 규칙 전부의 정본**이다. 여기는 **막힌 쓰기가 갈리는 칸**까지.
+- [목록의 **35번 주제**](../35-strict-mode/) 「엄격 모드」 — **그쪽이 모드가 바꾸는 규칙 전부의 정본**이다. 여기는 **막힌 쓰기가 달라지는 항목**까지.
 - [목록의 **45번 주제**](../45-proxy/) 「`Proxy`」 · [목록의 **46번 주제**](../46-reflect/) 「`Reflect`」 — **그쪽이 트랩과 불변식의 정본**이다. 여기는 **디스크립터가 그 계약의 언어**라는 사실까지(프록시는 안 던져 봤다).
 - [목록의 **48번 주제**](../48-deep-copy-methods-compared/) 「깊은 복사 수단 비교」 — **그쪽이 깊은 동결·깊은 복사의 정본**이다. 여기는 **얕다는 사실**까지.
 - Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **29번** 「클래스와 속성 탐색」 —
@@ -1130,7 +1130,7 @@ document.documentElement.appendChild(document.createElement("pre")).textContent 
 
 ## 실행 환경
 
-★★★ **이 주제의 본체는 ② 전수 격자다. 그리고 그 격자의 눈금이 `getOwnPropertyDescriptor` 덤프다.**
+★★★ **이 주제의 핵심은 ② 전수 격자다. 그리고 그 격자의 눈금이 `getOwnPropertyDescriptor` 덤프다.**
 「이 프로퍼티는 무엇이 막혀 있나」는 **값을 아무리 읽어도 안 보인다** — `o.a` 는 막혔든 안 막혔든 `1` 이다.
 보이는 곳은 **디스크립터의 세 플래그**(`writable`·`enumerable`·`configurable`) 하나뿐이고,
 「그래서 무엇이 되고 무엇이 안 되나」는 **그 세 플래그의 조합을 전부 던져 본 격자**로만 나온다.
@@ -1151,25 +1151,25 @@ document.documentElement.appendChild(document.createElement("pre")).textContent 
 ★★ **던지는 형태를 하나로 고정했다** — 예외는 `try`/`catch` 로 받아 `e.constructor.name` 과 `e.message` 만 찍는다.
 Node 의 스택트레이스에는 **절대 경로**가 박혀 다른 머신에서 재현이 안 되기 때문이다.
 ★★ **이 문서의 모든 블록은 표준 출력뿐이다** — 표준 오류와 섞은 블록이 하나도 없다.
-★★★ **격자 두 개는 통째로 `"use strict"` 아래에서 돌렸다.** 비엄격에서는 막힌 칸이 **`OK` 로 보이기** 때문에
+★★★ **격자 두 개는 통째로 `"use strict"` 아래에서 돌렸다.** 비엄격에서는 막힌 항목이 **`OK` 로 보이기** 때문에
 격자를 읽을 수가 없다. 「모드가 무엇을 바꾸나」는 따로 세 번째 격자에서 잰다.
 
 **버전** — **세 플래그·`defineProperty`·`getOwnPropertyDescriptor`·`freeze`/`seal`/`preventExtensions`·`isFrozen`/`isSealed`/`isExtensible` 은 전부 ES5** 다.
 **복수형 `Object.getOwnPropertyDescriptors` 는 ES2017**, **`Reflect.defineProperty`·`Reflect.getOwnPropertyDescriptor` 는 ES2015** 다.
 ★ 본문 격자에 한 줄 섞여 있는 `Array.prototype.toSorted` 는 **ES2023** 라 **v18 에 없다.**
 
-**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+**★★★ 이 주제가 쓰는 창 — 그리고 해당 없는 창**
 
 | 창 | 이 주제에서 무엇을 보나 |
 |---|---|
-| ★★★ **② 전수 격자**(본체) | `configurable:false` **27칸** · 세 봉인 함수 **6연산 × 4상태 = 24칸** · 엄격/비엄격 **13칸** |
+| ★★★ **② 전수 격자**(핵심) | `configurable:false` **27칸** · 세 봉인 함수 **6연산 × 4상태 = 24칸** · 엄격/비엄격 **13칸** |
 | ★★★ **디스크립터 덤프**(이 주제 고유의 창 — 격자의 눈금) | `getOwnPropertyDescriptor` 가 **값에 안 보이는 세 플래그**를 표로 꺼낸다. 이 창이 없으면 격자의 칸에 이름을 못 붙인다 |
 | ★★ **④ 예외의 `constructor.name` + `message`** | **엄격 모드에서만 열린다.** `TypeError` 의 종류가 「무엇이 막혔나」를 가른다 |
-| ★★ **두 번 컴파일**(엄격 먼저 / 비엄격 나중) | **설정에 달린 칸이 몇 개인가** — 13칸 중 **9칸**이었다. 이 배치 네 주제 중 **가장 크게 갈린다** |
-| ★★★ **⑤ 두 판 대조기 + 브라우저** | ★★ **이 배치에서 두 판이 갈린 단 하나의 블록이 이 주제의 것**이다(19블록 중 1개) |
+| ★★ **두 번 컴파일**(엄격 먼저 / 비엄격 나중) | **설정에 달린 칸이 몇 개인가** — 13칸 중 **9칸**이었다. 이 배치 네 주제 중 **가장 크게 달라진다** |
+| ★★★ **⑤ 두 판 대조기 + 브라우저** | ★★ **이 배치에서 두 버전이 달라진 단 하나의 블록이 이 주제의 것**이다(19블록 중 1개) |
 | ★ **① 추상 연산에 로그 심기** | 한 자리에만 쓰인다 — **동결된 객체의 getter 에 카운터**를 달아 「얼었는데 값이 바뀐다」를 찍는다 |
-| ★ **부적용 — ③ 브랜드 태그**(`Object.prototype.toString.call`) | 디스크립터는 값의 **종류**를 묻지 않는다. 가를 칸이 없다 — **잴 것이 없다** |
-| ★ **부적용 — 진단의 `(행,열)`**(18-C) | 이 주제에는 **`SyntaxError` 가 한 줄도 없다.** 전부 런타임 `TypeError` 라 캐럿이 나올 자리가 없다 |
+| ★ **해당 없음 — ③ 브랜드 태그**(`Object.prototype.toString.call`) | 디스크립터는 값의 **종류**를 묻지 않는다. 가를 칸이 없다 — **잴 것이 없다** |
+| ★ **해당 없음 — 진단의 `(행,열)`**(18-C) | 이 주제에는 **`SyntaxError` 가 한 줄도 없다.** 전부 런타임 `TypeError` 라 캐럿이 나올 자리가 없다 |
 | ★ **안 쟀다 — 성능** | 「동결하면 느려진다」·「`defineProperty` 가 비싸다」는 **한 줄도 안 쟀다.** 이 문서에 속도 주장이 없다 |
 
 ★★ **제5의 상태 — 창을 바꿔 물은 자리가 하나 있다.**
@@ -1177,18 +1177,18 @@ Node 의 스택트레이스에는 **절대 경로**가 박혀 다른 머신에�
 그래서 같은 질문을 **「쓴 뒤에 값을 다시 읽는」 창**으로 바꿔 물었다(엄격/비엄격 격자의 `return 'a=' + o.a`).
 ★ 바꾼 창이 못 보는 것도 적어 둔다 — **원래 값과 쓰려던 값이 같으면 그 창도 아무것도 못 가른다.**
 
-**★ 흔들리는 칸 / 안 흔들리는 칸**
+**★ 실행마다 달라지는 항목 / 달라지지 않는 항목**
 
-| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+| 실행마다 달라진다(근거로 쓰지 않는다) | 달라지지 않는다(근거로 쓴다) |
 |---|---|
 | Node 스택트레이스의 **절대 경로** — 한 줄도 싣지 않았다 | ★★★ **세 플래그의 `true`/`false`** |
-| 예외 **문구**(`Cannot redefine property: p` 등 — 판이 오르면 바뀐다) | ★★★ **격자의 집계 줄** — `blocked 11 / 27` · `mode-dependent cells 9 / 13` |
+| 예외 **문구**(`Cannot redefine property: p` 등 — 버전이 오르면 바뀐다) | ★★★ **격자의 집계 줄** — `blocked 11 / 27` · `mode-dependent cells 9 / 13` |
 | V8 이 객체를 적는 방식(`#<Object>`·`[object Array]`) | ★★★ **예외의 종류**(`TypeError`) · 세 술어의 판정 |
 | ★ **`fa.toSorted()` 한 줄** — **판에 달렸다** | ★★ **전역 오염 목록** · 두 판 대조기의 `identical / differs` 집계 |
 
-★★ **이 주제의 블록에는 주소도 시간도 난수도 한 곳도 안 찍힌다.** 같은 판에서 다시 돌리면 **한 글자도 안 변한다.**
-★★★ **두 판이 갈린 블록이 이 주제에 하나 있다** — `js12b-14c-freeze.js` 의 `fa.toSorted()` 한 줄이다.
-**갈린 블록은 양쪽을 다 싣는다.**
+★★ **이 주제의 블록에는 주소도 시간도 난수도 한 곳도 안 찍힌다.** 같은 버전에서 다시 돌리면 **한 글자도 안 변한다.**
+★★★ **두 버전이 달라진 블록이 이 주제에 하나 있다** — `js12b-14c-freeze.js` 의 `fa.toSorted()` 한 줄이다.
+**달라진 블록은 양쪽을 다 싣는다.**
 
 **선행** — [13 — 객체 리터럴과 프로퍼티](../13-object-literals-and-properties/2-summary.md) · [12 — 옵셔널 체이닝·널 병합·논리 할당](../12-optional-chaining-nullish-and-logical-assignment/2-summary.md) · [11 — 스프레드와 나머지](../11-spread-and-rest/2-summary.md) · [01 — 값의 종류와 `typeof`](../01-value-types-and-typeof/2-summary.md).
 ★★★ **13번이 이 주제의 뿌리다.** 13번은 「어느 문법이 어떤 디스크립터를 만드나」까지 갔고,

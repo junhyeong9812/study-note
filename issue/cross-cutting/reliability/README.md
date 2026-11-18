@@ -24,7 +24,7 @@
 - [change-detection-key-design](change-detection-key-design/) — 변경 감지·캐시 키는 결과에 영향을 주는 입력 전부를 반영해야 하고(mtime·길이·합산값은 불완전), 잠금·정체성 키에는 가변값을 넣지 않는다 — 한쪽이면 갱신 누락, 반대면 무한 루프.
 - [cleanup-on-every-exit-path](cleanup-on-every-exit-path/) — 종료 경로가 여럿이면 경로마다 정리를 흩어 두지 말고 스코프 소멸(RAII·try/finally·trap)에 묶어 모든 경로(에러·취소·spawn 실패·예외)에서 정확히 한 번 해제한다.
 - [closed-state-model](closed-state-model/) — 상태 공간을 타입·전이 규칙으로 닫아라 — 불법 상태·누락된 조합·종단 재전이·검사 없는 set·비단조 guard는 오보고와 교착을 만든다.
-- [debounce-trailing-contract](debounce-trailing-contract/) — 디바운스·보류 전송은 "마지막 변경 뒤 반드시 한 번 더"와 종결 이벤트와의 순서라는 새 계약을 만든다 — 지키지 못하면 마지막 변경이 무음 유실되거나 순서가 뒤집힌다.
+- [debounce-trailing-contract](debounce-trailing-contract/) — 디바운스·보류 전송은 "마지막 변경 뒤 반드시 한 번 더"와 종결 이벤트와의 순서라는 새 계약을 만든다 — 지키지 못하면 마지막 변경이 조용한 유실되거나 순서가 뒤집힌다.
 - [derived-cache-staleness](derived-cache-staleness/) — 파생 캐시·사본·비동기 로그는 원본보다 늦으며 실패 결과를 캐시하면 일시 장애가 영구화된다 — 완결성·최신성이 필요한 판정은 정본(이벤트 페이로드·원본)을 직접 읽는다.
 - [deserialization-trust-boundary](deserialization-trust-boundary/) — 역직렬화 경계에서 타입 보장이 끊긴다 — 영속·외부 데이터는 로드 시 검증·정규화하고, 부분 손상은 격리하되 드롭은 관측하며, 모르는 값·깊이 공격·스키마 진화를 명시 처리한다.
 - [edge-detection-on-raw-signals](edge-detection-on-raw-signals/) — 여러 신호를 스칼라로 접거나 매 tick 덮어쓰거나 주기 샘플링하면 사건(edge)이 사라진다 — 기저 신호별 edge 판정·래치·세대 ID·지속 조건으로 감지한다.

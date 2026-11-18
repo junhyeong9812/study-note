@@ -1,8 +1,8 @@
 # web-api/19 — `passive` 와 스크롤 성능: 기본값이 바뀐 이유 — 정답
 
-| 안 흔들리는 칸 | 흔들리는 칸 · 못 잰 칸 |
+| 달라지지 않는 항목 | 실행마다 달라지는 항목 · 못 잰 항목 |
 |---|---|
-| 기본값 42칸 · 인자 꼴 9줄 · body 바꿔 끼우기 · 진짜 입력의 네 칸 · 콘솔 줄 수 | **안 실었다** — 스크롤한 거리(관성으로 흔들린다) |
+| 기본값 42칸 · 인자 꼴 9줄 · body 바꿔 끼우기 · 진짜 입력의 네 칸 · 콘솔 줄 수 | **안 실었다** — 스크롤한 거리(관성으로 실행마다 달라진다) |
 | 캡처를 여러 판 돌려 **한 글자도 같았다** | ★ **못 잰 것** — 스크롤 지연 · 프레임 · 입력 지연 |
 | — | Chrome 판 번호 |
 
@@ -68,7 +68,7 @@ window 와 div 가 갈린 줄 = 7 / 9
 
 - **`window`** — `{ passive: false }` 만 먹히고 나머지 여덟은 무시(P).
 - **`div`** — `{ passive: true }` 만 무시되고 나머지 여덟은 먹힌다.
-- **같은 답을 내는 줄은 `{ passive: false }`(둘 다 O)와 `{ passive: true }`(둘 다 P)** 둘이다. 나머지 **7 / 9** 가 갈렸다.
+- **같은 답을 내는 줄은 `{ passive: false }`(둘 다 O)와 `{ passive: true }`(둘 다 P)** 둘이다. 나머지 **7 / 9** 가 달라졌다.
 - **`false` 는 `capture`** 로 읽힌다. 명세의 flatten more options 는 불리언이면 **`passive` 를 null 로** 남기고, add an event listener 가 그 null 을 기본값으로 채운다.
 
 ### 3. 등록할 때 굳는다
@@ -206,7 +206,7 @@ javascript · error · Unable to preventDefault inside passive event listener in
 - 문서 수준의 비passive `wheel`·`touchmove` 리스너 하나가 있으면 **모든 스크롤**이 「이 리스너가 막을지」를 **메인 스레드에 물어야** 한다(명세 2.8 절의 모형).
 - 그런 리스너 대부분은 **읽기만** 한다(분석·지연 로딩 등) — 막지 않는데도 기다리게 한다.
 - 그래서 **문서 수준 네 대상 × 스크롤 네 이벤트만** 기본을 passive 로 바꿨다. 되돌리려면 **`{ passive: false }` 를 명시**한다(A2).
-- ★ 그 「기다림」의 표지는 이 판에서도 보였다 — 아무것도 안 하는 비passive 리스너 하나를 더 달자 진짜 휠의 **`cancelable` 이 `false` 에서 `true` 로** 바뀌었다.
+- ★ 그 「기다림」의 표지는 이 버전에서도 보였다 — 아무것도 안 하는 비passive 리스너 하나를 더 달자 진짜 휠의 **`cancelable` 이 `false` 에서 `true` 로** 바뀌었다.
 
 ```text
 $ python3 wa16b-cdp.py page wa16b-19-more.html | sed -n '1,3p'
@@ -225,7 +225,7 @@ $ python3 wa16b-cdp.py page wa16b-19-more.html | sed -n '1,3p'
 ### 10. 지금은 명세 본문, 출발은 Chrome 의 개입
 
 - **있다** — DOM 표준의 **「default passive value」** 절.
-- **출발은 Chrome 의 개입** — 터치 쪽 Chrome 56, 휠 쪽 Chrome 73(chromestatus). 이 판의 콘솔은 출처를 **`intervention`** 으로 찍는다(A6 의 ①).
+- **출발은 Chrome 의 개입** — 터치 쪽 Chrome 56, 휠 쪽 Chrome 73(chromestatus). 이 버전의 콘솔은 출처를 **`intervention`** 으로 찍는다(A6 의 ①).
 - 진짜 입력에서 `cancelable` 을 `false` 로 보내는 것은 — **명세는 「할 수 있다」는 설명**, **하는 것은 Chrome 의 구현**, 이 편은 그것을 **관찰**했다.
 
 ### 11. 다른 주제와 잇기
@@ -240,7 +240,7 @@ javascript · error · Unable to preventDefault inside passive event listener in
 (exit 0)
 ```
 
-  두 줄은 그 페이지에서 **명시 `{ passive: true }` 리스너가 두 번** 불린 것과 맞고, 나머지 호출은 전부 **기본 passive + 합성**(문항 6의 ③ 칸)이라 **한 줄도 안 남았다.** 이 판에서는 **합친 것이 아니라 ③ 칸의 침묵**이었다.
+  두 줄은 그 페이지에서 **명시 `{ passive: true }` 리스너가 두 번** 불린 것과 맞고, 나머지 호출은 전부 **기본 passive + 합성**(문항 6의 ③ 칸)이라 **한 줄도 안 남았다.** 이 버전에서는 **합친 것이 아니라 ③ 칸의 침묵**이었다.
 - **17번 주제의 두 속성** — 진짜 입력에서는 **`cancelable` 이 `false` 로 와서** 「막을 수 있나」가 제대로 드러났고, **`defaultPrevented`** 가 「막혔나」를 확인했다(A4·A5).
 - **`passive` 가 동일성 키가 아니라는 것**은 [15번 주제](../15-listener-registration/3-answer.md)의 격자에서 쟀다. 문항 2의 **불리언 `false`** 가 `capture` 로만 읽히는 것도 그 격자의 「세 번째 인자가 불리언이면 `capture`」와 같은 규칙(flatten)이다.
 

@@ -224,7 +224,7 @@ class C : B() {
 가시성은 [18번 주제](../18-visibility-modifiers/), 인터페이스의 충돌 해소는 [20번 주제](../20-interfaces-default-impl-and-super/)가 정본이다.
 
 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
-이 주제의 모든 답은 **kotlinc 2.4.20 · JRE 21.0.5** 에서 실제로 던져 받은 것이다.
+이 주제의 모든 답은 **kotlinc 2.4.20 · JRE 21.0.5** 에서 실제로 실행해 받은 것이다.
 
 ## 복습 기록
 

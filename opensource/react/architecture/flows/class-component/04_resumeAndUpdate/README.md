@@ -2,7 +2,7 @@
 
 상위: [클래스 컴포넌트](../README.md)
 
-`resumeMountClassInstance` 와 `updateClassInstance` 는 뼈대가 같고 꼬리는 글자까지 같다. 그런데 **차이가 열셋**이고, 그중 몇은 동작이 갈린다.
+`resumeMountClassInstance` 와 `updateClassInstance` 는 뼈대가 같고 꼬리는 글자까지 같다. 그런데 **차이가 열셋**이고, 그중 몇은 동작이 달라진다.
 
 ## 위치
 
@@ -32,7 +32,7 @@
 
 > Note: During these life-cycles, instance.props/instance.state are what ever the previously attempted to render - not the "current". However, during componentDidUpdate we pass the "current" props.
 
-조기 바이아웃. 두 함수가 여기서 가장 크게 갈린다.
+조기 바이아웃. 두 함수가 여기서 가장 크게 달라진다.
 
 ```js
 // ReactFiberClassComponent.js L918-L933

@@ -67,7 +67,7 @@ backend 가 "이 릴레이션의 이 블록"을 달라고 할 때 **shared buffe
  31  BM_PERMANENT          WAL 대상 (unlogged 가 아니거나 init fork)
 ```
 
-한 블록을 찾는 길은 hit, miss, 경합 셋으로 갈린다. 해시 테이블은 128개 분할(`NUM_BUFFER_PARTITIONS`, lwlock.h L93)로 나뉘어 있고, 분할 lock 은 조회에 공유, 삽입에 배타로 잡는다.
+한 블록을 찾는 길은 hit, miss, 경합 셋으로 나뉜다. 해시 테이블은 128개 분할(`NUM_BUFFER_PARTITIONS`, lwlock.h L93)로 나뉘어 있고, 분할 lock 은 조회에 공유, 삽입에 배타로 잡는다.
 
 ```text
  BufferTag -> buffer id (buf_table.c 의 SharedBufHash)

@@ -63,7 +63,7 @@ _bt_insertonpg(Relation rel,
 	}
 ```
 
-공간이 없으면 쪼갠다. 왼쪽 페이지는 쓰기 잠금을 쥔 채 부모 삽입으로 간다.
+공간이 없으면 쪼갠다. 왼쪽 페이지는 쓰기 잠금을 잡은 채 부모 삽입으로 간다.
 
 `access` / `nbtree` / `nbtinsert.c` L1210-L1242 ([GitHub](https://github.com/postgres/postgres/blob/724edf9bde9d356724ad384a2e196edc3c9f80f7/src/backend/access/nbtree/nbtinsert.c#L1210-L1242))
 

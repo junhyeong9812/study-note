@@ -21,7 +21,7 @@ matchMedia("(prefers-color-scheme: dark)").matches = true
 
 - **`true`** 다. 선호는 분명히 바뀌었다.
 
-**둘이 갈리는 이유**
+**둘이 달라지는 이유**
 
 - **미디어 쿼리는 조건일 뿐 아무것도 그리지 않는다.** 내가 그 안에 선언을 쓰지 않으면 화면은 그대로다.\
   「선호를 읽는 것」과 「브라우저가 그리는 것을 바꾸는 것」은 **다른 기계**이고, 뒤엣것은 `color-scheme` 이다.
@@ -389,7 +389,7 @@ python3 -c "from PIL import Image; im=Image.open('/tmp/o.png').convert('RGB'); p
 | demo 1개 — 값 6항목 | 1 | 2-summary 의 demo |
 | demo 의 「바꿔 볼 것」 — `.dark` 의 `color-scheme` 제거 | 1 | demo |
 | demo 의 「바꿔 볼 것」 — 같은 선언을 `:root` 에 (픽셀) | 3 | demo · A2 |
-| **제출 직전 demo 재추출·재실행 대조** | 1 | 어긋남 0건 |
+| **제출 직전 demo 재추출·재실행 대조** | 1 | 불일치 0건 |
 
 **구현에 달린 항목**
 

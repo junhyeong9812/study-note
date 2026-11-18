@@ -1,6 +1,6 @@
 # web-api/34 — `navigator.sendBeacon` 과 이탈 시점 전송: `fetch` 의 `keepalive` 와의 관계 — 정리 (힌트)
 
-**이 판의 Chrome**
+**이 버전의 Chrome**
 
 ```text
 $ google-chrome --version
@@ -8,25 +8,25 @@ Google Chrome 151.0.7922.173
 (exit 0)
 ```
 
-### 흔들리는 칸 / 안 흔들리는 칸
+### 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| **안 흔들린다** | 격자 40칸의 「닿은 판 / 5」와 「살아 있던 판」 · 동기 결과 · 64KiB 표 · `Content-Type` 표 · 콘솔 · 8 MiB 세 줄 | **판 안에서 5판**, 캡처 세 판이 **한 글자도 같았다** — 판마다 갈린 칸 `0 / 40` |
+| **달라지지 않는다** | 격자 40칸의 「닿은 판 / 5」와 「살아 있던 판」 · 동기 결과 · 64KiB 표 · `Content-Type` 표 · 콘솔 · 8 MiB 세 줄 | **판 안에서 5판**, 캡처 세 번이 **한 글자도 같았다** — 판마다 달라진 항목 `0 / 40` |
 | ★ **흔들리게 만들지 않았다** | 8 MiB 가 **얼마나** 올라갔나 | 바이트 수를 찍지 않고 **「끝까지 받았나」·「받은 것이 있나」** 만 찍었다 |
-| ★ **판에 매일 수 있는 칸** | 「닿았다」 전부 | **localhost** 라서 닿는 데 시간이 거의 안 든다(「실행 환경」). 27편에서 `abort()` 가 **따라잡지 못한 것**과 같은 성질일 수 있다 — 먼 서버라면 **안 닿는 판이 나올 수 있다** |
-| **흔들린다** | Chrome 판 번호 · 포트 · multipart 경계 | 포트는 출력에 안 나온다 · 경계는 뒤 16자를 가린다 |
+| ★ **판에 매일 수 있는 항목** | 「닿았다」 전부 | **localhost** 라서 닿는 데 시간이 거의 안 든다(「실행 환경」). 27편에서 `abort()` 가 **따라잡지 못한 것**과 같은 성질일 수 있다 — 먼 서버라면 **안 닿는 판이 나올 수 있다** |
+| **실행마다 달라진다** | Chrome 판 번호 · 포트 · multipart 경계 | 포트는 출력에 안 나온다 · 경계는 뒤 16자를 가린다 |
 
 - 재대조에서 정규화하는 칸은 없다. **위 표에 없는 차이는 전부 고칠 것**이다.
 
-### 이 주제가 쓰는 창 / 부적용인 창
+### 이 주제가 쓰는 창 / 해당 없는 창
 
 | 창 | 이 주제에서 | 무엇을 답하나 |
 |---|---|---|
-| 창 ① `--dump-dom` 트리 | **부적용** | — |
+| 창 ① `--dump-dom` 트리 | **해당 없음** | — |
 | 창 ② 노드 프로브 | ★ **쓴다** | `sendBeacon` 의 반환값 · `fetch` 의 `then`/`catch` · 던진 예외 |
-| 창 ③ 같은 것을 두 번 읽기 | **부적용** | — |
-| **창 ④ 서버 요청 로그 → 떠날 때 전송 격자** | ★★★ **본체** | 닿았나(5판 중 몇 판) · 응답을 놓을 때 연결이 살아 있었나 · 메서드 · `Content-Type` · 본문 길이 · 프리플라이트 |
+| 창 ③ 같은 것을 두 번 읽기 | **해당 없음** | — |
+| **창 ④ 서버 요청 로그 → 떠날 때 전송 격자** | ★★★ **핵심** | 닿았나(5판 중 몇 판) · 응답을 놓을 때 연결이 살아 있었나 · 메서드 · `Content-Type` · 본문 길이 · 프리플라이트 |
 | ★ **「잘렸나」를 서버 쪽 소켓으로** | ★★ **제5의 상태 — 같은 질문을 다른 창으로** | 떠난 페이지는 **`then` 도 `catch` 도 적지 못한다**(문서가 없다). 그래서 **서버가 응답을 놓는 순간 소켓이 닫혔나**로 물었다. ★ 바꾼 창이 못 보는 것 — **브라우저가 응답을 받아 어디에 버렸나** |
 | ★ **동기 결과를 다른 탭에서** | ★ **같은 질문을 다른 창으로** | 떠나는 페이지가 **localStorage 에 적어 두고**, 하네스가 **같은 출처의 다른 탭에서** 읽는다(24편의 기록기와 같은 수) |
 | 콘솔(Log 도메인) | ★ **쓴다** | 교차 출처 프리플라이트 거부 |
@@ -168,10 +168,10 @@ xhr	unload	던짐 NetworkError 「Failed to execute 'send' on 'XMLHttpRequest': 
 (exit 0)
 ```
 
-- ★★★ **서버에 닿지 않은 칸 6 / 40 — 여섯 칸 전부 동기 XHR 이다.** `fetch` · `keepalive` · `sendBeacon` · `img.src` 는 **네 자리 × 두 방식 32칸 전부 5/5 닿았다.** 판마다 갈린 칸 **0 / 40**.
-- ★★★ **잘린 것은 요청이 아니라 연결이었다** — 보통 `fetch` 는 **탭을 닫으면 네 자리 모두 「살아 0/5」**: 요청은 닿았는데 **응답을 놓을 때 소켓이 이미 닫혀 있었다.** Fetch 명세 그대로 읽힌다 — **fetch group 이 terminated 되면 keepalive 가 false 인 진행 중 fetch 를 끊는다.** 누가 언제 그 terminate 를 부르나(HTML 쪽 문장)는 이 판에서 열지 못했다.
+- ★★★ **서버에 닿지 않은 칸 6 / 40 — 여섯 칸 전부 동기 XHR 이다.** `fetch` · `keepalive` · `sendBeacon` · `img.src` 는 **네 자리 × 두 방식 32칸 전부 5/5 닿았다.** 판마다 달라진 항목 **0 / 40**.
+- ★★★ **잘린 것은 요청이 아니라 연결이었다** — 보통 `fetch` 는 **탭을 닫으면 네 자리 모두 「살아 0/5」**: 요청은 닿았는데 **응답을 놓을 때 소켓이 이미 닫혀 있었다.** Fetch 명세 그대로 읽힌다 — **fetch group 이 terminated 되면 keepalive 가 false 인 진행 중 fetch 를 끊는다.** 누가 언제 그 terminate 를 부르나(HTML 쪽 문장)는 이 버전에서 열지 못했다.
 - ★★★ **`keepalive` · `sendBeacon` · `img.src` 는 탭을 닫아도 「살아 5/5」** — 문서가 사라진 뒤에도 브라우저가 응답까지 받아 갔다. Fetch 의 keepalive 설명이 **`sendBeacon()` 과 `img` 가 이것을 쓴다**고 적는다 — `img.src` 가 같은 줄에 선 이유다.
-- ★★ **링크로 떠나면 보통 `fetch` 도 「살아 5/5」 — `unload` 자리만 「살아 0/5」.** `unload` 리스너를 단 페이지는 **bfcache 에 못 들어가 떠나는 순간 파괴되고**(24편 (4)), 나머지 세 자리는 리스너가 `unload` 가 아니라서 **문서가 bfcache 에 살아 있었다**(31편 (5)의 「떠남 ≠ 파괴」). 이 판은 bfcache 에 들어갔는지를 **따로 묻지 않았다** — 24편의 결과로 읽는다.
+- ★★ **링크로 떠나면 보통 `fetch` 도 「살아 5/5」 — `unload` 자리만 「살아 0/5」.** `unload` 리스너를 단 페이지는 **bfcache 에 못 들어가 떠나는 순간 파괴되고**(24편 (4)), 나머지 세 자리는 리스너가 `unload` 가 아니라서 **문서가 bfcache 에 살아 있었다**(31편 (5)의 「떠남 ≠ 파괴」). 이 버전은 bfcache 에 들어갔는지를 **따로 묻지 않았다** — 24편의 결과로 읽는다.
 - ★★ **동기 XHR** — 링크로 떠날 때 `visibilitychange` · `pagehide` 에서는 **`status 204` 로 돌아오고 닿았다.** 그 밖의 여섯 칸은 **던지고 안 닿았다**(아래 (2)).
 
 ```text
@@ -207,8 +207,8 @@ xhr	unload	던짐 NetworkError 「Failed to execute 'send' on 'XMLHttpRequest': 
 ```
 
 - ★★ **`sendBeacon` 은 여덟 칸 모두 `true`** — 부른 자리에서 「큐에 넣었다」.
-- ★★ **동기 XHR 은 탭 닫기의 네 자리 · 링크의 `beforeunload`·`unload` 에서 `NetworkError` — 문구가 이유를 말한다: `Synchronous XHR in page dismissal.`** 링크로 떠날 때의 `visibilitychange` · `pagehide` 에서는 **`status 204`** 로 돌아왔다 — 두 자리가 **「page dismissal」 로 다뤄지지 않은** 것으로 읽힌다(bfcache 로 가는 이동이다). 어느 자리를 dismissal 로 치는지의 명세 문장은 이 판에서 열지 못했다.
-- ★ **「그래도 동기 XHR 로 보내면 확실하다」는 옛 처방은 이 판에서 여섯 칸이 안 닿았다.**
+- ★★ **동기 XHR 은 탭 닫기의 네 자리 · 링크의 `beforeunload`·`unload` 에서 `NetworkError` — 문구가 이유를 말한다: `Synchronous XHR in page dismissal.`** 링크로 떠날 때의 `visibilitychange` · `pagehide` 에서는 **`status 204`** 로 돌아왔다 — 두 자리가 **「page dismissal」 로 다뤄지지 않은** 것으로 읽힌다(bfcache 로 가는 이동이다). 어느 자리를 dismissal 로 치는지의 명세 문장은 이 버전에서 열지 못했다.
+- ★ **「그래도 동기 XHR 로 보내면 확실하다」는 옛 처방은 이 버전에서 여섯 칸이 안 닿았다.**
 
 ```text
    떠나는 중의 동기 XHR — 자리 × 방식 (이 판)
@@ -476,7 +476,7 @@ B OPTIONS /beacon?body=keepalive-json  Origin=http://127.0.0.1:<A> · Access-Con
 
 ### 2. `unload` 에서 보낸다
 
-**이 판에서는 닿았다** — 그러나 `unload` 리스너는 **문서를 bfcache 에서 빼고**(24편 (4)), 보통 `fetch` 는 링크 이동에서도 끊겼다((1)). **`visibilitychange → hidden`** 이 떠남·가림 7행 전부에서 났다(24편 (2)).
+**이 버전에서는 닿았다** — 그러나 `unload` 리스너는 **문서를 bfcache 에서 빼고**(24편 (4)), 보통 `fetch` 는 링크 이동에서도 끊겼다((1)). **`visibilitychange → hidden`** 이 떠남·가림 7행 전부에서 났다(24편 (2)).
 
 ### 3. 확실하게 보내려고 동기 XHR 을 쓴다
 
@@ -502,14 +502,14 @@ B OPTIONS /beacon?body=keepalive-json  Origin=http://127.0.0.1:<A> · Access-Con
 
 | 이 문서의 서술 | 누가 보장하나 |
 |---|---|
-| 문서가 사라질 때 keepalive 가 false 인 fetch 를 끊는다 | **명세**(Fetch — fetch group terminated) · 이 판도 그랬다((1) 탭 닫기) |
-| keepalive 요청은 문서보다 오래 산다 · `sendBeacon` 과 `img` 가 쓴다 | **명세**(Fetch 의 keepalive 설명) · 이 판도 그랬다((1)) |
-| 아직 안 끝난 keepalive 본문의 합 > 64KiB → network error | **명세**(Fetch) · 이 판도 그랬다((3) — 경계 둘씩) |
-| keepalive + `ReadableStream` → `TypeError` | **명세**(Fetch 본문 추출) · 이 판도 그랬다((3)) |
-| `sendBeacon` 이 같은 한도를 나눠 쓰고 넘으면 `false` · 늘 `POST` · 본문별 `Content-Type` | ★ **이 판의 관찰** — Beacon 명세는 열지 못했다 |
-| 떠나는 중 동기 XHR → `NetworkError`(`Synchronous XHR in page dismissal`) · 링크의 vis/ph 에서는 됨 | ★ **이 판의 관찰** — 문구는 Chrome 의 것. HTML 명세 문장은 열지 못했다 |
-| 링크로 떠날 때 보통 `fetch` 가 산 것 | ★ **이 판의 관찰** — bfcache 에 들어가느냐는 구현(24편) |
-| 32칸 전부 닿았다 | ★ **이 판의 관찰 — localhost 5판**. 먼 서버는 모른다 |
+| 문서가 사라질 때 keepalive 가 false 인 fetch 를 끊는다 | **명세**(Fetch — fetch group terminated) · 이 버전도 그랬다((1) 탭 닫기) |
+| keepalive 요청은 문서보다 오래 산다 · `sendBeacon` 과 `img` 가 쓴다 | **명세**(Fetch 의 keepalive 설명) · 이 버전도 그랬다((1)) |
+| 아직 안 끝난 keepalive 본문의 합 > 64KiB → network error | **명세**(Fetch) · 이 버전도 그랬다((3) — 경계 둘씩) |
+| keepalive + `ReadableStream` → `TypeError` | **명세**(Fetch 본문 추출) · 이 버전도 그랬다((3)) |
+| `sendBeacon` 이 같은 한도를 나눠 쓰고 넘으면 `false` · 늘 `POST` · 본문별 `Content-Type` | ★ **이 버전의 관찰** — Beacon 명세는 열지 못했다 |
+| 떠나는 중 동기 XHR → `NetworkError`(`Synchronous XHR in page dismissal`) · 링크의 vis/ph 에서는 됨 | ★ **이 버전의 관찰** — 문구는 Chrome 의 것. HTML 명세 문장은 열지 못했다 |
+| 링크로 떠날 때 보통 `fetch` 가 산 것 | ★ **이 버전의 관찰** — bfcache 에 들어가느냐는 구현(24편) |
+| 32칸 전부 닿았다 | ★ **이 버전의 관찰 — localhost 5판**. 먼 서버는 모른다 |
 
 ## 언제 쓰고 언제 안 쓰나
 
@@ -536,7 +536,7 @@ B OPTIONS /beacon?body=keepalive-json  Origin=http://127.0.0.1:<A> · Access-Con
 - [25번 주제](../25-fetch-request-response/2-summary.md) — 서버 요청 로그 창
 - [27번 주제](../27-abort-and-timeout/2-summary.md) — 취소해도 닿은 판. 「닿았나」를 판 수로 읽는 이유
 - [28번 주제](../28-cors-simple-and-preflight/2-summary.md) · [30번 주제](../30-request-body-and-content-type/2-summary.md) — 프리플라이트가 붙는 조건 · 본문별 `Content-Type`
-- [31번 주제](../31-blob-file-and-object-url/2-summary.md) — 「떠났다」와 「파괴됐다」가 갈리는 bfcache
+- [31번 주제](../31-blob-file-and-object-url/2-summary.md) — 「떠났다」와 「파괴됐다」가 달라지는 bfcache
 
 ## 용어 풀이
 
@@ -544,18 +544,18 @@ B OPTIONS /beacon?body=keepalive-json  Origin=http://127.0.0.1:<A> · Access-Con
 - **fetch group terminated** — 문서가 사라질 때 그 문서의 진행 중 fetch 를 정리하는 단계. keepalive 가 false 인 것을 끊는다.
 - **`sendBeacon`** — 응답을 안 읽는 `POST`. 큐에 넣으면 `true`.
 - **page dismissal** — 페이지가 떠나는 중. Chrome 이 그때의 동기 XHR 을 거절한다(문구에서 온 말).
-- **떠날 때 전송 격자** — 수단 × 자리 × 떠남 40칸을 5판 돌려 「닿았나 · 연결이 살아 있었나」를 센 표. 이 편의 본체.
+- **떠날 때 전송 격자** — 수단 × 자리 × 떠남 40칸을 5판 돌려 「닿았나 · 연결이 살아 있었나」를 센 표. 이 편의 핵심.
 
 ## 더 들어가면
 
-- **`fetchLater()`** — Fetch 의 deferred fetching(문서가 사라지거나 비활성이 될 때 **나중에** 보낼 요청을 미리 맡긴다). 명세 사본에 절이 있다 — 이 판의 Chrome 에서 던지지 않았다.
+- **`fetchLater()`** — Fetch 의 deferred fetching(문서가 사라지거나 비활성이 될 때 **나중에** 보낼 요청을 미리 맡긴다). 명세 사본에 절이 있다 — 이 버전의 Chrome 에서 던지지 않았다.
 - **Beacon 명세 · HTML 의 page dismissal 문장** — 열지 못했다.
 - **먼 서버 · 느린 선** — 이 격자를 네트워크 지연을 넣은 판(CDP `Network.emulateNetworkConditions`)으로 다시 돌리는 일이 남았다.
 
 ## 실행 환경
 
-★★★ **이 편의 본체는 창 ④ 「서버 요청 로그」로 [24번 주제](../24-document-lifecycle-events/2-summary.md)의 「떠날 때」 격자에 열을 더한 「떠날 때 전송 격자」다.** 24편은 **떠날 때 어느 이벤트가 불리나**를 쟀다. 여기서는 그 이벤트 안에서 **한 번 보낸 요청이 서버에 닿았나**, 그리고 서버가 응답을 붙잡았다가 놓는 순간 **그 연결이 아직 살아 있었나**를 잰다. 전송 수단 5(`fetch` · `fetch keepalive` · `sendBeacon` · `img.src` · 동기 XHR) × 부르는 자리 4(`visibilitychange → hidden` · `pagehide` · `beforeunload` · `unload`) × 떠나는 방식 2(링크 · 탭 닫기) = **40칸을 5판** 돌려 **칸마다 「5판 중 몇 판」** 으로 적는다.\
-**기준 소스** — [WHATWG Fetch](https://fetch.spec.whatwg.org/)(앞 배치가 받아 둔 사본에서 열었다) — request 의 **keepalive**(「요청이 **environment settings object 보다 오래 살게** 하는 데 쓸 수 있다 — 예: **`navigator.sendBeacon()` 과 HTML `img` 요소가 이것을 쓴다**」) · **fetch group 이 terminated 될 때**(「fetch record 마다 — controller 가 있고 **done 이 아니고 keepalive 가 false 면 그 controller 를 terminate 한다**」) · HTTP-network-or-cache fetch 의 **한도**(「contentLength 와 **아직 안 끝난 keepalive 요청들의 본문 길이 합**이 **64 kibibytes 보다 크면 network error**」) · 본문 추출(「본문이 `ReadableStream` 이고 **keepalive 가 true 면 `TypeError` 를 던진다**」). ★ **[W3C Beacon](https://w3c.github.io/beacon/) 과 HTML 명세의 「page dismissal 중 동기 XHR」 문장은 이 판에서 열지 못했다**(외부 네트워크를 쓰지 않았고 사본이 없다) — 그쪽 서술은 **관찰**로만 적는다. 열어서 확인한 것만 명세로 적었다(기준일 2026-09-26).\
+★★★ **이 편의 핵심은 창 ④ 「서버 요청 로그」로 [24번 주제](../24-document-lifecycle-events/2-summary.md)의 「떠날 때」 격자에 열을 더한 「떠날 때 전송 격자」다.** 24편은 **떠날 때 어느 이벤트가 불리나**를 쟀다. 여기서는 그 이벤트 안에서 **한 번 보낸 요청이 서버에 닿았나**, 그리고 서버가 응답을 붙잡았다가 놓는 순간 **그 연결이 아직 살아 있었나**를 잰다. 전송 수단 5(`fetch` · `fetch keepalive` · `sendBeacon` · `img.src` · 동기 XHR) × 부르는 자리 4(`visibilitychange → hidden` · `pagehide` · `beforeunload` · `unload`) × 떠나는 방식 2(링크 · 탭 닫기) = **40칸을 5판** 돌려 **칸마다 「5판 중 몇 판」** 으로 적는다.\
+**기준 소스** — [WHATWG Fetch](https://fetch.spec.whatwg.org/)(앞 배치가 받아 둔 사본에서 열었다) — request 의 **keepalive**(「요청이 **environment settings object 보다 오래 살게** 하는 데 쓸 수 있다 — 예: **`navigator.sendBeacon()` 과 HTML `img` 요소가 이것을 쓴다**」) · **fetch group 이 terminated 될 때**(「fetch record 마다 — controller 가 있고 **done 이 아니고 keepalive 가 false 면 그 controller 를 terminate 한다**」) · HTTP-network-or-cache fetch 의 **한도**(「contentLength 와 **아직 안 끝난 keepalive 요청들의 본문 길이 합**이 **64 kibibytes 보다 크면 network error**」) · 본문 추출(「본문이 `ReadableStream` 이고 **keepalive 가 true 면 `TypeError` 를 던진다**」). ★ **[W3C Beacon](https://w3c.github.io/beacon/) 과 HTML 명세의 「page dismissal 중 동기 XHR」 문장은 이 버전에서 열지 못했다**(외부 네트워크를 쓰지 않았고 사본이 없다) — 그쪽 서술은 **관찰**로만 적는다. 열어서 확인한 것만 명세로 적었다(기준일 2026-09-26).\
 **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. 링크는 **CDP 로 넣은 진짜 마우스**로 누르고, 탭 닫기는 **`Page.close`** 다(24편 (3) — `Target.closeTarget` 은 `beforeunload` 를 안 부른다). 서버는 [32번 주제](../32-server-sent-events/2-summary.md)의 (1) `/beacon`·`/big` 이다.\
-**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.** ★★ **서버는 같은 기계(localhost)다** — 요청이 선에 오르는 데 걸리는 시간이 거의 0 이다. 먼 서버 · 느린 선에서의 「닿았나」는 이 판이 말하지 않는다.\
-**선행** — ★★★ **[24번 주제](../24-document-lifecycle-events/2-summary.md)** — (2)의 「떠날 때」 격자(**`visibilitychange → hidden` 은 7행 전부**) · (3) 탭 닫기 두 명령 · (4) **`unload` 리스너 하나가 문서를 bfcache 에서 뺀다.** 여기서는 **다시 재지 않고 인용**한다. ★★ **[25번 주제](../25-fetch-request-response/2-summary.md)** — 서버 요청 로그 창. ★ **[27번 주제](../27-abort-and-timeout/2-summary.md)의 (4)** — **같은 잡에서 `abort()` 해도 요청이 서버에 닿은 판이 있었다.** 여기의 「잘리나」도 같은 모양일 수 있어 **판 수로** 적는다. ★ [31번 주제](../31-blob-file-and-object-url/2-summary.md)의 (5) — **「떠났다」와 「파괴됐다」가 bfcache 에서 갈린다.**
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.** ★★ **서버는 같은 기계(localhost)다** — 요청이 선에 오르는 데 걸리는 시간이 거의 0 이다. 먼 서버 · 느린 선에서의 「닿았나」는 이 버전이 말하지 않는다.\
+**선행** — ★★★ **[24번 주제](../24-document-lifecycle-events/2-summary.md)** — (2)의 「떠날 때」 격자(**`visibilitychange → hidden` 은 7행 전부**) · (3) 탭 닫기 두 명령 · (4) **`unload` 리스너 하나가 문서를 bfcache 에서 뺀다.** 여기서는 **다시 재지 않고 인용**한다. ★★ **[25번 주제](../25-fetch-request-response/2-summary.md)** — 서버 요청 로그 창. ★ **[27번 주제](../27-abort-and-timeout/2-summary.md)의 (4)** — **같은 잡에서 `abort()` 해도 요청이 서버에 닿은 판이 있었다.** 여기의 「잘리나」도 같은 모양일 수 있어 **판 수로** 적는다. ★ [31번 주제](../31-blob-file-and-object-url/2-summary.md)의 (5) — **「떠났다」와 「파괴됐다」가 bfcache 에서 달라진다.**

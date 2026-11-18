@@ -2,7 +2,7 @@
 
 상위: [ExceptionTranslationFilter.doFilter](../README.md)
 
-401 과 403 이 갈리는 자리다. 같은 `AccessDeniedException` 이 누가 요청했느냐에 따라 다른 응답이 된다.
+401 과 403 이 달라지는 자리다. 같은 `AccessDeniedException` 이 누가 요청했느냐에 따라 다른 응답이 된다.
 
 ## 위치
 

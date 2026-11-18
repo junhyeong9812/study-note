@@ -231,7 +231,7 @@ Objects involved in the operation:
 **왜 그런가**
 
 - ★★★ **이터레이터는 「어디에 있나」 까지 들고 있고, 참조는 「그 원소」만 가리킨다** — `deque` 는 끝에 칸을 덧붙이면 **칸 목록(이터레이터가 쓰는 것)** 이 바뀌어도 원소는 그대로다. 해시 쪽 rehash 도 **칸을 다시 나눌 뿐 노드는 안 옮긴다.**
-- ★★★ **디버그 모드는 연산마다 「무효로 표시할 이터레이터」를 정한다** — 이 판의 `rehash()` 직접 호출에는 그 표시가 없었다(6번).
+- ★★★ **디버그 모드는 연산마다 「무효로 표시할 이터레이터」를 정한다** — 이 버전의 `rehash()` 직접 호출에는 그 표시가 없었다(6번).
 - ★★★ **ASan 은 해제·경계 밖만 본다** — 메모리가 살아 있는 무효화는 못 본다(7번).
 
 ### 2. ★★★ **`FORM=1` — `Error: attempt to increment a singular iterator.` · `run exit=134` / ASan `heap-buffer-overflow` · `erase01.cpp:20`** · ★★ **`FORM=2..5` 는 전부 `1 3 5 | size 3`**(`FORM=4` 는 앞에 `erase_if 가 돌려준 수 3`)
@@ -533,7 +533,7 @@ sort01.cpp:16:5: error: no matching function for call to object of type 'const _
 
 - ★★ 35편 (7)의 「컨셉을 걸면 첫 에러가 호출 줄로」 · clang 이 사슬 끝까지 **`__is_base_of(std::random_access_iterator_tag, std::bidirectional_iterator_tag)` evaluated to false** 를 보였다(요약 (4)).
 
-### 10. ★★ **말할 수 없다 — 무효가 된 것을 쓰는 것은 UB 다.** 도구가 침묵하는 칸이 있다는 것은 1번이 보였고, **값이 맞은 것은 「이 판의 우연」** 일 뿐이다
+### 10. ★★ **말할 수 없다 — 무효가 된 것을 쓰는 것은 UB 다.** 도구가 침묵하는 칸이 있다는 것은 1번이 보였고, **값이 맞은 것은 「이 버전의 우연」** 일 뿐이다
 
 - ★★ 1번의 `vector` × 「뒤 삭제」 칸(명세상 **유효**)과 「가운데 삽입」 칸(명세상 **무효** · ASan 침묵)은 **실행만으로는 구분되지 않는다.** 가르는 것은 명세 표다.
 
@@ -548,7 +548,7 @@ sort01.cpp:16:5: error: no matching function for call to object of type 'const _
 
 | 무엇을 | 몇 번 · 어느 판 | 결과 |
 |---|---|---|
-| `inv01.cpp` + `inv-grid.sh` | 5 × 7 × 컴파일러 2 × 창 3(빌드 6 · 실행 210) | ★★★ **적용 27 · 명세상 무효 13 / 10 · 명세와 갈린 칸 1 · 5(`SV` 4) · 갈린 행 0 / 35** |
+| `inv01.cpp` + `inv-grid.sh` | 5 × 7 × 컴파일러 2 × 창 3(빌드 6 · 실행 210) | ★★★ **적용 27 · 명세상 무효 13 / 10 · 명세와 달라진 항목 1 · 5(`SV` 4) · 달라진 행 0 / 35** |
 | `inv01.cpp` rehash 두 판 | g++ 디버그 | ★★★ **직접 `rehash` 침묵 · 넣다가 rehash 잡음** |
 | `erase01.cpp` | 두 컴파일러 × (디버그 · ASan · 보통 넷) | ★★★ **`singular` · `heap-buffer-overflow` · `1 3 5` 넷** |
 | `rfor01.cpp` | 두 컴파일러 × (ASan · 디버그) | ★★★ **`heap-use-after-free rfor01.cpp:8`** |
@@ -576,5 +576,5 @@ sort01.cpp:16:5: error: no matching function for call to object of type 'const _
 이 파일의 모든 출력·진단·리포트는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
 **Ubuntu clang version 18.1.3 (1ubuntu1)** · libstdc++ 13 · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
 소스는 질문 파일과 같다(출력 블록의 배너에 파일 이름이 있다). 블록은 캡처 스크립트가 받은 것이다 — 손으로 옮긴 줄은 없다.
-**읽는 법** — 흔들리는 칸은 **ASan 의 PID·주소·`pc`/`bp`/`sp` · 디버그 모드 리포트의 `@ 0x…` · 진단 문구와 총 줄 수** 다.\
+**읽는 법** — 실행마다 달라지는 항목은 **ASan 의 PID·주소·`pc`/`bp`/`sp` · 디버그 모드 리포트의 `@ 0x…` · 진단 문구와 총 줄 수** 다.\
 근거로 쓰는 것은 다음이다 — **격자의 칸 · `Error:` 줄 · 리포트 이름 · `SUMMARY` 의 `파일:줄` · `run exit` · 격자의 마지막 줄**.

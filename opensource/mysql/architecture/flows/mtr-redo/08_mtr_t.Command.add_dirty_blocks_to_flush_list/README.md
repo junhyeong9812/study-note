@@ -2,7 +2,7 @@
 
 상위: [mini-transaction과 redo 기록](../README.md)
 
-**mtr 이 X 또는 SX 래치로 잡은 페이지에 lsn 을 찍고, 처음 더럽혀진 페이지만 flush list 의 머리에 붙인다.** 페이지마다 `newest_modification = end_lsn` 은 매번 갱신하고, `oldest_modification = start_lsn` 은 처음 한 번만 정한다. flush list 에 붙는 순서가 lsn 순서와 어긋날 수 있는데, 그 어긋남의 상한을 `buf_flush_list_added` 가 `order_lag()` 로 묶는다. 이 함수 앞뒤의 `wait_to_add` 와 `report_added` 는 [04] execute 가 부른다.
+**mtr 이 X 또는 SX 래치로 잡은 페이지에 lsn 을 찍고, 처음 더럽혀진 페이지만 flush list 의 머리에 붙인다.** 페이지마다 `newest_modification = end_lsn` 은 매번 갱신하고, `oldest_modification = start_lsn` 은 처음 한 번만 정한다. flush list 에 붙는 순서가 lsn 순서와 어긋날 수 있는데, 그 불일치의 상한을 `buf_flush_list_added` 가 `order_lag()` 로 묶는다. 이 함수 앞뒤의 `wait_to_add` 와 `report_added` 는 [04] execute 가 부른다.
 
 ## 위치
 

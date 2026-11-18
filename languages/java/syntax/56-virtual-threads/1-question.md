@@ -140,7 +140,7 @@ static class C0 { static { Thread.sleep(200); } }   // 클래스 초기화 블�
 
 **선행** — [`../54-executorservice-and-future/`](../54-executorservice-and-future/) 의 질문을 먼저 푼다. 풀 크기·`close()`·`Future` 가 전제다.
 ★ [`../33-synchronized-and-volatile/`](../33-synchronized-and-volatile/) 의 `synchronized` 도 전제다 — **그 키워드가 여기서 버전에 따라 다르게 동작한다.**
-⚠️ 이 주제는 **JDK 판에 따라 답이 갈린다.** "몇 버전에서는?"을 항상 같이 묻는다.
+⚠️ 이 주제는 **JDK 판에 따라 답이 달라진다.** "몇 버전에서는?"을 항상 같이 묻는다.
 시간 수치를 묻는 문항은 **자릿수**만 맞히면 된다. 이 문서의 수치는 24코어 머신의 한 측정이다.
 
 ## 복습 기록

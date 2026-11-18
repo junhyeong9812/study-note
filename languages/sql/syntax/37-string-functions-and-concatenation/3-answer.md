@@ -224,8 +224,8 @@ PG 의 LENGTH    = 글자 수  -> 5   (CHAR_LENGTH 와 같다)
 MySQL 의 LENGTH = 바이트 수 -> 9   (OCTET_LENGTH 와 같다)
 ```
 
-**`CHAR_LENGTH` 와 `OCTET_LENGTH` 는 두 엔진에서 한 자리도 안 갈렸다.**\
-갈리는 것은 `LENGTH` 라는 **이름 하나**다.
+**`CHAR_LENGTH` 와 `OCTET_LENGTH` 는 두 엔진에서 한 자리도 달라지지 않았다.**\
+달라지는 것은 `LENGTH` 라는 **이름 하나**다.
 
 **어디서 물리나**
 
@@ -273,7 +273,7 @@ PG 에서 무슨 일이 일어났나
 
 ---
 
-### 5. 범위 밖 인덱스 — **시작이 1 미만이면 갈린다**
+### 5. 범위 밖 인덱스 — **시작이 1 미만이면 달라진다**
 
 **출력**
 
@@ -372,7 +372,7 @@ PostgreSQL (이 서버: en_US.utf8, 결정적)   MySQL (이 서버: utf8mb4_0900
 
 ---
 
-### 7. 갈리지 않는 것 — **일곱 다 같다**
+### 7. 달라지지 않는 것 — **일곱 다 같다**
 
 **출력**
 
@@ -539,7 +539,7 @@ SELECT CONCAT_WS(' ', last_name, middle_name, first_name) AS full_name FROM t;
 | 방법 | PG | MySQL | 비고 |
 |---|---|---|---|
 | `a \|\| b` | 연결 (`NULL` 전파) | **OR** | 쓰면 안 된다 |
-| `CONCAT(a, b)` | `NULL` 건너뜀 | **`NULL` 전파** | 그대로 쓰면 갈린다 |
+| `CONCAT(a, b)` | `NULL` 건너뜀 | **`NULL` 전파** | 그대로 쓰면 달라진다 |
 | `CONCAT(COALESCE(a,''), COALESCE(b,''))` | 같다 | 같다 | ✅ |
 | `CONCAT_WS(sep, a, b)` | `NULL` 건너뜀 | `NULL` 건너뜀 | ✅ |
 
@@ -678,7 +678,7 @@ MySQL 이 `||` 를 **deprecated** 로 표시한다는 사실은 서버가 직접
 ## 실행 환경
 
 근거는 **실행 결과**다 — 본문의 출력·에러·경고는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+2026-09-21 에 실제로 실행해 받은 것이다. 지어낸 출력은 없다.\
 **환경 조건** — PG `server_encoding` = `UTF8` · MySQL `character_set_server` = `utf8mb4`, 클라이언트도 `--default-character-set=utf8mb4`.\
 MySQL `sql_mode` 는 기본값이고 **`PIPES_AS_CONCAT` 이 없다**(8번에서 실제 값을 찍었다).\
 `emp`·`dept` 는 읽기만 했고 바꾸지 않았다.\

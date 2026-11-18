@@ -557,6 +557,6 @@ CREATE UNIQUE INDEX t_code_live_uq ON t (code) WHERE deleted_at IS NULL;
 ## 실행 환경
 
 근거는 **실행 결과**다 — 본문의 출력·에러는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+2026-09-21 에 실제로 실행해 받은 것이다. 지어낸 출력은 없다.\
 이 편이 만든 표(`t43_pk`·`t43_nnd`·`t43_comp`·`t43_comp2`·`t43_addpk`·`t43_un`·`t43_dc`)는 **전부 지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
 문서 근거는 [PG 18 Constraints](https://www.postgresql.org/docs/18/ddl-constraints.html) · [MySQL 8.4 CREATE TABLE](https://dev.mysql.com/doc/refman/8.4/en/create-table.html).

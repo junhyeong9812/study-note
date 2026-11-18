@@ -18,10 +18,10 @@ OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sha
 
 | 층 | 뜻 | 이 주제에서 근거로 쓰는 것 |
 |---|---|---|
-| **언어 명세(ECMA-334)** | ★★★ C# 언어가 약속한 것 | ★★★ **람다는 목표 타입이 델리게이트면 델리게이트로, `Expression<TDelegate>` 면 식 트리로 변환된다** · 식 트리로 못 바꾸는 람다(문 본문 등)는 **컴파일 에러** · `s.Where(…)` 가 **정적 타입**에 따라 `Enumerable` / `Queryable` 로 갈리는 것(오버로드 해석 — [30번](../30-extension-methods-and-extension-members/)) |
+| **언어 명세(ECMA-334)** | ★★★ C# 언어가 약속한 것 | ★★★ **람다는 목표 타입이 델리게이트면 델리게이트로, `Expression<TDelegate>` 면 식 트리로 변환된다** · 식 트리로 못 바꾸는 람다(문 본문 등)는 **컴파일 에러** · `s.Where(…)` 가 **정적 타입**에 따라 `Enumerable` / `Queryable` 로 나뉘는 것(오버로드 해석 — [30번](../30-extension-methods-and-extension-members/)) |
 | **컴파일러 구현(Roslyn)** | ★★ 그것을 **어떻게 적나** | ★★ 식 트리 람다가 **`Expression.Parameter`·`Constant`·`GreaterThan`·`Lambda` 호출 사슬**이 되는 것 · 그 사슬에 **캐시 필드가 없는 것**(부를 때마다 새 트리) · 진단 코드 배정 |
 | **BCL 계약(XML 문서)** | ★★ 문서가 약속한 것 | ★★ `IQueryProvider` = **만들기(`CreateQuery`)와 실행(`Execute`)** · `Expression<T>` = 자료 구조 · `Compile` = 실행 가능한 코드로 |
-| **이 판의 관찰 · 장난감** | .NET 10.0.12 · linux-x64 | ★★★ **`Execute` 가 불리는 단계**(장난감 공급자 — ★ **내가 짠 것**이라 「ORM 이 그렇다」의 근거가 아니다 · 「`IQueryable` 계약이 그 지점을 준다」의 근거다) |
+| **이 버전의 관찰 · 장난감** | .NET 10.0.12 · linux-x64 | ★★★ **`Execute` 가 불리는 단계**(장난감 공급자 — ★ **내가 짠 것**이라 「ORM 이 그렇다」의 근거가 아니다 · 「`IQueryable` 계약이 그 지점을 준다」의 근거다) |
 
 ★★★ **이 주제의 층 구분이 급소다 —**\
 **「번역이 언제 일어나나」는 두 층이 나눠 가진다.** `Where` 를 이을 때 **`CreateQuery` 가 불린다**는 것은 `Queryable.Where` 의 구현이 정하고(★ 문서 요약은 「평가할 수 있는 `IQueryable` 을 만든다」까지), **`Execute` 에서 무엇을 하나**(SQL 로 번역 · 거부 · 메모리 실행)는 **공급자마다 다르다.** 장난감은 뒤쪽을 **내가** 정했다 — 그러니 (3)이 증명하는 것은 **「연산자를 잇는 동안 공급자에게 오는 것은 `CreateQuery`(새 쿼리를 만들어라)뿐이고, 결과를 달라는 요청은 결과를 요구하는 연산에서만 온다」** 쪽이지, 「어떤 ORM 이 거기서 SQL 을 보낸다」가 아니다. ★ `CreateQuery` 도 공급자의 코드이니 **거기서 무언가를 할 수는 있다** — 다만 결과를 내라는 요청이 아니다.
@@ -46,9 +46,9 @@ OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sha
 | 쌓기만 | ★★★ `Where` 두 번 → **`CreateQuery` 1 · `Execute` 0** 씩 | (3) |
 | 주문 넣기 | ★★★ `ToList`·`Count()`·`First()`·`foreach` → **`Execute` 1** — **Execute 가 불린 단계 9 / 12** | (3) |
 | 없는 부품 | ★★★ `Where(x => IsOdd(x))` → **만들 때 통과** · `ToList()` 때 **`NotSupportedException — 번역 못 함: 메서드 Program.IsOdd`** | (3) |
-| 설계도에 못 그림 | ★★★ **막힌 칸 8 / 20** — `Func` 열은 전부 `ok`, `Expression` 열 여덟이 막힌다(`CS0834` …) | (4) |
+| 설계도에 못 그림 | ★★★ **막힌 항목 8 / 20** — `Func` 열은 전부 `ok`, `Expression` 열 여덟이 막힌다(`CS0834` …) | (4) |
 
-★★★ **이 주제의 본체 그림 — 같은 람다, 두 목적지.**
+★★★ **이 주제의 핵심 그림 — 같은 람다, 두 목적지.**
 
 ```text
    소스:  s.Where(x => x > 2)
@@ -83,16 +83,16 @@ OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sha
 
 ### (0) 이 주제가 쓰는 창
 
-★★★ **본체 창은 ① IL + ⑤ 장난감 공급자 로그다.**
+★★★ **핵심 창은 ① IL + ⑤ 장난감 공급자 로그다.**
 
 | 창 | 무엇을 보여 주나 | 이 주제에서 |
 |---|---|---|
 | ★★★ **① IL 덤프** | ★★★ 델리게이트 생성(`ldftn`·`newobj`) 대 **`Expression` 팩토리 호출 사슬** · `Enumerable::Where` 대 `Queryable::Where` | (1) |
 | ★★★ **⑤ 장난감 공급자 로그** | ★★★ 단계마다 **`CreateQuery` 수 · `Execute` 수 · 공급자가 만든 번역 문자열** · 거부 예외 · **「Execute 가 불린 단계 N / M」** | (3) |
 | ★★ **③ 리플렉션(식 트리 순회)** | ★★ 노드의 `NodeType`·`Type`·`ToString()` · `Call` 노드의 **어느 클래스의 어느 메서드**인가 | (2) |
-| ★★★ **② 진단 격자** | ★★★ 같은 본문 열 가지 × `Func`/`Expression` — **막힌 칸 N / M** | (4) |
+| ★★★ **② 진단 격자** | ★★★ 같은 본문 열 가지 × `Func`/`Expression` — **막힌 항목 N / M** | (4) |
 | **④ 할당 바이트 · 시간** | ★★★ **안 쟀다** — 「`IQueryable` 이 DB 에서 빠르다」는 **이 문서가 잰 것이 아니다.** 잰 것은 **「어디서 걸러지나」**((3) `[8]` 의 `WHERE` 유무)다. 거기서 오가는 행 수의 차이가 곧 시간 차이인지는 **DB 가 있어야** 잰다 — 못 잰 것 | — |
-| **부적용인 창** | 없다 | — |
+| **해당 없는 창** | 없다 | — |
 
 ### (1) ★★★ 본체 — 같은 람다를 `Func` 과 `Expression` 에 · `Where` 는 어디로 가나
 
@@ -193,7 +193,7 @@ class Program {
 
 - ★★★ **`AsFunc` — `ldsfld <>9__0_0` · `ldftn <AsFunc>b__0_0` · `newobj Func<Int32,Boolean>::.ctor`** — 람다 몸 `x > 2` 는 **`<AsFunc>b__0_0` 이라는 메서드**로 따로 컴파일됐고, IL 은 그 **주소**로 델리게이트를 만들 뿐이다. 캐시 필드에 담아 두 번째부터는 재사용한다([28번](../28-lambdas-and-closure-capture/) (1)).
 - ★★★ **`AsTree` — `ldtoken Int32` · `ldstr "x"` · `call Expression::Parameter` · `ldc.i4.2` · `box Int32` · `call Expression::Constant` · `call Expression::GreaterThan` · `newarr ParameterExpression` · `call Expression::Lambda<Func<Int32,Boolean>>`** — `x > 2` 가 **코드가 아니라 「노드를 조립하는 호출」** 이 됐다. `ldftn` 이 **없다** — 몸을 컴파일한 메서드가 없다. 받는 쪽이 갖는 것은 **부를 수 있는 함수가 아니라 읽을 수 있는 자료**다(XML 의 「자료 구조」).
-- ★★ **`AsTree` 에는 캐시 필드(`ldsfld`/`stsfld`)가 없다** — 부를 때마다 **노드를 새로** 만든다(이 판 Roslyn · 할당은 안 쟀다).
+- ★★ **`AsTree` 에는 캐시 필드(`ldsfld`/`stsfld`)가 없다** — 부를 때마다 **노드를 새로** 만든다(이 버전 Roslyn · 할당은 안 쟀다).
 - ★★★ **`OnEnumerable` 과 `OnQueryable` 은 소스 글자가 `s.Where(x => x > 2)` 로 같다** — 그런데 앞쪽은 델리게이트를 만들어 **`call Enumerable::Where<Int32>`**, 뒤쪽은 `AsTree` 와 **똑같은 조립 사슬**을 돈 뒤 **`call Queryable::Where<Int32>`** 다. **람다가 무엇이 될지는 람다가 아니라 받는 쪽의 매개변수 타입**(`Func` 대 `Expression<Func>`)이 정하고, 어느 `Where` 가 불릴지는 **`s` 의 정적 타입**이 정한다.
 
 ### (2) ★★ 식 트리는 데이터다 — 노드 덤프 · `AsQueryable` 에 `Where` 를 이으면
@@ -468,7 +468,7 @@ throw-식          ok               CS8188
 막힌 칸 8 / 20
 ```
 
-- ★★★ **막힌 칸 8 / 20 — 전부 `Expression` 열이고 `Func` 열은 10 / 10 `ok`.** 같은 본문이 **델리게이트로는 되고 식 트리로는 안 된다.**
+- ★★★ **막힌 항목 8 / 20 — 전부 `Expression` 열이고 `Func` 열은 10 / 10 `ok`.** 같은 본문이 **델리게이트로는 되고 식 트리로는 안 된다.**
 - ★★★ **`CS0834` — 문 본문 람다**(`x => { return x > 2; }`) · **`CS0832` 대입** · **`CS8072` 널 조건 `?.`** · **`CS8514` `switch` 식** · **`CS8122` `is` 패턴** · **`CS8188` `throw` 식** · **`CS8143` 튜플 리터럴** · **`CS8110` 지역 함수 참조.** 식 트리의 노드로 **나타낼 수 없는** 꼴로 읽힌다(★ 각 문법이 들어온 판과 노드 목록의 변천은 **재지 않았다**).
 - ★★ **통과한 두 행 — 보간 문자열 `$"{x}"` 과 `x > 2 && x < 9`** — 식 트리로 **된다.** 보간 문자열은 식 트리 안에서 **다른 호출로 바뀌어** 들어가는 것으로 읽힌다(그 노드는 덤프하지 않았다).
 - ★★ **`CS8110` 이 가장 실무적이다** — 식 트리 안에서 **지역 함수를 못 부른다**는 것은, 식 트리가 **「부를 수 있는 코드」가 아니라 「이름 붙은 메서드를 가리키는 자료」** 라는 뜻이다. (3)의 `IsOdd` 는 **정적 메서드라 컴파일은 통과**했고 공급자가 거부했다 — **거부하는 자리가 둘**(컴파일러 · 공급자)이다.
@@ -541,7 +541,7 @@ x => (x > 2) · True
 | **`s.Where` 가 정적 타입으로 `Enumerable`/`Queryable` 을 고른다** | ★★★ **언어**(오버로드 해석) | (1)(3) `[8]` |
 | **식 트리 람다가 `Expression.Parameter`·`Constant`·`GreaterThan`·`Lambda` 호출 사슬로 · 캐시 없음** | ★★ **Roslyn 구현** | (1) |
 | **`IQueryProvider` 의 두 일 — 만들기(`CreateQuery`)와 실행(`Execute`)** | ★★ **BCL 계약**(XML) | (3) |
-| **`Queryable.Where` 가 `CreateQuery` 를, `Queryable.Count`·`First` 가 `Execute` 를 부른다** | ★★ **BCL 구현**(이 판의 로그) | (3) |
+| **`Queryable.Where` 가 `CreateQuery` 를, `Queryable.Count`·`First` 가 `Execute` 를 부른다** | ★★ **BCL 구현**(이 버전의 로그) | (3) |
 | **`ToList`·`foreach` 가 `GetEnumerator` 를 부르고, 거기서 `Execute` 를 부른다** | ★★★ 앞쪽(`GetEnumerator`)은 **BCL** · 뒤쪽(`Execute`)은 **장난감이 그렇게 짰다**(`ToyQuery.GetEnumerator`) | (3) |
 | **`Execute` 에서 무엇을 하나(번역 · 거부 · 메모리 실행)** | ★★★ **공급자마다 다르다** — 이 문서는 **장난감**의 것 | (3) |
 | **`EnumerableQuery` 가 메모리에서 돈다** | ★★ **BCL**(XML 요약 + 결과 관찰) | (2) |
@@ -590,16 +590,16 @@ x => (x > 2) · True
 **기준 소스** — ★ **SDK 참조 팩의 XML 문서**(로컬에서 열어 확인) — `System.Linq.Expressions.xml`: `Expression<TDelegate>` 「강하게 타입이 붙은 람다 식을 **식 트리 형태의 자료 구조**로 나타낸다」 · `Compile` 「식 트리가 묘사하는 람다 식을 **실행 가능한 코드로 컴파일**해 델리게이트를 만든다」 · `IQueryable.Expression` 「이 인스턴스에 딸린 식 트리를 얻는다」 · `IQueryProvider` 「`IQueryable` 이 묘사하는 쿼리를 **만들고 실행하는** 메서드를 정의한다」 · `CreateQuery<T>` 「식 트리가 나타내는 쿼리를 **평가할 수 있는** `IQueryable<T>` 를 만든다」 · `Execute<TResult>` 「식 트리가 나타내는 쿼리를 **실행한다**」 ·\
 `System.Linq.Queryable.xml`: `EnumerableQuery<T>` 「`IEnumerable<T>` 컬렉션을 `IQueryable<T>` 데이터 원본으로 나타낸다」.
 ★★★ **ORM 은 설치하지 않았다**(NuGet 없음 · 외부 네트워크 없음). EF Core 의 문서도 **열지 않았다.** 그래서 이 문서의 「ORM 에서 쿼리가 나가는 지점」은 **직접 짠 장난감 공급자**로 보인 **모양**이다((3)) — EF Core 가 그 지점에서 무엇을 하는지는 **재지도 인용하지도 않는다.**
-**실행 검증** — 이 문서의 모든 출력·진단·IL 은 맨 위 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26). 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣었다.
+**실행 검증** — 이 문서의 모든 출력·진단·IL 은 맨 위 「이 버전」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26). 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣었다.
 **버전** — 식 트리로 바꿀 **람다 자체가 C# 3** 이다([33번](../33-linq-method-syntax-and-deferred-execution/) (6) — `-langversion:2` 의 람다 `CS8023`). ★ 식 트리 변환만 따로 판 경계를 재지는 않았다 · 라이브러리 쪽 판은 참조 팩이 10.0.12 하나뿐이라 **확인 못 함.**
 **경계** — ★★★ **`Enumerable` 쪽 연산자가 즉시냐 지연이냐는 [33번](../33-linq-method-syntax-and-deferred-execution/)** 이 정본이다. 여기는 **같은 모양의 쿼리가 `Queryable` 쪽에 도착하면 무엇이 다른가** 하나다.\
 ★★ 람다가 **델리게이트**가 되는 IL(`ldftn` · `newobj Func`)은 [27번](../27-delegates-and-func-action/) · [28번](../28-lambdas-and-closure-capture/) (1)이 정본이다 — 여기서는 **같은 람다가 식 트리가 되면 IL 이 어떻게 달라지나**만 본다.\
 ★ 「`OrderBy(…).First()` 가 정렬을 건너뛴다」([33번](../33-linq-method-syntax-and-deferred-execution/) (1-b))처럼 **연산자가 뒤에 붙은 것을 알아보는** 일을, `IQueryable` 은 **식 트리 전체를 공급자에게 넘기는** 방식으로 일반화한다 — (3)이 그 모양이다.
-★★★ **본체 창은 둘이다 — ① IL(「같은 람다가 무엇으로 컴파일되나」)과 ⑤ 장난감 공급자의 로그(「번역·실행은 언제 불리나」).**
+★★★ **핵심 창은 둘이다 — ① IL(「같은 람다가 무엇으로 컴파일되나」)과 ⑤ 장난감 공급자의 로그(「번역·실행은 언제 불리나」).**
 
-★★ **흔들리는 칸 / 안 흔들리는 칸**
+★★ **실행마다 달라지는 항목 / 달라지지 않는 항목**
 
-| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+| 실행마다 달라진다(근거로 쓰지 않는다) | 달라지지 않는다(근거로 쓴다) |
 |---|---|
 | IL **오프셋** · 컴파일러가 지은 이름(`<>9__0_0` · `<AsFunc>b__0_0`) · 진단 **문구** · 진단 **순서**(배너에 `sort`) | ★★★ **옵코드와 호출 대상**(`ldftn` · `newobj Func` 대 `call Expression::Parameter` · `Expression::GreaterThan` · `Expression::Lambda` · `Enumerable::Where` 대 `Queryable::Where`) · **진단 코드** |
-| 식 트리 노드의 **내부 클래스 이름**(찍지 않았다 — `NodeType` 만 찍었다) | ★★★ **`NodeType`**(`Lambda` · `GreaterThan` · `Call` · `Quote` …) · `ToString()` · **공급자 로그의 `CreateQuery`/`Execute` 수 · 「Execute 가 불린 단계 N / M」 · 「막힌 칸 N / M」** |
+| 식 트리 노드의 **내부 클래스 이름**(찍지 않았다 — `NodeType` 만 찍었다) | ★★★ **`NodeType`**(`Lambda` · `GreaterThan` · `Call` · `Quote` …) · `ToString()` · **공급자 로그의 `CreateQuery`/`Execute` 수 · 「Execute 가 불린 단계 N / M」 · 「막힌 항목 N / M」** |

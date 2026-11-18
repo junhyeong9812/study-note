@@ -131,10 +131,10 @@ RFC 1122 §3.2.2는 다음을 받았을 때 ICMP 오류를 보내면 **안 된�
 
 - 라우터는 TTL이 0이 되면 버리고 Time Exceeded를 보내야 한다(RFC 1812 §5.3.1). traceroute는 이 규칙을 이용한다.
 - 리눅스 traceroute(8)의 기본 동작
-  - UDP 탐침을 "쓰일 것 같지 않은" 포트 33434부터 하나씩 올려 가며 보낸다.
+  - UDP probe를 "쓰일 것 같지 않은" 포트 33434부터 하나씩 올려 가며 보낸다.
   - 목적지에 닿으면 ICMP port unreachable이 온다. TCP 방식(`-T`)이면 닫힌 포트는 RST, 열린 포트는 SYN-ACK가 온다(열린 포트에는 RST로 답해 연결을 버린다). 그것이 종료 신호다.
-  - TTL마다 탐침 3개를 보내고, 최대 30홉까지 간다. 제한 시간 안에 응답이 없으면 `*`를 찍는다.
-  - `-I`는 ICMP Echo, `-T`는 TCP SYN(기본 포트 80)을 탐침으로 쓴다. 방화벽이 UDP·ICMP를 막을 때 `-T -p 443`처럼 허용된 포트를 쓴다.
+  - TTL마다 probe 3개를 보내고, 최대 30홉까지 간다. 제한 시간 안에 응답이 없으면 `*`를 찍는다.
+  - `-I`는 ICMP Echo, `-T`는 TCP SYN(기본 포트 80)을 probe로 쓴다. 방화벽이 UDP·ICMP를 막을 때 `-T -p 443`처럼 허용된 포트를 쓴다.
   - 결과 뒤에 `!H`(host unreachable), `!N`(net unreachable), `!X`(관리적 차단), `!F`(frag needed) 같은 표시가 붙을 수 있다.
 - 각 홉에 찍히는 주소는 원칙상 그 라우터가 **ICMP를 내보낸 인터페이스**의 주소다(MUST, 단 "달리 정한 경우 제외" — RFC 1812 §4.3.2.4). 그래서 같은 라우터라도 방향에 따라 다른 주소로 보일 수 있다.
   - 실제 장비는 설정에 따라 **패킷이 들어온 인터페이스** 주소를 쓰기도 한다(리눅스 `icmp_errors_use_inbound_ifaddr=1`, kernel ip-sysctl 문서).
@@ -153,12 +153,12 @@ RFC 1122 §3.2.2는 다음을 받았을 때 ICMP 오류를 보내면 **안 된�
   - 리눅스도 기본으로 Destination Unreachable·Time Exceeded 등의 전송 간격을 대상별 1000ms로 제한한다(icmp(7) `icmp_ratelimit`, `icmp_ratemask`).
   - 즉 중간 홉의 `*`와 높은 RTT는 "ICMP를 늦게·덜 만든다"일 수 있다. 진짜 손실은 **마지막 홉까지 이어질 때**만 의미가 있다.
 - 돌아오는 ICMP는 다른 경로로 올 수 있다. RTT는 "가는 길 + 오는 길"이다.
-- 탐침마다 포트가 달라지면 부하 분산 장비가 탐침을 다른 경로로 보낼 수 있다. 그러면 존재하지 않는 경로가 이어 붙어 보인다 [?].
+- probe마다 포트가 달라지면 부하 분산 장비가 probe를 다른 경로로 보낼 수 있다. 그러면 존재하지 않는 경로가 이어 붙어 보인다 [?].
 
 ## 쓰이는 자료구조·알고리즘
 
 - **점진적 탐색(TTL을 1씩 늘리기)** — 경로 길이를 모르므로 깊이를 1, 2, 3…으로 늘리며 한 단계씩 드러낸다. 깊이 제한을 늘려 가는 반복 심화(iterative deepening)와 같은 발상이다.
-- **해시 맵(요청-응답 짝짓기)** — ping은 (identifier, sequence) → 보낸 시각을 기억했다가 응답이 오면 RTT를 계산한다. traceroute도 탐침(포트·TTL)과 돌아온 ICMP 안의 원래 헤더를 짝짓는다. 개념: [해시맵](../../data-structure/05-hashmap/2-summary.md).
+- **해시 맵(요청-응답 짝짓기)** — ping은 (identifier, sequence) → 보낸 시각을 기억했다가 응답이 오면 RTT를 계산한다. traceroute도 probe(포트·TTL)과 돌아온 ICMP 안의 원래 헤더를 짝짓는다. 개념: [해시맵](../../data-structure/05-hashmap/2-summary.md).
 - **토큰 버킷(속도 제한)** — 리눅스는 `icmp_ratemask`에 해당하는 ICMP의 호스트 전체 전송량을 `icmp_msgs_per_sec`(기본 10000)과 버킷 크기 `icmp_msgs_burst`(기본 10000)로 제한한다(kernel ip-sysctl 문서 "token bucket").
 - **역다중화(demultiplexing)** — ICMP 오류에 담긴 원래 헤더의 (프로토콜, 주소, 포트)로 소켓을 찾는다. TCP 연결 조회와 같은 키다.
 
@@ -295,7 +295,7 @@ try (Socket s = new Socket()) {
   - RFC 4890 §4.3.1 — ICMPv6 필터링 권고(정보성): 버려서는 안 되는 메시지 <https://www.rfc-editor.org/rfc/rfc4890>
 - Linux man-pages
   - ping(8) — 기본 56바이트, `-M do`, `-t`, `-s` <https://man7.org/linux/man-pages/man8/ping.8.html>
-  - traceroute(8) — 기본 UDP 33434+, TTL당 3탐침, 최대 30홉, `-I`, `-T`(기본 포트 80, 닫힌 포트 RST·열린 포트 SYN-ACK), `!H`·`!N`·`!X`·`!F` <https://man7.org/linux/man-pages/man8/traceroute.8.html>
+  - traceroute(8) — 기본 UDP 33434+, TTL당 3probe, 최대 30홉, `-I`, `-T`(기본 포트 80, 닫힌 포트 RST·열린 포트 SYN-ACK), `!H`·`!N`·`!X`·`!F` <https://man7.org/linux/man-pages/man8/traceroute.8.html>
   - tracepath(8) <https://man7.org/linux/man-pages/man8/tracepath.8.html>
   - icmp(7) — `icmp_ratelimit`(1000ms), `icmp_ratemask`, `ping_group_range`(기본 `1 0`) <https://man7.org/linux/man-pages/man7/icmp.7.html>
 - kernel "IP Sysctl" — `icmp_msgs_per_sec`(10000), `icmp_msgs_burst`(토큰 버킷), `icmp_errors_use_inbound_ifaddr` <https://docs.kernel.org/networking/ip-sysctl.html>

@@ -61,7 +61,7 @@
 
 **왜 그런가**
 
-- ★★★ **`[1]` 결과는 셋이 같고 본문 로그만 갈린다** — 시작 전·끝난 뒤는 `(no log)`, `yield 1` 에서 멈춘 것만 `finally`.
+- ★★★ **`[1]` 결과는 셋이 같고 본문 로그만 달라진다** — 시작 전·끝난 뒤는 `(no log)`, `yield 1` 에서 멈춘 것만 `finally`.
   시작 전이면 `GeneratorResumeAbrupt` 가 "If state is suspended-start, then Set gen.[[GeneratorState]] to completed." 로 **본문 없이 끝낸다** — `try` 에 들어간 적이 없으니 `finally` 도 없다.
   끝난 것에는 "If abruptCompletion is a return completion, then Return CreateIteratorResultObject(abruptCompletion.[[Value]], true)." — **준 `R` 을 그대로 돌려준다.**
 - ★★★ **`[2]` `done` 이 `false` → `true` → `true`.** `return()` 은 **멈춘 자리에서 `return "R"` 을 일으킬 뿐**이고, 그 `return` 이 `finally` 를 지나다 `yield "from finally"` 에서 **다시 멈췄다.**
@@ -170,7 +170,7 @@ cells where body code ran: 4 / 9
 **왜 그런가**
 
 - ★★★ **마지막 줄의 수가 결론이다.** 도는 칸은 「시작 전 × `next`」 하나와 「`yield` 에서 멈춤」 줄 셋이다.
-- ★★ **`return` 줄 셋은 결과가 전부 `{"value":"R","done":true}`** 이고, `throw` 의 시작 전·끝남도 둘 다 `throws Error 「err」` 다 — **결과로는 상태를 못 가른다.** 로그로만 갈린다.
+- ★★ **`return` 줄 셋은 결과가 전부 `{"value":"R","done":true}`** 이고, `throw` 의 시작 전·끝남도 둘 다 `throws Error 「err」` 다 — **결과로는 상태를 못 가른다.** 로그로만 달라진다.
 - ★ 「`yield` 에서 멈춤 × `throw`」가 `done: true` 인 것은 `catch` 다음에 `yield` 가 없어서다 — 3번의 `[1]` 과 모양이 다른 이유다.
 
 ### 6. 막히는 자리 — **`new` 는 `TypeError` · 화살표·콜백 안 `yield` 는 `SyntaxError` · 재진입과 빌린 메서드는 `TypeError`** ★★
@@ -226,7 +226,7 @@ cells where body code ran: 4 / 9
 
 - ★★★ **`prototype` 이 `object` 인데 `new gen()` 은 `TypeError 「gen is not a constructor」`** — 08번 격자의 반례 그대로다. 제너레이터의 `prototype` 은 **제너레이터 객체들의 프로토타입**이다.
 - ★★★ **`() => { yield 1; }` 은 `Unexpected number` — `1` 에서 막혔다.** 비엄격 스크립트의 평범한 함수 안에서 `yield` 는 **식별자**라 `yield 1` 이 「식별자 뒤에 숫자」다.
-- ★★ **콜백 안의 `yield` 가 두 판이 갈린 줄이다** — node18 `Unexpected identifier`, node20 `Unexpected identifier 'x'`. **종류(`SyntaxError`)는 같다.**
+- ★★ **콜백 안의 `yield` 가 두 버전이 달라진 줄이다** — node18 `Unexpected identifier`, node20 `Unexpected identifier 'x'`. **종류(`SyntaxError`)는 같다.**
 - ★★ **`*m() {}` 는 객체·클래스 모두 `compiles`.**
 - ★★★ **재진입은 `TypeError 「Generator is already running」`** — `GeneratorValidate` 의 "If state is executing, throw a TypeError exception." 그 예외가 본문을 빠져나가 제너레이터가 끝났고, 다음 호출이 `{"done":true}` 다.
 - ★★ **빌린 `next`·`return` 은 `incompatible receiver #<Object>`** — ③ 브랜드 창이다. 받는 쪽에 `[[GeneratorState]]` 슬롯이 있어야 한다.
@@ -275,15 +275,15 @@ cells where body code ran: 4 / 9
 | 소스 | 무엇을 고정하나 | 몇 번 · 어디서 |
 |---|---|---|
 | `js20b-20a-start-and-end.js` | 호출 직후 본문 로그 0 · `next` 다섯 번의 결과와 로그 · 소비자 넷이 `return` 값을 안 보는 것 · 매개변수가 호출에서 평가되는 것 | node20 1벌 + node18 대조 1벌 |
-| `js20b-20b-two-way.js` | ★★★ **양방향 흐름** — 첫 `next(값)` 이 버려지는 것 · 한 박자 어긋남 · 프라이밍 유무의 누산 차이 | node20 1벌 + node18 대조 1벌 |
+| `js20b-20b-two-way.js` | ★★★ **양방향 흐름** — 첫 `next(값)` 이 버려지는 것 · 한 박자 불일치 · 프라이밍 유무의 누산 차이 | node20 1벌 + node18 대조 1벌 |
 | `js20b-20c-return-finally.js` | ★★★ `return()` 의 세 상태 · `finally` 의 `yield`·`return` · `break` 의 `finally` | node20 1벌 + node18 대조 1벌 |
 | `js20b-20d-throw.js` | ★★ `throw()` 를 받아 내는 본문 · 못 받는 본문 · 시작 전 | node20 1벌 + node18 대조 1벌 |
 | `js20b-20e-delegate.js` | ★★★ `yield*` 식의 값 · `next`/`throw`/`return` 전달 · `throw` 없는 안쪽 | node20 1벌 + node18 대조 1벌 |
-| `js20b-20f-errors.js` | ★★ `new` · 문법 다섯 · 재진입 · 빌린 메서드(브랜드) | node20 1벌 + **node18 판도 싣는다**(갈린 블록) |
+| `js20b-20f-errors.js` | ★★ `new` · 문법 다섯 · 재진입 · 빌린 메서드(브랜드) | node20 1벌 + **node18 판도 싣는다**(달라진 블록) |
 | `js20b-20g-grid.js` | ★★★ 세 메서드 × 세 상태 아홉 칸 · 본문이 돈 칸 수 | node20 1벌 + node18 대조 1벌 |
 | `js20b-20h-lazy-seq.js` | ★★ 끝없는 제너레이터에서 만든 개수 · 닫기의 전파 | node20 1벌 + node18 대조 1벌 |
-| `js20b-vdiff.sh` | **두 판이 갈린 탐침 수** — 이 주제의 것은 `js20b-20f-errors.js` 하나 | 1벌 |
-| `js20b-versions.sh` + `js20b-features.js` | 이 문서의 모든 출력이 **어느 판에서 나왔나** · 판별 기능 표(node 두 판 · Chrome) | 1벌 |
+| `js20b-vdiff.sh` | **두 버전이 달라진 probe 수** — 이 주제의 것은 `js20b-20f-errors.js` 하나 | 1벌 |
+| `js20b-versions.sh` + `js20b-features.js` | 이 문서의 모든 출력이 **어느 버전에서 나왔나** · 판별 기능 표(node 두 판 · Chrome) | 1벌 |
 
 ```sh
 # js20b-vdiff.sh
@@ -397,30 +397,30 @@ js20b-23f-timing-gc.js               identical
 identical 18  ·  differs 6  ·  total 24
 ```
 
-- ★ 대조기는 **이 배치 네 주제의 node 탐침 전부**를 센다. 이 주제의 줄은 `js20b-20` 으로 시작하는 여덟 줄이고, 그중 `DIFFERS` 는 `js20b-20f-errors.js` 하나다.
+- ★ 대조기는 **이 배치 네 주제의 node probe 전부**를 센다. 이 주제의 줄은 `js20b-20` 으로 시작하는 여덟 줄이고, 그중 `DIFFERS` 는 `js20b-20f-errors.js` 하나다.
 
 **구현 의존 항목** — 다음은 **이 환경(node 20.19.6 / 18.19.1 · x86-64 Linux)에서만** 그렇다.
 
 - ★★★ **예외 문구 전부** — `gen is not a constructor` · `Unexpected token '*'` · `Unexpected number` · `Unexpected identifier 'x'`(v20) / `Unexpected identifier`(v18) ·
   `Generator is already running` · `Method [Generator].prototype.next called on incompatible receiver #<Object>` · `The iterator does not provide a 'throw' method.` ·
   `Cannot destructure property 'a' of 'undefined' as it is undefined.` **종류(`TypeError`·`SyntaxError`)만 명세가 정한다.**
-- ★ **이터레이터 헬퍼가 두 node 판에 없는 것** — 판의 사정이다(판별 블록).
+- ★ **이터레이터 헬퍼가 두 node 버전에 없는 것** — 판의 사정이다(판별 블록).
 
 **호출이 본문을 안 돌리는 것 · 첫 `next` 의 값이 버려지는 것 · `yield` 식의 값이 다음 `next` 의 인자인 것 · 시작 전·끝난 뒤의 `return`/`throw` 가 본문을 안 거치는 것 · `finally` 의 `yield` 가 `return()` 을 멈추는 것 · `yield*` 의 값 회수와 세 호출 전달 · `throw` 없는 안쪽을 닫고 `TypeError` 인 것 · 재진입과 `new` 가 `TypeError` 인 것은 구현 의존이 아니다.**
 어느 엔진에서도 같아야 한다.
 
-**안 돌려 본 것 / 못 잰 것 / 부적용인 창**
+**안 돌려 본 것 / 못 잰 것 / 해당 없는 창**
 
 - **안 돌려 본 것** —
   **`finally` 가 `yield` 하는 제너레이터를 `for...of` + `break` 로 닫는 조합**(11번 — 추론으로만 적었다) ·
   **파이썬 `send()`**(파이썬 17번이 실은 출력을 인용했다) · **Kotlin `sequence {}`** ·
-  **브라우저**(판별 블록 말고는) · **엄격 모드 스크립트·모듈**(탐침은 전부 비엄격 스크립트 — 6번 `[2]` 둘째 줄의 문구는 비엄격이라서 그렇다) ·
+  **브라우저**(판별 블록 말고는) · **엄격 모드 스크립트·모듈**(probe는 전부 비엄격 스크립트 — 6번 `[2]` 둘째 줄의 문구는 비엄격이라서 그렇다) ·
   **`yield` 의 우선순위·ASI** · 다른 엔진(SpiderMonkey·JavaScriptCore)의 문구.
 - ★ **못 잰 것** — **없다.**
 - ★★★ **안 쟀다** — **성능·메모리 전부.** 10번은 **만든 개수**만 셌다.
-- ★★ **부적용인 창** — **진단의 `(행,열)`**(18-C). `SyntaxError` 는 「안 된다」를 보이려는 것이지 **값으로 못 가르는 문법 성질**을 증명하려는 것이 아니다 — **잴 것이 없다.**
+- ★★ **해당 없는 창** — **진단의 `(행,열)`**(18-C). `SyntaxError` 는 「안 된다」를 보이려는 것이지 **값으로 못 가르는 문법 성질**을 증명하려는 것이 아니다 — **잴 것이 없다.**
 
-**판이 올랐을 때 다시 돌려야 하는 것**
+**버전이 올랐을 때 다시 돌려야 하는 것**
 
 - ★★★ **예외 문구 전부** — 콜백 안 `yield` 의 문구는 **이 주제 안에서 실제로 바뀌었다**(6번).
 - ★★ **이터레이터 헬퍼의 유무** — ES2025 를 들인 판에서는 제너레이터 객체에도 `map`·`take` 가 붙는다. 그때는 [21번](../21-iterator-helpers/2-summary.md)으로 넘어간다.
@@ -432,7 +432,7 @@ identical 18  ·  differs 6  ·  total 24
 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮긴 출력이 하나도 없다). 브라우저는 판별 블록 말고는 **안 돌렸다.**
 
 ★★ **예외는 `이름 「메시지」` 꼴로만 찍었다** — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
-★★★ **이 주제는 두 판이 갈린 블록을 하나 갖고 있다**(`js20b-20f-errors.js`) — 6번 답에 v18 판을 나란히 싣는다.
+★★★ **이 주제는 두 버전이 달라진 블록을 하나 갖고 있다**(`js20b-20f-errors.js`) — 6번 답에 v18 판을 나란히 싣는다.
 ★ **표준 출력과 표준 오류를 한 블록에도 안 섞었다** — 예외는 전부 `catch` 로 받아 표준 출력에 찍었다.
 
 **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다(8·10번의 소스는 [2-summary.md](2-summary.md) 의 동작 (1)·(8)).

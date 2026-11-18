@@ -242,7 +242,7 @@ printf("dangling a->user=%s balance=%d\n", a->user, a->balance);   /* UB */
   - 큰 값은 PEP 683(3.12)의 *불멸 객체(immortal object)* 표시다. 이 객체들은 카운트를 바꾸지 않는다(C API 문서 "Changed in version 3.12: Immortal objects are not modified").
   - Python 3.12 `sys.getrefcount` 문서(와 C API `Py_REFCNT` 문서)는 이 값을 "0이나 1 말고는 정확하다고 믿지 말라"고 적는다.
   - 패치 사이에 달라진 이유: Python 3.12.7 체인지로그 gh-113993 — "Strings interned with sys.intern() are again garbage-collected when no longer used", 인터닝 내부 구조도 바뀌었다. 같은 체인지로그의 Core 항목은 "`PyUnicode_InternInPlace()`로 인터닝한 문자열은 여전히 불멸"이라 적지만, C API 항목과 3.12 C API 문서는 거꾸로 "`PyUnicode_InternInPlace()`는 더 이상 GC를 막지 않는다"·"interned strings are not immortal"이라 적고, `PyUnicode_InternFromString()` 등 `char *`를 받는 함수가 GC를 늦출 수 있다고 적는다(체인지로그 안에서 서로 어긋난다 — C API 문서 쪽을 따른다). 3.12.3은 이 변경 전, 3.12.14는 뒤다. 리터럴 `"abcde"`가 이 변경으로 불멸이 아니게 됐다는 것은 위 관찰과 체인지로그를 이은 해석이다(3.12.4~3.12.13을 하나씩 돌려 보지는 않았다).
-- 참고: 원고 §6의 "Stop and Copy는 가장 빠르다고 알려진"은 근거가 없다. 복사 수집은 살아 있는 객체만 옮기므로 비용 구조가 다를 뿐, 어느 수집기가 "가장 빠르다"는 워크로드에 달렸다(10번 실험에서 같은 부하에도 수집기별 순위가 지표마다 갈렸다).
+- 참고: 원고 §6의 "Stop and Copy는 가장 빠르다고 알려진"은 근거가 없다. 복사 수집은 살아 있는 객체만 옮기므로 비용 구조가 다를 뿐, 어느 수집기가 "가장 빠르다"는 워크로드에 달렸다(10번 실험에서 같은 부하에도 수집기별 순위가 지표마다 달라졌다).
 
 ## 쓰이는 자료구조·알고리즘
 

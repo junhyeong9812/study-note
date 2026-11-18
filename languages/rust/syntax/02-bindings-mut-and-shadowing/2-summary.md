@@ -280,7 +280,7 @@ let _unused = 5;           // 이름은 붙이되 경고를 끈다
 
 ### `const` 와의 대비 — 여기서는 경계만
 
-정본은 [목록의 **07번 주제**](../07-const-static-and-const-fn/)(상수·`static`·`const fn`)다. 여기서는 **실측으로 갈린 두 줄**만 둔다.
+정본은 [목록의 **07번 주제**](../07-const-static-and-const-fn/)(상수·`static`·`const fn`)다. 여기서는 **실측으로 달라진 두 줄**만 둔다.
 
 ```text
 const LIMIT = 100;              ->  error: missing type for `const` item
@@ -454,7 +454,7 @@ warning: 3 warnings emitted
 
 판단 규칙 두 줄.
 
-- **타입이 바뀌면 섀도잉, 값만 바뀌면 `mut`.** 이 한 줄로 거의 다 갈린다.
+- **타입이 바뀌면 섀도잉, 값만 바뀌면 `mut`.** 이 한 줄로 거의 다 달라진다.
 - **`mut` 를 붙이기 전에 「정말 바꿔야 하나」를 먼저 묻는다.** 안 바꾸면 `unused_mut` 가 알려 준다.
 
 ## 핵심 문장

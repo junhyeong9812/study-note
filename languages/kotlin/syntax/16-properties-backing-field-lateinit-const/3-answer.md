@@ -235,7 +235,7 @@ public final class Service {
 - ★★ 예외 이름은 **`kotlin.UninitializedPropertyAccessException`** 이다. **`NullPointerException` 이 아니다** —\
   `catch (e: NullPointerException)` 으로는 **안 잡힌다.** 메시지에 **프로퍼티 이름**이 들어 있다.
 - ★★ **필드가 `public java.lang.String conn`** 이다. 1번의 다른 프로퍼티는 전부 `private` 인데 여기만 다르다.\
-  「아직 대입 안 됨」을 밖에서도 읽을 수 있어야 하기 때문이다(★ **이 판의 관찰**이다).
+  「아직 대입 안 됨」을 밖에서도 읽을 수 있어야 하기 때문이다(★ **이 버전의 관찰**이다).
 - ★★★ **`::conn.isInitialized` 는 리플렉션이 아니다.** `status()` 의 바이트코드가 `getfield conn; ifnull` 로 시작한다 —\
   컴파일러가 **널 검사 한 줄로 바꿔 놓았다.** `KProperty` 객체도 안 만든다.
 - ★ 게터는 `getfield → dup → ifnull → areturn` 이고, 널이면 `throwUninitializedPropertyAccessException("conn")` 이다.\
@@ -574,13 +574,13 @@ OpenJDK Runtime Environment Temurin-21.0.5+11 (build 21.0.5+11-LTS)
 OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sharing)
 ```
 
-★ **흔들리는 칸과 안 흔들리는 칸**(제출 전 재대조에서 「고칠 것」과 「설계상 다른 것」을 가르는 선언이다)
+★ **실행마다 달라지는 항목과 달라지지 않는 항목**(제출 전 재대조에서 「고칠 것」과 「설계상 다른 것」을 가르는 선언이다)
 
-| 흔들린다 | 안 흔들린다 |
+| 실행마다 달라진다 | 달라지지 않는다 |
 |---|---|
 | **없다** — 이 문서의 블록은 전부 결정적이다(예외를 **잡아서 타입과 메시지만** 찍었고 스택 트레이스를 싣지 않았다) | `javap` 출력 **전체** · 예외 타입과 메시지 본문 · 에러 문구 · 종료 코드 · 두 번에 걸친 `const` 실행 결과 |
 
-> 근거 — **캡처 스크립트를 두 번 돌려 블록 82개를 바이트 단위로 대조**했고, 이 주제의 블록은 한 글자도 안 갈렸다.
+> 근거 — **캡처 스크립트를 두 번 돌려 블록 82개를 바이트 단위로 대조**했고, 이 주제의 블록은 한 글자도 달라지지 않았다.
 
 | 프로그램 | 무엇을 확인했나 | 돌린 방법 |
 |---|---|---|
@@ -603,7 +603,7 @@ OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sha
 「`const` 는 원시 타입과 `String` 만, 최상위·object·companion 에서만」·
 「explicit backing fields 는 언어 버전 2.4 부터」** 는 **언어 규칙**이라 타깃과 무관하다.
 
-**★ 던져 봤더니 예상과 달랐던 것 — 세 건**
+**★ 실행해 봤더니 예상과 달랐던 것 — 세 건**
 
 1. ★★★ **`const` 가 「필드 읽기를 상수 읽기로 바꾸는」 정도가 아니었다.** `F` 줄은
    **보간 문자열 전체가 하나의 `ldc`** 로 접혔다 — `Config` 라는 이름이 호출부 바이트코드에 **아예 없다.**

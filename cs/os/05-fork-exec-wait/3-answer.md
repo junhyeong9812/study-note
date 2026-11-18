@@ -78,11 +78,11 @@
 - 대처
   - `socket(..., SOCK_STREAM | SOCK_CLOEXEC, 0)`, `open(..., O_CLOEXEC)`, `accept4(..., SOCK_CLOEXEC)`.
   - 자식에서 exec 전에 `close_range(3, ~0U, CLOSE_RANGE_CLOEXEC)`로 일괄 표시.
-- 파이프의 경우: 자식이 쓰기 쪽 사본을 쥐고 있으면, 부모가 쓰기 쪽을 닫아도 읽는 쪽이 **EOF를 영원히 못 받는다**(pipe(7): 쓰기 쪽 fd가 모두 닫혀야 EOF). 읽는 프로세스가 끝나지 않고 멈춘다.
+- 파이프의 경우: 자식이 쓰기 쪽 사본을 잡고 있으면, 부모가 쓰기 쪽을 닫아도 읽는 쪽이 **EOF를 영원히 못 받는다**(pipe(7): 쓰기 쪽 fd가 모두 닫혀야 EOF). 읽는 프로세스가 끝나지 않고 멈춘다.
 
 ### 10. 스레드 많은 서비스의 외부 명령
 
 - `posix_spawn`(또는 그것을 쓰는 런타임 API: Java `ProcessBuilder` — 현재 OpenJDK 리눅스 기본이 `POSIX_SPAWN`)을 쓴다.
 - 이유
-  1. **락 문제**: fork한 자식에는 스레드가 하나뿐이다. 다른 스레드가 쥐고 있던 락(앱·라이브러리의 mutex 등)이 자식에서 안 풀려, exec 전에 그 락을 쓰는 함수를 부르면 멈춘다(fork(2)). glibc는 malloc·stdio 내부 락만은 fork 때 챙긴다(posix/fork.c).
+  1. **락 문제**: fork한 자식에는 스레드가 하나뿐이다. 다른 스레드가 잡고 있던 락(앱·라이브러리의 mutex 등)이 자식에서 안 풀려, exec 전에 그 락을 쓰는 함수를 부르면 멈춘다(fork(2)). glibc는 malloc·stdio 내부 락만은 fork 때 챙긴다(posix/fork.c).
   2. **비용**: fork는 큰 주소 공간의 페이지 테이블을 복사하고 COW를 준비한다. `posix_spawn`은 glibc에서 `CLONE_VM|CLONE_VFORK`로 부모 메모리를 공유한 채 바로 exec해 이 복사가 없다(로컬 strace `clone3`).

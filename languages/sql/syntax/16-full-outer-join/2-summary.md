@@ -36,7 +36,7 @@
 
 1. **양쪽의 짝 없는 행을 다 살리면 행이 몇이 되나?** — `LEFT` + `RIGHT` − `INNER` 라는 셈이 왜 맞나.
 2. **결과의 `NULL` 이 조인이 만든 것인가, 원래 있던 것인가?** — 「어느 쪽에만 있는 행인가」는 **어느 열로** 판정하나.
-3. **MySQL 에는 이 문법이 없다 — 우회는 무엇이고 어디서 조용히 틀리나?** — `UNION` 과 `UNION ALL` 이 갈리는 자리.
+3. **MySQL 에는 이 문법이 없다 — 우회는 무엇이고 어디서 조용히 틀리나?** — `UNION` 과 `UNION ALL` 이 달라지는 자리.
 
 ## 예시 데이터 — 이 묶음이 공유하는 것
 
@@ -435,7 +435,7 @@ FROM emp e FULL OUTER JOIN dept d ON e.dept_id = d.id;
 | MySQL 에 `FULL [OUTER] JOIN` 이 **없다** | **방언** | 엔진 — 문서의 외부 조인 문법이 `LEFT`·`RIGHT` 둘뿐 + `ERROR 1064` |
 | `UNION` 이 중복을 지운다 / `UNION ALL` 은 안 지운다 | **정의** | 언어 — 두 문서가 같은 말을 한다(아래) |
 | ★ **PG 가 부등호 `FULL` 을 거부하는 것** | **구현** | **문서에 없다** — 에러 메시지 한 줄이 전부다(아래) |
-| **동률 행의 줄 순서** | **비결정** | **아무도 보장 안 한다** — 본문 1번 `RIGHT` 에서 `ann`·`bob` 이 갈렸다 |
+| **동률 행의 줄 순서** | **비결정** | **아무도 보장 안 한다** — 본문 1번 `RIGHT` 에서 `ann`·`bob` 이 달라졌다 |
 | 에러 번호·문구(`1064`) | 구현 세부 | 엔진 — **문자열로 분기하지 마라** |
 
 **PG 문서만이 근거인 자리** — `FULL OUTER JOIN` 의 정의는 PG 매뉴얼의 이 문장이다:\
@@ -449,7 +449,7 @@ PG *"The result of `UNION` does not contain any duplicate rows unless the `ALL` 
 
 ★ **PG 의 `FULL JOIN is only supported with merge-joinable or hash-joinable join conditions` 는 문서에 없다.**\
 기준 소스인 [Table Expressions](https://www.postgresql.org/docs/18/queries-table-expressions.html) 페이지를 열어 확인했다 — 위 정의는 있지만 **조인 조건에 대한 제약 문장은 없다.**\
-그러므로 이 제약의 근거는 **PG 18.6 서버가 뱉은 에러 메시지 하나**뿐이고, 그것이 말하는 것은 「표준이 금지했다」가 아니라 「**이 판의 PG 가 `FULL` 을 머지/해시로만 구현했다**」다.\
+그러므로 이 제약의 근거는 **PG 18.6 서버가 뱉은 에러 메시지 하나**뿐이고, 그것이 말하는 것은 「표준이 금지했다」가 아니라 「**이 버전의 PG 가 `FULL` 을 머지/해시로만 구현했다**」다.\
 **다른 엔진엔 해당 없고, 버전이 오르면 조용히 바뀔 수 있다.** 어떤 조건이 merge/hash-joinable 로 분류되는지도 **문서에서 확인 못 했다 — 모른다.**
 
 **「MySQL 에는 없다」와 「PG 가 이 조건으로는 못 한다」는 다른 층이다.** 앞은 문서가 정한 문법의 유무(방언), 뒤는 구현의 현재 모습이다.\

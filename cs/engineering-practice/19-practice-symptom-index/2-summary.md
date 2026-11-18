@@ -23,7 +23,7 @@
 "CI가 빨갛다"라는 같은 증상에 원인이 여럿이다.
 - 두 PR이 각자 초록이었는데 합친 뒤 빨갛다면 의미 충돌이다([06-2](../06-ci-cd-pipelines/2-summary.md)). 병합 결과를 검사하면 된다.
 - 개발자 PC에서는 초록인데 CI에서만 빨갛다면 선언되지 않은 입력(시간대·로캘)이다([07-1](../07-build-systems-and-reproducibility/2-summary.md)). 입력을 고정하면 된다.
-- 정적 분석을 켠 첫날부터 빨갛다면 기존 위반과 새 위반을 섞은 게이트다([14-2](../14-quality-standards/2-summary.md)). 기준선을 두면 된다.
+- 정적 분석을 켠 첫날부터 빨갛다면 기존 위반과 새 위반을 섞은 게이트다([14-2](../14-quality-standards/2-summary.md)). 베이스라인을 두면 된다.
 
 처방이 셋 다 다르다. 증상만 보고 "CI를 고친다"고 하면 엉뚱한 곳을 손댄다.
 
@@ -120,7 +120,7 @@
 | 대시보드 "failing since 3 days", 실패 테스트 목록이 계속 길어짐 | 실패를 소유한 사람이 없음. 불안정 테스트가 무시 습관을 만듦 | main 빨간 시간, 깨뜨린 첫 커밋 | [06-1](../06-ci-cd-pipelines/2-summary.md) |
 | `zone=UTC locale=en_US day=2026-10-04 … -> test FAIL`, `locale=de_DE … amount=1,5 -> test FAIL`(eclipse-temurin:21-jdk, `TZ`·`-Duser.language`만 바꿈) | 기본 시간대·로캘·도구 판이 선언되지 않은 입력 | CI와 로컬의 `TZ`·로캘·JDK 판 비교 | [07-1](../07-build-systems-and-reproducibility/2-summary.md) |
 | `PMD 7.7.0 has found 3 violations`로 빌드 실패 → 며칠 뒤 CI에 `-Dpmd.skip=true` | 기존 위반과 새 위반을 구분하지 않음 | 위반 중 이번 변경이 만든 것은 몇 건인가 | [14-2](../14-quality-standards/2-summary.md) |
-| import 한 줄 추가에 "새 위반" 5건, 실제 새 위반은 2건(PMD 7.7.0 · maven-pmd-plugin 3.26.0) | 기준선 키에 줄 번호 | 기준선 지문이 무엇으로 만들어지나 | [14-3](../14-quality-standards/2-summary.md) |
+| import 한 줄 추가에 "새 위반" 5건, 실제 새 위반은 2건(PMD 7.7.0 · maven-pmd-plugin 3.26.0) | 베이스라인 키에 줄 번호 | 베이스라인 지문이 무엇으로 만들어지나 | [14-3](../14-quality-standards/2-summary.md) |
 | 보안 3건이 품질 경고와 섞여 같은 `[ERROR]` 줄로, `failed with 9 bugs and 0 errors`(SpotBugs 4.9.3 + FindSecBugs 1.14.0) | 범주·심각도를 나누지 않은 한 게이트 | 경고를 범주별로 세면 보안 고심각도는 몇 건인가 | [15-2](../15-security-standards/2-summary.md) |
 | `The projects in the reactor contain a cyclic reference: … ex:app:1 --> ex:service:1 --> ex:util:1 --> ex:app:1`(Maven 3.9.16) | 하위 모듈이 상위 모듈을 의존 | 사이클 경로의 어느 간선이 방향을 거스르나 | [07-4](../07-build-systems-and-reproducibility/2-summary.md) |
 | 커밋 단계 40분, PR 크기 증가. 파이프라인 모형에서 순차 합 29분 vs DAG 병렬 22분(소요 분은 예시 값) | 임계 경로를 안 봄, 느린 테스트를 커밋 단계에 다 넣음 | 임계 경로 위 작업이 무엇인가 | [06-5](../06-ci-cd-pipelines/2-summary.md) |
@@ -128,7 +128,7 @@
 
 - **"CI를 못 믿는다"의 끝 상태는 빨강을 아무도 안 보는 것**이다. 그러면 진짜 회귀도 옛 빨강에 묻힌다([06-1](../06-ci-cd-pipelines/2-summary.md)).
 - 불안정 테스트(재실행하면 초록)는 테스트 영역 색인이 정본이다 — [testing/20-test-symptom-index](../../testing/20-test-symptom-index/2-summary.md) 1절, [testing/09-flaky-tests](../../testing/09-flaky-tests/2-summary.md).
-- 게이트를 끄는 것(`-Dpmd.skip=true`, "경고만")은 처방이 아니다. 기준선(래칫)으로 새 위반만 막는다([14-2](../14-quality-standards/2-summary.md)).
+- 게이트를 끄는 것(`-Dpmd.skip=true`, "경고만")은 처방이 아니다. 베이스라인(래칫)으로 새 위반만 막는다([14-2](../14-quality-standards/2-summary.md)).
 
 ### 3. "배포가 무섭다" — 금요일엔 안 한다, 한 번에 모아서 한다
 
@@ -519,7 +519,7 @@ public class VersionDrift {
 - **현상**: CI는 초록, 신선도 대시보드도 초록, 리뷰 대기도 짧아졌다. 그런데 사고와 재작업은 그대로다.
 - **보이는 형태**: CI 설정에 `-Dpmd.skip=true`([14-2](../14-quality-standards/2-summary.md)), 날짜만 바뀐 문서 커밋(경고 7건 → 4건, [11-5](../11-documentation-practices/2-summary.md)), 리뷰 없이 머지된 PR과 그 뒤 롤백([18-2](../18-engineering-virtues/2-summary.md)).
 - **원인**: 증상(빨강·경고·대기)을 없애는 것과 원인을 고치는 것을 혼동했다.
-- **대처**: 증상을 끄는 변경(게이트 비활성화, 기준선 재생성, 검토일만 갱신)은 리뷰에서 원인 설명을 요구한다. 끈 게이트 수·억제 주석 수를 따로 센다.
+- **대처**: 증상을 끄는 변경(게이트 비활성화, 베이스라인 재생성, 검토일만 갱신)은 리뷰에서 원인 설명을 요구한다. 끈 게이트 수·억제 주석 수를 따로 센다.
 
 ### 2. 같은 증상에 반대 처방 — "CI가 빨갛다"를 하나로 봄
 

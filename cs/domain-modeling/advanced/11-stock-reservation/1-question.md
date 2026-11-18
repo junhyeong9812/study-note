@@ -41,7 +41,7 @@ private boolean expired(Reservation reservation, Instant at, Boundary boundary) 
 - HELD 가 아닌 예약에 대해 이 함수는 무엇을 돌려줘야 하는가?
 - 확정된 예약에 대해 true 를 돌려주면 `sweep` 에서 무슨 일이 벌어지는가?
 - `EXPIRED_AT_DEADLINE` 과 `ALIVE_AT_DEADLINE` 은 각각 어떤 부등호가 되는가?
-- `!at.isBefore(deadline)` 와 `at.isAfter(deadline)` 는 정확히 어떤 시각 하나에서만 갈리는가?
+- `!at.isBefore(deadline)` 와 `at.isAfter(deadline)` 는 정확히 어떤 시각 하나에서만 달라지는가?
 - 만료 시각은 어디서 오는가 — 필드로 저장돼 있는가 계산되는가?
 
 2. TODO 2 — holding (그 시각에 재고를 잡고 있나)

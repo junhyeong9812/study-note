@@ -156,7 +156,7 @@ DB 커넥션 하나를 새로 여는 일은 비싸다.
   - HikariCP 6.3.0 `HikariConfig.setConnectionTimeout(0)`은 `Integer.MAX_VALUE` ms(약 24.8일)로 바뀐다. 최솟값은 250ms다.
   - Tn = 최대 스레드 수, Cm = 한 스레드가 **동시에** 쥐는 최대 커넥션 수.
   - 예: Tn = 8, Cm = 3 → 8 × 2 + 1 = 17. 교착을 피하는 **최소값**이지 최적값이 아니다.
-- 이것은 os 교착의 네 조건 그대로다. 점유 대기(바깥 커넥션을 쥔 채 대기)를 없애는 게 근본 해법이다.
+- 이것은 os 교착의 네 조건 그대로다. 점유 대기(바깥 커넥션을 잡은 채 대기)를 없애는 게 근본 해법이다.
   - Spring `REQUIRES_NEW`가 대표적 원인이다([24](../24-transaction-boundaries-in-app-code/2-summary.md)).
 
 ## 쓰이는 자료구조·알고리즘
@@ -247,8 +247,8 @@ SHOW GLOBAL STATUS LIKE 'Max_used_connections';   -- 기동 후 최대 동시 �
 SHOW PROCESSLIST;                                  -- Command = Sleep 은 유휴 *세션* (풀 유휴분인지 앱이 쥔 채 노는지는 풀 지표와 대조)
 ```
 
-- 풀 쪽 지표(Micrometer, HikariCP 6.3.0 소스 이름): `hikaricp.connections.active`·`.idle`·`.pending`(대기 스레드 수)·`.timeout`(대여 실패 수)·`.acquire`(대여 대기 시간)·`.usage`(쥔 시간).
-  - `pending`이 0보다 큰 상태가 이어지고 `usage`가 늘었다면, 풀을 키우기 전에 **쥔 시간**부터 줄인다.
+- 풀 쪽 지표(Micrometer, HikariCP 6.3.0 소스 이름): `hikaricp.connections.active`·`.idle`·`.pending`(대기 스레드 수)·`.timeout`(대여 실패 수)·`.acquire`(대여 대기 시간)·`.usage`(잡은 시간).
+  - `pending`이 0보다 큰 상태가 이어지고 `usage`가 늘었다면, 풀을 키우기 전에 **잡은 시간**부터 줄인다.
 
 ## 장애 시나리오와 대처
 
@@ -259,7 +259,7 @@ SHOW PROCESSLIST;                                  -- Command = Sleep 은 유휴
 - 원인: 커넥션을 오래 쥐는 코드다. 느린 쿼리, 트랜잭션 안 HTTP 호출([24](../24-transaction-boundaries-in-app-code/2-summary.md)), 반납 누락(누수), 락 대기([22](../22-database-side-timeouts/2-summary.md)).
 - 대처:
   - 긴급: `pg_stat_activity`에서 오래된 `active`·`idle in transaction`을 찾는다. 원인 세션만 `pg_cancel_backend`·`pg_terminate_backend`로 정리한다.
-  - 근본: 쥔 시간을 줄인다. 누수 탐지를 켠다. 서버 측 타임아웃으로 상한을 둔다(22).
+  - 근본: 잡은 시간을 줄인다. 누수 탐지를 켠다. 서버 측 타임아웃으로 상한을 둔다(22).
   - `connectionTimeout`을 짧게 해 빨리 실패하게 한다. 풀 크기를 무작정 키우지 않는다.
 
 ### 2. DB 연결 한도 초과 — `too many clients`
@@ -276,7 +276,7 @@ SHOW PROCESSLIST;                                  -- Command = Sleep 은 유휴
 
 - 현상: 풀을 50 → 200으로 키웠더니 처리량은 그대로이고 p99는 나빠졌다.
 - 보이는 형태: DB CPU 100%, 실행 대기(run queue) 증가, `pg_stat_activity`의 `active` 수가 코어 수의 몇 배다. 락 대기 이벤트(`wait_event_type = 'Lock'`·`'LWLock'`)가 는다.
-- 원인: 동시 실행이 코어 수를 크게 넘어 전환·경합 비용이 늘었다. 쿼리 하나하나가 느려져 쥔 시간 W가 늘고, 풀이 더 필요해 보이는 악순환이다.
+- 원인: 동시 실행이 코어 수를 크게 넘어 전환·경합 비용이 늘었다. 쿼리 하나하나가 느려져 잡은 시간 W가 늘고, 풀이 더 필요해 보이는 악순환이다.
 - 대처: 풀을 줄여 앱 쪽 줄에서 기다리게 한다(위키의 "작은 풀" 공리). 부하 시험으로 `(코어 × 2) + 스핀들` 근처를 찾는다.
 
 ### 4. 끊긴 커넥션을 빌려준다 — `maxLifetime` > 중간 장비 idle timeout
@@ -286,21 +286,21 @@ SHOW PROCESSLIST;                                  -- Command = Sleep 은 유휴
 - 원인: LB·NAT·방화벽·DB(`wait_timeout` 기본 28800초, MySQL 8.4)가 풀보다 먼저 연결을 끊었다. 조용히 기록만 지운 경우 검증 요청이 응답 없이 걸려 `validationTimeout`만큼 늦다.
 - 대처: idle 한도에는 `keepaliveTime`을 그보다 짧게 두어 유휴 커넥션을 주기적으로 찌른다(또는 `maxLifetime`을 idle 한도보다 짧게). 연결 수명 한도에는 `maxLifetime`을 그보다 몇 초 이상 짧게 둔다. TCP keepalive 설정은 [network/21](../../network/21-tcp-keepalive-and-user-timeout/2-summary.md)을 본다.
 
-### 5. 풀 교착 — 커넥션을 쥔 채 커넥션을 기다린다
+### 5. 풀 교착 — 커넥션을 잡은 채 커넥션을 기다린다
 
 - 현상: 부하가 몰릴 때만 전체가 멈춘다. DB는 한가하고 교착 탐지도 조용하다.
 - 보이는 형태: 모든 스레드 덤프가 `HikariPool.getConnection`에서 대기 중이다. 몇 초 뒤 `Connection is not available`이 한꺼번에 난다.
-- 원인: 한 스레드가 커넥션을 쥔 채 두 번째를 빌린다. `REQUIRES_NEW`, 트랜잭션 안에서 별도 `DataSource` 호출 등이 원인이다. 대기의 한쪽 끝이 앱(풀)에 있어서 DB의 교착 탐지기는 볼 수 없다.
+- 원인: 한 스레드가 커넥션을 잡은 채 두 번째를 빌린다. `REQUIRES_NEW`, 트랜잭션 안에서 별도 `DataSource` 호출 등이 원인이다. 대기의 한쪽 끝이 앱(풀)에 있어서 DB의 교착 탐지기는 볼 수 없다.
 - 대처: 한 스레드가 커넥션 하나만 쥐게 코드를 바꾼다. 불가피하면 풀 크기를 `Tn × (Cm − 1) + 1` 이상으로 둔다.
 
 ## 핵심 문장
 
 - 풀은 커넥션 생성 비용을 없애고 **동시 커넥션 수에 상한과 대기 줄**을 준다. 풀이 비면 스레드는 `connectionTimeout`까지 기다린다.
-- 필요한 커넥션 수는 "초당 대여 수 × 쥔 시간"이다. 풀이 모자라 보이면 풀을 키우기 전에 **쥔 시간**을 줄인다.
+- 필요한 커넥션 수는 "초당 대여 수 × 잡은 시간"이다. 풀이 모자라 보이면 풀을 키우기 전에 **잡은 시간**을 줄인다.
 - 풀을 키우면 DB가 코어 수보다 훨씬 많은 일을 동시에 떠안아 오히려 느려질 수 있다. 작은 풀과 앱 쪽 대기 줄이 기본이다.
 - 모든 클라이언트의 풀 합은 DB 연결 한도(PostgreSQL 17 기본 `max_connections` 100에서 예약 3을 뺀 97) 안에 들어가야 한다.
 - `maxLifetime`은 경로상 누군가(LB·NAT·DB)가 거는 연결 수명 한도보다 짧아야 하고, idle 한도는 `keepaliveTime`(또는 더 짧은 `maxLifetime`)으로 피한다. 아니면 끊긴 커넥션을 빌려준다.
-- 커넥션을 쥔 채 커넥션을 더 빌리면 풀 교착이 난다. DB는 이 교착을 탐지하지 못한다.
+- 커넥션을 잡은 채 커넥션을 더 빌리면 풀 교착이 난다. DB는 이 교착을 탐지하지 못한다.
 
 ## 관련 주제·근거
 

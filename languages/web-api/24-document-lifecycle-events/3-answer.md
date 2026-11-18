@@ -1,9 +1,9 @@
 # web-api/24 — 문서 수명주기 이벤트: `DOMContentLoaded`/`load`·`visibilitychange`·`pagehide`/`pageshow` 와 bfcache — 정답
 
-| 안 흔들리는 칸 | 흔들리는 칸 · 못 잰 칸 |
+| 달라지지 않는 항목 | 실행마다 달라지는 항목 · 못 잰 항목 |
 |---|---|
 | 「떠날 때」 격자 전 칸 · CDP 이유 · 문서별 순서 · 이미지 순서 | **안 실었다** — 두 문서가 섞인 순서(렌더러가 다르다) |
-| 캡처를 세 판 돌려 **한 글자도 같았다** | **못 잰 것** — 모바일 백그라운드 · 탭 폐기 · 사용자의 창 닫기 · 속도 |
+| 캡처를 세 번 돌려 **한 글자도 같았다** | **못 잰 것** — 모바일 백그라운드 · 탭 폐기 · 사용자의 창 닫기 · 속도 |
 
 ```text
 $ google-chrome --version
@@ -40,7 +40,7 @@ $ python3 wa24b-net.py life wa24b-24-grid.html | sed -n '1,14p'
 
 **왜 그런가**
 
-- **첫쪽** — `beforeunload → pagehide(persisted=true) → visibilitychange hidden`(「링크로 떠나기」 줄). 리스너가 없어 `unload` 칸은 부적용.
+- **첫쪽** — `beforeunload → pagehide(persisted=true) → visibilitychange hidden`(「링크로 떠나기」 줄). 리스너가 없어 `unload` 칸은 해당 없음.
 - **둘째쪽** — 처음 여는 문서라 `pageshow persisted=false` 와 `load` ○.
 - ★ HTML 의 unload a document 순서 그대로 — **`pagehide` → 가시성 `hidden` → (salvageable 이 거짓일 때만) `unload`**.
 
@@ -89,7 +89,7 @@ $ python3 wa24b-net.py life wa24b-24-grid.html | sed -n '16,17p;22,27p'
 - ★ **페이지** — `[{"reason":"masked"}]`. 같은 질문을 페이지가 물으면 이유가 가려졌다.
 - ★ 이 조건은 **Chrome 구현**이다 — HTML 명세에서 「`unload` 리스너가 있으면 bfcache 불가」 문장은 찾지 못했다.
 
-### 4. `beforeunload` 한 칸만 갈린다
+### 4. `beforeunload` 한 칸만 달라진다
 
 **출력**
 
@@ -160,7 +160,7 @@ A   go 를 받고 이미지를 보냈다
 ### 8. 명세는 틀, 조건은 Chrome
 
 - **명세(HTML)** — `pagehide`/`pageshow` 의 `persisted`, **`pagehide → hidden → (salvageable 이 거짓이면) unload`** 순서. 어떤 문서를 창고에 넣을지는 명세 문장으로 확인하지 못했다.
-- **Chrome** — `unload` 리스너 → `UnloadHandlerExistsInMainFrame` · 옆 쪽까지 `BrowsingInstanceNotSwapped` · **`no-store` 주 문서는 이 판에서 들어갔다** · **`Permissions-Policy: unload=()` 면 `unload` 가 안 불리고 들어갔다**(동작 방식 (5)).
+- **Chrome** — `unload` 리스너 → `UnloadHandlerExistsInMainFrame` · 옆 쪽까지 `BrowsingInstanceNotSwapped` · **`no-store` 주 문서는 이 버전에서 들어갔다** · **`Permissions-Policy: unload=()` 면 `unload` 가 안 불리고 들어갔다**(동작 방식 (5)).
 
 ### 9. `load` 가 다시 안 난다 — `pageshow` 의 `persisted` 를 본다
 
@@ -169,7 +169,7 @@ A   go 를 받고 이미지를 보냈다
 ### 10. 다른 주제와 잇기
 
 - **HTML 08번 주제와 문항 6** — 08편이 **`defer`·모듈이 `DOMContentLoaded` 앞**, `load` 가 `complete` 를 쟀다. 문항 6은 그 끝에 **「`load` 는 이미지까지 기다린다」** 한 칸을 서버 붙잡기로 더했다.
-- **도구가 못 보는 것** — ① **모바일의 백그라운드 전환·프로세스 강제 종료**(헤드리스 데스크톱에는 운영체제가 탭을 얼리거나 죽이는 경로가 없다 — 「탭 전환」은 새 탭 열기로만 흉내 냈다) ② **사용자의 진짜 창 닫기**(두 CDP 명령이 `beforeunload` 에서 갈렸다). 그 밖에 탭 폐기 · bfcache 의 속도.
+- **도구가 못 보는 것** — ① **모바일의 백그라운드 전환·프로세스 강제 종료**(헤드리스 데스크톱에는 운영체제가 탭을 얼리거나 죽이는 경로가 없다 — 「탭 전환」은 새 탭 열기로만 흉내 냈다) ② **사용자의 진짜 창 닫기**(두 CDP 명령이 `beforeunload` 에서 달라졌다). 그 밖에 탭 폐기 · bfcache 의 속도.
 
 ## 실행 검증
 

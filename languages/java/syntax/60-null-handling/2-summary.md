@@ -262,7 +262,7 @@ ElseGet(null, make)   = 만들어진 기본값 / make() 호출 = 1
 
 비용 — ★ `Else` 의 두 번째 인자는 **100% 평가된다.**
 
-### (6) NPE 메시지 — 빌드 옵션·JVM 플래그에 갈린다
+### (6) NPE 메시지 — 빌드 옵션·JVM 플래그에 달라진다
 
 **언제 쓰나** — 운영 로그의 NPE 메시지를 근거로 삼으려 할 때. **삼으면 안 된다.**
 
@@ -597,7 +597,7 @@ Objects.requireNonNullElse(value, config.getDefault());   // getDefault() 가 nu
 | `Map.of`/`List.of` 가 `null` 을 거부 | **javadoc (계약)** | `@throws NullPointerException if ... is null` |
 | `HashMap` 이 `null` 키를 허용 | **javadoc (계약)** | `HashMap` 은 `null` 키 하나와 `null` 값을 허용한다고 명시 |
 | helpful NPE 메시지의 문구 | **구현 세부 + 컴파일 옵션 + JVM 플래그** | `-g` 유무·`-XX:-ShowCodeDetailsInExceptionMessages` ([`../05-arrays/`](../05-arrays/) 실측) |
-| `requireNonNull` 메시지가 플래그에 안 흔들림 | **구현 (소스 그대로)** | 내가 준 문자열이 그대로 `NullPointerException` 생성자로 간다 |
+| `requireNonNull` 메시지가 플래그에 달라지지 않음 | **구현 (소스 그대로)** | 내가 준 문자열이 그대로 `NullPointerException` 생성자로 간다 |
 | 애너테이션의 `toString` 형태 | **구현 세부 — JDK 마다 달랐다 ★** | 아래 |
 | `@Retention(RUNTIME)` 애너테이션이 런타임 검사를 하지 않음 | **언어 보장** | 애너테이션은 메타데이터다. 검사는 도구의 몫 |
 
@@ -650,7 +650,7 @@ JDK 25.0.1  : 메서드 파라미터의 애너테이션 : [@Ex.NonNull()]
 - `requireNonNull` 은 **메시지를 주고 쓴다.** javadoc 의 예제 자체가 인자가 여럿인 생성자에 메시지를 붙인 형태다.
 - `requireNonNullElse` 의 NPE 메시지 셋(`defaultObj`·`supplier`·`supplier.get()`)은 **어느 단계에서 `null` 이 나왔는지**를 말한다.
 - ★ **`requireNonNullElse` 의 두 번째 인자도 항상 평가된다.** `Optional.orElse` 와 완전히 같은 현상이고, 원인은 자바의 인자 평가 규칙이다.
-- ★ **helpful NPE 메시지는 `-g` 와 JVM 플래그에 갈리지만, `requireNonNull` 의 메시지는 세 조건에서 모두 살아남았다.** 이것이 명시적 검증의 실무적 이유다.
+- ★ **helpful NPE 메시지는 `-g` 와 JVM 플래그에 달라지지만, `requireNonNull` 의 메시지는 세 조건에서 모두 살아남았다.** 이것이 명시적 검증의 실무적 이유다.
 - ★ **`@Nullable`/`@NonNull` 은 런타임에 아무것도 막지 않는다.** `len(null)` 이 그냥 컴파일되고 실행된다 — 검사는 그것을 읽는 도구의 몫이다.
 - **컬렉션마다 `null` 정책이 다르다.** `HashMap` 은 받고, `Map.of`/`List.of`/`TreeSet` 은 NPE 로 거부한다.
 
@@ -659,7 +659,7 @@ JDK 25.0.1  : 메서드 파라미터의 애너테이션 : [@Ex.NonNull()]
 - [`../README.md`](../README.md) — Java 문법·API 주제 목록(이 주제는 60번)
 - [`../38-optional/`](../38-optional/) — **그쪽은 `Optional` 이라는 타입 하나(생성·소비·안티패턴·버전)까지, 여기는 그것을 세 방어 시점 중 하나로 배치하는 판단부터.**\
   "`Optional` 을 필드에 두면 안 되는 이유"의 실측은 전부 그쪽에 있다
-- [`../05-arrays/`](../05-arrays/) — **helpful NPE 메시지가 `-g` 와 `-XX:-ShowCodeDetailsInExceptionMessages` 에 갈린다는 실측의 정본.**\
+- [`../05-arrays/`](../05-arrays/) — **helpful NPE 메시지가 `-g` 와 `-XX:-ShowCodeDetailsInExceptionMessages` 에 달라진다는 실측의 정본.**\
   여기서는 그 결론만 받아 "그래서 `requireNonNull` 을 쓴다"까지만 적는다
 - [`../25-exceptions/`](../25-exceptions/) — **"없음"을 값으로 돌려줄지 예외로 던질지**의 경계. 예외 설계는 그쪽이 정본
 - [`../14-records/`](../14-records/) — 컴팩트 생성자에서 검증하는 자리의 정본
@@ -716,4 +716,4 @@ JDK 25.0.1  : 메서드 파라미터의 애너테이션 : [@Ex.NonNull()]
 helpful NullPointerException 은 **Java 14**(JEP 358), **15부터 기본 켜짐**.
 **범위** — `Optional` 이라는 **타입 하나**의 생성·소비·안티패턴은 [`../38-optional/`](../38-optional/) 가 정본이다.\
 여기는 **"어느 계층에서 무엇으로 막을 것인가"** 라는 배치 문제만 다룬다.\
-NPE 메시지가 빌드 옵션·JVM 플래그에 갈린다는 실측은 [`../05-arrays/`](../05-arrays/) 가 정본이고, 여기서는 **결론만 받아 쓴다**((6)).
+NPE 메시지가 빌드 옵션·JVM 플래그에 달라진다는 실측은 [`../05-arrays/`](../05-arrays/) 가 정본이고, 여기서는 **결론만 받아 쓴다**((6)).

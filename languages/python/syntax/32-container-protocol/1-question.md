@@ -120,7 +120,7 @@ for it, gi, co in itertools.product([1, 0], repeat=3):
 ```
 
 - `iter+getitem` 인 줄에서 `'b' in o` 는 **무엇을 부르는가**?
-- ★ `contains` 만 가진 줄에서 `'b' in o` 와 `for v in o` 의 결과가 **어떻게 갈리는가**?
+- ★ `contains` 만 가진 줄에서 `'b' in o` 와 `for v in o` 의 결과가 **어떻게 달라지는가**?
 - ★ `getitem` 만 가진 줄에서 `in` 과 `for` 의 `__getitem__` 호출 **횟수가 같은가**?
 - 아무것도 없는 줄에서 나는 두 `TypeError` 의 **문구가 같은가**?
 
@@ -360,7 +360,7 @@ print("   그런데 for 는 돈다          :", [v for v in Old()])
 ### 12. 이웃 주제와의 경계 (연결)
 
 - [16번](../16-iterator-protocol/2-summary.md)이 정본인 것과 이 주제가 정본인 것을 한 줄씩으로 가르면?
-- ★ 「`for` 가 돈다」와 「`isinstance(o, Iterable)` 이 참이다」가 갈리는 객체는 어떤 것인가?
+- ★ 「`for` 가 돈다」와 「`isinstance(o, Iterable)` 이 참이다」가 달라지는 객체는 어떤 것인가?
 - [30번](../30-repr-eq-hash-contracts/2-summary.md)의 `__eq__` 가 틀리면 이 주제의 무엇이 같이 틀리는가?
 
 ## 실행 환경

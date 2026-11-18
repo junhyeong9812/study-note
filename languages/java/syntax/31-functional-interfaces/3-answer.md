@@ -436,7 +436,7 @@ Ex.java:7: error: unreported exception IOException; must be caught or declared t
 - 람다 본문은 SAM 의 `throws` 목록을 넘어서는 검사 예외를 던질 수 없다.
 - `Callable.call()` 은 `throws Exception` 이라서 **같은 람다가 들어간다.**\
   실행 결과: `Callable.call() = 파일 내용`.
-- 즉 **모양이 같아도 `throws` 하나로 갈린다.**
+- 즉 **모양이 같아도 `throws` 하나로 나뉜다.**
 
 **통상적 우회 두 단계** (`Ex.java (31-e2)`)
 

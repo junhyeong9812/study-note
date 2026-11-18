@@ -107,7 +107,7 @@ public long nextFireTime(long lastScheduled, long lastFinished, long now) {
 
 ### B. 개념
 
-5. 밀렸다 살아날 때 넷이 갈린다 (원본 README 도입)
+5. 밀렸다 살아날 때 넷이 달라진다 (원본 README 도입)
 
 - 10분 멈췄다 살아나면 네 방아쇠는 각각 몇 번 도는가?
 - "회복할수록 부하가 커진다"는 되먹임을 설명하면?

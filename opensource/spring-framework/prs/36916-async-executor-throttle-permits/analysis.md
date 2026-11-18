@@ -37,7 +37,7 @@
 | `submit(Callable<T>)` | :348 | `TIMEOUT_INDEFINITE` | 결함 B만 |
 | `execute(Runnable, long)` `@Deprecated(since="5.3.16")` | :311 | 호출자가 지정 | 결함 A(0을 줄 때) + 결함 B |
 
-부르는 쪽은 이 executor를 기본값으로 꽂아 쓰는 프레임워크 코드(`@Async` 최종 폴백, `WebAsyncManager`, `JdkClientHttpRequestFactory`, JMS·websocket)와 상속해 쓰는 쪽(`SimpleAsyncTaskScheduler`, MVC의 `MvcSimpleAsyncTaskExecutor`)으로 갈린다.\
+부르는 쪽은 이 executor를 기본값으로 꽂아 쓰는 프레임워크 코드(`@Async` 최종 폴백, `WebAsyncManager`, `JdkClientHttpRequestFactory`, JMS·websocket)와 상속해 쓰는 쪽(`SimpleAsyncTaskScheduler`, MVC의 `MvcSimpleAsyncTaskExecutor`)으로 나뉜다.\
 다만 전자는 대개 `setConcurrencyLimit`을 부르지 않아 `isThrottleActive()`가 거짓이고, 그러면 분기 1 자체가 성립하지 않는다.\
 노출면은 "한도를 명시적으로 건 사용자"로 좁다(목록 전체는 `structure.md` §4).
 
@@ -167,7 +167,7 @@ throttle 스위치(`concurrencyLimit`)와 추적 스위치(`activeThreads`)가 �
 
 | 이름표 | 역할 | 값이 정해지는 곳 | 이 결함과의 관계 |
 |---|---|---|---|
-| `startTimeout` (파라미터, :311) | "언제까지 시작되어야 하는가"의 힌트 | 호출자 | `> TIMEOUT_IMMEDIATE` 비교 하나로 분기 1/2가 갈린다 |
+| `startTimeout` (파라미터, :311) | "언제까지 시작되어야 하는가"의 힌트 | 호출자 | `> TIMEOUT_IMMEDIATE` 비교 하나로 분기 1/2가 달라진다 |
 | `TIMEOUT_IMMEDIATE` (`AsyncTaskExecutor`) | 값 0. "즉시 실행, throttle 우회" | 인터페이스 상수 | 분기 1의 경계값. `0 > 0`이 거짓이므로 **경계값 자신이 분기 2로 떨어진다** — 결함 A의 유일한 입구 |
 | `TIMEOUT_INDEFINITE` (`AsyncTaskExecutor`) | `Long.MAX_VALUE` | 인터페이스 상수 | 공개 3 API가 넘기는 값. 항상 분기 1로 간다 |
 | `taskToUse` (:317) | 데코레이터 적용 후의 실제 Runnable | `execute` :317 | 결함과 무관(래퍼 안쪽에 그대로 실린다) |
@@ -201,7 +201,7 @@ throttle 스위치(`concurrencyLimit`)와 추적 스위치(`activeThreads`)가 �
 immediate 태스크를 던질 때마다 count가 더 내려가므로 설정값과 실제 동시성의 괴리가 누적된다.\
 다만 입구가 deprecated 오버로드 + `TIMEOUT_IMMEDIATE`뿐이라 노출면은 좁다.
 
-> **무음 실패(silent failure)** — 잘못된 동작이 예외·로그 없이 정상처럼 흘러가는 실패.\
+> **조용한 실패(silent failure)** — 잘못된 동작이 예외·로그 없이 정상처럼 흘러가는 실패.\
 > 예: 한도 2가 실제로 3을 통과시키는데도 `getConcurrencyLimit()`은 여전히 2를 돌려주므로, 관측 지표만 보면 아무 이상이 없다.
 
 ### 3.2 결함 B — 반납 없는 획득
@@ -224,7 +224,7 @@ immediate 태스크를 던질 때마다 count가 더 내려가므로 설정값�
 그리고 이 경로는 `submit`·`execute(Runnable)` 같은 통상 API로 도달한다 — 필요한 것은 throttle 활성 + 추적 활성 + 종료 시점 경합뿐이고, 마지막 항목은 애플리케이션 셧다운마다 벌어지는 상황이다.
 
 > **경합 조건(race condition)** — 두 사건의 도착 순서에 따라 결과가 달라지는 상황.\
-> 예: 워커가 `run()`에 닿는 시점과 `close()`가 `cancelled`를 세우는 시점 중 무엇이 먼저냐로 permit이 새는지가 갈린다.
+> 예: 워커가 `run()`에 닿는 시점과 `close()`가 `cancelled`를 세우는 시점 중 무엇이 먼저냐로 permit이 새는지가 달라진다.
 
 ### 3.3 이미 막혀 있던 세 번째 경로
 

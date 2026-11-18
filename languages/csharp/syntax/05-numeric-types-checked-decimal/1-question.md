@@ -84,7 +84,7 @@ int big = int.MaxValue;
 Console.WriteLine($"int.MaxValue + 1 = {big + 1}");
 ```
 
-- `csc -out:ex.dll …` 로 던진 것과 `csc -checked+ -out:ex.dll …` 로 던진 것의 **출력과 `run exit`** 은?
+- `csc -out:ex.dll …` 로 실행한 것과 `csc -checked+ -out:ex.dll …` 로 실행한 것의 **출력과 `run exit`** 은?
 - MSBuild 에서 이 플래그를 켜는 **속성 이름**은?
 - 이 플래그는 **상수식**에도 영향을 주는가?
 - 내가 `-checked+` 로 빌드한 프로젝트가 **참조하는 라이브러리** 안쪽은 어떻게 되는가?
@@ -260,7 +260,7 @@ Console.WriteLine($"(double)0.1f == 0.1 : {widened == 0.1}");
 - `0.0 == -0.0` 은? 그런데 `1.0 / -0.0` 은?
 - `(double)0.1f == 0.1` 은 참인가 — 왜인가?
 
-### 10. ★★★ 공식 문서가 적어 둔 값과 이 판의 값 (경계)
+### 10. ★★★ 공식 문서가 적어 둔 값과 이 버전의 값 (경계)
 
 - `unchecked((int)double.MaxValue)` 는 무엇인가 — **감기는가 포화하는가**?
 - `unchecked((int)double.NaN)` 은?
@@ -290,7 +290,7 @@ MSBuild 를 안 쓰고 Roslyn `csc` 를 직접 부른다(`-debug` 없음 — 트
 ★★ **이 주제에는 컴파일 진단이 세 자리에만 난다** — 3번(상수식) · 9번(같은 변수 비교 경고) · 문법 절의 금지 사례.
 나머지는 **실행 출력 · 예외 전문 · IL · 할당 바이트**가 근거다.
 ★★★ **6번을 외우려 하지 마라** — 「`decimal` 이 더 정확하다」가 **거기서 뒤집힌다.** 던져서 확인하는 것이 답이다.
-★ **10번은 공식 문서와 이 판이 갈린 자리**다. 「문서에 적힌 값」을 답으로 쓰면 틀린다.
+★ **10번은 공식 문서와 이 버전이 달라진 자리**다. 「문서에 적힌 값」을 답으로 쓰면 틀린다.
 선행 — [01번](../01-value-types-and-reference-types/) · [03번](../03-boxing-and-unboxing/) ·
 [`foundations/data-representation/`](../../../../cs/foundations/data-representation/)(2진 표현 자체는 거기).
 

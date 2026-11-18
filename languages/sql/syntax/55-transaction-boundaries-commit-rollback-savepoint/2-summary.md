@@ -44,7 +44,7 @@ UPDATE ... ;  -> 즉시 확정             UPDATE ... ;   <- 아직 내 눈에�
 ## 이 주제가 답하려는 질문
 
 1. **괄호를 안 치면 어떻게 되나** — 두 엔진의 기본값은 무엇이고, 그 기본값이 어디에 사는가.
-2. **괄호 안에서 문 하나가 실패하면 나머지는 어떻게 되나** — ★ 여기서 두 엔진이 **정반대로 갈린다.**
+2. **괄호 안에서 문 하나가 실패하면 나머지는 어떻게 되나** — ★ 여기서 두 엔진이 **정반대로 나뉜다.**
 3. **괄호 전체가 아니라 일부만 되돌리려면** — `SAVEPOINT` 가 무엇을 되돌리고 무엇을 안 되돌리나.
 
 ## 환경 확인 — 물어보고 시작한다
@@ -447,7 +447,7 @@ ERROR 1305 (42000) at line 9: SAVEPOINT sp1 does not exist
 
 ### ㄹ. 트랜잭션 밖에서 `SAVEPOINT` 를 치면
 
-**여기서 두 엔진이 또 갈린다.**
+**여기서 두 엔진이 또 달라진다.**
 
 ```text
 --- PG 18.6 ---                             --- MySQL 8.4.10 ---
@@ -496,11 +496,11 @@ MySQL 의 DDL(4번), 두 번째 `START TRANSACTION`(ㅁ), `SET autocommit=1` 로
 |---|---|
 | `BEGIN`·`COMMIT`·`ROLLBACK`·`SAVEPOINT`·`ROLLBACK TO`·`RELEASE` 의 **의미** | 두 엔진이 같다. 문서로 보장된다 |
 | **기본이 자동 커밋**이라는 것 | 두 엔진이 같다 |
-| 자동 커밋을 **어디서 끄나** | 갈린다 — PG 는 클라이언트, MySQL 은 서버 세션 변수(`@@autocommit`) |
-| 에러 뒤 트랜잭션이 **사는가 죽는가** | **갈린다.** PG = 중단, MySQL = 문 단위 롤백 후 계속 |
-| **DDL 이 트랜잭션 안에 들어가는가** | **갈린다.** PG = 들어간다, MySQL = 암묵 커밋 |
-| 중첩 `BEGIN` 의 처리 | **갈린다.** PG = 경고 + 무시, MySQL = 암묵 커밋 + 무경고 |
-| 트랜잭션 밖 `SAVEPOINT` | **갈린다.** PG = 에러, MySQL = 통과 |
+| 자동 커밋을 **어디서 끄나** | 달라진다 — PG 는 클라이언트, MySQL 은 서버 세션 변수(`@@autocommit`) |
+| 에러 뒤 트랜잭션이 **사는가 죽는가** | **달라진다.** PG = 중단, MySQL = 문 단위 롤백 후 계속 |
+| **DDL 이 트랜잭션 안에 들어가는가** | **달라진다.** PG = 들어간다, MySQL = 암묵 커밋 |
+| 중첩 `BEGIN` 의 처리 | **달라진다.** PG = 경고 + 무시, MySQL = 암묵 커밋 + 무경고 |
+| 트랜잭션 밖 `SAVEPOINT` | **달라진다.** PG = 에러, MySQL = 통과 |
 | `ERROR 1062` / `ERROR 1305` 같은 **번호** | MySQL 구현 세부다. 번호로 분기하는 코드는 버전에 묶인다 |
 | PG 의 `CONTEXT:` 줄 형식 | 구현 세부다. 문자열 매칭 금지 |
 
@@ -529,7 +529,7 @@ MySQL 의 DDL(4번), 두 번째 `START TRANSACTION`(ㅁ), `SET autocommit=1` 로
 - [`engineering-axes/concurrency.md`](../../../../cs/engineering/engineering-axes/concurrency.md) — **동시성의 개념·도구 선택은 거기가 정본**이다.\
   **여기는 트랜잭션 경계 문법까지**이고, 격리 수준은 [56번](../56-isolation-levels-read-phenomena-mvcc/)이 맡는다.
 - [56 격리 수준과 읽기 이상 현상·MVCC](../56-isolation-levels-read-phenomena-mvcc/) — 괄호 **안에서 남의 변경이 보이는 정도**.
-- [57 명시적 잠금과 교착](../57-explicit-locking-and-deadlock/) — 괄호가 **무엇을 쥐고 있나**.
+- [57 명시적 잠금과 교착](../57-explicit-locking-and-deadlock/) — 괄호가 **무엇을 잡고 있나**.
 - [52 UPSERT](../52-upsert/) — 「`SELECT` 후 `INSERT`」의 틈을 **문 하나로** 없애는 쪽.
 - [49 INSERT](../49-insert-multi-row-and-insert-select/) · [51 DELETE 와 TRUNCATE](../51-delete-and-truncate/) — MySQL 의 `TRUNCATE` 도 암묵 커밋이다.
 

@@ -90,7 +90,7 @@ XmlBeanDefinitionReader                    검증 모드를 정해야 파서를 
 ```
 
 왼쪽은 누가 부르는가, 오른쪽은 그 단계가 정하는 것이다.\
-갈래가 갈리는 지점은 두 곳뿐이고, 검출기가 내놓는 정수 하나가 아래쪽 갈래를 전부 결정한다.
+갈래가 달라지는 지점은 두 곳뿐이고, 검출기가 내놓는 정수 하나가 아래쪽 갈래를 전부 결정한다.
 
 ```java
 protected int getValidationModeForResource(Resource resource) {
@@ -377,7 +377,7 @@ private boolean hasDoctype(String content) {
 4행 이후는 읽히지도 않는다.\
 결과는 `VALIDATION_DTD`다.
 
-같은 3행에서 수정 전과 수정 후가 어떻게 갈리는지를 나란히 놓으면 이렇다.
+같은 3행에서 수정 전과 수정 후가 어떻게 달라지는지를 나란히 놓으면 이렇다.
 
 ```text
  3행: \tSee the DOCTYPE notes for legacy configs   (마커 없음, inComment = true)

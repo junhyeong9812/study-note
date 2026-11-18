@@ -190,7 +190,7 @@ ex.01b.ts(14,35): error TS1294: This syntax is not allowed when 'erasableSyntaxO
 
 - `enum Color` → 방출에 `var Color;` + IIFE 4줄. **런타임 객체가 생긴다.**
 - `const enum Dir` → 방출에 **선언이 없다.** 대신 `Dir.Up` 을 쓴 자리에 `0 /* Dir.Up */` 이 박혔다.
-- ★ 그래서 「소거된다 / 안 된다」 **둘로 안 갈린다** — 세 부류다.
+- ★ 그래서 「소거된다 / 안 된다」 **둘로 안 달라진다** — 세 부류다.
 
 ```text
   ① 통째로 사라진다        : type · interface · 표기 · as · satisfies · import type
@@ -277,8 +277,8 @@ console.log(s.area(), t.area());
 - `import { Shape, Circle }` 에서 **`Shape` 만 빠졌다.** 타입으로만 쓰인 이름이라 소거됐다.
 - `import type { Shape as Shape2 }` 는 **줄째로** 사라졌다 — 애초에 값을 안 가져오겠다고 적은 것이다.
 - `const t: Shape2 = s;` 는 `const t = s;` 가 됐다.
-- ★ **이 판의 기본 설정에서는 `import type` 을 안 써도 같은 JS 가 나온다.** `import type` 의 값은 방출을 바꾸는 게 아니라 **의도를 못 박는 것**이다.
-- ★★ 단 `verbatimModuleSyntax` 를 켜면 갈린다 — 타입 이름이 import 목록에 **그대로 남고**, 그 파일은 실행에서 터진다. [**02번 주제**](../02-type-checking-vs-emit/)에서 `node` 로 터뜨려 본다.
+- ★ **이 버전의 기본 설정에서는 `import type` 을 안 써도 같은 JS 가 나온다.** `import type` 의 값은 방출을 바꾸는 게 아니라 **의도를 못 박는 것**이다.
+- ★★ 단 `verbatimModuleSyntax` 를 켜면 달라진다 — 타입 이름이 import 목록에 **그대로 남고**, 그 파일은 실행에서 터진다. [**02번 주제**](../02-type-checking-vs-emit/)에서 `node` 로 터뜨려 본다.
 
 ### 7. ★★★ 기본값은 `TS1241` 로 거절 · 켜면 방출이 **길어지고** 첫 줄은 `호출: run`
 
@@ -348,7 +348,7 @@ console.log(new Svc().run(21));
 
 **왜 그런가**
 
-- 옵션 없이 던지면 이 판은 이 데코레이터를 **표준(TC39) 데코레이터로 읽는다.** 표준은 인자가 둘인데 이 함수는 셋이라 `TS1241` 이 났다.\
+- 옵션 없이 던지면 이 버전은 이 데코레이터를 **표준(TC39) 데코레이터로 읽는다.** 표준은 인자가 둘인데 이 함수는 셋이라 `TS1241` 이 났다.\
   진단 둘째 줄이 그 이유를 그대로 적는다 — 「The runtime will invoke the decorator with 2 arguments, but the decorator expects 3.」
 - `--experimentalDecorators` 를 켜면 통과하고, 방출 **맨 앞에 `__decorate` 헬퍼 여섯 줄**이 붙는다 — 원본에 없던 코드다.
 - 클래스 몸통에서 `@log` 가 빠지고 클래스 뒤에 `__decorate([log], Svc.prototype, "run", null);` 이 붙었다.
@@ -428,7 +428,7 @@ typeof 로 갈리는 것  : string number object undefined
 | 층 | 이 주제의 항목 |
 |---|---|
 | **언어 보장** | 타입 표기·`interface`·`type`·`as`·`satisfies` 는 **런타임 의미가 없다** · `enum`·`namespace`·매개변수 프로퍼티·레거시 데코레이터는 **JS 로 번역된다**(`TS1294` 다섯 건이 그 목록이다) · 타입 공간과 값 공간은 분리돼 있다(`TS2693`) |
-| **이 판(7.0.2)·이 옵션의 관찰** | `enum` 이 **IIFE + 역매핑**이라는 **정확한 모양** · `const enum` 이 `0 /* Dir.Up */` 으로 **주석까지 붙여** 인라인되는 것 · `__decorate` 헬퍼의 **본문 여섯 줄** · 클래스 필드가 `x;` 로 선언되는 것(`target` 기본 es2025 · `useDefineForClassFields` 기본 `true` 에 달렸다) |
+| **이 버전(7.0.2)·이 옵션의 관찰** | `enum` 이 **IIFE + 역매핑**이라는 **정확한 모양** · `const enum` 이 `0 /* Dir.Up */` 으로 **주석까지 붙여** 인라인되는 것 · `__decorate` 헬퍼의 **본문 여섯 줄** · 클래스 필드가 `x;` 로 선언되는 것(`target` 기본 es2025 · `useDefineForClassFields` 기본 `true` 에 달렸다) |
 | **설정에 달린 것** | `Shape` 가 import 목록에서 **지워지는 것** — `verbatimModuleSyntax` 가 꺼져 있을 때만이다 · 레거시 데코레이터가 통과하는 것 — `experimentalDecorators` 를 켰을 때만이다 |
 
 - ★ **「여러 번 돌려 같았다」는 보장이 아니다.** 방출 전문은 판과 옵션의 함수다. `target` 을 낮추면 클래스 필드 모양부터 바뀐다.
@@ -457,7 +457,7 @@ typeof 로 갈리는 것  : string number object undefined
 | 데코레이터(기본) | `tsc --noEmit ex.01f.ts` | exit 1 · `TS1241` 1건 |
 | 데코레이터(레거시) | `tsc --experimentalDecorators ex.01f.ts` 후 덤프 + 실행 | exit 0 · `__decorate` 헬퍼 6줄 · 실행 `호출: run` / `42` |
 
-**구현 의존 항목 — 판이 오르면 다시 돌릴 것**
+**구현 의존 항목 — 버전이 오르면 다시 돌릴 것**
 
 - `enum`·`namespace` 의 IIFE 모양, 매개변수 프로퍼티의 필드 방출 모양 — `target`·`useDefineForClassFields` 에 달렸다.
 - `const enum` 인라인의 **주석 형식**(`0 /* Dir.Up */`).
@@ -466,7 +466,7 @@ typeof 로 갈리는 것  : string number object undefined
 
 **안 돌려 본 것**
 
-- `target` 을 낮춘 방출(`--target es2015` 등) — 이 주제의 결론(무엇이 지워지나)은 `target` 과 무관하므로 생략했다. **모양**을 인용하는 자리에는 전부 「이 판의 관찰」로 표시했다.
+- `target` 을 낮춘 방출(`--target es2015` 등) — 이 주제의 결론(무엇이 지워지나)은 `target` 과 무관하므로 생략했다. **모양**을 인용하는 자리에는 전부 「이 버전의 관찰」로 표시했다.
 
 ## 실행 환경
 

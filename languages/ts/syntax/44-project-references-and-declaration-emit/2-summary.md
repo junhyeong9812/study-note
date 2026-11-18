@@ -13,7 +13,7 @@ Model name: 13th Gen Intel(R) Core(TM) i7-13700HX
 import "../lib/tsc.js";
 ```
 
-> ★★★ **본체 창 선언 — 이 주제의 본체는 「프로젝트 참조 격자」(`core` 의 `composite` 있음/없음 × `app` 의 `references` 있음/없음 × `tsc -b` / `tsc -p` × 두 판 — 칸마다 두 프로젝트를 새로 복사)이다.** 칸은 **진단 코드 · 종료 코드 · 생긴 `.js`/`.d.ts`** 셋이다.
+> ★★★ **핵심 창 선언 — 이 주제의 핵심은 「프로젝트 참조 격자」(`core` 의 `composite` 있음/없음 × `app` 의 `references` 있음/없음 × `tsc -b` / `tsc -p` × 두 판 — 칸마다 두 프로젝트를 새로 복사)이다.** 칸은 **진단 코드 · 종료 코드 · 생긴 `.js`/`.d.ts`** 셋이다.
 > ★★★ **제5의 상태 — 「`app` 이 `core` 의 무엇을 보나」를 `--traceResolution` 에 물었더니 `core/src/index.ts` 라고 답했다**(2절 ①). 같은 질문을 **`--explainFiles`**(프로그램에 실제로 든 파일)로 바꿔 묻자 **`core/dist/index.d.ts`** 였다(②). 그리고 **`.d.ts` 한 줄을 손으로 바꿔 `app` 이 속는지** 던져 확인했다(③). 해석 창은 **「어느 경로로 풀었나」만** 보고 **「그 자리를 무엇으로 바꿔 끼웠나」는 못 본다.**
 > ★★ **44 는 43 에서 온다.** [**43번 주제**](../43-remaining-tsconfig-choices/) 4절이 `incremental` 이 **바뀐 파일과 그 의존자만** 다시 방출하고, `declaration` 이 켜지면 **겉모습이 같은 변경의 의존자를 건너뛴다**는 것을 쟀다. 여기의 `tsc -b` 는 **그 규칙을 프로젝트 단위로** 올린 것이다(3절).
 > ★★ 선언 방출 자체 — **`--declaration` 은 적힌 타입은 그대로 옮기고 안 적힌 자리만 추론한다** — 는 [**37번 주제**](../37-writing-declaration-files/) 5절이 쟀다. 4절의 `isolatedDeclarations` 는 **그 「추론」을 금지**하는 스위치다.
@@ -21,16 +21,16 @@ import "../lib/tsc.js";
 > ★ 소스 펜스 첫 줄 `// 파일명`·`# 파일명` 은 대조용 배너다 — 실파일에는 없다. **진단의 행 번호는 그 줄을 뺀 기준**이다. `tsconfig.json` 은 두 개라 **경로째**(`===== 소스: p44/core/tsconfig.json =====`) 싣는다.
 > ★ 진단 문구에 박히는 절대 경로는 스크립트가 **작업 디렉토리 기준으로 줄인다**(`sed`) — 그 줄이 스크립트 소스에 보인다.
 
-## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
+## 이 문서에서 실행마다 달라지는 항목과 달라지지 않는 항목
 
 | | 무엇 | 왜 |
 |---|---|---|
-| **안 흔들린다** | 에러 코드(`TS####`)·`(행,열)` · 생긴 파일 목록 | 같은 입력·같은 설정이면 같다 |
-| **안 흔들린다** | ★★★ 격자의 칸과 마지막 줄의 **수** | 스크립트가 세어 찍는다 |
-| **안 흔들린다** | ★★ 3절 빌드 로그의 **판정 줄** | 시각 머리는 지웠고 mtime 은 고정했다 — ★ 고정 없이 돌린 탐색에서는 **세 번 돌려 md5 가 셋 다 달랐다**(흔들리는 판이라 블록으로 싣지 않았다) |
+| **달라지지 않는다** | 에러 코드(`TS####`)·`(행,열)` · 생긴 파일 목록 | 같은 입력·같은 설정이면 같다 |
+| **달라지지 않는다** | ★★★ 격자의 칸과 마지막 줄의 **수** | 스크립트가 세어 찍는다 |
+| **달라지지 않는다** | ★★ 3절 빌드 로그의 **판정 줄** | 시각 머리는 지웠고 mtime 은 고정했다 — ★ 고정 없이 돌린 탐색에서는 **세 번 돌려 md5 가 셋 다 달랐다**(실행마다 달라지는 판이라 블록으로 싣지 않았다) |
 | **판에 매인다** | ★ 종료 코드 — `tsc -b` 의 `TS6059` 칸이 7.0.2 `2` · 5.9.3 `1` | 결론의 일부다(1절) |
 | **판에 매인다** | ★★ `isolatedDeclarations` 의 진단 **코드와 자리** — 7.0.2 `TS9013` · 5.9.3 `TS9007`/`TS9008` | 4절 |
-| **★ 부적용 — 시간** | 「참조로 쪼개면 빌드가 빨라진다」 | **재지 않았다** — 이 문서는 **무엇을 다시 짓나**만 센다 |
+| **★ 해당 없음 — 시간** | 「참조로 쪼개면 빌드가 빨라진다」 | **재지 않았다** — 이 문서는 **무엇을 다시 짓나**만 센다 |
 
 ## 한눈에 — 쉽게 말하면
 
@@ -71,13 +71,13 @@ import "../lib/tsc.js";
 
 | 창 | 무엇을 보여 주나 | 성질 | 이 주제에서 |
 |---|---|---|---|
-| ★★★ **참조 격자** | `composite` × `references` × `-b`/`-p` × 두 판 — 진단 · exit · 생긴 파일 | 칸마다 세 값 | **본체**(1절) |
+| ★★★ **참조 격자** | `composite` × `references` × `-b`/`-p` × 두 판 — 진단 · exit · 생긴 파일 | 칸마다 세 값 | **핵심**(1절) |
 | ★★ **해석 창 `--traceResolution`** | import 가 **어느 파일로 풀렸나** | 로그 한 줄 | 2절 ① — `core/src/index.ts` |
 | ★★★ **프로그램 창 `--explainFiles`** | 프로그램에 **실제로 든 파일**과 그 까닭 | 파일 목록 | 2절 ② — **제5의 상태**(해석 창이 못 보는 것) |
 | ★★ **빌드 로그 `tsc -b --verbose`** | 프로젝트마다 「최신인가 · 왜」 | 판정 줄 | 3절 — 시간이 아니라 **판정 문구** |
 | ★★ **`isolatedDeclarations` 격자** | export 꼴 열하나 × 세 판 | 진단(행:코드) | 4절 |
 | ★ **5창 — `.d.ts`** | 적은 판과 안 적은 판의 `.d.ts` | 방출물 | 4절 끝 — 37편 인용 |
-| ★ **부적용 — 시간** | 빌드가 빨라지나 | — | 45편 |
+| ★ **해당 없음 — 시간** | 빌드가 빨라지나 | — | 45편 |
 
 비용 — 격자 16칸 + `-b` 자리 · `--dry` + 진단 전문 셋 + `rootDir` 없는 한 쌍 · 무엇을 보나 두 판 × 셋 · 빌드 로그 두 판 × 여섯 단계 · `isolatedDeclarations` 열두 행 × 세 판 + 전문 · `.d.ts` 한 쌍.
 
@@ -204,7 +204,7 @@ composite  references   명령 판    진단         exit  생긴 파일
 - ★★★ **같은 설정인데 `tsc -p app` 이면 `TS6305`** — `core` 를 **안 짓는다.** 참조된 `core/dist/index.d.ts` 가 없으니 「아직 안 지어졌다」고 한다.
 - ★★★ **`composite` 없이 참조하면 `TS6306`** — `-b` 도 `-p` 도. ★ 그런데 **`-b` 칸에는 `core/dist/index.js` 가 생겼다** — 공장장은 `core` 를 **짓기는 짓고**(`.d.ts` 없이) `app` 에서 멈췄다.
 - ★★★ **`references` 가 없으면 `TS6059`** — `composite` 와 무관하다. `app` 이 `core/src/index.ts` 를 **자기 프로그램으로 끌어와** `rootDir: src` 밖이라고 막는다. `-b` 도 `core` 를 **짓지 않는다**(참조가 없으니 모른다).
-- ★★ **두 판이 갈린 칸 `2 / 8`** — 둘 다 `TS6059` 의 `tsc -b` 칸이고 **종료 코드만** 다르다(7.0.2 `2` · 5.9.3 `1`). 진단 코드와 생긴 파일은 16칸 모두 같다.
+- ★★ **두 버전이 달라진 항목 `2 / 8`** — 둘 다 `TS6059` 의 `tsc -b` 칸이고 **종료 코드만** 다르다(7.0.2 `2` · 5.9.3 `1`). 진단 코드와 생긴 파일은 16칸 모두 같다.
 
 진단 전문 — 격자가 코드만 찍은 셋.
 
@@ -253,7 +253,7 @@ app/src/main.ts(1,21): error TS6059: File 'core/src/index.ts' is not under 'root
   composite ✗ references ✗   TS6059                          TS6059
 ```
 
-★ `app` 에 `rootDir` 를 **안 적고** 참조도 없으면 — 판이 갈린다.
+★ `app` 에 `rootDir` 를 **안 적고** 참조도 없으면 — 판이 달라진다.
 
 ```bash
 # ts42b-norootdir44.sh
@@ -348,7 +348,7 @@ app/src/main.ts(2,17): error TS2345: Argument of type 'number' is not assignable
 - ★★★ **① 해석 창** — import `../../core/src/index` 는 **`core/src/index.ts`** 로 풀렸다. 여기까지만 보면 `app` 이 **소스**를 보는 것 같다.
 - ★★★ **② 프로그램 창** — 프로그램에 든 것은 **`core/dist/index.d.ts`** 다. 까닭 두 줄 — 「Imported via "../../core/src/index" from file 'app/src/main.ts'」 · **「File is output of project reference source 'core/src/index.ts'」**. 풀린 `.ts` 자리에 **그 출력 `.d.ts` 를 끼웠다.**
 - ★★★ **③ `.d.ts` 한 줄을 `(a: string, b: string)` 으로 바꾸자** `app` 이 **`TS2345`**(「Argument of type 'number' is not assignable to parameter of type 'string'.」). `core/src/index.ts` 는 여전히 `number` 인데 — **`app` 은 `.d.ts` 에 속았다.** 이것이 「`.d.ts` 를 본다」의 행동 증거다.
-- ★ 두 판이 **들여쓰기(3칸 · 2칸)** 말고 한 글자도 같다.
+- ★ 두 버전이 **들여쓰기(3칸 · 2칸)** 말고 한 글자도 같다.
 
 ```text
   같은 import — 창 둘이 다른 답
@@ -478,7 +478,7 @@ echo "두 판의 판정 줄이 한 글자도 같은 단계 $same / 6"
 - ★★★ **4 `core` 서명까지**(매개변수 `c = 0` 추가) — `app` 도 「is older than input 'core'」 → **다시 짓는다.**
 - ★★★ **5 `core/dist` 만 지움**(`.tsbuildinfo` 는 남김) — **둘 다 「up to date」, `exit 0`** — 그리고 **`core/dist/index.d.ts` 가 없다.** 공장장은 **일지만 보고** 창고가 빈 것을 모른다.
 - ★★ **6 `--clean` 뒤** — 일지까지 지워져 1단계처럼 **처음부터** 짓는다.
-- ★★ 마지막 줄 — **두 판의 판정 줄이 한 글자도 같은 단계 `6 / 6`**.
+- ★★ 마지막 줄 — **두 버전의 판정 줄이 한 글자도 같은 단계 `6 / 6`**.
 
 ```text
   core 를 바꿨을 때 — app 은 무엇을 하나
@@ -637,11 +637,11 @@ iso44b.ts  설정:TS5069 설정:TS5069 설정:TS5023 (--declaration 없이)
 - ★★★ **막힌 꼴** — 반환 타입을 안 적은 함수(`n * 2`) · `[1, 2]`(`TS9017` — 「Only const arrays can be inferred」) · 호출 결과 `two()`(`TS9010`) · 화살표 함수(`TS9007`) · 메서드 · `export default make()`(`TS9037`).
 - ★★★ **통과한 꼴** — 반환 타입을 **적은** 함수 · **`return 1`**(리터럴이라 보고 안다) · `const c = 10` · **`[1, 2] as const`** · **`export` 만 적고 안쪽 헬퍼는 안 적은 것**(`iso44j`).
 - ★★★ **`iso44j` 가 급소다** — 안쪽 `inner` 는 타입이 안 적혔어도 **export 되지 않으니** `.d.ts` 에 안 나온다. `isolatedDeclarations` 가 요구하는 것은 **공개 표면**뿐이다.
-- ★★★ **판이 갈린 행 `2 / 12`** — `iso44a`·`iso44h`. 7.0.2 는 **`TS9013`**(식 자리), 5.9.3 은 **`TS9007`/`TS9008`**(함수·메서드 이름 자리). 막는 **꼴은 같고 진단 코드와 자리가 다르다.**
+- ★★★ **판이 달라진 행 `2 / 12`** — `iso44a`·`iso44h`. 7.0.2 는 **`TS9013`**(식 자리), 5.9.3 은 **`TS9007`/`TS9008`**(함수·메서드 이름 자리). 막는 **꼴은 같고 진단 코드와 자리가 다르다.**
 - ★★ **`--declaration` 없이 주면 `TS5069`**(두 판) — 「cannot be specified without specifying option 'declaration' or option 'composite'」.
 - ★★ **4.9.5 는 열두 행 전부 `TS5023`** — 옵션을 모른다(README 의 「5.5」와 어긋나지 않는다).
 
-진단 전문 — 갈린 두 행.
+진단 전문 — 달라진 두 행.
 
 ```text
 ===== tsc --pretty false --noEmit --declaration --isolatedDeclarations iso44a.ts iso44h.ts ; 이어서 "$TSC_OLD" 로 같은 것 (sh exit=0) =====
@@ -693,7 +693,7 @@ export declare function f(n: number): number;
   "isolatedDeclarations": true (+ declaration)  공개 표면의 추론을 금지한다               (4절)
 ```
 
-**금지 사례** — 이 주제에서 던져 받은 것이다.
+**금지 사례** — 이 주제에서 실행해 받은 것이다.
 
 | 쓴 꼴 | 진단 | 어느 절 |
 |---|---|---|
@@ -788,5 +788,5 @@ export declare function f(n: number): number;
 ## 실행 환경
 
 **기준 소스** — [Handbook — Project References](https://www.typescriptlang.org/docs/handbook/project-references.html) · [TSConfig — `composite`](https://www.typescriptlang.org/tsconfig/#composite) · [`isolatedDeclarations`](https://www.typescriptlang.org/tsconfig/#isolatedDeclarations).
-★ 위는 **자리 안내용 링크**다 — 이 배치는 외부 네트워크를 쓰지 않아 **열어서 문장을 대조하지 못했다.** 본문의 사실은 **전부 직접 던져 받은 진단·빌드 로그·생긴 파일 목록**에만 세운다. `isolatedDeclarations` 가 **5.5** 부터라는 README 의 문장은 「4.9.5 에 없다 · 5.9.3 에 있다」까지만 확인했다(4절).
+★ 위는 **자리 안내용 링크**다 — 이 배치는 외부 네트워크를 쓰지 않아 **열어서 문장을 대조하지 못했다.** 본문의 사실은 **전부 직접 실행해 받은 진단·빌드 로그·생긴 파일 목록**에만 세운다. `isolatedDeclarations` 가 **5.5** 부터라는 README 의 문장은 「4.9.5 에 없다 · 5.9.3 에 있다」까지만 확인했다(4절).
 **실행 검증** — 본판은 맨 위 블록이다. 판 비교에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 5.9.3 · 4.9.5** 를 **읽기만** 해서 썼다 — 환경변수 **`TSC_OLD`·`TSC_49`**.

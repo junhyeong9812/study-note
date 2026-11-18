@@ -99,7 +99,7 @@
   background: border-box padding-box red   border-box   padding-box   ← 둘이면 순서대로
 ```
 
-- `position` 과 `size` 는 **`/` 로 갈린다.** `/` 없이 `40px 30px` 을 더 적으면 위치로 읽힌다.
+- `position` 과 `size` 는 **`/` 로 나뉜다.** `/` 없이 `40px 30px` 을 더 적으면 위치로 읽힌다.
 - **`position-x`/`position-y` 는 롱핸드가 따로 있다.** `background-position` 은 그 둘의 단축이다.
 
 비용 — 단축의 편리함 값이 **「안 적은 것이 리셋된다」** 는 규칙이다. 미디어 쿼리 안에서 한 조각만 바꾸려면 **롱핸드로 적어야 한다.**
@@ -261,7 +261,7 @@
 
 비용 — `cover` 는 **중요한 부분이 잘릴 수 있다.** 사람 얼굴이 든 이미지면 `background-position` 을 같이 조정해야 한다.
 
-### (6) `background-repeat` — `space` 와 `round` 가 갈리는 자리
+### (6) `background-repeat` — `space` 와 `round` 가 달라지는 자리
 
 **언제 쓰나** — 타일이 상자 폭에 딱 안 떨어질 때. 넷의 차이가 여기서만 보인다.
 
@@ -367,7 +367,7 @@
    ↑ 기본 0% 0% (왼쪽 위)            ↑ 기본 50% 50% (가운데)  ★ 기본값이 다르다
 ```
 
-같은 **16×8 이미지**를 같은 **120×120 칸**에 넣고, 한쪽은 `<img>` 에 `object-fit`, 한쪽은 `<div>` 에 `background-size` 로 던졌다.
+같은 **16×8 이미지**를 같은 **120×120 칸**에 넣고, 한쪽은 `<img>` 에 `object-fit`, 한쪽은 `<div>` 에 `background-size` 로 실행했다.
 
 ```text
   값의 이름이 같아도 결과가 다르다 — 기본 정렬이 다르기 때문이다
@@ -554,7 +554,7 @@ background: url(a) 10px 20px 40px 30px;    /* / 가 없으면 size 가 아니라
 | `-webkit-background-clip` 이 **같은 속성의 별칭**인 것 | **구현(Chrome)** | 실측: 둘 다 계산값 `text`. **다른 엔진의 동작은 확인하지 못했다** |
 | `background-clip: text` 를 **쓸 수 있는가** | **구현 — Baseline `limited`** | Chrome 120 / Safari 14. Firefox 는 접두사 없는 형태 미지원(webstatus.dev) |
 | `background-attachment` 의 지원 | **구현 — Baseline `limited`** | webstatus.dev. **이 환경에서 모바일 동작은 확인하지 못했다** |
-| `scroll` 과 `local` 의 차이 | **못 잰 것** ★ | 한 장면 스크린샷으로는 **측정 방법 자체가 성립하지 않는다**. 요소 안을 실제로 스크롤해야 갈린다 |
+| `scroll` 과 `local` 의 차이 | **못 잰 것** ★ | 한 장면 스크린샷으로는 **측정 방법 자체가 성립하지 않는다**. 요소 안을 실제로 스크롤해야 달라진다 |
 
 ★ **「못 잰 것」은 「안 돌려 본 것」과 다르다.** `scroll` 대 `local` 은 던져서 픽셀까지 받았고(1 단위 차이로 같았다), **그 실험으로는 구분이 성립하지 않는다**는 것이 결과다.
 
@@ -610,7 +610,7 @@ background: url(a) 10px 20px 40px 30px;    /* / 가 없으면 size 가 아니라
 
 - **`background-repeat` 은 두 축을 따로 받는다.** `background-repeat: round space` 처럼 가로·세로에 다른 값을 줄 수 있다.
 - **`background-position-x`/`-y` 는 따로 있는 롱핸드**다(실측 — 단축이 그 둘로 분해됐다). 한 축만 바꾸고 싶을 때 쓴다.
-- **`background-blend-mode` 는 레이어끼리 섞는다** — [목록의 **48번 주제**](../48-blend-modes-and-isolation/)가 정본이다. 「누가 위인가」(여기)와 「어떻게 섞이나」(그쪽)가 갈린다.
+- **`background-blend-mode` 는 레이어끼리 섞는다** — [목록의 **48번 주제**](../48-blend-modes-and-isolation/)가 정본이다. 「누가 위인가」(여기)와 「어떻게 섞이나」(그쪽)가 달라진다.
 - **`object-fit` 은 `<iframe>`·`<embed>` 에도 정의돼 있다.** 흔히 `<img>`·`<video>` 로만 배우지만 대체 요소 전반의 규칙이다.
 - **`image-rendering: pixelated`** 는 작은 이미지를 크게 늘일 때 흐릿해지지 않게 한다 — 이 문서의 demo 가 16×8 이미지를 120px 로 키우면서 쓴 것이 그것이다.
 

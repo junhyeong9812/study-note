@@ -263,7 +263,7 @@ f/Ex.java:28: warning: [synchronization] attempt to synchronize on an instance o
 
 - **안쪽 블록에서 막히지 않는다.** 같은 스레드는 자기가 쥔 락에 다시 들어간다.
 - **`depth(5)` 는 `5` 를 반환한다.** 재진입이 없다면 이 재귀는 **자기 자신과 교착**한다.
-- **다른 스레드였다면 첫 줄에서 막힌다** — 그 스레드는 락을 안 쥐고 있으니까.
+- **다른 스레드였다면 첫 줄에서 막힌다** — 그 스레드는 락을 안 잡고 있으니까.
 - `Thread.holdsLock(o)` 은 각각 `false → true → true → true → false` 다.\
   **계수는 알려 주지 않는다** — 안쪽 블록을 나와도 아직 `true` 인 것이 그 증거다.
 
@@ -356,7 +356,7 @@ f/Ex.java:28: warning: [synchronization] attempt to synchronize on an instance o
 **왜 그런가**
 
 - **(A)와 (B) 둘 다 `IllegalMonitorStateException: current thread is not owner`** 다.\
-  **다른 객체의 락을 쥐고 있어도 소용없다** — 그 객체의 락이어야 한다.
+  **다른 객체의 락을 잡고 있어도 소용없다** — 그 객체의 락이어야 한다.
 - **`wait` 는 락을 놓고 `sleep` 은 안 놓는다.**\
   관측 방법이 실측 그대로다 — 상대가 300ms 동안 `wait`/`sleep` 하는 사이에 같은 락을 잡아 보고 **걸린 시간을 잰다.**\
   `wait` 는 **0 ms**, `sleep` 은 **250 ms** 였다.
@@ -426,7 +426,7 @@ wait 중                                    sleep 중
 - **아무 예외도 던지지 않는다.** 로그도, 스택트레이스도 없다. **멈춰 있는 것이 증상의 전부다.**
 - 두 스레드의 상태는 **`BLOCKED`** 다.
 - 밖에서 보는 표준 수단은 **스레드 덤프**(`jstack`)와 **`ThreadMXBean.findDeadlockedThreads()`** 다.\
-  `getLockName()`·`getLockOwnerName()` 이 **누가 무엇을 쥐고 누구를 기다리는지** 짝지어 준다.
+  `getLockName()`·`getLockOwnerName()` 이 **누가 무엇을 잡고 누구를 기다리는지** 짝지어 준다.
 - **순서를 맞추면 20/20 → 0/20** 이다. 고치는 법은 **락 순서 고정** 하나다.
 
 ```text
@@ -492,9 +492,9 @@ f/Ex.java:28: warning: [identity] attempt to synchronize on an instance of a val
 
 **왜 그런가**
 
-- **스택 최상단 프레임이 갈렸다** — 17 은 `Object.wait`, **21·25 는 `Object.wait0`**.\
+- **스택 최상단 프레임이 달라졌다** — 17 은 `Object.wait`, **21·25 는 `Object.wait0`**.\
   예외 이름과 메시지(`current thread is not owner`)는 셋 다 같았다.
-- **`javac` 린트 이름이 갈렸다** — 17·21 은 `[synchronization]`, **25 는 `[identity]`**.\
+- **`javac` 린트 이름이 달라졌다** — 17·21 은 `[synchronization]`, **25 는 `[identity]`**.\
   `-Xlint:synchronization` 을 CI 에 박아 뒀다면 25 에서 이름이 달라진다.
 - **경쟁 실험의 정답 횟수는 세 버전에서 달랐다.** 예를 들어 8스레드 × 10만 회의 `int++` 이\
   17 에서 14/20, 21 에서 13~18/20, **25 에서 20/20** 이었다.\
@@ -518,7 +518,7 @@ f/Ex.java:28: warning: [identity] attempt to synchronize on an instance of a val
 **(C) `synchronized (this) { httpClient.send(request); }`**
 
 - **락 밖으로 I/O 를 뺀다.** 락 안에서는 **메모리 상태만** 건드린다.
-- 근거: 9번 — 락을 쥔 채 자면 남이 250 ms 를 기다린다. 네트워크는 그보다 훨씬 오래 걸린다.
+- 근거: 9번 — 락을 잡은 채 자면 남이 250 ms 를 기다린다. 네트워크는 그보다 훨씬 오래 걸린다.
 - 가상 스레드에서는 **더 나쁘다** — 21 에서는 캐리어까지 붙잡는다([`../56-virtual-threads/`](../56-virtual-threads/)).
 
 **(D) `public final Object lock = new Object();`**
@@ -557,7 +557,7 @@ f/Ex.java:28: warning: [identity] attempt to synchronize on an instance of a val
 
 - **JMH 가 아니다.** 스레드를 직접 띄워 반복한 것이다. 워밍업·DCE 통제가 없다.
 - **머신 의존**이다 — 24코어 x86-64 Linux. 코어가 적으면 경쟁이 덜 드러난다.
-- **실행마다 흔들린다** — 같은 명령 1회차와 2회차가 `18/20 → 13/20` 이었다.
+- **실행마다 달라진다** — 같은 명령 1회차와 2회차가 `18/20 → 13/20` 이었다.
 - 이 문서의 정답률은 "**0 인가 아닌가**"의 근거이지 "**몇 %인가**"의 근거가 아니다.
 - ★ **「안 터졌다」를 안전의 근거로 쓰지 마라.** 25 에서 가장 센 조건이 20/20 정답이었다.
 

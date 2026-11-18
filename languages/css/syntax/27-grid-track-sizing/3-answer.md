@@ -308,7 +308,7 @@ min-content                    max-content
 ```
 
 - 한글은 글자 사이에서 줄바꿈이 되므로 `min-content` 가 **한 글자 폭**이 된다.
-- 그래서 같은 글자인데 트랙 폭이 12.891 대 25.766 으로 **정확히 두 배 가까이** 갈린다.
+- 그래서 같은 글자인데 트랙 폭이 12.891 대 25.766 으로 **정확히 두 배 가까이** 달라진다.
 
 **`auto` 트랙은**
 
@@ -388,7 +388,7 @@ min-content                    max-content
 | 칸 | 성격 |
 |---|---|
 | 계산값의 **직렬화 형태** (암묵 트랙 포함 여부·`0px` 표기·`[이름]` 표기) | 구현 관찰 — 버전이 오르면 다시 찍는다 |
-| `fr` 배분·`auto-fill` 개수 세는 식·`minmax` 최소 우선 | 명세 보장 — 안 흔들린다 |
+| `fr` 배분·`auto-fill` 개수 세는 식·`minmax` 최소 우선 | 명세 보장 — 달라지지 않는다 |
 | `12.8906px` 같은 **개별 px 값** | 폰트·창 크기에 딸린 값 — 재현되는 것은 숫자가 아니다 |
 
 **재현되는 것**
@@ -439,5 +439,5 @@ min-content                    max-content
 ## 실행 환경
 
 이 파일의 **모든 트랙 값은 Google Chrome 151.0.7922.173 headless 에서 실제로 렌더해 `getComputedStyle(el).gridTemplateColumns`(또는 `.gridTemplateRows`)로 읽은 값**이다.\
-항목의 자리는 같은 판에서 `getBoundingClientRect()` 로 **따로** 쟀다 — 트랙 정의와 항목 배치는 다른 질문이다.\
+항목의 자리는 같은 버전에서 `getBoundingClientRect()` 로 **따로** 쟀다 — 트랙 정의와 항목 배치는 다른 질문이다.\
 규칙은 [CSS Grid Layout Level 1](https://drafts.csswg.org/css-grid-1/) 과 [CSS Box Sizing Level 3](https://drafts.csswg.org/css-sizing-3/) 으로 접지했다.

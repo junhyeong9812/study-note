@@ -125,7 +125,7 @@ LockRelationOid(Oid relid, LOCKMODE lockmode)
  L137    MarkLockClear(locallock)       lockCleared = true (lock.c L1919)
 ```
 
-잠근 뒤에 무효화 메시지를 받는 순서가 핵심이다. 잠금을 쥔 다음에는 이 테이블의 정의를 바꾸려는 쪽(AccessExclusiveLock 등)이 들어올 수 없으므로, 그 시점에 흡수한 메시지가 마지막 변경까지 다 담고 있다(L118-L133 주석).
+잠근 뒤에 무효화 메시지를 받는 순서가 핵심이다. 잠금을 잡은 다음에는 이 테이블의 정의를 바꾸려는 쪽(AccessExclusiveLock 등)이 들어올 수 없으므로, 그 시점에 흡수한 메시지가 마지막 변경까지 다 담고 있다(L118-L133 주석).
 
 ```text
  같은 트랜잭션에서 같은 테이블을 두 번 여는 경우

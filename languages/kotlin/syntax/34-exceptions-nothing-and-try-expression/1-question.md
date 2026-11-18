@@ -249,7 +249,7 @@ fun main() {
 선행은 [06번 주제](../06-when-expression/)다 — `when` 이 식일 때 가지에 `throw` 를 놓는 자리를 거기서 봤다.
 
 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
-이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5(`javac`·`java`·`javap`)** 에서 실제로 던져 받은 것이다.
+이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5(`javac`·`java`·`javap`)** 에서 실제로 실행해 받은 것이다.
 
 ## 복습 기록
 

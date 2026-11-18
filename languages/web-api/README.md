@@ -14,7 +14,7 @@
 
 **`DOM`** 은 문서 트리를 읽고 쓰는 표면이다. 조회·삽입·속성이 앞에 오고, 그 뒤에 **스크립트가 스타일과 기하를 읽는 자리**(`08`~`09`)를 붙였다. 이 둘을 붙여 놓은 이유는 하나다 — 그 다음 주제가 **레이아웃 스래싱**(`10`)이기 때문이다. 읽기와 쓰기를 교차시키면 브라우저가 프레임마다 레이아웃을 강제로 다시 돌린다는 사실은 「동작은 하는데 조용히 느려진다」의 대표 원인이고, `getComputedStyle`·`getBoundingClientRect` 가 무엇을 트리거하는지 모르면 진단이 불가능하다. 그래서 이 갈래에서 유일하게 **API 가 아니라 실패 모드 자체를 주제로 세운 자리**다.
 
-**`이벤트`** 는 전파 모델 하나만 제대로 세우면 나머지가 따라온다. 전파 3단계(`16`) → 멈추는 두 방법의 구분(`17`) → 위임(`18`) → `passive`(`19`) 순서가 그 뼈대다. 여기서 갈리는 것은 문법이 아니라 **누가 먼저 불리고, 무엇을 막았고, 리스너가 언제까지 살아 있는가**다.
+**`이벤트`** 는 전파 모델 하나만 제대로 세우면 나머지가 따라온다. 전파 3단계(`16`) → 멈추는 두 방법의 구분(`17`) → 위임(`18`) → `passive`(`19`) 순서가 그 뼈대다. 여기서 달라지는 것은 문법이 아니라 **누가 먼저 불리고, 무엇을 막았고, 리스너가 언제까지 살아 있는가**다.
 
 **`네트워크`** 는 `fetch` 하나에서 출발해 **본문·취소·출처·자격 증명**으로 퍼진다. CORS(`28`)를 「에러 메시지」가 아니라 **브라우저가 응답 읽기를 막는 규칙**으로 세운 것이 이 갈래의 핵심이다.
 
@@ -28,9 +28,9 @@
 
 | # | 주제 | 분류 | 무엇을 인출하게 되나 | 선행 | 기존 주제 | 렌더 | 우선 |
 |---|------|------|----------------------|------|-----------|------|------|
-| 01 | [문서와 노드 트리](01-document-and-node-tree/) — `Node`/`Element`/`Text`/`Comment`·`childNodes` 대 `children`·탐색 | DOM | 노드와 요소를 구분해 두 컬렉션이 갈리는 지점을 설명하고, 소스의 줄바꿈이 어디서 텍스트 노드가 되는지 예측할 수 있다 | HTML 05 | — | 도움 | A |
+| 01 | [문서와 노드 트리](01-document-and-node-tree/) — `Node`/`Element`/`Text`/`Comment`·`childNodes` 대 `children`·탐색 | DOM | 노드와 요소를 구분해 두 컬렉션이 달라지는 지점을 설명하고, 소스의 줄바꿈이 어디서 텍스트 노드가 되는지 예측할 수 있다 | HTML 05 | — | 도움 | A |
 | 02 | [요소 조회](02-element-queries-and-live-collections/) — `querySelector` 계열·`getElementById`/`getElementsBy*` 와 라이브 대 정적 컬렉션 | DOM | 조회 뒤에 노드를 붙였을 때 결과가 따라 변하는 쪽과 아닌 쪽을 판정하고, 라이브 컬렉션을 순회하며 삭제할 때 나는 사고를 예측할 수 있다 | 01 · CSS 08 | — | 도움 | A |
-| 03 | [노드 생성·삽입·이동·제거](03-node-creation-insertion-removal/) — `createElement`·`append`/`prepend`/`before`/`after`·`remove` | DOM | 이미 트리에 있는 노드를 다시 삽입하면 복사가 아니라 **이동**이라는 것과 `append` 와 `appendChild` 가 갈리는 지점을 설명할 수 있다 | 01 | — | 필수 | A |
+| 03 | [노드 생성·삽입·이동·제거](03-node-creation-insertion-removal/) — `createElement`·`append`/`prepend`/`before`/`after`·`remove` | DOM | 이미 트리에 있는 노드를 다시 삽입하면 복사가 아니라 **이동**이라는 것과 `append` 와 `appendChild` 가 달라지는 지점을 설명할 수 있다 | 01 | — | 필수 | A |
 | 04 | [`textContent` 대 `innerHTML` 대 `innerText`](04-textcontent-innerhtml-innertext/) — 파싱·비용·XSS | DOM | 세 프로퍼티가 각각 무엇을 읽고 쓰는지 구분하고, `innerHTML` 이 왜 신뢰할 수 없는 문자열에 쓰면 안 되는 표면인지 공격 경로로 설명할 수 있다 | 03 | [`../../cs/foundations/security/`](../../cs/foundations/security/) | 필수 | A |
 | 05 | [`DocumentFragment` 와 `<template>` 복제](05-documentfragment-and-template/) — 일괄 삽입 | DOM | 조각에 모아 한 번에 붙이는 것이 무엇을 줄이는지 설명하고 `template.content` 를 `cloneNode(true)` 로 찍어 쓰는 형태를 설계할 수 있다 | 03 · HTML 10 | — | 도움 | A |
 | 06 | [속성(attribute) 대 성질(property)](06-attribute-vs-property/) — `getAttribute`/`setAttribute` 와 IDL 프로퍼티의 반영 | DOM | `input.value` 를 바꿔도 `value` 속성이 그대로인 이유를 설명하고 `checked`·`href`·`class` 처럼 반영 규칙이 제각각인 것을 판정할 수 있다 | 01 · HTML 02 | — | 도움 | A |
@@ -41,7 +41,7 @@
 | 11 | 스크롤 제어 — `scrollTo`/`scrollBy`/`scrollIntoView`·스크롤 컨테이너 찾기·위치 복원 | DOM | 실제로 스크롤되는 요소가 누구인지 찾아내고, 복원이 이미지 로딩과 경합해 튀는 자리를 예측할 수 있다 | 09 · CSS 23 | — | 필수 | B |
 | 12 | Shadow DOM — `attachShadow`·캡슐화 경계·슬롯 할당·`::part` | DOM | 그림자 경계가 선택자·스타일·이벤트에 각각 무엇을 하는지 설명하고 `open` 과 `closed` 가 실제로 무엇을 막는지 판단할 수 있다 | 01 · HTML 10 | [`../../history/web/05-웹플랫폼-API.md`](../../history/web/05-웹플랫폼-API.md) §6 | 필수 | B |
 | 13 | 커스텀 요소 수명주기 — `customElements.define`·`connected`/`disconnected`/`attributeChanged`·업그레이드 | DOM | 파서가 먼저 만든 요소가 나중 정의로 「업그레이드」되는 순서를 추적하고, 생성자에서 하면 안 되는 일을 판정할 수 있다 | 12 · JS 16 | [`../../history/web/05-웹플랫폼-API.md`](../../history/web/05-웹플랫폼-API.md) §6 | 도움 | B |
-| 14 | `dialog`·`popover` 의 스크립트 제어 — `showModal()`·`togglePopover()`·최상위 레이어·포커스 | DOM | `show()` 와 `showModal()` 이 포커스·배경 비활성·`::backdrop` 에서 갈리는 것과 팝오버의 가벼운 닫기가 언제 일어나는지 예측할 수 있다 | 03 · HTML 47, HTML 48 | — | 필수 | B |
+| 14 | `dialog`·`popover` 의 스크립트 제어 — `showModal()`·`togglePopover()`·최상위 레이어·포커스 | DOM | `show()` 와 `showModal()` 이 포커스·배경 비활성·`::backdrop` 에서 달라지는 것과 팝오버의 가벼운 닫기가 언제 일어나는지 예측할 수 있다 | 03 · HTML 47, HTML 48 | — | 필수 | B |
 | 15 | 리스너 등록과 해제 — `addEventListener` 옵션 객체·`removeEventListener` 의 동일성 조건·`handleEvent` | 이벤트 | 익명 함수로 등록한 리스너를 왜 제거할 수 없는지 설명하고 객체를 리스너로 넘기는 형태를 쓸 수 있다 | HTML 41 | — | 도움 | A |
 | 16 | 전파 3단계 — 캡처·타깃·버블과 `target` 대 `currentTarget` | 이벤트 | 중첩 구조에서 리스너 호출 순서를 적고, 버블하지 않는 이벤트(`focus`·`load`)를 어떻게 잡는지 판정할 수 있다 | 15 | — | 필수 | A |
 | 17 | `stopPropagation` 대 `preventDefault` — 전파를 멈추는 것과 기본 동작을 막는 것 | 이벤트 | 둘이 서로 다른 일을 한다는 것을 링크·폼·체크박스로 설명하고 `stopImmediatePropagation`·`cancelable`·`defaultPrevented` 를 판정할 수 있다 | 16 | — | 필수 | A |
@@ -142,7 +142,7 @@
 | Web Crypto(`crypto.subtle`) | 해시·HMAC·서명의 **의미**는 [`foundations/security/`](../../cs/foundations/security/) 에 이미 있다. 브라우저 표면만 따로 세울 만큼 크지 않다 |
 | Trusted Types·Sanitizer API | XSS 방어의 다음 수단이지만 Sanitizer 는 Baseline **limited**, Trusted Types 는 **newly**(2026-02-24)다. `04`·`58` 안에서 한 줄씩만 |
 | Navigation API(`navigation.navigate`) | Baseline **newly**(2026-01-13). `46` 이 History API 를 다루고, 후계 API 라는 사실만 언급 |
-| `URLPattern`·`WebTransport`·`fetchLater`·Cookie Store·Scoped custom element registries | newly 이거나 limited. 「지금 배워 쓰는 표면」 기준선 밖이다(아래 지원 표에 근거) |
+| `URLPattern`·`WebTransport`·`fetchLater`·Cookie Store·Scoped custom element registries | newly 이거나 limited. 「지금 배워 쓰는 표면」 베이스라인 밖이다(아래 지원 표에 근거) |
 | Origin Private File System·File System Access | 저장 갈래를 한 번 더 키우는 데다 쓰기 권한 모델이 별개다. `31` 의 파일 읽기까지만 |
 | 브라우저 확장 API·Node 런타임 API | 이 플랫폼이 아니다 |
 | 프레임워크의 가상 DOM·상태 관리 | 라이브러리 층이다. [`history/js/06-프레임워크-진화.md`](../../history/js/06-프레임워크-진화.md) 의 몫 |
@@ -152,7 +152,7 @@
 
 웹 플랫폼 API 에는 버전이 없다. 대부분 **Living Standard** 이고, 기준은 **브라우저 Baseline** 하나다.
 
-- **기준선**: Baseline **widely available**(주요 엔진 전부에서 30개월 이상) 인 것을 「그냥 써도 되는 것」으로 본다.
+- **베이스라인**: Baseline **widely available**(주요 엔진 전부에서 30개월 이상) 인 것을 「그냥 써도 되는 것」으로 본다.
 - **newly available** 인 것은 주제 이름·3파일에 「**Baseline newly, 저변 도달 시점 <날짜>**」를 명시한다.
 - **limited** 인 것은 원칙적으로 뺐고(위 표), 남긴 것은 그 사실과 어느 엔진이 없는지를 적는다.
 

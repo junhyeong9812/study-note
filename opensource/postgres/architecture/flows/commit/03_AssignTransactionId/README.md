@@ -71,7 +71,7 @@ AssignTransactionId(TransactionState s)
 }
 ```
 
-번호를 실제로 만드는 쪽이다. `XidGenLock` 을 쥔 채로 pg_xact 를 늘리고, 카운터를 올리고, **잠금을 놓기 전에** 자기 PGPROC 에 XID 를 싣는다.
+번호를 실제로 만드는 쪽이다. `XidGenLock` 을 잡은 채로 pg_xact 를 늘리고, 카운터를 올리고, **잠금을 놓기 전에** 자기 PGPROC 에 XID 를 싣는다.
 
 `access` / `transam` / `varsup.c` L195-L282 ([GitHub](https://github.com/postgres/postgres/blob/724edf9bde9d356724ad384a2e196edc3c9f80f7/src/backend/access/transam/varsup.c#L195-L282))
 

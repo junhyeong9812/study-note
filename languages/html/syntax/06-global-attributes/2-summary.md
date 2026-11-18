@@ -1,6 +1,6 @@
 # html/syntax/06 — 전역 속성: `id`/`class`/`title`/`hidden`/`data-*`/`contenteditable`/`translate` — 정리 (힌트)
 
-**이 판의 Chrome**
+**이 버전의 Chrome**
 
 ```text
 ===== google-chrome --version =====
@@ -8,20 +8,20 @@ Google Chrome 151.0.7922.173
 (exit 0)
 ```
 
-### 흔들리는 칸 / 안 흔들리는 칸
+### 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| **흔들린다** | Chrome 판 번호 · 실행 시각 | 판이 오르면 바뀐다 |
-| **흔들린다** | demo 의 높이 픽셀 | 글꼴·창 폭에 달렸다 |
-| **안 흔들린다** | **속성 이름과 값 · `attributes` 목록의 순서** | 파싱 알고리즘이 명세에 있다 |
-| **안 흔들린다** | `dataset` 키 · `classList` 목록 · `.hidden`/`.translate`/`.contentEditable` 값 | 반영 규칙이 명세에 있다 |
-| **안 흔들린다** | 던진 대입의 예외 이름(`SyntaxError`) | 〃 |
-| **안 흔들린다** | 블록의 `(exit N)` | 파서는 실패하지 않는다([03번 주제](../03-parser-and-error-recovery/2-summary.md)) |
+| **실행마다 달라진다** | Chrome 판 번호 · 실행 시각 | 버전이 오르면 바뀐다 |
+| **실행마다 달라진다** | demo 의 높이 픽셀 | 글꼴·창 폭에 달렸다 |
+| **달라지지 않는다** | **속성 이름과 값 · `attributes` 목록의 순서** | 파싱 알고리즘이 명세에 있다 |
+| **달라지지 않는다** | `dataset` 키 · `classList` 목록 · `.hidden`/`.translate`/`.contentEditable` 값 | 반영 규칙이 명세에 있다 |
+| **달라지지 않는다** | 던진 대입의 예외 이름(`SyntaxError`) | 〃 |
+| **달라지지 않는다** | 블록의 `(exit N)` | 파서는 실패하지 않는다([03번 주제](../03-parser-and-error-recovery/2-summary.md)) |
 
 ## 한눈에 — 쉽게 말하면
 
-**★ 전역 속성은 「어느 요소에나 붙는 스티커」다. 그런데 스티커마다 「붙인 대로 읽히는 것」과 「브라우저가 다시 해석하는 것」이 갈린다.**
+**★ 전역 속성은 「어느 요소에나 붙는 스티커」다. 그런데 스티커마다 「붙인 대로 읽히는 것」과 「브라우저가 다시 해석하는 것」이 달라진다.**
 
 이삿짐 상자에 붙이는 스티커에 비유한다. 대응은 문서 끝까지 이것 하나로 고정한다.
 
@@ -201,7 +201,7 @@ typeof h1.hidden = boolean   typeof h4.hidden = string
 - **불리언 속성의 뜻은 「있으면 참, 없으면 거짓」이다.** 값은 안 본다 — `hidden="false"` 도 **숨긴다.**
 - **트리에는 내가 쓴 값이 그대로 남는다.** 창 ① 이 `hidden="false"` 를 보여 준다. **버려진 것이 아니라 안 읽힌 것**이다.
 - **`hidden` 없이 쓴 것은 `hidden=""` 로 직렬화된다** — 창 ① 의 첫 줄이 그렇다. [02번 주제](../02-elements-and-attributes/2-summary.md)의 불리언 속성 규칙 그대로다.
-- ★★ **`until-found` 만 갈린다.** `.hidden` 의 **타입이 boolean 에서 string 으로 바뀌고**, 숨기는 방법도 `display: none` 이 아니라 **`content-visibility: hidden`** 이다. 그래서 **상자는 남고 내용만 안 그려진다** — 브라우저의 「페이지에서 찾기」가 이것을 찾아내 펼칠 수 있게 하려는 것이다.
+- ★★ **`until-found` 만 달라진다.** `.hidden` 의 **타입이 boolean 에서 string 으로 바뀌고**, 숨기는 방법도 `display: none` 이 아니라 **`content-visibility: hidden`** 이다. 그래서 **상자는 남고 내용만 안 그려진다** — 브라우저의 「페이지에서 찾기」가 이것을 찾아내 펼칠 수 있게 하려는 것이다.
 - ★ **그러므로 `hidden` 은 순수한 불리언이 아니라 「열거 값이 하나 얹힌 불리언」이다.**
 
 ### (2) 창 ② — `id` 는 전역 이름을 만든다
@@ -852,13 +852,13 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 | **명세(WHATWG HTML)** | 속성의 뜻·반영 규칙·`data-*` 이름 규칙 | `hidden` 이 불리언인 것 · `dataset` 의 양방향 규칙 · `translate` 의 기본이 `yes` 인 것 |
 | **명세(파싱 알고리즘)** | 이름 소문자 접기 · 중복 속성 버리기 | `data-Key` → `data-key` · `CLASS`/`class` 에서 첫째가 남는 것 |
 | **구현(Blink)** | 명세 구현 + 숨기는 **방법** | `until-found` 를 `content-visibility: hidden` 으로 구현한 것 |
-| **이 판의 관찰** | Chrome 151 이 실제로 뱉은 것 | `display`·`content-visibility` 계산값 · `HTMLCollection` 타입 · `SyntaxError` 이름 |
+| **이 버전의 관찰** | Chrome 151 이 실제로 뱉은 것 | `display`·`content-visibility` 계산값 · `HTMLCollection` 타입 · `SyntaxError` 이름 |
 
 **도구가 못 보는 것**
 
 - **`translate` 가 실제로 하는 일.** 번역 엔진이 없어 **측정 수단 자체가 없다.** 잰 것은 `.translate` 가 답하는 값까지다.
 - **`title` 의 말풍선.** headless 에는 뜰 자리가 없다. 잰 것은 `.title` 문자열과 「`innerText` 에 안 섞인다」까지다.
-- **`contenteditable` 의 실제 편집.** 키 입력을 넣지 않았다 — `plaintext-only` 가 서식을 정말 막는지는 **안 던졌다.**
+- **`contenteditable` 의 실제 편집.** 키 입력을 넣지 않았다 — `plaintext-only` 가 서식을 정말 막는지는 **실행하지 않았다.**
 - **다른 엔진.** Chrome 하나뿐이라 이식성을 주장할 수 없다. 특히 **`until-found` 를 `content-visibility` 로 구현한 것은 Blink 의 선택**이고, 명세가 정한 것은 「찾기로 펼 수 있게 감춘다」는 **동작**이다.
 
 ## 언제 쓰고 언제 안 쓰나
@@ -911,4 +911,4 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 ★ **엔진은 Chrome 하나다.** 이 갈래는 **「이식성」을 주장하지 않는다.**
 **버전** — HTML 에는 언어 버전이 없다. 지원 상태는 **Baseline** 으로 읽는다. ★ 이 주제에서 **`hidden="until-found"` 와 `contenteditable="plaintext-only"` 둘만 최근 표면**이고 나머지는 20년 넘게 안정돼 있다.
 
-★★ **이 주제의 본체는 창 ② (프로브)다** — 속성은 **트리에 담긴 이름·값**과 **IDL 프로퍼티가 답하는 값**이 갈리는 자리이고, 그 둘은 직렬화로는 안 보인다. 창 ① 은 「소스의 이름이 트리에서 어떻게 바뀌었나」를 보일 때만 쓴다. 창 넷의 정의는 [01번](../01-document-skeleton/2-summary.md) 의 「이 갈래의 창」 절에 있다.
+★★ **이 주제의 핵심은 창 ② (프로브)다** — 속성은 **트리에 담긴 이름·값**과 **IDL 프로퍼티가 답하는 값**이 달라지는 자리이고, 그 둘은 직렬화로는 안 보인다. 창 ① 은 「소스의 이름이 트리에서 어떻게 바뀌었나」를 보일 때만 쓴다. 창 넷의 정의는 [01번](../01-document-skeleton/2-summary.md) 의 「이 갈래의 창」 절에 있다.

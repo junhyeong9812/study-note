@@ -223,7 +223,7 @@ rtl + text-align: left         0        left
 - `rtl + start` — **오른쪽**(x=160).
 - `rtl + left` — **왼쪽**(x=0).
 
-**`.c` 와 `.d` 가 갈리는 이유**
+**`.c` 와 `.d` 가 달라지는 이유**
 
 - **`start` 는 논리 값이고 `left` 는 물리 값**이기 때문이다.
 - `rtl` 에서 인라인 축의 시작은 오른쪽이므로 `start` 는 오른쪽이 되고, `left` 는 화면의 왼쪽에 고정된다.
@@ -319,7 +319,7 @@ transitionProperty = "writing-mode, width"     <- 선언은 받아들여진다
 
 **유니코드·문자 인코딩**
 
-- [`foundations/data-representation/`](../../../../cs/foundations/data-representation/). 이 문서는 **물리 축과 논리 축이 갈리는 CSS 규칙**만 다룬다.
+- [`foundations/data-representation/`](../../../../cs/foundations/data-representation/). 이 문서는 **물리 축과 논리 축이 달라지는 CSS 규칙**만 다룬다.
 
 **[24번](../24-flexbox-axes/)의 「축이 돈다」의 왜**
 

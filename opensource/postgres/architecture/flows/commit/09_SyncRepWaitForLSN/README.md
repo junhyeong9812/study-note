@@ -2,7 +2,7 @@
 
 상위: [커밋](../README.md)
 
-**동기 복제일 때 standby 가 commit 레코드를 받았다고 알려올 때까지 잠든다.** 동기 복제를 쓰지 않으면 첫 검사에서 바로 돌아간다. 쓰면 `SyncRepLock` 아래에서 자기 PGPROC 를 LSN 순으로 정렬된 대기 큐에 넣고 latch 위에서 기다린다. 깨우는 쪽은 walsender 다. standby 의 응답을 받은 walsender 가 확인된 LSN 까지의 대기자를 큐에서 빼고 `SYNC_REP_WAIT_COMPLETE` 로 바꾼 뒤 latch 를 세운다. 이 동안 트랜잭션은 이미 로컬에서 커밋됐으므로(pg_xact COMMITTED) 취소 요청이 와도 abort 할 수 없고 WARNING 만 낸 채 대기를 끝낸다(L288-L299, L311-L316 주석). ProcArray 와 잠금은 그때까지 아직 쥐고 있다.
+**동기 복제일 때 standby 가 commit 레코드를 받았다고 알려올 때까지 잠든다.** 동기 복제를 쓰지 않으면 첫 검사에서 바로 돌아간다. 쓰면 `SyncRepLock` 아래에서 자기 PGPROC 를 LSN 순으로 정렬된 대기 큐에 넣고 latch 위에서 기다린다. 깨우는 쪽은 walsender 다. standby 의 응답을 받은 walsender 가 확인된 LSN 까지의 대기자를 큐에서 빼고 `SYNC_REP_WAIT_COMPLETE` 로 바꾼 뒤 latch 를 세운다. 이 동안 트랜잭션은 이미 로컬에서 커밋됐으므로(pg_xact COMMITTED) 취소 요청이 와도 abort 할 수 없고 WARNING 만 낸 채 대기를 끝낸다(L288-L299, L311-L316 주석). ProcArray 와 잠금은 그때까지 아직 잡고 있다.
 
 ## 위치
 

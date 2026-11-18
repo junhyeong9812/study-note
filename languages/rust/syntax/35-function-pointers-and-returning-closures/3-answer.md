@@ -515,7 +515,7 @@ r35_lambda_cap.cpp:5:11: error: no viable conversion from '(lambda at r35_lambda
 
 | 무엇을 | 어떻게 | 몇 번 | 결과 |
 |---|---|---|---|
-| 이 문서·서머리의 **모든 블록** | `capture.sh` — 블록마다 명령을 배너에 | 배치 내내 + **제출 전 전수 재실행** | `normalize-shaky.py` — **흔들린 칸 0 · 고칠 것 0** |
+| 이 문서·서머리의 **모든 블록** | `capture.sh` — 블록마다 명령을 배너에 | 배치 내내 + **제출 전 전수 재실행** | `normalize-shaky.py` — **달라진 항목 0 · 고칠 것 0** |
 | 버전 | `r35_versions` — 설치된 `releases.md` | 1 | **1.19.0** |
 | 값으로서의 함수 | `r35_fnptr` | 1 | `[11, 20]` · `2 2` · `0` |
 | ★★ 크기 | `r35_size` | 1 | 0 · 8 · 8 · 8 · 0 · 4 · 16 · 16 |
@@ -524,7 +524,7 @@ r35_lambda_cap.cpp:5:11: error: no viable conversion from '(lambda at r35_lambda
 | 반환 | `r35_ret_impl` · `r35_ret_nomove` | 2 | `11 21` · 4 · **E0373** |
 | ★★ 갈래 | `r35_ret_branch_impl` · `r35_ret_branch_help` · `r35_ret_branch` | 3 | **E0308** · 첫 처방만 **E0308 ×2** · 통과 `[13, 30]` |
 | C++ 대비 | `r35_lambda` · `r35_lambda_cap` — g++ · clang++ | 4 | 1 · 4 · 8 · 0 · 두 컴파일러 거절 |
-| **안 던진 것** — 실행 시간 · `unsafe fn` 강제 · `fn` 포인터 비교 · 다른 함수의 클로저를 섞는 컨테이너 | — | 0 | ★ 「안 던졌다」로 표시했다 |
+| **실행하지 않은 것** — 실행 시간 · `unsafe fn` 강제 · `fn` 포인터 비교 · 다른 함수의 클로저를 섞는 컨테이너 | — | 0 | ★ 「실행하지 않았다」로 표시했다 |
 
 **구현 의존 항목**(버전·환경이 바뀌면 **다시 찍어야 하는** 것).
 

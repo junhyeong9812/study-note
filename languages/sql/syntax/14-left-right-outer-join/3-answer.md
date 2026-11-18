@@ -385,7 +385,7 @@ SELECT e.name, d.name FROM emp e LEFT JOIN dept d ON e.dept_id = d.id AND d.id <
 SELECT e.name FROM emp e WHERE e.dept_id IS DISTINCT FROM 10;   -- PG
 ```
 
-(B)의 `IS DISTINCT FROM` 은 방언이 갈리는 연산자라 [목록의 **05번 주제**](../05-null-comparison-is-distinct-from/)가 정본이다.\
+(B)의 `IS DISTINCT FROM` 은 방언이 달라지는 연산자라 [목록의 **05번 주제**](../05-null-comparison-is-distinct-from/)가 정본이다.\
 **가장 안전한 것은 (A)** — 조건의 뜻이 「붙이는 규칙」인지 「결과 필터」인지를 자리로 말하게 하는 것이다.
 
 ---
@@ -450,7 +450,7 @@ SELECT e.name FROM emp e WHERE e.dept_id IS DISTINCT FROM 10;   -- PG
 | 짝 없는 행의 `NULL` 채우기 | ✓ 전부 | ✓ 전부 |
 | `WHERE` 가 보존을 깨는 것 | ✓ 같은 결과 | ✓ 같은 결과 |
 
-**갈리는 것은 [16번](../16-full-outer-join/)부터다** — `FULL OUTER JOIN` 이 MySQL 8.4.10 에 아예 없다(`ERROR 1064`).
+**달라지는 것은 [16번](../16-full-outer-join/)부터다** — `FULL OUTER JOIN` 이 MySQL 8.4.10 에 아예 없다(`ERROR 1064`).
 
 ★ **단 하나 주의할 것은 「출력이 같다」와 「행 순서가 같다」가 다르다는 점이다.**\
 `ORDER BY` 없이 던지면 순서는 어느 엔진도 약속하지 않는다.\
@@ -481,10 +481,10 @@ SELECT e.name FROM emp e WHERE e.dept_id IS DISTINCT FROM 10;   -- PG
 **단 행 순서는 보장되지 않으므로** 모든 출력에 `ORDER BY` 를 붙였다.
 
 **언어 보장 항목** — 1~10번 전부. 보존 규칙, `NULL` 채우기, `LEFT`/`RIGHT` 대칭은 두 문서가 같은 모양으로 적는다.\
-**버전** — `LEFT`·`RIGHT [OUTER] JOIN` 에서 버전에 갈리는 것은 이 주제에 없다. 다음 버전에서도 **11번만 다시 확인하면 된다.**
+**버전** — `LEFT`·`RIGHT [OUTER] JOIN` 에서 버전에 달라지는 것은 이 주제에 없다. 다음 버전에서도 **11번만 다시 확인하면 된다.**
 
 ## 실행 환경
 
 근거는 **실행 결과**다 — 본문의 출력은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+2026-09-21 에 실제로 실행해 받은 것이다. 지어낸 출력은 없다.\
 문서 근거는 [PG 18 Table Expressions](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [MySQL 8.4 JOIN Clause](https://dev.mysql.com/doc/refman/8.4/en/join.html).

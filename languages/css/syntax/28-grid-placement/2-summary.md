@@ -227,7 +227,7 @@ rows: 32px                    rows: 32px [24px] [24px]
 > **보이는 것** — 위 격자는 **오른쪽 위에 빈칸 하나**가 남고 아랫줄이 `B B C D` 로 채워진다. 아래 격자는 그 빈칸에 **`C` 가 올라가 있고** 아랫줄이 `B B D` 로 끝나 **오른쪽 아래가 빈다.** 마크업 순서는 둘 다 A·B·C·D 로 똑같은데 **아래 격자만 화면에서 A → C → B → D 순으로 읽힌다.**\
 > **바꿔 볼 것** — `.dense` 의 `row dense` → `row` 로 되돌리면 위 격자와 똑같아진다 · `.w2` 의 `span 2` → `span 1` 하면 빈칸이 안 생겨 **두 격자가 같아진다**(메울 구멍이 없으므로)
 
-*(Chrome 151 headless 실측 — 두 격자의 트랙 계산값은 똑같이 `100px 100px 100px 100px`. 항목 좌표만 갈린다: 기본 흐름 `C`(x=202, y=34) · `D`(x=302, y=34) / `dense` `C`(**x=302, y=2**) · `D`(x=202, y=34). `grid-auto-flow` 계산값은 `row` 대 `dense` 였다 — `row` 는 기본값이라 직렬화에서 빠진다.)*
+*(Chrome 151 headless 실측 — 두 격자의 트랙 계산값은 똑같이 `100px 100px 100px 100px`. 항목 좌표만 달라진다: 기본 흐름 `C`(x=202, y=34) · `D`(x=302, y=34) / `dense` `C`(**x=302, y=2**) · `D`(x=202, y=34). `grid-auto-flow` 계산값은 `row` 대 `dense` 였다 — `row` 는 기본값이라 직렬화에서 빠진다.)*
 
 ```text
 기본 (row)                          dense
@@ -249,7 +249,7 @@ rows: 32px                    rows: 32px [24px] [24px]
 
 비용 — `dense` 는 배치 패스를 더 돌지만 실무에서 문제 되는 비용은 그게 아니라 **접근성**이다.
 
-### (7) Grid 는 겹침을 허용한다 — flex 와 갈리는 자리
+### (7) Grid 는 겹침을 허용한다 — flex 와 달라지는 자리
 
 **언제 쓰나** — 사진 위에 캡션, 카드 위에 배지처럼 **같은 칸에 둘을 쌓을 때.**
 
@@ -296,8 +296,8 @@ flex 의 주축                            grid 의 칸
 
 *(Chrome 151 headless 실측 — 같은 선언 `justify-self: end` 를 준 항목: **grid** 에서는 x 가 261.7 로 칸 오른쪽 끝에 붙고 폭이 내용 크기(39.3px)로 줄었다. **flex** 에서는 계산값이 `end` 로 남는데도 x 가 9.69 로 **전혀 안 움직였다** — 무시된 것이다.)*
 
-- ★ **정렬 어휘(`justify-*`/`align-*`)의 정본은 [24번](../24-flexbox-axes/)이다.** 여기서는 **Grid 에서 의미가 갈리는 것만** 적는다.
-- 갈리는 것 셋:
+- ★ **정렬 어휘(`justify-*`/`align-*`)의 정본은 [24번](../24-flexbox-axes/)이다.** 여기서는 **Grid 에서 의미가 달라지는 것만** 적는다.
+- 달라지는 것 셋:
 
 | | flex | grid |
 |---|---|---|
@@ -338,7 +338,7 @@ grid-area:  row-start / column-start / row-end / column-end
               그리고 앞 둘이 시작, 뒤 둘이 끝.
 ```
 
-*(Chrome 151 headless 실측 — 2열 × 40px 두 행짜리 격자에서 `grid-area: 2 / 1 / 3 / 3` 인 항목이 **2행 1\~3열**에 놓였다: x=2 y=42 w=200 h=40. 「2행부터 3행 전까지, 1열부터 3열 전까지」로 읽으면 맞는다. 같은 판에서 `grid-column` 의 계산값이 `1 / 3` 으로 직렬화됐다.)*
+*(Chrome 151 headless 실측 — 2열 × 40px 두 행짜리 격자에서 `grid-area: 2 / 1 / 3 / 3` 인 항목이 **2행 1\~3열**에 놓였다: x=2 y=42 w=200 h=40. 「2행부터 3행 전까지, 1열부터 3열 전까지」로 읽으면 맞는다. 같은 버전에서 `grid-column` 의 계산값이 `1 / 3` 으로 직렬화됐다.)*
 
 - 값이 **둘**이면 `grid-area: a / b` 는 `row-start / column-start` 다(끝은 자동).
 - `grid-area` 에 **이름** 하나만 쓰는 형태(`grid-area: header`)는 [**29번**](../29-grid-template-areas/)의 자리다.
@@ -447,7 +447,7 @@ grid-area:  row-start / column-start / row-end / column-end
 - [목록의 **27번 주제**](../27-grid-track-sizing/)(Grid 트랙 정의) — ★ **트랙을 어떻게 만드는가는 거기.** 이 문서는 그 실측(`fr`·`auto-fill`·암묵 트랙 크기)을 그대로 이어 쓴다
 - [목록의 **29번 주제**](../29-grid-template-areas/)(Grid 영역) — ★ **번호 대신 이름으로 놓는 것은 거기.** 여기는 번호·`span`·자동 배치까지
 - [목록의 **30번 주제**](../30-subgrid/)(`subgrid`) — 자식이 부모의 트랙과 **라인 이름까지** 잇는 것
-- [목록의 **24번 주제**](../24-flexbox-axes/)(Flexbox 축과 정렬) — ★ **`justify-*`/`align-*` 의 정본은 거기.** 여기는 Grid 에서 의미가 갈리는 (8)만
+- [목록의 **24번 주제**](../24-flexbox-axes/)(Flexbox 축과 정렬) — ★ **`justify-*`/`align-*` 의 정본은 거기.** 여기는 Grid 에서 의미가 달라지는 (8)만
 - [목록의 **26번 주제**](../26-flex-wrap-gap-order/)(flex 줄바꿈·`gap`·`order`) — ★ **`order` 의 정본은 거기.** `dense` 는 같은 계열의 접근성 문제다
 - [목록의 **22번 주제**](../22-stacking-context-and-z-index/)(쌓임 맥락과 `z-index`) — 겹친 항목의 앞뒤를 뒤집는 것의 정본
 - [목록의 **16번 주제**](../16-display-inner-outer/)(`display` 의 내부/외부 값) — `grid` 와 `inline-grid`
@@ -489,4 +489,4 @@ grid-area:  row-start / column-start / row-end / column-end
 **트랙은 `getComputedStyle(el).gridTemplateColumns`/`.gridTemplateRows` 로, 항목의 자리는 `getBoundingClientRect()` 로 따로** 잰다 — 둘은 다른 질문이다. 본문의 px 값은 전부 그 실측값이다.\
 **엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 스크린샷이 산출되지 않고 WebKit 은 이 머신에 없다. 「두 엔진에서 확인했다」고 적지 않았다.
 **버전** — Grid 는 Baseline **widely**(newly 2017-10-17 → widely 2020-04-17).
-**여기서 다루지 않는 것** — **트랙을 어떻게 만드는가**는 [**27번**](../27-grid-track-sizing/)이 정본이다(이 문서는 그 실측을 그대로 이어 쓴다). **이름으로 놓는 것**(`grid-template-areas`·이름 붙은 라인)은 [**29번**](../29-grid-template-areas/)이다. 정렬(`justify-*`/`align-*`)의 정본은 [**24번**](../24-flexbox-axes/)이고 여기서는 Grid 에서 갈리는 것만 쓴다.
+**여기서 다루지 않는 것** — **트랙을 어떻게 만드는가**는 [**27번**](../27-grid-track-sizing/)이 정본이다(이 문서는 그 실측을 그대로 이어 쓴다). **이름으로 놓는 것**(`grid-template-areas`·이름 붙은 라인)은 [**29번**](../29-grid-template-areas/)이다. 정렬(`justify-*`/`align-*`)의 정본은 [**24번**](../24-flexbox-axes/)이고 여기서는 Grid 에서 달라지는 것만 쓴다.

@@ -462,7 +462,7 @@ FAIL
 - ★★★ **`TestFirstUnbuffered` 는 `FAIL`, 「고루틴 수: 시작 2 → 끝 4」** — 결과 셋 중 첫 것만 받으니 **둘이 남았다.** `TestFirstBuffered` 는 **`PASS`**(버퍼 3 = 보내는 횟수).
 - ★★ 시작이 **2** 인 것은 테스트 함수가 **`testing` 이 띄운 고루틴**에서 돌기 때문이다 — 그래서 「1 로」가 아니라 **「시작 값으로」** 돌아왔나를 본다.
 - ★★ **500ms 기다림** — 고루틴이 끝나도 **사라지기까지 틈**이 있다([28번 주제](../28-goroutines-go-statement-cost-and-termination/) (2)절). 안 기다리면 깨끗한 코드도 가끔 실패한다.
-- ★ 거짓 결과의 조건 — **병렬 테스트**(`t.Parallel`)면 다른 테스트의 고루틴이 섞인다. 이 문서는 **안 던졌다.**
+- ★ 거짓 결과의 조건 — **병렬 테스트**(`t.Parallel`)면 다른 테스트의 고루틴이 섞인다. 이 문서는 **실행하지 않았다.**
 
 ### 6. 「blocked goroutines remain」 · 둘 · `(durable), synctest bubble 1` · 패닉이 바이너리를 끝내서 · `1h0m0s` 대 `(0.00s)`
 
@@ -863,10 +863,10 @@ go get exit=1
 - ★★★ **`go vet` 은 `vet exit=0`, 한 줄도 없다** — 「누가 이 채널에 보내나」는 **함수 하나를 넘는 질문**이다.
 - ★★ **`goleak` 은 이 환경에 없다**(모듈 캐시 「아니오」 · `module lookup disabled by GOPROXY=off`). **「못 잰 것」** 으로 적고, 표준 창 둘(전후 비교·`synctest`)로 같은 질문을 물었다.
 
-### 10. 「막힘은 영원」+「고루틴을 없애는 문법이 없다」 · 구현(이 판 runtime) · 없다
+### 10. 「막힘은 영원」+「고루틴을 없애는 문법이 없다」 · 구현(이 버전 runtime) · 없다
 
 - ★★★ [29번 주제](../29-channels-buffering-direction-close-range-and-nil/)의 **차단 규칙**(받을 쪽이 없으면 영원히 막힌다)과, **고루틴을 밖에서 끝내는 문법이 없다**는 것 — 둘이 합쳐 「아무도 안 치운다」가 된다.
-- ★★ **`goroutineleak` 프로파일은 이 판 `runtime`·`pprof` 의 구현**이다. 명세의 보장이 아니다. 판이 바뀌면 다시 확인할 칸이다.
+- ★★ **`goroutineleak` 프로파일은 이 버전 `runtime`·`pprof` 의 구현**이다. 명세의 보장이 아니다. 판이 바뀌면 다시 확인할 칸이다.
 - ★ **명세에는 「누수」라는 낱말이 없다** — 누수는 **프로그램의 성질**이지 언어의 사건이 아니다.
 
 ### 11. ③ — 29편 (8)절 `sleeper` · ① · `failure-modes`
@@ -892,10 +892,10 @@ go get exit=1
 
 | 항목 | 무엇에 달렸나 |
 |---|---|
-| `goroutineleak` 프로파일의 존재·판정 규칙 | **이 판 runtime·pprof** — 몇 판부터인지는 **확인 못 했다** |
+| `goroutineleak` 프로파일의 존재·판정 규칙 | **이 버전 runtime·pprof** — 몇 판부터인지는 **확인 못 했다** |
 | `synctest` 의 `Sleep` | **1.27** |
 | `asynctimerchan` 제거 | **1.27** — 1.22 쪽 칸은 **못 잰 것** |
-| 고루틴 id · 주소 · 테스트 시간 | **흔들린다** — 정규화 규칙 `([Gg]oroutine) \d+` + 기본 넷 |
+| 고루틴 id · 주소 · 테스트 시간 | **실행마다 달라진다** — 정규화 규칙 `([Gg]oroutine) \d+` + 기본 넷 |
 | `goleak` | **이 환경에 없다** |
 
 ★ **다시 찍는 법** — `capture.sh <디렉토리>` 를 그대로 돌리고 `normalize-shaky.py` 로 견준다.
@@ -904,5 +904,5 @@ go get exit=1
 
 이 파일의 모든 출력은 **`go version go1.27.1 linux/amd64`** 에서 실제로 돌려
 **파일로 캡처한 것**이다. 소스 펜스도 같은 파일에서 떠 왔다 — 손으로 옮겨 적은 블록은 없다.\
-★ **근거로 읽을 칸** — `NumGoroutine` 의 수 · 「돌아왔나 : true / false」 · 누수 프로파일의 수 · **`(leaked)`·`(durable)` 표시** · `파일:줄` · `PASS`/`FAIL` · 종료 코드.
-**근거로 읽지 않을 칸** — `goroutine N` 의 N · `@ 0x…` 주소 · 테스트 시간(2-summary 맨 위 부분의 정규화 칸).
+★ **근거로 읽을 항목** — `NumGoroutine` 의 수 · 「돌아왔나 : true / false」 · 누수 프로파일의 수 · **`(leaked)`·`(durable)` 표시** · `파일:줄` · `PASS`/`FAIL` · 종료 코드.
+**근거로 읽지 않을 항목** — `goroutine N` 의 N · `@ 0x…` 주소 · 테스트 시간(2-summary 맨 위 부분의 정규화 칸).

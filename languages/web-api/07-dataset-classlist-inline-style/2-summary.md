@@ -1,6 +1,6 @@
 # web-api/07 — `dataset`·`classList`·인라인 `style`: 스크립트가 만지는 세 표면 — 정리 (힌트)
 
-**이 판의 Chrome**
+**이 버전의 Chrome**
 
 ```text
 $ google-chrome --version
@@ -8,16 +8,16 @@ Google Chrome 151.0.7922.173
 (exit 0)
 ```
 
-### 흔들리는 칸 / 안 흔들리는 칸
+### 실행마다 달라지는 항목 / 달라지지 않는 항목
 
-**★ 이 주제에는 흔들리는 칸이 없다.** 수치를 재지 않기 때문이다 — 시간도, 크기도 없다.
+**★ 이 주제에는 실행마다 달라지는 항목이 없다.** 수치를 재지 않기 때문이다 — 시간도, 크기도 없다.
 
 | | 칸 | 왜 |
 |---|---|---|
-| **안 흔들린다** | 속성 이름과 값 · `dataset` 키 목록과 순서 · `classList` 반환값과 `length` · `style.length` 와 `item(i)` 목록 · 예외 이름 · 직렬화 문자열 | 전부 명세가 절차로 정한 결과다 |
-| **흔들린다** | Chrome 판 번호 | 판이 오르면 바뀐다 |
+| **달라지지 않는다** | 속성 이름과 값 · `dataset` 키 목록과 순서 · `classList` 반환값과 `length` · `style.length` 와 `item(i)` 목록 · 예외 이름 · 직렬화 문자열 | 전부 명세가 절차로 정한 결과다 |
+| **실행마다 달라진다** | Chrome 판 번호 | 버전이 오르면 바뀐다 |
 
-- 단축 속성이 **몇 개의 낱개로 풀리나**(`background` → 10)는 **명세가 정한 낱개 목록**이라 흔들리지 않는다. 다만 **명세에 낱개가 더해지면 바뀐다** — 그래서 아래 (8) 에 「판을 적고 다시 찍어라」를 달아 두었다.
+- 단축 속성이 **몇 개의 낱개로 풀리나**(`background` → 10)는 **명세가 정한 낱개 목록**이라 달라지지 않는다. 다만 **명세에 낱개가 더해지면 바뀐다** — 그래서 아래 (8) 에 「판을 적고 다시 찍어라」를 달아 두었다.
 - 그래서 제출 전 재대조에서 **정규화할 칸이 하나도 없다.**
 
 ## 한눈에 — 쉽게 말하면
@@ -74,7 +74,7 @@ Google Chrome 151.0.7922.173
 ```
 
 - ★ **이 창은 CSS 갈래에서 왔다.** 거기서는 `cssRules`(담겼나) → `querySelectorAll`(잡혔나) → `getComputedStyle`(이겼나) 셋으로 갈랐다(정본: [CSS 07번 주제](../../css/syntax/07-syntax-and-error-recovery/2-summary.md)). **CSS 는 에러가 없는 언어**라 무효한 선언이 조용히 버려지는데, **`el.style` 은 그 CSS 문법을 그대로 쓰는 표면**이라 같은 성질을 물려받는다.
-- **창 1\~3 으로는 「조용히 버려짐」을 못 가른다.** 값이 안 바뀐 것과 원래 그 값이었던 것이 같아 보이기 때문이다. **쓰기 직전의 값을 잡아 두고 대조**해야 갈린다 — 그것이 창 ④ 가 하는 일이다.
+- **창 1\~3 으로는 「조용히 버려짐」을 못 가른다.** 값이 안 바뀐 것과 원래 그 값이었던 것이 같아 보이기 때문이다. **쓰기 직전의 값을 잡아 두고 대조**해야 달라진다 — 그것이 창 ④ 가 하는 일이다.
 - **세 표면의 실패 방식이 서로 다르다**는 것이 이 주제의 결론 하나다. `dataset` 과 `classList` 는 **예외를 던지는 자리**가 있고 `el.style` 은 **거의 전부 조용하다.**
 
 ## 동작 방식
@@ -117,7 +117,7 @@ $ google-chrome --headless --disable-gpu --no-sandbox --dump-dom wa06b-07-tree.h
 
 **언제 쓰나** — 마크업에 심어 둔 값을 스크립트로 꺼낼 때.
 
-**던진 것** — 아래 (3)의 블록도 같은 실행에서 잘라 낸 것이다.
+**실행한 것** — 아래 (3)의 블록도 같은 실행에서 잘라 낸 것이다.
 
 ```html
 <!-- wa06b-07-dataset.html -->
@@ -267,7 +267,7 @@ setAttr('data-Late-Add')  ["data-late-add"]             dataset.lateAdd = "h"
 
 **언제 쓰나** — 상태를 클래스로 표현할 때. **이 주제에서 가장 자주 쓰는 표면**이다.
 
-**던진 것** — 아래 (5)의 블록도 같은 실행에서 잘라 낸 것이다.
+**실행한 것** — 아래 (5)의 블록도 같은 실행에서 잘라 낸 것이다.
 
 ```html
 <!-- wa06b-07-classlist.html -->
@@ -412,7 +412,7 @@ add('끝') 뒤 속성             "두 칸 띄움 끝"             (그때 정�
 
 **언제 쓰나** — 계산한 값을 요소에 직접 줄 때.
 
-**던진 것** — 아래 (7)\~(9)의 블록도 같은 실행에서 잘라 낸 것이다.
+**실행한 것** — 아래 (7)\~(9)의 블록도 같은 실행에서 잘라 낸 것이다.
 
 ```html
 <!-- wa06b-07-style.html -->
@@ -513,7 +513,7 @@ s.style.color = 'navy' 뒤               "color: navy; padding-left: 4px;" 속�
 
 - **`el.style.cssText` 와 `getAttribute('style')` 은 같은 것**이다 — 정확히는 **끝의 세미콜론 하나만 다르다**(원문에 없으면 `cssText` 가 붙여 준다). 한 줄이라도 쓰고 나면 **둘이 한 글자까지 같아진다**(마지막 두 줄).
 - **`style` 속성이 없는 요소에서도 `el.style` 은 있다** — `cssText` 가 `""` 인 빈 선언 목록이다. **`null` 이 아니다.**
-- **`el.style` 은 같은 객체**다(`s.style === s.style` 이 `true`). [08번 주제](../08-getcomputedstyle/2-summary.md)의 `getComputedStyle` 과 **여기가 갈린다.**
+- **`el.style` 은 같은 객체**다(`s.style === s.style` 이 `true`). [08번 주제](../08-getcomputedstyle/2-summary.md)의 `getComputedStyle` 과 **여기가 달라진다.**
 - 읽는 창구가 셋이다 — **카멜 프로퍼티**(`style.paddingLeft`), **`getPropertyValue('padding-left')`**, **`item(i)`/`length`**.
 
 비용 — 인라인 스타일은 **캐스케이드에서 매우 강하다.** 시트로 되돌릴 수 없고 `!important` 로만 이긴다. 그 규칙의 정본은 [CSS 01번 주제](../../css/syntax/01-cascade-and-priority/2-summary.md)다.
@@ -584,7 +584,7 @@ u.style.background 되읽기               "blue"                            u.s
 
 ### (9) `el.style` 로는 스타일시트가 안 보인다 — 그 창은 08번이다
 
-**언제 쓰나** — 「지금 이 요소의 색이 뭐지」를 물을 때. **여기서 표면이 갈린다.**
+**언제 쓰나** — 「지금 이 요소의 색이 뭐지」를 물을 때. **여기서 표면이 달라진다.**
 
 ```text
 $ google-chrome --headless --disable-gpu --no-sandbox --dump-dom wa06b-07-style.html | sed -n '/^--OUT$/,/^OUT--$/{//!p}' | sed -n '36,41p'
@@ -637,7 +637,7 @@ getComputedStyle 로 물으면              "rgb(0, 128, 0)"  "21px"
 > **`toggle('on', true)`** 는 **몇 번을 눌러도 파란 채로** 있고 반환값이 언제나 `true` 다. **`toggle('on', false)`** 는 반대로 언제나 회색·`false` 다.\
 > **바꿔 볼 것** — `toggle('on', true)` 를 `add('on')` 으로 바꿔 보라(반환값이 `undefined` 로 바뀐다) · `chip.classList.toggle('두 칸')` 을 콘솔에서 던져 보라(`InvalidCharacterError`) · `chip.className = 'on on'` 으로 넣어 보라(메서드가 아니라 문자열 대입이라 **검사 없이 그대로 담긴다**).
 
-*(Chrome 151 headless 실측: 버튼을 `toggle` → `toggle` → `toggle(true)` → `toggle(true)` → `toggle(false)` 순으로 눌러 `class` 속성이 `null` → `"on"` → `""` → `"on"` → `"on"` → `""` 로, 계산된 배경색이 `rgb(226, 232, 240)` ↔ `rgb(37, 99, 235)` 로 갈리는 것을 확인했다)*
+*(Chrome 151 headless 실측: 버튼을 `toggle` → `toggle` → `toggle(true)` → `toggle(true)` → `toggle(false)` 순으로 눌러 `class` 속성이 `null` → `"on"` → `""` → `"on"` → `"on"` → `""` 로, 계산된 배경색이 `rgb(226, 232, 240)` ↔ `rgb(37, 99, 235)` 로 나뉘는 것을 확인했다)*
 
 ## 문법 — 형태와 규칙
 
@@ -796,11 +796,11 @@ if (getComputedStyle(el).color === 'rgb(255, 0, 0)') { }   // 08번 주제
 ## 용어 풀이
 
 - **`DOMStringMap`** — `el.dataset` 의 타입. 키가 **글자열만** 담기는 맵처럼 생긴 객체다.
-- **`DOMTokenList`** — `el.classList` 의 타입. **공백으로 갈린 토큰 목록**을 다루는 라이브 객체. `rel`·`sandbox` 등에도 쓰인다.
+- **`DOMTokenList`** — `el.classList` 의 타입. **공백으로 달라진 토큰 목록**을 다루는 라이브 객체. `rel`·`sandbox` 등에도 쓰인다.
 - **`CSSStyleDeclaration`** — `el.style` 의 타입. **선언 목록**이다. [08번 주제](../08-getcomputedstyle/2-summary.md)의 `getComputedStyle` 도 같은 타입을 돌려주는데 **읽기 전용**이다.
 - **케밥 표기(kebab-case)** — `data-foo-bar` 처럼 `-` 로 잇는 표기. HTML·CSS 쪽 관례다.
 - **카멜 표기(camelCase)** — `fooBar` 처럼 대문자로 잇는 표기. 자바스크립트 쪽 관례다.
-- **토큰(token)** — 공백으로 갈린 한 낱말. 클래스 이름 하나가 토큰 하나다.
+- **토큰(token)** — 공백으로 달라진 한 낱말. 클래스 이름 하나가 토큰 하나다.
 - **정규화(normalize)** — 토큰 목록을 다시 직렬화하면서 여분 공백이 정리되는 것.
 - **단축 속성(shorthand)** — `margin`·`background` 처럼 여러 낱개를 한 번에 정하는 속성.
 - **낱개 속성(longhand)** — `margin-top`·`background-color` 처럼 하나만 정하는 속성. **실제로 담기는 것은 이쪽**이다.

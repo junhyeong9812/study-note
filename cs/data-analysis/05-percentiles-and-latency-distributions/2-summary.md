@@ -47,7 +47,7 @@
 
 ### 2. 정의가 여러 개다 — 보간 방식
 
-사분위수에서 정의가 갈리는 예는 [04-descriptive-statistics](../04-descriptive-statistics/2-summary.md)에 있다. 여기서는 꼬리 쪽 분위(p90·p99)에서 차이가 훨씬 커지는 것을 본다.
+사분위수에서 정의가 달라지는 예는 [04-descriptive-statistics](../04-descriptive-statistics/2-summary.md)에 있다. 여기서는 꼬리 쪽 분위(p90·p99)에서 차이가 훨씬 커지는 것을 본다.
 
 같은 10개 값 `[12, 15, 18, 20, 22, 25, 30, 41, 95, 300]`의 p90:
 
@@ -153,7 +153,7 @@
 | t-digest | 요약 병합 | 꼬리에서 작음(논문 주장) | 압축 계수로 조절 |
 | 미리 계산한 분위수(summary) | **불가** | — | 분위수 몇 개 |
 
-### 6. 작은 표본의 p99는 흔들린다
+### 6. 작은 표본의 p99는 실행마다 달라진다
 
 (실험 E — 로그정규 지연, 이론 p99 204.8ms, 표본 크기마다 2000번 반복, seed 7)
 
@@ -166,7 +166,7 @@
 
 - 표본 100건의 p99는 nearest-rank로 99번째 값, 즉 두 번째로 느린 값이다(선형 보간이면 99·100번째 사이). 맨 끝 한두 건이 무엇이냐에 따라 101~340ms를 오간다.
 - 지연처럼 오른쪽 꼬리가 긴 분포에서는 분위가 높을수록 같은 정확도에 더 많은 표본이 필요하다(실험 E). 값 단위 오차는 그 분위 근처에 값이 얼마나 촘촘한지(밀도)에도 달려 있어, 균등분포처럼 꼬리가 없는 분포에서는 그렇지 않다(표본 분위수의 점근 분산 `p(1−p)/(n·f²)`). 1분 창에 요청이 100건뿐인 엔드포인트의 p99.9 그래프는 거의 최댓값 그래프다(해석).
-- 추정값이 얼마나 흔들리는지는 표본분포 문제다 → [07-sampling-distributions-and-clt](../07-sampling-distributions-and-clt/2-summary.md).
+- 추정값이 얼마나 실행마다 달라지는지는 표본분포 문제다 → [07-sampling-distributions-and-clt](../07-sampling-distributions-and-clt/2-summary.md).
 
 ## 쓰이는 자료구조·알고리즘
 
@@ -222,7 +222,7 @@ SELECT 2 * power(1.02, min(b)) / (1.02 + 1) AS p99 FROM cum WHERE acc >= 0.99 * 
 ### 2. 지표를 설계할 때
 
 - 서버마다 분위수를 계산해 내보내지 말고, **같은 경계의 히스토그램**을 내보낸다. 합칠 일이 있으면 summary는 피한다.
-- 경계는 SLO 문턱 근처를 촘촘히 둔다. 모르면 로그 간격(native histogram, HdrHistogram)을 쓴다.
+- 경계는 SLO 임계값 근처를 촘촘히 둔다. 모르면 로그 간격(native histogram, HdrHistogram)을 쓴다.
 - 분위와 함께 **표본 수**를 같이 그린다. 표본이 적은 창의 p99.9는 신호가 아니라 잡음일 수 있다.
 - SLI를 "X ms 이내 요청 비율"로 정의하면 합치기 쉽다. 비율은 분자·분모를 각각 더하면 된다([reliability/02-slo-sli-error-budget](../../reliability/02-slo-sli-error-budget/2-summary.md)).
 
@@ -240,7 +240,7 @@ SELECT 2 * power(1.02, min(b)) / (1.02 + 1) AS p99 FROM cum WHERE acc >= 0.99 * 
 - 현상: p99가 계단처럼 움직이거나, 배포 전후 차이가 안 보인다.
 - 보이는 형태: 고정 경계 12칸에서 p99 198ms(진짜 155ms, +27.5%, 실험 C). 값이 버킷 경계 사이를 직선으로 오간다.
 - 원인: 분위수가 넓은 버킷 하나에 떨어지면 그 안의 위치를 직선 보간으로 추정한다.
-- 대처: SLO 문턱 근처에 경계를 추가하거나 로그 간격 히스토그램을 쓴다. 경계를 바꾸면 이전 데이터와 합칠 수 없으니 전환 시점을 기록한다.
+- 대처: SLO 임계값 근처에 경계를 추가하거나 로그 간격 히스토그램을 쓴다. 경계를 바꾸면 이전 데이터와 합칠 수 없으니 전환 시점을 기록한다.
 
 ### 3. 도구마다 p90이 다르다
 
@@ -253,7 +253,7 @@ SELECT 2 * power(1.02, min(b)) / (1.02 + 1) AS p99 FROM cum WHERE acc >= 0.99 * 
 
 - 현상: 새벽마다 p99 알람이 울렸다 꺼진다.
 - 보이는 형태: 트래픽이 적은 시간대에만 p99가 출렁인다. 표본 100건짜리 p99는 101~340ms를 오간다(실험 E).
-- 원인: 높은 분위수는 꼬리에 표본이 몇 개 없으면 크게 흔들린다.
+- 원인: 높은 분위수는 꼬리에 표본이 몇 개 없으면 크게 달라진다.
 - 대처: 창을 늘리거나, 최소 표본 수 조건을 붙이거나, "X ms 초과 요청 수/비율"로 알람한다([reliability/43-alerting-and-on-call](../../reliability/43-alerting-and-on-call/2-summary.md)).
 
 ### 5. summary 분위수를 합쳐 SLO를 판정했다
@@ -278,7 +278,7 @@ SELECT 2 * power(1.02, min(b)) / (1.02 + 1) AS p99 FROM cum WHERE acc >= 0.99 * 
   - [math/08-expectation-variance-tails](../../math/08-expectation-variance-tails/2-summary.md) — 평균 vs 백분위, 로그정규 지연(실험 C), 꼬리 부등식
   - [math/09-common-distributions](../../math/09-common-distributions/2-summary.md) — 정규 가정으로 p99를 어림하면 과소(4절)
 - 후속·연결
-  - [07-sampling-distributions-and-clt](../07-sampling-distributions-and-clt/2-summary.md) — 추정값이 표본마다 흔들리는 정도
+  - [07-sampling-distributions-and-clt](../07-sampling-distributions-and-clt/2-summary.md) — 추정값이 표본마다 달라지는 정도
   - [08-confidence-intervals](../08-confidence-intervals/2-summary.md) — 부트스트랩으로 중앙값 구간 만들기
   - [reliability/19-performance-measurement](../../reliability/19-performance-measurement/2-summary.md) — 측정 방법이 백분위를 왜곡하는 경우(coordinated omission)
   - [reliability/16-metrics-and-golden-signals](../../reliability/16-metrics-and-golden-signals/2-summary.md) — histogram vs summary, 버킷 실험

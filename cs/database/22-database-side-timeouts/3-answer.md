@@ -53,7 +53,7 @@
 - 첫 번째 UPDATE는 트랜잭션 안에 남는다. 앱이 그대로 COMMIT하면 **첫 번째만 커밋**된다. 반쯤 된 트랜잭션이다.
 - 그래서 1205를 받으면 앱이 명시적으로 ROLLBACK하고, 필요하면 처음부터 재시도한다.
 - 같은 1205(`ER_LOCK_WAIT_TIMEOUT`)가 메타데이터 락 대기(`lock_wait_timeout`)에서도 난다. 그 문장이 `ALTER TABLE` 같은 DDL이면 실행 전에 이미 암묵 커밋이 일어났으므로 "트랜잭션이 살아 있다"는 설명이 맞지 않는다(MySQL 8.4 문서 15.3.3 암묵 커밋).
-- 1213(교착)은 InnoDB가 희생자 트랜잭션을 **통째로** 롤백한다. 서버 SQLSTATE도 40001로, 재시도 대상임이 드러난다(1205는 HY000). 다만 Connector/J는 1205도 40001로 바꿔 올리므로 JDBC에서는 SQLSTATE로 둘을 가를 수 없고 `getErrorCode()`를 본다([56번](../56-db-symptom-index/2-summary.md) §2).
+- 1213(교착)은 InnoDB가 희생자 트랜잭션을 **통째로** 롤백한다. 서버 SQLSTATE도 40001로, 재시도 대상임이 드러난다(1205는 HY000). 다만 Connector/J는 1205도 40001로 바꿔 올리므로 JDBC에서는 SQLSTATE로 둘을 구분할 수 없고 `getErrorCode()`를 본다([56번](../56-db-symptom-index/2-summary.md) §2).
 
 ### 6. 정렬
 

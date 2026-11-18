@@ -290,7 +290,7 @@ KILL <id>;         -- 연결
 
 - 현상: 배포의 마이그레이션 단계에서 서비스 전체가 멈춘다. DDL 자체는 아주 빠른 작업이다.
 - 보이는 형태: `pg_stat_activity`에서 `ALTER TABLE`이 `wait_event_type = Lock`. 그 뒤로 같은 테이블의 SELECT가 줄줄이 `Lock` 대기이고, `pg_blocking_pids`가 DDL의 pid를 가리킨다.
-- 원인: 앞에 오래 열린 트랜잭션(보통 `idle in transaction`)이 약한 락을 쥐고 있다. DDL은 `AccessExclusiveLock`을 기다리며 줄 앞에 선다. 뒤따르는 읽기는 DDL과 충돌하므로 추월하지 못한다.
+- 원인: 앞에 오래 열린 트랜잭션(보통 `idle in transaction`)이 약한 락을 잡고 있다. DDL은 `AccessExclusiveLock`을 기다리며 줄 앞에 선다. 뒤따르는 읽기는 DDL과 충돌하므로 추월하지 못한다.
 - 대처: 마이그레이션 역할에 `lock_timeout = '2s'`(예시)를 두고 실패 시 재시도한다. 배포 전 오래 열린 트랜잭션을 확인한다. MySQL이면 `lock_wait_timeout`을 세션에서 짧게 둔다. 마이그레이션 일반은 [26-schema-migration](../26-schema-migration/2-summary.md).
 
 ### 4. idle in transaction — 락 유지와 vacuum 정지
@@ -319,7 +319,7 @@ KILL <id>;         -- 연결
 - 정렬: `lock_timeout` < `statement_timeout` < 드라이버 query timeout < `socketTimeout` < 요청 데드라인. 서버 쪽이 먼저 터져야 일이 멈추고 커넥션이 산다.
 - `lock_timeout` 없는 DDL은 락 대기열 앞에 서서, 충돌하는 뒤의 모든 쿼리를 멈춘다.
 - MySQL 8.4 `innodb_lock_wait_timeout`(기본 50초) 초과는 **문장만** 롤백한다. 1205를 받으면 앱이 트랜잭션을 롤백해야 한다.
-- idle in transaction은 락을 쥐고 vacuum을 막는다. 타임아웃은 세션을 끊는다(25P03).
+- idle in transaction은 락을 잡고 vacuum을 막는다. 타임아웃은 세션을 끊는다(25P03).
 
 ## 관련 주제·근거
 

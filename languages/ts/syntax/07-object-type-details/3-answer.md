@@ -47,11 +47,11 @@ ex.07a.ts(14,7): error TS2322: Type 'string | undefined' is not assignable to ty
 | `u.nickname === undefined ? 0 : u.nickname.length` | 비교로 좁힌다 | **통과** |
 | `u.nickname?.length` | 옵셔널 체이닝 | **통과** |
 | `(u.nickname ?? "").length` | 널 병합 | **통과** |
-| `const probe: null = u.nickname` | ★ 탐침 | **TS2322** — 「Type 'string \| undefined' …」 |
+| `const probe: null = u.nickname` | ★ probe | **TS2322** — 「Type 'string \| undefined' …」 |
 | `const asString: string = u.nickname` | `string` 자리 | **TS2322** |
 | `const partial: User = { id: "a" }` | 키를 아예 뺀다 | **통과** — `?` 의 목적 |
 
-- ★★★ 탐침이 답을 글자로 적어 준다 — **`?` 는 타입에 `| undefined` 를 더한 것**이다(`strictNullChecks` 아래에서).
+- ★★★ probe가 답을 글자로 적어 준다 — **`?` 는 타입에 `| undefined` 를 더한 것**이다(`strictNullChecks` 아래에서).
 - ★★ 그래서 「**있을 수도 없을 수도 있다**」가 **값의 타입**으로 내려온다. 쓰는 자리마다 좁히기가 필요한 이유다.
 - ★ 푸는 길이 셋이고 **셋 다 진단 목록에 없다** — 비교 · `?.` · `??`.
 
@@ -157,7 +157,7 @@ ex.07c.ts(26,5): error TS2413: 'number' index type 'number' is not assignable to
 | 인터페이스 | 무엇 | 결과 |
 |---|---|---|
 | `Bag` + `bag.nothing.toFixed(2)` | 선언에 없는 키를 읽는다 | ★★★ **통과** |
-| `Bad { [k: string]: number; name: string }` | 프로퍼티가 인덱스 타입과 어긋남 | **TS2411** |
+| `Bad { [k: string]: number; name: string }` | 프로퍼티가 인덱스 타입과 불일치 | **TS2411** |
 | `Widened { [k: string]: number \| string; … }` | 인덱스 타입을 넓혔다 | **통과** |
 | `TwoKinds { [i: number]: string; [k: string]: string }` | 두 인덱스가 같은 타입 | **통과** |
 | `Clash { [i: number]: number; [k: string]: string }` | 숫자 인덱스가 문자열 인덱스에 안 맞음 | **TS2413** |
@@ -286,7 +286,7 @@ export declare function pick(c: Conf): {
   4번의 `exactOptionalPropertyTypes` 가 갈라 주는 것이 정확히 이 차이다.
 - ★ `as const` 는 `readonly` 를 **재귀적으로** 붙이고 배열을 튜플로 만든다([**03번 주제**](../03-basic-type-annotations/)).
 
-### 6. ★★★ `readonly host` 가 **`바뀜`** 으로 찍히고, `"port" in` 이 **`false` 와 `true`** 로 갈린다
+### 6. ★★★ `readonly host` 가 **`바뀜`** 으로 찍히고, `"port" in` 이 **`false` 와 `true`** 로 나뉜다
 
 **출력**
 
@@ -350,9 +350,9 @@ undefined 쪽  : undefined {"host":"b"} true
 
 - ★★★ 방출된 파일에 수정자가 **한 글자도 없다.** `const loose = c;` 는 `as` 가 사라진 자리이고, 그 다음 줄에서 값이 **그대로 바뀌었다**.
 - ★★ 인덱스 시그니처도 런타임 보호가 아니다 — `c.nothing` 은 그냥 `undefined` 다.
-- ★★★ 마지막 두 줄이 `exactOptionalPropertyTypes` 의 존재 이유다. **`JSON.stringify` 로는 둘이 똑같고 `in` 으로만 갈린다.**\
+- ★★★ 마지막 두 줄이 `exactOptionalPropertyTypes` 의 존재 이유다. **`JSON.stringify` 로는 둘이 똑같고 `in` 으로만 달라진다.**\
   「키가 없다」와 「키가 `undefined`」는 **JS 에서 다른 객체**인데, 기본 설정의 타입은 그 차이를 못 적는다.
-- ★ 그래서 `in` 이나 `Object.keys` 로 동작이 갈리는 API 를 다룬다면 그 플래그를 켜는 것이 값을 한다.
+- ★ 그래서 `in` 이나 `Object.keys` 로 동작이 달라지는 API 를 다룬다면 그 플래그를 켜는 것이 값을 한다.
 
 ### 7. ★★ 「없을 수도 있다」가 **값의 타입으로 내려오기** 때문이다
 
@@ -361,16 +361,16 @@ undefined 쪽  : undefined {"host":"b"} true
 - `?` 는 두 가지를 한 번에 말한다 — ① **키가 없어도 된다** ② 그래서 **읽으면 `undefined` 일 수 있다**.
 - `strictNullChecks` 아래에서 `undefined` 는 **`string` 에 안 들어가는 별개의 타입**이다([**04번 주제**](../04-any-unknown-never-void/)).\
   그러니 `string | undefined` 를 `string` 처럼 쓰려면 **한 갈래를 잘라 내야** 한다.
-- ★★ 1번의 탐침이 그것을 글자로 보여 준다 — 「Type 'string \| undefined' is not assignable to type 'null'.」
+- ★★ 1번의 probe가 그것을 글자로 보여 준다 — 「Type 'string \| undefined' is not assignable to type 'null'.」
 - ★ 그래서 「표시일 뿐」이 아니다. **타입이 바뀌고, 그 결과로 검사가 생긴다.**
-- ★★ 뒤집어서 **직접 던져 봤다** — `strictNullChecks` 를 끄면 1번의 진단이 **3건에서 1건**으로 줄고, 탐침이 말하는 타입이 그냥 「`string`」이 된다.
+- ★★ 뒤집어서 **직접 던져 봤다** — `strictNullChecks` 를 끄면 1번의 진단이 **3건에서 1건**으로 줄고, probe가 말하는 타입이 그냥 「`string`」이 된다.
 
 ```text
 ===== tsc --pretty false --noEmit --strictNullChecks false ex.07a.ts (tsc exit=1) =====
 ex.07a.ts(13,7): error TS2322: Type 'string' is not assignable to type 'null'.
 ```
 
-- ★★★ 같은 판에서 선언 방출도 달라진다 — `pick` 의 반환이 **`port: number`** 다. `| undefined` 가 사라졌다.
+- ★★★ 같은 버전에서 선언 방출도 달라진다 — `pick` 의 반환이 **`port: number`** 다. `| undefined` 가 사라졌다.
 
 ```text
 ===== tsc --pretty false --declaration --emitDeclarationOnly --strictNullChecks false ex.07d.ts (tsc exit=0) =====
@@ -440,7 +440,7 @@ export declare function pick(c: Conf): {
 | `exactOptionalPropertyTypes` | `{ ...opts, port: maybe }` 같은 **스프레드 조립 관용구**가 전부 걸린다 |
 
 - ★★ 그래서 읽는 법은 「**엄격도가 낮은 플래그**」가 아니라 「**마이그레이션 비용이 큰 플래그**」다.
-- ★ 고르는 기준 — 6번처럼 **`in` 이나 `Object.keys` 로 동작이 갈리는 경계**가 있으면 `exactOptionalPropertyTypes` 가 값을 하고,\
+- ★ 고르는 기준 — 6번처럼 **`in` 이나 `Object.keys` 로 동작이 달라지는 경계**가 있으면 `exactOptionalPropertyTypes` 가 값을 하고,\
   배열·맵을 많이 훑는 코드면 `noUncheckedIndexedAccess` 가 값을 한다.
 
 ### 11. ★★ 세 층
@@ -448,8 +448,8 @@ export declare function pick(c: Conf): {
 | 층 | 이 주제의 항목 |
 |---|---|
 | **언어 보장** | `?` 는 `\| undefined` 를 더한다 · `readonly` 프로퍼티는 **대입문만** 막는다 · 인덱스 시그니처는 선언된 프로퍼티에 **조건을 건다** · 세 수정자는 **방출에 안 남는다** |
-| **설정에 달린 것** | ★★ **이 주제의 본체다** — `strictNullChecks`(`strict` 에 딸려 기본 `true`) · `exactOptionalPropertyTypes`(기본 `false`) · `noUncheckedIndexedAccess`(기본 `false`). **두 판을 다 실었고 설정 전문도 같은 블록에 있다** |
-| **이 판(7.0.2)의 관찰** | 진단 문구와 코드 배정(`TS18048`·`TS2540`·`TS4104`·`TS2411`·`TS2413`·`TS2375`) · `.d.ts` 가 수정자를 **적은 그대로** 싣는 것 · `pick` 의 반환이 `port: number \| undefined` 로 적히는 것 |
+| **설정에 달린 것** | ★★ **이 주제의 핵심이다** — `strictNullChecks`(`strict` 에 딸려 기본 `true`) · `exactOptionalPropertyTypes`(기본 `false`) · `noUncheckedIndexedAccess`(기본 `false`). **두 버전을 다 실었고 설정 전문도 같은 블록에 있다** |
+| **이 버전(7.0.2)의 관찰** | 진단 문구와 코드 배정(`TS18048`·`TS2540`·`TS4104`·`TS2411`·`TS2413`·`TS2375`) · `.d.ts` 가 수정자를 **적은 그대로** 싣는 것 · `pick` 의 반환이 `port: number \| undefined` 로 적히는 것 |
 
 - ★ 이 주제에서 **「설정에 달린 것」 칸이 가장 두껍다.** [**06번 주제**](../06-excess-property-checks/)가 정반대였다 — 거기는 `strict` 를 꺼도 결과가 같았다.
 
@@ -458,19 +458,19 @@ export declare function pick(c: Conf): {
 | 무엇 | 어떻게 | 결과 |
 |---|---|---|
 | 판 | `tsc --version` · `node --version` | `Version 7.0.2` · `v18.19.1` |
-| 선택 프로퍼티 | `--noEmit ex.07a.ts` | exit 1 · **3건**(8·13·14행) · 탐침이 `string \| undefined` |
+| 선택 프로퍼티 | `--noEmit ex.07a.ts` | exit 1 · **3건**(8·13·14행) · probe가 `string \| undefined` |
 | `readonly` | `--noEmit ex.07b.ts` | exit 1 · `TS2540`·`TS4104`·`TS2339` **3건** · 양방향 대입 2줄 통과 |
 | 인덱스 시그니처 | `--noEmit ex.07c.ts` | exit 1 · `TS2411`·`TS2413` **2건** · 없는 키 읽기 통과 |
 | 같은 파일 기본값 | `--noEmit ex.07e.ts` | exit **0** · 진단 **0건** |
 | 같은 파일 설정 | `-p tsconfig.07.json` | exit 1 · `TS2375`·`TS18048` **2건** |
-| `strictNullChecks` 끔 | `--noEmit --strictNullChecks false ex.07a.ts` | exit 1 · **1건**으로 줄고 탐침이 `string` |
+| `strictNullChecks` 끔 | `--noEmit --strictNullChecks false ex.07a.ts` | exit 1 · **1건**으로 줄고 probe가 `string` |
 | 〃 선언 방출 | `--declaration --emitDeclarationOnly --strictNullChecks false ex.07d.ts` | exit 0 · `pick` 반환이 `port: number` |
 | 선언 방출 | `--declaration --emitDeclarationOnly ex.07d.ts` | exit 0 · 수정자 보존 · `pick` 반환이 `port: number \| undefined` |
 | 방출·실행 | `tsc ex.07f.ts` + `node ex.07f.js` | tsc exit 0 · node exit 0 · `readonly` 가 `바뀜` · `"port" in` 이 `false`/`true` |
 
-**구현 의존 항목 — 판이 오르면 다시 돌릴 것**
+**구현 의존 항목 — 버전이 오르면 다시 돌릴 것**
 
-- 두 플래그의 **기본값이 `false`** 라는 것 — `tsc --help --all` 에서 확인했고 실행으로 재확인했다. 판이 오르면 `strict` 묶음이 바뀔 수 있다.
+- 두 플래그의 **기본값이 `false`** 라는 것 — `tsc --help --all` 에서 확인했고 실행으로 재확인했다. 버전이 오르면 `strict` 묶음이 바뀔 수 있다.
 - `.d.ts` 가 `readonly tags?: readonly string[]` 를 적은 그대로 싣는 것 — 선언 방출기의 구현이다.
 - `pick` 의 반환이 `port: number | undefined` 로 적히는 것 — 「선택성이 안 따라간다」만 성질로 읽는다.
 - 진단 문구 전문 — 코드가 더 오래 간다.

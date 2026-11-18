@@ -112,9 +112,9 @@ raw = [p < 0.05 for p in ps]
                      Ai = "i번째 참인 귀무를 기각"
 ```
 
-- *Bonferroni 보정*: 문턱을 α/m로 낮춰 FWER ≤ α를 보장한다(OpenIntro 7.5.6은 α* = α/K로 쓴다. K는 비교 수).
+- *Bonferroni 보정*: 임계값을 α/m로 낮춰 FWER ≤ α를 보장한다(OpenIntro 7.5.6은 α* = α/K로 쓴다. K는 비교 수).
 - 합집합 상한만 쓰므로 **검정끼리 독립일 필요가 없다**. Benjamini–Hochberg 1995 2절도 "각 가설을 α/m로 검정하면 P(V ≥ 1) ≤ α가 보장된다"고 적는다.
-- 대가: 검정 수가 늘수록 문턱이 작아져 진짜 효과도 놓친다(검정력 하락). 지표끼리 상관이 클수록 실제 FWER이 α보다 훨씬 작아져, 필요 이상으로 보수적이 된다.
+- 대가: 검정 수가 늘수록 임계값이 작아져 진짜 효과도 놓친다(검정력 하락). 지표끼리 상관이 클수록 실제 FWER이 α보다 훨씬 작아져, 필요 이상으로 보수적이 된다.
 
 ### 실험: 지표끼리 상관이 있으면
 
@@ -159,7 +159,7 @@ raw = [p < 0.05 for p in ps]
           ↑ Bonferroni 문턱과 같다           ↑ 순위가 낮을수록 문턱이 느슨해진다
 ```
 
-- "가장 큰 k"라서, 중간에 문턱을 넘는 순위가 있어도 더 뒤의 순위가 문턱 아래면 그 앞은 모두 기각한다(step-up).
+- "가장 큰 k"라서, 중간에 임계값을 넘는 순위가 있어도 더 뒤의 순위가 임계값 아래면 그 앞은 모두 기각한다(step-up).
 - 보장(BH 1995 정리 1과 그 보조정리): **검정 통계량이 서로 독립**이면, 거짓 귀무가 어떻게 섞여 있든 FDR ≤ (m0/m)·q ≤ q. 논문의 비고는 거짓 귀무 쪽 통계량끼리의 독립은 증명에 필요 없다고 적는다.
   - 독립이 아닐 때: Benjamini–Yekutieli 2001(Annals of Statistics 29(4)) 정리 1.2는 참인 귀무 쪽 통계량에 대한 **양의 회귀 의존(PRDS)**이면 같은 절차가 FDR ≤ (m0/m)·q를 지킨다고 증명한다. 임의의 의존에서는 q를 Σ(1/i)(i = 1..m)로 나눈 보수적 변형이 필요하다(같은 논문 정리 1.3).
 
@@ -205,9 +205,9 @@ raw = [p < 0.05 for p in ps]
 
 ## 쓰이는 자료구조·알고리즘
 
-- **Bonferroni**: 문턱 α/m 비교만 한다. O(m).
+- **Bonferroni**: 임계값 α/m 비교만 한다. O(m).
 - **BH 절차**: p값 정렬 O(m log m) + 한 번 훑기. 정렬은 [algorithm/09-sorting-in-practice](../../algorithm/09-sorting-in-practice/2-summary.md).
-  - SQL에서는 `row_number() OVER (ORDER BY p)`로 순위를 매기고 문턱선과 비교한다. 윈도 함수는 [database/05-window-functions-and-cte](../../database/05-window-functions-and-cte/2-summary.md).
+  - SQL에서는 `row_number() OVER (ORDER BY p)`로 순위를 매기고 임계값선과 비교한다. 윈도 함수는 [database/05-window-functions-and-cte](../../database/05-window-functions-and-cte/2-summary.md).
 - **시뮬레이션(A/A)**: 효과 0인 데이터를 반복 생성해 실제 거짓 양성률을 잰다. 난수 생성기 성질은 [math/12-randomness-and-prng](../../math/12-randomness-and-prng/2-summary.md).
 
 ## 적용 — 풀어나가는 법
@@ -308,7 +308,7 @@ FROM r WHERE k <= 10 ORDER BY k;
 ### 3. 수백 개 지표에 Bonferroni → 진짜 효과도 다 놓침
 
 - 현상: 지표 300개 전부에 Bonferroni(0.05/300 ≈ 0.00017). 몇 달째 "유의한 지표 없음".
-- 보이는 형태: 효과 크기 추정치는 일관되게 양수인데 아무것도 문턱을 못 넘는다.
+- 보이는 형태: 효과 크기 추정치는 일관되게 양수인데 아무것도 임계값을 못 넘는다.
 - 원인: Bonferroni는 독립이 아니어도 FWER을 묶지만, 상관이 큰 지표가 많으면 지나치게 보수적이다(실험 E: ρ = 0.8에서 실제 FWER 0.018). 검정력이 바닥이다.
 - 대처: 결정에 쓰는 1차 지표는 소수로 줄인다. 탐색 지표는 FDR(BH)로 본다(의존 구조에 따른 보장 조건은 4절). 같은 것을 재는 지표(중복 지표)는 묶는다.
 
@@ -342,7 +342,7 @@ FROM r WHERE k <= 10 ORDER BY k;
   - [reliability/43-alerting-and-on-call](../../reliability/43-alerting-and-on-call/2-summary.md) — 경보 수와 거짓 경보
   - [domain-modeling/advanced/27-ab-assign](../../domain-modeling/advanced/27-ab-assign/2-summary.md) — A/B 배정 구현
 - 문헌
-  - OpenIntro Statistics 4판 7.5.6 "Multiple comparisons and controlling Type 1 Error rate"(Bonferroni α* = α/K, K = k(k−1)/2), 예제 7.44(data snooping) — <https://www.openintro.org/book/os/> (커리큘럼의 "7.5C"는 이 판 PDF 목차에서는 7.5.6이다)
+  - OpenIntro Statistics 4판 7.5.6 "Multiple comparisons and controlling Type 1 Error rate"(Bonferroni α* = α/K, K = k(k−1)/2), 예제 7.44(data snooping) — <https://www.openintro.org/book/os/> (커리큘럼의 "7.5C"는 이 버전 PDF 목차에서는 7.5.6이다)
   - Benjamini, Hochberg (1995) "Controlling the False Discovery Rate: A Practical and Powerful Approach to Multiple Testing", JRSS B 57(1):289–300 — 표 1, 2.1절(FDR 정의와 두 성질), 3.1절(절차, 정리 1: 독립 검정 통계량에서 FDR ≤ (m0/m)q). JSTOR 스캔 사본으로 열람
   - Benjamini, Yekutieli (2001) "The control of the false discovery rate in multiple testing under dependency", Annals of Statistics 29(4):1165–1188 — 정리 1.2(PRDS에서 BH 절차의 FDR 통제), 정리 1.3(임의 의존에서 Σ1/i 변형). 저자 사본 <https://www.math.tau.ac.il/~ybenja/MyPapers/benjamini_yekutieli_ANNSTAT2001.pdf>
   - Ioannidis (2005) "Why Most Published Research Findings Are False", PLoS Med 2(8): e124 — R의 정의, PPV = (1 − β)R/(R − βR + α), 따름정리 1~6 <https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.0020124>

@@ -129,7 +129,7 @@ print("exit %d" % run.returncode)
 print("blocked probes: %d / %d" % (blocked, len(probes)))
 ```
 
-- 여덟 탐침 중 어느 것이 컴파일에서 막히나? 막힌 탐침의 진단 문구는 무엇인가?
+- 여덟 probe 중 어느 것이 컴파일에서 막히나? 막힌 probe의 진단 문구는 무엇인가?
 
 ### 3. ★★ 자물쇠를 기다리는 동안 풀 스레드는 (예측)
 
@@ -346,7 +346,7 @@ fun main() = runBlocking {
 
 ### 8. 컴파일러가 보는 것 (경계)
 
-- 2번의 여덟 탐침 가운데 컴파일러의 판정과 실제 위험이 어긋나는 것이 있나? 있다면 왜 어긋나나 — 검사기는 무엇을 알아보나?
+- 2번의 여덟 probe 가운데 컴파일러의 판정과 실제 위험이 어긋나는 것이 있나? 있다면 왜 어긋나나 — 검사기는 무엇을 알아보나?
 
 ### 9. 닫은 채널 (경계)
 
@@ -364,7 +364,7 @@ fun main() = runBlocking {
 
 선행은 [54번 주제](../54-coroutine-context-dispatchers-and-withcontext/)(디스패처 · `withContext`)와 [52번 주제](../52-coroutine-basics-suspend-scope-launch-async/)(`suspend` 호출 규칙)다.
 
-이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5 · kotlinx-coroutines 1.11.0** 에서 실제로 던져 받은 것이다.
+이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5 · kotlinx-coroutines 1.11.0** 에서 실제로 실행해 받은 것이다.
 
 ## 복습 기록
 

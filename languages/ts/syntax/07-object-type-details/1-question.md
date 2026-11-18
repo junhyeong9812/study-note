@@ -30,7 +30,7 @@ console.log(direct, guarded, chained, fallback, probe, asString, full, partial);
 ```
 
 - 진단은 **몇 건**이고 **어느 줄**인가?
-- `null` 탐침(13행)이 말하는 `nickname` 의 타입은 무엇인가?
+- `null` probe(13행)이 말하는 `nickname` 의 타입은 무엇인가?
 
 ### 2. `readonly` 를 양쪽으로 넣어 보면 (예측)
 
@@ -101,7 +101,7 @@ console.log(hit, miss);
 - 진단은 **몇 건**이고 **어느 인터페이스**인가?
 - `const miss = bag.nothing.toFixed(2);` 는 어느 쪽인가?
 
-### 4. 같은 파일을 설정 두 판으로 던지면 (예측)
+### 4. 같은 파일을 설정 두 버전으로 던지면 (예측)
 
 ```ts
 // ex.07e.ts
@@ -191,7 +191,7 @@ console.log("undefined 쪽  :", explicitUndefined.port, JSON.stringify(explicitU
 
 ### 11. 세 층 가르기 (연결)
 
-- 이 주제에서 **언어 보장** · **설정에 달린 것** · **이 판(7.0.2)의 관찰**에 각각 해당하는 항목을 하나씩 댈 수 있는가?
+- 이 주제에서 **언어 보장** · **설정에 달린 것** · **이 버전(7.0.2)의 관찰**에 각각 해당하는 항목을 하나씩 댈 수 있는가?
 
 ## 실행 환경
 

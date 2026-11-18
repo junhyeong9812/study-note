@@ -200,7 +200,7 @@ ex.c:3:1: runtime error: nan is outside the range of representable values of typ
 3 -3 -2147483648 -2147483648 4294967295
 ```
 
-**다섯 값과 갈린 개수**
+**다섯 값과 달라진 개수**
 
 | 식 | `-O0` | `-O2` |
 |---|---|---|

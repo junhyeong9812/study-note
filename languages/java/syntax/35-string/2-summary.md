@@ -58,7 +58,7 @@ String b = "hello";                  String f = var + "lo";   (var = "hel")
 
 1. 같은 글자를 담은 두 `String` 이 **언제 같은 객체이고 언제 아닌가** — 그 경계는 누가 정하는가.
 2. "불변"이 **무엇을 보장하고 무엇을 보장하지 않는가.**
-3. `length()` 가 세는 것은 **무엇인가** — 사람이 세는 글자 수와 언제 갈리는가.
+3. `length()` 가 세는 것은 **무엇인가** — 사람이 세는 글자 수와 언제 달라지는가.
 
 ## 동작 방식
 
@@ -433,7 +433,7 @@ substring(2,1) -> java.lang.StringIndexOutOfBoundsException: begin 2, end 1, len
 substring(6)   -> java.lang.StringIndexOutOfBoundsException: begin 6, end 5, length 5
 ```
 
-- **같은 코드, 같은 예외 클래스, 다른 메시지.** 이 문서에서 버전이 갈린 유일한 자리다.
+- **같은 코드, 같은 예외 클래스, 다른 메시지.** 이 문서에서 버전이 달라진 유일한 자리다.
 - 함의: **예외 메시지를 파싱하거나 테스트에서 문자열로 단언하면 JDK를 올릴 때 깨진다.**
 - `substring(5)`(길이와 같은 인덱스)는 **예외가 아니라 빈 문자열**이다 — 경계가 하나 차이다.
 
@@ -636,7 +636,7 @@ JDK 25: a=2060468723 b=2060468723 c=622488023 f=1933863327
 **기준 소스** — [JLS SE 21 §3.10.5 String Literals](https://docs.oracle.com/javase/specs/jls/se21/html/jls-3.html) · [§15.29 Constant Expressions](https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html) · [Java SE 21 `String` API 문서](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/lang/String.java`(`lib/src.zip`).
 **실행 검증** — 이 문서의 모든 출력은 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
 프로그램 5개를 **17.0.13 · 21.0.5 · 25.0.1** 에서 모두 돌렸다.\
-**한 군데가 갈렸다** — `substring` 의 예외 메시지가 17과 21에서 다르다(「어디서 틀리나」 3번).
+**한 군데가 달라졌다** — `substring` 의 예외 메시지가 17과 21에서 다르다(「어디서 틀리나」 3번).
 **버전** — `String` 자체는 Java 1.0. 아래 `@since` 는 JDK 21 `src.zip` 에서 직접 읽은 것이다.\
 `isBlank`·`strip`·`repeat`·`lines` = **11** · `formatted`·`stripIndent` = **15** ·
 `chars`·`codePoints` = **`CharSequence` 의 default 로 1.8**(`String` 의 전용 재정의는 **9**) ·

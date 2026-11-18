@@ -104,8 +104,8 @@ emp8 (CTE — emp 4행 + UNION ALL 로 얹은 4행)
 
 - **동률이 세 덩어리다** — `300`(ann·eve) · `400`(dan·gus·hui) · `500`(bob·fay).\
   동률이 없으면 [29번](../29-ranking-functions/)의 `RANK`·`DENSE_RANK`·`ROW_NUMBER` 가 **전부 같은 값**을 내서 셋을 구분할 수 없다.\
-  [28번](../28-window-frames-rows-range-groups/)의 `ROWS` 대 `RANGE` 도 **동률이 있어야만 갈린다.**
-- **`salary` 에 `NULL` 이 하나 있다**(`cho`) — 창 안에서 `NULL` 이 앞에 서는지 뒤에 서는지가 두 엔진에서 갈린다([08번](../08-order-by-null-position-stability/)).
+  [28번](../28-window-frames-rows-range-groups/)의 `ROWS` 대 `RANGE` 도 **동률이 있어야만 달라진다.**
+- **`salary` 에 `NULL` 이 하나 있다**(`cho`) — 창 안에서 `NULL` 이 앞에 서는지 뒤에 서는지가 두 엔진에서 달라진다([08번](../08-order-by-null-position-stability/)).
 - **`dept_id` 에 `NULL` 이 하나 있다**(`dan`) — `PARTITION BY dept_id` 가 `NULL` 을 **한 칸으로 묶는다**([27번](../27-partition-by-and-window-order-by/)).
 - **행이 8개다** — `NTILE(3)` 이 `3/3/2` 로 갈려 **나머지를 어디에 붙이나**가 보인다([29번](../29-ranking-functions/)).
 
@@ -289,7 +289,7 @@ ERROR 1055 (42000) at line 1: Expression #1 of SELECT list is not in GROUP BY cl
 ```
 
 그림 해설 — `name` 이 그대로 있고 부서별 합계가 **행마다 붙었다.** 같은 요구를 `GROUP BY` 로 쓰면 위 에러가 난다.\
-**두 엔진의 값은 한 자리도 안 갈렸다.** 갈린 것은 `dan`(부서 `NULL`) 행의 **위치**뿐이다 —\
+**두 엔진의 값은 한 자리도 달라지지 않았다.** 달라진 것은 `dan`(부서 `NULL`) 행의 **위치**뿐이다 —\
 PG 는 `ORDER BY dept_id` 에서 `NULL` 을 뒤에, MySQL 은 앞에 놓는다([08번](../08-order-by-null-position-stability/)). **창이 아니라 출력 정렬의 문제다.**
 
 비용 — 부서별 합계를 `GROUP BY` 로 따로 구해 **다시 조인**하는 것과 결과가 같다. 윈도우는 그 조인을 없앤다.
@@ -495,7 +495,7 @@ SELECT dept_id, COUNT(*) AS c, SUM(COUNT(*)) OVER () AS total FROM emp8 GROUP BY
 | 윈도우 함수의 **도입 버전** | 엔진 | PG 8.4 · MySQL 8.0 |
 | 윈도우가 집계보다 빠른가 | **측정 안 함** | 이 주제에서 재지 않았다. 적지 않는다 |
 
-- **이 주제에서 두 엔진의 값이 갈린 자리는 없다.** 갈린 것은 에러 메시지와 `dan` 행의 출력 위치뿐이다.
+- **이 주제에서 두 엔진의 값이 달라진 자리는 없다.** 달라진 것은 에러 메시지와 `dan` 행의 출력 위치뿐이다.
 - 출력 위치 차이는 **창이 아니라 `ORDER BY` 의 `NULL` 규칙**이다([08번](../08-order-by-null-position-stability/)).
 
 ## 언제 쓰고 언제 안 쓰나
@@ -590,7 +590,7 @@ ERROR 1064 (42000) at line 1: You have an error in your SQL syntax; check the ma
 **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
 본문에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
 **버전** — 윈도우 함수는 **PG 8.4 부터** · **MySQL 8.0 부터**다(MySQL 5.7 에는 없다).\
-이 주제에서 두 엔진의 **결과가 갈린 자리는 없다** — 갈린 것은 에러 메시지뿐이다(6번).\
+이 주제에서 두 엔진의 **결과가 달라진 자리는 없다** — 달라진 것은 에러 메시지뿐이다(6번).\
 **선행** — [21 집계 함수와 `COUNT` 의 세 형태](../21-aggregate-functions-count-forms/) · [22 GROUP BY 와 비집계 열 규칙](../22-group-by-nonaggregated-columns/).\
 **이 주제는 그 둘과의 대비가 본문이다** — 「접는다」와 「안 접는다」.\
 **뒤 주제** — [27 PARTITION BY 와 윈도우 ORDER BY](../27-partition-by-and-window-order-by/) · [28 프레임](../28-window-frames-rows-range-groups/) · [29 순위 함수](../29-ranking-functions/) · [30 오프셋·경계 함수](../30-offset-and-boundary-functions/) · [31 평가 시점](../31-window-evaluation-timing/).

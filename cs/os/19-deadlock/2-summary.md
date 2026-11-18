@@ -148,7 +148,7 @@ void lock_both(pthread_mutex_t *a, pthread_mutex_t *b) {
 
 - **wait-for 그래프 + DFS 사이클 탐지** — 간선을 따라 깊이 우선으로 내려가다 "지금 경로 위의 노드"를 다시 만나면 사이클이다. InnoDB·PostgreSQL·JVM(`findDeadlockedThreads`)이 쓰는 방식이다. [algorithm/12-dfs](../../algorithm/12-dfs/2-summary.md)(CycleDetector), [data-structure/08-graph](../../data-structure/08-graph/2-summary.md)
 - **락 전순서** — 락에 번호(주소, id)를 매기고 정렬된 순서로 잡는다. 여러 개를 잡을 때는 먼저 **정렬**한다(예: `ORDER BY id FOR UPDATE`).
-- **락 순서 그래프** — lockdep·TSan은 "L1을 쥔 채 L2를 잡았다"를 간선으로 기록하고, 그 그래프의 사이클을 찾는다. 실제 대기가 아닌 **순서 이력**의 사이클이라 멈추기 전에 잡는다.
+- **락 순서 그래프** — lockdep·TSan은 "L1을 잡은 채 L2를 잡았다"를 간선으로 기록하고, 그 그래프의 사이클을 찾는다. 실제 대기가 아닌 **순서 이력**의 사이클이라 멈추기 전에 잡는다.
 - **은행원 알고리즘** — 안전 순서를 찾는 탐욕 탐색이다. "지금 가진 cash로 끝낼 수 있는 프로세스"를 하나씩 골라 끝났다고 치고 cash를 늘린다(EWD 623).
 - **강한 연결 요소** — 여러 사이클이 얽힌 큰 교착 덩어리를 한 번에 찾을 때 쓴다. [algorithm/18-scc](../../algorithm/18-scc/2-summary.md)
 
@@ -233,7 +233,7 @@ SELECT pid, pg_blocking_pids(pid), query FROM pg_stat_activity WHERE wait_event_
 - **원인**: 두 경로가 같은 두 락을 반대 순서로 잡았다. 흔히 `synchronized` 메서드가 다른 객체의 `synchronized` 메서드를 부르며 숨어 있다. OSTEP는 `v1.addAll(v2)`와 `v2.addAll(v1)`의 동시 호출 예를 든다(32.3).
 - **대처**
   - 긴급: 재시작. JVM은 교착을 **탐지만** 하고 풀지 않는다.
-  - 근본: 락 순서를 정한다. 락을 쥔 채 외부 코드(콜백·다른 객체 메서드)를 부르지 않는다.
+  - 근본: 락 순서를 정한다. 락을 잡은 채 외부 코드(콜백·다른 객체 메서드)를 부르지 않는다.
   - 탐지 자동화: 헬스 체크에서 `findDeadlockedThreads()`가 `null`이 아니면 경보한다. 가상 스레드가 낀 사이클은 이 메서드가 찾지 못한다(Java SE `ThreadMXBean` 문서).
 
 ### 2. MySQL `ERROR 1213` → 트랜잭션 하나가 롤백된다
@@ -277,13 +277,13 @@ SELECT pid, pg_blocking_pids(pid), query FROM pg_stat_activity WHERE wait_event_
 ### 5. 탐지기가 못 보는 교착 → 영원히 기다린다
 
 - **현상**: 교착처럼 멈췄는데 JVM도 DB도 아무 말이 없다.
-- **보이는 형태**: 스레드 덤프에 `Semaphore`·`CountDownLatch`·조건 대기에서 `WAITING (parking)`인 스레드들이 서로를 기다린다. 또는 애플리케이션 락을 쥔 스레드가 DB 락을 기다리고, 그 DB 락을 쥔 트랜잭션의 스레드가 애플리케이션 락을 기다린다.
+- **보이는 형태**: 스레드 덤프에 `Semaphore`·`CountDownLatch`·조건 대기에서 `WAITING (parking)`인 스레드들이 서로를 기다린다. 또는 애플리케이션 락을 잡은 스레드가 DB 락을 기다리고, 그 DB 락을 잡은 트랜잭션의 스레드가 애플리케이션 락을 기다린다.
 - **원인**
   - JVM 탐지는 monitor와 ownable synchronizer의 사이클만 본다. 소유자가 없는 세마포어·래치는 보지 못한다(18번 로컬 재현: `null`).
   - DB 탐지는 DB 안의 락만 본다. 애플리케이션 락과 DB 락이 섞인 사이클은 어느 쪽도 전체 그래프를 갖고 있지 않다.
 - **대처**
   - 모든 대기에 시간 제한을 둔다(`tryAcquire(timeout)`, `lock_timeout`, `innodb_lock_wait_timeout`).
-  - 애플리케이션 락을 쥔 채 DB 호출을 하지 않는다. 또는 둘을 하나의 순서 규칙에 넣는다.
+  - 애플리케이션 락을 잡은 채 DB 호출을 하지 않는다. 또는 둘을 하나의 순서 규칙에 넣는다.
 
 ## 핵심 문장
 

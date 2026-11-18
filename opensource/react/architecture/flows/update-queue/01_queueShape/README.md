@@ -60,7 +60,7 @@ let hasForceUpdate = false;
 
 > Global state that is reset at the beginning of calling `processUpdateQueue`. It should **only** be read right after calling `processUpdateQueue`, via `checkHasForceUpdateAfterProcessing`.
 
-복제할 때 무엇을 남기고 무엇을 버리는지가 여기서 갈린다.
+복제할 때 무엇을 남기고 무엇을 버리는지가 여기서 달라진다.
 
 ```js
 // ReactFiberClassUpdateQueue.js L191-L208

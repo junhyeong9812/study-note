@@ -232,7 +232,7 @@ SELECT trx_id, trx_state, trx_started, trx_mysql_thread_id, trx_query
 FROM information_schema.innodb_trx ORDER BY trx_started;
 ```
 
-- 오래 열린 트랜잭션은 락을 쥐고, 옛 버전 정리(vacuum·purge)를 막는다(16번). PostgreSQL은 `idle_in_transaction_session_timeout`으로 끊을 수 있다(22번).
+- 오래 열린 트랜잭션은 락을 잡고, 옛 버전 정리(vacuum·purge)를 막는다(16번). PostgreSQL은 `idle_in_transaction_session_timeout`으로 끊을 수 있다(22번).
 
 ### 4. 설정 확인
 
@@ -262,7 +262,7 @@ SELECT @@autocommit, @@transaction_isolation, @@innodb_flush_log_at_trx_commit, 
 - **현상**: 두 번째 UPDATE가 실패했는데 첫 번째는 이미 반영돼 있다.
 - **보이는 형태**: 오류 로그는 두 번째 문장 하나뿐인데 첫 번째 변경은 남아 있다. 직접 JDBC를 쓴 코드라면 예외 처리에서 부른 `rollback()`이 오히려 `SQLException`을 던진다. `Connection.rollback()` 명세가 자동 커밋 모드에서 호출하면 예외라고 정한다.
 - **원인**: 커넥션이 자동 커밋 모드였다. 문장마다 이미 커밋됐다. `setAutoCommit(false)` 누락, 또는 `@Transactional`이 프록시를 안 거쳐 적용되지 않았다(24번: 자기 호출).
-- **대처**: 경계를 코드에서 명시한다. 통합 테스트에서 "두 번째 문장 실패 시 첫 번째가 없어야 한다"를 직접 검증한다. 반대 방향 사고도 있다. MySQL에서 `autocommit=0` 세션이 커밋을 잊으면 트랜잭션이 끝없이 열려 락을 쥔다.
+- **대처**: 경계를 코드에서 명시한다. 통합 테스트에서 "두 번째 문장 실패 시 첫 번째가 없어야 한다"를 직접 검증한다. 반대 방향 사고도 있다. MySQL에서 `autocommit=0` 세션이 커밋을 잊으면 트랜잭션이 끝없이 열려 락을 잡는다.
 
 ### 3. MySQL에서 오류를 삼키고 커밋 → 반쪽 커밋
 

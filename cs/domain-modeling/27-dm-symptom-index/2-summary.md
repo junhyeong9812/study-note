@@ -80,7 +80,7 @@
 | 같은 규칙 N벌 | §7 | [01-1](../01-domain-vs-application-logic/2-summary.md) · [07-1](../07-domain-logic-patterns-and-service-layer/2-summary.md) · [06-3](../06-anemic-vs-rich-model/2-summary.md) |
 | 거대 트랜잭션 락 | §6 · §7 | [05-1](../05-aggregates-and-invariants/2-summary.md) · [05-4](../05-aggregates-and-invariants/2-summary.md) |
 | 팀 간 모델 충돌 | §7 | [16-1](../16-bounded-contexts/2-summary.md) · [18-1](../18-context-mapping/2-summary.md) |
-| 미래 예약 1시간 어긋남 · DST 알람 누락/중복 | §4 | [13-1](../13-instant-vs-local-time-and-tz-rules/2-summary.md) · [13-3](../13-instant-vs-local-time-and-tz-rules/2-summary.md) |
+| 미래 예약 1시간 불일치 · DST 알람 누락/중복 | §4 | [13-1](../13-instant-vs-local-time-and-tz-rules/2-summary.md) · [13-3](../13-instant-vs-local-time-and-tz-rules/2-summary.md) |
 | 과거 금액 재계산 불일치 | §3 | [23-1](../23-versioned-rules-and-effective-dating/2-summary.md) · [22-1](../22-decision-log-and-provenance/2-summary.md) · [22-3](../22-decision-log-and-provenance/2-summary.md) |
 | 잔액 원인 불명 | §3 | [24-1](../24-double-entry-ledger/2-summary.md) · [24-2](../24-double-entry-ledger/2-summary.md) |
 | 504인데 결제됨(대사) | §5 | [25-1](../25-reconciliation/2-summary.md) · [26-2](../26-advanced-modeling-exercises/2-summary.md) |
@@ -162,7 +162,7 @@
 | **31일 가입자의 2월 결제 누락, 또는 3월부터 28일 결제** | 값(시간) | 날짜 일치 스케줄러, 전 결제일에 1개월씩 더하는 연쇄 계산 | 월별 결제 건수의 출렁임, 기준일 저장 여부 | [13-2](../13-instant-vs-local-time-and-tz-rules/2-summary.md) |
 | **해외 사용자에게 생일이 하루 전** | 값(시간) | 시각 없는 날짜를 자정 UTC 순간으로 저장 | 생일 컬럼 타입(`date`인가 `timestamptz`인가) | [13-4](../13-instant-vs-local-time-and-tz-rules/2-summary.md) |
 | **윤일·연말에만 예외 또는 무한 루프** | 값(시간) | 날짜 산술을 직접 함(연도 + 1, 366번째 날 처리) | 윤일·366일째를 고정 `Clock`으로 넣은 테스트 | [13-5](../13-instant-vs-local-time-and-tz-rules/2-summary.md) · [28-dm-incidents](../28-dm-incidents/2-summary.md) |
-| **계약 갱신일이 윤년마다 하루씩 밀림, 월말 마감이 2월에 어긋남** | 값(시간) | `plusDays(365)`, 월말 상수 | 달력 산술(`plusYears`·`YearMonth.atEndOfMonth`)을 쓰나 | [26-5](../26-advanced-modeling-exercises/2-summary.md) |
+| **계약 갱신일이 윤년마다 하루씩 밀림, 월말 마감이 2월에 불일치** | 값(시간) | `plusDays(365)`, 월말 상수 | 달력 산술(`plusYears`·`YearMonth.atEndOfMonth`)을 쓰나 | [26-5](../26-advanced-modeling-exercises/2-summary.md) |
 | **2박이 3일로 계산, 맞닿은 구간 사이에 길이 0 빈 구간** | 값(시간) | 닫힌 구간 `[start, end]` | "딱 경계" 값 테스트 | [15-1](../15-basic-modeling-exercises/2-summary.md) |
 | **매일 수백 건 "내부에만 있음", 다음 날 반대쪽에서 상쇄** | 원장·대사 | 내부는 로컬 날짜, 외부 파일은 UTC 날짜로 자름 | 차이 시각이 특정 시간대(예: KST 00:00~09:00)에 몰리나, 차이가 "저절로 풀리나" | [25-4](../25-reconciliation/2-summary.md) |
 
@@ -377,7 +377,7 @@ WHERE i.order_id IS NULL OR e.order_id IS NULL OR i.amount <> e.amount ORDER BY 
 관찰:
 - 주문 2는 줄 합(9,999)과 총액(9,999)이 **같이** 틀려 (2)에 나오지 않았다. 외부 대조 (4)에서만 `AMOUNT_MISMATCH`로 보였다. 배분 소실(14-1)이 일관되게 저장되면 내부 검사는 통과한다.
 - 이 쿼리의 `EXTERNAL_ONLY`·`INTERNAL_ONLY`는 25 실험 분류의 `MISSING_INTERNAL`(외부에만 있음)·`MISSING_EXTERNAL`(내부에만 있음)에 해당한다. 이름만 다르다.
-- 주문 4는 내부 결제에 외부 거래 ID가 없어(`pg_tx_id` NULL) 한쪽에만 있는 행 셋으로 갈렸다. 거래 ID를 저장하지 않으면(25-3) 키 대조가 깨지고 금액 매칭에 기대게 된다(26-3).
+- 주문 4는 내부 결제에 외부 거래 ID가 없어(`pg_tx_id` NULL) 한쪽에만 있는 행 셋으로 나뉘었다. 거래 ID를 저장하지 않으면(25-3) 키 대조가 깨지고 금액 매칭에 기대게 된다(26-3).
 - 외부에는 같은 주문 ID의 승인이 둘(T4·T5)이다. 25의 대사 분류로는 DUPLICATE_EXTERNAL(재시도에 멱등 키 없음)의 모양이다. 고객이 **새 주문으로** 다시 결제한 경우(25-1)는 주문 ID가 달라 이 모양으로 나오지 않는다. 25-1은 그 경우를 같은 고객·금액·가까운 시각으로 따로 묶어 찾는다.
 - 장난감 데이터라 건수에 의미는 없다. 쿼리 모양이 어떤 증상을 잡고 어떤 증상을 놓치는지만 본다.
 
@@ -416,12 +416,12 @@ WHERE i.order_id IS NULL OR e.order_id IS NULL OR i.amount <> e.amount ORDER BY 
 - **원인**: 시산표는 "각 전표의 차대 합이 0"만 본다. 중복·음수 잔액은 균형 잡힌 전표로도 생긴다(24-4·24-5). 대사 0건은 자동 보정이나 금액 매칭이 차이를 지운 결과일 수 있다.
 - **대처**: 지표가 0일 때도 세 가지를 따로 본다. 업무 키 중복(쿼리 모양 3), 설명 없는 조정 분개 수, 짝 키가 참조값인가. 대사 차이는 먼저 사건으로 남기고, 자동 처리는 원인이 정해진 분류만 한다(25-5).
 
-### 4. 1시간 어긋남을 서버 시계 문제로 본다
+### 4. 1시간 불일치를 서버 시계 문제로 본다
 
 - **현상**: 한 지역 고객의 예약 알림이 1시간 늦게 간다. 팀은 NTP 동기화를 점검하고 서버 시계를 맞췄다. 그대로다.
 - **보이는 형태**: 에러 없음. 그 지역 예약에서만, JDK·OS 업데이트(tzdata 갱신) 뒤부터 생긴다(13-1).
 - **원인**: 미래 예약을 옛 규칙으로 계산한 UTC 순간으로만 저장했다. 규칙이 바뀐 뒤에도 옛 순간이 그대로 남았다. 시계는 맞았고 **규칙**이 바뀌었다.
-- **대처**: 증상이 특정 지역·특정 날짜 이후에만 있고 어긋남이 그 지역 DST 폭(대개 1시간, Lord_Howe는 30분)과 같으면 tz 규칙부터 본다(IANA NEWS). 원본을 현지 시각 + tz ID로 저장하고 규칙 판을 기록해 갱신 때 재계산한다(13-1). 시계 동기화 문제의 모양은 [distributed/04](../../distributed/04-physical-clocks-and-ntp/2-summary.md).
+- **대처**: 증상이 특정 지역·특정 날짜 이후에만 있고 불일치가 그 지역 DST 폭(대개 1시간, Lord_Howe는 30분)과 같으면 tz 규칙부터 본다(IANA NEWS). 원본을 현지 시각 + tz ID로 저장하고 규칙 판을 기록해 갱신 때 재계산한다(13-1). 시계 동기화 문제의 모양은 [distributed/04](../../distributed/04-physical-clocks-and-ntp/2-summary.md).
 
 ### 5. 불법 상태 행을 SQL로만 고친다 — 또는 UPDATE로 고쳐 흔적을 지운다
 

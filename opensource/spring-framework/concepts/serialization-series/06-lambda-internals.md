@@ -97,7 +97,7 @@ Field 는 Serializable 이 아니다  →  NotSerializableException: java.lang.r
 
 ## 5. C4의 네 생성자 비교
 
-네 생성자가 각각 무엇을 캡처하는지 늘어놓으면 결과가 갈리는 이유가 보인다.
+네 생성자가 각각 무엇을 캡처하는지 늘어놓으면 결과가 달라지는 이유가 보인다.
 
 ```java
 new TypeDescriptor(field)            → 캡처: Field            → X

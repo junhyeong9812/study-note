@@ -176,7 +176,7 @@ fun main() {
 ★ Java 쪽 짝은 [`../../../java/syntax/12-nested-classes/`](../../../java/syntax/12-nested-classes/)다 — 이 주제는 **Java 를 같은 모양으로 짜서 나란히** 던졌다.
 
 바이트코드를 묻는 문항은 **kotlinc 기본 `-jvm-target` 1.8 · javac 기본 `--release` 21** 기준이다.
-이 주제의 모든 답은 **kotlinc 2.4.20 · JDK 21.0.5** 에서 실제로 던져 받은 것이다.
+이 주제의 모든 답은 **kotlinc 2.4.20 · JDK 21.0.5** 에서 실제로 실행해 받은 것이다.
 
 ## 복습 기록
 

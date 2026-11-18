@@ -8,7 +8,7 @@
 
 ### A. 문제 (NaiveLock · LeaseLock · FencedStore 의 TODO)
 
-1. TODO 1·2 — NaiveLock (기준선: 만료도 소유자 검사도 없다)
+1. TODO 1·2 — NaiveLock (베이스라인: 만료도 소유자 검사도 없다)
 
 ```java
 // TODO 1: 없으면 잡고 있으면 못 잡는다. **만료는 안 둔다.**

@@ -496,7 +496,7 @@ func main() {
 }
 ```
 
-<!-- 위 소스는 vet21/probe.go 다. 같은 패키지에 탐침 여덟이 들어 있다. -->
+<!-- 위 소스는 vet21/probe.go 다. 같은 패키지에 probe 여덟이 들어 있다. -->
 
 - `go vet ./...` 의 **출력이 몇 줄**이고 종료 코드는 몇인가?
 - 그 패키지가 빌드는 되나 — 되면 왜인가?
@@ -553,7 +553,7 @@ func main() {
 ★ **「이것을 누가 막아 주나」도 같이 물어라** — 컴파일러인가, `go vet` 인가, 아무도 아닌가.
 ★ [20번 주제](../20-interface-declaration-and-implicit-implementation/) (3)절을 먼저 읽었다면
 **「두 칸이 있다」까지는 아는 것으로 치고** 여기서는 **코드 모양**을 묻는다.
-소스는 전부 `go build -trimpath -o prog . && ./prog` 로 던졌다. 모듈 이름은 `ex` 다.
+소스는 전부 `go build -trimpath -o prog . && ./prog` 로 실행했다. 모듈 이름은 `ex` 다.
 컴파일 에러를 전부 보려고 몇 블록은 `-gcflags=-e` 를 붙였다.
 
 ## 복습 기록

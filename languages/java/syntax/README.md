@@ -6,7 +6,7 @@ JLS 자신의 목차는 **타입(4장) → 클래스·인터페이스(8·9장) �
 
 표준 API 쪽은 `java.base` 모듈의 패키지 경계를 그대로 쓰지 않았다. `java.util` 하나에 컬렉션·스트림·시간·동시성이 섞여 있어 패키지가 학습 단위가 되지 못하기 때문이다. 대신 **"한 번에 인출할 수 있는 기능 하나"** 를 단위로 잘랐다 — 스트림은 생성·중간 연산·최종 연산·수집·병렬로 다섯 갈래가 되고, 컬렉션은 계층 지도·List/Set·Map·순서 보장·순회로 다섯 갈래가 된다.
 
-버전은 **21 LTS를 기준선**으로 잡고, 21 이후에 확정된 것(Gatherers 24, 모듈 import·유연한 생성자 본문 25)은 주제 이름에 버전을 달았다. JVM 내부(GC·JIT·클래스로더·메모리 모델)는 이 목록에서 다루지 않는다 — [`../언어-특성/README.md`](../언어-특성/README.md)의 영역이다.
+버전은 **21 LTS를 베이스라인**으로 잡고, 21 이후에 확정된 것(Gatherers 24, 모듈 import·유연한 생성자 본문 25)은 주제 이름에 버전을 달았다. JVM 내부(GC·JIT·클래스로더·메모리 모델)는 이 목록에서 다루지 않는다 — [`../언어-특성/README.md`](../언어-특성/README.md)의 영역이다.
 
 ## 주제 목록
 
@@ -56,14 +56,14 @@ JLS 자신의 목차는 **타입(4장) → 클래스·인터페이스(8·9장) �
 | 42 | [`SequencedCollection` (21) — 순서 있는 컬렉션의 공통 API](42-sequenced-collections/) | 표준 API | `getFirst`/`reversed` 가 어느 타입에 생겼고 무엇을 통일했는지 설명할 수 있다 | 39 | [`../../../history/java/java-21.md`](../../../history/java/java-21.md) | B |
 | 43 | [`Iterator`·`ListIterator`·fail-fast 와 `ConcurrentModificationException`](43-iterator-and-fail-fast/) | 표준 API | 순회 중 삭제가 언제 터지고 어떻게 안전하게 하는지 예측할 수 있다 | 39 | — | A |
 | 44 | [`Stream` 생성 — 소스별·기본형 스트림](44-stream-creation/) | 표준 API | 컬렉션·배열·`Stream.iterate`·`IntStream` 중 무엇을 쓸지 판단할 수 있다 | 31, 39 | [`../../../history/java/java-8.md`](../../../history/java/java-8.md) | A |
-| 45 | [중간 연산 — `map`/`filter`/`flatMap`/`mapMulti`](45-intermediate-operations/) | 표준 API | `map` 과 `flatMap` 이 갈리는 자리를 타입으로 판단할 수 있다 | 44 | — | A |
+| 45 | [중간 연산 — `map`/`filter`/`flatMap`/`mapMulti`](45-intermediate-operations/) | 표준 API | `map` 과 `flatMap` 이 달라지는 자리를 타입으로 판단할 수 있다 | 44 | — | A |
 | 46 | [최종 연산과 지연 평가·단락 평가](46-terminal-operations/) | 표준 API | 최종 연산이 없으면 아무 일도 안 일어나는 이유와 실행 순서를 설명할 수 있다 | 45 | — | A |
 | 47 | [`Collectors` — 기본 수집기와 `toMap` 의 함정](47-collectors-basics/) | 표준 API | 키 충돌·`null` 값에서 `toMap` 이 터지는 조건을 예측할 수 있다 | 46 | — | A |
 | 48 | [`Collectors` 그룹핑·분할·다운스트림](48-collectors-grouping/) | 표준 API | 2단 그룹핑과 집계를 다운스트림 조합으로 조립할 수 있다 | 47 | — | A |
 | 49 | [병렬 스트림 — 값이 나오는 조건](49-parallel-streams/) | 표준 API | 병렬이 손해인 경우(분할 불가·작은 데이터·공유 상태)를 판단할 수 있다 | 46 | [`../언어-특성/README.md`](../언어-특성/README.md) | B |
 | 50 | [`Stream` Gatherers (24) — 커스텀 중간 연산](50-stream-gatherers/) | 표준 API | 기존 중간 연산으로 안 되는 것(윈도·스캔)을 어떻게 메우는지 설명할 수 있다 | 46 | [`../../../history/java/java-24.md`](../../../history/java/java-24.md) | C |
 | 51 | [`java.time` — `Instant`·`LocalDate`/`LocalDateTime`·`ZonedDateTime`](51-java-time-types/) | 표준 API | "언제"를 표현할 때 어느 타입이 맞는지 시간대 유무로 판단할 수 있다 | — | [`../../../cs/ops-patterns/17-timeseries/`](../../../cs/ops-patterns/17-timeseries/) | A |
-| 52 | [`Duration`·`Period`·`DateTimeFormatter`](52-duration-period-formatter/) | 표준 API | 기계 시간 간격과 달력 간격이 갈리는 지점을 예측할 수 있다 | 51 | — | B |
+| 52 | [`Duration`·`Period`·`DateTimeFormatter`](52-duration-period-formatter/) | 표준 API | 기계 시간 간격과 달력 간격이 달라지는 지점을 예측할 수 있다 | 51 | — | B |
 | 53 | [`BigDecimal` — 스케일·반올림·`equals` vs `compareTo`](53-bigdecimal/) | 표준 API | 금액 계산에서 `double` 이 틀리는 자리와 `equals` 함정을 설명할 수 있다 | 02 | [`../../../cs/foundations/data-representation/`](../../../cs/foundations/data-representation/) | A |
 | 54 | [`java.util.concurrent` — `ExecutorService`·`Future`·`CompletableFuture`](54-executorservice-and-future/) | 표준 API | 스레드를 직접 만들지 않고 작업을 제출·조합·종료하는 형태를 설계할 수 있다 | 25, 31 | [`../../../cs/foundations/process-thread/`](../../../cs/foundations/process-thread/) | A |
 | 55 | [원자 변수와 동시 컬렉션 — `Atomic*`·`ConcurrentHashMap`](55-atomics-and-concurrent-collections/) | 표준 API | 락 없이 안전한 갱신이 가능한 조건과 복합 연산의 위험을 판단할 수 있다 | 33, 41 | [`../언어-특성/README.md`](../언어-특성/README.md) §9 | B |
@@ -115,7 +115,7 @@ JLS 자신의 목차는 **타입(4장) → 클래스·인터페이스(8·9장) �
 
 ## 버전 기준
 
-**Java 21 (LTS, 2023-09)** 을 기준선으로 한다. 17과 25의 차이는 아래처럼 갈린다.
+**Java 21 (LTS, 2023-09)** 을 베이스라인으로 한다. 17과 25의 차이는 아래처럼 달라진다.
 
 | 주제 | 확정 버전 | 17 기준이면 | 25 기준이면 |
 |---|---|---|---|
@@ -133,7 +133,7 @@ JLS 자신의 목차는 **타입(4장) → 클래스·인터페이스(8·9장) �
 | 07 유연한 생성자 본문 | **25** (JEP 513) | 없다 | 있다 — `super()` 앞 문장 허용 |
 | 34 모듈 import 선언 | **25** (JEP 511) | 없다 | 있다 |
 
-**버전에 갈리는 주제 = 8개**(23·24·42·56·50·07·34 + 실행 시 동작이 갈리는 33/55의 `synchronized` 고정 동작).
+**버전에 달라지는 주제 = 8개**(23·24·42·56·50·07·34 + 실행 시 동작이 달라지는 33/55의 `synchronized` 고정 동작).
 21에 없는 것(50·07·34)은 **주제로는 남기되 "25 전용"을 이름에 달고 우선순위를 낮췄다**(C 또는 B).
 실행 검증은 기본을 21.0.5로 하고, 25 전용 주제만 25.0.1로 돌린 뒤 **어느 JDK 에서 돌렸는지 3파일에 적는다**.
 

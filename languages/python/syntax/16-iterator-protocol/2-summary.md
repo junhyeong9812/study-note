@@ -353,10 +353,10 @@ RuntimeError: generator raised StopIteration
 - `The above exception was the **direct cause** of` — `__cause__` 로 이어 붙였다는 뜻이다. **원인이 안 지워진다.**
 - 둘째 덩어리가 **바깥으로 나온 것** — `RuntimeError: generator raised StopIteration`.
 - ★★ **3.6 이전에는 이것이 예외가 아니었다.** `list(...)` 가 `[1]` 을 조용히 돌려줬다 —
-  **두 개를 달라고 했는데 하나만 오고 아무도 안 알려 주는** 상태였다. PEP 479 가 그 무음 실패를 **시끄러운 실패로 바꾼 것**이다.
+  **두 개를 달라고 했는데 하나만 오고 아무도 안 알려 주는** 상태였다. PEP 479 가 그 조용한 실패를 **시끄러운 실패로 바꾼 것**이다.
 - 고치는 법은 **끝을 명시적으로 다루는 것**이다 — `next(it, None)` 로 기본값을 주거나 `try/except StopIteration: return`.
 
-★ 이 판(3.12.3)에는 끄는 스위치가 없다. **3.5\~3.6 에서만** `from __future__ import generator_stop` 로 미리 켜 볼 수 있었고,
+★ 이 버전(3.12.3)에는 끄는 스위치가 없다. **3.5\~3.6 에서만** `from __future__ import generator_stop` 로 미리 켜 볼 수 있었고,
 **3.7 부터 무조건**이다(PEP 479). 이 머신에 3.6 이하가 없어 **옛 동작은 직접 못 돌려 봤다** — PEP 문서 근거다.
 
 **비용** — 조용히 잘리던 버그가 터져서 보인다.\
@@ -424,7 +424,7 @@ print("  iter([]).__length_hint__()            =", iter([]).__length_hint__())
 - ★★ **`bool` 이 넷 다 `True` 다.** 빈 이터레이터도 **참**이다 — 리스트와 정반대다(`bool([])` 은 `False`).
   **`if it:` 로 「값이 있나」를 검사하면 언제나 참이다.**
 - ★★ **아래 세 줄이 한 글자도 다르지 않다.** 소진된 제너레이터 · 처음부터 빈 것 · 소진된 리스트 이터레이터 —
-  **어떤 검사로도 안 갈린다.**
+  **어떤 검사로도 안 달라진다.**
 - ★ **그리고 검사하는 행위 자체가 값을 먹는다.** 첫 줄의 `next(x,'없음')` 이 `1` 을 반환하며 **그 값을 꺼내 버렸다.**
   「남았나」를 물어보면 **남은 것이 줄어든다.**
 - **`__length_hint__` 도 못 가른다** — 소진된 것과 빈 것이 둘 다 `0` 이다. 그리고 문서상 **힌트일 뿐** 보장이 아니다.
@@ -451,7 +451,7 @@ print("  iter([]).__length_hint__()            =", iter([]).__length_hint__())
 | 「몇 개냐」 | `len(it)` (`TypeError`) | `sum(1 for _ in it)` — **그 순간 소진된다** |
 
 **비용** — 구분이 안 되는 대신 **`for` 가 모든 것을 똑같이 받는다.**\
-대가는 **디버깅이 안 되는 무음 실패**다. 「결과가 비었다」의 원인이 코드가 아니라 **이미 지나간 소비**에 있다.
+대가는 **디버깅이 안 되는 조용한 실패**다. 「결과가 비었다」의 원인이 코드가 아니라 **이미 지나간 소비**에 있다.
 
 ## 문법 — 형태와 규칙
 
@@ -559,7 +559,7 @@ iter([1,2])[0]   -> TypeError: 'list_iterator' object is not subscriptable
 
 ### (1) 이터러블과 이터레이터를 같은 것으로 안다
 
-`iter(x) is x` 로 갈린다. **`map`·`zip`·`enumerate`·`filter`·`reversed`·제너레이터**가 전부 이터레이터 쪽이다.
+`iter(x) is x` 로 나뉜다. **`map`·`zip`·`enumerate`·`filter`·`reversed`·제너레이터**가 전부 이터레이터 쪽이다.
 
 ### (2) 함수가 받은 것을 두 번 돈다
 
@@ -608,7 +608,7 @@ iter([1,2])[0]   -> TypeError: 'list_iterator' object is not subscriptable
 |---|---|---|
 | **언어 보장** | 라이브러리·언어 레퍼런스가 정한 것 | 공식 문서 문장을 열어서 인용 |
 | **CPython 구현** | 이 구현이 그렇게 하는 것 | 실행 + `gi_*` 내성 + 타입 이름 |
-| **이 판의 관찰** | 3.12.3 에서 그랬을 뿐 | 「관찰」로 명기 |
+| **이 버전의 관찰** | 3.12.3 에서 그랬을 뿐 | 「관찰」로 명기 |
 
 ### 언어 보장
 
@@ -637,7 +637,7 @@ iter([1,2])[0]   -> TypeError: 'list_iterator' object is not subscriptable
 | `iter()` 가 대체 경로용 이터레이터를 **대신 만들어 주는 것** | 실행 — `type(iter(o)).__name__` 이 `iterator` |
 | 예외 **문구** 전부 | 실행 |
 
-### 이 판(3.12.3)의 관찰
+### 이 버전(3.12.3)의 관찰
 
 | 관찰 | 어디가 흔들리나 |
 |---|---|
@@ -651,7 +651,7 @@ iter([1,2])[0]   -> TypeError: 'list_iterator' object is not subscriptable
 ### 그래서 이렇게 적으면 틀린다
 
 - ✗ 「이터러블과 이터레이터는 같은 말이다」\
-  ○ `iter(x) is x` 로 갈린다. **`map`·`zip`·`enumerate` 는 이터레이터 쪽**이다.
+  ○ `iter(x) is x` 로 나뉜다. **`map`·`zip`·`enumerate` 는 이터레이터 쪽**이다.
 - ✗ 「`for` 에 들어가면 `__iter__` 가 있는 것이다」\
   ○ **`__getitem__` 만 있어도 돈다.** `hasattr` 검사는 그것을 놓친다.
 - ✗ 「소진된 이터레이터는 `False` 다」\
@@ -755,21 +755,21 @@ iter([1,2])[0]   -> TypeError: 'list_iterator' object is not subscriptable
 ★ **던지는 형태를 하나로 고정했다** — `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 된다.
 그래서 **실행 중 예외에는 소스 줄과 캐럿이 안 나온다.**\
 **버전** — 이터레이터 프로토콜 자체는 **2.2+**(PEP 234)이고 이 노트 범위(3.10\~3.13)에서 안 바뀌었다.
-갈리는 것은 하나다 — **`StopIteration` 이 제너레이터 밖으로 새면 `RuntimeError` 가 되는 것이 3.7 부터**다(PEP 479).
+달라지는 것은 하나다 — **`StopIteration` 이 제너레이터 밖으로 새면 `RuntimeError` 가 되는 것이 3.7 부터**다(PEP 479).
 3.5\~3.6 에서는 `from __future__ import generator_stop` 로 켜는 선택이었다.
 `gi_suspended` 속성은 3.11.15 에도 있었다(대조 확인).\
-**★ 흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
+**★ 실행마다 달라지는 항목 / 달라지지 않는 항목** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
 
-| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+| 실행마다 달라진다 | 달라지지 않는다(근거로 써도 되는 항목) |
 |---|---|
-| (판이 오르면) **타입 이름** `list_iterator`·`callable_iterator`·`iterator` | `iter(x) is x` 의 참·거짓 · `__next__` 유무 |
-| (판이 오르면) **예외 문구** 전부 | 예외 **종류**(`StopIteration`·`RuntimeError`·`TypeError`) |
-| (판이 오르면) `gi_*` 속성의 있고 없음 | **소진 여부**와 「소진과 공집합이 구분 안 된다」는 사실 |
+| (버전이 오르면) **타입 이름** `list_iterator`·`callable_iterator`·`iterator` | `iter(x) is x` 의 참·거짓 · `__next__` 유무 |
+| (버전이 오르면) **예외 문구** 전부 | 예외 **종류**(`StopIteration`·`RuntimeError`·`TypeError`) |
+| (버전이 오르면) `gi_*` 속성의 있고 없음 | **소진 여부**와 「소진과 공집합이 구분 안 된다」는 사실 |
 | — | `File "<stdin>", line N` · `__getitem__` 이 **몇 번** 불렸나 |
 
-★ **이 주제의 실행 출력은 전부 결정적이다** — 같은 판에서 다시 돌리면 한 글자도 안 변한다(수치·주소를 안 찍는다).\
+★ **이 주제의 실행 출력은 전부 결정적이다** — 같은 버전에서 다시 돌리면 한 글자도 안 변한다(수치·주소를 안 찍는다).\
 ★ **단 한 블록만 stdout 과 stderr 가 섞인다**(PEP 479 — `[1, 2]` 다음에 트레이스백).
-파이프로 받아 **세 판을 md5 로 대조해 순서가 같음을 확인**했다 — CPython 이 트레이스백을 찍기 전에 stdout 을 flush 하기 때문이다.
+파이프로 받아 **세 버전을 md5 로 대조해 순서가 같음을 확인**했다 — CPython 이 트레이스백을 찍기 전에 stdout 을 flush 하기 때문이다.
 
 **선행** — [15-generator-expressions-lazy-eval](../15-generator-expressions-lazy-eval/2-summary.md)(지연의 값어치) ·
 [09-sequence-ops-and-slicing](../09-sequence-ops-and-slicing/2-summary.md)(시퀀스가 무엇인가).\

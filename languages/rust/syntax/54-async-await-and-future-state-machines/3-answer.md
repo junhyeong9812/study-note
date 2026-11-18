@@ -445,7 +445,7 @@ type: r54_size::a_no_buffer::{{closure}}
 **왜 그런가**
 
 - ★★★ **디버그 판과 같다** — 상태 기계에 **무엇을 담나**는 최적화가 아니라 **그 전의 분석**이 정한다(규칙 24 — 2판 격자).
-- ★★ **「await 너머로 살아 있어야 할 값은 future 안에」** — 멈춘 동안 스택 프레임이 없으니 **그렇지 않으면 성립할 수 없다**(의미상 필연). **「빌린 적이 있으면 스코프 끝까지」·「두 자리가 칸을 나눠 쓴다」·바이트 수** — Reference 는 크기를 말하지 않는다. **rustc 1.92 의 관찰**이고 판이 오르면 다시 찍을 칸이다.
+- ★★ **「await 너머로 살아 있어야 할 값은 future 안에」** — 멈춘 동안 스택 프레임이 없으니 **그렇지 않으면 성립할 수 없다**(의미상 필연). **「빌린 적이 있으면 스코프 끝까지」·「두 자리가 칸을 나눠 쓴다」·바이트 수** — Reference 는 크기를 말하지 않는다. **rustc 1.92 의 관찰**이고 버전이 오르면 다시 찍을 칸이다.
 
 ### 7. ★★ 잎(`YieldOnce::poll`)만 만진다 · `.await` 는 받은 `Context` 를 그대로 넘긴다
 
@@ -457,16 +457,16 @@ type: r54_size::a_no_buffer::{{closure}}
 - ★★★ `async fn` 의 future 는 **「몇 번째 await 에서 멈췄나」와 그때 필요한 지역 변수**를 담은 상태 기계다(5번의 크기가 그 흔적). 다음 poll 은 그 상태를 보고 **멈춘 await 로 곧장** 간다.
 - ★★ Reference — `Pending` 이면 「the future returns `Poll::Pending`, **suspending its state** so that, when the surrounding async context is re-polled, execution returns to step 3」(3단계 = 안쪽 future 를 poll 하는 자리).
 
-### 9. ★★ Rust 는 Python 편 — 둘 다 몸통 0줄 · 갈리는 칸은 「버린 것을 누가 알리나」
+### 9. ★★ Rust 는 Python 편 — 둘 다 몸통 0줄 · 달라지는 항목은 「버린 것을 누가 알리나」
 
 | 언어 | 부르기만 하면 | 어떻게 쟀나 |
 |---|---|---|
 | Rust | future 만 — **몸통 0줄** | 이 편 1번 — 표준 출력 줄 |
 | Python | 코루틴 객체만 — **몸통 0줄** | Python 51 (1) — 표준 출력 줄 + 표준 오류의 `never awaited` |
-| JavaScript | **첫 `await` 까지 지금 돈다** | JS 39 (9) — 같은 탐침을 Python 과 나란히 |
+| JavaScript | **첫 `await` 까지 지금 돈다** | JS 39 (9) — 같은 probe를 Python 과 나란히 |
 | Kotlin | 일반 함수에서는 **못 부른다**(컴파일 에러) · 코루틴 안에서는 보통 호출 | Kotlin 52 (2) 호출 격자 · (4) 순서 로그 |
 
-- ★★★ **같은 편 안에서 갈리는 칸** — Rust 는 **컴파일러**가 버린 식 문장을 경고하고 실행 중에는 말이 없다. Python 은 **런타임**이 버려지는 순간 `RuntimeWarning` 을 낸다.
+- ★★★ **같은 편 안에서 달라지는 항목** — Rust 는 **컴파일러**가 버린 식 문장을 경고하고 실행 중에는 말이 없다. Python 은 **런타임**이 버려지는 순간 `RuntimeWarning` 을 낸다.
 
 ### 10. ★★ 「futures do nothing unless you `.await` or poll them」 대 「iterators are lazy and do nothing unless consumed」 — `let _ =` 는 경고만 끈다
 
@@ -551,7 +551,7 @@ fn main() {
 | ★★★ **크기 격자** | `r54_size` × (디버그 · `-O3`) | 2판 × 10행 | **두 판 동일** · 1024 초과 **5 / 10** 행 |
 | ★ **이미 잰 것 — 다시 안 돌림** | Python 51 · JS 39 · Kotlin 52 · Rust 36 | — | 각 편의 블록 |
 | 취소 | `r54_cancel` — 안 poll 한 것 · 한 번 poll 한 것을 버림 | 1 | `drop a` **없음** · `drop b` **있음** |
-| **안 던진 것** — 재귀 `async fn` · `-Zprint-type-sizes`(nightly) · 시간·메모리 | — | 0 | ★ 「안 던졌다 / 못 잰 것」으로 표시했다 |
+| **실행하지 않은 것** — 재귀 `async fn` · `-Zprint-type-sizes`(nightly) · 시간·메모리 | — | 0 | ★ 「실행하지 않았다 / 못 잰 것」으로 표시했다 |
 
 **구현 의존 항목**(버전·환경이 바뀌면 **다시 찍어야 하는** 것).
 
@@ -559,7 +559,7 @@ fn main() {
 |---|---|
 | `size_of_val` 의 바이트 수 · 「빌린 지역 변수는 스코프 끝까지」 | ★ rustc 의 상태 기계 분석·배치 — 언어는 크기를 약속하지 않는다 |
 | `type_name_of_val` 의 `{{closure}}` 문자열 | ★ std 가 「exact output is not guaranteed」라고 적는다 |
-| 경고 문구 · 린트 이름 | ★ rustc 판에 매인다 |
+| 경고 문구 · 린트 이름 | ★ rustc 버전에 매인다 |
 
 ★ **다시 찍는 법** — `capture.sh <새 디렉토리>` 를 그대로 돌리고 `normalize-shaky.py <원본> <새 디렉토리>` 로 견준다.
 

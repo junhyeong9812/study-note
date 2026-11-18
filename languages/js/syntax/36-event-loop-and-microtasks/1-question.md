@@ -228,7 +228,7 @@ setTimeout(() => console.log(log.join("\n")), 0);
 
 **환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · Google Chrome 151(헤드리스) · Python 3.12 · x86-64 Linux. 배너의 `node20` 은 v20.19.6 이다.
 
-★★★ **이 주제의 본체는 한 파일을 세 호스트에 던진 순서 퍼즐 격자다** — **1번과 2번 문항이 이 주제의 중심이다.**
+★★★ **이 주제의 핵심은 한 파일을 세 호스트에 던진 순서 퍼즐 격자다** — **1번과 2번 문항이 이 주제의 중심이다.**
 
 **선행** — [32](../32-error-handling-and-error/2-summary.md) · [20](../20-generators/2-summary.md) · [26](../26-array-search-flatten-and-create/2-summary.md).
 

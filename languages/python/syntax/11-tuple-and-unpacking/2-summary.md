@@ -38,7 +38,7 @@ The exception is the empty tuple, for which parentheses are required."*
 ## 이 주제가 답하려는 질문
 
 1. **무엇이 튜플을 만드는가** — 괄호인가 쉼표인가, 그리고 한 원소짜리는 왜 특별한가.
-2. **언패킹은 언제 어떤 예외를 내는가** — 「너무 많다」와 「모자란다」가 어떻게 갈리는가.
+2. **언패킹은 언제 어떤 예외를 내는가** — 「너무 많다」와 「모자란다」가 어떻게 달라지는가.
 3. **`*` 는 자리마다 다른 일을 하는가** — 대입 왼쪽·호출 인자·리터럴 안에서 각각 무엇인가.
 
 ## 동작 방식
@@ -619,7 +619,7 @@ True True True True
 | **`t[:] is t`** 가 참 | 문서에 없다. `range` 는 반례([09번](../09-sequence-ops-and-slicing/2-summary.md)) |
 | 예외 문구(`too many values to unpack (expected 2)` 등) | 실행 |
 
-### 이 판(3.12.3)·이 머신의 관찰
+### 이 버전(3.12.3)·이 머신의 관찰
 
 | 관찰 | 어디가 흔들리나 |
 |---|---|
@@ -737,7 +737,7 @@ True True True True
 - [`collections.namedtuple`](https://docs.python.org/3.12/library/collections.html#collections.namedtuple) · [`typing.NamedTuple`](https://docs.python.org/3.12/library/typing.html#typing.NamedTuple)
 
 **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
-**버전** — 별표 언패킹은 3.0(PEP 3132), 리터럴·호출 안의 `*`/`**` 확장은 3.5(PEP 448). `getsizeof`·바이트코드 명령 이름은 **이 판의 관찰**이다.
+**버전** — 별표 언패킹은 3.0(PEP 3132), 리터럴·호출 안의 `*`/`**` 확장은 3.5(PEP 448). `getsizeof`·바이트코드 명령 이름은 **이 버전의 관찰**이다.
 **선행** — [01-object-and-name-binding](../01-object-and-name-binding/2-summary.md)(스왑의 `dis` 정본) ·
 [09-sequence-ops-and-slicing](../09-sequence-ops-and-slicing/2-summary.md)(시퀀스 공통 연산·`t[:]`) ·
 [03-mutability-and-copying](../03-mutability-and-copying/2-summary.md)(불변 안의 가변 정본).

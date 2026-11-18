@@ -111,7 +111,7 @@ typeof h1.hidden = boolean   typeof h4.hidden = string
 **왜 그런가**
 
 - **`hidden` 은 불리언 속성이다** — **있으면 참**이고 값은 안 본다. 그래서 `hidden="false"`·`hidden="hide-me"` 도 `.hidden` 이 `true` 이고 `display` 가 `none` 이다.
-- **`until-found` 하나만 갈린다.** `.hidden` 의 **타입이 boolean 에서 string 으로 바뀌고**, `display` 는 `block` 인 채 **`content-visibility` 가 `hidden`** 이 된다. **상자는 남고 내용만 안 그려진다.**
+- **`until-found` 하나만 달라진다.** `.hidden` 의 **타입이 boolean 에서 string 으로 바뀌고**, `display` 는 `block` 인 채 **`content-visibility` 가 `hidden`** 이 된다. **상자는 남고 내용만 안 그려진다.**
 - **트리에는 내가 쓴 값이 그대로 남는다.** 창 ① 이 `hidden="false"` 를 보여 준다 — **버려진 것이 아니라 안 읽힌 것**이다.
 - **첫째 문단은 `hidden=""` 로 직렬화된다.** 불리언 속성을 이름만 써도 트리에는 **빈 문자열 값**으로 담긴다([02번 주제](../02-elements-and-attributes/3-answer.md)).
 - ★ 마지막 줄이 이 실험의 핵심이다 — **`typeof h1.hidden = boolean` 인데 `typeof h4.hidden = string`.** 한 프로퍼티가 값에 따라 타입을 바꾼다.
@@ -663,7 +663,7 @@ u2 의 display       = inline
 - **`title`** — headless 에는 말풍선이 뜰 자리가 없다. 잰 것은 **`.title` 문자열**과 「`innerText` 에 안 섞인다」까지다.
 - **「안 돌려 봤다」와 다르다.** 안 돌려 본 것은 **돌리면 답이 나오는데 안 한 것**이고, 못 잰 것은 **측정 방법 자체가 전제를 요구해 성립하지 않는 것**이다.
 - **잴 수 없는 것을 단언하면** 이 갈래의 유일한 근거(「돌려 본 것만 적는다」)가 무너진다. 그래서 두 항목은 **쪼개서 잰 조각**만 적었다.
-- ★ 이 주제에는 「**부적용인 창**」도 있다 — 창 ④(`compatMode`·`doctype`)는 전역 속성이 문서 모드를 바꾸지 않으므로 **잴 것이 없다.**
+- ★ 이 주제에는 「**해당 없는 창**」도 있다 — 창 ④(`compatMode`·`doctype`)는 전역 속성이 문서 모드를 바꾸지 않으므로 **잴 것이 없다.**
 
 ### 11. 정본 경계
 
@@ -736,9 +736,9 @@ hidden="until-found"   display = block  content-visibility = hidden   높이 = 1
 
 - **`hidden` 은 상자가 0개**다 — 레이아웃에서 아예 빠진다.
 - **`until-found` 는 상자 1개에 높이 12** — 테두리 2 + 안쪽 여백 4 가 위아래로 잡힌 값이고 **글자 줄은 없다**(안 숨긴 것은 36). `content-visibility: hidden` 이 **내용만 안 그린 것**이다.
-- 픽셀 자체는 **흔들리는 칸**이므로 「0 / 납작 / 정상」 세 단계만 근거로 쓴다.
+- 픽셀 자체는 **실행마다 달라지는 항목**이므로 「0 / 납작 / 정상」 세 단계만 근거로 쓴다.
 
-`바꿔 볼 것` 에 적은 두 단언도 따로 던졌다.
+`바꿔 볼 것` 에 적은 두 단언도 따로 실행했다.
 
 ```text
 ===== 소스: html05b-demo06b.html (demo 블록 + 래퍼 + 측정 프로브) =====
@@ -790,17 +790,17 @@ hidden="until-fond" (오타)     .hidden = true     display = none   content-vis
 
 **구현에 달린 항목**
 
-| 항목 | 이 판의 값 | 왜 다시 찍나 |
+| 항목 | 이 버전의 값 | 왜 다시 찍나 |
 |---|---|---|
 | **`until-found` 를 구현한 방법** | `content-visibility: hidden` | 명세가 정한 것은 **동작**이지 이 속성이 아니다 |
 | `<wat-element>` 의 인터페이스 | `HTMLElement` | 커스텀 요소 이름 규칙에 달렸다 |
 | demo 의 높이 픽셀 | `0` · `12` · `36` | 글꼴·테두리·여백에 달렸다 |
 
-**안 돌려 본 것** — ① **Firefox·Safari 재현**(엔진이 없다). ② **`contenteditable` 의 실제 편집** — 키 입력을 넣지 않았다. `plaintext-only` 가 서식 붙여넣기를 정말 막는지는 안 던졌다. ③ **`hidden="until-found"` 를 「페이지에서 찾기」로 펼치는 것** — headless 에서 찾기 UI 를 부를 수단을 쓰지 않았다. ④ **`lang`·`dir`** — [목록의 **20번 주제**](../20-lang-dir-and-bidi/) 몫이다.
+**안 돌려 본 것** — ① **Firefox·Safari 재현**(엔진이 없다). ② **`contenteditable` 의 실제 편집** — 키 입력을 넣지 않았다. `plaintext-only` 가 서식 붙여넣기를 정말 막는지는 실행하지 않았다. ③ **`hidden="until-found"` 를 「페이지에서 찾기」로 펼치는 것** — headless 에서 찾기 UI 를 부를 수단을 쓰지 않았다. ④ **`lang`·`dir`** — [목록의 **20번 주제**](../20-lang-dir-and-bidi/) 몫이다.
 
 **못 잰 것**(「안 돌려 본 것」과 다르다) — ① **`translate` 가 실제로 하는 일.** 번역 엔진이 없어 측정 수단 자체가 없다. 쪼개서 잰 조각은 **`.translate` 가 답하는 값**뿐이다. ② **`title` 의 말풍선.** headless 에는 뜰 자리가 없다. 조각은 **`.title` 문자열**과 「`innerText` 에 안 섞인다」뿐이다.
 
-**부적용인 창** — **창 ④(`document.compatMode`·`document.doctype`).** 전역 속성은 문서 모드를 바꾸지 않아 **잴 것이 없다**(「재 봤더니 같았다」가 아니다).
+**해당 없는 창** — **창 ④(`document.compatMode`·`document.doctype`).** 전역 속성은 문서 모드를 바꾸지 않아 **잴 것이 없다**(「재 봤더니 같았다」가 아니다).
 
 ## 용어 풀이
 
@@ -821,4 +821,4 @@ hidden="until-fond" (오타)     .hidden = true     display = none   content-vis
 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** `--dump-dom` 과 DOM 프로브로 읽은 것이다. 하네스는 맨 아래 `## 실행 검증` 절에 있다.\
 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 로 접지했다.\
 ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-★ **이 주제의 본체는 창 ② (프로브)다.** 창 ① 은 「소스의 이름이 트리에서 어떻게 바뀌었나」를 보일 때만 쓴다.
+★ **이 주제의 핵심은 창 ② (프로브)다.** 창 ① 은 「소스의 이름이 트리에서 어떻게 바뀌었나」를 보일 때만 쓴다.

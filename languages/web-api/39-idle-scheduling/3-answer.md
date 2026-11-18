@@ -1,9 +1,9 @@
 # web-api/39 — 유휴 스케줄링: `requestIdleCallback` · `scheduler.postTask()`/`yield()` 와 긴 작업 쪼개기 — 정답
 
-| 안 흔들리는 칸 | 흔들리는 칸 · 못 잰 칸 |
+| 달라지지 않는 항목 | 실행마다 달라지는 항목 · 못 잰 항목 |
 |---|---|
 | 지원 판별 · 입력 막힘 판 · 이어가기 순서 · 유휴 가 \~ 라 | ★★ **흔들렸다** — 유휴 마(바쁜 동안의 열 판) 두 수 |
-| 캡처를 세 판 돌려 **한 글자도 같았다**(유휴 마 한 줄 빼고) | **못 잰 것** — INP · 지연 ms · Safari · 진짜 손 입력 |
+| 캡처를 세 번 돌려 **한 글자도 같았다**(유휴 마 한 줄 빼고) | **못 잰 것** — INP · 지연 ms · Safari · 진짜 손 입력 |
 
 ```text
 $ google-chrome --version
@@ -142,7 +142,7 @@ $ python3 wa36b-net.py page wa36b-39-idle.html | sed -n '5p'
 **왜 그런가**
 
 - 조건 — **rAF 마다 20ms 씩 바쁜 500ms** 동안 `timeout` 없는 것과 `timeout 100` 인 것을 건다. 열 판.
-- 결과 — timeout 없는 쪽이 **바쁨이 끝난 뒤에야** 불린 판이 **열 판 중 일부뿐**이다 — 나머지는 바쁜 동안에도 불렸다. `timeout 100` 쪽의 `didTimeout=true` 도 **일부 판**이다. **수는 캡처마다 움직였다** — 캡처 세 판에서 timeout 없는 쪽 **4 · 5 · 4** / 10, `didTimeout=true` 쪽 **5 · 5 · 5** / 10(이쪽은 세 캡처가 같았지만 판 단위로는 참과 거짓이 섞였다).
+- 결과 — timeout 없는 쪽이 **바쁨이 끝난 뒤에야** 불린 판이 **열 판 중 일부뿐**이다 — 나머지는 바쁜 동안에도 불렸다. `timeout 100` 쪽의 `didTimeout=true` 도 **일부 판**이다. **수는 캡처마다 움직였다** — 캡처 세 번에서 timeout 없는 쪽 **4 · 5 · 4** / 10, `didTimeout=true` 쪽 **5 · 5 · 5** / 10(이쪽은 세 캡처가 같았지만 판 단위로는 참과 거짓이 섞였다).
 - 그래서 **`timeout` 은 「늦어도 이때까지」** 다 — 바빠도 틀 사이의 짧은 유휴에서 먼저 불릴 수 있다. 어느 쪽인지는 **`deadline.didTimeout`** 이 가른다.
 
 ### 8. 같게 — 입력을 끼웠다 · 다르게 — 남의 타이머와의 순서
@@ -212,7 +212,7 @@ python3 wa36b-net.py page wa36b-39-idle.html
 |---|---|---|
 | `yield` 이어가기가 타이머보다 앞 | 앞 | implementation-defined |
 | `setTimeout` 이 `user-blocking` 과 `user-visible` 사이 | 사이 | implementation-defined |
-| `isInputPending` | 있다 | 받은 명세 밖의 표면 — 판이 오르면 빠질 수 있다 |
+| `isInputPending` | 있다 | 받은 명세 밖의 표면 — 버전이 오르면 빠질 수 있다 |
 | 바쁜 동안의 유휴 콜백 | 판마다 다름 | 유휴 기간은 user agent defined |
 
 **안 돌려 본 것** — ① Firefox·Safari(Safari 는 없다 · Firefox 는 이 환경에서 헤드리스 산출이 조용히 실패한다 — README). ② INP · 지연 ms. ③ 숨은 탭의 유휴 기간. ④ `postTask` 의 `delay` · `prioritychange`.

@@ -196,9 +196,9 @@ run("revoke() a second time", () => o.revoke());
 
 ## 실행 환경
 
-**환경** — node v20.19.6(배너의 `node20`) · x86-64 Linux. ★ 이 주제의 탐침은 node 18 · Chrome 151 에서도 **한 글자도 같았다.**
+**환경** — node v20.19.6(배너의 `node20`) · x86-64 Linux. ★ 이 주제의 probe는 node 18 · Chrome 151 에서도 **한 글자도 같았다.**
 
-★★★ **이 주제의 본체는 불변식 격자다** — 트랩 8개 × 대상 상태 3개 = 24칸. **1번 문항이 이 주제의 중심이다.**
+★★★ **이 주제의 핵심은 불변식 격자다** — 트랩 8개 × 대상 상태 3개 = 24칸. **1번 문항이 이 주제의 중심이다.**
 
 **선행** — [14](../14-property-descriptors-and-freezing/2-summary.md) · [15](../15-prototype-chain/2-summary.md) · [35](../35-strict-mode/2-summary.md) · [16](../16-class-syntax/2-summary.md).
 

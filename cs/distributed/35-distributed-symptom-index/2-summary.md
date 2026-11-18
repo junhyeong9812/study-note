@@ -237,8 +237,8 @@
 |---|---|---|---|
 | 윤초·NTP step 순간 일부 요청 오류. Go면 `panic: invalid argument to Int63n`(`math/rand`), Java면 `IllegalArgumentException: bound must be positive`(JDK 21 `RandomSupport`) | 벽시계 차이로 경과 시간을 재서 음수가 됨 | 경과 시간 계산에 쓰인 시계(Go 1.9 이전 `time.Now()`, Java `currentTimeMillis`) | [04 §1](../04-physical-clocks-and-ntp/2-summary.md) · [36](../36-distributed-incidents/2-summary.md) |
 | 특정 서버에서만 "토큰이 아직 유효하지 않음"(JWT `nbf`/`iat`), TLS `certificate is not yet valid`류 | 발급자 시계가 빠르거나 검증자 시계가 느림 | 두 노드의 NTP 오프셋 | [04 §2](../04-physical-clocks-and-ntp/2-summary.md) |
-| 몇 주 뒤 로그 순서·토큰 만료·일별 경계가 어긋남. `node_timex_sync_status` 0, `node_timex_maxerror_seconds`가 16 s에서 멈춤 | NTP(UDP 123)가 막혀 시계가 천천히 벌어짐 | `timedatectl`의 동기 상태·마지막 동기 시각 | [04 §4](../04-physical-clocks-and-ntp/2-summary.md) |
-| 사용자가 바꾼 값이 가끔 되돌아감, 빠른 노드를 거친 쓰기가 계속 이김 | LWW + 시계 어긋남 | 같은 키 값들의 타임스탬프와 실제 순서 | [04 §3](../04-physical-clocks-and-ntp/2-summary.md) · [24 §2](../24-conflict-resolution-and-crdt/2-summary.md) |
+| 몇 주 뒤 로그 순서·토큰 만료·일별 경계가 불일치. `node_timex_sync_status` 0, `node_timex_maxerror_seconds`가 16 s에서 멈춤 | NTP(UDP 123)가 막혀 시계가 천천히 벌어짐 | `timedatectl`의 동기 상태·마지막 동기 시각 | [04 §4](../04-physical-clocks-and-ntp/2-summary.md) |
+| 사용자가 바꾼 값이 가끔 되돌아감, 빠른 노드를 거친 쓰기가 계속 이김 | LWW + 클럭 스큐 | 같은 키 값들의 타임스탬프와 실제 순서 | [04 §3](../04-physical-clocks-and-ntp/2-summary.md) · [24 §2](../24-conflict-resolution-and-crdt/2-summary.md) |
 | `duplicate key` 또는 ID 역순, NTP 점프·VM 이동·재시작 직후 | Snowflake 시계 역행 + 재시작으로 `lastTs` 잃음 | 중복 ID 해독, 역행 감지 지표 | [13 §1](../13-distributed-id-generation/2-summary.md) |
 | 타임스탬프가 실제보다 수 초~수 분 미래, 물리 성분은 멈추고 논리 성분만 오름 | 앞선 시계 하나가 HLC를 미래로 끌고 감 | 받은 타임스탬프 vs 자기 시계 + 상한 | [26 §2](../26-hybrid-clocks-and-truetime/2-summary.md) |
 | 윤초 전후 하루 동안 노드 간 오프셋이 수백 ms, 노드 종료·재시작 증가 | 노드마다 다른 윤초 처리(smearing vs 계단) | 노드별 시각 소스 | [26 §5](../26-hybrid-clocks-and-truetime/2-summary.md) |
@@ -257,7 +257,7 @@
 |---|---|---|---|
 | 하류 요청률이 상류의 몇 배, 타임아웃률과 재시도율이 같이 오름 | 꼬리보다 짧은 타임아웃 + 재시도 | 재시도 예산·백오프·지터 유무 | [03 §3](../03-partial-failure-and-timeouts/2-summary.md) · [36](../36-distributed-incidents/2-summary.md) |
 | 게이트웨이 504와 동시에 안쪽에서 수 초 뒤 "완료" 로그 | 타임아웃 계층 역전, 취소 미전파 | 계층별 타임아웃 값 | [03 §4](../03-partial-failure-and-timeouts/2-summary.md) |
-| 주 DB가 잠깐 느렸을 뿐인데 자동 페일오버, 양쪽에만 있는 쓰기 | 탐지 문턱이 지연 꼬리보다 짧음, 또는 승격 대상 범위가 앱 한계를 넘음 | 페일오버 로그, 승격 범위 설정 | [03 §2](../03-partial-failure-and-timeouts/2-summary.md) · [36](../36-distributed-incidents/2-summary.md) |
+| 주 DB가 잠깐 느렸을 뿐인데 자동 페일오버, 양쪽에만 있는 쓰기 | 탐지 임계값이 지연 꼬리보다 짧음, 또는 승격 대상 범위가 앱 한계를 넘음 | 페일오버 로그, 승격 범위 설정 | [03 §2](../03-partial-failure-and-timeouts/2-summary.md) · [36](../36-distributed-incidents/2-summary.md) |
 | 장애 없는데 리더가 자주 바뀜. `etcd_server_leader_changes_seen_total` 증가, 로그 `became candidate`·`is starting a new election`·`lost leader` (etcd raft v3.6.0), 같은 시각 `etcd_disk_wal_fsync_duration_seconds` 꼬리 | 선거 타임아웃이 RTT·fsync 꼬리보다 짧음, 멤버마다 다른 값 | RTT·fsync 지연 측정 | [02 §2](../02-system-and-failure-models/2-summary.md) · [10 §3](../10-leader-election/2-summary.md) · [11 §2](../11-consensus-raft/2-summary.md) |
 | 잠깐 고립됐던 노드가 돌아오자 리더가 바뀜, 그 노드 term이 더 큼 | PreVote 꺼짐 | `--pre-vote` 설정(etcd 3.6 기본 켜짐) | [10 §4](../10-leader-election/2-summary.md) |
 | 락이 풀리는 순간 조정 서비스 요청이 치솟음 | 모든 대기자가 같은 키를 watch(herd) | watch 대상이 바로 앞 순번인가 | [12 §5](../12-coordination-and-fencing/2-summary.md) |
@@ -291,7 +291,7 @@
 
 | 보이는 형태 | 흔한 원인 | 첫 진단 | leaf |
 |---|---|---|---|
-| 새 기능마다 주문 서비스 배포가 따라옴 | 이벤트 자리에 명령을 하나씩 보냄(결합 역전) | 받는 쪽 목록을 발행자가 쥐고 있나 | [19 §1](../19-message-types-channels-and-endpoints/2-summary.md) |
+| 새 기능마다 주문 서비스 배포가 따라옴 | 이벤트 자리에 명령을 하나씩 보냄(결합 역전) | 받는 쪽 목록을 발행자가 잡고 있나 | [19 §1](../19-message-types-channels-and-endpoints/2-summary.md) |
 | 간헐적으로 다른 사용자의 결과가 보임 | Correlation ID 없이 순서로 응답을 짝지음 | 응답 채널 공유 여부 | [19 §2](../19-message-types-channels-and-endpoints/2-summary.md) |
 | 다른 팀 배포 직후 내 API가 `ERROR: column c.full_name does not exist` | 공유 DB 직접 조회(분산 모놀리스) | 스택 트레이스가 가리키는 표의 소유 팀 | [20 §1](../20-data-ownership-and-cross-service-queries/2-summary.md) |
 | 단계 인스턴스를 늘려도 처리량이 평평 | 필터 사이 공유 상태 | 공유 행 락·캐시 키 경합 | [34 §3](../34-message-routing-and-transformation/2-summary.md) |
@@ -355,7 +355,7 @@
 | 단조 증가 번호(term·epoch·fencing token·offset·version·seq) + 받는 쪽 비교 | 리더 둘, 순서 역전, 낡은 이벤트 덮어쓰기, 옛 소유자 쓰기 | [10](../10-leader-election/2-summary.md) · [12](../12-coordination-and-fencing/2-summary.md) · [17](../17-queues-logs-and-delivery-semantics/2-summary.md) · [27](../27-chain-replication-and-striping/2-summary.md) |
 | 멱등 키 집합(유일 제약 + 처리와 같은 트랜잭션) | 중복 결제, 재전달 중복, outbox·대조 배치 중복 | [03](../03-partial-failure-and-timeouts/2-summary.md) · [17](../17-queues-logs-and-delivery-semantics/2-summary.md) · [25](../25-impossibility-results/2-summary.md) |
 | 정족수 교집합(과반, R+W>N, ISR ≥ min.insync) | 리더 둘, 확인된 쓰기 유실, 오래된 읽기 | [09](../09-quorums/2-summary.md) · [11](../11-consensus-raft/2-summary.md) · [21](../21-kafka-internals/2-summary.md) |
-| 추가 전용 로그를 원천으로(outbox·CDC·WAL) | 이중 쓰기 유실, 무효화 유실, 뷰 영구 어긋남 | [16](../16-outbox-and-dual-write/2-summary.md) · [32](../32-distributed-cache-consistency/2-summary.md) · [20](../20-data-ownership-and-cross-service-queries/2-summary.md) |
+| 추가 전용 로그를 원천으로(outbox·CDC·WAL) | 이중 쓰기 유실, 무효화 유실, 뷰 영구 불일치 | [16](../16-outbox-and-dual-write/2-summary.md) · [32](../32-distributed-cache-consistency/2-summary.md) · [20](../20-data-ownership-and-cross-service-queries/2-summary.md) |
 | 단조 시계·논리 시계(램포트·벡터·HLC) | 음수 duration, 인과 역전, 동시 쓰기 유실 감지 | [04](../04-physical-clocks-and-ntp/2-summary.md) · [05](../05-logical-clocks/2-summary.md) · [26](../26-hybrid-clocks-and-truetime/2-summary.md) |
 | 병합 가능한 자료형(CRDT, 버전 벡터 + 형제) | LWW 유실, 다중 리더 충돌 | [24](../24-conflict-resolution-and-crdt/2-summary.md) · [33](../33-collaborative-editing-ot-and-sequence-crdt/2-summary.md) |
 | 기다림의 상한(타임아웃·DLQ·완료 조건 둘·사람 결정 절차) | 블로킹·진행 없음 | [01](../01-why-distributed-and-fallacies/2-summary.md) · [14](../14-two-phase-commit/2-summary.md) · [18](../18-consumer-failure-handling/2-summary.md) · [34](../34-message-routing-and-transformation/2-summary.md) |

@@ -251,7 +251,7 @@ const variants = [
 
 **환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · Google Chrome 151(헤드리스) · Python 3.12 · x86-64 Linux. 배너의 `node20` 은 v20.19.6 이다.
 
-★★★ **이 주제의 본체는 로그 심기다** — 본문 줄 · 호출자의 다음 줄 · `await` 뒤에 로그를 심었다. **1번 · 3번 · 6번 문항이 이 주제의 중심이다.**
+★★★ **이 주제의 핵심은 로그 심기다** — 본문 줄 · 호출자의 다음 줄 · `await` 뒤에 로그를 심었다. **1번 · 3번 · 6번 문항이 이 주제의 중심이다.**
 
 **선행** — [37](../37-promise-state-model/2-summary.md) · [36](../36-event-loop-and-microtasks/2-summary.md) · [20](../20-generators/2-summary.md) · [32](../32-error-handling-and-error/2-summary.md) · [38](../38-promise-combinators/2-summary.md).
 

@@ -77,7 +77,7 @@ x = "다섯";
 - 컴파일되는가? 안 된다면 **에러 번호**와 「expected … found …」 부분은 무엇인가?
 - 에러가 가리키는 「expected due to this value」는 소스의 어디인가?
 - 나는 타입을 한 글자도 안 적었는데 왜 타입이 정해져 있는가?
-- `mut` 가 푸는 것과 못 푸는 것을 한 줄씩으로 가를 수 있는가?
+- `mut` 가 푸는 것과 못 푸는 것을 한 줄씩으로 구분할 수 있는가?
 
 ### 6. 이 두 줄은 컴파일되는가 (예측)
 
@@ -130,7 +130,7 @@ println!("myValue = {myValue}");
 
 ## 실행 환경
 
-답을 모르겠으면 **던져 보라.** `rustc --edition 2021 ex.rs -o /tmp/ex && /tmp/ex` 면 된다.
+답을 모르겠으면 **실행해 보라.** `rustc --edition 2021 ex.rs -o /tmp/ex && /tmp/ex` 면 된다.
 에러 번호를 물을 때는 `rustc --explain E0xxx` 까지 읽는다.
 
 ## 복습 기록

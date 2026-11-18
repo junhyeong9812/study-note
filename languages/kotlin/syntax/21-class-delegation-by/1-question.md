@@ -212,7 +212,7 @@ class Car(n: NotEngine) : Engine by n
 인터페이스와 기본 구현은 [20번 주제](../20-interfaces-default-impl-and-super/), `open`/`override` 는 [19번 주제](../19-inheritance-open-final-override/)가 정본이다.
 
 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
-이 주제의 모든 답은 **kotlinc 2.4.20 · JRE 21.0.5** 에서 실제로 던져 받은 것이다.
+이 주제의 모든 답은 **kotlinc 2.4.20 · JRE 21.0.5** 에서 실제로 실행해 받은 것이다.
 
 ## 복습 기록
 

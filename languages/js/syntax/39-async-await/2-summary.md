@@ -44,7 +44,7 @@ Google Chrome 151.0.7922.173
 Python 3.12.3
 ```
 
-두 node 판 · Chrome 대조기의 집계 줄 — 전문은 [3-answer.md](3-answer.md) 의 「실행 검증」에 있다.
+두 node 버전 · Chrome 대조기의 집계 줄 — 전문은 [3-answer.md](3-answer.md) 의 「실행 검증」에 있다.
 
 `node18 vs node20: identical 13 · differs 0   ·   node20 vs Chrome 151: identical 12 · differs 0 · node only 1`
 
@@ -201,8 +201,8 @@ const log = (s) => console.log(s);
 - ★★★ **`await 1` 도 쉰다** — `caller's next line @0 > after await @0` 에서 **호출자의 다음 줄이 먼저**다. 값이 이미 있어도 `then` 을 걸고 **반응 잡으로** 돌아온다.
 - ★★★ **`await 1` 과 `await` 진짜 프라미스는 같은 틱**(`after await @0` · 호출자의 `then` 은 `@1`), **`await thenable` 은 하나 더**(`@1` · `@2`) — 37번의 흡수 규칙 그대로다.
 - ★★★ **반환 쪽** — `return 'v'` 는 `@0`, **`return settledP` 는 `@2`**, **`return await settledP` 는 `@1`**. `async` 함수의 결과 프라미스를 **프라미스로 resolve** 하면 37번의 +2 가 붙고, `await` 로 **값을 꺼내 돌려주면** 그 값으로 resolve 되기 때문이다.
-  ★ 「`return await` 는 틱을 낭비한다」는 **이 판에서는 거꾸로**였다 — 단 **이 문서는 시간을 재지 않았다.** 틱 하나의 차이가 무엇을 바꾸나는 동작 (5)가 보인다(`catch`).
-- ★★ **두 node 판과 Chrome 151 이 같은 `@k` 를 냈다** — 틱 수는 명세의 잡 개수다.
+  ★ 「`return await` 는 틱을 낭비한다」는 **이 버전에서는 거꾸로**였다 — 단 **이 문서는 시간을 재지 않았다.** 틱 하나의 차이가 무엇을 바꾸나는 동작 (5)가 보인다(`catch`).
+- ★★ **두 node 버전과 Chrome 151 이 같은 `@k` 를 냈다** — 틱 수는 명세의 잡 개수다.
 
 ### (3) ★★★ 순차 대 병렬 — 시간 대신 「시작 로그의 순서」
 
@@ -340,7 +340,7 @@ rows where node18 gives the same two answers as node20: 2 / 2
 
 - ★★★ **`one-by-one` 은 훅이 있으면 `unhandledRejection(b)` 가 먼저 찍히고, 훅이 없으면 `exit 1`** 이다 — `await pb` 에 닿기 **전에** `pb` 가 거부됐는데, 그때 `pb` 에는 **처리기가 하나도 없다.** `catch` 블록은 코드에 **분명히 있는데도** 그렇다.
 - ★★★ **`all` 은 `exit 0`** — `Promise.all` 은 **모든 입력에 곧바로 `then` 을 건다.** 거부가 **처리된 채로** 도착한다.
-- ★★ 두 node 판이 **같은 두 답**을 냈다(`2 / 2`). 이 보고와 종료는 **node 의 것**이다(37번 동작 (5) — 거기가 정본).
+- ★★ 두 node 버전이 **같은 두 답**을 냈다(`2 / 2`). 이 보고와 종료는 **node 의 것**이다(37번 동작 (5) — 거기가 정본).
 
 ### (5) ★★★ `forEach` 안의 `await` — 기다리지 않는다
 
@@ -506,7 +506,7 @@ SyntaxError: await is only valid in async functions and the top level bodies of 
 
 - ★★★ **같은 글자가 ES 모듈로는 돌고(`before` · `after: value` · `exit 0`), CommonJS 로는 `SyntaxError 「await is only valid in async functions and the top level bodies of modules」` · `exit 1`** — 그리고 **표준 출력은 0 줄**이다. 컴파일 단계에서 거절돼 `before` 조차 안 찍혔다(35번의 early error 와 같은 모양).
 - ★★ **`.mjs` 만이 아니다** — `--input-type=module` 로 표준 입력에 준 **같은 글자**도 돌았다. 기준은 **확장자가 아니라 「모듈 코드인가」** 다(모듈 판정은 호스트의 몫 — [목록의 **42번 주제**](../42-esm-modules/)).
-- ★ 두 node 판이 같은 답을 냈다(node 18 도 ES2022 기능을 갖고 있다).
+- ★ 두 node 버전이 같은 답을 냈다(node 18 도 ES2022 기능을 갖고 있다).
 
 ### (8) ★★ `async` 함수 = 제너레이터 + 프라미스 러너 — 로그가 한 줄씩 같은가
 
@@ -662,7 +662,7 @@ caller: before f() > f: line 1 > caller: after f() -- got Promise
 ```
 
 - ★★★ **파이썬은 `f()` 를 불러도 `f: line 1` 이 안 찍힌다**(`caller: before f() > caller: after f() -- got coroutine`). `create_task` 로 루프에 올려야 돈다. **JS 는 부르는 순간 `f: line 1` 이 찍힌다**(`got Promise`).
-- ★★ 그래서 **JS 에서 「부르고 안 기다린」 async 함수는 이미 일을 하고 있다** — 동작 (4)의 거부가 그래서 **처리기 없이** 도착한다. 파이썬은 기다리지 않은 코루틴이 **아예 안 돈다**(이 탐침은 그 코루틴을 끝에서 `close()` 로 닫았다).
+- ★★ 그래서 **JS 에서 「부르고 안 기다린」 async 함수는 이미 일을 하고 있다** — 동작 (4)의 거부가 그래서 **처리기 없이** 도착한다. 파이썬은 기다리지 않은 코루틴이 **아예 안 돈다**(이 probe는 그 코루틴을 끝에서 `close()` 로 닫았다).
 - ★ 파이썬 쪽 정본은 파이썬 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **51번**(`asyncio` 코루틴 기초 — 아직 폴더가 없다). Rust 는 러스트 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **54번**(`async`/`await` 와 `Future`) — **이 문서는 Rust 를 돌리지 않았다.**
 
 ## 문법 — 형태와 규칙
@@ -709,7 +709,7 @@ caller: before f() > f: line 1 > caller: after f() -- got Promise
 
 ### (7) ★★ 「`return await` 는 쓸데없는 틱 낭비다」
 
-**이 판에서 `return await settledP` 는 `@1`, `return settledP` 는 `@2`** 였다 — 틱이 **적었다.** 그리고 `try` 안에서는 **뜻이 다르다**(4). 속도는 **안 쟀다.**
+**이 버전에서 `return await settledP` 는 `@1`, `return settledP` 는 `@2`** 였다 — 틱이 **적었다.** 그리고 `try` 안에서는 **뜻이 다르다**(4). 속도는 **안 쟀다.**
 
 ### (8) ★★ 최상위 `await` 는 `.mjs` 에서만 된다고 외운다
 
@@ -734,17 +734,17 @@ caller: before f() > f: line 1 > caller: after f() -- got Promise
 - ★★ **어느 파일이 모듈인가** — `.mjs` · `--input-type=module` · `package.json` 의 `type`. node 의 규칙이다(42번).
 - ★ 걸음을 만든 `setTimeout` 0 — 같은 지연의 타이머는 등록 순서(36번).
 
-### 구현(V8) · 이 판의 관찰
+### 구현(V8) · 이 버전의 관찰
 
 - 예외 문구 — `await is only valid in async functions and the top level bodies of modules`.
-- ★★ 틱 수(`@0`·`@1`·`@2`)가 두 node 판과 Chrome 151 에서 같았다 — 명세의 잡 개수에서 나오지만, **옛 판의 명세와 대조하지 않았으므로** 옛 엔진에서의 틱 수는 이 문서가 말하지 않는다.
+- ★★ 틱 수(`@0`·`@1`·`@2`)가 두 node 버전과 Chrome 151 에서 같았다 — 명세의 잡 개수에서 나오지만, **옛 판의 명세와 대조하지 않았으므로** 옛 엔진에서의 틱 수는 이 문서가 말하지 않는다.
 
 ### 그래서 이렇게 적으면 틀린다
 
 - ✗ 「`Promise.all` 로 감싸야 병렬이 된다」 → ○ 「**먼저 부르면** 겹친다(`[3]` 도 `true`). `Promise.all` 은 **거부를 곧바로 받아 주는** 기다리는 방법이다」
 - ✗ 「병렬로 바꾸면 빨라진다」 → ○ **안 쟀다** — 「`b` 가 `a` 가 끝나기 전에 시작했다」까지가 이 문서의 근거다
 - ✗ 「`async` 함수는 호출되면 나중에 실행된다」 → ○ 「**첫 `await` 까지 지금**」
-- ✗ 「`return await` 는 항상 불필요하다」 → ○ 「**`try` 안에서는 뜻이 다르다** — 그리고 이 판에서는 틱도 적었다」
+- ✗ 「`return await` 는 항상 불필요하다」 → ○ 「**`try` 안에서는 뜻이 다르다** — 그리고 이 버전에서는 틱도 적었다」
 
 ## 언제 쓰고 언제 안 쓰나
 
@@ -787,12 +787,12 @@ caller: before f() > f: line 1 > caller: after f() -- got Promise
 ## 더 들어가면
 
 - **최상위 `await` 가 모듈 그래프에 주는 영향** — 그 모듈을 `import` 한 쪽의 평가가 기다린다고 알려져 있다. **이 문서는 돌리지 않았다**(42번).
-- **옛 명세의 `await` 틱 수** — ES2019 전의 `await` 는 진짜 프라미스에도 틱을 더 먹었다고 알려져 있다. 이 머신의 세 판은 모두 새 모양이었다.
+- **옛 명세의 `await` 틱 수** — ES2019 전의 `await` 는 진짜 프라미스에도 틱을 더 먹었다고 알려져 있다. 이 머신의 세 버전은 모두 새 모양이었다.
 - **`async` 함수의 스택 추적**(V8 의 async stack trace) — 명세 밖이다. 재지 않았다.
 
 ## 실행 환경
 
-★★★ **이 주제의 본체는 ① 추상 연산에 로그 심기다** — `async` 함수 본문의 줄마다, 호출한 쪽의 다음 줄에, **`await` 가 멈추고 다시 도는 지점**마다 로그를 심는다.
+★★★ **이 주제의 핵심은 ① 추상 연산에 로그 심기다** — `async` 함수 본문의 줄마다, 호출한 쪽의 다음 줄에, **`await` 가 멈추고 다시 도는 지점**마다 로그를 심는다.
 틱 수는 37번의 **계수 잡**으로 센다(동작 (2)). ★★★ **순차 대 병렬은 시간이 아니라 「시작 로그의 순서」로** 가른다 — **`b` 가 `a` 가 끝나기 전에 시작했나**(참/거짓)를 스크립트가 찍는다(동작 (3)).
 ★★ 보조로 **② 전수 격자**(반환 모양 4 · 틱 6행 · 순차/병렬 4행)와 **④ 예외의 `constructor.name` + `message`**(`catch` 가 잡았나 · 최상위 `await` 의 `SyntaxError`)를 쓴다.
 
@@ -805,42 +805,42 @@ caller: before f() > f: line 1 > caller: after f() -- got Promise
 
 **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다. 파이썬은 3.12.
-★★ **이 주제의 node 탐침은 두 node 판과 Chrome 151 에서 한 글자도 같았다**(맨 위 대조기의 집계 줄 · Chrome 은 `./js36b-browser.sh` — 소스는 [36번](../36-event-loop-and-microtasks/2-summary.md)).
+★★ **이 주제의 node probe는 두 node 버전과 Chrome 151 에서 한 글자도 같았다**(맨 위 대조기의 집계 줄 · Chrome 은 `./js36b-browser.sh` — 소스는 [36번](../36-event-loop-and-microtasks/2-summary.md)).
 ★★★ **시간은 한 번도 재지 않았다** — 「병렬이 빠르다」·「`await` 가 느리다」를 **쓰지 않는다.**
 
 **버전**
 
 | 무엇 | 판 | 이 머신에서 |
 |---|---|---|
-| `async function` · `await` · `async` 화살표 · `async` 메서드 | **ES2017** | 세 판 다 있다 |
+| `async function` · `await` · `async` 화살표 · `async` 메서드 | **ES2017** | 세 버전 다 있다 |
 | 최상위 `await`(모듈 코드에서만) | **ES2022** | node 18 · 20 둘 다 ES 모듈에서 돌았다(동작 (7)) |
 
 ★★ **판 경계는 TC39 finished proposals 표와 이 목록의 README 를 대조했다** — Async functions **2017** · Top-level `await` **2022**. README 39행은 판을 적지 않는다.
 
-**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+**★★★ 이 주제가 쓰는 창 — 그리고 해당 없는 창**
 
 | 창 | 이 주제에서 무엇을 보나 |
 |---|---|
-| ★★★ **① 추상 연산에 로그 심기**(본체) | 본문 줄 · 호출자의 다음 줄 · `await` 뒤 — **어느 줄이 먼저 찍히나**(동작 (1)·(3)·(4)·(5)) · 계수 잡의 `@k`(동작 (2)) |
+| ★★★ **① 추상 연산에 로그 심기**(핵심) | 본문 줄 · 호출자의 다음 줄 · `await` 뒤 — **어느 줄이 먼저 찍히나**(동작 (1)·(3)·(4)·(5)) · 계수 잡의 `@k`(동작 (2)) |
 | ★★ **② 전수 격자** | 반환 모양 4행 · 틱 6행 · 순차/병렬 4행 — 마지막 칸 「`b started before a ended`」 를 스크립트가 찍는다 |
 | ★★ **④ 예외의 `constructor.name` + `message`** | `return` 과 `return await` 에서 **`catch` 가 잡았나** · CommonJS 의 최상위 `await` → `SyntaxError` |
 | ★ **창을 바꿔 물었다**(제5의 상태) | 「`async` 함수는 제너레이터 + 프라미스 러너인가」를 **명세 비교가 아니라 로그 비교**로 물었다 — 옆에서 도는 다른 마이크로태스크와 **한 줄씩 같은가**(동작 (8)) |
-| ★ **부적용 — ③ 브랜드 태그** | 판정할 객체의 종류가 없다(반환값이 `Promise` 인지는 `instanceof` 로 충분했다) |
+| ★ **해당 없음 — ③ 브랜드 태그** | 판정할 객체의 종류가 없다(반환값이 `Promise` 인지는 `instanceof` 로 충분했다) |
 | ★ **안 쟀다 — 시간** | ★★★ 순차 대 병렬을 **시간으로 재지 않았다.** 「시작 로그의 순서」가 전부다 |
 
-**★ 흔들리는 칸 / 안 흔들리는 칸**
+**★ 실행마다 달라지는 항목 / 달라지지 않는 항목**
 
-| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+| 실행마다 달라진다(근거로 쓰지 않는다) | 달라지지 않는다(근거로 쓴다) |
 |---|---|
 | 판별 블록의 판 문자열 — 머신에 매인다 | ★★★ 모든 로그의 **줄 순서** · `@k` · `true`/`false` — 걸음은 전부 **마이크로태스크나 `setTimeout` 0 하나씩**이고, 같은 지연의 타이머는 등록 순서다(36번) |
-| ★ **이 주제의 탐침에는 재실행에서 흔들린 칸이 없다**(재대조 동일) | 종료 코드 `0`·`1` · 두 node 판이 같은 두 답(`2 / 2`) |
+| ★ **이 주제의 probe에는 재실행에서 달라진 항목이 없다**(재대조 동일) | 종료 코드 `0`·`1` · 두 node 버전이 같은 두 답(`2 / 2`) |
 
 **층** — `async`/`await` 의 멈춤과 재개는 **언어(ECMA-262)** 의 것이다. **호스트가 끼는 자리는 둘**이다 — 걸음을 만든 **타이머**와, 먼저 거부된 프라미스를 **보고하는** node(동작 (4) · 37번).
 
 **선행** — [37 — Promise 상태 모델](../37-promise-state-model/2-summary.md)(직접 선행 — ★★★ **흡수 규칙과 틱 세는 창**이 거기서 온다 · 미처리 거부) ·
 [36 — 이벤트 루프와 마이크로태스크](../36-event-loop-and-microtasks/2-summary.md)(★★ **`A1` 이 `S2` 보다 먼저**였던 것 — 여기서 정본으로 다시 잰다) ·
 [20 — 제너레이터](../20-generators/2-summary.md)(★★★ **`yield` ↔ `await`** — 멈췄다 이어 도는 함수. 동작 (8)이 러너로 같은 로그를 낸다) ·
-[32 — 오류 처리와 `Error`](../32-error-handling-and-error/2-summary.md)(★★ **`try`/`catch`/`finally` 의 흐름** — `return` 과 `return await` 가 그 흐름에서 갈린다. 동작 (6)) ·
+[32 — 오류 처리와 `Error`](../32-error-handling-and-error/2-summary.md)(★★ **`try`/`catch`/`finally` 의 흐름** — `return` 과 `return await` 가 그 흐름에서 달라진다. 동작 (6)) ·
 [38 — Promise 조합기](../38-promise-combinators/2-summary.md)(`Promise.all` 은 **이미 시작한 것**을 기다린다) · [26 — 배열 탐색·평탄화·생성](../26-array-search-flatten-and-create/2-summary.md)(★ `Array.fromAsync` 는 하나씩, `Promise.all([...gen()])` 은 셋 다 먼저 — 순차 대 병렬의 **내장 함수 쪽 짝**).
 
 ★★ **경계 — 연혁**(`co` 러너에서 언어 문법으로)은 [`history/js/04-비동기-진화.md`](../../../../history/js/04-비동기-진화.md) 의 **「4단계 — 제너레이터/이터레이터」** 와 **「5단계 — async/await (ES2017)」** 절이 정본이다. 그 절의 순차/병렬 그림은 **「가로 길이는 원문 수치가 아니다」** 라고 스스로 적는다 — 여기서는 **시작 로그의 순서**로 같은 차이를 보인다.

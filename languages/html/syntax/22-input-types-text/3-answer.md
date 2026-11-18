@@ -149,7 +149,7 @@ document.body.append(Object.assign(document.createElement("pre"), {
 
 ### 9. `password` 는 HTML-AAM 「대응 역할 없음」, CDP 는 `textbox` · 문구는 UA 가 정한다
 
-- **HTML-AAM** — `input type=password` 는 「**대응하는 역할 없음**」(계산된 역할 `html-input-password`). **이 판의 CDP 트리는 `textbox`**(A1). 트리에 역할 이름을 무엇으로 찍나는 구현의 선택이다.
+- **HTML-AAM** — `input type=password` 는 「**대응하는 역할 없음**」(계산된 역할 `html-input-password`). **이 버전의 CDP 트리는 `textbox`**(A1). 트리에 역할 이름을 무엇으로 찍나는 구현의 선택이다.
 - **`validationMessage`** — 명세의 getter 는 제약을 어긴 칸이면 「UA 가 사용자에게 보여 줄 **알맞게 현지화된 메시지**」를 돌려주라고 한다. **글자는 UA 가 정한다**(A2 — 로케일마다 다르다).
 
 ### 10. 자판은 입력기가 띄운다 — 이 환경에 없다(제3의 상태) · 자동완성은 저장된 값과 브라우저 UI 가 없다
@@ -167,7 +167,7 @@ document.body.append(Object.assign(document.createElement("pre"), {
 **환경** — Google Chrome 151.0.7922.173 · Linux · headless · `--window-size=1000,800`. **엔진은 이것 하나다.** 하네스는 [21번](../21-form-submission-model/3-answer.md)의 `html21b-form.py`·`html21b-cdp.py` 그대로다.\
 ★ **로케일** — `page` 블록은 `--lang=ko-KR`(하네스가 환경 변수 `LANGUAGE=ko_KR` 로 바꿔 넘긴다)로 **고정**했다. 그 까닭(리눅스의 Chrome 이 `--lang` 플래그를 안 듣는다)은 [23번](../23-input-types-number-date/3-answer.md)의 `## 실행 검증` 에 있다.
 
-**흔들림 확인** — 이 배치의 캡처를 **세 번** 돌렸다. 이 주제의 블록은 **세 판이 한 글자도 같았다**(재대조 결과는 [21번](../21-form-submission-model/3-answer.md)의 표와 같은 판).
+**재현성 확인** — 이 배치의 캡처를 **세 번** 돌렸다. 이 주제의 블록은 **세 버전이 한 글자도 같았다**(재대조 결과는 [21번](../21-form-submission-model/3-answer.md)의 표와 같은 판).
 
 | 무엇을 | 몇 번 | 결과가 쓰인 곳 |
 |---|---|---|
@@ -179,7 +179,7 @@ document.body.append(Object.assign(document.createElement("pre"), {
 
 **구현에 달린 항목**
 
-| 항목 | 이 판의 값 | 왜 다시 찍나 |
+| 항목 | 이 버전의 값 | 왜 다시 찍나 |
 |---|---|---|
 | `password` 의 CDP 역할 | `textbox` | HTML-AAM 은 대응 역할 없음 |
 | `validationMessage` 문구 | ko·de 두 벌 | 판마다 바뀔 수 있다 — 근거로 안 쓴다 |
@@ -188,7 +188,7 @@ document.body.append(Object.assign(document.createElement("pre"), {
 
 **못 잰 것** — ① **모바일 가상 키보드**. ② **자동완성·비밀번호 관리자**. ③ **스크린리더의 `password` 읽기.**
 
-**부적용인 창** — **창 ③ · ④ · ⑥.** 입력의 값은 자식 글자도, 문서 모드도, 렌더 차단도 아니다 — **잴 것이 없다.**
+**해당 없는 창** — **창 ③ · ④ · ⑥.** 입력의 값은 자식 글자도, 문서 모드도, 렌더 차단도 아니다 — **잴 것이 없다.**
 
 ## 용어 풀이
 

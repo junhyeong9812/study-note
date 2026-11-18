@@ -35,7 +35,7 @@
 
 - SQL 인젝션 경고는 `findByUser`만 받았다(13행 `SQL_INJECTION_JDBC`, `SQL_NONCONSTANT_STRING_PASSED_TO_EXECUTE`). 바인딩한 `findByUserSafe`는 받지 않았다.
 - 9건 중 보안 경고(범주 `SECURITY`)는 3건(SQL 2건 + `PREDICTABLE_RANDOM`). 나머지 6건은 자원 해제(`ODR_OPEN_DATABASE_RESOURCE`·`OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE` 각 2)·`EI_EXPOSE_REP2`(범주 `MALICIOUS_CODE`)·`DMI_RANDOM_USED_ONLY_ONCE` 같은 `SECURITY` 밖 범주 경고다.
-- 한 게이트에 다 걸면 소음 때문에 경고를 읽지 않게 되고(경고 피로), 진짜 보안 경고가 묻히거나 게이트가 "경고만"으로 낮춰진다. 보안 범주만 병합을 막고 나머지는 기준선으로 나눈다.
+- 한 게이트에 다 걸면 소음 때문에 경고를 읽지 않게 되고(경고 피로), 진짜 보안 경고가 묻히거나 게이트가 "경고만"으로 낮춰진다. 보안 범주만 병합을 막고 나머지는 베이스라인으로 나눈다.
 
 ### 5. 실험 B
 

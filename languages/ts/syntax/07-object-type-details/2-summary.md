@@ -12,14 +12,14 @@ v18.19.1
 > (`tsc --help --all` 의 `default: false` 를 확인했고, **켠 판을 따로 던져 두 결과를 나란히 실었다**).
 > **버전** — `readonly` 프로퍼티는 TS 2.0, `exactOptionalPropertyTypes` 는 4.4, `noUncheckedIndexedAccess` 는 4.1 부터다.
 
-## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
+## 이 문서에서 실행마다 달라지는 항목과 달라지지 않는 항목
 
 | | 무엇 | 왜 |
 |---|---|---|
-| **안 흔들린다** | 에러 코드·문구·`(행,열)`·종료 코드·**`.d.ts` 전문**·방출 전문·`node` 출력 | 같은 입력·같은 옵션이면 같은 글자다 |
-| **안 흔들린다** | `.d.ts` 안의 **프로퍼티 순서** | 선언 순서를 따른다 |
-| **흔들린다** | 절대 경로 | 작업 디렉토리에서 **상대 경로로만** 던졌다 |
-| **흔들린다** | `--pretty` 가 켜졌을 때의 색·소스 발췌·요약 줄 | 기본값이 **`true`** 다. 모든 블록을 **`--pretty false`** 로 고정했다 |
+| **달라지지 않는다** | 에러 코드·문구·`(행,열)`·종료 코드·**`.d.ts` 전문**·방출 전문·`node` 출력 | 같은 입력·같은 옵션이면 같은 글자다 |
+| **달라지지 않는다** | `.d.ts` 안의 **프로퍼티 순서** | 선언 순서를 따른다 |
+| **실행마다 달라진다** | 절대 경로 | 작업 디렉토리에서 **상대 경로로만** 실행했다 |
+| **실행마다 달라진다** | `--pretty` 가 켜졌을 때의 색·소스 발췌·요약 줄 | 기본값이 **`true`** 다. 모든 블록을 **`--pretty false`** 로 고정했다 |
 
 > ★ 「**소스 펜스의 첫 줄 `// 파일명` 은 대조용 배너다**」 — 실파일에는 없다. **진단의 행 번호는 그 줄을 뺀 기준**이다.
 > ★★ **설정이 답을 바꾸는 주제라 옵션이 매 블록의 배너에 있다.** 설정 파일로 던진 판은 **그 설정 전문도 같은 블록**에 실었다.
@@ -82,12 +82,12 @@ v18.19.1
 
 | 창 | 무엇을 보여 주나 | 어디서 왔나 |
 |---|---|---|
-| ★★★ **같은 파일을 옵션만 바꿔 두 번** | `exactOptionalPropertyTypes`·`noUncheckedIndexedAccess` 로 **갈리는 칸** | ★ 이 주제의 본체 |
+| ★★★ **같은 파일을 옵션만 바꿔 두 번** | `exactOptionalPropertyTypes`·`noUncheckedIndexedAccess` 로 **달라지는 항목** | ★ 이 주제의 핵심 |
 | ★★ **`.d.ts` 덤프** | 세 수정자가 **선언 방출에 어떻게 남는지** | [**03번 주제**](../03-basic-type-annotations/)에서 이어받음 |
-| ★★ **`null` 탐침** | `?` 가 만든 타입을 **컴파일러가 글자로** 말하게 하기 | [**03번 주제**](../03-basic-type-annotations/)에서 이어받음 |
+| ★★ **`null` probe** | `?` 가 만든 타입을 **컴파일러가 글자로** 말하게 하기 | [**03번 주제**](../03-basic-type-annotations/)에서 이어받음 |
 | ★★★ **방출된 `.js` + `node`** | `readonly` 가 **런타임을 못 막는 것** | [**01번 주제**](../01-what-ts-adds-and-erases/)에서 이어받음 |
 
-★ 첫째 창이 이 주제의 본체다. **설정을 안 밝히면 본문 전체가 검증 불가**가 된다.
+★ 첫째 창이 이 주제의 핵심이다. **설정을 안 밝히면 본문 전체가 검증 불가**가 된다.
 
 비용 — 컴파일 두 번(기본값 한 번, 설정 한 번).
 
@@ -130,7 +130,7 @@ ex.07a.ts(14,7): error TS2322: Type 'string | undefined' is not assignable to ty
 
 - 진단이 **세 건**이다 — 8행·13행·14행. **9·10·11행은 통과했다.**
 - 8행 `u.nickname.length` 가 `TS18048` — 「'u.nickname' is possibly 'undefined'」.
-- ★★ 13행의 `null` 탐침이 답을 적어 준다 — `nickname` 의 타입은 「**`string | undefined`**」다. `?` 는 **`| undefined` 를 타입에 더한 것**이다.
+- ★★ 13행의 `null` probe가 답을 적어 준다 — `nickname` 의 타입은 「**`string | undefined`**」다. `?` 는 **`| undefined` 를 타입에 더한 것**이다.
 - 14행도 같은 근거다 — `string` 자리에 못 들어간다.
 - ★ 풀리는 길이 셋이다 — `=== undefined` 비교(9행) · 옵셔널 체이닝 `?.`(10행) · `??` 기본값(11행). **셋 다 진단 목록에 없다.**
 - ★ 17행 `const partial: User = { id: "a" }` 도 통과했다 — **키를 아예 빼는 것**이 `?` 의 목적이다.
@@ -157,7 +157,7 @@ ex.07a.ts(14,7): error TS2322: Type 'string | undefined' is not assignable to ty
 ex.07a.ts(13,7): error TS2322: Type 'string' is not assignable to type 'null'.
 ```
 
-- ★★★ 진단이 **3건에서 1건**으로 줄고, 탐침이 말하는 타입이 그냥 「`string`」이다 — **`| undefined` 가 아예 안 붙는다.**
+- ★★★ 진단이 **3건에서 1건**으로 줄고, probe가 말하는 타입이 그냥 「`string`」이다 — **`| undefined` 가 아예 안 붙는다.**
 - ★ 즉 이 절의 모든 이야기는 **`strictNullChecks` 가 켜진 전제** 위에 선다. 7.0 에서는 `strict` 에 딸려 기본으로 켜져 있다.
 
 비용 — 쓰는 자리마다 **좁히기가 필요**하다. 그 비용이 싫어 기본값을 넣는 설계가 흔하다.
@@ -288,7 +288,7 @@ ex.07c.ts(26,5): error TS2413: 'number' index type 'number' is not assignable to
 
 ### (4) ★★★ 같은 파일, 설정 두 판
 
-**언제 쓰나** — 「우리 팀은 왜 이게 에러가 안 나지」에서 막힐 때. **이 절이 이 주제의 본체다.**
+**언제 쓰나** — 「우리 팀은 왜 이게 에러가 안 나지」에서 막힐 때. **이 절이 이 주제의 핵심이다.**
 
 ```ts
 // ex.07e.ts
@@ -523,11 +523,11 @@ undefined 쪽  : undefined {"host":"b"} true
 - ★★ **배열의 `readonly` 는 다르다** — `readonly T[]` 를 `T[]` 자리에 못 넣고(`TS4104`), `push` 자체가 없다(`TS2339`).
 - ★★ **인덱스 시그니처는 선언된 프로퍼티에 조건을 건다**(`TS2411`). 숫자 인덱스는 문자열 인덱스에 맞아야 한다(`TS2413`).
 - ★★ **없는 키를 읽는 것은 기본값에서 안 걸린다.** `noUncheckedIndexedAccess` 를 켜야 `| undefined` 가 붙는다.
-- ★★★ **`exactOptionalPropertyTypes` 는 `strict` 에 없다**(기본 `false`). 켜야 「키 없음」과 「`undefined`」가 갈린다.
+- ★★★ **`exactOptionalPropertyTypes` 는 `strict` 에 없다**(기본 `false`). 켜야 「키 없음」과 「`undefined`」가 달라진다.
 - ★ **선언 방출은 수정자를 그대로 싣는다.** 단 **읽어서 새 객체를 만들면 `?` 가 `| undefined` 로 바뀐다.**
 - ★★ **셋 다 방출에 안 남는다.** `readonly` 는 런타임 변경을 못 막는다.
 
-**금지 사례** — 이 주제에서 던져 받은 것 다섯이다. 전문은 「동작 방식」의 블록에 있다.
+**금지 사례** — 이 주제에서 실행해 받은 것 다섯이다. 전문은 「동작 방식」의 블록에 있다.
 
 ```text
 1) 선택 프로퍼티를 그냥 쓰기        ->  TS18048  'u.nickname' is possibly 'undefined'.
@@ -542,7 +542,7 @@ undefined 쪽  : undefined {"host":"b"} true
 - ★★★ 「**`readonly` 를 붙였으니 안 바뀐다**」 — 바뀐다. 넓은 타입으로 받아 대입하면 그만이고, 실행 출력이 `바뀜` 이다.
 - ★★★ 「**`readonly` 가 있는 쪽과 없는 쪽은 호환이 안 되겠지**」 — **양방향으로 통과**한다. 진단 목록에 그 두 줄이 없다.
 - ★★ 「**인덱스 시그니처가 있으면 아무 키나 안전하게 읽는다**」 — 읽히기만 한다. 기본값에서는 **`undefined` 를 `number` 라고 믿는다.**
-- ★★ 「**`{ port: undefined }` 와 `{}` 는 같은 것**」 — JS 에서 다르다. `"port" in` 이 `true` 와 `false` 로 갈린다.
+- ★★ 「**`{ port: undefined }` 와 `{}` 는 같은 것**」 — JS 에서 다르다. `"port" in` 이 `true` 와 `false` 로 나뉜다.
 - ★★ 「**`strict` 를 켰으니 객체 타입 검사는 최대치**」 — 아니다. `exactOptionalPropertyTypes`·`noUncheckedIndexedAccess` 는 **`strict` 밖**이다.
 - ★ 「**인덱스 시그니처를 넣어도 기존 프로퍼티는 그대로겠지**」 — `TS2411` 이 난다. 인덱스 타입을 넓히거나 프로퍼티를 빼야 한다.
 - ★ 「**`?` 는 그냥 「없어도 된다」는 표시**」 — 표시이자 **타입 변경**이다. `| undefined` 가 붙는다.
@@ -554,15 +554,15 @@ undefined 쪽  : undefined {"host":"b"} true
 
 | 층 | 무엇 | 근거 |
 |---|---|---|
-| **언어 보장** | `?` 는 `strictNullChecks` 아래에서 **`\| undefined` 를 더한다** | 핸드북 「Optional Properties」. `null` 탐침이 `string \| undefined` 를 적어 줬다 |
-| **언어 보장** | `readonly` 프로퍼티는 **대입문만** 막는다 | 핸드북이 「할당 가능성에 영향이 없다」를 명시한다. 이 판에서 양방향 통과를 확인 |
+| **언어 보장** | `?` 는 `strictNullChecks` 아래에서 **`\| undefined` 를 더한다** | 핸드북 「Optional Properties」. `null` probe가 `string \| undefined` 를 적어 줬다 |
+| **언어 보장** | `readonly` 프로퍼티는 **대입문만** 막는다 | 핸드북이 「할당 가능성에 영향이 없다」를 명시한다. 이 버전에서 양방향 통과를 확인 |
 | **언어 보장** | 인덱스 시그니처는 선언된 프로퍼티에 **조건을 건다** | `TS2411`·`TS2413` 의 문구가 그 규칙이다 |
 | **언어 보장** | 세 수정자는 **방출에 안 남는다** | `ex.07f.js` 전문과 `node` 출력 |
-| **설정에 달림** | 「키 없음」과 「`undefined`」의 구별 | `exactOptionalPropertyTypes`(기본 `false`). **두 판을 다 실었다** |
-| **설정에 달림** | 없는 키를 읽을 때 `\| undefined` 가 붙는가 | `noUncheckedIndexedAccess`(기본 `false`). **두 판을 다 실었다** |
+| **설정에 달림** | 「키 없음」과 「`undefined`」의 구별 | `exactOptionalPropertyTypes`(기본 `false`). **두 버전을 다 실었다** |
+| **설정에 달림** | 없는 키를 읽을 때 `\| undefined` 가 붙는가 | `noUncheckedIndexedAccess`(기본 `false`). **두 버전을 다 실었다** |
 | **설정에 달림** | `?` 가 애초에 `\| undefined` 를 만드는가 | `strictNullChecks`(`strict` 에 딸려 7.0 기본 `true`) |
-| **이 판(7.0.2)의 관찰** | 진단 문구와 코드 배정 | 문구는 판마다 바뀐다. 코드(`TS18048`·`TS2540`·`TS4104`·`TS2411`·`TS2413`)가 더 오래 간다 |
-| **이 판의 관찰** | `.d.ts` 가 `readonly tags?: readonly string[]` 를 **적은 그대로** 싣는 것 | 선언 방출기의 구현이다. 「보존된다」만 성질로 읽는다 |
+| **이 버전(7.0.2)의 관찰** | 진단 문구와 코드 배정 | 문구는 판마다 바뀐다. 코드(`TS18048`·`TS2540`·`TS4104`·`TS2411`·`TS2413`)가 더 오래 간다 |
+| **이 버전의 관찰** | `.d.ts` 가 `readonly tags?: readonly string[]` 를 **적은 그대로** 싣는 것 | 선언 방출기의 구현이다. 「보존된다」만 성질로 읽는다 |
 
 ★ 「**여러 번 돌려 같았다」는 보장이 아니다.** 이 주제는 특히 **설정이 답을 바꾼다** — 블록의 배너와 설정 전문이 그래서 같은 자리에 있다.
 
@@ -593,7 +593,7 @@ undefined 쪽  : undefined {"host":"b"} true
 - [**03번 주제** — 기본 타입 표기](../03-basic-type-annotations/) — 객체 타입 **표기의 기본형**과 `as const` 는 그쪽.
 - [**04번 주제** — `any`·`unknown`·`never`·`void`](../04-any-unknown-never-void/) — `undefined` 가 타입 격자에서 어디 있는지는 그쪽.
 - [**08번 주제** — `interface` 대 `type`](../08-interface-vs-type/) — **어느 문법으로 적을까**는 그쪽. 여기서는 수정자의 의미만.
-- [목록의 **41번 주제**](../41-index-and-optional-property-strict-flags/)(인덱스·선택 프로퍼티 엄격 플래그) — 두 플래그의 **도입 순서·마이그레이션 비용**은 그쪽. 여기서는 **결과가 갈리는 두 판**까지.
+- [목록의 **41번 주제**](../41-index-and-optional-property-strict-flags/)(인덱스·선택 프로퍼티 엄격 플래그) — 두 플래그의 **도입 순서·마이그레이션 비용**은 그쪽. 여기서는 **결과가 달라지는 두 판**까지.
 - [목록의 **40번 주제**](../40-strict-null-checks-ripple/)(`strictNullChecks` 의 파급) — `?` 가 `| undefined` 를 만드는 전제는 그쪽.
 - [목록의 **28번 주제**](../28-utility-types/)(유틸리티 타입) — `Partial`·`Required`·`Readonly` 로 수정자를 **켜고 끄는** 법은 그쪽.
 
@@ -623,7 +623,7 @@ undefined 쪽  : undefined {"host":"b"} true
 ## 더 들어가면
 
 - **`Readonly<T>` 와 `readonly` 의 차이** — 유틸리티 타입은 **한 겹만** 붙인다. 중첩 객체는 그대로 쓸 수 있다. [목록의 **28번 주제**](../28-utility-types/).
-- **`Object.freeze` 와의 관계** — `readonly` 는 검사 시각, `freeze` 는 실행 시각이다. 둘을 같이 쓰면 타입과 런타임이 맞는다. 이 판에서 `readonly` 만으로는 값이 바뀐 것을 확인했다.
+- **`Object.freeze` 와의 관계** — `readonly` 는 검사 시각, `freeze` 는 실행 시각이다. 둘을 같이 쓰면 타입과 런타임이 맞는다. 이 버전에서 `readonly` 만으로는 값이 바뀐 것을 확인했다.
 - **인덱스 시그니처 대신 `Record`** — `Record<string, number>` 는 매핑 타입으로 같은 것을 만든다. 차이는 **`interface` 안에서 다른 프로퍼티와 같이 쓸 수 있는가**뿐이다. [목록의 **26번 주제**](../26-mapped-types/).
 - **키가 정해져 있으면 유니온 키를 쓴다** — `Record<"a" \| "b", number>` 처럼 쓰면 없는 키 접근이 `TS2339` 로 잡힌다. 인덱스 시그니처는 그 검사를 **포기하는 대신** 확장성을 얻는 것이다.
 
@@ -633,5 +633,5 @@ undefined 쪽  : undefined {"host":"b"} true
 [Handbook — Object Types: Index Signatures](https://www.typescriptlang.org/docs/handbook/2/objects.html#index-signatures) ·
 [TSConfig — `exactOptionalPropertyTypes`](https://www.typescriptlang.org/tsconfig/#exactOptionalPropertyTypes) ·
 [TSConfig — `noUncheckedIndexedAccess`](https://www.typescriptlang.org/tsconfig/#noUncheckedIndexedAccess).
-핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·`.d.ts` 전문·방출 전문은 전부 이 판에서 직접 던져서 받은 것이다.
-**실행 검증** — 맨 위 판에서 실제로 돌려 얻었다.
+핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·`.d.ts` 전문·방출 전문은 전부 이 버전에서 직접 실행해서 받은 것이다.
+**실행 검증** — 맨 위 버전에서 실제로 돌려 얻었다.

@@ -84,7 +84,7 @@ CommonJS(Node)·AMD(RequireJS) 같은 모듈 규약이 난립한 것도 언어�
 > 예: `for (let i = ...)`의 `i`는 그 반복 블록 안에서만 통한다.
 
 > **호이스팅(hoisting)** — 선언이 그 범위의 **맨 위에서 먼저 처리되는 것**. `var`·`let`·`const` 모두 그렇게 처리된다.\
-> 예: 그래도 선언 줄보다 위에서 써 보면 결과가 갈린다 — `var`는 `undefined`로 통과하고, `let`/`const`는 같은 자리에서 TDZ로 막힌다(원문에 없는 예).
+> 예: 그래도 선언 줄보다 위에서 써 보면 결과가 달라진다 — `var`는 `undefined`로 통과하고, `let`/`const`는 같은 자리에서 TDZ로 막힌다(원문에 없는 예).
 
 > **TDZ(Temporal Dead Zone)** — `let`/`const`로 선언한 이름을 그 선언 줄에 닿기 전에 쓰려고 하면 막히는 구간.\
 > 예: 원문의 표현대로 "선언 전 접근은 TDZ(Temporal Dead Zone)로 막힌다".

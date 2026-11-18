@@ -123,7 +123,7 @@ ORM이 연관을 "만질 때 가져오기"로 두면, 목록을 도는 반복문
 
 - 지연 연관은 **살아 있는 Session(과 그 커넥션)**이 있어야 채울 수 있다.
 - 회피책 Open Session in View(OSIV)는 요청이 끝날 때까지 EntityManager를 스레드에 붙여 둔다. Spring Boot의 `spring.jpa.open-in-view` 기본값은 **true**다(Spring Boot 속성 부록).
-  - 대가: 뷰 렌더링 중에도 지연 로딩 SQL이 나가고, 그동안 커넥션을 쥔다. Spring의 `HibernateJpaVendorAdapter`는 리소스 로컬 기본에서 연결 처리 모드를 `DELAYED_ACQUISITION_AND_HOLD`로 둔다. 처음 DB를 쓸 때 커넥션을 얻고, EntityManager가 닫힐 때(OSIV면 요청 끝)까지 쥔다. 풀이 더 빨리 마른다([21](../21-connection-pooling/2-summary.md)).
+  - 대가: 뷰 렌더링 중에도 지연 로딩 SQL이 나가고, 그동안 커넥션을 잡는다. Spring의 `HibernateJpaVendorAdapter`는 리소스 로컬 기본에서 연결 처리 모드를 `DELAYED_ACQUISITION_AND_HOLD`로 둔다. 처음 DB를 쓸 때 커넥션을 얻고, EntityManager가 닫힐 때(OSIV면 요청 끝)까지 잡는다. 풀이 더 빨리 마른다([21](../21-connection-pooling/2-summary.md)).
 - 정석은 트랜잭션 안에서 필요한 연관을 **쿼리로 말해 가져오는** 것이다. fetch join, 엔티티 그래프, DTO 프로젝션이다(Hibernate User Guide: "fetch all the required associations prior to closing the Persistence Context").
 
 ## 쓰이는 자료구조·알고리즘
@@ -242,7 +242,7 @@ await db.query("SELECT * FROM order_line WHERE order_id = ANY($1)", [orders.rows
 - N+1은 "목록 1번 + 연관 N번"이다. 쿼리 하나하나는 빨라서 슬로 로그에 안 걸리고, 호출 수로 드러난다.
 - EAGER는 N+1의 해법이 아니다. 해법은 가져올 것을 쿼리에서 말하는 것이다(fetch join·엔티티 그래프·batch fetch·DTO).
 - 컬렉션 fetch join에 페이징을 붙이면 Hibernate는 LIMIT 없이 전부 읽고 메모리에서 자른다.
-- 지연 연관은 살아 있는 Session이 있어야 채운다. OSIV로 덮으면 (Spring 기본 연결 처리에서) 첫 DB 접근부터 요청 끝까지 커넥션을 쥔다.
+- 지연 연관은 살아 있는 Session이 있어야 채운다. OSIV로 덮으면 (Spring 기본 연결 처리에서) 첫 DB 접근부터 요청 끝까지 커넥션을 잡는다.
 
 ## 관련 주제·근거
 

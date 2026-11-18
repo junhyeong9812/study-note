@@ -99,7 +99,7 @@ ArrayValuesSourceParser.java:96-101, :167-169).\
 ### 8.4 nullability와 XContent 왕복의 경계
 
 `missing`(null 가능)에서 `missingMap`으로 비교 대상을 바꾸면 "와이어 양쪽에서 null 취급이
-갈리지 않는가"를 물어야 한다.
+달라지지 않는가"를 물어야 한다.
 
 > **nullability(널 허용성)** — 그 자리에 null이 들어올 수 있는지 여부.\
 > 예: 기본값이 `emptyMap()`이고 setter가 null을 거부하면, 그 필드는 사실상 null이 안 되는 자리다.

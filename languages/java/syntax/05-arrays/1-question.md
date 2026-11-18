@@ -51,7 +51,7 @@ objects[1] = Integer.valueOf(42);    // (C)
 - 배열을 공변으로 만든 이유는 무엇이었나?
 - 제네릭은 왜 같은 선택을 하지 않았나?
 
-### 5. `Arrays.equals` 와 `deepEquals` 가 갈리는 지점 (예측)
+### 5. `Arrays.equals` 와 `deepEquals` 가 달라지는 지점 (예측)
 
 ```java
 int[][] p = {{1, 2}, {3, 4}};

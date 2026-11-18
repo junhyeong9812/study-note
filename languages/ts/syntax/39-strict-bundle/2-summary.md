@@ -8,23 +8,23 @@ v20.19.6
 Python 3.12.3
 ```
 
-> ★★★ **본체 창 선언 — 이 주제의 본체는 「탐침 격자」(하위 플래그마다 하나씩 걸리는 탐침 아홉 × 설정 넷 × 세 판 — 칸마다 디렉토리와 `tsconfig.json` 을 따로)이다.**
-> ★★★ **제5의 상태 — 「`strict` 가 무엇을 켜나」를 도구로 뽑으려 했더니 `--showConfig` 가 5.9.3 에서만 펼쳐 적었다**(1절). 7.0.2·4.9.5 에서는 같은 질문을 **`--help --all` 의 기본값 문구**로 물었고, 그 문구도 믿지 않고 **탐침 격자로** 확인했다 — 4.9.5 의 도움말은 **실제와 한 칸 어긋났다**.
+> ★★★ **핵심 창 선언 — 이 주제의 핵심은 「probe 격자」(하위 플래그마다 하나씩 걸리는 probe 아홉 × 설정 넷 × 세 판 — 칸마다 디렉토리와 `tsconfig.json` 을 따로)이다.**
+> ★★★ **제5의 상태 — 「`strict` 가 무엇을 켜나」를 도구로 뽑으려 했더니 `--showConfig` 가 5.9.3 에서만 펼쳐 적었다**(1절). 7.0.2·4.9.5 에서는 같은 질문을 **`--help --all` 의 기본값 문구**로 물었고, 그 문구도 믿지 않고 **probe 격자로** 확인했다 — 4.9.5 의 도움말은 **실제와 한 칸 어긋났다**.
 > ★★ **39 는 02 에서 온다.** [**02번 주제**](../02-type-checking-vs-emit/)가 「7.0 의 `strict` 기본 `true`」를 맨 위 부분에 적었고 `--strict false` 로 판을 가르는 방식을 세웠다. 여기서는 **설정 없이 던지는 칸**을 새로 재서(3절) 그 문장을 다시 확인한다 — 02편은 고치지 않는다.
 > ★★ 설정 실험은 **칸마다 디렉토리를 따로** 만들었다 — 7.0.2 는 **위쪽 디렉토리에** `tsconfig.json` 이 있으면 파일을 직접 줘도 `TS5112` 로 검사를 거부한다(35편 6절). 격자 스크립트는 **칸에 `TS5112` 가 들면 멈추고, 모든 칸이 같은 코드면 멈춘다.**
 > ★ 소스 펜스 첫 줄 `// 파일명`·`# 파일명` 은 대조용 배너다 — 실파일에는 없다. **진단의 행 번호는 그 줄을 뺀 기준**이다.
 
-## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
+## 이 문서에서 실행마다 달라지는 항목과 달라지지 않는 항목
 
 | | 무엇 | 왜 |
 |---|---|---|
-| **안 흔들린다** | 에러 코드(`TS####`)·`(행,열)` | 같은 입력·같은 옵션이면 같은 글자다 |
-| **안 흔들린다** | ★★★ 격자·단계표의 칸과 마지막 줄의 **수** | 스크립트가 세어 찍는다 |
+| **달라지지 않는다** | 에러 코드(`TS####`)·`(행,열)` | 같은 입력·같은 옵션이면 같은 글자다 |
+| **달라지지 않는다** | ★★★ 격자·단계표의 칸과 마지막 줄의 **수** | 스크립트가 세어 찍는다 |
 | **판에 매인다** | ★★★ **「키 없음」의 뜻** — 7.0.2 는 `strict` 가 켜진 것과 같고 5.9.3·4.9.5 는 꺼진 것과 같다(2·3절) | 결론 자체다 |
 | **판에 매인다** | ★★ `--showConfig` 가 **펼치나** · `--help` 의 기본값 문구(1절) | 결론 자체다 — 도구의 성질도 판에 매인다 |
 | **판에 매인다** | ★ 종료 코드 — 진단 있는 `--noEmit` 이 7.0.2 는 `1`, 5.9.3 은 `2` | 격자는 **진단 코드로** 갈랐다 |
-| **★ 설계 권고** | 5절의 「켜는 순서」 | ★★ **탐침 파일 한 장**에서 센 진단 수에 기댄다 — 실제 코드베이스의 비율이 아니다 |
-| **★ 부적용 — 5창(`.d.ts` 방출)** · **2창(`null` 탐침)** | 이 주제는 「**켜졌나**」를 진단 코드 하나로 묻는다 — 타입의 모양을 묻지 않는다 | — |
+| **★ 설계 권고** | 5절의 「켜는 순서」 | ★★ **probe 파일 한 장**에서 센 진단 수에 기댄다 — 실제 코드베이스의 비율이 아니다 |
+| **★ 해당 없음 — 5창(`.d.ts` 방출)** · **2창(`null` probe)** | 이 주제는 「**켜졌나**」를 진단 코드 하나로 묻는다 — 타입의 모양을 묻지 않는다 | — |
 | **안 잰 것** | `strict` 가 검사 **시간**에 주는 영향 | **재지 않았다** |
 
 ## 한눈에 — 쉽게 말하면
@@ -36,7 +36,7 @@ Python 3.12.3
 | **묶음 스위치** | `"strict": true` |
 | **개별 스위치** | 하위 플래그 — `noImplicitAny`·`strictNullChecks`·… |
 | ★★★ 공장 출고 상태가 **켜짐**으로 바뀌었다 | 7.0.2 — 설정 없이 던져도 `TS2322`(3절) · 5.9.3 은 0줄 |
-| 묶음을 켜고 **하나만 끈다** | `"strict": true, "strictNullChecks": false` — 그 탐침만 조용해진다(2절 넷째 열) |
+| 묶음을 켜고 **하나만 끈다** | `"strict": true, "strictNullChecks": false` — 그 probe만 조용해진다(2절 넷째 열) |
 | ★★★ 스위치를 **떼어 버린** 점검 | `alwaysStrict` — 7.0.2 에서 `strict: false` 로도 안 꺼지고 `false` 는 `TS5108`(4절) |
 | 「설명서에는 점검 아홉이라고 적혀 있다」 | 레퍼런스의 Enables 목록 — 7.0.2 에서 **끌 수 있는 것은 여덟** |
 | 스위치 두 개를 **같이 올려야** 불이 들어오는 점검 | `strictPropertyInitialization` 은 `strictNullChecks` 없이 `TS5052`(5절) |
@@ -56,7 +56,7 @@ Python 3.12.3
 
 원고가 없는 문법 주제라 「문제」 대신 이 셋을 둔다.
 
-1. **★★★ `strict` 는 무엇을 켜나 — 도구로 뽑을 수 있나** — `--showConfig`·`--help --all` × 세 판(1절) · 그 목록이 실제와 맞나(2절 탐침 격자).
+1. **★★★ `strict` 는 무엇을 켜나 — 도구로 뽑을 수 있나** — `--showConfig`·`--help --all` × 세 판(1절) · 그 목록이 실제와 맞나(2절 probe 격자).
 2. **★★★ 7.0 에서 기본값 `true` 는 무엇을 바꾸나** — 「키 없음」 열 · 설정 없이 던진 칸(2·3절) · `alwaysStrict` 가 묶음에서 빠진 것(4절).
 3. **★★ 기존 코드에 어떤 순서로 켜나** — 하위 플래그를 하나씩 켠 진단 수(5절 — 설계 권고 층).
 
@@ -66,14 +66,14 @@ Python 3.12.3
 
 | 창 | 무엇을 보여 주나 | 성질 | 이 주제에서 |
 |---|---|---|---|
-| ★★★ **탐침 격자** | 탐침 아홉 × (키 없음 · `true` · `false` · `true` + 하위 하나 `false`) × 세 판 | 칸마다 진단 코드 | **본체**(2절) |
+| ★★★ **probe 격자** | probe 아홉 × (키 없음 · `true` · `false` · `true` + 하위 하나 `false`) × 세 판 | 칸마다 진단 코드 | **핵심**(2절) |
 | ★★ **도구 창 — `--showConfig`** | `strict` 를 **펼쳐 적나** | 설정 덤프 | 1절 — ★ 5.9.3 에서만 열렸다 |
 | ★★ **도구 창 — `--help --all`** | 하위 플래그의 **기본값 문구** | 도움말 | 1절 — **제5의 상태**(`--showConfig` 가 안 열린 판에서 같은 질문을 이 창으로) |
 | ★★ **3창 — 방출물** | `"use strict";` 가 붙나 | 방출물 | 4절 |
 | ★★ **단계표** | 스크립트 한 장에 하위 플래그를 **하나씩** 켠 새 진단 수 | 수 | 5절 |
-| ★ **부적용 — 5창(`.d.ts`)** · **2창(`null` 탐침)** | 켜졌나를 **진단 코드**로만 묻는다 | — | — |
+| ★ **해당 없음 — 5창(`.d.ts`)** · **2창(`null` probe)** | 켜졌나를 **진단 코드**로만 묻는다 | — | — |
 
-비용 — 탐침 격자 108칸(아홉 × 넷 × 세 판) + 도구 창 둘(세 판) + 설정 없는 칸 · 방출 둘 · 단계표 열세 줄(두 판).
+비용 — probe 격자 108칸(아홉 × 넷 × 세 판) + 도구 창 둘(세 판) + 설정 없는 칸 · 방출 둘 · 단계표 열세 줄(두 판).
 
 ```text
   이 주제의 축 — 「누가 켜나」
@@ -124,7 +124,7 @@ done
 그림 해설 — 한 단계에 한 문장.
 
 - ★★★ **5.9.3 만** `"strict": true` 를 **하위 아홉으로 펼쳐** 적었다 — `noImplicitAny` · `noImplicitThis` · `strictNullChecks` · `strictFunctionTypes` · `strictBindCallApply` · `strictPropertyInitialization` · `strictBuiltinIteratorReturn` · `alwaysStrict` · `useUnknownInCatchVariables`.
-- ★★★ **7.0.2 와 4.9.5 는 `strict` 한 키만** 돌려준다 — `--showConfig` 는 이 두 판에서 **「무엇이 켜졌나」를 말해 주지 않는다.**
+- ★★★ **7.0.2 와 4.9.5 는 `strict` 한 키만** 돌려준다 — `--showConfig` 는 이 두 버전에서 **「무엇이 켜졌나」를 말해 주지 않는다.**
 - ★ `"strict": false` 는 세 판 모두 `strict` 한 키 — 펼쳐 적는 5.9.3 도 **끈 것은 안 적는다.**
 
 같은 질문을 **도움말 창**으로 묻는다.
@@ -204,13 +204,13 @@ exit 0
   4.9.5       strict 한 키 (안 열림)  일곱 "unless set" + useUnknown… false  ★ 여덟 (useUnknown… 도 켜진다)
 ```
 
-비용 — **도구의 성질도 판에 매인다.** 「`--showConfig` 로 확인했다」는 **5.9.3 에서만** 참이었다. 그래서 이 문서의 결론은 **탐침 격자**에 세운다.
+비용 — **도구의 성질도 판에 매인다.** 「`--showConfig` 로 확인했다」는 **5.9.3 에서만** 참이었다. 그래서 이 문서의 결론은 **probe 격자**에 세운다.
 
-### (2) ★★★ 탐침 격자 — 하위 플래그 아홉 × 설정 넷 × 세 판
+### (2) ★★★ probe 격자 — 하위 플래그 아홉 × 설정 넷 × 세 판
 
 **언제 쓰나** — 「이 설정에서 이 검사가 켜져 있나」를 **코드 한 줄**로 확인할 때.
 
-탐침 — 하위 플래그마다 **그것 하나에만** 걸리는 파일 한 장.
+probe — 하위 플래그마다 **그것 하나에만** 걸리는 파일 한 장.
 
 ```ts
 // pr39a.ts
@@ -366,12 +366,12 @@ pr39i.ts  7.0.2    TS1212         TS1212         TS1212         TS5108
 그림 해설 — 한 단계에 한 문장.
 
 - ★★★ **「키없음」 열** — 7.0.2 는 **아홉 전부** 진단이 났고 5.9.3·4.9.5 는 **아홉 전부 OK**. 7.0.2 에서 키가 없으면 **`strict: true` 와 같다.**
-- ★★ **`true` 열** — 세 판이 **거의 같다.** 다른 칸은 4.9.5 의 `pr39g`(OK) 하나 — 그 판에는 `strictBuiltinIteratorReturn` 이 **없다.**
+- ★★ **`true` 열** — 세 버전이 **거의 같다.** 다른 칸은 4.9.5 의 `pr39g`(OK) 하나 — 그 판에는 `strictBuiltinIteratorReturn` 이 **없다.**
 - ★★ **`false` 열** — 여덟은 세 판 모두 OK. ★★★ **`pr39i`(예약어 `package`)만 7.0.2 에서 `TS1212`** — `strict: false` 로도 **엄격 모드 파싱이 안 꺼졌다**(4절).
-- ★★★ **`true+끔` 열**(묶음을 켜고 그 탐침의 하위 하나만 `false`) — **그 탐침만 조용해졌다**(OK). 하위 스위치가 묶음보다 **우선**한다.
+- ★★★ **`true+끔` 열**(묶음을 켜고 그 probe의 하위 하나만 `false`) — **그 probe만 조용해졌다**(OK). 하위 스위치가 묶음보다 **우선**한다.
   ★ 예외 둘 — 7.0.2 의 `pr39i` 는 **`TS5108`**(`alwaysStrict: false` 가 제거된 값), 4.9.5 의 `pr39g` 는 **`TS5023`**(그런 옵션이 없다).
 - ★★ 4.9.5 의 `pr39h`(`catch` 변수) `true` 열이 **`TS18046`** — 1절 도움말의 「default: false」와 달리 **`strict` 가 켠다.** 도움말 문구가 틀렸다.
-- ★★★ 마지막 줄 — **7.0.2 와 5.9.3 이 갈린 칸 `11 / 36`**(「키없음」 아홉 + `pr39i` 의 `false`·`true+끔` 둘) · **5.9.3 과 4.9.5 가 갈린 칸 `2 / 36`**(`pr39g` 의 `true`·`true+끔`).
+- ★★★ 마지막 줄 — **7.0.2 와 5.9.3 이 달라진 항목 `11 / 36`**(「키없음」 아홉 + `pr39i` 의 `false`·`true+끔` 둘) · **5.9.3 과 4.9.5 가 달라진 항목 `2 / 36`**(`pr39g` 의 `true`·`true+끔`).
 
 ```text
   탐침 하나 = 하위 플래그 하나 (7.0.2 · "strict": true 에서 난 코드)
@@ -387,7 +387,7 @@ pr39i.ts  7.0.2    TS1212         TS1212         TS1212         TS5108
   pr39i  var package = 1  (스크립트)          alwaysStrict                 TS1212
 ```
 
-비용 — 탐침은 **켜졌다**는 것만 말한다. 그 플래그가 **무엇을 더 잡는지**의 전모는 각자의 주제다(40편 `strictNullChecks` · [목록의 **42번 주제**](../42-implicit-any-and-catch-variables/) `noImplicitAny`·`useUnknownInCatchVariables` · 17편 `strictFunctionTypes`).
+비용 — probe는 **켜졌다**는 것만 말한다. 그 플래그가 **무엇을 더 잡는지**의 전모는 각자의 주제다(40편 `strictNullChecks` · [목록의 **42번 주제**](../42-implicit-any-and-catch-variables/) `noImplicitAny`·`useUnknownInCatchVariables` · 17편 `strictFunctionTypes`).
 
 ### (3) ★★★ 설정 없이 던지면 — 7.0.2 의 기본값
 
@@ -433,7 +433,7 @@ error TS5108: Option 'alwaysStrict=false' has been removed. Please remove it fro
 그림 해설 — 한 단계에 한 문장.
 
 - ★★★ **7.0.2 `--strict false`** — 여전히 **`TS1212`**(「'package' is a reserved word in strict mode.」)이고 방출물 첫 줄에 **`"use strict";`** 가 붙었다.
-- ★★ **5.9.3 `--strict false`** — 진단 0줄, 방출물에 `"use strict"` **없음**. 레퍼런스의 「Default: `true` if `strict` is enabled; `false` otherwise」는 **이 판의 동작**이다.
+- ★★ **5.9.3 `--strict false`** — 진단 0줄, 방출물에 `"use strict"` **없음**. 레퍼런스의 「Default: `true` if `strict` is enabled; `false` otherwise」는 **이 버전의 동작**이다.
 - ★★★ **7.0.2 `--alwaysStrict false`** — **`TS5108`**(「Option 'alwaysStrict=false' has been removed.」). **끌 수 있는 값 자체가 없어졌다** — 02편 7절의 `TS5108`(제거된 값) 집안이다.
 - ★★ 그래서 7.0.2 에서 `strict` 가 끄고 켜는 하위 플래그는 **여덟**이다 — 레퍼런스의 Enables 목록(아홉)과 **한 칸 어긋난다.**
 
@@ -553,7 +553,7 @@ strictNullChecks+useUnknownInCatchVariables 3      3      13:TS2322 14:TS2322 35
 
 그림 해설 — 한 단계에 한 문장.
 
-- ★★ **바닥(`strict: false`)은 0건**, `strict: true` 로 한 번에 켜면 **14건**. 두 판의 수가 **행마다 같았다**.
+- ★★ **바닥(`strict: false`)은 0건**, `strict: true` 로 한 번에 켜면 **14건**. 두 버전의 수가 **행마다 같았다**.
 - ★★★ **하나만 켠 여덟 행의 합은 11건**이고 그중 하나는 **설정 진단**(`TS5052`)이다 — 한 번에 켠 14건과 **안 맞는다.** 플래그끼리 **맞물린 진단**이 있기 때문이다.
 - ★★★ **맞물림 넷**(아래 네 행으로 쪼개 확인했다) —
   `strictPropertyInitialization` 은 혼자면 **`TS5052`**(`strictNullChecks` 없이는 못 켠다) — 둘을 같이 켜야 23·24행 `TS2564` 가 난다.
@@ -575,7 +575,7 @@ strictNullChecks+useUnknownInCatchVariables 3      3      13:TS2322 14:TS2322 35
   ★ 수는 이 한 장의 것이다 — 코드베이스마다 다르다. 맞물림(TS5052 · 0건 · 코드 바뀜)은 탐침과 무관한 성질이다
 ```
 
-비용 — 하나씩 켜면 **맞물린 진단이 마지막에 한꺼번에** 나온다(합 11 ≠ 14). 그래서 순서는 「진단이 적은 것부터」만으로 못 정하고 **`strictNullChecks` 를 축으로** 둔다. 이 권고는 **탐침 한 장의 수**에 기댄 것이다 — 실제 코드베이스에서 몇 % 가 줄어드는지는 **재지 않았다.**
+비용 — 하나씩 켜면 **맞물린 진단이 마지막에 한꺼번에** 나온다(합 11 ≠ 14). 그래서 순서는 「진단이 적은 것부터」만으로 못 정하고 **`strictNullChecks` 를 축으로** 둔다. 이 권고는 **probe 한 장의 수**에 기댄 것이다 — 실제 코드베이스에서 몇 % 가 줄어드는지는 **재지 않았다.**
 
 ## 문법 — 형태와 규칙
 
@@ -588,7 +588,7 @@ strictNullChecks+useUnknownInCatchVariables 3      3      13:TS2322 14:TS2322 35
   tsc --showConfig -p tsconfig.json            5.9.3 만 하위를 펼쳐 적는다              (1절)
 ```
 
-**금지 사례** — 이 주제에서 던져 받은 것이다.
+**금지 사례** — 이 주제에서 실행해 받은 것이다.
 
 | 쓴 꼴 | 진단 | 어느 절 |
 |---|---|---|
@@ -600,7 +600,7 @@ strictNullChecks+useUnknownInCatchVariables 3      3      13:TS2322 14:TS2322 35
 **규칙 불릿**
 
 - ★★★ **7.0.2 에서 `strict` 키가 없으면 켜진 것과 같다** — 5.9.3·4.9.5 는 꺼진 것(2·3절).
-- ★★★ **하위 플래그 `false` 가 묶음 `true` 보다 우선한다** — 그 탐침만 조용해진다(2절 넷째 열).
+- ★★★ **하위 플래그 `false` 가 묶음 `true` 보다 우선한다** — 그 probe만 조용해진다(2절 넷째 열).
 - ★★★ **7.0.2 에서 `alwaysStrict` 는 묶음 밖이다** — `strict: false` 로 안 꺼지고 `false` 는 `TS5108`(4절).
 - ★★ **`--showConfig` 가 `strict` 를 펼치는 것은 5.9.3 의 성질**이다 — 7.0.2·4.9.5 는 안 펼친다(1절).
 - ★★ **`strictPropertyInitialization` 은 `strictNullChecks` 없이 못 켠다**(`TS5052`)(5절).
@@ -626,7 +626,7 @@ strictNullChecks+useUnknownInCatchVariables 3      3      13:TS2322 14:TS2322 35
 | **★ 도구의 판** | `--showConfig` 가 펼치나 — 5.9.3 만 | 1절 |
 | **★ 도구의 판** | `--help` 기본값 문구 — 4.9.5 의 `useUnknownInCatchVariables` 가 실제와 다르다 | 1·2절 |
 | **컴파일러 동작** | 하위 `false` 가 묶음 `true` 보다 우선 · `strictPropertyInitialization` 은 `strictNullChecks` 를 요구 | 2절 · 5절 `TS5052` |
-| **★ 설계 권고** | 켜는 순서 — `strictNullChecks` 를 축으로 | 5절 — **탐침 한 장의 수** |
+| **★ 설계 권고** | 켜는 순서 — `strictNullChecks` 를 축으로 | 5절 — **probe 한 장의 수** |
 | **안 잰 것** | 검사 시간 · 실제 코드베이스에서의 진단 분포 | **재지 않았다** |
 
 ## 언제 쓰고 언제 안 쓰나
@@ -635,22 +635,22 @@ strictNullChecks+useUnknownInCatchVariables 3      3      13:TS2322 14:TS2322 35
 |---|---|
 | ★★★ **`"strict": true` 를 명시** — 7.0 에서 기본이라도 **적어 두면 판을 안 탄다** | 「키 없음」에 기대기 — 5.x 로 돌린 도구·CI 에서 **뜻이 뒤집힌다** |
 | ★★ **`strict: true` + 하위 하나 `false`** — 옮기는 동안 한 플래그만 잠시 끌 때 | `strict: false` 로 **전부** 끄기 — 되켤 때 맞물린 진단이 한꺼번에 온다(5절) |
-| ★★ **탐침 한 장으로 설정 확인** — 도구가 안 펼쳐 줄 때(7.0.2) | `--showConfig`·도움말만 믿기 — 판마다 다르고 틀리기도 한다(1절) |
+| ★★ **probe 한 장으로 설정 확인** — 도구가 안 펼쳐 줄 때(7.0.2) | `--showConfig`·도움말만 믿기 — 판마다 다르고 틀리기도 한다(1절) |
 | ★ **`strictNullChecks` 를 축으로 순서 잡기** | 진단 수만 보고 `strictPropertyInitialization` 먼저 — `TS5052` |
 
 ## 핵심 문장
 
-1. **7.0.2 에서 `strict` 키가 없으면 켜진 것과 같다** — 설정 없이 던져도 `TS2322`, 5.9.3 은 0줄(격자에서 `11 / 36` 이 갈렸다).
-2. **하위 플래그 `false` 는 묶음 `true` 보다 우선한다** — 그 탐침 하나만 조용해진다.
+1. **7.0.2 에서 `strict` 키가 없으면 켜진 것과 같다** — 설정 없이 던져도 `TS2322`, 5.9.3 은 0줄(격자에서 `11 / 36` 이 달라졌다).
+2. **하위 플래그 `false` 는 묶음 `true` 보다 우선한다** — 그 probe 하나만 조용해진다.
 3. **7.0.2 에서 `alwaysStrict` 는 묶음 밖이다** — `strict: false` 로도 `"use strict"` 가 붙고, `alwaysStrict: false` 는 `TS5108` 이다. 레퍼런스의 Enables 목록과 한 칸 어긋난다.
-4. **「무엇이 켜졌나」를 도구로 묻는 창은 판마다 다르다** — `--showConfig` 는 5.9.3 만 펼치고, 4.9.5 의 도움말은 틀렸다. 결론은 탐침에 세운다.
+4. **「무엇이 켜졌나」를 도구로 묻는 창은 판마다 다르다** — `--showConfig` 는 5.9.3 만 펼치고, 4.9.5 의 도움말은 틀렸다. 결론은 probe에 세운다.
 5. **하위 플래그는 맞물린다** — 하나씩 켠 합(11)이 한 번에 켠 수(14)와 다르고, `strictNullChecks` 없이는 못 켜거나 조용한 플래그가 있다.
 
 ## 관련 자료
 
 - [**02번 주제** — 타입 검사와 코드 방출의 분리](../02-type-checking-vs-emit/) — ★★★ **README 의 선행.** 7.0 의 `strict` 기본 `true`·`TS5108`·`TS5102` 를 적은 맨 위 부분과 7절. **여기는 그 기본값이 무엇을 켜는지 — 하위 플래그 격자부터.**
 - [**35번 주제** — 모듈 해석](../35-module-resolution/) — 판마다 다른 기본값을 세 판 격자로 본 방식 · `TS5112`.
-- [**12번 주제** — 좁히기](../12-narrowing/) 5절 · [**04번 주제**](../04-any-unknown-never-void/) — `--strict false` 로 같은 파일이 갈리는 칸.
+- [**12번 주제** — 좁히기](../12-narrowing/) 5절 · [**04번 주제**](../04-any-unknown-never-void/) — `--strict false` 로 같은 파일이 달라지는 항목.
 - [**17번 주제** — 변성과 매개변수 양립성](../17-variance-and-parameter-compatibility/) — `strictFunctionTypes` 의 범위.
 - [**40번 주제** — `strictNullChecks` 의 파급](../40-strict-null-checks-ripple/) — 5절의 「축」이 무엇을 바꾸는지.
 - [**41번 주제** — 인덱스·선택 프로퍼티 엄격 플래그](../41-index-and-optional-property-strict-flags/) — **`strict` 에 안 드는** 두 엄격 플래그.
@@ -689,6 +689,6 @@ strictNullChecks+useUnknownInCatchVariables 3      3      13:TS2322 14:TS2322 35
 
 **기준 소스** — [TSConfig — `strict`](https://www.typescriptlang.org/tsconfig/#strict)(「Default: `true`」 · Enables — `alwaysStrict`·`strictNullChecks`·`strictBindCallApply`·`strictBuiltinIteratorReturn`·`strictFunctionTypes`·`strictPropertyInitialization`·`noImplicitAny`·`noImplicitThis`·`useUnknownInCatchVariables`) ·
 [`alwaysStrict`](https://www.typescriptlang.org/tsconfig/#alwaysStrict)(「Default: `true` if `strict` is enabled; `false` otherwise」).
-위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·방출물·출력은 **전부 직접 던져 받은 것**이다.
+위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·방출물·출력은 **전부 직접 실행해 받은 것**이다.
 ★★★ **레퍼런스와 7.0.2 가 어긋나는 칸이 하나 있다** — 레퍼런스는 `alwaysStrict` 를 `strict` 가 켜는 아홉 가운데 하나로 적지만, 7.0.2 에서는 **`strict: false` 로도 안 꺼지고 `alwaysStrict: false` 는 `TS5108`**(제거된 값)이다(4절).
 **실행 검증** — 본판은 맨 위 블록이다. ★ 판 비교에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 5.9.3 · 4.9.5** 를 **읽기만** 해서 썼다 — 환경변수 **`TSC_OLD`·`TSC_49`**.

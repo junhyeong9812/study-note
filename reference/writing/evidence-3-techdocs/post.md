@@ -147,7 +147,7 @@
   - **빈 셀·em dash 금지 → "Not applicable" 또는 "None"**
   - **"Limit the number of columns and keep the text in each cell brief—ideally one line."** ← 고밀도 표에 대한 가장 직접적인 반대 규칙
   - 헤더는 구체적으로("Name" 대신 "Group"/"Employee"). 헤더+셀이 합쳐져 한 문장이 되게 구성하지 말 것(현지화 저해).
-  - 표 도입 문장은 **완전한 문장 + 마침표**(Google은 콜론 — 두 가이드가 갈리는 지점)
+  - 표 도입 문장은 **완전한 문장 + 마침표**(Google은 콜론 — 두 가이드가 달라지는 지점)
   - 긴 표는 헤더 행 고정/반복.
 
 ### 2.3 Write the Docs 커뮤니티 합의 [원출처]
@@ -177,7 +177,7 @@ https://www.innoq.com/en/blog/2022/01/principles-of-technical-documentation/
 
 ### 2.6 우리 문서 유형별 적용 후보
 
-- **BR 대장 / 계약(표)**: MS "셀 텍스트는 이상적으로 한 줄", Google "3개 이상 관련 데이터일 때만 표" → 2열 표는 description list로 강등, 셀에 문단이 들어간 표는 표를 쪼개거나 본문으로 승격. 빈 셀은 "해당 없음"으로 명시(무음 누락 방지 — 검증 관점과도 합치).
+- **BR 대장 / 계약(표)**: MS "셀 텍스트는 이상적으로 한 줄", Google "3개 이상 관련 데이터일 때만 표" → 2열 표는 description list로 강등, 셀에 문단이 들어간 표는 표를 쪼개거나 본문으로 승격. 빈 셀은 "해당 없음"으로 명시(조용한 누락 방지 — 검증 관점과도 합치).
 - **전 문서**: lead-in 문장 규칙(모든 표·목록 앞에 "이 표는 X를 나타낸다" 한 줄) — 표만 던지는 현재 스타일의 최소 비용 개선.
 - **교차참조**: "링크 하나 = 독자의 의사결정 하나" 원칙으로 링크 예산을 세우고, 용어 정의·짧은 절차는 인라인 해결. 동일 대상 중복 링크 제거.
 - **헤딩**: 절차서·워크플로우는 원형동사 헤딩("계좌를 개설한다" 형태), 연속 헤딩(내용 없는 헤딩) 제거.
@@ -431,7 +431,7 @@ https://c4model.com/ · https://c4model.com/faq
 **반론 / 조건부 반박**
 - Write the Docs **Complete** 원칙 [원출처]: "Cover chosen concepts fully or not at all" — **부분 커버리지가 완전 미커버리지보다 나쁠 수 있다**(오도).
 - Write the Docs **ARID** [원출처]: DRY를 문서에 엄격 적용하면 실패. 짧게 만들려는 압력이 필요한 재진술까지 제거한다.
-- Diátaxis [원출처]: reference는 "boring and unmemorable"해도 **완전해야** 하며, 축약이 미덕이 아니다. 짧음은 튜토리얼·how-to의 미덕이지 reference의 미덕이 아니다. → **"짧을수록 좋다"는 문서 유형별로 참/거짓이 갈린다**.
+- Diátaxis [원출처]: reference는 "boring and unmemorable"해도 **완전해야** 하며, 축약이 미덕이 아니다. 짧음은 튜토리얼·how-to의 미덕이지 reference의 미덕이 아니다. → **"짧을수록 좋다"는 문서 유형별로 참/거짓이 달라진다**.
 - ozimmer [원출처]: ADR 길이는 "sometimes one slide suffices, complex issues may require several pages" — 길이는 **주제 복잡도의 함수**이지 상수가 아니다.
 - INNOQ [2차]: Maintainable 원칙 = 불필요 상세 생략이지만, Correct/Comprehensive는 유지 — 짧게 만드는 방식은 **삭제가 아니라 추상화**여야 한다.
 - HN [실무 의견] (https://news.ycombinator.com/item?id=41894814 계열 논의 요약, https://news.ycombinator.com/item?id=42325011): 읽히지 않는 진짜 원인은 길이가 아니라 ① **지식의 저주**(작성자는 너무 많이 알고 독자는 너무 적게 안다) ② **코드와 분리된 도구**에 문서가 살아서 ③ **오래됨**. 짧게 쓴다고 해결되지 않는다.

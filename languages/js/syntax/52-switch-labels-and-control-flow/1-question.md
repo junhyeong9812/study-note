@@ -275,9 +275,9 @@ compile("'use strict'; lbl: function f() {}", "'use strict'; lbl: function f() {
 
 ## 실행 환경
 
-**환경** — node v18.19.1 · v20.19.6 · Google Chrome 151 · x86-64 Linux. 세 판의 출력이 한 글자도 같았다.
+**환경** — node v18.19.1 · v20.19.6 · Google Chrome 151 · x86-64 Linux. 세 버전의 출력이 한 글자도 같았다.
 
-★★★ **이 주제의 본체는 64칸 전수 격자다** — 판별식 여덟 × `case` 값 여덟을 `Object.is`·SameValueZero 와 견준다. **1번 · 2번 문항이 이 주제의 중심이다.**
+★★★ **이 주제의 핵심은 64칸 전수 격자다** — 판별식 여덟 × `case` 값 여덟을 `Object.is`·SameValueZero 와 견준다. **1번 · 2번 문항이 이 주제의 중심이다.**
 
 **선행** — [32](../32-error-handling-and-error/2-summary.md) · [33](../33-equality-three-kinds/2-summary.md) · [05](../05-var-let-const-and-tdz/2-summary.md).
 

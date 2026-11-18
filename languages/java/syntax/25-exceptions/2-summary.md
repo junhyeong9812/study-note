@@ -736,7 +736,7 @@ Ex.java:10: error: exception FileNotFoundException has already been caught
 ## 관련 자료
 
 - [`../README.md`](../README.md) — Java 문법·API 주제 목록(이 주제는 25번)
-- [`../../../../cs/ops-patterns/failure-modes/`](../../../../cs/ops-patterns/failure-modes/) — **그쪽은 운영 관점의 실패 모드 분류와 대응 패턴(재시도·차단기·격벽)까지, 여기는 언어의 예외 문법(checked 규칙·전파·다중 `catch`)부터.**\
+- [`../../../../cs/ops-patterns/failure-modes/`](../../../../cs/ops-patterns/failure-modes/) — **그쪽은 운영 관점의 실패 모드 분류와 대응 패턴(재시도·차단기·벌크헤드)까지, 여기는 언어의 예외 문법(checked 규칙·전파·다중 `catch`)부터.**\
   "실패했을 때 무엇을 할까"는 그쪽, "그 실패가 언어에서 어떻게 표현되고 전달되나"는 여기다
 - [`../26-try-with-resources/`](../26-try-with-resources/) — 이 주제의 `finally` 함정 셋째(예외가 예외를 덮는 것)를 언어가 자동으로 막아 주는 장치
 - [`../03-variables-and-assignment/`](../03-variables-and-assignment/) — 다중 `catch` 변수가 암묵적 `final` 인 것, `finally` 가 값은 못 바꾸고 객체 내용은 바꾸는 이유

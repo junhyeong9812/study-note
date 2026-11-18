@@ -2,7 +2,7 @@
 
 상위: [내비게이션이 서버 응답을 트리에 합치기까지](../README.md)
 
-`createCacheNodeForSegment` 는 CacheNode **하나**를 만든다. 데이터를 가져올 곳이 넷이다 — BFCache, 세그먼트 캐시(프리페치), 이미 받은 서버 응답(seed), 그리고 "나중에 올 것" 의 약속. 어느 것을 먼저 보는지가 `FreshnessPolicy` 로 갈린다. [프리페치] [03](../../segment-cache/03_navigate/README.md)이 범위 밖으로 둔 여섯 값의 동작이 여기서 풀린다.
+`createCacheNodeForSegment` 는 CacheNode **하나**를 만든다. 데이터를 가져올 곳이 넷이다 — BFCache, 세그먼트 캐시(프리페치), 이미 받은 서버 응답(seed), 그리고 "나중에 올 것" 의 약속. 어느 것을 먼저 보는지가 `FreshnessPolicy` 로 나뉜다. [프리페치] [03](../../segment-cache/03_navigate/README.md)이 범위 밖으로 둔 여섯 값의 동작이 여기서 풀린다.
 
 ## 위치
 

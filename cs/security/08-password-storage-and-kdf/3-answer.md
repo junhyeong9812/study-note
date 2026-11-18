@@ -24,7 +24,7 @@
 ### 4. 72바이트 실험
 
 - `a`×73: True. `a`×71: False. `가`×24 + `나`: True.
-- 이유: 이 판의 bcrypt는 원조 OpenBSD 동작대로 72바이트 뒤를 조용히 버린다. 73번째 바이트는 무시되고, 71바이트는 다른 입력이다.
+- 이유: 이 버전의 bcrypt는 원조 OpenBSD 동작대로 72바이트 뒤를 조용히 버린다. 73번째 바이트는 무시되고, 71바이트는 다른 입력이다.
 - `가`는 UTF-8 3바이트 → 24자 = 72바이트. 25번째 글자부터 무시된다. 제한은 문자가 아니라 바이트다.
 - 판에 따라 다르다: pyca/bcrypt 5.0.0부터 `hashpw`에 72바이트 초과면 `ValueError`, Spring Security 7.1.1은 새 해시 생성 때만 `IllegalArgumentException`이고 검증(`matches`·`checkpw`)은 여전히 잘라서 비교한다(재실험: `checkpw(73 a, hash(72 a)) = true`). BC 1.81.1은 이 실험에서 조용히 잘랐다.
 

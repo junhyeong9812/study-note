@@ -302,7 +302,7 @@ class Program {
 
 **왜 그런가**
 
-- ★★★ 받는 타입이 **구체 타입이면 0**, **`IEnumerable<int>` 면 `foreach` 마다 열거자 객체 하나** — 같은 `List<int>` 인데 갈린다(9번).
+- ★★★ 받는 타입이 **구체 타입이면 0**, **`IEnumerable<int>` 면 `foreach` 마다 열거자 객체 하나** — 같은 `List<int>` 인데 달라진다(9번).
 - ★★ 첫 캡처(짧게 데운 판)에서는 **한 칸이 한 번 움직였다**(`[4]` 가 `32`) — 길게 데운 판으로 바꾸자 **네 판 0 / 4**(요약 (5)).
 
 ### 6. ★★★ **`[1]`·`[2]`·`[3]`·`[6]` 이 던진다** · `_version` **`3 → 4 → 5 → 5`** · Java 는 **`[3]` 을 안 던진다**
@@ -362,7 +362,7 @@ public class Ex31 {
 
 - ★★★ `List<T>` 는 **모든 쓰기**(값 덮어쓰기 포함)에서 `_version` 을 올리고, 열거자가 `MoveNext` 마다 대조한다 — **끝에 닿을 때도.**
 - ★★★ Java `ArrayList` 는 `[3]` 에서 **`cursor == size` 가 되어 검사 없이 끝난다** — 마지막 원소 `3` 을 지운 것은 맞지만, **이 모양은 조용히 통과**한다([Java 43번](../../../java/syntax/43-iterator-and-fail-fast/) 의 「끝에서 두 번째」).
-- ★★ `Dictionary` 는 **`Remove`·기존 키 덮어쓰기에서 안 던졌다**(이 판) · 새 키만 던졌다. 배열은 번호가 없다.
+- ★★ `Dictionary` 는 **`Remove`·기존 키 덮어쓰기에서 실행하지 않았다**(이 판) · 새 키만 던졌다. 배열은 번호가 없다.
 
 ### 7. ★★ **셋 다 `Dispose`** — `[3]` 은 `Dispose` 다음에 `바깥 catch`
 
@@ -435,14 +435,14 @@ class Program {
 ### 8. ★★★ **이름으로 찾고 찾은 타입 그대로 부른다** — `Dispose` 만은 **`IDisposable` 로** 찾는다
 
 - ★★★ 1번 — 인터페이스 0 개인 `Bag` 이 컴파일됐다. 4번 — `List<int>` 판도 **`call …Enumerator::MoveNext`** 로 인터페이스를 안 거친다. 그래서 「`foreach` 는 `IEnumerable` 을 안 봐도 된다」.
-- ★★ 그런데 1번 `Walker` 의 `public void Dispose()` 는 **안 불렸다** — `Dispose` 는 이름 패턴이 아니라 **열거자 타입이 `IDisposable` 인가**로 정한다(`ref struct` 예외는 이 판에서 안 던졌다).
+- ★★ 그런데 1번 `Walker` 의 `public void Dispose()` 는 **안 불렸다** — `Dispose` 는 이름 패턴이 아니라 **열거자 타입이 `IDisposable` 인가**로 정한다(`ref struct` 예외는 이 버전에서 안 던졌다).
 
 ### 9. ★★★ **`IEnumerable<int>` 변수로 받은 `GetEnumerator()` 가 인터페이스를 돌려주므로 구조체가 박스에 담긴다**
 
 - ★★★ 4번 — `OverSeq` 는 `callvirt IEnumerable<Int32>::GetEnumerator` 로 **`IEnumerator<Int32>`** 를 받는다. 3번 — 그 실제 타입은 **값 타입 `Enumerator`** 다. 값 타입이 인터페이스 변수에 담기면 박싱([03번](../03-boxing-and-unboxing/)) — 5번 `[2]` 40000.
 - ★★ [24번](../24-generics-and-type-parameters/) 과의 경계 — 거기는 **제네릭 타입 인자**가 값 타입일 때 코드를 따로 만드는 이야기이고, 여기는 **변수의 선언 타입이 인터페이스**라서 생기는 박싱이다. `IEnumerable<T>` 를 받는 제네릭 메서드는 **`T` 가 무엇이든** 이 박싱을 한다.
 
-### 10. ★★ **C# 실행(매 `MoveNext`) · Java 실행(`next()`) · Rust 컴파일(`E0502`)** — 갈린 칸은 **「끝에 닿을 때도 대조하나」**
+### 10. ★★ **C# 실행(매 `MoveNext`) · Java 실행(`next()`) · Rust 컴파일(`E0502`)** — 달라진 항목은 **「끝에 닿을 때도 대조하나」**
 
 - ★★ 6번 블록 + [Java 43번](../../../java/syntax/43-iterator-and-fail-fast/) + [Rust 38번](../../../rust/syntax/38-vec-api-capacity-retain-and-drain/)(순회 중 `push`·`remove` 는 **빌림이 살아 있는 동안** 컴파일 에러).
 
@@ -459,12 +459,12 @@ class Program {
 | `cs31b-ext.cs` · `cs31b-none.cs` | csc 3회(latest · 8) · 실행 1회 | `0 1 2` · `CS8400` · `CS1579` |
 | `cs31b-roles.cs` | csc 1회 · 실행 1회 | 세 역할의 멤버 · `Enumerator (struct)` |
 | `cs31b-il.cs` | csc 1회(`-optimize`) · 실행 1회 | 구조체 `constrained.` · 인터페이스 `callvirt` · 배열 `ldelem` |
-| `cs31b-alloc.cs` | **2×2 판 격자**(길게 데움) | ★★★ `0 · 40000 · 0 · 32000` · **갈린 줄 0 / 4** — ★ 짧게 데운 첫 판에서 한 칸이 `32` |
+| `cs31b-alloc.cs` | **2×2 판 격자**(길게 데움) | ★★★ `0 · 40000 · 0 · 32000` · **달라진 줄 0 / 4** — ★ 짧게 데운 첫 판에서 한 칸이 `32` |
 | `cs31b-mod.cs` · `Ex31.java` | csc 1회 · 실행 1회 · javac 1회 · java 1회 | ★★★ List 셋 · Dictionary 새 키 던짐 · `_version` · **Java `[3]` 안 던짐** |
 | `cs31b-dispose.cs` | csc 1회 · 실행 1회 | 셋 다 `Dispose` 한 번 |
 | `cs31b-form.cs` | csc 1회 · 실행 1회 | `bac · x=1 · bac` |
 
-**구현 의존 항목** — 다음은 **이 판(.NET SDK 10.0.401 · 런타임 10.0.12 · javac 21.0.5)에서만** 그렇다.
+**구현 의존 항목** — 다음은 **이 버전(.NET SDK 10.0.401 · 런타임 10.0.12 · javac 21.0.5)에서만** 그렇다.
 
 - ★★★ **할당 바이트 값 · `_version` 필드 · `Dictionary` 의 `Remove`/덮어쓰기가 열거를 안 깨는 것 · `constrained.` 로 부르는 모양** — BCL · Roslyn · 이 판.
 
@@ -490,5 +490,5 @@ class Program {
 진단은 **`-preferreduilang:en-US`** 로 영어로 고정했다.\
 ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 손으로 옮긴 줄은 없다.\
 ★ 진단을 싣는 블록은 전부 **그 진단을 낸 소스를 같은 블록 안에** 다시 싣는다(`===== 소스: … =====`).
-**읽는 법** — 근거로 쓰는 것은 **옵코드 · `.try … finally` 의 유무 · 진단 코드 · 할당 바이트의 0 대 비(非)0 · 「네 판에서 갈린 줄 N / M」 · 예외 타입** 이다.
+**읽는 법** — 근거로 쓰는 것은 **옵코드 · `.try … finally` 의 유무 · 진단 코드 · 할당 바이트의 0 대 비(非)0 · 「네 버전에서 달라진 줄 N / M」 · 예외 타입** 이다.
 ★★★ **이 문서는 시간을 재지 않았다.** 「구조체 열거자가 빠르다」는 문장이 **한 줄도 없다.**

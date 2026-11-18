@@ -487,7 +487,7 @@ dedu07.cpp:9:26: runtime error: load of null pointer of type 'int'
 - ★★ **`runtime error: reference binding to null pointer of type 'int'` 두 줄**이 나오고\
   **`run exit=139`**(SIGSEGV)로 죽는다. 이 주제의 UB 는 **도구가 본다** —\
   형제 [`03번`](../03-four-cast-operators/)의 UB(앨리어싱·`const` 벗기기)가 **아무 도구에도 안 걸린 것과 반대**다.
-- ★ **UB 가 만든 값 자체는 이 문서에 싣지 않았다** — 흔들리는 칸이다.\
+- ★ **UB 가 만든 값 자체는 이 문서에 싣지 않았다** — 실행마다 달라지는 항목이다.\
   근거로 쓰는 것은 「**경고가 났다**」와 「**UBSan 이 두 줄을 냈다**」와 「**`run exit=139`**」다.
 
 ### (7) 범위 for 에서 `auto` 를 어떻게 쓰느냐
@@ -715,7 +715,7 @@ int main() {
 - ★ **`auto x{1}` 은 `int`(C++17부터), `auto x = {1}` 은 `initializer_list<int>`** —\
   정본은 형제 [`04번`](../04-brace-initialization-narrowing-and-initializer-list/).
 
-### 금지 사례 — 던져서 받은 다섯
+### 금지 사례 — 실행해서 받은 다섯
 
 | 쓴 것 | 컴파일러 | 무엇이 나오나 |
 |---|---|---|
@@ -869,12 +869,12 @@ int main() {
 
 ## 더 들어가면
 
-- **`auto` 와 템플릿 추론이 갈리는 한 곳** — **중괄호 목록**이다.\
+- **`auto` 와 템플릿 추론이 달라지는 한 곳** — **중괄호 목록**이다.\
   `auto x = {1, 2};` 는 `initializer_list<int>` 가 되지만, `template <class T> void f(T x);` 에\
-  `f({1, 2})` 를 넘기면 **추론이 실패한다.** ★ **이 문서는 템플릿 쪽을 안 던졌다** — 정본은 [목록의 **31번 주제**](../31-function-templates-and-argument-deduction/)다.
+  `f({1, 2})` 를 넘기면 **추론이 실패한다.** ★ **이 문서는 템플릿 쪽을 실행하지 않았다** — 정본은 [목록의 **31번 주제**](../31-function-templates-and-argument-deduction/)다.
 - **`decltype(auto)` 를 변수에 쓰기** — `decltype(auto) x = e;` 도 된다. 이 문서는 **반환 타입 쪽만** 던졌다.
 - **후행 반환 타입**(`auto f() -> decltype(...)`) — C++11 에서 `decltype` 이 매개변수를 볼 수 있게 하려고 나온 문법.\
-  C++14 의 반환 타입 추론이 대부분을 대신한다. ★ 이 문서는 안 던졌다.
+  C++14 의 반환 타입 추론이 대부분을 대신한다. ★ 이 문서는 실행하지 않았다.
 - **컨셉으로 제약한 `auto`**(`std::integral auto x = ...`) — C++20. 정본은 [목록의 **36번 주제**](../36-concepts-and-requires/).
 - **`auto` 와 구조적 바인딩**(`auto [a, b] = pair;`) — 추론 규칙이 한 겹 더 있다. 정본은 목록의 **48번 주제**.
 - **프록시가 `auto` 를 무는 다른 사례** — 표현식 템플릿(Eigen 류)이 같은 모양이다.\
@@ -901,9 +901,9 @@ int main() {
 「참조가 무엇인가」는 형제 [`07번`](../07-references-vs-pointers/)이다.\
 「`auto x{1}` 대 `auto x = {1}`」의 정본은 형제 [`04번`](../04-brace-initialization-narrowing-and-initializer-list/)이고 여기서는 **되짚기만** 한다.
 
-★★ **흔들리는 칸 / 안 흔들리는 칸**
+★★ **실행마다 달라지는 항목 / 달라지지 않는 항목**
 
-| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+| 실행마다 달라진다(근거로 쓰지 않는다) | 달라지지 않는다(근거로 쓴다) |
 |---|---|
 | 컴파일 시간 | ★ **`TypeOf<...>` 꺾쇠 안의 타입 이름** — 이 주제의 답 자체다 |
 | 댕글링 참조가 **읽은 값**(이 문서는 **싣지 않았다**) | **진단 본문** · `파일:줄:칸` · **경고 이름** |

@@ -1,6 +1,6 @@
 # html/syntax/31 — 파일 업로드: `accept`/`multiple`/`capture` 와 `enctype=multipart/form-data` — 정리 (힌트)
 
-**이 판의 Chrome**
+**이 버전의 Chrome**
 
 ```text
 $ google-chrome --version
@@ -8,25 +8,25 @@ Google Chrome 151.0.7922.173
 (exit 0)
 ```
 
-### 흔들리는 칸 / 안 흔들리는 칸
+### 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| **흔들린다** | Chrome 판 번호 | 판이 오르면 바뀐다 |
-| **흔들린다** | CDP 포트·프로필 경로·서버 포트 · **올린 파일의 절대 경로** | 출력에는 안 들어간다(서버는 `filename` 만 받는다 — 명세가 경로 성분을 금한다) |
+| **실행마다 달라진다** | Chrome 판 번호 | 버전이 오르면 바뀐다 |
+| **실행마다 달라진다** | CDP 포트·프로필 경로·서버 포트 · **올린 파일의 절대 경로** | 출력에는 안 들어간다(서버는 `filename` 만 받는다 — 명세가 경로 성분을 금한다) |
 | **죽였다** | `multipart/form-data` 의 **경계(boundary) 문자열** | 실행마다 바뀐다 — 하네스가 경계로 갈라 **필드만** 적는다([21번](../21-form-submission-model/2-summary.md)과 같다) |
-| **죽였다** | PNG 부분의 **원시 바이트** | UTF-8 이 아니라 「(바이트 67개)」로 적는다 — 개수는 안 흔들린다 |
-| **안 흔들린다** | 부분의 `filename` · 부분 `Content-Type` · 부분 수 · `files.length` · 고르기 창의 `mode` · 「거부된 칸 N / M」 | 같은 판이면 결정적이다 |
+| **죽였다** | PNG 부분의 **원시 바이트** | UTF-8 이 아니라 「(바이트 67개)」로 적는다 — 개수는 달라지지 않는다 |
+| **달라지지 않는다** | 부분의 `filename` · 부분 `Content-Type` · 부분 수 · `files.length` · 고르기 창의 `mode` · 「거부된 칸 N / M」 | 같은 판이면 결정적이다 |
 
-### 이 주제가 쓰는 창 / 부적용인 창
+### 이 주제가 쓰는 창 / 해당 없는 창
 
 | 창 | 이 주제에서 | 무엇을 답하나 |
 |---|---|---|
-| **⑤ 서버 요청 로그** | ★ **쓴다 — 본체** | 서버가 **어느 파일을** 받았나(`filename`) · **본문 모양**(`enctype` 별) · 같은 이름의 **부분 수**((1)\~(3)) |
+| **⑤ 서버 요청 로그** | ★ **쓴다 — 핵심** | 서버가 **어느 파일을** 받았나(`filename`) · **본문 모양**(`enctype` 별) · 같은 이름의 **부분 수**((1)\~(3)) |
 | **② 노드 프로브**(`files.length` · `validity` · `change` 기록) | ★ **쓴다** | 칸이 **받아들였나** · 깃발이 **섰나** · `change` 가 **사용자 입력으로** 왔나(`isTrusted`)((1)·(3)) |
 | **파일 고르기 창의 `mode`**(CDP `Page.fileChooserOpened`) | 쓴다 | `multiple` 이 **창을 여러 개 고르기로** 여나((3)) |
-| **⑦ 접근성 트리** | **부적용** — 24번 인용 | 파일 칸의 역할(`button`)은 [24번](../24-input-types-choice-special/2-summary.md)이 찍었다 |
-| **① · ③ · ④ · ⑥** | **부적용** | 무관하다 — **잴 것이 없다** |
+| **⑦ 접근성 트리** | **해당 없음** — 24번 인용 | 파일 칸의 역할(`button`)은 [24번](../24-input-types-choice-special/2-summary.md)이 찍었다 |
+| **① · ③ · ④ · ⑥** | **해당 없음** | 무관하다 — **잴 것이 없다** |
 
 - ★★★ **제5의 상태 — 「고르기 창이 거르나」를 서버로 물었다.** 운영체제의 파일 고르기 창은 headless 에서 **뜨지 않는다**(가로채면 CDP 이벤트만 온다). 그래서 **창이 `accept` 로 목록을 거르는지는 못 본다.** 대신 **창이 무엇을 받든 칸과 서버가 그것을 막나**를 물었다. ★ **바꾼 창이 못 보는 것** — 실제 창의 **「모든 파일」 선택지**나 **필터 목록**. 그것은 「못 잰 것」으로 남긴다.
 - ★★ **18-A — 몇 군데 물었나.** (1) 은 **`accept` 셋 × 파일 셋 × 넣는 길 셋 = 27 곳**을 물었다. 「거절이 없다」가 결론이라 **그 27 곳을 미리 선언**하고 「거부된 칸 N / 27」을 스크립트가 센다.
@@ -44,7 +44,7 @@ Google Chrome 151.0.7922.173
 | **봉투(상자 없음)** | **urlencoded · `text/plain`** — 파일 자리에 **이름만** 간다 |
 | **여러 개 접수** | **`multiple`** — 같은 이름으로 **부분이 여러 개** |
 | **빈 접수증** | 고른 파일이 없음 — 이름 빈 부분 하나([24번](../24-input-types-choice-special/2-summary.md)) |
-| **「카메라로 찍어 오세요」 메모** | **`capture`** — 이 판의 Chrome 은 **읽지도 않았다**(IDL 이 없다) |
+| **「카메라로 찍어 오세요」 메모** | **`capture`** — 이 버전의 Chrome 은 **읽지도 않았다**(IDL 이 없다) |
 
 - ★★★ **거부된 칸 0 / 27** — `accept="image/png"`·`".png"`·`"image/*"` 칸 모두 **`.txt` 를 받았고 서버에 그대로 갔다.** 세 길 모두, `validity` 깃발도 **0 칸**((1)).
 - ★★★ **urlencoded·`text/plain` 이면 파일 자리에 `p1.png` 라는 글자만 간다** — 본문 67 바이트는 **multipart 에서만**((2)).
@@ -63,7 +63,7 @@ Google Chrome 151.0.7922.173
 ```
 
 > **파일 고르기 창(file picker)** — 파일 칸을 누르면 뜨는 운영체제 창. 명세의 「picker」.\
-> 예: `accept="image/*"` 면 휴대폰은 카메라·사진첩을 먼저 보여 줄 수 **있다**(명세의 예시 문장 — 이 판은 못 본다).
+> 예: `accept="image/*"` 면 휴대폰은 카메라·사진첩을 먼저 보여 줄 수 **있다**(명세의 예시 문장 — 이 버전은 못 본다).
 
 ## 이 주제가 답하려는 질문
 
@@ -172,10 +172,10 @@ chooser · t2.png      받음 t2.png             받음 t2.png             받�
 
 - ★★★ **거부된 칸 0 / 27** — `t1.txt` 도 `image/png`·`.png`·`image/*` 세 칸 모두에 **들어갔고 서버가 `filename=「t1.txt」` 로 받았다.** 세 길이 **한 칸도 다르지 않다.**
 - ★★★ **`validity.valid` 가 `false` 인 칸도 0 / 27** — `accept` 에 맞지 않는 파일에 **깃발이 없다.** 명세의 File Upload 상태에 **`accept` 로 된 제약이 없다**(제약은 `required` 의 「고른 파일이 비었으면 missing」 하나뿐이다). **폼 검증으로도 못 막는다.**
-- ★★ **`change` 는 27 번 모두 `isTrusted=true`** — 스크립트 길(`setFileInputFiles`)조차 **사용자 입력처럼** `change` 를 냈다. 페이지 쪽 코드는 **어느 길로 들어왔는지 가를 수 없다.**
-- ★★ **고르기 창 길(`chooser`)도 거르지 않았다** — 진짜 클릭으로 창이 열렸고(`chooser(selectSingle)` — 한 시도의 전문), 창에 넣은 `.txt` 가 그대로 들어갔다. ★ **이것은 「실제 운영체제 창도 거르지 않는다」가 아니다** — 가로챈 창은 **목록을 보여 주지 않는다.** 명세의 「고르지 못하게 **해야 한다(should)**」는 **실제 창의 몫**이고, 이 판은 그것을 **못 본다.**
+- ★★ **`change` 는 27 번 모두 `isTrusted=true`** — 스크립트 길(`setFileInputFiles`)조차 **사용자 입력처럼** `change` 를 냈다. 페이지 쪽 코드는 **어느 길로 들어왔는지 구분할 수 없다.**
+- ★★ **고르기 창 길(`chooser`)도 거르지 않았다** — 진짜 클릭으로 창이 열렸고(`chooser(selectSingle)` — 한 시도의 전문), 창에 넣은 `.txt` 가 그대로 들어갔다. ★ **이것은 「실제 운영체제 창도 거르지 않는다」가 아니다** — 가로챈 창은 **목록을 보여 주지 않는다.** 명세의 「고르지 못하게 **해야 한다(should)**」는 **실제 창의 몫**이고, 이 버전은 그것을 **못 본다.**
 - ★ **끌어다 놓기가 거르지 않은 것** — 명세는 끌어다 놓기로 목록을 바꾸는 길을 적으면서 **거기서 `accept` 를 보라는 문장을 따로 두지 않는다.** 위 「should」가 끌어다 놓기에도 걸리는지는 문장이 가리지 않으므로 **이탈로 세지 않는다.**
-- ★★ **`t2.png` 는 부분 `Content-Type: image/png` 로 갔다** — 내용은 `xyz\n` 글자다. **형식은 이름의 확장자에서 왔다**(이 판의 관찰 — 형식을 정하는 규칙은 [web-api 31번](../../../web-api/31-blob-file-and-object-url/2-summary.md)의 `File` 쪽이다). **서버가 `Content-Type` 을 믿으면 안 되는 이유**가 이 한 줄이다.
+- ★★ **`t2.png` 는 부분 `Content-Type: image/png` 로 갔다** — 내용은 `xyz\n` 글자다. **형식은 이름의 확장자에서 왔다**(이 버전의 관찰 — 형식을 정하는 규칙은 [web-api 31번](../../../web-api/31-blob-file-and-object-url/2-summary.md)의 `File` 쪽이다). **서버가 `Content-Type` 을 믿으면 안 되는 이유**가 이 한 줄이다.
 
 ```text
   accept 가 닿는 곳과 안 닿는 곳
@@ -336,7 +336,7 @@ $ python3 html29b-form.py 시도 html29b-31-multiple.html
 - ★★★ **`multiple` 은 고르기 창을 「여러 개」로 연다** — `m1` 을 누르니 **`chooser(selectMultiple)`**, `m2` 는 `selectSingle`. 파일 둘이 **`m1` 이름의 부분 둘**로 갔다(`부분 5개`). 명세 — 「같은 이름의 항목은 **별개의 필드**로 다룬다」.
 - ★★★ **`multiple` 없는 칸에 파일 둘 — 길마다 다르다.** **`setFileInputFiles`** 는 **첫째(`p1.png`) 하나**를 넣었고, **끌어다 놓기**는 **아무것도 안 넣었다**(`m2=0` · 빈 부분). `multiple` 칸(`m1`)에 끌어다 놓으면 **둘 다** 들어갔다. 명세 — 「`multiple` 이 없으면 목록에 파일이 **하나를 넘으면 안 된다(must)**」. 두 길 다 그 문장을 지켰고, **지키는 방법**(자르기 · 통째 거절)이 달랐다.
 - ★★ **고른 파일이 없는 칸은 빈 부분 하나씩** — `m3=「」 (filename=「」 · 부분 Content-Type: application/octet-stream)`. [24번](../24-input-types-choice-special/2-summary.md)의 (2) 와 같고, `multiple` 칸(`m1`)도 **하나**다. 명세 — 「고른 파일이 없으면 **이름 빈 `File`**, 형식 `application/octet-stream`, 빈 본문으로 항목 하나」.
-- ★★★ **`capture` 는 데스크톱 Chrome 에서 IDL 조차 없다** — `'capture' in HTMLInputElement.prototype` 이 **`false`** 이고 `m3.capture` 는 `undefined`, 속성 글자(`getAttribute`)만 `user` 로 남았다. 고르기 창도 `selectSingle` 로 **똑같이** 열렸다. ★ **이것은 「못 잰 것」과 다르다** — 휴대폰에서 카메라가 뜨나는 **못 쟀지만**, 이 판의 Chrome 이 **그 속성을 인식하지 않는다**는 것은 **잰 것**이다. 그리고 앞 「실행 환경」대로 **WHATWG HTML 에는 `capture` 가 없다.**
+- ★★★ **`capture` 는 데스크톱 Chrome 에서 IDL 조차 없다** — `'capture' in HTMLInputElement.prototype` 이 **`false`** 이고 `m3.capture` 는 `undefined`, 속성 글자(`getAttribute`)만 `user` 로 남았다. 고르기 창도 `selectSingle` 로 **똑같이** 열렸다. ★ **이것은 「못 잰 것」과 다르다** — 휴대폰에서 카메라가 뜨나는 **못 쟀지만**, 이 버전의 Chrome 이 **그 속성을 인식하지 않는다**는 것은 **잰 것**이다. 그리고 앞 「실행 환경」대로 **WHATWG HTML 에는 `capture` 가 없다.**
 
 ```text
   파일 둘을 넣는 세 길 × multiple (이 판)
@@ -351,19 +351,19 @@ $ python3 html29b-form.py 시도 html29b-31-multiple.html
 
 HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 헷갈리나**」로 읽는다.
 
-| 쓰려는 것 | 형태 | 이 판에서 |
+| 쓰려는 것 | 형태 | 이 버전에서 |
 |---|---|---|
 | 파일을 내용째 올리기 | `<form method="post" enctype="multipart/form-data">` + `<input type="file" name="f">` | 둘 중 하나라도 빠지면 **이름만** 간다 |
 | 고르기 창에 힌트 | `accept="image/png,.png"` | **막지 않는다** — 0 / 27 |
 | 여러 개 | `multiple` | 같은 `name` 으로 부분이 여러 개 |
 | 필수 | `required` | 고른 파일이 없을 때만 missing — **형식은 안 본다** |
-| 카메라 | `capture="user"` | 이 판의 Chrome 은 IDL 이 없다 |
+| 카메라 | `capture="user"` | 이 버전의 Chrome 은 IDL 이 없다 |
 
 ### 어디서 헷갈리나
 
 - **`accept` 의 토큰은 다섯 꼴** — `audio/*` · `video/*` · `image/*` · 매개변수 없는 MIME · `.` 으로 시작하는 확장자. 쉼표로 가르고 중복을 두지 않는다.
 - **`accept` 는 확장자와 MIME 을 같이 쓰라고 명세가 권한다** — 플랫폼마다 한쪽만 쓰기 때문이다.
-- **부분 `Content-Type` 은 브라우저가 붙인다** — 이 판은 **이름의 확장자**에서 붙였다.
+- **부분 `Content-Type` 은 브라우저가 붙인다** — 이 버전은 **이름의 확장자**에서 붙였다.
 
 ## 어디서 틀리나
 
@@ -389,7 +389,7 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 
 ### 6. 데스크톱에서 `capture` 를 달면 웹캠이 뜰 거라 여긴다
 
-**이 판의 Chrome 은 그 속성을 모른다**((3) — IDL 없음 · 고르기 창 그대로).
+**이 버전의 Chrome 은 그 속성을 모른다**((3) — IDL 없음 · 고르기 창 그대로).
 
 ## 구현 세부사항 대 언어 보장
 
@@ -402,7 +402,7 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 | **명세(HTML)** | 파일 이름에 **경로 성분이 없어야 한다** | (1) — 서버가 받은 `filename` 이 전부 이름뿐 |
 | **명세 없음** | **`capture`** — WHATWG HTML 에 없다(W3C HTML Media Capture — 이 배치는 안 열었다) | (3) |
 | **구현(Chrome)** | 스크립트 길의 둘 → 첫째만 · 끌어다 놓기의 둘 → 통째 거절 · 부분 형식을 **이름의 확장자**에서 · 데스크톱에 `capture` IDL 없음 · 스크립트 길도 `change` 가 `isTrusted=true` | (1)·(3) |
-| **이 판의 관찰** | 거부된 칸 **0 / 27** · 깃발 0 / 27 | (1) |
+| **이 버전의 관찰** | 거부된 칸 **0 / 27** · 깃발 0 / 27 | (1) |
 
 **도구가 못 보는 것**
 
@@ -410,8 +410,8 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 |---|---|
 | ★★★ **운영체제 고르기 창이 `accept` 로 목록을 거르나** | headless 에서는 창이 뜨지 않는다 — 가로채면 CDP 이벤트만 온다. 명세의 should 가 지켜지는지는 **실제 창의 몫** |
 | ★★ **휴대폰에서 `capture`·`accept="image/*"` 가 카메라를 띄우나** | 모바일 기기가 없다 — 「못 잰 것」 |
-| **실제 끌어다 놓기와 CDP 의 흉내가 같은가** | CDP 가 브라우저 안에서 끌기 이벤트를 합성한다 — 운영체제의 끌기와 같은 길인지는 이 판이 가를 수 없다 |
-| **큰 파일 · 진행률** | 이 판의 파일은 67 바이트 이하다 |
+| **실제 끌어다 놓기와 CDP 의 흉내가 같은가** | CDP 가 브라우저 안에서 끌기 이벤트를 합성한다 — 운영체제의 끌기와 같은 길인지는 이 버전이 구분할 수 없다 |
+| **큰 파일 · 진행률** | 이 버전의 파일은 67 바이트 이하다 |
 
 ## 언제 쓰고 언제 안 쓰나
 
@@ -425,10 +425,10 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 
 1. **`accept` 는 고르기 창에 주는 힌트다 — 칸도 폼 검증도 서버도 다시 보지 않는다(이 판: 거부 0 / 27 · 깃발 0).**
 2. **파일의 내용은 `method="post"` + `enctype="multipart/form-data"` 일 때만 간다 — urlencoded·`text/plain` 이면 파일 이름 글자만 간다.**
-3. **부분의 `Content-Type` 은 이 판에서 이름의 확장자가 정했다 — 서버가 믿을 것이 못 된다.**
+3. **부분의 `Content-Type` 은 이 버전에서 이름의 확장자가 정했다 — 서버가 믿을 것이 못 된다.**
 4. **`multiple` 이 없으면 칸은 파일 하나까지다 — 스크립트 길은 첫째만, 끌어다 놓기는 통째로 거절했다.**
 5. **고른 파일이 없는 칸도 이름 빈 부분 하나를 보낸다.**
-6. **`capture` 는 WHATWG HTML 의 속성이 아니고, 이 판의 데스크톱 Chrome 은 IDL 조차 없다.**
+6. **`capture` 는 WHATWG HTML 의 속성이 아니고, 이 버전의 데스크톱 Chrome 은 IDL 조차 없다.**
 
 ## 관련 자료
 
@@ -451,17 +451,17 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 ## 더 들어가면
 
 - **왜 `accept` 가 must 가 아니라 should 인가** — 명세의 예시가 답에 가깝다 — 확장자만 쓰는 플랫폼과 MIME 만 쓰는 플랫폼이 있어서 **UA 가 정확히 거를 수 없는 경우**가 있다(「확장자는 모호하다」는 문장이 이어진다). 그래서 명세는 **작성자에게 둘 다 적으라고** 권한다(해석이다).
-- **`webkitdirectory`** — 폴더째 고르기. 명세 밖의 속성이다. 이 판은 던지지 않았다.
+- **`webkitdirectory`** — 폴더째 고르기. 명세 밖의 속성이다. 이 버전은 던지지 않았다.
 - **폼 제출 대신 `fetch`** — 같은 multipart 본문을 스크립트로 만드는 쪽은 [web-api 30번](../../../web-api/30-request-body-and-content-type/2-summary.md)의 (4).
 
 ## 실행 환경
 
 **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「File Upload state」](https://html.spec.whatwg.org/multipage/input.html#file-upload-state-(type=file))(★ `accept` — 「UA 는 받지 않는 파일을 **고르지 못하게 해야 한다(should)**」 · 파일 이름에 **경로 성분이 없어야 한다** · `multiple` 이 없으면 **파일은 하나 이하** · 끌어다 놓기로도 바꿀 수 있다), [「Constructing the entry list」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#constructing-the-form-data-set)(★ 고른 파일이 없으면 **이름 빈 `File`, `application/octet-stream`**), [「Converting an entry list to a list of name-value pairs」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#converting-an-entry-list-to-a-list-of-name-value-pairs)(★ **`File` 이면 그 이름을 값으로**), [「Multipart form data」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#multipart-form-data)(RFC 7578 · 같은 이름은 **별개의 필드**). **명세 본문은 앞 배치가 2026-09-26 에 받아 둔 사본**으로 읽었다 — 이 배치는 네트워크를 쓰지 않았다.\
-★★★ **`capture` 는 WHATWG HTML 에 없다** — 받아 둔 `input` 절 전문에서 `capture` 를 찾으면 **0 건**이다. 그 속성은 W3C 의 별도 문서(HTML Media Capture)가 정의하고, **이 배치는 그 문서를 열지 않았다.** 그래서 (3) 의 `capture` 줄에는 **명세층이 없다** — 「Chrome 이 이 판에서 그 속성을 무엇으로 다뤘나」만 적는다.
+★★★ **`capture` 는 WHATWG HTML 에 없다** — 받아 둔 `input` 절 전문에서 `capture` 를 찾으면 **0 건**이다. 그 속성은 W3C 의 별도 문서(HTML Media Capture)가 정의하고, **이 배치는 그 문서를 열지 않았다.** 그래서 (3) 의 `capture` 줄에는 **명세층이 없다** — 「Chrome 이 이 버전에서 그 속성을 무엇으로 다뤘나」만 적는다.
 **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 파일은 **세 길**로 넣었다 — CDP `DOM.setFileInputFiles`(스크립트 쪽 길) · CDP `Input.dispatchDragEvent`(끌어다 놓기를 흉내 낸 입력) · **파일 고르기 창 가로채기**(진짜 마우스로 칸을 누르고 열린 창에 파일을 넣는다). 하네스는 [29번 주제](../29-constraint-validation/3-answer.md)의 `## 실행 검증` 절에 있다.\
 ★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
 **버전** — HTML 에는 언어 버전이 없다. 파일 칸은 가장 오래된 표면이라 Baseline 조회 대상이 아니다.
 **선행** — [21번 주제](../21-form-submission-model/2-summary.md)(★ **`enctype` × `method` 격자** — GET 은 `enctype` 을 안 본다) · [24번 주제](../24-input-types-choice-special/2-summary.md)(★ **고른 파일이 없는 파일 칸도 실린다** — urlencoded 는 `f1=` · multipart 는 `filename=「」` 부분 하나).
 **경계** — ★★ **같은 본문을 스크립트로 만드는 쪽**(`FormData` 에 `Blob`·`File` 을 넣을 때 `filename`·`Content-Type` 이 어디서 오나)은 [web-api 30번](../../../web-api/30-request-body-and-content-type/2-summary.md)의 (3)·(4), **받은 `File` 을 읽고 미리보고 올리는 쪽**(`Blob`·`FileReader`·오브젝트 URL)은 [web-api 31번](../../../web-api/31-blob-file-and-object-url/2-summary.md)이다 — 여기는 **마크업의 파일 칸이 무엇을 받고 무엇을 보내나**까지. `enctype` 의 여섯 칸은 21번이 쟀다 — 여기는 **파일 칸이 있을 때** 세 `enctype` 만.
 
-★★★ **이 주제의 본체는 창 ⑤(서버 요청 로그)다** — 파일 칸이 무엇을 받아들였는지는 **서버가 받은 부분의 `filename`** 으로 판정한다. 짝으로 **창 ②**(`files.length` · `validity` · 파일 고르기 창의 `mode`)가 페이지 쪽을 본다.
+★★★ **이 주제의 핵심은 창 ⑤(서버 요청 로그)다** — 파일 칸이 무엇을 받아들였는지는 **서버가 받은 부분의 `filename`** 으로 판정한다. 짝으로 **창 ②**(`files.length` · `validity` · 파일 고르기 창의 `mode`)가 페이지 쪽을 본다.

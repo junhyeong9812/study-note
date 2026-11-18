@@ -172,7 +172,7 @@ HINT:  Use separate LIMIT and OFFSET clauses.
 +----+------+
 ```
 
-`LIMIT` 없이 `OFFSET` 만 쓰는 것과 `LIMIT ALL` 도 갈린다.
+`LIMIT` 없이 `OFFSET` 만 쓰는 것과 `LIMIT ALL` 도 달라진다.
 
 ```text
 ### SQL: SELECT id FROM emp ORDER BY id OFFSET 2;
@@ -305,7 +305,7 @@ PG 의 `Heap Fetches: 100010`, MySQL 의 노드 이름 `Limit/Offset: 10/100000`
 (C) 키셋          : actual time=0.466..0.468 / 0.466..0.468 / 0.355..0.357
 ```
 
-**신호 대 잡음** — 흔들림은 PG 가 약 20%·MySQL 이 약 5% 인데, (B)와 (C)의 차이는 PG 약 **500배** · MySQL 약 **25배** 다.\
+**신호 대 잡음** — 실행 간 차이는 PG 가 약 20%·MySQL 이 약 5% 인데, (B)와 (C)의 차이는 PG 약 **500배** · MySQL 약 **25배** 다.\
 신호가 잡음보다 훨씬 크므로 **방향은 재현된다.** 다만 **절댓값은 이 머신·이 데이터의 것**이고, 읽을 것은 `actual rows` 와 자릿수다.
 
 대가 — 키셋도 공짜가 아니다. **인덱스가 정렬 키를 덮고 있어야** 이 계획이 나온다. 5절에서 그 조건을 본다.
@@ -611,7 +611,7 @@ SELECT ... ORDER BY <결정적 정렬 키> LIMIT <개수> [OFFSET <건너뛸 수
 - **행 생성자(row constructor)** — 여러 값을 묶어 「행 값」 하나로 만드는 표기.\
   예: `(dept_id, id) > (10, 1)` 은 사전식으로 한 번에 비교한다.
 - **사전식 비교(lexicographic comparison)** — 앞 항목부터 견주고, 같으면 다음 항목을 보는 비교.\
-  예: `(20, 1) > (10, 999)` 는 참이다. 첫 항목에서 이미 갈렸다.
+  예: `(20, 1) > (10, 999)` 는 참이다. 첫 항목에서 이미 달라졌다.
 - **`actual rows`** — `EXPLAIN ANALYZE` 가 찍는, 그 노드가 **실제로 만들어 낸 행 수**.\
   예: `OFFSET 100000` 판에서 자식 노드가 100,010 이었다.
 - **`Index Only Scan`** — 표를 안 보고 인덱스만 읽어 답하는 PG 의 접근 방식.\
@@ -629,7 +629,7 @@ SELECT ... ORDER BY <결정적 정렬 키> LIMIT <개수> [OFFSET <건너뛸 수
 
 **기준 소스** — [PostgreSQL 18 · SELECT · LIMIT Clause](https://www.postgresql.org/docs/18/sql-select.html) · [MySQL 8.4 · LIMIT Optimization](https://dev.mysql.com/doc/refman/8.4/en/limit-optimization.html)\
 **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-본문에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+본문에 실린 출력은 **전부 이 두 서버에 실제로 실행해서 받은 것**이다. 지어낸 출력은 없다.\
 **측정 조건** — 비용 비교(3절)는 **20만 행 세션 임시 표**에 기본키 인덱스를 걸고 `EXPLAIN ANALYZE` 를 **각 3회** 돌린 것이다.\
 도커 컨테이너 안의 단발 측정이라 **절댓값이 아니라 자릿수와 `actual rows` 를 본다.** 임시 표는 롤백·삭제해 잔재가 없다.\
 **버전** — `FETCH FIRST` 는 PG 에 있고 MySQL 8.4.10 에는 문법이 없다(`ERROR 1064`).\

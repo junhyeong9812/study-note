@@ -328,7 +328,7 @@ Reactive Streams는 `onNext(null)`을 금지하므로 null item은 "아이템 �
   최종 상태: 요청이 매달린다              최종 상태: 형제와 같아진다
 ```
 
--> 변환 단계는 수정 전후가 똑같고, 마지막 신호 층에서만 갈린다.
+-> 변환 단계는 수정 전후가 똑같고, 마지막 신호 층에서만 달라진다.
 
 여섯째 행이 착수 명세의 `[구현 검증]` 이연 항목을 해소한 자리다.\
 "빈 Publisher가 null item Uni로 완료된다"는 서술은 착수 시점에 Mutiny 문서에만 근거했는데(UniCreate.java:265-287의 javadoc - "If the publisher emits the completion signal before having emitted a value, the produced `Uni` emits a `null` item event"), red 확인 회차에 `toUniFromEmptyPublisher`가 green으로 나오면서 실행으로 확정됐다.\

@@ -508,7 +508,7 @@ HINT:  No operator matches the given name and argument types. You might need to 
 | ★ `NULL` 안전 등호 두 방언 (8번) | PG 18.6 · MySQL 8.4.10 | 각 2회 | **양쪽에 서로의 문법을 던졌다** — 둘 다 에러 |
 
 (위 질의를 PG 에는 **한 세션에 묶어 한 번 더** 던졌다 — 그래서 PG 쪽은 표의 두 배, MySQL 쪽은 표 그대로다.\
-두 판의 **값이 같았다**. 첫 판은 `NULL` 표시 설정만 달라 빈칸으로 찍혔다 — 서버가 다른 답을 준 것이 아니다.)
+두 버전의 **값이 같았다**. 첫 판은 `NULL` 표시 설정만 달라 빈칸으로 찍혔다 — 서버가 다른 답을 준 것이 아니다.)
 
 **★ 한쪽에서만 결론이 서는 실험** — 8번의 두 에러는 **서로를 대신하지 못한다.**\
 MySQL 의 `ERROR 1064` 는 **`IS NOT DISTINCT FROM` 이 없다는 근거**일 뿐이고, PG 의 `operator does not exist: unknown <=> unknown` 은\
@@ -523,7 +523,7 @@ MySQL 의 `ERROR 1064` 는 **`IS NOT DISTINCT FROM` 이 없다는 근거**일 �
 집계가 `NULL` 을 건너뛰고 `COUNT(*)` 만 예외라는 것, `GROUP BY`·`DISTINCT` 가 `NULL` 을 한 덩어리로 묶는다는 것은\
 **두 엔진에서 한 칸도 다르지 않았다.** 이 주제는 방언이 거의 없는 쪽이다.
 
-**방언이 갈리는 항목 — 버전이 오르면 다시 찍을 자리** — ① `NULL` 안전 등호의 문법(8번) ② 불린 표시(`t/f` ↔ `1/0`)\
+**방언이 달라지는 항목 — 버전이 오르면 다시 찍을 자리** — ① `NULL` 안전 등호의 문법(8번) ② 불린 표시(`t/f` ↔ `1/0`)\
 ③ `AVG` 의 결과 타입·자릿수 ④ 빈 결과의 출력 모양(PG 는 `(0 rows)`, MySQL 은 **아무것도 안 찍는다**).
 
 **DB 잔재** — 없다. 이 주제는 **`emp`·`dept` 를 읽기만 했다.** 두 엔진의 최종 표 목록은 [52 UPSERT](../52-upsert/)의 「실행 검증」에 있다.
@@ -531,5 +531,5 @@ MySQL 의 `ERROR 1064` 는 **`IS NOT DISTINCT FROM` 이 없다는 근거**일 �
 ## 실행 환경
 
 근거는 **실행 결과**다 — 본문의 출력은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-2026-09-21 에 실제로 던져 받은 것이다. 문서를 보고 적은 출력은 없다.\
+2026-09-21 에 실제로 실행해 받은 것이다. 문서를 보고 적은 출력은 없다.\
 문서 근거는 [PG 18 비교 연산자](https://www.postgresql.org/docs/18/functions-comparison.html) · [MySQL 8.4 NULL 다루기](https://dev.mysql.com/doc/refman/8.4/en/working-with-null.html).

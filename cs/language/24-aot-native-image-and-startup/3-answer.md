@@ -32,7 +32,7 @@
 
 - 실험 1(20회): 시작~종료가 off 179~265ms > 기본 89~160ms ≥ AppCDS 84~146ms(사실 점검 재실행 20회: 211~246 / 91~141 / 97~126ms).
 - 아카이브에서 온 클래스: off 0/735, 기본 698/702, AppCDS 630/632.
-- 기본 대비 AppCDS의 이득은 이 작은 프로그램에서 작고 흔들린다.
+- 기본 대비 AppCDS의 이득은 이 작은 프로그램에서 작고 실행마다 달라진다.
 - 디렉터리 클래스패스: `[error][cds] Error: non-empty directory 'out'` → `Cannot have non-empty directory in paths`로 아카이브 생성이 실패했다. 클래스패스에 비어 있지 않은 디렉터리가 있으면 안 되므로 JAR로 묶는다(`java` 도구 문서 "Restrictions on Class Path and Module Path"; JEP 483의 AOT 캐시도 "클래스패스에는 JAR만").
 
 ### 5. 빌드 때 초기화

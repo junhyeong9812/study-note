@@ -211,7 +211,7 @@ c/Ex.java:5: error: incompatible types: try-with-resources not applicable to var
 - **19 부터 있다.** `--release 19` 가 통과하는 것으로 경계를 확인했다.
 - 17 을 지원해야 하면 `try`-with-resources 대신 **`finally { es.shutdown(); }`** 를 쓴다.
 
-### (4) ★ 예외가 어디로 가나 — `submit` 과 `execute` 가 갈린다
+### (4) ★ 예외가 어디로 가나 — `submit` 과 `execute` 가 달라진다
 
 **언제 쓰나** — "작업이 도는지 안 도는지 모르겠다"일 때. **이 주제의 대표 사고다.**
 
@@ -669,7 +669,7 @@ ThreadPoolExecutor pool = new ThreadPoolExecutor(
 
 | 관측한 것 | 누가 보장하나 | 버전에 갈리나 |
 |---|---|---|
-| `ExecutorService` 가 `AutoCloseable` 인 것 | **javadoc — `@since 19`** | ★ **갈린다.** 17 에서 컴파일 에러 |
+| `ExecutorService` 가 `AutoCloseable` 인 것 | **javadoc — `@since 19`** | ★ **달라진다.** 17 에서 컴파일 에러 |
 | `Future.state()`·`resultNow()` | **javadoc — `@since 19`** | ★ 17 에 없다 |
 | `newFixedThreadPool` 이 `LinkedBlockingQueue` 를 쓰는 것 | javadoc 이 "unbounded queue" 라고 적는다. **큐 클래스 이름은 구현 세부** | 17·21·25 소스 동일(확인함) |
 | `RejectedExecutionException` 메시지에 풀 상태가 들어가는 것 | **구현 세부**(`ThreadPoolExecutor.toString`) | 21 에서만 확인 |

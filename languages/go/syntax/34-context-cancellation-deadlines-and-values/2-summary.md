@@ -1,9 +1,9 @@
 # go/syntax/34 — ★ `context`: 취소·데드라인·값 — 정리 (힌트)
 
-★★★ **본체는 넷째 창이다** — 「**취소 전파 나무의 노드마다 `Done` 을 받았나를 참거짓으로 찍는 로그**」.
-**누가 먼저 받나**(도착 순서)는 실행마다 흔들린다 — 그래서 순서는 「**두 가지 이상 나왔나**」 로만 적고,
+★★★ **핵심은 넷째 창이다** — 「**취소 전파 나무의 노드마다 `Done` 을 받았나를 참거짓으로 찍는 로그**」.
+**누가 먼저 받나**(도착 순서)는 실행마다 달라진다 — 그래서 순서는 「**두 가지 이상 나왔나**」 로만 적고,
 「**누가 받았나 / 안 받았나**」 를 근거로 쓴다. 부모를 끊으면 **7 / 7**, 자식 하나를 끊으면 **2 / 7**((1)절).
-★★ 그 짝으로 「**`go vet lostcancel` 탐침 11개 중 몇 개가 답했나**」((5)절 — 규칙 18-A)와 「**`stdversion` 이 판마다 말했나**」((6)절 — `go.mod` 판 격자).
+★★ 그 짝으로 「**`go vet lostcancel` probe 11개 중 몇 개가 답했나**」((5)절 — 규칙 18-A)와 「**`stdversion` 이 판마다 말했나**」((6)절 — `go.mod` 판 격자).
 
 ★★★ **이 주제의 경계** — 데드라인 전파의 **설계**(타임아웃 대 데드라인 · 진입점 → 작업 → DB → 외부 연결 → 큐 · 취소가 닿지 않는 곳)는
 [`../../../../cs/ops-patterns/deadline-propagation/`](../../../../cs/ops-patterns/deadline-propagation/)가 정본이다. **그쪽은 「무엇을 어디까지 넘기나」의 설계까지**, 여기는 **`context` 타입의 API·관례·함정부터.**
@@ -16,7 +16,7 @@
 | **명세 보장** | Go 명세가 약속한 것 | ★ **명세에는 `context` 가 없다** — 표준 라이브러리다. 명세에서 오는 것은 「`Done()` 은 채널이고 **닫힌 채널은 모든 받는 쪽을 깨운다**」([29번 주제](../29-channels-buffering-direction-close-range-and-nil/)) 뿐이다 |
 | **표준 라이브러리 계약** | `context` 문서가 약속한 것 | ★★★ 「**When a Context is canceled, all Contexts derived from it are also canceled**」 · 「**Failing to call the CancelFunc leaks the child**」 · ★★★ 「**Do not store Contexts inside a struct type**」·「**first parameter**」 · 키는 **내장 타입이 아니게** |
 | **구현·도구** | `vet`·런타임이 한 것 | ★★ **`lostcancel` 은 `vet` 의 휴리스틱**(11 중 5) · **`stdversion` 은 `go 1.21` 미만 모듈에 침묵** · `key is not comparable` 패닉 |
-| **이 판의 관찰** | go1.27.1·linux/amd64 에서 이번에 본 것 | 나무의 참거짓 · 도착 순서의 가짓수 |
+| **이 버전의 관찰** | go1.27.1·linux/amd64 에서 이번에 본 것 | 나무의 참거짓 · 도착 순서의 가짓수 |
 
 ★★★ **선을 긋는다** — 「부모가 취소되면 자식이 취소된다」는 **문서의 계약**이다.
 「**자식이 취소돼도 부모는 그대로**」는 그 계약의 **방향**이다 — 취소는 **아래로만** 흐른다((1)절의 `2 / 7`).
@@ -47,14 +47,14 @@ go1.21.txt:10:pkg context, func WithTimeoutCause(Context, time.Duration, error) 
 (exit 0)
 ```
 
-## 흔들리는 칸 / 안 흔들리는 칸
+## 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| **흔들린다(그래서 안 실었다)** | ★★★ **`Done` 이 도착한 순서** | 고루틴 스케줄링 — 200판을 돌려 「**두 가지 이상 나왔나 : 예**」 만 실었다(탐색 실행에서 50판 중 49가지) |
-| 안 흔들린다 | ★★★ **노드마다 `Done 받았나=true/false` · `Err` · `7 / 7` · `2 / 7`** | 취소가 번지는 **범위**는 나무 모양이 정한다 |
-| 안 흔들린다 | ★★★ **`lostcancel` 탐침 `답한 탐침 5 / 11`** · `vet` 문장 · `파일:줄:칸` | 정적 분석 |
-| 안 흔들린다 | `vet 이 말한 판 2 / 5` · `Err` 문구 · `Cause` · 종료 코드 | |
+| **실행마다 달라진다(그래서 안 실었다)** | ★★★ **`Done` 이 도착한 순서** | 고루틴 스케줄링 — 200판을 돌려 「**두 가지 이상 나왔나 : 예**」 만 실었다(탐색 실행에서 50판 중 49가지) |
+| 달라지지 않는다 | ★★★ **노드마다 `Done 받았나=true/false` · `Err` · `7 / 7` · `2 / 7`** | 취소가 번지는 **범위**는 나무 모양이 정한다 |
+| 달라지지 않는다 | ★★★ **`lostcancel` probe `답한 탐침 5 / 11`** · `vet` 문장 · `파일:줄:칸` | 정적 분석 |
+| 달라지지 않는다 | `vet 이 말한 판 2 / 5` · `Err` 문구 · `Cause` · 종료 코드 | |
 
 ★ 정규화 규칙은 **기본 넷**만 썼다.
 
@@ -69,7 +69,7 @@ go1.21.txt:10:pkg context, func WithTimeoutCause(Context, time.Duration, error) 
 |---|---|
 | 사장의 「접어」가 아래로 전달 | ★★★ **부모 `cancel()` → 파생된 모든 `Context` 의 `Done` 이 닫힌다**((1)절 `7 / 7`) |
 | 과장이 접어도 사장은 계속 | ★★★ **자식 `cancel()` 은 부모·형제를 건드리지 않는다**((1)절 `2 / 7`) |
-| 누가 먼저 소식을 듣나 | ★ **도착 순서는 흔들린다** — 「다 들었나」만 믿는다 |
+| 누가 먼저 소식을 듣나 | ★ **도착 순서는 실행마다 달라진다** — 「다 들었나」만 믿는다 |
 | 「시간 다 됐다」와 「그만둬」 | ★★ **`DeadlineExceeded`** 대 **`Canceled`**((2)절) |
 | 왜 접었는지 **사유서** | ★★ **`WithCancelCause`·`Cause`(1.20)**((3)절) |
 | 지시를 받아 놓고 **서류 정리를 안 함** | ★★★ **`cancel` 을 안 부르면 샌다** — `vet lostcancel`((5)절) |
@@ -108,18 +108,18 @@ go1.21.txt:10:pkg context, func WithTimeoutCause(Context, time.Duration, error) 
 
 ## 동작 방식
 
-### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「부적용인 창」
+### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「해당 없는 창」
 
 | 창 | 무엇을 보여 주나 | 어디서 왔나 |
 |---|---|---|
-| ★★★ **나무 노드별 `Done` 참거짓 로그** | 취소가 **어디까지** 번지나 | ★ 본체 창 |
-| ★★ **도착 순서의 `sort -u` 가짓수** | 순서가 **흔들린다는 사실** 자체 | 규칙 11 |
-| ★★★ **`vet lostcancel` × 탐침 11개** | `cancel` 누락을 **어디까지** 잡나 | 규칙 18-A |
+| ★★★ **나무 노드별 `Done` 참거짓 로그** | 취소가 **어디까지** 번지나 | ★ 핵심 창 |
+| ★★ **도착 순서의 `sort -u` 가짓수** | 순서가 **실행마다 달라진다는 사실** 자체 | 규칙 11 |
+| ★★★ **`vet lostcancel` × probe 11개** | `cancel` 누락을 **어디까지** 잡나 | 규칙 18-A |
 | ★★ **`vet stdversion` × `go.mod` 판 5개** | 새 API 를 **옛 판 모듈**에서 쓰면 누가 말하나 | [24번 주제](../24-error-wrapping-and-errors-is-as-join/)의 `api/` 방식 + 판 격자 |
 | ★★ **다중 패키지 모듈** | 문자열 키가 **패키지 사이에서** 부딪히는 것 | (4)절 |
 | ★ **`go doc` 원문** | 관례(첫 인자 · 구조체 금지 · 키 타입) | 이 툴체인 |
-| **부적용 — `-race`** | ★ 나무 블록은 `-race` 빌드로 돌렸고 보고 0 줄이다 — 그러나 이 주제의 질문(「누가 받나」)은 경쟁이 아니다 | [35번 주제](../35-data-races-and-the-race-detector/) |
-| **부적용 — 시간** | 취소 전파가 **몇 µs 걸리나**는 안 쟀다 | — |
+| **해당 없음 — `-race`** | ★ 나무 블록은 `-race` 빌드로 돌렸고 보고 0 줄이다 — 그러나 이 주제의 질문(「누가 받나」)은 경쟁이 아니다 | [35번 주제](../35-data-races-and-the-race-detector/) |
+| **해당 없음 — 시간** | 취소 전파가 **몇 µs 걸리나**는 안 쟀다 | — |
 | **못 잰 것 — 외부 린터** | ★ `staticcheck`·`golangci-lint` 는 **이 머신에 없다**(아래 판별 블록) — 받지 않았다. **`go vet` 은 침묵**했다((4)절) | 규칙 26 |
 
 ```text
@@ -397,7 +397,7 @@ collect:
 (exit 0)
 ```
 
-- ★★★ **「도착 순서가 두 가지 이상 나왔나 : 예」 · 「모든 판이 일곱 노드를 다 담았나 : 예」.** 순서는 흔들리고, **「다 받았다」는 안 흔들린다.**
+- ★★★ **「도착 순서가 두 가지 이상 나왔나 : 예」 · 「모든 판이 일곱 노드를 다 담았나 : 예」.** 순서는 흔들리고, **「다 받았다」는 달라지지 않는다.**
   ★ 그래서 「부모가 먼저 받고 자식이 나중에 받는다」 같은 **순서 가정 위에 코드를 세우면 안 된다.**
 
 ```text
@@ -750,7 +750,7 @@ vet exit=0
 - ★★★ **`문자열 키 — authstr.User: "req-42" ok=true`** — 인증 패키지는 `"alice"` 를 넣었는데 **추적 패키지의 `"req-42"` 가 나왔다.** 뒤에 넣은 `WithValue` 가 같은 키를 **가렸다.**
   ★★★ **`ok=true`** 다 — 타입도 `string` 으로 같아서 **아무 에러도 없다.** 틀린 사용자로 **조용히** 진행된다.
 - ★★★ **`비공개 타입 키 — authtyp.User: "alice" ok=true`** — `type userKey struct{}` 는 **그 패키지 밖에서 만들 수 없는** 키다. 다른 패키지가 같은 키를 **원리상** 못 쓴다.
-- ★★ **`vet exit=0`** — `go vet` 은 문자열 키에 **침묵**했다(탐침 1, 답 0 — 규칙 18-A).
+- ★★ **`vet exit=0`** — `go vet` 은 문자열 키에 **침묵**했다(probe 1, 답 0 — 규칙 18-A).
 - ★ 문서가 이 모든 것을 말한다:
 
 ```text
@@ -818,7 +818,7 @@ recover: key is not comparable
 
 비용 — 없다.
 
-### (5) ★★★ `cancel` 을 안 부르면 — `vet lostcancel` 탐침 11개
+### (5) ★★★ `cancel` 을 안 부르면 — `vet lostcancel` probe 11개
 
 문서가 먼저 말한다:
 
@@ -849,7 +849,7 @@ you are unsure about which Context to use.
 ```
 
 - ★★★ 「**Failing to call the CancelFunc leaks the child and its children until the parent is canceled. The go vet tool checks that CancelFuncs are used on all control-flow paths.**」
-- ★★★ 「**Do not store Contexts inside a struct type; instead, pass a Context explicitly to each function that needs it.**」 · 「**The Context should be the first parameter, typically named ctx**」 — **관례**다. ★ 이 둘을 **검사하는 도구는 이 판 `vet` 에 없다**(`go tool vet help` 목록에 해당 분석기가 없다 — [32번 주제](../32-sync-mutex-rwmutex-waitgroup-once/)의 목록 블록 참고). **문서의 관례를 지키는 것은 사람**이다.
+- ★★★ 「**Do not store Contexts inside a struct type; instead, pass a Context explicitly to each function that needs it.**」 · 「**The Context should be the first parameter, typically named ctx**」 — **관례**다. ★ 이 둘을 **검사하는 도구는 이 버전 `vet` 에 없다**(`go tool vet help` 목록에 해당 분석기가 없다 — [32번 주제](../32-sync-mutex-rwmutex-waitgroup-once/)의 목록 블록 참고). **문서의 관례를 지키는 것은 사람**이다.
 
 그러면 `vet` 은 `cancel` 누락을 **어디까지** 잡나:
 
@@ -1092,7 +1092,7 @@ p11 (줄 81) : 침묵
 
 ### (6) ★★ 판 경계 — `api/go1NN.txt` 와 `go.mod` 가 막아 주나
 
-| API | 판 | 근거(「이 판」 절 블록) |
+| API | 판 | 근거(「이 버전」 절 블록) |
 |---|---|---|
 | `Background`·`TODO`·`WithCancel`·`WithDeadline`·`WithTimeout`·`WithValue` | **1.7** | `go1.7.txt:6-11` |
 | **`WithCancelCause`·`Cause`** | **1.20** | `go1.20.txt:6-7` |
@@ -1222,7 +1222,7 @@ func main() {
 규칙 불릿.
 
 - ★★★ **`ctx context.Context` 는 첫 인자, 이름은 `ctx`** — 문서의 관례.
-- ★★★ **구조체 필드에 넣지 않는다** — 함수마다 넘긴다(문서). 이 판 `vet` 은 **검사하지 않는다.**
+- ★★★ **구조체 필드에 넣지 않는다** — 함수마다 넘긴다(문서). 이 버전 `vet` 은 **검사하지 않는다.**
 - ★★★ **`WithCancel`·`WithTimeout`·`WithDeadline` 을 만들면 바로 다음 줄에 `defer cancel()`** — 끝난 뒤 불러도 `Err` 는 안 바뀐다((2)절 ④).
 - ★★ **취소는 아래로만** — 자식 `cancel()` 로 부모를 멈출 수 없다.
 - ★★ **`Err` 는 `Canceled`·`DeadlineExceeded` 둘뿐** — 사유는 **`Cause`**(1.20).
@@ -1239,7 +1239,7 @@ func main() {
 | 두 패키지가 문자열 키 `"id"` | ★★★ **아무도 안 잡는다**(`vet` 침묵, `ok=true`) | (4)절 |
 | 비교할 수 없는 키 | 실행 — `panic: key is not comparable` | (4)절 |
 | `go 1.20` 모듈에서 1.21 API | ★★ **아무도 안 잡는다**(빌드 통과 · `stdversion` 은 1.21 미만에 침묵) | (6)절 |
-| 구조체에 `ctx` 저장 | 이 판 `vet` 에 분석기 없음 — **문서의 관례** | (5)절 |
+| 구조체에 `ctx` 저장 | 이 버전 `vet` 에 분석기 없음 — **문서의 관례** | (5)절 |
 
 ## 어디서 틀리나
 
@@ -1283,7 +1283,7 @@ func main() {
 | ★★★ **첫 인자 · 구조체 금지 · 키 타입** | **문서의 관례**(도구 없음) | (4)·(5)절 |
 | ★★ **`lostcancel` 11 중 5 · `stdversion` 의 1.21 미만 침묵** | **도구(`vet`)의 휴리스틱·정책** | (5)·(6)절 |
 | `key is not comparable` 패닉 | **표준 라이브러리 구현** | (4)절 |
-| `Done` 도착 순서 | ★ **흔들린다 — 약속 없음** | (1)절 |
+| `Done` 도착 순서 | ★ **실행마다 달라진다 — 약속 없음** | (1)절 |
 
 ## 언제 쓰고 언제 안 쓰나
 
@@ -1300,7 +1300,7 @@ func main() {
 ## 핵심 문장
 
 - ★★★ **부모를 취소하면 7 / 7, 자식 하나를 취소하면 2 / 7** — 취소는 **아래로만** 흐르고, `WithValue` 노드도 그대로 전한다.
-- ★★★ **도착 순서는 흔들린다**(200판에서 두 가지 이상) — 근거는 「**다 받았나**」 다.
+- ★★★ **도착 순서는 실행마다 달라진다**(200판에서 두 가지 이상) — 근거는 「**다 받았나**」 다.
 - ★★ **시간 초과는 `DeadlineExceeded`, 취소는 `Canceled`** — 끝난 뒤 `cancel()` 해도 첫 원인이 남는다. **자식 데드라인은 부모를 못 넘는다.**
 - ★★ **1.20 `Cause`, 1.21 `AfterFunc`·`WithoutCancel`** — `WithoutCancel` 은 취소·데드라인을 끊고 **값만** 남긴다.
 - ★★★ **`vet lostcancel` 은 11 중 5** — **`_ = cancel` 을 놓친다.** 구조체 금지·첫 인자는 **도구가 없는 관례**다.
@@ -1334,7 +1334,7 @@ func main() {
 
 ## 더 들어가면
 
-- ★ **`net/http` 가 연결이 끊기면 `Request.Context()` 를 취소하는 것**은 [ops-patterns 정본](../../../../cs/ops-patterns/deadline-propagation/) 「2. 고아 작업」 이 인용한다 — 여기서는 **안 던졌다.**
+- ★ **`net/http` 가 연결이 끊기면 `Request.Context()` 를 취소하는 것**은 [ops-patterns 정본](../../../../cs/ops-patterns/deadline-propagation/) 「2. 고아 작업」 이 인용한다 — 여기서는 **실행하지 않았다.**
 - ★ 문서가 가리키는 블로그 글(context-and-structs)은 **안 열었다.**
 - ★ 취소 전파가 **자식 수에 따라 어떻게 비용이 드나**(구현 — 자식 맵)는 **안 열었다.**
 - ★ `staticcheck` 등 **외부 린터**가 문자열 키를 잡는지는 **이 머신에서 확인 못 했다.**
@@ -1343,6 +1343,6 @@ func main() {
 
 **기준 소스** — [`context`](https://pkg.go.dev/context) 문서 · [`go vet` 의 `lostcancel`·`stdversion` 분석기](https://pkg.go.dev/cmd/vet).
 문서·`api/go1NN.txt`·분석기 소스는 **이 툴체인의 `$(go env GOROOT)` 에서 직접 떴다.** 문서가 가리키는 블로그 글(context-and-structs)은 **안 열었다.**\
-**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다.
+**실행 검증** — 이 문서의 출력은 전부 「이 버전」 절의 버전에서 실제로 돌려 **파일로 캡처한 것**이다.
 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
 ★★ **버전** — `context` 패키지가 **1.7** · `WithCancelCause`·`Cause` 가 **1.20** · `AfterFunc`·`WithoutCancel`·`WithDeadlineCause`·`WithTimeoutCause` 가 **1.21**((6)절 판 표 — `api/go1NN.txt` 에서 뗐다).

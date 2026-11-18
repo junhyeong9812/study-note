@@ -29,7 +29,7 @@
 | (d) | `Ex::greet` | 3. 안 묶인 인스턴스 | `BiFunction<Ex,String,String>` — `(Ex, String) -> String` |
 | (e) | `ArrayList::new` | 4. 생성자 | `Supplier<ArrayList<String>>` — `() -> ArrayList` |
 
-**(b)와 (d)가 갈리는 이유**
+**(b)와 (d)가 달라지는 이유**
 
 - `greet` 의 선언은 `String greet(String who)` — **인자 하나**다.
 - (b)는 **`me` 라는 수신 객체가 이미 정해져 있다.** 그래서 인자가 선언 그대로 하나다.

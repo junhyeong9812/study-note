@@ -4,7 +4,7 @@
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
 
-### 1. 메시지는 같고 `Is` 가 갈린다 · 사슬은 다섯 층이다
+### 1. 메시지는 같고 `Is` 가 달라진다 · 사슬은 다섯 층이다
 
 **출력**
 
@@ -91,7 +91,7 @@ func sqlOf(q *QueryErr) string {
 **왜 그런가**
 
 - ★★★ **메시지가 한 글자도 같다**(`true`).
-- ★★★ **`%T` 가 갈린다** — **`*fmt.wrapError`** 대 **`*errors.errorString`**.
+- ★★★ **`%T` 가 달라진다** — **`*fmt.wrapError`** 대 **`*errors.errorString`**.
   `errors.Unwrap` 이 **속 오류** 대 **`<nil>`** 이다.
   ★ `%w` 판만 **링크**를 들고 있다.
 - **`errors.Is`** 가 **`true` 대 `false`**, **`errors.As`** 도 마찬가지다.
@@ -331,7 +331,7 @@ func main() {
   미리 넣어 둔 `{-1, -1}` 이 그대로 남았다.
   ★ 그래서 **`ok` 를 안 보고 대상만 보면 틀린다.**
 
-### 3. 대상이 `*T` 면 `**T` 이고, `go vet` 이 탐침 4개 중 3개를 잡는다
+### 3. 대상이 `*T` 면 `**T` 이고, `go vet` 이 probe 4개 중 3개를 잡는다
 
 **출력**
 
@@ -398,7 +398,7 @@ main.main()
   ★★ **「무조건 두 겹」이 아니다** — **오류 타입 자체가 포인터인가**가 정한다.
 - ★★★ **`&` 를 빠뜨리면 `panic: errors: target must be a non-nil pointer`**, 종료 코드 **2**.
   스택에 **`errors.As(...)` 프레임**과 **`errors/wrap.go:112`** 가 찍힌다.
-  ★ 그 줄의 괄호 안 주소는 **흔들리는 칸**이라 근거로 안 읽는다.
+  ★ 그 줄의 괄호 안 주소는 **실행마다 달라지는 항목**이라 근거로 안 읽는다.
 
 
 **출력**
@@ -448,9 +448,9 @@ t24probe.go:25:6: second argument to errors.As must be a non-nil pointer to eith
 
 - ★★★ **세 건**이 나오고 종료 코드 **1** 이다. 문장은 셋 다 같다 —
   **`second argument to errors.As must be a non-nil pointer to either a type that implements error, or to any interface type`**.
-- **안 잡힌 것은 탐침 4**(`errors.As(err, &d)` — 제대로 된 꼴)다. 조용한 것이 맞다.
+- **안 잡힌 것은 probe 4**(`errors.As(err, &d)` — 제대로 된 꼴)다. 조용한 것이 맞다.
 - ★★★ **[21번 주제](../21-nil-interface-vs-interface-holding-nil-pointer/) (6)절과 정확히 대비된다.**
-  거기서는 **탐침 8개 중 0개**였고 여기서는 **4개 중 3개**다.
+  거기서는 **probe 8개 중 0개**였고 여기서는 **4개 중 3개**다.
   ★ 이유는 **검사 가능성**이다 — `errors.As` 의 둘째 인자는
   **그 자리에서 타입만 보면** 옳고 그름이 정해지는데,
   `return p` 가 함정인지는 **`p` 가 실행 시점에 `nil` 인가**에 달려 있다.
@@ -1069,7 +1069,7 @@ func Unwrap(err error) error
 - ★★★ **`$(go env GOROOT)/api/go1NN.txt` 가 정본**이다. 릴리스 노트를 기억으로 적지 않아도 된다.
 - ★★ **`%w` 는 그 파일에 안 나온다** — **함수가 아니라 포맷 동사**라 API 목록의 대상이 아니다.
   `%w` 가 1.13, `%w` 여러 개가 1.20 이라는 것은 **`fmt` 문서 쪽**이다.
-  ★ 이 문서는 **`%w` 두 개가 이 판에서 도는 것**만 실행으로 보였다((5)번).
+  ★ 이 문서는 **`%w` 두 개가 이 버전에서 도는 것**만 실행으로 보였다((5)번).
 - ★★★ **그 파일이 못 담는 것** — 「**동작이 바뀐 판**」이다.
   예컨대 `errors.Is` 가 `Unwrap() []error` 를 보게 된 것은 **API 추가가 아니라 동작 변경**이라
   그 파일에 줄이 없다. ★ **창의 한계를 같이 적어 둔다.**
@@ -1108,7 +1108,7 @@ func Unwrap(err error) error
 
 - **Rust 의 `source()` 가 `Unwrap()`**, **`downcast_ref` 가 `errors.As`** 다.
   ★★ **구조가 거의 같다** — Rust 24편도 그렇게 적어 뒀다.
-  갈리는 것은 **Rust 가 열거형 오류에 `match` 로 완전성 검사를 얹을 수 있다**는 것이다
+  달라지는 것은 **Rust 가 열거형 오류에 `match` 로 완전성 검사를 얹을 수 있다**는 것이다
   (Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **24번**).
 - ★ **Rust std 에 `Join` 의 짝이 없다** — 여러 오류를 한 값으로 묶는 표준 함수가 없다.
 - **자바의 `getCause()` 가 `Unwrap()`** 이고,
@@ -1142,7 +1142,7 @@ func Unwrap(err error) error
 | ★★★ 사슬 걷기 (`t24b`) | 〃 | 1 | **5층** · `Unwrap` 없는 래퍼는 **1층** |
 | ★★ `Is` 대 `As` (`t24c`) | 〃 | 1 | 값이 필요한 자리만 `As` · 못 찾으면 대상 그대로 |
 | ★★ `As` 인자 (`t24d`) | 〃 | 1 | `panic: errors: target must be a non-nil pointer` · **exit 2** |
-| ★★★ `go vet` 탐침 (`t24probe`) | `go vet ./...` | 1 | **4개 중 3개** · exit 1 |
+| ★★★ `go vet` probe (`t24probe`) | `go vet ./...` | 1 | **4개 중 3개** · exit 1 |
 | ★★ 커스텀 `Is`/`As` (`t24e`) | `go build && ./prog` | 1 | 층 순서 로그 3줄 · 다른 포인터인데 `Is` 가 `true` |
 | ★★★ `%w` 여러 개 (`t24f`) | 〃 | 1 | `*fmt.wrapErrors` · `errors.Unwrap` 이 `nil` · 길이 2 |
 | ★★★ `Join` (`t24g`) | 〃 | 1 | 줄바꿈 **2개** · `nil` 이면 `nil` · **트리** |
@@ -1156,19 +1156,19 @@ func Unwrap(err error) error
 
 | 항목 | 무엇에 달렸나 |
 |---|---|
-| `errors.As` 패닉의 **스택 프레임 힙 주소** | **런타임** — 이 문서의 **유일한 흔들리는 칸** |
+| `errors.As` 패닉의 **스택 프레임 힙 주소** | **런타임** — 이 문서의 **유일한 실행마다 달라지는 항목** |
 | `*fmt.wrapError`·`*fmt.wrapErrors`·`*errors.joinError` 라는 **이름** | **표준 라이브러리 내부** — 기대지 마라 |
 | `errors/wrap.go` 의 **줄 번호** | **이 툴체인 판** |
 | 패닉·`go vet` 의 **문구 자체** | **툴체인 판(go1.27.1)** |
-| ★★★ `-lang` 게이트가 이 API 들을 **안 막는 것** | **도구(구현)** — 언어 기능과 갈리는 자리 |
+| ★★★ `-lang` 게이트가 이 API 들을 **안 막는 것** | **도구(구현)** — 언어 기능과 달라지는 자리 |
 | `api/*.txt` 가 **`%w` 를 안 담는 것** | **그 파일의 성질** — 포맷 동사는 대상이 아니다 |
 | `api/*.txt` 가 **동작 변경을 안 담는 것** | 〃 |
 | `syscall.Errno` 가 `Is` 를 갖고 있는 것 | **표준 라이브러리 계약** |
 | `Is`/`As` 의 **비용** | ★ **안 쟀다**([목록의 **50번 주제**](../50-benchmarks-testing-b-and-reading-profiles/)) |
-| `errors.ErrUnsupported`(1.21) | ★ **안 던졌다** |
+| `errors.ErrUnsupported`(1.21) | ★ **실행하지 않았다** |
 | 오류에 **스택 트레이스**를 붙이는 외부 패키지 | ★ **안 던졌다** — 이 머신에 없다 |
-| `Is`/`As` 가 **순환 참조**를 만나면 | ★ **안 던졌다** |
-| `%w` 와 다른 동사를 섞을 때의 인자 순서 | ★ **안 던졌다**([목록의 **42번 주제**](../42-fmt-verbs-stringer-and-errorf/)) |
+| `Is`/`As` 가 **순환 참조**를 만나면 | ★ **실행하지 않았다** |
+| `%w` 와 다른 동사를 섞을 때의 인자 순서 | ★ **실행하지 않았다**([목록의 **42번 주제**](../42-fmt-verbs-stringer-and-errorf/)) |
 
 ★ **다시 찍는 법** — `capture.sh <디렉토리>` 를 그대로 돌리고 `normalize-shaky.py` 로 견준다.
 
@@ -1177,7 +1177,7 @@ func Unwrap(err error) error
 이 파일의 모든 출력은 **`go version go1.27.1 linux/amd64`** 에서 실제로 돌려
 **파일로 캡처한 것**이다. 소스 펜스도 같은 파일에서 떠 왔다 — 손으로 옮겨 적은 블록은 없다.\
 판 경계를 보이는 블록은 **`===== 소스: go.mod =====` 까지** 싣는다.
-★ **근거로 읽을 칸** — 사슬의 **층수·차례·각 층의 `%T`**, `Is`/`As`/`AsType` 의 참거짓,
+★ **근거로 읽을 항목** — 사슬의 **층수·차례·각 층의 `%T`**, `Is`/`As`/`AsType` 의 참거짓,
 패닉·`go vet` 의 **메시지 본문**, 종료 코드, `Join` 메시지의 **줄바꿈 개수**,
 `api/go1NN.txt` 의 줄 번호와 본문.
-**근거로 읽지 않을 칸** — `errors.As` 패닉 블록의 **스택 프레임 힙 주소**(이 문서의 유일한 흔들리는 칸).
+**근거로 읽지 않을 항목** — `errors.As` 패닉 블록의 **스택 프레임 힙 주소**(이 문서의 유일한 실행마다 달라지는 항목).

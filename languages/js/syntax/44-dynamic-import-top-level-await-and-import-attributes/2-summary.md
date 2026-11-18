@@ -208,7 +208,7 @@ gc():
 
 1. **`import()` 는 언제 상대 본문을 돌리나** — 정적 `import` 와 견주면? 같은 파일을 두 번, 이미 정적으로 가져온 파일을 또 부르면?
 2. **최상위 `await` 는 누구를 기다리게 하나** — 형제 모듈인가, 가져오는 쪽인가? 끝내 안 풀리면?
-3. **import attributes 는 세 판에서 어느 칸이 통과하고 어느 칸이 무엇으로 막히나** — `with` 대 `assert`, 속성 없음, 모르는 값·키, 이름 있는 가져오기? 그리고 실패한 `import()` 는 무엇으로 거부되나?
+3. **import attributes 는 세 버전에서 어느 칸이 통과하고 어느 칸이 무엇으로 막히나** — `with` 대 `assert`, 속성 없음, 모르는 값·키, 이름 있는 가져오기? 그리고 실패한 `import()` 는 무엇으로 거부되나?
 
 ## 동작 방식
 
@@ -471,7 +471,7 @@ throws44c.mjs: body runs
 
 ### (4) ★★★ import attributes 판 격자 — 12행 × 세 판
 
-**언제 쓰나** — JSON 파일을 모듈로 가져올 때 · 옛 코드의 `assert { … }` 를 옮길 때 · 여러 node 판과 브라우저를 함께 받아야 할 때.
+**언제 쓰나** — JSON 파일을 모듈로 가져올 때 · 옛 코드의 `assert { … }` 를 옮길 때 · 여러 node 버전과 브라우저를 함께 받아야 할 때.
 ★★★ 행마다 **새 디렉토리**에 `data.json`(`{"k": 1}`)·`code.mjs`·그 행의 `main.mjs` 를 쓰고 **이 node 로** 돌린다. Chrome 은 **같은 칸 디렉토리**의 `main.mjs` 를 `import()` 로 차례로 부른다.
 ★★ **두 행이 「같다」의 기준** — 둘 다 `ok` 이고 출력이 같거나, 둘 다 **같은 에러 이름**으로 막혔을 때다. **코드·문구·경고는 비교하지 않는다**(규칙 27 — 문구보다 칸).
 
@@ -625,13 +625,13 @@ rows where node20 and Chrome differ: 3 / 12
 rows where the three do not all agree: 8 / 12
 ```
 
-- ★★★ **마지막 네 줄 — 막힌 행 node 20 `7 / 12` · node 18 `10 / 12` · Chrome `9 / 12`, 세 판이 다 같지는 않은 행 `8 / 12`.** 세 판이 **다 같이 통과한 행은 하나도 없다**(행 1 `with` 는 node 18 이, 행 2 `assert` 는 Chrome 이 막았다). 다 같이 막힌 넷은 **속성 없음**(행 3·10) · **이름 있는 가져오기**(행 6) · **키 중복**(행 11)이다.
+- ★★★ **마지막 네 줄 — 막힌 행 node 20 `7 / 12` · node 18 `10 / 12` · Chrome `9 / 12`, 세 버전이 다 같지는 않은 행 `8 / 12`.** 세 버전이 **다 같이 통과한 행은 하나도 없다**(행 1 `with` 는 node 18 이, 행 2 `assert` 는 Chrome 이 막았다). 다 같이 막힌 넷은 **속성 없음**(행 3·10) · **이름 있는 가져오기**(행 6) · **키 중복**(행 11)이다.
 - ★★★ **`with` 대 `assert`(행 1·2 · 동적 8·9)** —
   node 20 은 **둘 다 통과**(`assert` 는 `V8: … 'assert' is deprecated in import statements …` 경고),
   node 18 은 **`with` 가 `SyntaxError 「Unexpected token 'with'」`, `assert` 만 통과**(`ExperimentalWarning: Importing JSON modules is an experimental feature …`),
   Chrome 151 은 **`with` 만 통과, `assert` 는 `SyntaxError 「Unexpected identifier 'assert'」`**.
   ★ 동적 쪽도 같은 방향이다 — node 18 은 `{ with: … }` 를 **못 읽고** 속성 없음으로 보아 `ERR_IMPORT_ASSERTION_TYPE_MISSING`(행 8), Chrome 은 `{ assert: … }` 를 **못 읽고** 같은 자리에서 막혔다(행 9).
-- ★★★ **속성 없이 JSON — 세 판 다 막았다**(행 3·10). node 는 **`ERR_IMPORT_ASSERTION_TYPE_MISSING`**(코드 이름에 아직 **ASSERTION** 이 남아 있다), Chrome 은 `TypeError`. 명세는 **막으라고 하지 않는다**(note — 「`type: "json"` 없이 지원하는 것을 금하지 않는다」) — **막는 것은 호스트의 선택**이다.
+- ★★★ **속성 없이 JSON — 세 버전 다 막았다**(행 3·10). node 는 **`ERR_IMPORT_ASSERTION_TYPE_MISSING`**(코드 이름에 아직 **ASSERTION** 이 남아 있다), Chrome 은 `TypeError`. 명세는 **막으라고 하지 않는다**(note — 「`type: "json"` 없이 지원하는 것을 금하지 않는다」) — **막는 것은 호스트의 선택**이다.
 - ★★ **모르는 값 `type: 'css'`(행 4)** — node 20 `ERR_IMPORT_ASSERTION_TYPE_UNSUPPORTED`, Chrome `TypeError`. Chrome 이 **무엇 때문에** 막았는지(값을 몰라서인지, JSON 파일을 그 값으로 받을 수 없어서인지)는 콘솔에만 있어 **못 쟀다**(「실행 환경」).
 - ★★ **모르는 키 `mode`(행 5)** — ★★★ **node 20 은 `TypeError ERR_IMPORT_ATTRIBUTE_UNSUPPORTED`, Chrome 은 `SyntaxError 「Invalid attribute key "mode".」`** — 명세의 `AllImportAttributesSupported` 가 거짓이면 「**SyntaxError**」다. Chrome 은 그 모양이고 node 20 은 **다른 이름**으로 막았다(node 가 키를 엔진에 「지원한다」고 넘긴 뒤 자기 적재기에서 거절하는 것으로 보인다 — ★ 이것은 **해석**이다. node 문서는 「`type` 만 받는다」까지 적는다).
 - ★★ **이름 있는 가져오기 `import { k }`(행 6)** — node 20 과 Chrome 은 `SyntaxError 「The requested module './data.json' does not provide an export named 'k'」`(42번의 「없는 이름」과 같은 문구) — **JSON 모듈의 내보내기는 `default` 하나**(`CreateDefaultExportSyntheticModule`). ★ node 18 도 `SyntaxError` 라 격자는 「같다」로 셌지만 **이유가 다르다**(`with` 를 못 읽었다) — **이름만 견주는 기준이 가리는 자리**다.
@@ -686,7 +686,7 @@ node 20 은 **경고와 함께** 받지만 **Chrome 151 은 `SyntaxError`** 다(
 
 ### (5) ★★ JSON 을 속성 없이 `import` 한다
 
-세 판 다 막았다 — node **`ERR_IMPORT_ASSERTION_TYPE_MISSING`**(동작 (4) 행 3·10). 명세가 금하지 않는데도 **호스트가** 막는다.
+세 버전 다 막았다 — node **`ERR_IMPORT_ASSERTION_TYPE_MISSING`**(동작 (4) 행 3·10). 명세가 금하지 않는데도 **호스트가** 막는다.
 
 ### (6) ★★ JSON 모듈에서 이름을 꺼낸다
 
@@ -712,11 +712,11 @@ node 20 은 **경고와 함께** 받지만 **Chrome 151 은 `SyntaxError`** 다(
 ### 호스트
 
 - ★★★ **어느 속성 키를 받나** — `HostGetSupportedImportAttributes`. node 는 **`type` 만**(문서).
-- ★★★ **속성 없는 JSON 을 막나** — 명세는 금하지 않는다. **세 판 다 막았다**(node `ERR_IMPORT_ASSERTION_TYPE_MISSING` · Chrome `TypeError`).
+- ★★★ **속성 없는 JSON 을 막나** — 명세는 금하지 않는다. **세 버전 다 막았다**(node `ERR_IMPORT_ASSERTION_TYPE_MISSING` · Chrome `TypeError`).
 - ★★ **모르는 `type`·모르는 키의 거절 모양** — node 20 은 `TypeError` + `ERR_…` 코드, Chrome 은 모르는 키에 `SyntaxError`(명세의 모양).
 - ★ **끝내 안 풀린 최상위 `await` 의 종료 코드 13** — node 의 것.
 
-### 구현(V8) · 이 판의 관찰
+### 구현(V8) · 이 버전의 관찰
 
 - ★★★ **`assert { … }` 를 받는 것** — 표준이 아니다. node 18(V8 10.2)·node 20(V8 11.3)은 받았고 **Chrome 151 은 버렸다** — 경고 문구가 「**support will be removed in a future version**」라고 스스로 적는다.
 - ★ node 의 에러 코드 이름 — `ASSERTION` 이 남은 `ERR_IMPORT_ASSERTION_TYPE_MISSING` 과 새 이름 `ERR_IMPORT_ATTRIBUTE_UNSUPPORTED` 가 **한 판에 섞여 있다.**
@@ -725,22 +725,22 @@ node 20 은 **경고와 함께** 받지만 **Chrome 151 은 `SyntaxError`** 다(
 
 - ✗ 「최상위 `await` 는 모듈 그래프 전체를 멈춘다」 → ○ 「**그 모듈을 가져오는 쪽만** — 형제는 먼저 돈다」
 - ✗ 「JSON 모듈은 ES2025 부터 표준이라 node 18 에서도 된다」 → ○ 「**node 18.19.1 은 `with` 를 파싱하지 못한다** — `assert` 로만 됐다」
-- ✗ 「`type: "json"` 을 빼면 명세 위반이다」 → ○ 「명세는 **빼도 금하지 않는다** — 막는 것은 **호스트**다(세 판 다 막았다)」
+- ✗ 「`type: "json"` 을 빼면 명세 위반이다」 → ○ 「명세는 **빼도 금하지 않는다** — 막는 것은 **호스트**다(세 버전 다 막았다)」
 - ✗ 「실패한 `import()` 는 다시 부르면 다시 시도된다」 → ○ 「**같은 에러로 거부**되고 본문은 안 돈다」
 
 ## 언제 쓰고 언제 안 쓰나
 
 - **`import()`** — 조건·사용 시점에 따라 모듈을 고를 때 · CommonJS 에서 ESM 을 쓸 때(43번). 결과가 **프라미스**라는 비용을 받아들인다.
 - **최상위 `await`** — 초기화가 **정말 비동기이고** 그 값을 쓰는 모듈이 **직접 가져올 때.** 옆 모듈이 기다려 주리라 기대하지 않는다.
-- **JSON 모듈** — node 20 · 브라우저 대상이면 **`with { type: "json" }`**. node 18 까지 받아야 하면 **`fs` 로 읽고 `JSON.parse`**(31번) 쪽이 판을 안 탄다 — `with` 도 `assert` 도 **한 벌로 세 판을 못 덮었다**(동작 (4)의 그림).
+- **JSON 모듈** — node 20 · 브라우저 대상이면 **`with { type: "json" }`**. node 18 까지 받아야 하면 **`fs` 로 읽고 `JSON.parse`**(31번) 쪽이 판을 안 탄다 — `with` 도 `assert` 도 **한 벌로 세 버전을 못 덮었다**(동작 (4)의 그림).
 - ★ **안 쓰는 자리** — `assert { … }` 새로 쓰기 · 실패한 `import()` 를 같은 지정자로 재시도하기 · 끝내 안 풀릴 수 있는 프라미스를 최상위에서 `await` 하기.
 
 ## 핵심 문장
 
 1. ★★★ **`import()` 는 부르는 순간** 적재한다 — 정적 `import` 의 본문은 `first line` 전에, `import()` 의 본문은 그 호출 뒤에 돌았다. 두 번 불러도 **본문 한 번 · 같은 이름공간**(프라미스는 매번 새것).
 2. ★★★ **최상위 `await` 는 가져오는 쪽만 세운다** — `tla(before) → plain → tla(after) → dep → main`. 끝내 안 풀리면 **`exit 13` · 경고 0 줄.**
-3. ★★★ import attributes 격자 — 막힌 행 node 20 `7 / 12` · node 18 `10 / 12` · Chrome `9 / 12`, **세 판이 다 같지는 않은 행 `8 / 12`**. `with` 는 node 18 이, `assert` 는 Chrome 이 막았다.
-4. ★★ **속성 없는 JSON 은 세 판 다 막았다** — 명세는 금하지 않으니 **호스트의 선택**이다. JSON 모듈의 내보내기는 **`default` 하나.**
+3. ★★★ import attributes 격자 — 막힌 행 node 20 `7 / 12` · node 18 `10 / 12` · Chrome `9 / 12`, **세 버전이 다 같지는 않은 행 `8 / 12`**. `with` 는 node 18 이, `assert` 는 Chrome 이 막았다.
+4. ★★ **속성 없는 JSON 은 세 버전 다 막았다** — 명세는 금하지 않으니 **호스트의 선택**이다. JSON 모듈의 내보내기는 **`default` 하나.**
 5. ★★ 평가에 실패한 모듈은 **실패한 채 남는다** — 다시 `import()` 해도 **같은 에러 객체**, 본문은 안 돈다.
 
 ## 관련 자료
@@ -769,8 +769,8 @@ node 20 은 **경고와 함께** 받지만 **Chrome 151 은 `SyntaxError`** 다(
 
 ## 실행 환경
 
-★★★ **이 주제의 본체는 ① 평가 순서 로그다** — 모듈 본문이 **언제** 도는지는 값으로 안 보인다. 본문 첫 줄에 로그를 심고 **줄의 순서**로 읽는다(동작 (1)·(2)·(3)).
-★★★ **import attributes 는 ② 판 격자로 본다** — 12행 × 세 판(node 20 · node 18 · Chrome 151)의 「**막힌 행 N / 12**」와 「**세 판이 다 같지는 않은 행 N / 12**」을 스크립트가 마지막 줄로 찍는다(동작 (4)).
+★★★ **이 주제의 핵심은 ① 평가 순서 로그다** — 모듈 본문이 **언제** 도는지는 값으로 안 보인다. 본문 첫 줄에 로그를 심고 **줄의 순서**로 읽는다(동작 (1)·(2)·(3)).
+★★★ **import attributes 는 ② 판 격자로 본다** — 12행 × 세 판(node 20 · node 18 · Chrome 151)의 「**막힌 행 N / 12**」와 「**세 버전이 다 같지는 않은 행 N / 12**」을 스크립트가 마지막 줄로 찍는다(동작 (4)).
 ★★ 보조로 **④ 예외의 이름 + 코드**(`ERR_IMPORT_ASSERTION_TYPE_MISSING` · `SyntaxError 「Unexpected token 'with'」`)를 쓴다.
 
 **기준 소스** — 열어서 확인한 것만.
@@ -789,36 +789,36 @@ node 20 은 **경고와 함께** 받지만 **Chrome 151 은 `SyntaxError`** 다(
 
 | 무엇 | 판 | 이 머신에서 |
 |---|---|---|
-| 동적 `import()` | **ES2020** | 세 판 다(판별 블록 · 42번 동작 (5)) |
-| 최상위 `await` | **ES2022** | 세 판 다(동작 (2)) |
+| 동적 `import()` | **ES2020** | 세 버전 다(판별 블록 · 42번 동작 (5)) |
+| 최상위 `await` | **ES2022** | 세 버전 다(동작 (2)) |
 | import attributes `with { … }` · `import(…, { with })` | **ES2025** | ★★★ **node 20 · Chrome 151 은 받고, node 18.19.1 은 `SyntaxError`**(동작 (4)) |
-| JSON 모듈 | **ES2025** | 세 판 다 — 단 **node 18 은 `assert` 로만**, Chrome 은 **`with` 로만** |
+| JSON 모듈 | **ES2025** | 세 버전 다 — 단 **node 18 은 `assert` 로만**, Chrome 은 **`with` 로만** |
 | `assert { … }`(옛 import assertions) | ★ **표준에 없다** | node 18 · node 20 은 받고(경고) **Chrome 151 은 `SyntaxError`** |
 
-**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+**★★★ 이 주제가 쓰는 창 — 그리고 해당 없는 창**
 
 | 창 | 이 주제에서 무엇을 보나 |
 |---|---|
-| ★★★ **① 로그 심기**(본체) | 모듈 본문 첫 줄의 로그 — `import()` 가 부르는 순간 도는 것 · 두 번 불러도 한 번(동작 (1)) · 최상위 `await` 가 누구를 세우나(동작 (2)) · 실패한 모듈의 본문 횟수(동작 (3)) |
+| ★★★ **① 로그 심기**(핵심) | 모듈 본문 첫 줄의 로그 — `import()` 가 부르는 순간 도는 것 · 두 번 불러도 한 번(동작 (1)) · 최상위 `await` 가 누구를 세우나(동작 (2)) · 실패한 모듈의 본문 횟수(동작 (3)) |
 | ★★★ **② 판 격자** | import attributes 12행 × 세 판 — `blocked rows` · `differ` 셋(동작 (4)) |
 | ★★ **④ 예외의 이름 + 코드** | `ERR_IMPORT_ASSERTION_TYPE_MISSING` 등 node 의 코드 · Chrome 의 `SyntaxError` 문구(동작 (4)) · 거부된 `import()` 의 `constructor.name`(동작 (3)) |
 | ★ **종료 코드** | 끝내 안 풀리는 최상위 `await` — **`exit 13` · 표준 오류 0 줄**(동작 (2)) |
-| ★ **부적용 — ③ 브랜드 태그** | 이름공간 객체의 `[object Module]` 은 42번이 쟀다. 이 주제는 **같은 객체인가**(`===`)만 본다 |
-| ★ **못 잰 것 — Chrome 이 거부한 「이유」** | 격자의 Chrome 칸은 `import()` 의 거부만 받는다. 정적 `import` 가 막힌 칸은 문구가 **「어느 모듈을 못 가져왔나」까지만** 말하고(`Failed to fetch dynamically imported module: <origin>/…/main.mjs`), 이유(MIME 형식 불일치 등)는 **DevTools 콘솔로만** 간다 — 이 하네스는 콘솔을 못 읽는다. 그래서 Chrome 칸은 **에러 이름**만 근거로 쓴다 |
+| ★ **해당 없음 — ③ 브랜드 태그** | 이름공간 객체의 `[object Module]` 은 42번이 쟀다. 이 주제는 **같은 객체인가**(`===`)만 본다 |
+| ★ **못 잰 것 — Chrome 이 거부한 「이유」** | 격자의 Chrome 칸은 `import()` 의 거부만 받는다. 정적 `import` 가 막힌 항목은 문구가 **「어느 모듈을 못 가져왔나」까지만** 말하고(`Failed to fetch dynamically imported module: <origin>/…/main.mjs`), 이유(MIME 형식 불일치 등)는 **DevTools 콘솔로만** 간다 — 이 하네스는 콘솔을 못 읽는다. 그래서 Chrome 칸은 **에러 이름**만 근거로 쓴다 |
 | ★ **안 쟀다 — 시간·크기** | 동적 적재가 무엇을 아끼는지는 재지 않았다 |
 
-**★ 흔들리는 칸 / 안 흔들리는 칸**
+**★ 실행마다 달라지는 항목 / 달라지지 않는 항목**
 
-| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+| 실행마다 달라진다(근거로 쓰지 않는다) | 달라지지 않는다(근거로 쓴다) |
 |---|---|
 | 판별 블록의 판 문자열 · Chrome 문구의 **origin**(포트가 매번 바뀐다 — 블록 안에서 `<origin>` 으로 지웠다) · node 경고의 PID(블록 안에서 지웠다) | ★★★ 로그의 **줄 순서** · 격자의 모든 칸과 마지막 네 줄 · 에러의 **이름과 코드** · 종료 코드 |
-| ★ **이 주제의 탐침에는 재실행에서 흔들린 칸이 없다**(재대조 동일) | ★★ **판 사이의 차이**(`with` 대 `assert`)는 흔들림이 아니라 **판의 차이**다 — 그것이 격자의 절반이다 |
+| ★ **이 주제의 probe에는 재실행에서 달라진 항목이 없다**(재대조 동일) | ★★ **판 사이의 차이**(`with` 대 `assert`)는 실행 간 차이가 아니라 **판의 차이**다 — 그것이 격자의 절반이다 |
 
 **층** — `import()`·최상위 `await`·`with` 의 **문법과 평가 순서**는 **언어(ECMA-262)** 다. **어느 속성 키를 받나 · 모르는 `type` 값을 어떻게 거절하나 · JSON 을 속성 없이도 받나 · 파일을 읽어 오는 일**은 **호스트**다 — 명세가 `HostGetSupportedImportAttributes`·`HostLoadImportedModule` 로 문을 열어 두었다. `assert` 는 **어느 층에도 표준이 아니다** — 엔진(V8)이 옛 제안을 남겨 둔 것이다.
 
 **선행** — [42 — ESM 모듈](../42-esm-modules/2-summary.md)(직접 선행 — ★★★ **정적 `import` 의 연결 → 평가 · 깊이 우선 · 각 모듈은 한 번**이 거기 동작 (4)에 있다 · ★★ **`import()` 는 식이고 `Promise` 를 돌려주며, 두 번 불러도 같은 이름공간 객체 · 없는 파일은 node `ERR_MODULE_NOT_FOUND` · Chrome `TypeError`** 가 거기 동작 (5)에 있다 — 이 문서는 그것을 **다시 재지 않고** 「부르는 순간 · 실패 · 속성」 쪽만 넓힌다) ·
-[43 — CJS 와 ESM 상호운용](../43-cjs-and-esm-interop/2-summary.md)(★★★ **CommonJS 에서 `import()` 는 두 판 다 되고, 최상위 `await` 가 든 ESM 을 `require` 하면 node 18 `ERR_REQUIRE_ESM` · node 20 `ERR_REQUIRE_ASYNC_MODULE`** — 거기 동작 (1)) ·
+[43 — CJS 와 ESM 상호운용](../43-cjs-and-esm-interop/2-summary.md)(★★★ **CommonJS 에서 `import()` 는 두 버전 다 되고, 최상위 `await` 가 든 ESM 을 `require` 하면 node 18 `ERR_REQUIRE_ESM` · node 20 `ERR_REQUIRE_ASYNC_MODULE`** — 거기 동작 (1)) ·
 [39 — `async`/`await`](../39-async-await/2-summary.md)(★★ **최상위 `await` 는 ES 모듈에서만** — 거기 동작 (7)) ·
 [31 — JSON](../31-json/2-summary.md)(JSON 모듈의 값은 `ParseJSON` 의 결과다).
 
-★★ **경계** — README 44행의 「기존 주제」 칸은 비어 있다(`—`). 연혁(import assertions → attributes 로 이름과 키워드가 바뀐 경위)은 **이 목록의 몫이 아니다**(README 「뺀 것과 이유」의 「버전별 신기능 나열 — `history/js/`」). 여기는 **그 전환이 지금 세 판의 어느 칸에 남았나**부터다.
+★★ **경계** — README 44행의 「기존 주제」 칸은 비어 있다(`—`). 연혁(import assertions → attributes 로 이름과 키워드가 바뀐 경위)은 **이 목록의 몫이 아니다**(README 「뺀 것과 이유」의 「버전별 신기능 나열 — `history/js/`」). 여기는 **그 전환이 지금 세 버전의 어느 칸에 남았나**부터다.

@@ -102,7 +102,7 @@ compiled: 14 / 21
 **왜 그런가**
 
 - ★★★ SAM 변환은 **Java 인터페이스와 `fun interface`** 에만 걸린다. `KPlain` 은 모양(추상 메서드 하나)이 맞아도 **도장이 없어** 어느 모양으로도 안 된다 — SAM 생성자조차 「`does not have constructors`」.
-- ★★ `j2`/`k2` — 같은 `JHost` 의 Java 메서드인데 갈렸다. 변환 여부는 **받는 메서드가 아니라 인터페이스의 출신**이 정한다.
+- ★★ `j2`/`k2` — 같은 `JHost` 의 Java 메서드인데 달라졌다. 변환 여부는 **받는 메서드가 아니라 인터페이스의 출신**이 정한다.
 - ★★ 4·5·6(값·참조)과 7(변수 초기화)도 `JSam`·`KFun` 에서는 통과했다 — **기대 타입이 SAM 이면** 어디서나 변환된다.
 
 ### 2. ★★ `fnid.kt` — 경고 둘(「`check for instance is always 'true'.`」) · `A true true` · `B false false` · `C 2 2` · `D 11` / `JCall` — ★ **컴파일된다** · `A 20` · `B 30` · `C 40`
@@ -334,7 +334,7 @@ cells that differ from o36d: 9 / 12
 
 - ★★★ 도움말이 두 옵션을 **따로** 적는다 — 「code generation scheme for lambdas」와 「… for SAM conversions」. 격자가 그대로 보였다: `-Xlambdas=class` 아래에서도 `viaJava` 는 **`indy->JSam`** 이다.
 - ★★ `viaValue` 는 조각마다 다른 플래그를 따른다 — `$viaValue$f$1`(람다) 과 `$sam$JSam$0`(어댑터).
-- ★ 네 판의 출력은 `A 11 12 13 14` 로 같다 — 전략은 **값을 안 바꾼다.**
+- ★ 네 버전의 출력은 `A 11 12 13 14` 로 같다 — 전략은 **값을 안 바꾼다.**
 
 ### 5. ★ 막힌 넷 — `Two`·`Zero`(「`exactly one abstract function`」) · `WithProp`(「`cannot have abstract properties`」) · `Gen`(「`… abstract method with type parameters`」) · 통과 `Ok`
 
@@ -428,7 +428,7 @@ public final class Susp36Kt {
 - ★★ 별칭은 **새 타입이 아니다**([29번 주제](../29-type-aliases-and-nested-type-aliases/)) — 같은 모양의 다른 함수도 그 자리에 들어간다. `fun interface` 는 **`is Function1` 이 `false`** 인 별개 타입이라 섞이지 않는다(2번 `B`).
 - ★ 박싱 없는 원시 시그니처가 필요할 때도 `fun interface` 다(3번의 `apply:(I)I`). 반대로 **호출자가 아무 람다·함수 참조나** 넘기게 하려면 함수 타입이 가장 가볍다.
 
-### 11. **확인할 수 없다** — 이 판은 `-language-version 1.9` 이하를 「`is no longer supported`」로 거부한다 — ★ **못 잰 것**이다
+### 11. **확인할 수 없다** — 이 버전은 `-language-version 1.9` 이하를 「`is no longer supported`」로 거부한다 — ★ **못 잰 것**이다
 
 **출력**
 
@@ -444,7 +444,7 @@ warning: language version 2.0 is deprecated and its support will be removed in a
 **왜 그런가**
 
 - ★★ 「2.0 미만이면 `class`」는 **도움말의 말**이고, 그 판을 돌릴 수 없으니 **실측이 없다.** `fun interface` 의 1.4 경계도 같은 이유로 문서를 근거로 적었다.
-- ★ 이 판에서 잴 수 있는 것은 **2.0 이상에서 기본이 `indy`** 라는 것뿐이다(3번).
+- ★ 이 버전에서 잴 수 있는 것은 **2.0 이상에서 기본이 `indy`** 라는 것뿐이다(3번).
 
 ### 12. Kotlin 은 **함수 타입과 SAM 인터페이스 두 세계**를 가져서, 람다가 **어느 쪽으로 가나**를 컴파일러가 가려야 한다 — 그 가름이 1번 격자의 `KPlain` 줄이다
 
@@ -481,9 +481,9 @@ javac 21.0.5
 (exit 0)
 ```
 
-★ **흔들리는 칸과 안 흔들리는 칸**
+★ **실행마다 달라지는 항목과 달라지지 않는 항목**
 
-| 흔들린다 | 안 흔들린다 |
+| 실행마다 달라진다 | 달라지지 않는다 |
 |---|---|
 | **없다** — 람다 객체의 `toString()`·런타임 클래스 이름을 찍지 않았다 | 실행 출력 · `javap` 출력 · 격자 스크립트가 뽑은 명령 종류 |
 | | 진단의 **문구·`파일:줄:칸`·캐럿** · 「compiled 14 / 21」·「differ 9 / 12」 |
@@ -492,7 +492,7 @@ javac 21.0.5
 > 근거 — 캡처 스크립트를 처음부터 다시 돌려 **블록 전체를 바이트 단위로 대조**했다.
 >
 > 실측 — `capture.sh blocks` 와 `capture.sh blocks-recheck` 를 처음부터 따로 돌려 `normalize-shaky.py` 로 대조했다 —\
-> **블록 103개 · 동일 103 · 흔들린 칸 0 · ★고칠 것 0**(34\~37 네 주제를 한 캡처로 받았다). `diff -rq` 도 차이 0 이다.\
+> **블록 103개 · 동일 103 · 달라진 항목 0 · ★고칠 것 0**(34\~37 네 주제를 한 캡처로 받았다). `diff -rq` 도 차이 0 이다.\
 > ★ **정규화 규칙은 하나도 안 썼다** — 기본 넷(주소·PID·스레드 id·시간)에 걸리는 칸이 애초에 없었다.
 
 | 프로그램 | 무엇을 확인했나 | 돌린 방법 |
@@ -509,7 +509,7 @@ javac 21.0.5
 **구현 의존 항목** — 람다를 `invokedynamic` 으로 내리는 것 · ★★ **두 플래그가 따로 움직이는 것** · 값의 SAM 변환이 만드는 어댑터 · `suspend` 의 `Continuation` 매개변수 · 합성 클래스 이름 · 진단 문구 — 이 컴파일러·판의 산출물이다.\
 반면 **「함수 타입은 `FunctionN`」「SAM 변환은 Java 인터페이스·`fun interface` 에만」「`fun interface` 는 추상 함수 하나」** 는 **언어의 계약**이다.
 
-**★ 던져 봤더니 예상과 달랐던 것 — 세 건**
+**★ 실행해 봤더니 예상과 달랐던 것 — 세 건**
 
 1. ★★★ **`-Xlambdas=class` 가 SAM 람다를 움직이지 않았다**(4번) — 그것은 **`-Xsam-conversions`** 라는 **다른 옵션**의 몫이었다. 브리핑은 `-Xlambdas` 하나로 판 격자를 짰다.
 2. ★★ **`val x: JSam = { … }` 가 통과했다**(1번 `j7`·`f7`) — SAM 변환은 인자 자리만이 아니라 **기대 타입이 있는 자리** 어디서나 걸렸다.

@@ -69,7 +69,7 @@ JDK가 클래스 파일에서 annotation 객체를 만들고(1), `AnnotationsSca
 
 `AnnotationsScanner`는 전략에 따라 요소 계층을 순회하면서, 각 단계마다 그 요소의 선언
 annotation을 processor에게 넘긴다. 진입점은 `scan`(`AnnotationsScanner.java:79`)이고, 대상이
-`Class`인지 `Method`인지 그 외인지에 따라 세 갈래로 갈린다(`AnnotationsScanner.java:86-97`).
+`Class`인지 `Method`인지 그 외인지에 따라 세 갈래로 나뉜다(`AnnotationsScanner.java:86-97`).
 
 `Class`의 경우 전략별 분기는 `processClass`의 switch가 전부다(`AnnotationsScanner.java:99-108`).
 
@@ -328,7 +328,7 @@ aggregate 오름차순으로 흘려보내므로, "가장 가까운 계층의 것
 축이고, `SearchStrategy`가 동작을 지배한다. 둘째, 이 코드가 **다른 annotation 타입**(메타
 annotation, 별칭)을 보러 가는가? 그렇다면 매핑 축이고, `AnnotationTypeMappings`가 이미 계산해
 둔 배열을 읽을 뿐이다. 셋째, 대상이 `Class` 객체인가 `MetadataReader`인가? 전자면 리플렉션
-경로, 후자면 ASM 경로이며 — 6절대로 — 갈리는 것은 검색 축뿐이다.
+경로, 후자면 ASM 경로이며 — 6절대로 — 달라지는 것은 검색 축뿐이다.
 
 ## 10. 한 문장 요약
 

@@ -131,7 +131,7 @@
     both       width=200px
 ```
 
-- **에러도 경고도 없다.** `cssRules` 에 담겼고 선택자도 잡혔고 계산값도 나온다 — **창 ④(`getAnimations()`)의 `timeline`·`currentTime` 을 봐야** 갈린다.
+- **에러도 경고도 없다.** `cssRules` 에 담겼고 선택자도 잡혔고 계산값도 나온다 — **창 ④(`getAnimations()`)의 `timeline`·`currentTime` 을 봐야** 달라진다.
 
 비용 — 없음. 진단 비용만 든다.
 
@@ -356,7 +356,7 @@ view-timeline-inset: 50px;                       /* 이름 붙인 형태에서�
 timeline-scope: --sc;
 ```
 
-### 금지 사례 — 던져서 확인한 것
+### 금지 사례 — 실행해서 확인한 것
 
 ```css
 /* ✗ 익명 view() 에 view-timeline-inset — 조용히 무시된다 */
@@ -438,7 +438,7 @@ animation-timeline: --scrol;        /* --scroll 의 오타 */
 
 **대체 수단과의 관계** — `scroll` 이벤트나 `IntersectionObserver` 로 같은 연출을 만들 수 있고, 그쪽은 **모든 엔진에서 돈다.**\
 이 기능이 노리는 것은 **스타일 계산을 JS 왕복 없이 엔진 안에서 끝내는 것**이다.\
-다만 **이 문서에서는 그 비용 차이를 재지 않았다** — 「더 빠르다」고 적지 않는다. 갈리는 지점은 **구현 난이도**다:\
+다만 **이 문서에서는 그 비용 차이를 재지 않았다** — 「더 빠르다」고 적지 않는다. 달라지는 지점은 **구현 난이도**다:\
 되감기·구간 밖 처리·리사이즈 대응이 CSS 쪽에서는 공짜인데 JS 쪽에서는 전부 손으로 짜야 한다.
 
 ## 핵심 문장
@@ -458,7 +458,7 @@ animation-timeline: --scrol;        /* --scroll 의 오타 */
   여기는 **그 스크롤 위치를 타임라인으로 쓰는 것부터**.
 - [목록의 **53번 주제**](../53-keyframes-and-animation/)(`@keyframes`·`animation`) — **애니메이션의 정본.**\
   키프레임·`fill-mode`·`direction`·`iteration` 은 거기, 여기는 **`animation-timeline` 한 축**만.
-- [`../32-logical-properties-and-writing-mode/2-summary.md`](../32-logical-properties-and-writing-mode/2-summary.md) — `block`/`inline` 축과 `y`/`x` 축이 갈리는 이유.
+- [`../32-logical-properties-and-writing-mode/2-summary.md`](../32-logical-properties-and-writing-mode/2-summary.md) — `block`/`inline` 축과 `y`/`x` 축이 달라지는 이유.
 - [`../52-transition/2-summary.md`](../52-transition/2-summary.md) — 두 값 사이만 오가는 쪽. 스크롤에 묶을 수 없다.
 - [`../57-starting-style-and-entry-exit-transitions/2-summary.md`](../57-starting-style-and-entry-exit-transitions/2-summary.md) — 나타날 때의 전환. `view()` 와 목적이 겹치지만 방아쇠가 다르다.
 - [`../60-prefers-reduced-motion/2-summary.md`](../60-prefers-reduced-motion/2-summary.md) — **모션 접근성의 정본.**\

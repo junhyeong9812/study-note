@@ -92,7 +92,7 @@ Google Chrome 151.0.7922.173
 | ★ 새 집을 짓는 설계도 | 함수의 `.prototype` **프로퍼티** | `Ctor.prototype` |
 | ★ 지금 살고 있는 윗집 | 그 인스턴스의 `[[Prototype]]` | `Object.getPrototypeOf(inst)` |
 | 계단이 아예 없는 집 | `Object.create(null)` | `String(o)` 가 `TypeError` 로 막힌다 |
-| 몇 층에서 답이 나왔는지 세는 계기 | `Proxy` 트랩 로그 | 이 주제의 본체 |
+| 몇 층에서 답이 나왔는지 세는 계기 | `Proxy` 트랩 로그 | 이 주제의 핵심 |
 
 **똑같은 구조다** — 실무에서 이게 물리는 자리도 굳어 있다.
 「**프로토타입에 배열을 올려 뒀더니 인스턴스 전부가 같은 배열을 쓴다**」와
@@ -252,7 +252,7 @@ does class A have one?               true
   **점 접근도 같은 일을 한다**(01번의 임시 래핑). 그래서 `(1).toFixed` 가 어디서 오는지가 이 줄 하나로 끝난다.
 - ★★ **제너레이터와 async 함수는 칸이 하나 더 있다** —
   `GeneratorFunction.prototype -> Function.prototype -> ...`, `AsyncFunction.prototype -> Function.prototype -> ...` 이다.
-  평범한 함수와 화살표 함수는 **바로 `Function.prototype`** 이다. **네 가지가 여기서 갈린다.**
+  평범한 함수와 화살표 함수는 **바로 `Function.prototype`** 이다. **네 가지가 여기서 달라진다.**
 - ★★★ **`Object.create(null)` 줄은 `null` 한 글자다.** 칸이 하나도 없다. 동작 (4)의 주인공이 이 줄이다.
 - ★★ **`class B extends A` 는 체인을 두 줄 만든다.**
   `[1]` 에서 `new B` 의 체인이 `B.prototype -> A.prototype -> Object.prototype -> null` 이고,
@@ -394,7 +394,7 @@ base._v              base   leaf._v written   leaf.s written
 - ★★★ **로그 3줄이 「체인이 3칸」이라는 뜻은 아니다 — 계측한 칸이 셋일 뿐이다.**
   `C.toString` 이 `function` 으로 돌아온 것이 그 반증이다.
   `A` 의 타깃은 평범한 객체라 **그 위에 `Object.prototype` 이 더 있고**, `toString` 은 거기서 왔다.
-  ★ **침묵은 「안 갔다」가 아니라 「거기엔 탐침이 없다」** — 18-A 의 규칙을 이 주제가 그대로 겪는 자리다.
+  ★ **침묵은 「안 갔다」가 아니라 「거기엔 probe가 없다」** — 18-A 의 규칙을 이 주제가 그대로 겪는 자리다.
 - ★★ `[2]` **`in` 과 `Object.hasOwn` 은 다른 질문이다.**
   `'fromA' in C` 는 **`has` 트랩 3줄**을 남기고 `true` 를 답한다 — **체인을 끝까지 탄다.**
   `Object.hasOwn(C, 'fromA')` 는 **`gopd` 트랩 1줄**만 남기고 `false` 를 답한다 — **첫 칸만 본다.**
@@ -821,7 +821,7 @@ P.prototype.isPrototypeOf(q)            true
   ★★★ **공통점이 있다 — 넷 다 「객체에게 메서드를 부르는」 것이 아니라 「객체를 인자로 받는」 것**이다.
   `bare` 에 대해 **정적 함수는 되고 메서드 호출은 안 된다** — 이 한 문장이 `Object.create(null)` 을 다루는 규칙이다.
 - ★ **`console.log(bare)` 와 `util.inspect(bare)` 가 `[Object: null prototype] { k: 1 }` 로 찍는다.**
-  ★★ **이 접두는 Node 가 정한 표기**다 — ECMA-262 밖이다. 「흔들리는 칸」 표에 그래서 넣었다.
+  ★★ **이 접두는 Node 가 정한 표기**다 — ECMA-262 밖이다. 「실행마다 달라지는 항목」 표에 그래서 넣었다.
   다만 실무에서는 **로그에서 이것을 보는 순간 체인이 없다는 것을 알아채는** 신호라 값이 크다.
 
 #### `[2]` ★★★ `__proto__` 는 어디에 사는가
@@ -1101,7 +1101,7 @@ leaf.v through a Proxy with a get trap            from the trap
   값은 setter 가 `this._viaSetter` 로 옮겨 놓았고, `this` 가 수신자라 **`kid2._viaSetter`** 에 들어갔다
   (`accProto._viaSetter` 는 `undefined`).
   ★★★ **그리고 읽어 보면 `ACCESSOR on prototype` 이 돌아온다** — **쓴 값이 읽기로 안 돌아온다.**
-  getter 가 `_viaSetter` 를 안 보기 때문이다. **에러도 경고도 없는 조용한 어긋남**이라 실무에서 가장 나쁘다.
+  getter 가 `_viaSetter` 를 안 보기 때문이다. **에러도 경고도 없는 조용한 불일치**이라 실무에서 가장 나쁘다.
 - ★★★ **그래서 결론이 이 한 줄이다 — 「같은 집안인데 이기는 방향이 반대다.」**
 
 | 묻는 것 | 파이썬(29번) | JS(이 주제) | 근거 |
@@ -1123,7 +1123,7 @@ leaf.v through a Proxy with a get trap            from the trap
   (「뒤집는 플래그가 없다」는 출력 줄이 아니라 이 산문의 결론이다 — 보통의 `[[Get]]` 은 **첫 own 적중에서 돌아온다.**
   근거는 `leaf.v` 가 `own` 이라는 줄과 `[1]` 이다.)
 - ★★ `[3]` 이 **대조군**이다 — 프로토타입 쪽이 **평범한 데이터 프로퍼티**면 쓰기가 own 을 만들고
-  `dataProto.v` 는 그대로다. `[2]` 와 나란히 놓으면 **갈리는 것이 「접근자인가」 하나뿐**임이 보인다.
+  `dataProto.v` 는 그대로다. `[2]` 와 나란히 놓으면 **달라지는 것이 「접근자인가」 하나뿐**임이 보인다.
 - ★★ `[4]` **체인은 객체로 되어 있다**를 네 줄로 못 박는다.
   `getPrototypeOf(c1) === getPrototypeOf(c2)` 가 `true`(두 인스턴스가 **한 객체를 같이 본다**),
   `=== C.prototype` 이 `true`, **`=== C` 가 `false`** 다.
@@ -1158,11 +1158,11 @@ leaf.v through a Proxy with a get trap            from the trap
   15  Symbol.hasInstance overrides      true
 ```
 
-★★ **호스트가 정하는 칸이 하나도 없었다.** 15번의 다섯 줄이 전부 Node 쪽과 같다 —
+★★ **호스트가 정하는 항목이 하나도 없었다.** 15번의 다섯 줄이 전부 Node 쪽과 같다 —
 `new TypeError` 의 체인 `TypeError -> Error -> Object -> null` · `String(Object.create(null))` 의 `TypeError` ·
 쓰기가 own 을 만드는 것(`o/p/own:true`) · 체인 위 비쓰기에서의 `TypeError` · `Symbol.hasInstance` 의 `true`.
 ★ **예외 문구까지 같은 것은 둘 다 V8 이기 때문**이지 명세가 정한 것이 아니다.
-★★ 다만 **한 줄의 라벨이 거칠다** — 탐침의 이름이 `15 write does not walk` 인데,
+★★ 다만 **한 줄의 라벨이 거칠다** — probe의 이름이 `15 write does not walk` 인데,
 동작 (2)의 `[3]` 이 보인 정확한 사실은 「**탐색은 걷고 저장만 수신자에 내려앉는다**」이다.
 **라벨은 브리핑의 거친 요약이고 로그가 더 정확하다.**
 
@@ -1307,7 +1307,7 @@ leaf.v through a Proxy with a get trap            from the trap
 - **`in` 이 체인을 타고 `Object.hasOwn` 이 own 만 보는 것.**
 - **`class B extends A` 가 `B.prototype -> A.prototype` 과 `B -> A` 두 연결을 만드는 것.**
 
-### 엔진(V8) 구현 · 이 판의 관찰
+### 엔진(V8) 구현 · 이 버전의 관찰
 
 - **예외 문구 전부** — `Cannot assign to read only property 'v' of object '#<Object>'` ·
   `Cannot set property s of #<Object> which has only a getter` ·
@@ -1318,16 +1318,16 @@ leaf.v through a Proxy with a get trap            from the trap
   `Function has non-object prototype 'undefined' in instanceof check`.
   **종류(`TypeError`)만 명세가 정한다.**
 - **`GeneratorFunction`·`AsyncFunction` 이라는 이름이 `constructor.name` 으로 읽히는 것** —
-  그 내장 객체들은 전역에 노출되지 않는데 **이름은 그대로 읽힌다.** 이 판의 관찰로 적는다.
+  그 내장 객체들은 전역에 노출되지 않는데 **이름은 그대로 읽힌다.** 이 버전의 관찰로 적는다.
 - **`(anonymous [object Object])` 라는 표기는 우리 스크립트가 지은 것**이다. 엔진의 출력이 아니다.
-- **두 판(18·20)과 Chrome 151 이 이 주제에서 한 글자도 안 갈렸다** — 셋 다 V8 이기 때문이지 보장이 아니다.
+- **두 판(18·20)과 Chrome 151 이 이 주제에서 한 글자도 달라지지 않았다** — 셋 다 V8 이기 때문이지 보장이 아니다.
 
 ### 호스트가 정하는 것 — ECMA-262 밖
 
 - ★★ **`console.log(bare)` 와 `util.inspect(bare)` 가 찍는 `[Object: null prototype]` 접두** —
   **Node 의 표기**다. 브라우저 콘솔은 다르게 그린다.
-  ★ 그래도 **실무 가치가 큰 신호**라 본문에 살려 두되, 「흔들리는 칸」에 넣었다.
-- 그 밖에 **이 주제의 브라우저 대조에서 호스트가 정하는 칸은 0개**였다.
+  ★ 그래도 **실무 가치가 큰 신호**라 본문에 살려 두되, 「실행마다 달라지는 항목」에 넣었다.
+- 그 밖에 **이 주제의 브라우저 대조에서 호스트가 정하는 항목은 0개**였다.
 
 ### 그래서 이렇게 적으면 틀린다
 
@@ -1435,14 +1435,14 @@ leaf.v through a Proxy with a get trap            from the trap
   `Proxy` 의 `get` 트랩이 가장 가깝지만 **다른 객체**다.
   ② 파이썬의 `__slots__` 처럼 **칸 자체를 없애는 장치**도 JS 에는 없다.
   `Object.preventExtensions`·`seal`·`freeze` 는 **칸을 못 늘리게** 할 뿐 구조를 바꾸지 않는다(14번).
-  ★ **둘 다 이번에 안 돌려 봤다** — 대비축을 넓히려면 탐침이 더 필요하다.
+  ★ **둘 다 이번에 안 돌려 봤다** — 대비축을 넓히려면 probe가 더 필요하다.
 - **`class` 가 만드는 체인 두 줄은 16·17번의 출발점이다.**
   `B.prototype -> A.prototype`(인스턴스 메서드)와 `B -> A`(정적 멤버)를 갈라 두지 않으면
   「정적 메서드가 왜 상속되지?」에서 막힌다. 이 문서는 **그 두 줄이 있다는 것**까지만 책임진다.
 
 ## 실행 환경
 
-★★★ **이 주제의 본체는 ① 추상 연산에 로그 심기다.**
+★★★ **이 주제의 핵심은 ① 추상 연산에 로그 심기다.**
 프로퍼티 조회는 **어느 칸에서 답이 나와도 같은 값**을 내놓는다 — `C.fromA` 가 `'a'` 인 것은
 그 값이 **첫 칸에 있었는지 셋째 칸에 있었는지 한 글자도 말해 주지 않는다.**
 ★★★ **값으로는 원리상 못 가른다.** 그래서 체인의 **각 칸에 `Proxy` 를 씌워** 트랩 로그로 경로를 찍었다 —
@@ -1474,30 +1474,30 @@ Node 의 스택트레이스에는 **절대 경로**가 박혀 다른 머신에�
 **`Object.hasOwn` 은 ES2022**, **`__proto__`(접근자와 리터럴 문법 둘 다)는 Annex B** 다.
 ★ Annex B 는 **웹 호환을 위한 규범적 선택 사항**이지만 **모든 웹 엔진이 구현한다.**
 
-**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+**★★★ 이 주제가 쓰는 창 — 그리고 해당 없는 창**
 
 | 창 | 이 주제에서 무엇을 보나 |
 |---|---|
-| ★★★ **① 추상 연산에 로그 심기**(본체) | 체인의 각 칸을 `Proxy` 로 감싸 `get`·`set`·`has`·`gopd`·`getPrototypeOf` 트랩을 찍는다. **조회가 어디서 멈추나**는 **오직 이것으로만** 보인다 |
+| ★★★ **① 추상 연산에 로그 심기**(핵심) | 체인의 각 칸을 `Proxy` 로 감싸 `get`·`set`·`has`·`gopd`·`getPrototypeOf` 트랩을 찍는다. **조회가 어디서 멈추나**는 **오직 이것으로만** 보인다 |
 | ★★★ **② 전수 격자** | 체인 **19종** · 생성자 자신의 체인 **5종** · 「있나」를 묻는 뷰 **4종** · 프로토타입 쪽 프로퍼티 **3종**(데이터 / 접근자 / 비쓰기) |
 | ★★★ **③ 브랜드 태그** `Object.prototype.toString.call` | **창을 바꿔 물은 자리다**(제5의 상태) — `Object.create(null)` 은 `toString` 도 없고 `String()` 이 `TypeError` 라 **평소 창이 전부 닫힌다.** 브랜드 태그만 `[object Object]` 라고 답한다 |
 | ★★ **④ 예외의 `constructor.name` + `message`** | `TypeError` **여섯 종** — 비쓰기 · getter-only · 원시값 변환 · 프로토타입 인자 · `instanceof` 우변 두 가지 |
-| ★ **⑤ 두 판 대조기 + 브라우저** | 판이 갈린 칸 · 호스트가 정하는 칸 — **이 주제에서 갈린 블록 0개** |
-| ★ **부적용 — 진단의 `(행,열)`**(18-C) | 이 주제에는 **`SyntaxError` 가 한 줄도 없다.** 체인은 전부 런타임 의미라 파서가 볼 것이 없다 — **잴 것이 없다** |
+| ★ **⑤ 두 판 대조기 + 브라우저** | 판이 달라진 항목 · 호스트가 정하는 항목 — **이 주제에서 달라진 블록 0개** |
+| ★ **해당 없음 — 진단의 `(행,열)`**(18-C) | 이 주제에는 **`SyntaxError` 가 한 줄도 없다.** 체인은 전부 런타임 의미라 파서가 볼 것이 없다 — **잴 것이 없다** |
 | ★ **안 쟀다 — 성능** | ★★★ 「`setPrototypeOf` 가 느리다」·「체인이 길면 조회가 느리다」는 **흔한 말이지만 여기서 한 줄도 쓰지 않는다.** **안 쟀다** |
 | ★ **안 돌렸다 — 두 번 컴파일**(엄격/비엄격) | 모드가 답을 바꾸는 칸은 **체인 위의 실패한 쓰기** 두 줄뿐이고, 그 격자는 [14 — 프로퍼티 디스크립터와 동결](../14-property-descriptors-and-freezing/2-summary.md)의 `proto has non-writable a` 줄이 이미 갖고 있다 |
 
-**★ 흔들리는 칸 / 안 흔들리는 칸**
+**★ 실행마다 달라지는 항목 / 달라지지 않는 항목**
 
-| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+| 실행마다 달라진다(근거로 쓰지 않는다) | 달라지지 않는다(근거로 쓴다) |
 |---|---|
 | Node 스택트레이스의 **절대 경로** — 한 줄도 싣지 않았다 | ★★★ **트랩 로그의 개수와 순서** |
-| 예외 **문구**(판이 오르면 바뀐다) | ★★★ **예외의 종류** · **own 키 목록** |
+| 예외 **문구**(버전이 오르면 바뀐다) | ★★★ **예외의 종류** · **own 키 목록** |
 | 브라우저 UA 문자열의 뒷자리 | ★★★ **체인을 글자로 찍은 줄** · 격자의 `true`/`false` |
 | `console.log(bare)` 가 찍는 **표기 형식**(Node 의 `util.inspect` — 호스트가 정한다) | ★★ **브랜드 태그** `[object Object]`(명세가 정한다) |
 
-★★ **이 주제의 블록에는 주소도 시간도 난수도 한 곳도 안 찍힌다.** 같은 판에서 다시 돌리면 **한 글자도 안 변한다.**
-★★★ **두 판이 갈린 블록은 이 주제에 0개다**(전체 19블록 중 갈린 것은 14번 주제의 `toSorted` 한 블록뿐이다).
+★★ **이 주제의 블록에는 주소도 시간도 난수도 한 곳도 안 찍힌다.** 같은 버전에서 다시 돌리면 **한 글자도 안 변한다.**
+★★★ **두 버전이 달라진 블록은 이 주제에 0개다**(전체 19블록 중 달라진 것은 14번 주제의 `toSorted` 한 블록뿐이다).
 
 **선행** — [13 — 객체 리터럴과 프로퍼티](../13-object-literals-and-properties/2-summary.md) · [14 — 프로퍼티 디스크립터와 동결](../14-property-descriptors-and-freezing/2-summary.md) · [07 — `this` 바인딩 네 규칙](../07-this-binding-four-rules/2-summary.md) · [01 — 값의 종류와 `typeof`](../01-value-types-and-typeof/2-summary.md).
 ★★★ **07번이 이 주제의 setter 절을 떠받친다.** 체인 위의 setter 가 불릴 때 그 안의 `this` 는

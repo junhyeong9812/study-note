@@ -41,9 +41,9 @@
 > **`default_factory`** — `defaultdict(list)` 의 `list` 처럼, 없는 키에 넣을 값을 **만드는 호출 가능 객체**.\
 > 예: `defaultdict(int)` 는 없는 키에 `0` 을 넣는다.
 
-### ★★ 이 주제가 쓰는 창 / 부적용인 창
+### ★★ 이 주제가 쓰는 창 / 해당 없는 창
 
-**본체는 ① 「조회가 키를 만드나」 격자 창이다.** 조회 여덟 가지를 **새 `defaultdict` 마다** 던지고 **`len` 전→후 · factory 호출 수**를 찍어 **`len` 이 늘어난 칸을 스크립트가 센다.**
+**핵심은 ① 「조회가 키를 만드나」 격자 창이다.** 조회 여덟 가지를 **새 `defaultdict` 마다** 던지고 **`len` 전→후 · factory 호출 수**를 찍어 **`len` 이 늘어난 칸을 스크립트가 센다.**
 
 | 창 | 무엇을 말해 주나 | 못 보는 것 |
 |---|---|---|
@@ -51,10 +51,10 @@
 | ② ★★ **`dict` 대 `OrderedDict` 격자** | 3.7+ 에서도 **무엇이 아직 갈리나** | 재배열 비용 |
 | ③ ★★ **값 출력**(`Counter` 연산 · `ChainMap` 의 두 dict · `deque` 의 칸) | 연산이 **무엇을 남기나 · 어디에 쓰나** | — |
 | ④ ★ **문서 인용** | 복잡도 · 동률 순서 보장 | 이 머신의 실제 시간 |
-| ★ **부적용인 창** — 시간 · 메모리 | — | ★★★ **한 번도 재지 않았다.** 복잡도는 전부 ④ |
+| ★ **해당 없는 창** — 시간 · 메모리 | — | ★★★ **한 번도 재지 않았다.** 복잡도는 전부 ④ |
 
 ★★ **①의 둘째 열(factory 호출 수)이 이 주제의 네 번째 창이다.** `len` 만 보면 **`setdefault` 와 `d[k]` 가 같은 칸**(둘 다 `1 → 2`)으로 보인다.
-factory 호출 수를 같이 찍으면 **`setdefault` 는 factory 를 안 부르고 넣은 것**(`0`)이고 **`d[k]` 는 factory 를 불러 넣은 것**(`1`)이 갈린다.
+factory 호출 수를 같이 찍으면 **`setdefault` 는 factory 를 안 부르고 넣은 것**(`0`)이고 **`d[k]` 는 factory 를 불러 넣은 것**(`1`)이 달라진다.
 
 ## 이 주제가 답하려는 질문
 
@@ -63,7 +63,7 @@ factory 호출 수를 같이 찍으면 **`setdefault` 는 factory 를 안 부르
 3. **3.7+ 에서 `OrderedDict`·`ChainMap`·`deque` 는 왜 남아 있나** — 무엇이 갈리고, 복잡도는 **문서가** 무엇을 말하나.
 
 ★ 첫째가 이 주제의 인출 목표다.
-**「엿보는 것(`get`·`in`)과 여는 것(`[]`)을 가를 수 있는 것」** 이 아는 것과 들은 것의 경계다.
+**「엿보는 것(`get`·`in`)과 여는 것(`[]`)을 구분할 수 있는 것」** 이 아는 것과 들은 것의 경계다.
 
 ## 동작 방식
 
@@ -156,7 +156,7 @@ n['z'] -> KeyError: 'z'
   ★ 문서 — *"`__missing__()` is not called for any operations besides `__getitem__()`"*. **`d[...]` 로 읽는 모든 자리**가 `__getitem__` 이다.
 * ★★★ **`if d['z']: …` 와 `f'{d["z"]}'` 도 키를 만들었다** — 「검사만 했다」·「출력만 했다」가 **쓰기**였다. 결과는 `False`·`'0'` 으로 **그럴듯하다.**
 * ★★ **`d['z'] += 1`** — 읽기(`__getitem__` → factory → 넣기)와 쓰기가 **한 줄**에 있다. `defaultdict(int)` 로 세는 관용이 이것에 기댄다.
-* ★★ **`setdefault` 도 `1 → 2`** 인데 **factory 호출 `0`** — **인자로 준 `9` 를 넣었다.** `len` 창만으로는 이 둘이 안 갈린다(네 번째 창).
+* ★★ **`setdefault` 도 `1 → 2`** 인데 **factory 호출 `0`** — **인자로 준 `9` 를 넣었다.** `len` 창만으로는 이 둘이 안 달라진다(네 번째 창).
 * ★ **`get`·`in`·`pop(k, None)` 은 `1 → 1`** — `__missing__` 을 안 탄다. [12번](../12-dict-and-key-requirements/2-summary.md) 동작 6 이 `get`·`in` 을 먼저 보였다.
 * ★★ **`Counter` 는 같은 `c['z']` 가 `0` 인데 `len(c)` 가 `1` 그대로**다 — `Counter` 의 `__missing__` 은 **넣지 않고 `0` 을 돌려주기만** 한다.
   ★ 문서 — *"return a zero count for missing items instead of raising a KeyError"*. **같은 `[]` 가 서랍마다 다르게 구는 것**이다.
@@ -352,12 +352,12 @@ x | {'c': 3}                   | 'dict'                 | 'OrderedDict'
 
 그림 해설.
 
-* ★★★ **마지막 줄 — `갈린 칸 4 / 8`.** 갈린 넷은 **`==`(같은 종류끼리) · `move_to_end` · `popitem(last=False)` · `|` 의 결과 타입.**
+* ★★★ **마지막 줄 — `갈린 칸 4 / 8`.** 달라진 넷은 **`==`(같은 종류끼리) · `move_to_end` · `popitem(last=False)` · `|` 의 결과 타입.**
 * ★★★ **`OrderedDict` 끼리의 `==` 는 순서를 본다**(`False`), 그런데 **한쪽이 `dict` 면 안 본다**(`True`).
   ★ 문서 — *"Equality tests between OrderedDict objects and other Mapping objects are order-insensitive like regular dictionaries."*
 * ★★ **`move_to_end`** — `dict` 에는 **없다**. 문서는 `d[k] = d.pop(k)` 로 **맨 끝**은 흉내 낼 수 있지만 **맨 앞(`last=False`)은 `dict` 에 효율적인 대응이 없다**고 적는다.
   ★ 「최근에 쓴 것을 맨 끝으로」가 **LRU 캐시**의 핵심 동작이다 — 원리는 [자료구조 10번 LRU 캐시](../../../../cs/data-structure/10-lru-cache/2-summary.md)의 「동작 — 조회」 절이 정본이다.
-* ★ **안 갈린 넷** — `dict` 와의 `==` · 삽입 순서 · `reversed`(`dict` 는 3.8+) · 인자 없는 `popitem()`(둘 다 **마지막** 것). `dict` 가 3.7·3.8 에서 **따라잡은 자리**다.
+* ★ **안 달라진 넷** — `dict` 와의 `==` · 삽입 순서 · `reversed`(`dict` 는 3.8+) · 인자 없는 `popitem()`(둘 다 **마지막** 것). `dict` 가 3.7·3.8 에서 **따라잡은 자리**다.
 
 **비용** — 문서의 말로는 `OrderedDict` 가 **재배열에 강하고** `dict` 가 **매핑 연산에 강하다.** ★ 이 문서는 그 차이를 **재지 않았다.**
 
@@ -558,8 +558,8 @@ q = deque(maxlen=3)              # append / appendleft / pop / popleft / rotate
 |---|---|---|
 | **라이브러리 보장** | `collections` 문서가 정한 것 | 문서 문장을 열어서 인용 |
 | **CPython 구현** | 예외 문구 | 실행 |
-| **이 판(3.12.3)의 관찰** | 이 판에서 그랬을 뿐 | 출력 |
-| ★ **부적용** | 시간·메모리 | 재지 않았다 — 복잡도는 문서 |
+| **이 버전(3.12.3)의 관찰** | 이 버전에서 그랬을 뿐 | 출력 |
+| ★ **해당 없음** | 시간·메모리 | 재지 않았다 — 복잡도는 문서 |
 
 ### 라이브러리 보장
 
@@ -606,7 +606,7 @@ q = deque(maxlen=3)              # append / appendleft / pop / popleft / rotate
 1. **`defaultdict` 의 `d[k]` 는 쓰기다** — 없는 키면 factory 를 불러 **넣는다.** `if d[k]:`·f-string 까지 전부(5 / 8).
 2. **그 쓰기가 순회 중이면 `RuntimeError`** 이고, 예외가 나도 키는 남는다.
 3. **`Counter[k]` 는 `0` 을 주고 넣지 않는다** — `+`·`-` 는 양수만 남기고 `total()` 은 음수까지 더한다.
-4. **`OrderedDict` 는 `==` 가 순서를 보고 `move_to_end` 가 있다** — 3.7+ 에서도 4 / 8 이 갈렸다.
+4. **`OrderedDict` 는 `==` 가 순서를 보고 `move_to_end` 가 있다** — 3.7+ 에서도 4 / 8 이 달라졌다.
 5. **복잡도는 문서의 말이다** — 이 문서는 시간을 한 번도 재지 않았다.
 
 ## 관련 자료
@@ -656,11 +656,11 @@ q = deque(maxlen=3)              # append / appendleft / pop / popleft / rotate
 `Counter` 의 `==` 가 **없는 원소를 0 으로 보는 것**은 **3.10** 부터(문서의 *"In equality tests, missing elements are treated as having zero counts"* 와 그 버전 표기). `dict` 의 삽입 순서 보장은 **3.7**.\
 ★ **구현 대 언어 보장 한 줄** — 위 문서 문장들이 보장이다. **`most_common` 의 동률 순서도 문서가 보장한다**(「처음 만난 순서」).
 예외 **문구**(`deque already at its maximum size` 따위)는 CPython 의 것이다.\
-★ **흔들리는 칸 / 안 흔들리는 칸**
+★ **실행마다 달라지는 항목 / 달라지지 않는 항목**
 
-| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+| 실행마다 달라진다 | 달라지지 않는다(근거로 써도 되는 항목) |
 |---|---|
-| 판이 오르면 예외 **문구** | ★★ 격자의 칸 · 마지막 줄 **「… N / M」** · `len` 전→후 · factory 호출 수 |
+| 버전이 오르면 예외 **문구** | ★★ 격자의 칸 · 마지막 줄 **「… N / M」** · `len` 전→후 · factory 호출 수 |
 | — (주소·시간·`set` 출력을 한 곳도 안 찍었다) | `dict`·`Counter` 의 **출력 순서** — 삽입 순서가 **3.7+ 언어 보장**이고 `most_common` 동률 순서도 문서 보장 |
 
 ★ `PYTHONHASHSEED` 를 바꿔 한 번 더 캡처해도 **한 글자도 같았다** — 순서가 해시에 기대는 출력이 없다는 뜻이다.\

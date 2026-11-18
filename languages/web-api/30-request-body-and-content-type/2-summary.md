@@ -1,6 +1,6 @@
 # web-api/30 — 요청 본문 만들기: `FormData`·`URLSearchParams`·JSON 과 `Content-Type` 자동 설정 — 정리 (힌트)
 
-**이 판의 Chrome**
+**이 버전의 Chrome**
 
 ```text
 $ google-chrome --version
@@ -8,24 +8,24 @@ Google Chrome 151.0.7922.173
 (exit 0)
 ```
 
-### 흔들리는 칸 / 안 흔들리는 칸
+### 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| **안 흔들린다** | 격자 14칸 · 원문(boundary 를 가린 것) · 바이트 수 · 파일 칸 · 폼 대 `fetch` · 파이썬 대비 | 캡처 세 판이 **한 글자도 같았다** |
-| ★★ **흔들린다 — 하네스가 가렸다** | **multipart boundary 의 뒤 16자**(Chrome — `----WebKitFormBoundary` 뒤) · **파이썬 `requests` 의 boundary 32자**(16진) | 브라우저·라이브러리가 **요청마다 새로 만든다.** 서버가 **로그에 적기 전에** `<16자>`·`<32자>` 로 바꾼다 — 그래서 재대조에서 정규화할 칸이 남지 않는다. ★ **바이트 수는 안 흔들린다** — 길이가 고정이기 때문이다 |
-| **흔들린다** | Chrome 판 번호 · 포트 | 포트는 출력에 안 나온다 |
+| **달라지지 않는다** | 격자 14칸 · 원문(boundary 를 가린 것) · 바이트 수 · 파일 칸 · 폼 대 `fetch` · 파이썬 대비 | 캡처 세 번이 **한 글자도 같았다** |
+| ★★ **실행마다 달라진다 — 하네스가 가렸다** | **multipart boundary 의 뒤 16자**(Chrome — `----WebKitFormBoundary` 뒤) · **파이썬 `requests` 의 boundary 32자**(16진) | 브라우저·라이브러리가 **요청마다 새로 만든다.** 서버가 **로그에 적기 전에** `<16자>`·`<32자>` 로 바꾼다 — 그래서 재대조에서 정규화할 칸이 남지 않는다. ★ **바이트 수는 달라지지 않는다** — 길이가 고정이기 때문이다 |
+| **실행마다 달라진다** | Chrome 판 번호 · 포트 | 포트는 출력에 안 나온다 |
 
-- 재대조 정규화 규칙은 **0개** — 흔들리는 칸은 하네스가 **출력 전에** 가렸다(위 표). **위 표에 없는 차이는 전부 고칠 것**이다.
+- 재대조 정규화 규칙은 **0개** — 실행마다 달라지는 항목은 하네스가 **출력 전에** 가렸다(위 표). **위 표에 없는 차이는 전부 고칠 것**이다.
 
-### 이 주제가 쓰는 창 / 부적용인 창
+### 이 주제가 쓰는 창 / 해당 없는 창
 
 | 창 | 이 주제에서 | 무엇을 답하나 |
 |---|---|---|
-| 창 ① `--dump-dom` 트리 | **부적용** | — |
+| 창 ① `--dump-dom` 트리 | **해당 없음** | — |
 | 창 ② 노드 프로브 | ★ **쓴다** | `FormData.get()` 이 돌려주는 것의 종류·이름·`type`((3)) |
 | 창 ③ 같은 것을 두 번 읽기 | ★★★ **쓴다** | **같은 `FormData` 를 두 번** — 헤더만 다르게((2)) · **같은 폼을 두 길로** — `fetch` 와 진짜 제출((4)) |
-| **창 ④ 서버 요청 로그 — 받은 `Content-Type` · 원문 · 파싱** | ★★★ **본체** | 무엇이 **실렸나**(원문) · 서버가 **무엇으로 읽었나**(파싱) |
+| **창 ④ 서버 요청 로그 — 받은 `Content-Type` · 원문 · 파싱** | ★★★ **핵심** | 무엇이 **실렸나**(원문) · 서버가 **무엇으로 읽었나**(파싱) |
 | ★ **「무엇이 실렸나」를 페이지 대신 서버에게** | ★★ **같은 질문을 다른 창으로(제5의 상태)** | 페이지는 **서버에 실제로 닿은 `Content-Type` 을 볼 수 없다.** 그래서 서버에게 `/note` 로 물었다. ★ 바꾼 창이 못 보는 것 — **HTTP 층에서 바뀌는 것**(압축·청크)은 이 서버가 풀어서 받으므로 안 보인다 |
 | 파이썬 `urllib`·`requests` | ★ **대비** | 다른 클라이언트는 **무엇을 자동으로 붙이나**((5)) |
 
@@ -33,7 +33,7 @@ Google Chrome 151.0.7922.173
 
 | 무엇을 | 왜 못 보나 |
 |---|---|
-| ★ **서버 프레임워크의 관용** | 파서를 **직접** 짰다 — boundary 가 없으면 못 가른다. 어떤 프레임워크는 본문 첫 줄에서 boundary 를 **짐작**할지도 모른다. 그런 관용은 이 판이 말하지 않는다 |
+| ★ **서버 프레임워크의 관용** | 파서를 **직접** 짰다 — boundary 가 없으면 못 가른다. 어떤 프레임워크는 본문 첫 줄에서 boundary 를 **짐작**할지도 모른다. 그런 관용은 이 버전이 말하지 않는다 |
 | **업로드 진행률 · 큰 파일** | 본문은 수백 바이트다. 스트림 업로드는 28편 (3)에서 HTTP/1.1 로는 안 나갔다 |
 | **`text/plain` 폼 인코딩 · 문자 인코딩이 UTF-8 이 아닌 폼** | 던지지 않았다(HTML 21편이 `text/plain` 을 쟀다) |
 
@@ -71,7 +71,7 @@ Google Chrome 151.0.7922.173
 
 **언제 쓰나** — 「`FormData` 로 올렸더니 서버가 필드를 하나도 못 읽는다」 · 「JSON 을 보냈는데 서버가 JSON 이 아니라고 한다」일 때.
 
-**던진 것** — 같은 출처 A 의 `/echo` 에 본문 일곱 × (`Content-Type` 안 씀 / 씀). 「씀」에는 **그 본문에 자연스러운 값**을 적었다 — `FormData` 에는 `multipart/form-data`, JSON 들에는 `application/json` 식으로. 칸마다 **서버가 받은 `Content-Type`** 과 **그것으로 고른 파서의 결과**를 서버에게 묻는다.
+**실행한 것** — 같은 출처 A 의 `/echo` 에 본문 일곱 × (`Content-Type` 안 씀 / 씀). 「씀」에는 **그 본문에 자연스러운 값**을 적었다 — `FormData` 에는 `multipart/form-data`, JSON 들에는 `application/json` 식으로. 칸마다 **서버가 받은 `Content-Type`** 과 **그것으로 고른 파서의 결과**를 서버에게 묻는다.
 
 ```html
 <!-- wa28b-30-grid.html -->
@@ -142,7 +142,7 @@ ArrayBuffer      application/json                    application/json           
 (exit 0)
 ```
 
-- ★★★ **직접 써서 서버 파싱이 깨진 본문 1 / 7 — `FormData` 하나.** 직접 쓰면 받은 값이 **`multipart/form-data`(boundary 없음)** 이고 서버는 **가를 수 없다.**
+- ★★★ **직접 써서 서버 파싱이 깨진 본문 1 / 7 — `FormData` 하나.** 직접 쓰면 받은 값이 **`multipart/form-data`(boundary 없음)** 이고 서버는 **구분할 수 없다.**
 - ★★ **직접 써서 받은 `Content-Type` 이 바뀐 본문 6 / 7** — 바뀌어도 대개는 무해하다: `;charset=UTF-8` 이 빠지거나(`URLSearchParams`·문자열), 없던 것이 생긴다(타입 없는 `Blob`·`ArrayBuffer`). **안 바뀐 것은 `type` 을 준 `Blob` 하나**다(같은 값을 적었으므로). 명세 — Request 생성자는 **`Content-Type` 이 이미 있으면 자동 값을 안 붙인다.**
 - ★★ **`JSON.stringify` 만 넘기면 `text/plain;charset=UTF-8`** — 서버가 `Content-Type` 으로 파서를 고르면 JSON 이 아니라 **글**로 읽는다. JSON 은 **문자열**일 뿐이라 브라우저는 모른다((6)).
 - ★ **타입 없는 `Blob` 과 `ArrayBuffer` 는 `Content-Type` 이 아예 없다**(`(없음)`) — 명세 그대로(`Blob` 은 `type` 이 비었으면 안 붙이고, `BufferSource` 는 타입이 없다).
@@ -246,7 +246,7 @@ A POST /echo?id=f3&raw=1  Content-Type=multipart/form-data; boundary=----WebKitF
 ```
 
 - ★★ **`Blob` 을 넣으면 `get()` 이 `File` 을 돌려준다** — 이름을 안 주면 **`name=blob`**, 주면 그 이름(`r.csv`). 명세의 「create an entry」 — **`File` 이 아닌 `Blob` 은 이름이 `"blob"` 인 새 `File`** 이 된다.
-- ★★ **파일 칸의 `Content-Type` 은 그 `File` 의 `type`** 이고, 비었으면 **`application/octet-stream`** 이 붙었다(`b`·`e` — 이 판의 관찰). **문자열 칸(`a`)에는 `Content-Type` 줄이 없다** — 명세의 「파일이 아닌 칸에는 붙이지 않는다」.
+- ★★ **파일 칸의 `Content-Type` 은 그 `File` 의 `type`** 이고, 비었으면 **`application/octet-stream`** 이 붙었다(`b`·`e` — 이 버전의 관찰). **문자열 칸(`a`)에는 `Content-Type` 줄이 없다** — 명세의 「파일이 아닌 칸에는 붙이지 않는다」.
 - 서버 파서는 `text/` 가 아닌 파일 칸의 값을 바이트 수로만 적는다(`<1바이트>`).
 
 ```text
@@ -422,13 +422,13 @@ A POST /echo?id=py  Content-Type=multipart/form-data · 본문 248바이트
 
 | 이 문서의 서술 | 누가 보장하나 |
 |---|---|
-| 본문 종류별 자동 `Content-Type` 다섯 | **명세**(Fetch — extract a body) · 이 판도 그랬다((1)) |
+| 본문 종류별 자동 `Content-Type` 다섯 | **명세**(Fetch — extract a body) · 이 버전도 그랬다((1)) |
 | ★ `Content-Type` 을 직접 쓰면 자동 값이 안 붙는다 → `FormData` 의 boundary 가 빠진다 | **명세**(Fetch — Request 생성자 「없을 때만 붙인다」) · ★ **서버 로그가 증명**((2)) |
 | boundary 의 모양(`----WebKitFormBoundary` + 16자) | ★ **Chrome 의 글자** — 명세는 「알고리즘이 만든 boundary 문자열」까지만 말한다 |
-| `Blob` → 이름 `"blob"` 인 `File` · 파일 아닌 칸에 `Content-Type` 없음 · 체크 안 된 체크박스 제외 | **명세**(HTML — create an entry · multipart 인코딩 · constructing the entry list) · 이 판도 그랬다((3)·(4)) |
-| 파일 칸 `type` 이 비면 `application/octet-stream` | ★ **이 판의 관찰**(RFC 7578 은 열지 않았다) |
+| `Blob` → 이름 `"blob"` 인 `File` · 파일 아닌 칸에 `Content-Type` 없음 · 체크 안 된 체크박스 제외 | **명세**(HTML — create an entry · multipart 인코딩 · constructing the entry list) · 이 버전도 그랬다((3)·(4)) |
+| 파일 칸 `type` 이 비면 `application/octet-stream` | ★ **이 버전의 관찰**(RFC 7578 은 열지 않았다) |
 | `new FormData(form)` 과 폼 제출의 원문이 같다 | **명세**(같은 entry list · 같은 인코딩) · ★ **원문 대조가 증명**((4)) |
-| `urllib` 의 자동 `application/x-www-form-urlencoded` · `requests` 의 boundary | ★ **각 라이브러리의 설계** — 이 판의 관찰((5)) |
+| `urllib` 의 자동 `application/x-www-form-urlencoded` · `requests` 의 boundary | ★ **각 라이브러리의 설계** — 이 버전의 관찰((5)) |
 
 ## 언제 쓰고 언제 안 쓰나
 
@@ -463,7 +463,7 @@ A POST /echo?id=py  Content-Type=multipart/form-data · 본문 248바이트
 - **`multipart/form-data`** — 칸마다 머리(이름·파일 이름·타입)와 값을 boundary 로 갈라 싣는 형식. 파일을 실을 수 있다.
 - **`application/x-www-form-urlencoded`** — `a=1&b=%ED%95%9C` 꼴. 파일을 못 싣는다.
 - **entry list** — 폼이나 `FormData` 가 가진 (이름, 값) 목록. 폼 제출과 `new FormData(form)` 이 같은 것을 만든다.
-- **자동 `Content-Type` 격자** — 본문 일곱 × 직접 쓰나 = 14칸 × (받은 `Content-Type` · 서버 파싱). 이 편의 본체.
+- **자동 `Content-Type` 격자** — 본문 일곱 × 직접 쓰나 = 14칸 × (받은 `Content-Type` · 서버 파싱). 이 편의 핵심.
 
 ## 더 들어가면
 
@@ -473,7 +473,7 @@ A POST /echo?id=py  Content-Type=multipart/form-data · 본문 248바이트
 
 ## 실행 환경
 
-★★★ **이 편의 본체는 창 ④ 「서버 요청 로그」 — 서버가 받은 `Content-Type` 과 **그것으로 고른 파서의 결과**를 칸마다 서버에게 묻는 「자동 `Content-Type` 격자」다.** 본문 일곱 × `Content-Type` 을 직접 쓰나(안 씀 / 씀) = 14칸, 마지막 줄을 스크립트가 **「직접 써서 서버 파싱이 깨진 본문 N / 7」** 로 찍는다. 그 옆에 **원문(본문 바이트)** 을 서버 로그째 싣는다.\
+★★★ **이 편의 핵심은 창 ④ 「서버 요청 로그」 — 서버가 받은 `Content-Type` 과 **그것으로 고른 파서의 결과**를 칸마다 서버에게 묻는 「자동 `Content-Type` 격자」다.** 본문 일곱 × `Content-Type` 을 직접 쓰나(안 씀 / 씀) = 14칸, 마지막 줄을 스크립트가 **「직접 써서 서버 파싱이 깨진 본문 N / 7」** 로 찍는다. 그 옆에 **원문(본문 바이트)** 을 서버 로그째 싣는다.\
 **기준 소스** — [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 「extract a body」(**`Blob` — `type` 이 빈 바이트열이 아니면 그 값** · `BufferSource` — 타입 없음 · **`FormData` — `multipart/form-data; boundary=` + multipart/form-data 인코딩 알고리즘이 만든 boundary 문자열** · **`URLSearchParams` — `application/x-www-form-urlencoded;charset=UTF-8`** · **문자열 — `text/plain;charset=UTF-8`**) · Request 생성자(「type 이 null 이 아니고 **headers 에 `Content-Type` 이 없으면** 그때만 붙인다」) · [WHATWG HTML](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html) 의 「create an entry」(**`File` 이 아닌 `Blob` 은 이름이 `"blob"` 인 새 `File` 로** · filename 을 주면 그 이름으로) · 「constructing the entry list」(**체크 안 된 체크박스는 건너뛴다**) · 「multipart/form-data encoding algorithm」(**RFC 7578** 을 따르고, **파일이 아닌 칸에는 `Content-Type` 을 붙이지 않는다** · boundary 는 알고리즘이 만든다) · [WHATWG XHR](https://xhr.spec.whatwg.org/) 의 `FormData(form)` 생성자(form 이 주어지면 **constructing the entry list** 의 결과를 쓴다). 열어서 확인한 것만 적었다(기준일 2026-09-26).\
 **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. 요청은 **같은 출처 A 의 `/echo`** 로 보냈다 — CORS 를 빼고 본문만 고립시키려고. 서버는 받은 **`Content-Type` · 원문 · 직접 짠 파서의 결과**를 적는다(파이썬 `email`·`cgi` 를 안 쓰고 **boundary 로 직접 가른다** — 파서가 대신 고쳐 주는 일을 없애려고). 하네스는 [28번 주제](../28-cors-simple-and-preflight/2-summary.md)의 (1)이다.\
 **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\

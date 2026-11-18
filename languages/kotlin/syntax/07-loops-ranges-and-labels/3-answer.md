@@ -275,7 +275,7 @@ for (i in 5..1) 의 반복 횟수 = 0
 - `[E]` 는 `step` 자체가 거부한다. **방향은 `downTo` 가 정하고 `step` 은 크기만 정한다** —\
   그래서 `9 downTo 1 step 3` 의 step 도 **양수 3** 이다.
 
-타입도 갈린다.
+타입도 달라진다.
 
 ```text
 타입 — (1..5)=IntRange, (1..10 step 3)=IntProgression, (1 until 5)=IntRange
@@ -598,7 +598,7 @@ OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sha
 반면 "`for` 가 `iterator()` 규약으로 돈다" · "`step` 은 양수" · "`last` 는 도달하는 마지막 값" ·
 "빈 범위는 0회" · "`return` 은 가장 가까운 `fun` 으로" · "반복은 식이 아니다" 는 **언어 규칙**이라 타깃과 무관하다.
 
-**★ 던져 봤더니 예상과 달랐던 것 — 세 건**
+**★ 실행해 봤더니 예상과 달랐던 것 — 세 건**
 
 1. **`for (i in 1..10)` 이 `IntRange` 조차 안 만든다.**\
    "`Iterator` 는 안 만들어도 `IntRange` 는 만들겠지" 라고 예상했는데 **`new` 가 한 번도 안 나왔다.**\

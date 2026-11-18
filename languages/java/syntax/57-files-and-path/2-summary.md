@@ -830,11 +830,11 @@ if (Files.exists(p)) {
 | `probeContentType` 의 결과 | **보장 아님** | OS 의 MIME 데이터베이스에서 온다. 이 머신은 `text/plain` |
 | POSIX 권한 문자열 | **보장 아님** | umask·OS 에 달렸다. 이 머신은 `rw-rw-r--` |
 
-**세 판에서 같았던 것**
+**세 버전에서 같았던 것**
 
 - 57-a·57-c(fd 숫자 제외)·57-e 는 출력이 같았다.
 - 57-b 는 `createDirectories` 한 줄만 달랐다.
-- 57-d 의 OOM 스택트레이스는 **줄 번호가 세 판 다 달랐다**(`String.java:4501` / `:4768` / `:4842`).
+- 57-d 의 OOM 스택트레이스는 **줄 번호가 세 버전 다 달랐다**(`String.java:4501` / `:4768` / `:4842`).
 - **하지만 그것은 관찰이지 보장이 아니다.**
 
 ## 언제 쓰고 언제 안 쓰나
@@ -938,7 +938,7 @@ if (Files.exists(p)) {
 **선행** — [`../26-try-with-resources/`](../26-try-with-resources/)(자원을 닫는 문법)과 [`../44-stream-creation/`](../44-stream-creation/)(스트림 소스). 이 문서의 절반이 그 둘이 만나는 자리다.
 **기준 소스** — Temurin **JDK 21.0.5** 표준 라이브러리 소스 `java.base/java/nio/file/Files.java`·`Path.java`(`lib/src.zip`) · [`Files` javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/nio/file/Files.html) · [`Path` javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/nio/file/Path.html)
 **실행 검증** — 이 문서의 모든 출력은 실제로 돌려 얻은 것이다. 프로그램 일곱(57-a~57-g)을 **17.0.13 · 21.0.5 · 25.0.1** 에서 각각 돌렸다.\
-★ **세 판의 출력이 전부 같지는 않았다.** `Files.createDirectories` 의 반환값이 **17 에서만 절대 경로**였다(본문 「구현 세부사항 대 언어 보장」이 정본).
+★ **세 버전의 출력이 전부 같지는 않았다.** `Files.createDirectories` 의 반환값이 **17 에서만 절대 경로**였다(본문 「구현 세부사항 대 언어 보장」이 정본).
 **버전** — `Path` 인터페이스는 `@since 1.7`, `Path.of` 는 **11**, `Files.lines`·`walk`·`list`·`find`·`readAllLines` 는 **1.8**, `Files.readString`·`writeString` 은 **11**.
 **측정 조건** — Linux · ext4 · `file.encoding=UTF-8` · 기본 `Locale` `ko_KR`. 실험은 전부 **임시 스크래치 디렉터리 안의 `sandbox/` 아래**에서 하고 매번 지웠다.\
 경로 구분자·권한·`probeContentType` 결과는 **OS 에 달렸다.** 그 줄에는 그 사실이 붙어 있다.

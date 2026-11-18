@@ -1,6 +1,6 @@
 # web-api/17 — `stopPropagation` 대 `preventDefault`: 전파를 멈추는 것과 기본 동작을 막는 것 — 정리 (힌트)
 
-**이 판의 Chrome**
+**이 버전의 Chrome**
 
 ```text
 $ google-chrome --version
@@ -8,29 +8,29 @@ Google Chrome 151.0.7922.173
 (exit 0)
 ```
 
-### 흔들리는 칸 / 안 흔들리는 칸
+### 실행마다 달라지는 항목 / 달라지지 않는 항목
 
-**★ 이 편에는 흔들리는 칸이 없었다** — 세는 것이 호출 여부·`checked`·`location.hash`·`submit` 이벤트 여부뿐이다.
+**★ 이 편에는 실행마다 달라지는 항목이 없었다** — 세는 것이 호출 여부·`checked`·`location.hash`·`submit` 이벤트 여부뿐이다.
 
 | | 칸 | 왜 |
 |---|---|---|
-| **안 흔들린다** | 2×2 격자 24칸 · 합성 세 가지와 진짜의 견줌 · `checked` 두 번 읽기 · 리스너 셋의 호출 순서 · `defaultPrevented`·`dispatchEvent` 반환값 · 라디오 · 링크 가로채기 · Enter 제출 | 같은 판이면 결정적이다. **캡처 네 판이 한 글자도 같았다** |
-| **안 흔들린다** | 링크 이동의 판정 | **같은 문서 안의 조각(`#도착`)** 으로만 이동시켰다. 다른 문서로 떠나면 페이지가 사라져 셀 수 없다 |
-| **부적용** | 시간 | 재지 않았다 |
-| **흔들린다** | Chrome 판 번호 | 판이 오르면 바뀐다 |
+| **달라지지 않는다** | 2×2 격자 24칸 · 합성 세 가지와 진짜의 견줌 · `checked` 두 번 읽기 · 리스너 셋의 호출 순서 · `defaultPrevented`·`dispatchEvent` 반환값 · 라디오 · 링크 가로채기 · Enter 제출 | 같은 판이면 결정적이다. **캡처 네 번이 한 글자도 같았다** |
+| **달라지지 않는다** | 링크 이동의 판정 | **같은 문서 안의 조각(`#도착`)** 으로만 이동시켰다. 다른 문서로 떠나면 페이지가 사라져 셀 수 없다 |
+| **해당 없음** | 시간 | 재지 않았다 |
+| **실행마다 달라진다** | Chrome 판 번호 | 버전이 오르면 바뀐다 |
 
 - 재대조에서 정규화하는 칸은 없다. **위 표에 없는 차이는 전부 고칠 것**이다.
 
-### 이 주제가 쓰는 창 / 부적용인 창
+### 이 주제가 쓰는 창 / 해당 없는 창
 
 | 창 | 이 주제에서 | 무엇을 답하나 |
 |---|---|---|
-| 창 ① `--dump-dom` 트리 | **부적용** | 기본 동작의 결과는 **속성이 아니라 상태**로 남는다(`checked` 성질·`location`). 트리의 `checked` 속성은 안 바뀐다 |
+| 창 ① `--dump-dom` 트리 | **해당 없음** | 기본 동작의 결과는 **속성이 아니라 상태**로 남는다(`checked` 성질·`location`). 트리의 `checked` 속성은 안 바뀐다 |
 | **창 ② 노드 프로브** | ★ **본체의 한 축** | **기본 동작이 일어났나** — 링크는 `location.hash`, 체크박스는 `checked`, 제출 단추는 `submit` 이벤트 |
 | **창 ③ 같은 것을 두 번 읽기** | ★ **쓴다** | 체크박스의 `checked` 를 **리스너 안에서 한 번, 디스패치가 끝난 뒤 한 번** 읽는다((4)) — 이 편의 함정이 이 두 값의 차이다 |
 | **창 ④ 디스패치 계수기** | ★ **본체의 다른 축** | **조상 리스너가 불렸나** · 같은 요소의 리스너 셋이 어디까지 불렸나 |
 | **진짜 입력(CDP)** | ★ **쓴다 — 입력 쪽** | 진짜 클릭 · 진짜 Space · 진짜 Enter |
-| 창 ⑤ 콘솔 | **부적용** | 이 편에는 경고를 내는 자리가 없다 — **`passive` 의 경고는 [19번 주제](../19-passive-and-scroll/2-summary.md)** |
+| 창 ⑤ 콘솔 | **해당 없음** | 이 편에는 경고를 내는 자리가 없다 — **`passive` 의 경고는 [19번 주제](../19-passive-and-scroll/2-summary.md)** |
 
 - ★★ **제5의 상태 — 「기본 동작이 일어났나」를 대상마다 다른 창으로 물었다.** 링크는 **`location.hash`**, 체크박스는 **`checked`**, 제출 단추는 **`submit` 이벤트가 났나**다. **셋 다 「기본 동작」이라는 한 질문**인데 드러나는 자리가 다르다. ★ 바꾼 창이 못 보는 것 — `submit` 이벤트는 「제출이 **시작됐나**」까지만 말한다. 실제 네트워크 요청은 `submit` 리스너가 막았으므로 **보내지 않았다.**
 
@@ -87,7 +87,7 @@ Google Chrome 151.0.7922.173
 
 **언제 쓰나** — 「`stopPropagation` 했는데 링크가 이동한다」·「`preventDefault` 했는데 조상이 받는다」일 때.
 
-**던진 것** — `#조상` 안에 **링크(`href="#도착"`) · 체크박스 · 폼 안의 제출 단추**를 두고, 대상 요소의 click 리스너가 **없음 / `stopPropagation` / `preventDefault` / 둘 다** 를 부르게 했다. `#조상` 의 bubble 리스너가 불렸나와 기본 동작이 일어났나를 적는다. 폼의 `submit` 리스너는 「제출 이벤트가 났다」를 적고 **실제 전송은 막는다.** 아래 (2)·(4)의 블록도 같은 실행에서 잘라 낸 것이다.
+**실행한 것** — `#조상` 안에 **링크(`href="#도착"`) · 체크박스 · 폼 안의 제출 단추**를 두고, 대상 요소의 click 리스너가 **없음 / `stopPropagation` / `preventDefault` / 둘 다** 를 부르게 했다. `#조상` 의 bubble 리스너가 불렸나와 기본 동작이 일어났나를 적는다. 폼의 `submit` 리스너는 「제출 이벤트가 났다」를 적고 **실제 전송은 막는다.** 아래 (2)·(4)의 블록도 같은 실행에서 잘라 낸 것이다.
 
 ```html
 <!-- wa16b-17-grid.html -->
@@ -237,7 +237,7 @@ $ python3 wa16b-cdp.py page wa16b-17-grid.html | sed -n '1,14p'
 
 비용 — **`stopPropagation()` 은 남의 리스너를 조용히 죽인다.** 조상에 단 분석 코드·위임 리스너([18번 주제](../18-event-delegation/2-summary.md))·「바깥을 누르면 닫기」가 **예외 없이 안 불린다.** 기본 동작을 막고 싶으면 **`preventDefault()` 만** 부른다.
 
-### (2) ★★ 같은 격자를 합성으로 던지면 — 진짜와 갈린 칸
+### (2) ★★ 같은 격자를 합성으로 던지면 — 진짜와 달라진 항목
 
 **언제 쓰나** — 「기본 동작은 진짜 입력이라야 나겠지」 또는 「합성 테스트로 충분하겠지」일 때. **둘 다 틀릴 수 있다.**
 
@@ -250,9 +250,9 @@ $ python3 wa16b-cdp.py page wa16b-17-grid.html | sed -n '16,19p'
 (exit 0)
 ```
 
-- ★★ **`new MouseEvent('click')` 은 진짜와 갈린 칸이 0 / 24** 다. **합성 이벤트인데도 링크가 이동했고, 체크박스가 토글됐고, 폼이 제출 이벤트를 냈다.**
+- ★★ **`new MouseEvent('click')` 은 진짜와 달라진 항목이 0 / 24** 다. **합성 이벤트인데도 링크가 이동했고, 체크박스가 토글됐고, 폼이 제출 이벤트를 냈다.**
 - **`el.click()` 도 0 / 24** 다.
-- ★★ **`new Event('click')` 만 6 / 24** 다. 갈린 여섯 칸이 전부 **「기본」 칸**이고, 전부 **진짜에서는 기본 동작이 난 줄**(없음·`stopPropagation`)이다 — **`new Event` 로는 기본 동작이 아예 안 난다.**
+- ★★ **`new Event('click')` 만 6 / 24** 다. 달라진 여섯 칸이 전부 **「기본」 칸**이고, 전부 **진짜에서는 기본 동작이 난 줄**(없음·`stopPropagation`)이다 — **`new Event` 로는 기본 동작이 아예 안 난다.**
 - ★ **가르는 것은 「진짜냐 합성이냐」가 아니라 「`MouseEvent` 인가」다.** DOM 표준의 dispatch 는 **「이벤트가 `MouseEvent` 이고 타입이 `click` 이면」** 활성화 대상(activation target)을 잡는다. `isTrusted` 는 안 본다.
 
 ```text
@@ -267,13 +267,13 @@ $ python3 wa16b-cdp.py page wa16b-17-grid.html | sed -n '16,19p'
    ★ DOM dispatch: 「MouseEvent 이고 type 이 click 이면」 activation target 을 잡는다
 ```
 
-- ★ **그래서 「합성으로는 기본 동작이 안 드러날 것」이라는 예상은 이 판에서 틀렸다.** [14번 주제](../14-dialog-popover-scripting/2-summary.md)의 가벼운 닫기는 합성으로 한 칸도 안 움직였지만, **클릭의 활성화 동작은 다르다** — 이 둘을 같은 규칙으로 외우지 마라.
+- ★ **그래서 「합성으로는 기본 동작이 안 드러날 것」이라는 예상은 이 버전에서 틀렸다.** [14번 주제](../14-dialog-popover-scripting/2-summary.md)의 가벼운 닫기는 합성으로 한 칸도 안 움직였지만, **클릭의 활성화 동작은 다르다** — 이 둘을 같은 규칙으로 외우지 마라.
 
 ### (3) ★ 기본 동작은 디스패치가 **끝난 뒤** 돈다 — 그래서 조상이 막을 수 있다
 
 **언제 쓰나** — 「`preventDefault` 는 타깃 리스너에서만 불러야 하나?」일 때.
 
-**던진 것** — 같은 요소에 리스너 셋, 그리고 조상. 둘째 리스너가 무엇을 부르느냐에 따라 **어디까지 불리나**를 본다. 체크박스 쪽은 **조상이 막는 경우**와 **조상이 capture 에서 멈추는 경우**를 본다. 아래 (5)·(6)의 블록도 같은 실행에서 잘라 낸 것이다.
+**실행한 것** — 같은 요소에 리스너 셋, 그리고 조상. 둘째 리스너가 무엇을 부르느냐에 따라 **어디까지 불리나**를 본다. 체크박스 쪽은 **조상이 막는 경우**와 **조상이 capture 에서 멈추는 경우**를 본다. 아래 (5)·(6)의 블록도 같은 실행에서 잘라 낸 것이다.
 
 ```html
 <!-- wa16b-17-imm.html -->
@@ -498,7 +498,7 @@ $ python3 wa16b-cdp.py page wa16b-17-imm.html | sed -n '11,16p'
 
 **언제 쓰나** — 「키보드 사용자도 막히나」를 확인할 때.
 
-**던진 것** — 체크박스에 포커스를 주고 **진짜 Space**, 링크에 포커스를 주고 **진짜 Enter**. click 리스너가 막는 판과 안 막는 판.
+**실행한 것** — 체크박스에 포커스를 주고 **진짜 Space**, 링크에 포커스를 주고 **진짜 Enter**. click 리스너가 막는 판과 안 막는 판.
 
 ```html
 <!-- wa16b-17-key.html -->
@@ -689,7 +689,7 @@ $ python3 wa16b-cdp.py page wa16b-17-more.html | sed -n '6,8p'
 
 ### 어디서 헷갈리나
 
-- **`return false`** — `addEventListener` 로 단 리스너에서는 **아무것도 안 한다.** `onclick` 속성 핸들러에서는 **취소가 된다**((6)). 같은 한 줄이 표면에 따라 갈린다.
+- **`return false`** — `addEventListener` 로 단 리스너에서는 **아무것도 안 한다.** `onclick` 속성 핸들러에서는 **취소가 된다**((6)). 같은 한 줄이 표면에 따라 달라진다.
 - **`preventDefault` 는 경로 위 어디서 불러도 된다** — 조상도 막을 수 있다((3)).
 - **`stopPropagation` 은 기본 동작을 안 막는다** — 이것을 기대하고 쓰는 코드가 가장 흔하다((1)).
 
@@ -725,7 +725,7 @@ $ python3 wa16b-cdp.py page wa16b-17-more.html | sed -n '6,8p'
 
 ### 8. 폼 제출을 단추의 click 에서 막는다
 
-**이 판에서는 동작했다** — Enter 도 단추의 click 을 거쳐 같이 막혔다((8)). 다만 그 코드는 **「제출은 반드시 단추의 click 을 거친다」에 기댄다.** 제출을 막는 자리는 **`submit` 이벤트**가 정석이다 — 이 판에서 단추 클릭과 Enter 가 **둘 다 `submit` 을 거쳤다.**
+**이 버전에서는 동작했다** — Enter 도 단추의 click 을 거쳐 같이 막혔다((8)). 다만 그 코드는 **「제출은 반드시 단추의 click 을 거친다」에 기댄다.** 제출을 막는 자리는 **`submit` 이벤트**가 정석이다 — 이 버전에서 단추 클릭과 Enter 가 **둘 다 `submit` 을 거쳤다.**
 
 ## 구현 세부사항 대 언어 보장
 
@@ -734,15 +734,15 @@ $ python3 wa16b-cdp.py page wa16b-17-more.html | sed -n '6,8p'
 | `stopPropagation` 이 **경로의 다음 자리**만 끊고 기본 동작은 안 건드리는 것 | **명세**(DOM — stop propagation 플래그는 invoke 만 본다) |
 | `preventDefault` 가 **취소 표시**만 세우고 전파는 안 건드리는 것 | **명세**(DOM — set the canceled flag) |
 | 기본 동작이 **경로를 다 돈 뒤에** 도는 것 | **명세**(DOM — dispatch 의 activation behavior 가 마지막) |
-| **`MouseEvent` 의 `click` 이면** 합성이어도 활성화가 도는 것 | **명세**(DOM — isActivationEvent 는 `isTrusted` 를 안 본다) · **이 판도 그랬다**((2)) |
+| **`MouseEvent` 의 `click` 이면** 합성이어도 활성화가 도는 것 | **명세**(DOM — isActivationEvent 는 `isTrusted` 를 안 본다) · **이 버전도 그랬다**((2)) |
 | 체크박스가 **리스너보다 먼저** 뒤집히고 취소되면 **뒤에** 되돌아가는 것 | **명세**(HTML — legacy-pre-activation · legacy-canceled-activation) |
 | `stopImmediatePropagation` 이 같은 자리의 남은 리스너를 막는 것 | **명세**(DOM — inner invoke 의 break) |
 | `cancelBubble`·`returnValue` 가 옛 이름인 것 | **명세**(DOM — legacy 표면으로 남아 있다) |
-| `addEventListener` 리스너의 `return false` 가 **아무것도 안 하고**, `onclick` 의 `return false` 는 **취소가 되는** 것 | ★ **이 판의 관찰**((6)). 속성 핸들러의 반환값 처리는 HTML 의 이벤트 핸들러 절이 정하는데 **이 문서는 그 절을 열어 확인하지 않았다** |
-| 키보드 Space·Enter 가 **`click` 을 만들어** 같은 기본 동작을 내는 것 | ★ **이 판의 관찰**이다. 요소마다 무엇이 click 을 만드는지는 이 문서가 명세로 전수 확인하지 않았다 |
-| 라디오가 리스너보다 먼저 선택되고 취소되면 되살아나는 것 | **명세**(HTML — legacy-pre-activation · legacy-canceled-activation 의 라디오 칸) · 이 판도 그랬다((8)) |
-| 입력칸의 Enter 가 **기본 단추에 `click` 을 내고** 그것을 막으면 제출이 안 되는 것 | ★ **이 판의 관찰**((8)). 암묵 제출 절은 이 문서가 열어 확인하지 않았다 |
-| `detail=0`(키보드로 만든 click) | ★ **이 판의 관찰** |
+| `addEventListener` 리스너의 `return false` 가 **아무것도 안 하고**, `onclick` 의 `return false` 는 **취소가 되는** 것 | ★ **이 버전의 관찰**((6)). 속성 핸들러의 반환값 처리는 HTML 의 이벤트 핸들러 절이 정하는데 **이 문서는 그 절을 열어 확인하지 않았다** |
+| 키보드 Space·Enter 가 **`click` 을 만들어** 같은 기본 동작을 내는 것 | ★ **이 버전의 관찰**이다. 요소마다 무엇이 click 을 만드는지는 이 문서가 명세로 전수 확인하지 않았다 |
+| 라디오가 리스너보다 먼저 선택되고 취소되면 되살아나는 것 | **명세**(HTML — legacy-pre-activation · legacy-canceled-activation 의 라디오 칸) · 이 버전도 그랬다((8)) |
+| 입력칸의 Enter 가 **기본 단추에 `click` 을 내고** 그것을 막으면 제출이 안 되는 것 | ★ **이 버전의 관찰**((8)). 암묵 제출 절은 이 문서가 열어 확인하지 않았다 |
+| `detail=0`(키보드로 만든 click) | ★ **이 버전의 관찰** |
 
 ## 언제 쓰고 언제 안 쓰나
 
@@ -761,7 +761,7 @@ $ python3 wa16b-cdp.py page wa16b-17-more.html | sed -n '6,8p'
 1. **`stopPropagation` 은 전파만, `preventDefault` 는 기본 동작만 바꾼다** — 진짜 클릭 24칸에서 서로의 칸을 한 번도 안 건드렸다.
 2. **기본 동작은 경로를 다 돈 뒤에 돈다** — 그래서 **조상도 막을 수 있고**, 전파를 끊어도 **기본 동작은 온다.**
 3. **체크박스는 리스너보다 먼저 뒤집힌다** — 리스너 안의 `checked` 는 막든 안 막든 새 값이고, 막으면 **끝난 뒤에** 되돌아간다.
-4. **합성이어도 `MouseEvent` 의 `click` 이면 기본 동작이 난다** — 갈리는 것은 `new Event('click')` 이다.
+4. **합성이어도 `MouseEvent` 의 `click` 이면 기본 동작이 난다** — 달라지는 것은 `new Event('click')` 이다.
 5. **`stopImmediatePropagation` 은 같은 자리의 남은 리스너까지 멈춘다.**
 6. **「막을 수 있나」는 `cancelable`, 「막혔나」는 `defaultPrevented`** 다.
 
@@ -801,7 +801,7 @@ $ python3 wa16b-cdp.py page wa16b-17-more.html | sed -n '6,8p'
 
 ## 실행 환경
 
-★ **이 편의 본체는 「멈춤 × 막음」 2×2 격자**다 — 창 ④(조상 리스너가 불렸나)와 창 ②(기본 동작이 일어났나)를 **한 표의 두 칸**으로 세우고, 그 표를 **진짜 입력**으로 채운다.\
+★ **이 편의 핵심은 「멈춤 × 막음」 2×2 격자**다 — 창 ④(조상 리스너가 불렸나)와 창 ②(기본 동작이 일어났나)를 **한 표의 두 칸**으로 세우고, 그 표를 **진짜 입력**으로 채운다.\
 **기준 소스** — [WHATWG DOM Standard — Events](https://dom.spec.whatwg.org/#events) 의 「`stopPropagation()`」·「`stopImmediatePropagation()`」·「set the canceled flag」·「dispatch」(activation behavior 부분) 절, [HTML Standard — `input` 요소](https://html.spec.whatwg.org/multipage/input.html) 의 「legacy-pre-activation behavior」·「legacy-canceled-activation behavior」, [HTML Standard — Links](https://html.spec.whatwg.org/multipage/links.html) 의 「`a` 요소의 activation behavior」. 열어서 확인한 것만 적었다(기준일 2026-09-26).\
 **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. **링크 이동·체크박스 토글·폼 제출은 CDP 로 넣은 진짜 클릭과 진짜 키**로 일으켰고, 같은 격자를 **합성 세 가지**로도 던져 견줬다. 하네스는 [16번 주제](../16-event-propagation-phases/2-summary.md)의 (1)에 있다.\
 **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\

@@ -46,7 +46,7 @@
 ### 5. 계획 읽기
 
 - 출발점은 **`Index Scan on o2 (rows=6) (actual rows=100010)`**다. 가장 아래에서 추정과 실제가 처음 크게 어긋난다.
-- 위의 `Nested Loop`의 어긋남은 이 노드의 결과다.
+- 위의 `Nested Loop`의 불일치는 이 노드의 결과다.
 - `Index Only Scan on cust`는 `loops=100010`이다. 한 번에 1행씩이지만 10만 번 인덱스를 내려갔다.
 - 한 문장: "옵티마이저가 o2에서 6행만 나온다고 믿고 중첩 루프를 골랐는데, 실제로는 10만 행이 나와 cust 인덱스를 10만 번 찔렀다."
 
@@ -58,7 +58,7 @@
 
 - 긴급: `ANALYZE <테이블>` 후 다시 `EXPLAIN ANALYZE`. 로컬 재현에서는 중첩 루프(152ms)가 해시 조인(82ms)으로 바뀌었다. 데이터가 메모리에 있어 2배였고, 디스크 임의 읽기가 끼면 차이가 더 커진다.
 - 재발 방지: 배치 마지막 단계에 `ANALYZE`. 자주 크게 바뀌는 테이블은 테이블 단위로 `autovacuum_analyze_scale_factor`를 낮춘다.
-- PostgreSQL 17 문턱: 바뀐 행 수 > `autovacuum_analyze_threshold`(50) + `autovacuum_analyze_scale_factor`(0.1) × reltuples.
+- PostgreSQL 17 임계값: 바뀐 행 수 > `autovacuum_analyze_threshold`(50) + `autovacuum_analyze_scale_factor`(0.1) × reltuples.
 
 ### 7. MySQL 히스토그램
 

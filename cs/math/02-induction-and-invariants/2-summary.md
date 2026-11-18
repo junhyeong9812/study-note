@@ -284,6 +284,6 @@ while (cursor != null) {
   - Maven Surefire `test` mojo — `enableAssertions` Default `true` <https://maven.apache.org/surefire/maven-surefire-plugin/test-mojo.html> · Gradle DSL `Test.enableAssertions` — Default with `java` plugin `true` <https://docs.gradle.org/current/dsl/org.gradle.api.tasks.testing.Test.html>
   - `Arrays.binarySearch` Javadoc — 같은 값이 여러 개면 어느 것을 찾을지 보장하지 않음
 - 실험 목록(이 노트)
-  - `Inv.java` — lowerBound 올바름·`hi=mid-1`·`lo=mid` 세 판을 무작위 10,000회(Random(42)), 불변식·척도 assert, `-ea` 유무 비교, 합계 루프 off-by-one. OpenJDK 21.0.12 Temurin, docker(`--cpus=2 --network none`), 2026-10-07.
+  - `Inv.java` — lowerBound 올바름·`hi=mid-1`·`lo=mid` 세 버전을 무작위 10,000회(Random(42)), 불변식·척도 assert, `-ea` 유무 비교, 합계 루프 off-by-one. OpenJDK 21.0.12 Temurin, docker(`--cpus=2 --network none`), 2026-10-07.
   - `Wrap.java` — `byte`·`int` 경계 넘김 루프(반복 상한으로 중단). 같은 환경.
   - `unsigned.c` — `unsigned i >= 0` 루프, gcc 13.3.0 `-Wall -Wextra` 경고. 호스트.

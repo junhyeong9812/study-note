@@ -153,7 +153,7 @@ Matcher m = p.matcher("abc123def456");
 
 비용 — `Matcher` 를 새로 만드는 것은 싸다. **공유하지 말고 그때그때 만들라**는 것이 javadoc 의 결론이다.
 
-### (3) 탐욕 · 게으름 · 소유 — 셋은 "되돌려주느냐"로 갈린다
+### (3) 탐욕 · 게으름 · 소유 — 셋은 "되돌려주느냐"로 나뉜다
 
 **언제 쓰나** — `<.+>` 가 태그 하나가 아니라 줄 전체를 먹었을 때.
 
@@ -577,7 +577,7 @@ as many times as possible and the array can have any length.
     No match found          <- JDK 21 · 25
 ```
 
-**★ 여기가 버전이 갈린 유일한 자리다.**
+**★ 여기가 버전이 달라진 유일한 자리다.**
 
 ```text
 JDK 17.0.13 : No match available
@@ -748,7 +748,7 @@ if (Pattern.compile("[0-9]+").matcher(input).matches()) { ... }
 **기준 소스** — [Java SE 21 `Pattern` API 문서](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/regex/Pattern.html) · [`Matcher`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/regex/Matcher.html) · JDK 17.0.13 / 21.0.5 / 25.0.1 표준 라이브러리 소스 `java.base/java/util/regex/Pattern.java` 의 **javadoc 과 구현 주석 원문**(`lib/src.zip` 에서 직접 읽음).
 **실행 검증** — 이 문서의 모든 출력·에러는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
 프로그램 7개를 **17.0.13 · 21.0.5 · 25.0.1** 에서 전부 돌렸다.\
-**한 군데가 갈렸다** — `Matcher.start()` 를 매치 없이 부를 때의 예외 **메시지**가 17 과 21 에서 다르다(「어디서 틀리나」 4번).
+**한 군데가 달라졌다** — `Matcher.start()` 를 매치 없이 부를 때의 예외 **메시지**가 17 과 21 에서 다르다(「어디서 틀리나」 4번).
 **★ 측정 조건**(수치를 싣는 절 — 「동작 방식 (5)」·「(6)」) — **JMH 가 아니다.** 단순 `System.nanoTime()` 반복 측정이다.\
 머신: 13th Gen Intel Core i7-13700HX · 24 스레드 · Linux 7.0.0-31-generic. 각 측정은 한 JVM 안에서 3\~6 회 반복했다.\
 **재현되는 것은 절댓값이 아니라 기울기와 자릿수다** — 파국적 백트래킹은 입력 +2 글자마다 시간이 약 4배가 되는 **모양**이,\

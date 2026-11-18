@@ -50,7 +50,7 @@ WIP 큐에만 넣는 이유.
   queue.lastBaseUpdate = capturedUpdate;
 ```
 
-콜백 저장소가 둘로 갈리는 자리.
+콜백 저장소가 둘로 나뉘는 자리.
 
 ```js
 // ReactFiberClassUpdateQueue.js L719-L735

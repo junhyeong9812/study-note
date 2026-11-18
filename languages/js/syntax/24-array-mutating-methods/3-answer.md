@@ -39,7 +39,7 @@ cells answering y: 20 / 45
 - ★★★ **`rows where same? and length are both y: 0 / 15`** — 이 열다섯 개 안에서는 「원본을 돌려주면서 길이도 바꾸는」 메서드가 없다.
 - ★★ **`splice(1, 1)` 의 반환값 `[1]` 은 배열이지만 원본이 아니다** — `same?` n. `splice(1, 0, 9)` 는 `[]` 를 돌려주고 원본을 바꿨다.
 - ★ 대조 행 다섯(`slice`·`concat`·`map`·`filter`·`join`)은 세 칸 전부 n — 25번의 영역이다.
-- 전부 명세 보장이다. 예외도 흔들리는 칸도 없다.
+- 전부 명세 보장이다. 예외도 실행마다 달라지는 항목도 없다.
 
 ### 2. `push`·`unshift` 는 **새 길이**, `pop`·`shift` 는 **뺀 원소**, `splice` 는 **지운 것들의 새 배열** ★★★
 
@@ -76,11 +76,11 @@ d.push(...[2, 3])           -> 3   arr [1,2,3]
 - ★★★ **`a.push(3, 4)` 가 `4`** — 명세 `push` 는 마지막 단계에서 **새 `len`** 을 돌려준다. **넣은 값이 아니라 길이**다. `unshift(0)` 도 새 길이 `4`.
 - ★★ **빈 배열의 `pop()`·`shift()` 는 `undefined`** — 던지지 않는다. `[].push()` 는 `0`.
 - ★★★ **`splice` 는 지운 것들을 돌려준다** — `splice(1, 2)` 가 `["b","c"]`. 끼우기만 하면 `[]`.
-  ★ **인자 개수로 갈린다** — `splice()` 는 **아무것도 안 지우고**(`[]`), `splice(2)` 는 **끝까지** 지운다. 명세가 「start 가 없으면 0 개」·「deleteCount 가 없으면 `len - actualStart`」를 따로 적는다.
+  ★ **인자 개수로 나뉜다** — `splice()` 는 **아무것도 안 지우고**(`[]`), `splice(2)` 는 **끝까지** 지운다. 명세가 「start 가 없으면 0 개」·「deleteCount 가 없으면 `len - actualStart`」를 따로 적는다.
   `splice(1, 99)` 는 넘치는 개수를 **잘라서**(clamp) 끝까지, `splice(9, 1, 'x')` 는 start 를 **길이로 잘라서** 끝에 붙인다.
 - ★ **`push([2, 3])` 은 배열 하나를 원소 하나로** 넣어 반환 `2`, `push(...[2, 3])` 은 둘을 넣어 반환 `3`.
 
-### 3. 비교 함수가 없으면 **글자로** — `[1,10,9]`. 불리언 비교 함수는 이 판에서 **한 자리도 안 움직였다** ★★★
+### 3. 비교 함수가 없으면 **글자로** — `[1,10,9]`. 불리언 비교 함수는 이 버전에서 **한 자리도 안 움직였다** ★★★
 
 **출력**
 
@@ -129,7 +129,7 @@ sort('desc')                                    -> TypeError 「The comparison f
   `-10` 은 `"-10"`, `1e21` 은 `"1e+21"` 이라 글자 순서로 선다. **섞인 타입도 전부 글자**가 되어 던지지 않는다 — 대문자 `"B"` 가 소문자 `"a"` 앞이다.
 - ★★ **`[3]`** — `a - b` 가 숫자 오름차순, `b - a` 가 내림차순. `localeCompare` 는 사람의 알파벳 순서(`a A b C`) — 이 줄만 ECMA-402 와 ICU 데이터에 매인다.
 - ★★★ **`[4]`** — 다섯 입력 전부 **입력 그대로**다. `a > b` 는 불리언이라 `ToNumber` 로 `1` 아니면 `0` — **음수가 안 나온다.**
-  ★★★ 이 결과는 **명세가 약속한 것이 아니다** — 불리언 비교 함수는 「consistent comparator」가 아니고(「v is a Number」를 어긴다), 그 순서는 **implementation-defined** 다(8번). 「안 움직인다」는 **이 판(V8 11.3·10.2)의 관찰**이다.
+  ★★★ 이 결과는 **명세가 약속한 것이 아니다** — 불리언 비교 함수는 「consistent comparator」가 아니고(「v is a Number」를 어긴다), 그 순서는 **implementation-defined** 다(8번). 「안 움직인다」는 **이 버전(V8 11.3·10.2)의 관찰**이다.
 - ★★ **`[5]`** — `undefined` 는 「비교 함수 없음」과 같아 통과, 나머지는 **`TypeError`**. 명세 `sort` 의 **첫 단계** — "If comparator is not undefined and IsCallable(comparator) is false, throw a TypeError exception." 배열을 읽기 전이다.
 
 ### 4. **값 → `undefined` → 구멍** 순서. 비교 함수는 `undefined` 를 **한 번도 안 받는다** ★★★
@@ -268,7 +268,7 @@ frozen []
   ★ **기준** — 「원본이 바뀌나」가 아니라 **「명세의 단계가 원본에 `Set`/`Delete` 를 부르나」**.
 - 예외의 **종류**는 명세 보장, 문구는 V8 의 것이다.
 
-### 7. 안정 정렬은 **ES2019(10판)부터** — 두 node 판은 **둘 다 그 뒤**라 판 대조로는 못 보고 같은 키 격자로 보였다 ★★★
+### 7. 안정 정렬은 **ES2019(10판)부터** — 두 node 버전은 **둘 다 그 뒤**라 판 대조로는 못 보고 같은 키 격자로 보였다 ★★★
 
 **소스**
 
@@ -335,11 +335,11 @@ lengths answering y: 10 / 10
 - ★★★ **9판(ES2018)** — "The sort is not necessarily stable (that is, elements that compare equal do not necessarily remain in their original order)."
   **10판(ES2019)** — "The sort must be stable (that is, elements that compare equal must remain in their original order)."
 - ★★ **최신 초안** — 그 문장을 `SortIndexedProperties` 의 조건으로 옮겼다. 「SortCompare 가 0 이면 원래 자리가 앞선 쪽이 앞」 — "if ℝ(SortCompare(old[j], old[k])) = 0, then π(j) < π(k); i.e., the sort is stable."
-- ★★ **이 머신의 node 18 과 20 은 둘 다 경계 뒤**다. 그래서 「판에 따라 갈리나」로는 물을 수 없고, **길이 열 가지 × 같은 키**로 「이 판이 약속을 지키나」를 물었다 — `10 / 10`.
+- ★★ **이 머신의 node 18 과 20 은 둘 다 경계 뒤**다. 그래서 「판에 따라 갈리나」로는 물을 수 없고, **길이 열 가지 × 같은 키**로 「이 버전이 약속을 지키나」를 물었다 — `10 / 10`.
   ★ 이것은 **창을 바꿔 물은 것**이다(제5의 상태). 바꾼 창이 못 보는 것 — **ES2019 이전 엔진이 실제로 불안정했나.** 이 머신에 그 판이 없다.
 - ★ `[3]` 두 번 나눠 정렬이 되는 것이 안정성의 쓸모다 — `dev` 무리 안에서 등급 순이 남았다.
 
-### 8. 규칙을 어긴 비교 함수의 순서는 **implementation-defined** — 이 판에서는 흔들리지 않았고, 난수 비교 함수는 **모든 순열**이 나왔다 ★★★
+### 8. 규칙을 어긴 비교 함수의 순서는 **implementation-defined** — 이 버전에서는 달라지지 않았고, 난수 비교 함수는 **모든 순열**이 나왔다 ★★★
 
 **소스**
 
@@ -434,9 +434,9 @@ input [1,2,3,4]  trials 20000
 - ★★★ **어기는 조건** — 「consistent comparator」의 첫 조건이 "Calling comparator(a, b) always returns the same value v … Furthermore, v is a Number, and v is not NaN." 이다.
   `(a, b) => a > b` 는 **Number 가 아니다**(불리언). `() => 1` 은 **대칭성**(a = b 이면 b = a, a < b 와 a > b 중 하나만)을 어긴다. 난수는 **같은 쌍에 같은 값**을 어긴다.
 - ★★★ **명세의 이름** — "The sort order is implementation-defined if SortCompare is not a consistent comparator for the elements of items."
-  그래서 3번 `[4]` 의 「입력 그대로」는 **이 엔진·이 판의 사실**이지 언어의 사실이 아니다.
-- ★★ **난수가 없는 일곱 개는 50판 모두 한 가지** — 흔들리지 않았다. 흔들리지 않는다고 **약속이 되는 것은 아니다**(규칙 3 — 「여러 번 같았다」는 보장이 아니다).
-- ★★★ **난수 비교 함수** — 원소 3개에서 `6 / 6`, 4개에서 `24 / 24`. 결과 자체는 판마다 흔들리지만 **가짓수는 흔들리지 않는다** — 분포를 안 찍고 가짓수만 찍은 이유다.
+  그래서 3번 `[4]` 의 「입력 그대로」는 **이 엔진·이 버전의 사실**이지 언어의 사실이 아니다.
+- ★★ **난수가 없는 일곱 개는 50판 모두 한 가지** — 달라지지 않았다. 달라지지 않는다고 **약속이 되는 것은 아니다**(규칙 3 — 「여러 번 같았다」는 보장이 아니다).
+- ★★★ **난수 비교 함수** — 원소 3개에서 `6 / 6`, 4개에서 `24 / 24`. 결과 자체는 판마다 흔들리지만 **가짓수는 달라지지 않는다** — 분포를 안 찍고 가짓수만 찍은 이유다.
   ★ **고르게 나오는가는 안 쟀다.** 섞기에는 피셔-예이츠를 쓴다.
 
 ### 9. 파이썬은 **`None` 을 돌려줘 체이닝을 막고 못 비교하면 던진다** · JS 는 **원본을 돌려줘 체이닝이 조용히 원본을 바꾸고 전부 글자로 비교한다** ★★★
@@ -515,9 +515,9 @@ strict mode here? false
 | `js24b-24h-same-array.js` | ★★★ 반환값과 원본의 정체 · `fill` 공유 · `copyWithin` · `length` 대입 | node20 1벌 + node18 대조 1벌 |
 | `js24b-24i-frozen-target.js` | ★★ 동결 배열 × 메서드 11 × 입력 셋(엄격 모드) | node20 1벌 + node18 대조 1벌 |
 | `js24b-24j-frozen-sloppy.js` | ★★ 같은 질문을 비엄격 모드로 — 메서드 대 대입식 | node20 1벌 + node18 대조 1벌 |
-| `js24b-vdiff.sh` · `js24b-versions.sh` | 두 판이 갈린 탐침 수 · 이 문서의 출력이 **어느 판에서 나왔나** + 판별 기능 표 | 1벌씩 |
+| `js24b-vdiff.sh` · `js24b-versions.sh` | 두 버전이 달라진 probe 수 · 이 문서의 출력이 **어느 버전에서 나왔나** + 판별 기능 표 | 1벌씩 |
 
-판별 블록의 Chrome 줄을 낸 페이지 — 탐침 파일 이름을 주소의 `?` 뒤에 붙여 연다. `console.log` 를 가로채 줄이 늘 때마다 `<pre>` 를 다시 쓰고, `--dump-dom` 이 그것을 내보낸다.
+판별 블록의 Chrome 줄을 낸 페이지 — probe 파일 이름을 주소의 `?` 뒤에 붙여 연다. `console.log` 를 가로채 줄이 늘 때마다 `<pre>` 를 다시 쓰고, `--dump-dom` 이 그것을 내보낸다.
 
 ```html
 <!-- js24b-page.html -->
@@ -543,9 +543,9 @@ document.write('<script src="' + location.search.slice(1) + '"><\/script>');
 
 **구현 의존 항목** — 다음은 **이 환경에서만** 그렇다.
 
-- ★★★ **규칙을 어긴 비교 함수의 결과 전부**(3번 `[4]` · 8번) — 명세가 **implementation-defined** 라 부른다. 두 node 판에서 같았다 — 그래도 약속이 아니다.
+- ★★★ **규칙을 어긴 비교 함수의 결과 전부**(3번 `[4]` · 8번) — 명세가 **implementation-defined** 라 부른다. 두 node 버전에서 같았다 — 그래도 약속이 아니다.
 - ★★ **비교 함수의 호출 순서와 횟수**(4번 `[2]` · 8번 `[2]`) — 명세는 "an implementation-defined sequence of calls to SortCompare" 다.
-- ★★ **난수 비교 함수의 가짓수**(`6 / 6` · `24 / 24`) — 이 판 · 2만 판의 관찰이다.
+- ★★ **난수 비교 함수의 가짓수**(`6 / 6` · `24 / 24`) — 이 버전 · 2만 판의 관찰이다.
 - ★ **예외 문구 전부** — `The comparison function must be either a function or undefined` · `Cannot add property 3, object is not extensible` · `Cannot delete property '2' of [object Array]` ·
   `Cannot assign to read only property '0' of object '[object Array]'` · `Cannot assign to read only property 'length' of object '[object Array]'` · `Invalid array length`. **종류만 명세가 정한다.**
 - ★ `localeCompare` 한 줄 — ECMA-402 · ICU 데이터.
@@ -553,15 +553,15 @@ document.write('<script src="' + location.search.slice(1) + '"><\/script>');
 **격자의 세 칸 · 반환값 · 기본 문자열 비교 · `undefined`/구멍의 자리 · 비교 함수가 `undefined` 를 안 받는 것 · 안정 정렬 · `sort` 의 전부 쓰기 · 모드와 상관없이 던지는 것 · `fill` 공유 · `copyWithin` 의 겹침 처리 · `length` 대입은 구현 의존이 아니다.**
 어느 엔진에서도 같아야 한다.
 
-**안 돌려 본 것 / 못 잰 것 / 부적용인 창**
+**안 돌려 본 것 / 못 잰 것 / 해당 없는 창**
 
-- **안 돌려 본 것** — **Chrome 에서의 이 주제 탐침**(판별 블록만 돌렸다 — 같은 V8 계열이다) · **파이썬 쪽 재실행**(10번·31번 인용) · 다른 엔진(SpiderMonkey·JavaScriptCore)의 불리언 비교 함수 결과 · `TypedArray.prototype.sort`.
-- ★★ **못 잰 것** — **ES2019 이전 엔진의 불안정 정렬.** 이 머신의 두 node 판이 다 경계 뒤다 — 명세 두 판의 문장과 같은 키 격자로 창을 바꿨다(7번).
+- **안 돌려 본 것** — **Chrome 에서의 이 주제 probe**(판별 블록만 돌렸다 — 같은 V8 계열이다) · **파이썬 쪽 재실행**(10번·31번 인용) · 다른 엔진(SpiderMonkey·JavaScriptCore)의 불리언 비교 함수 결과 · `TypedArray.prototype.sort`.
+- ★★ **못 잰 것** — **ES2019 이전 엔진의 불안정 정렬.** 이 머신의 두 node 버전이 다 경계 뒤다 — 명세 두 버전의 문장과 같은 키 격자로 창을 바꿨다(7번).
 - ★★★ **안 쟀다** — **성능 전부.** 「`push` 가 `concat` 보다 빠르다」·「`shift` 가 느리다」·「제자리 정렬이 메모리를 아낀다」를 **한 줄도 쓰지 않았다.**
-- ★★ **부적용인 창** — **③ 브랜드 태그**(메서드가 전부 generic) · **진단의 `(행,열)`**(`SyntaxError` 가 없다). **「잴 것이 없다」는 뜻**이다.
+- ★★ **해당 없는 창** — **③ 브랜드 태그**(메서드가 전부 generic) · **진단의 `(행,열)`**(`SyntaxError` 가 없다). **「잴 것이 없다」는 뜻**이다.
 - ★ **미룬 창** — Proxy `set` 트랩으로 **쓰기 횟수** 세기는 [25번](../25-array-non-mutating-and-copy-methods/2-summary.md)의 본체다.
 
-**판이 올랐을 때 다시 돌려야 하는 것**
+**버전이 올랐을 때 다시 돌려야 하는 것**
 
 - ★★★ **3번 `[4]` 과 8번 전부** — 엔진의 정렬 구현이 바뀌면 **결과가 바뀔 수 있고, 바뀌어도 명세 위반이 아니다.**
 - ★★ **예외 문구 전부.**
@@ -573,8 +573,8 @@ document.write('<script src="' + location.search.slice(1) + '"><\/script>');
 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮긴 출력이 하나도 없다).
 
 ★★ **예외는 `e.constructor.name` 과 `e.message` 로만 찍었다** — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
-★★★ **이 주제의 탐침은 두 node 판에서 한 글자도 같았다** — 판 대조기의 집계 줄은 [2-summary.md](2-summary.md) 맨 위 부분에 있다.
-★★ **8번의 둘째 블록(난수 비교 함수)은 분포를 찍지 않는다** — 가짓수만 찍어 흔들리지 않게 만들었다.
+★★★ **이 주제의 probe는 두 node 버전에서 한 글자도 같았다** — 판 대조기의 집계 줄은 [2-summary.md](2-summary.md) 맨 위 부분에 있다.
+★★ **8번의 둘째 블록(난수 비교 함수)은 분포를 찍지 않는다** — 가짓수만 찍어 달라지지 않게 만들었다.
 
 **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다(7·8·10번의 소스만 여기 싣는다).
 `js24b-24a-mutation-grid.js`(1번) · `js24b-24b-return-values.js`(2번) · `js24b-24c-default-order.js`(3번) · `js24b-24g-undefined-and-holes.js`(4번) ·

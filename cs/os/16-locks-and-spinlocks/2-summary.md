@@ -184,7 +184,7 @@ void unlock(void) { __atomic_store_n(&flag, 0, __ATOMIC_RELEASE); }
 
 - `pthread_spin_init(3)` NOTES는 유저 공간 스핀락을 **일반 해법이 아니라고** 적는다.
   - `SCHED_FIFO`(또는 `SCHED_RR`) 같은 실시간 정책과 함께 쓰라고 한다.
-  - `SCHED_OTHER`에서 쓰면 "설계 실수일 가능성이 높다"고 적는다. 락을 쥔 채 선점되면 나머지가 헛돌기 때문이다.
+  - `SCHED_OTHER`에서 쓰면 "설계 실수일 가능성이 높다"고 적는다. 락을 잡은 채 선점되면 나머지가 헛돌기 때문이다.
 
 ### 2. Java — 락은 반드시 finally에서 푼다
 
@@ -268,7 +268,7 @@ jstack <pid> | grep -A3 'BLOCKED\|parking to wait'
   - 임계 구역에서 불필요한 일을 뺀다.
   - 원자 변수 하나로 끝나는 갱신은 락 대신 원자 명령을 쓴다(같은 재현에서 4스레드 `fetch_add`는 0.08초, mutex는 0.44초였다, 스레드당 100만 회).
 
-### 3. 비공정 락 → 특정 요청만 꼬리 지연이 길다
+### 3. 비공정 락 → 특정 요청만 테일 레이턴시가 길다
 
 - **현상**: 평균 지연은 괜찮은데 p99가 튄다. 특정 스레드가 계속 락을 못 잡는다.
 - **보이는 형태**: 스레드 덤프를 여러 번 떠도 같은 스레드가 `BLOCKED`·`parking to wait for`에 머문다.
@@ -284,7 +284,7 @@ jstack <pid> | grep -A3 'BLOCKED\|parking to wait'
   - 그래서 **다른 스레드의** 호출만 영원히 기다린다. 스레드 풀이면 그 워커가 받은 요청은 성공해 "간헐적 멈춤"처럼 보일 수 있다.
 - **보이는 형태**
   - Java 스레드 덤프에 같은 `ReentrantLock`을 기다리는 스레드가 줄줄이 `WAITING (parking)`이다. 주인 스레드는 이미 다른 일을 하거나 끝났다. 주인이 종료했으면 누구도 락을 얻지 못한다.
-  - `jstack -l <pid>`의 "Locked ownable synchronizers"에서 락을 쥔 스레드를 찾는다. 코드에서는 `isHeldByCurrentThread()`·`getHoldCount()`로 확인한다.
+  - `jstack -l <pid>`의 "Locked ownable synchronizers"에서 락을 잡은 스레드를 찾는다. 코드에서는 `isHeldByCurrentThread()`·`getHoldCount()`로 확인한다.
   - C라면 `ps -L`에서 모두 `S` + `futex_do_wait`다.
 - **원인**: `lock()` 뒤 예외가 나서 `unlock()`을 건너뛰었다. `synchronized`는 블록을 빠져나갈 때 자동으로 풀지만 `Lock`은 직접 풀어야 한다.
 - **대처**: `lock(); try { … } finally { unlock(); }` 형식을 지킨다. 정적 분석 규칙으로 막는다.

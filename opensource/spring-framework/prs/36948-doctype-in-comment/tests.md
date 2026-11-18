@@ -32,7 +32,7 @@ void xsdDetection(String fileName) throws Exception {
 }
 ```
 
-그 한 케이스가 무엇을 주장하고 수정 전후로 어떻게 갈리는지를 네 항목으로 나눠 정리한다.
+그 한 케이스가 무엇을 주장하고 수정 전후로 어떻게 달라지는지를 네 항목으로 나눠 정리한다.
 
 - **주장**: 마커 없는 주석 본문 줄에 `DOCTYPE`이라는 단어가 있어도 문서는 여전히 `VALIDATION_XSD`로 판정된다.
 - **fix 전 결과와 이유**: red다.\

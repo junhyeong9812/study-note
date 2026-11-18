@@ -17,7 +17,7 @@ munmap(..., 208896)               <- free(큰 것): 바로 커널에 반납
                                   <- free(작은 것): 시스템 콜 없음 (free list로)
 ```
 
-- 128KiB 이상이고 free list로 못 채우는 요청은 `mmap`을 쓴다(mallopt(3) `M_MMAP_THRESHOLD`). 문턱은 기본 상태에서 동적이라 큰 mmap 블록을 free하면 올라갈 수 있다. `M_TRIM_THRESHOLD`·`M_TOP_PAD`·`M_MMAP_THRESHOLD`·`M_MMAP_MAX` 중 하나라도 설정하면 고정된다(mallopt(3)).
+- 128KiB 이상이고 free list로 못 채우는 요청은 `mmap`을 쓴다(mallopt(3) `M_MMAP_THRESHOLD`). 임계값은 기본 상태에서 동적이라 큰 mmap 블록을 free하면 올라갈 수 있다. `M_TRIM_THRESHOLD`·`M_TOP_PAD`·`M_MMAP_THRESHOLD`·`M_MMAP_MAX` 중 하나라도 설정하면 고정된다(mallopt(3)).
 - mmap 블록은 `free`하면 `munmap`으로 즉시 돌아간다. 힙 청크는 free list로 돌아갈 뿐 커널에 돌아가지 않는다.
 - (예시, 리눅스 7.0 · glibc 2.39 로컬 재현)
 
@@ -69,7 +69,7 @@ munmap(..., 208896)               <- free(큰 것): 바로 커널에 반납
 ### 7. 자바의 두 할당
 
 - `new byte[1024]`: JVM 힙 안에서 할당한다. HotSpot은 스레드별 버퍼(TLAB)에서 포인터를 밀어 할당한다(HotSpot Glossary). glibc `malloc`을 거치지 않는다.
-- `ByteBuffer.allocateDirect`: JDK 구현에서 `UNSAFE.allocateMemory` → HotSpot `os::malloc` → glibc `malloc`이다(OpenJDK 소스). 1MiB라 mmap 문턱 이상이면 `mmap`으로 받는다.
+- `ByteBuffer.allocateDirect`: JDK 구현에서 `UNSAFE.allocateMemory` → HotSpot `os::malloc` → glibc `malloc`이다(OpenJDK 소스). 1MiB라 mmap 임계값 이상이면 `mmap`으로 받는다.
 - 그래서 자바 힙(`-Xmx`)은 작아도 direct buffer·스레드 스택·JNI 라이브러리의 `malloc`, glibc arena의 여유 공간이 RSS를 키운다. 컨테이너에서는 이것이 limit 초과로 이어진다(13번).
 
 ### 8. double free → exit 134
@@ -91,7 +91,7 @@ munmap(..., 208896)               <- free(큰 것): 바로 커널에 반납
 ### 10. 스레드 많은 서버의 설명 안 되는 RSS
 
 - 의심: glibc **arena**가 많다. 스레드마다 경합을 피하려 arena가 생기고, 기본 상한은 CPU 수 × 8(64비트, malloc/malloc.c `NARENAS_FROM_NCORES`)이다. 스레드용 arena는 최대 64MiB짜리 heap을 `mmap`해 쓰고, 차면 heap을 더 만들어 잇는다(malloc/arena.c `HEAP_MAX_SIZE`, malloc.c `sysmalloc`의 `new_heap`). pmap의 64MiB 근처 영역이 그 heap들이다. 여러 arena일 수도, 한 arena의 여러 heap일 수도 있다.
-- 각 arena가 해제된 청크·여유 공간을 따로 쥐고 있어 RSS가 부푼다.
+- 각 arena가 해제된 청크·여유 공간을 따로 잡고 있어 RSS가 부푼다.
 - 확인·완화
   - `pmap -x <pid>`로 영역 크기·개수를 본다. 자바라면 NMT로 JVM이 아는 native 사용량과 비교한다(13번).
   - `MALLOC_ARENA_MAX`를 작게(예: 2~4, 예시) 설정해 비교한다. 대가는 할당 락 경합이다.

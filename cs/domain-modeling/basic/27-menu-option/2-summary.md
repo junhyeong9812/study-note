@@ -99,7 +99,7 @@ Menu (계약 — 다 주어짐)                 OptionSelection (구현 — TODO
 > 예: 거부·교체는 "보통→휘핑→라지→샷"과 그 역순이 다른 주문이 되지만, 확정은 같은 주문이 된다(0/1,000).
 
 - **세 방식이 일치하는 것은 397/1,000** — 나머지 603건은 어느 방식을 골랐느냐로 결과가 달라지는데, 이 선택은 대개 명세에 안 적힌다.
-- **값이 최대 1,200원 갈린다**: 둘 다 통과한 622건에서 값 차이 평균 288원, 최대 1,200원 — 4,500원 커피의 27%.\
+- **값이 최대 1,200원 달라진다**: 둘 다 통과한 622건에서 값 차이 평균 288원, 최대 1,200원 — 4,500원 커피의 27%.\
   **이 차이는 오류가 아니다.** 두 구현 다 자기 규칙대로 맞고 영수증도 이상이 없다.
 
 ### 규칙 3 — 그룹 최대를 넘으면 "가장 먼저 고른 것"이 비켜난다
@@ -252,8 +252,8 @@ Menu (계약 — 다 주어짐)                 OptionSelection (구현 — TODO
 
 ## 관련 주제·근거
 
-- 선행 — [26-category-tree](../26-category-tree/2-summary.md): "조회 시 계산 vs 저장 시 계산"의 시점 선택. 그쪽은 비용이, 여기는 결과가 갈린다.
-- 연결 — [17-cart-discount](../17-cart-discount/2-summary.md): 적용 순서를 계약으로 못 박아 결과가 갈리지 않게 하는 같은 구도.
+- 선행 — [26-category-tree](../26-category-tree/2-summary.md): "조회 시 계산 vs 저장 시 계산"의 시점 선택. 그쪽은 비용이, 여기는 결과가 달라진다.
+- 연결 — [17-cart-discount](../17-cart-discount/2-summary.md): 적용 순서를 계약으로 못 박아 결과가 달라지지 않게 하는 같은 구도.
 - 연결 — [09-order-state](../09-order-state/2-summary.md): `confirm`은 상태 전이이고 `violations()`는 그 가드다.
 - 후속 — [advanced/09-policy-version](../../advanced/09-policy-version/2-summary.md): 규칙이 바뀐 뒤 옛 장바구니를 어떻게 판정하나.
 - 기법 — [data-structure/05-hashmap](../../../data-structure/05-hashmap/2-summary.md): `LinkedHashSet`·`Set`의 바탕.

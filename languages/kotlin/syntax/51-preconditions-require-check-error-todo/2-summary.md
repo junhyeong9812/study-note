@@ -1,14 +1,14 @@
 # kotlin/syntax/51 — 계약 함수 — `require`/`check`/`error`/`TODO` — 정리 (힌트)
 
-★★★ **본체는 첫째 창이다** — 「**던지는 예외 격자 — 계약 함수 열한 가지 × JVM 두 벌(`java` · `java -ea`) → 예외 클래스 · 기본 메시지**」. 이 주제는 **계약·규약형**이라(§2-1 규칙 6) 「어기면 무엇이 출력되나」를 전수로 찍는 것이 본체다.
+★★★ **핵심은 첫째 창이다** — 「**던지는 예외 격자 — 계약 함수 열한 가지 × JVM 두 벌(`java` · `java -ea`) → 예외 클래스 · 기본 메시지**」. 이 주제는 **계약·규약형**이라(§2-1 규칙 6) 「어기면 무엇이 출력되나」를 전수로 찍는 것이 본체다.
 
 ## 이 주제가 쓰는 세 층
 
 | 층 | 뜻 | 근거로 쓰는 것 |
 |---|---|---|
 | **언어 보장 / API 계약** | 서명·KDoc 이 약속한 것 | ★★★ `require` KDoc 「**Throws an [IllegalArgumentException]**」 · `check` 는 **`IllegalStateException`** · `error` 는 **`IllegalStateException`** 을 던지고 반환 타입 **`Nothing`** · `assert` KDoc 「**runtime assertions have been enabled on the JVM using the -ea JVM option**」 · 계약 `returns() implies value` |
-| **구현(컴파일러·stdlib)** | 이 판이 실제로 하는 것 | ★★ 기본 메시지 문자열(`Failed requirement.` · `Check failed.` · `Required value was null.` · `An operation is not implemented.`) · 전부 `inline` 이라 **메시지 람다가 객체로 안 생긴다** · `-Xassertions` 의 네 모드 |
-| **이 판의 관찰** | kotlinc 2.4.20 에서 이번에 본 것 | 격자 값 · 진단 문구 · `javap` 발췌 |
+| **구현(컴파일러·stdlib)** | 이 버전이 실제로 하는 것 | ★★ 기본 메시지 문자열(`Failed requirement.` · `Check failed.` · `Required value was null.` · `An operation is not implemented.`) · 전부 `inline` 이라 **메시지 람다가 객체로 안 생긴다** · `-Xassertions` 의 네 모드 |
+| **이 버전의 관찰** | kotlinc 2.4.20 에서 이번에 본 것 | 격자 값 · 진단 문구 · `javap` 발췌 |
 
 ## 이 판
 
@@ -18,14 +18,14 @@ info: kotlinc-jvm 2.4.20 (JRE 21.0.5+11-LTS)
 (exit 0)
 ```
 
-## 흔들리는 칸 / 안 흔들리는 칸
+## 실행마다 달라지는 항목 / 달라지지 않는 항목
 
 | | 칸 | 왜 |
 |---|---|---|
-| **흔들린다** | (이 주제에는 없다) | 해시코드·주소·시간·스택 트레이스를 찍지 않았다 |
-| 안 흔들린다 | 던지기 격자 11행 × 2벌 · 예외 클래스 · 메시지 · 갈린 행 수 | stdlib 의 상수 문자열과 JVM 플래그로 정해진다 |
-| 안 흔들린다 | `-Xassertions` 4모드 × 2벌 · 조건이 평가됐나 | 컴파일 모드와 `-ea` 로 정해진다 |
-| 안 흔들린다 | 계약 격자 9탐침 · 진단 문구 · `javap` 발췌(오프셋·상수 풀 번호째) · 종료 코드 | 같은 판이면 같다 |
+| **실행마다 달라진다** | (이 주제에는 없다) | 해시코드·주소·시간·스택 트레이스를 찍지 않았다 |
+| 달라지지 않는다 | 던지기 격자 11행 × 2벌 · 예외 클래스 · 메시지 · 달라진 행 수 | stdlib 의 상수 문자열과 JVM 플래그로 정해진다 |
+| 달라지지 않는다 | `-Xassertions` 4모드 × 2벌 · 조건이 평가됐나 | 컴파일 모드와 `-ea` 로 정해진다 |
+| 달라지지 않는다 | 계약 격자 9probe · 진단 문구 · `javap` 발췌(오프셋·상수 풀 번호째) · 종료 코드 | 같은 판이면 같다 |
 
 ★ 근거 — 캡처 스크립트를 처음부터 두 번 돌려 **블록 전체를 대조**했다(수치는 3-answer 의 「실행 검증」).
 
@@ -57,22 +57,22 @@ info: kotlinc-jvm 2.4.20 (JRE 21.0.5+11-LTS)
 ## 이 주제가 답하려는 질문
 
 1. 계약 함수마다 **어느 예외 클래스를 어떤 기본 메시지로** 던지나 — 그리고 **어느 것이 JVM 플래그에 따라 갈리나.**
-2. `require(x != null)` 뒤에서 `x.length` 가 되는 것은 **무엇 덕분**인가 — 내가 만든 검증 함수는 왜 안 되고, **어떻게 하면** 되나(이 판에서 아직 실험적인가).
+2. `require(x != null)` 뒤에서 `x.length` 가 되는 것은 **무엇 덕분**인가 — 내가 만든 검증 함수는 왜 안 되고, **어떻게 하면** 되나(이 버전에서 아직 실험적인가).
 3. 메시지 람다는 **언제** 만들어지나 — 통과할 때도 비용을 내나.
 
 ## 동작 방식
 
-### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「부적용인 창」
+### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「해당 없는 창」
 
 | 창 | 무엇을 보여 주나 | 어디서 왔나 |
 |---|---|---|
-| ★★★ **던지기 격자(실행 × JVM 두 벌)** | 예외 클래스 · 메시지((1)) | ★ **본체 창** — 스크립트가 같은 클래스를 `java`·`java -ea` 로 두 번 돌려 합친다 |
+| ★★★ **던지기 격자(실행 × JVM 두 벌)** | 예외 클래스 · 메시지((1)) | ★ **핵심 창** — 스크립트가 같은 클래스를 `java`·`java -ea` 로 두 번 돌려 합친다 |
 | ★★ **`-Xassertions` 판 격자** | 컴파일 모드 × `-ea` → 던졌나 · **조건을 평가했나**((2)) | 조건 함수가 부를 때마다 계수를 올린다 |
 | ★★ **계약 판별 격자(컴파일)** | 스마트 캐스트가 되나 · 진단((3)) | 49편의 격자와 같은 꼴 |
 | ★★ **계수 로그 + `javap -c`** | 메시지를 몇 번 만들었나 · 람다가 객체가 되나((4)) | — |
 | ★★ **stdlib 소스 jar 발췌** | KDoc 계약 · 기본 메시지 · 계약 선언((5)) | — |
 | **인용 — 다시 안 잰다** | `Nothing` 타입 · `?:` 뒤 `error()` · `TODO()` 가 `catch (e: Exception)` 을 빠져나감 | [34번](../34-exceptions-nothing-and-try-expression/) · [49번](../49-result-and-runcatching/) |
-| **부적용 — 실행 시간** | 「`require` 는 공짜」는 **재지 않았다** — (4)는 **메시지 생성 횟수**만 센다 | — |
+| **해당 없음 — 실행 시간** | 「`require` 는 공짜」는 **재지 않았다** — (4)는 **메시지 생성 횟수**만 센다 | — |
 
 ### (1) ★★★ 던지는 예외 격자 — 열한 가지 × JVM 두 벌
 
@@ -158,7 +158,7 @@ rows that differ between java and java -ea: 2 / 11
 
 - ★★★ **`require` 계열 3행은 전부 `IllegalArgumentException`**, **`check` 계열 3행과 `error` 는 전부 `IllegalStateException`** 이다 — 클래스가 곧 「인자가 틀렸다」와 「상태가 틀렸다」의 구분이다.
 - ★★★ **기본 메시지** — `require(false)` 는 **`Failed requirement.`** · `check(false)` 는 **`Check failed.`** · `requireNotNull`·`checkNotNull` 은 **둘 다 `Required value was null.`**(클래스만 다르다) · `TODO()` 는 **`An operation is not implemented.`** · `TODO("m")` 은 **`An operation is not implemented: m`** · `assert(false)` 는 (`-ea` 일 때) **`Assertion failed`**(마침표 없음).
-- ★★★ **갈린 행은 11행 중 2행** — `assert` 둘뿐이다. `java` 에서는 **아무것도 안 던지고**(`(nothing thrown)`), `java -ea` 에서야 `java.lang.AssertionError` 다. 나머지 아홉은 JVM 플래그와 무관하다.
+- ★★★ **달라진 행은 11행 중 2행** — `assert` 둘뿐이다. `java` 에서는 **아무것도 안 던지고**(`(nothing thrown)`), `java -ea` 에서야 `java.lang.AssertionError` 다. 나머지 아홉은 JVM 플래그와 무관하다.
 - ★★ **`TODO` 의 클래스는 `kotlin.NotImplementedError`** — `java.lang` 이 아니라 **Kotlin stdlib 의 클래스**이고, `Error` 를 상속한다((5)). 그래서 `catch (e: Exception)` 을 빠져나간다 — [49번 주제](../49-result-and-runcatching/) (4)의 「다섯 중 둘」 중 하나다.
 
 ### (2) ★★ `assert` 는 무엇이 켜나 — `-Xassertions` × `-ea`
@@ -330,7 +330,7 @@ fun p6(s: String?): Int { ownCheck(s != null); return s.length }            // o
 - ★★★ **같은 몸통에 계약을 달면(`ownCheckC`) 통과한다** — 다만 **`@OptIn(ExperimentalContracts::class)` 가 있어야 한다.** 빼면(`ownCheckNoOptIn`) `contract`·`returns`·`implies` **세 자리 모두** 「`this declaration needs opt-in`」이다. **2.4.20 에서도 계약은 아직 실험적**이다.
 - ★★ **`assert` 에는 계약이 없다** — `assert(s != null)` 뒤는 막힌다. (2)에서 봤듯 `assert` 는 **돌아와도 조건이 참이라는 보장이 없으니**(꺼져 있으면 그냥 돌아온다) 계약을 달 수가 없는 것이 맞다.
 - ★ `if (s == null) error("none")` 과 `s ?: TODO()` 는 계약이 아니라 **`Nothing`** 덕분에 통과한다 — [34번 주제](../34-exceptions-nothing-and-try-expression/) (3)(4).
-- ★ 셈 — **막힌 탐침 3 / 9**(계약을 opt-in 없이 쓴 칸 · `assert` · 계약 없는 직접 함수).
+- ★ 셈 — **막힌 probe 3 / 9**(계약을 opt-in 없이 쓴 칸 · `assert` · 계약 없는 직접 함수).
 
 ### (4) ★★ 메시지 람다는 실패할 때만 — 그리고 객체가 안 생긴다
 
@@ -575,7 +575,7 @@ fee("gold") -> IllegalStateException: unknown kind: gold
 1. ★★★ **`require` 와 `check` 를 섞어 쓴다.** 로그의 예외 클래스가 **누구의 잘못인지**를 잘못 말하게 된다 — 인자는 `require`, 상태는 `check`((1)).
 2. ★★★ **`assert` 를 운영 검사로 쓴다.** `-ea` 없이는 **안 던진다** — 그런데 기본 모드에서는 **조건식의 부수 효과는 난다**((2)).
 3. ★★ **직접 만든 검증 함수 뒤에서 스마트 캐스트를 기대한다.** 계약이 없으면 안 된다 — 달려면 opt-in 이 필요하다(2.4.20)((3)).
-4. ★★ **`requireNotNull` 과 `checkNotNull` 의 메시지로 둘을 가른다.** 둘 다 `Required value was null.` — **클래스로만** 갈린다((1)).
+4. ★★ **`requireNotNull` 과 `checkNotNull` 의 메시지로 둘을 가른다.** 둘 다 `Required value was null.` — **클래스로만** 달라진다((1)).
 5. ★★ **`catch (e: Exception)` 으로 `TODO()` 를 잡는다고 본다.** `Error` 라 빠져나간다([49번](../49-result-and-runcatching/) (4)).
 6. ★ **메시지를 문자열로 미리 만들어 넘긴다.** 통과할 때도 만든다 — 람다로 넘겨라((4)).
 
@@ -589,7 +589,7 @@ fee("gold") -> IllegalStateException: unknown kind: gold
 | `assert` 가 `-ea` 에 따른다 | ★★ **API 계약(KDoc)** · 조건 평가 여부는 **컴파일러 모드**(`-Xassertions`) | (2)(5) |
 | 계약이 있으면 스마트 캐스트 | ★★★ **언어 기능 — 실험적**(`@RequiresOptIn`) | (3) |
 | 메시지 람다가 실패할 때만 불린다 | ★★ **선언**(`if (!value) { val message = lazyMessage() … }`) | (4)(5) |
-| 람다가 객체로 안 생긴다 | ★ **`inline` 의 결과** — 이 판의 바이트코드 관찰 | (4) |
+| 람다가 객체로 안 생긴다 | ★ **`inline` 의 결과** — 이 버전의 바이트코드 관찰 | (4) |
 | `Nothing` · `?:` 뒤 `error()` | **인용** | [34번 주제](../34-exceptions-nothing-and-try-expression/) |
 
 ## 언제 쓰고 언제 안 쓰나
@@ -638,15 +638,15 @@ fee("gold") -> IllegalStateException: unknown kind: gold
 
 ## 더 들어가면
 
-- **`callsInPlace` 계약** — `run { }`·`let { }` 이 람다를 「정확히 한 번 부른다」를 알려 `val` 초기화를 허용하는 계약. 이 판에서 돌리지 않았다.
+- **`callsInPlace` 계약** — `run { }`·`let { }` 이 람다를 「정확히 한 번 부른다」를 알려 `val` 초기화를 허용하는 계약. 이 버전에서 돌리지 않았다.
 - **`ExperimentalExtendedContracts`** — (5)의 발췌에 선언만 있다. 무엇을 여는 표지인지(어느 계약 꼴이 그 뒤에 있나)는 **돌려 보지 않았다.**
 - **`-Xassertions` 가 바꾸는 바이트코드** — (2)는 행동만 봤다. `javap -c` 로 `legacy` 와 `jvm` 의 차이(`$assertionsDisabled` 필드 여부)를 보면 원인이 보일 것이다 — **확인하지 않았다.**
 
 ## 실행 환경
 
-**기준 소스** — **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 `Preconditions.kt`·`Standard.kt`·`AssertionsJVM.kt`·`ContractBuilder.kt` — KDoc 과 구현((5)). ★ 공식 문서 페이지는 **이 작업에서 열지 못했다**(외부 네트워크를 쓰지 않았다).
+**기준 소스** — **이 버전의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 `Preconditions.kt`·`Standard.kt`·`AssertionsJVM.kt`·`ContractBuilder.kt` — KDoc 과 구현((5)). ★ 공식 문서 페이지는 **이 작업에서 열지 못했다**(외부 네트워크를 쓰지 않았다).
 **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java`·`javap` 에서 실제로 얻었다.\
 `kotlinc` 9회(`-Xassertions` 격자 스크립트 안의 4회 · 계약 격자 스크립트 안의 1회 포함) · `java` 12회(두 격자 스크립트 안의 10회 포함) · `javap` 1회 · stdlib 소스 jar 발췌 6곳.\
-★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「갈린 행 N / M」·「던진 칸 N / M」·「막힌 탐침 N / M」은 스크립트가 스스로 센 것**이다.
-**버전** — 이 판의 소스에서 `require`·`check`·`error`·`TODO` 는 `@kotlin.internal.InlineOnly` 인 **`inline fun`** 이고, 계약 표지 `ExperimentalContracts` 는 **`@SinceKotlin("1.3")` + `@RequiresOptIn`** 이다((5)) — ★★★ **2.4.20 에서도 직접 계약을 쓰려면 opt-in 이 필요하다**((3)).
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「달라진 행 N / M」·「던진 칸 N / M」·「막힌 probe N / M」은 스크립트가 스스로 센 것**이다.
+**버전** — 이 버전의 소스에서 `require`·`check`·`error`·`TODO` 는 `@kotlin.internal.InlineOnly` 인 **`inline fun`** 이고, 계약 표지 `ExperimentalContracts` 는 **`@SinceKotlin("1.3")` + `@RequiresOptIn`** 이다((5)) — ★★★ **2.4.20 에서도 직접 계약을 쓰려면 opt-in 이 필요하다**((3)).
 **경계** — ★★★ **`Nothing` 타입**(`error()`·`TODO()` 가 돌아오지 않는다는 것 · `?:` 뒤에 쓸 수 있는 까닭)과 검사 예외가 없다는 것은 [34번 주제](../34-exceptions-nothing-and-try-expression/)가 정본이다. **`TODO()` 의 `NotImplementedError` 가 `catch (e: Exception)` 을 빠져나간다**는 것은 [49번 주제](../49-result-and-runcatching/) (4)가 이미 쟀다(다섯 중 둘이 `Error`) — 여기서는 다시 안 잰다.

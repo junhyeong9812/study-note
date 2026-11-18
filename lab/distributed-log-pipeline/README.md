@@ -142,7 +142,7 @@ PostgreSQL PVC가 326GB까지 차오르며 노드 DiskPressure → Spark Master 
 - Phase 7에서 Spark Worker가 거의 미사용 — Query API의 PySpark가 local[*] 모드로 동작해 진짜 분산 조회가 아님(원본이 스스로 지적).
 - Delta Lake/Iceberg 인덱싱, 파티션 프루닝, Elasticsearch 하이브리드는 계획으로만 남음.
 - `docs/BENCHMARK_WRITE_PHASE3.md`는 **0바이트 빈 파일** — Phase 3(리소스 확장) 설계 문서 부재. 결과는 `BENCHMARK_WRITE_PHASE3_RESULT.md`(내용은 500만건 읽기 벤치마크)에 있음.
-- 루트 README "성능 개선 히스토리"의 `20,000건/분 → 180,000건/분`은 Phase 2 문서의 실측(`20만건/분 → 180만건/분`)과 단위가 어긋남 — 정본은 `BENCHMARK_WRITE_PHASE2.md`.
+- 루트 README "성능 개선 히스토리"의 `20,000건/분 → 180,000건/분`은 Phase 2 문서의 실측(`20만건/분 → 180만건/분`)과 단위가 불일치 — 정본은 `BENCHMARK_WRITE_PHASE2.md`.
 
 ## 원본 문서 지도
 

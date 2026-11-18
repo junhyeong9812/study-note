@@ -576,7 +576,7 @@ SELECT count(*) FROM t WHERE qty IS NULL OR qty <= 0;
 ## 실행 환경
 
 근거는 **실행 결과**다 — 본문의 출력·에러는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+2026-09-21 에 실제로 실행해 받은 것이다. 지어낸 출력은 없다.\
 ★ **환경** — MySQL 의 `sql_mode` 에 `STRICT_TRANS_TABLES` 가 켜져 있다.\
 이 편이 만든 표는 **전부 지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
 문서 근거는 [PG 18 Constraints](https://www.postgresql.org/docs/18/ddl-constraints.html) · [PG 18 Generated Columns](https://www.postgresql.org/docs/18/ddl-generated-columns.html) · [PG 18.0 릴리스 노트](https://www.postgresql.org/docs/release/18.0/) · [MySQL 8.4 CHECK Constraints](https://dev.mysql.com/doc/refman/8.4/en/create-table-check-constraints.html).

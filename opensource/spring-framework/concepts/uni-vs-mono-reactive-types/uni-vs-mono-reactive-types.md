@@ -148,7 +148,7 @@ Flux.from(multiAdapter.toPublisher(null)).blockLast(600ms) -> null (정상 완�
 WebFlux 컨트롤러의 반환값 처리는 선언 타입으로 어댑터를 찾고 값을 `toPublisher`에 넘긴다
 (`AbstractMessageWriterResultHandler.java:174-180`). 반환값이 `null`이어도 어댑터 조회는
 선언 타입(`Uni`/`Mono`)으로 성공하므로(`ReactiveAdapterRegistry.java:195-209`), 그대로
-`toPublisher(null)` 경로에 들어간다. 결과는 선언 타입에 따라 갈린다.
+`toPublisher(null)` 경로에 들어간다. 결과는 선언 타입에 따라 달라진다.
 
 | 컨트롤러 반환 | 내부 경로 | 현재 동작 |
 |---|---|---|

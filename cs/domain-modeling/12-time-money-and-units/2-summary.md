@@ -148,7 +148,7 @@ long once = BigDecimal.valueOf(sum).multiply(rate).setScale(0, RoundingMode.HALF
 ## 쓰이는 자료구조·알고리즘
 
 - **고정 소수점 정수(최소 단위 정수)**: 금액을 그 통화의 최소 단위 개수(`long`)로 든다. 1,000원 → 1000, $10.50 → 1050. 덧셈·뺄셈은 정확하다. 곱셈(이율·환율)과 나눗셈(n등분·배분)에서 반올림·나머지가 생긴다.
-- **`BigDecimal` = 정수 + 스케일**: 값 = unscaled value × 10^-scale(`BigDecimal` javadoc). 스케일까지 값의 일부라 `equals`가 갈린다 — [languages/java/syntax/53-bigdecimal](../../../languages/java/syntax/53-bigdecimal/2-summary.md) (1)(2).
+- **`BigDecimal` = 정수 + 스케일**: 값 = unscaled value × 10^-scale(`BigDecimal` javadoc). 스케일까지 값의 일부라 `equals`가 달라진다 — [languages/java/syntax/53-bigdecimal](../../../languages/java/syntax/53-bigdecimal/2-summary.md) (1)(2).
 - **은행가 반올림(HALF_EVEN)**: 절반에서 짝수 쪽. 모드별 표는 14번 노트.
 - **tz 전이 테이블**: 지역마다 "이 순간부터 오프셋이 몇이다"의 정렬된 배열 + 반복 규칙. JDK 21 `ZoneRules`는 마지막 저장 전이 이전(과거) 시각을 이 배열에서 `Arrays.binarySearch`로 찾고, 그 이후 시각은 반복 규칙으로 그해 전이를 만들어 비교한다(13번 노트).
 - **환산 비율 표**: 단위(또는 통화) 짝 → 비율. 통화 환율표가 방향 있는 그래프라는 점은 [advanced/05-multi-currency](../advanced/05-multi-currency/2-summary.md) 참고.

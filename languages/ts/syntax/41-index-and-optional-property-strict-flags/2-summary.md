@@ -8,22 +8,22 @@ v20.19.6
 Python 3.12.3
 ```
 
-> ★★★ **본체 창 선언 — 이 주제의 본체는 2창 변형(`symbol` 탐침으로 뽑은 요소 타입 격자 — 꼴 열하나 × 켬/끔)이고, 둘째 기둥은 3창(`{ a: undefined }` 대 `{}` 의 방출물 + `node`)이다.** 비용은 **탐침 파일 한 장의 새 진단 수**로만 센다(4절).
-> ★ 타입 탐침은 40편과 같은 **`const p: symbol = …`** 이다 — 진단 문구의 `Type '…'` 가 그 식의 타입이다.
+> ★★★ **핵심 창 선언 — 이 주제의 핵심은 2창 변형(`symbol` probe로 뽑은 요소 타입 격자 — 꼴 열하나 × 켬/끔)이고, 둘째 기둥은 3창(`{ a: undefined }` 대 `{}` 의 방출물 + `node`)이다.** 비용은 **probe 파일 한 장의 새 진단 수**로만 센다(4절).
+> ★ 타입 probe는 40편과 같은 **`const p: symbol = …`** 이다 — 진단 문구의 `Type '…'` 가 그 식의 타입이다.
 > ★★★ **41 은 40 에서 온다.** [**40번 주제**](../40-strict-null-checks-ripple/)가 「`strictNullChecks` 가 `undefined` 를 따로 선 타입으로 만든다 · 끄면 조용해진 칸이 `TypeError`」를 쟀다. 여기의 두 플래그는 그 위에서 **`undefined` 를 더 붙이거나(인덱스) 덜 허락하는(선택 프로퍼티)** 쪽이다.
-> ★★★ [**07번 주제**](../07-object-type-details/) 4절이 **이미 쟀다** — 두 플래그를 한 설정으로 켜면 `{ port: undefined }` 가 **`TS2375`**, `bag.missing.toFixed` 가 **`TS18048`**, 둘 다 **`strict` 에 안 든다.** 인용하고, 여기서는 **어느 꼴에 붙고 어느 꼴에 안 붙나**와 **런타임에서 갈리는 것**으로 넓힌다.
+> ★★★ [**07번 주제**](../07-object-type-details/) 4절이 **이미 쟀다** — 두 플래그를 한 설정으로 켜면 `{ port: undefined }` 가 **`TS2375`**, `bag.missing.toFixed` 가 **`TS18048`**, 둘 다 **`strict` 에 안 든다.** 인용하고, 여기서는 **어느 꼴에 붙고 어느 꼴에 안 붙나**와 **런타임에서 달라지는 것**으로 넓힌다.
 > ★ 소스 펜스 첫 줄 `// 파일명` 은 대조용 배너다 — 실파일에는 없다. **진단의 행 번호는 그 줄을 뺀 기준**이다.
 > ★★ 표 안의 `\|` 는 이스케이프이고 **뜻은 `|` 다.**
 
-## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
+## 이 문서에서 실행마다 달라지는 항목과 달라지지 않는 항목
 
 | | 무엇 | 왜 |
 |---|---|---|
-| **안 흔들린다** | 에러 코드(`TS####`)·`(행,열)` · `symbol` 탐침이 말하는 타입 | 같은 입력·같은 옵션이면 같은 글자다 |
-| **안 흔들린다** | ★★★ 격자의 칸과 마지막 줄의 **수** · 4절의 **진단 수** | 스크립트가 세어 찍는다 |
-| **안 흔들린다** | 방출된 `.js` 와 `node` 출력 | `in`·`Object.keys`·`JSON.stringify` 는 값만 찍었다 |
-| **★ 탐침 한 장의 수** | 4절의 「비용」 | ★★ **`cost41.ts` 한 장**에서 센 것이다 — 실제 코드베이스에서 몇 % 인지는 **주장하지 않는다** |
-| **★ 부적용 — 5창(`.d.ts` 방출)** | 선언 방출은 안 물었다 | — |
+| **달라지지 않는다** | 에러 코드(`TS####`)·`(행,열)` · `symbol` probe가 말하는 타입 | 같은 입력·같은 옵션이면 같은 글자다 |
+| **달라지지 않는다** | ★★★ 격자의 칸과 마지막 줄의 **수** · 4절의 **진단 수** | 스크립트가 세어 찍는다 |
+| **달라지지 않는다** | 방출된 `.js` 와 `node` 출력 | `in`·`Object.keys`·`JSON.stringify` 는 값만 찍었다 |
+| **★ probe 한 장의 수** | 4절의 「비용」 | ★★ **`cost41.ts` 한 장**에서 센 것이다 — 실제 코드베이스에서 몇 % 인지는 **주장하지 않는다** |
+| **★ 해당 없음 — 5창(`.d.ts` 방출)** | 선언 방출은 안 물었다 | — |
 | **안 잰 것** | 두 플래그가 검사 **시간**에 주는 영향 | **재지 않았다** |
 
 ## 한눈에 — 쉽게 말하면
@@ -55,7 +55,7 @@ Python 3.12.3
 
 1. **★★★ `noUncheckedIndexedAccess` 는 어느 꼴에 `undefined` 를 붙이고 어느 꼴에 안 붙이나** — 꼴 열하나 × 켬/끔(1절).
 2. **★★★ `exactOptionalPropertyTypes` 는 무엇을 막고, 그것이 런타임에서 왜 의미가 있나** — 진단(2절) · `in`·`Object.keys`·스프레드(3절).
-3. **★★ 켜는 비용** — 탐침 한 장에서 새로 나는 진단 수(4절) · 두 플래그가 `strict` 밖이라는 것(5절).
+3. **★★ 켜는 비용** — probe 한 장에서 새로 나는 진단 수(4절) · 두 플래그가 `strict` 밖이라는 것(5절).
 
 ## 동작 방식
 
@@ -63,12 +63,12 @@ Python 3.12.3
 
 | 창 | 무엇을 보여 주나 | 성질 | 이 주제에서 |
 |---|---|---|---|
-| ★★★ **2창 변형 — `symbol` 탐침 격자** | 꼴 열하나의 요소 타입 × 켬/끔 | 계산된 것 | **본체**(1절) |
+| ★★★ **2창 변형 — `symbol` probe 격자** | 꼴 열하나의 요소 타입 × 켬/끔 | 계산된 것 | **핵심**(1절) |
 | ★★ **진단 대조** | `{ a: undefined }`·`o.a = undefined`·`delete` × 켬/끔 | 에러 코드 | 2절 |
 | ★★★ **3창 — 방출물 + `node`** | `{ a: undefined }` 대 `{}` 가 **런타임에서** 갈리나 | 실행 결과 | **둘째 기둥**(3절) |
 | ★★ **비용표** | 한 장 × 두 플래그의 네 조합 — 진단 수 | 수 | 4절 |
-| ★ **도움말 창** | 세 판의 기본값 문구 | 도움말 | 5절 |
-| ★ **부적용 — 5창(`.d.ts`)** | 선언 방출은 안 물었다 | — | — |
+| ★ **도움말 창** | 세 버전의 기본값 문구 | 도움말 | 5절 |
+| ★ **해당 없음 — 5창(`.d.ts`)** | 선언 방출은 안 물었다 | — | — |
 
 비용 — 격자 한 장 × 두 판(켬/끔) + 진단 대조 넷 · 방출 하나 · `node` 하나 + 비용표 네 조합 + 도움말 세 판.
 
@@ -183,8 +183,8 @@ idx41.ts(21,11): error TS2322: Type 'number | undefined' is not assignable to ty
 
 그림 해설 — 한 단계에 한 문장.
 
-- ★★★ **갈린 칸 `7 / 11`** — 켜면 **`number | undefined`** 가 되는 꼴: 배열 인덱스(6행) · 인덱스 시그니처의 `["k"]`·`.k`(7·8행) · **`Record<string, number>`**(9행) · **배열 구조 분해**(16행) · **인덱스 시그니처 구조 분해**(18행) · **`for (i < length)` 안의 `arr[i]`**(21행).
-- ★★★ **안 갈린 꼴** — **`Record<"a" | "b", number>`**(10행) · **튜플 `pair[0]`**(11행) · **`for…of` 의 원소**(13행). 키·자리가 **타입에 적혀 있는** 접근과 **이미 있는 원소를 도는** 접근이다.
+- ★★★ **달라진 항목 `7 / 11`** — 켜면 **`number | undefined`** 가 되는 꼴: 배열 인덱스(6행) · 인덱스 시그니처의 `["k"]`·`.k`(7·8행) · **`Record<string, number>`**(9행) · **배열 구조 분해**(16행) · **인덱스 시그니처 구조 분해**(18행) · **`for (i < length)` 안의 `arr[i]`**(21행).
+- ★★★ **안 달라진 꼴** — **`Record<"a" | "b", number>`**(10행) · **튜플 `pair[0]`**(11행) · **`for…of` 의 원소**(13행). 키·자리가 **타입에 적혀 있는** 접근과 **이미 있는 원소를 도는** 접근이다.
 - ★★ **`.at(0)`**(19행) — **끔에서도 `number | undefined`**. 플래그가 붙인 것이 아니다 — 메서드의 **반환 타입**(`lib` 의 선언)에 이미 들어 있는 것으로 읽힌다.
 - ★★★ **21행** — `i < arr.length` 를 막 검사했는데도 **`| undefined`**. 플래그는 **길이 검사로 좁히지 않는다** — 40편의 좁히기 수단(`!==`·`??`)이 여기서 **줄마다** 필요해진다.
 - ★ 레퍼런스의 「un-declared field」가 이 격자의 경계다 — **선언된 키**(10행)·**선언된 자리**(11행)는 안 붙는다.
@@ -241,7 +241,7 @@ eopt41.ts(10,11): error TS2322: Type 'number | undefined' is not assignable to t
 
 그림 해설 — 한 단계에 한 문장.
 
-- ★★ **끔** — `symbol` 탐침(10행) 하나만. 5행 `{ retries: undefined }`·7행 `c.retries = undefined` 는 **통과**했다.
+- ★★ **끔** — `symbol` probe(10행) 하나만. 5행 `{ retries: undefined }`·7행 `c.retries = undefined` 는 **통과**했다.
 - ★★★ **켬** — 5행 **`TS2375`**(07편 4절과 같은 코드 — 「… with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.」) · 7행 **`TS2412`**(「Type 'undefined' is not assignable to type 'number' with 'exactOptionalPropertyTypes: true'.」). **리터럴로 만들 때**와 **대입할 때**가 다른 코드다.
 - ★★ **8행 `delete c.retries`** — 켬에서도 **통과**. 「없게 만드는 것」은 허락된다.
 - ★★★ **10행 읽기** — 켬에서도 **`number | undefined`**. 이 플래그는 **쓰기만** 막고, 읽을 때 `undefined` 가 오는 것(키가 없으니까)은 그대로다.
@@ -310,10 +310,10 @@ console.log("[5]", { ...defaults, ...empty }.retries);
 그림 해설 — 한 단계에 한 문장.
 
 - ★★★ **`[1] true false`** — `"retries" in given` 은 **`true`**, `in empty` 는 **`false`**. 키가 **있고 값이 `undefined`** 인 것과 **키가 없는** 것이다.
-- ★★★ **`[2] 1 0`** — `Object.keys` 도 갈렸다.
+- ★★★ **`[2] 1 0`** — `Object.keys` 도 달라졌다.
 - ★★ **`[3] {} {}`** — `JSON.stringify` 는 **둘을 같게** 적는다 — `undefined` 값은 직렬화에서 빠진다. 여기서만 보면 차이가 **안 보인다.**
 - ★★★ **`[4] undefined undefined`** — `{ ...defaults, ...given }` 에서 `given` 의 **`retries: undefined` 가 기본값 `3` 을 덮었다.** 대조 **`[5] 3`** — 키가 **없는** `empty` 를 펼치면 기본값이 남는다.
-- ★★★ **그런데 타입은 `number`** — 12행 `symbol` 탐침이 **끔·켬 모두 `Type 'number'`**. 스프레드는 선택 프로퍼티를 「**없으면 앞의 값이 남는다**」로 계산한다 — 값이 **`undefined` 로 있는** 경우를 타입이 못 본다. **타입은 `number`, 실제는 `undefined`** 인 칸이다.
+- ★★★ **그런데 타입은 `number`** — 12행 `symbol` probe가 **끔·켬 모두 `Type 'number'`**. 스프레드는 선택 프로퍼티를 「**없으면 앞의 값이 남는다**」로 계산한다 — 값이 **`undefined` 로 있는** 경우를 타입이 못 본다. **타입은 `number`, 실제는 `undefined`** 인 칸이다.
 - ★★★ **켜면 5행이 `TS2375`** — `given` 을 그렇게 **만들 수가 없다.** 그래서 12행의 「`number`」가 **거짓이 될 길이 막힌다.** 이 플래그가 지키는 것이 바로 이 칸이다.
 
 ```text
@@ -331,7 +331,7 @@ console.log("[5]", { ...defaults, ...empty }.retries);
 
 비용 — 끄면 **스프레드·`Object.assign` 의 기본값 병합이 `undefined` 에 덮이는 것**을 타입이 못 잡는다. 켜면 그 값을 **만드는 쪽**에서 막는다.
 
-### (4) ★★ 비용 — 탐침 한 장에서 새로 나는 진단 수
+### (4) ★★ 비용 — probe 한 장에서 새로 나는 진단 수
 
 **언제 쓰나** — 두 플래그를 켤지 정할 때. ★ 수는 **아래 한 장**의 것이다.
 
@@ -421,7 +421,7 @@ exactOptionalPropertyTypes   2    22:TS2375 25:TS2412
 
 비용 — `noUncheckedIndexedAccess` 는 **인덱스 접근이 많을수록**, `exactOptionalPropertyTypes` 는 **선택 프로퍼티에 `undefined` 를 쓰는 곳이 많을수록** 진단이 는다. 어느 쪽이 더 비싼지는 **코드의 모양에 달렸고**, 이 문서는 그 비율을 재지 않았다.
 
-### (5) ★ 두 플래그는 `strict` 밖이다 — 세 판의 도움말
+### (5) ★ 두 플래그는 `strict` 밖이다 — 세 버전의 도움말
 
 ```text
 ===== tsc --help --all 에서 두 플래그의 기본값 줄 ; 이어서 "$TSC_OLD" · "$TSC_49" 로 같은 것 (sh exit=0) =====
@@ -450,7 +450,7 @@ exactOptionalPropertyTypes   2    22:TS2375 25:TS2412
   for (const v of arr)                    noUnchecked 에서도 T                 (1절)
 ```
 
-**금지 사례** — 켠 판에서 던져 받은 것이다.
+**금지 사례** — 켠 판에서 실행해 받은 것이다.
 
 | 쓴 꼴 | 진단 | 어느 절 |
 |---|---|---|
@@ -484,10 +484,10 @@ exactOptionalPropertyTypes   2    22:TS2375 25:TS2412
 | **문서(TSConfig 레퍼런스)** | 인덱스의 「un-declared field」에 `undefined` · 선택 프로퍼티의 세 값(선언 타입·`undefined`·없음) 중 `undefined` 를 뺀다 | 기준 소스 |
 | **컴파일러 동작** | 튜플·키가 정해진 `Record`·`for…of` 는 안 붙는다 · 길이 검사로 안 좁힌다 | 1절 `7 / 11` |
 | **컴파일러 동작** | 리터럴 `TS2375` · 대입 `TS2412` · `delete` 는 허락 · 읽기는 그대로 | 2절 |
-| **★ 이 판(7.0.2)의 관찰** | 스프레드의 결과 타입이 선택 프로퍼티를 「없으면 앞의 값」으로 계산 — 켬·끔 모두 `number` | 3절 12행 |
+| **★ 이 버전(7.0.2)의 관찰** | 스프레드의 결과 타입이 선택 프로퍼티를 「없으면 앞의 값」으로 계산 — 켬·끔 모두 `number` | 3절 12행 |
 | **언어(JS) 의미** | `in`·`Object.keys` 는 **키의 존재**를 본다 · `JSON.stringify` 는 `undefined` 값을 뺀다 · 스프레드는 `undefined` 값도 **복사한다** | 3절 — node v18 |
 | **★ 판 격자** | 두 플래그의 기본값 `false` — 세 판 같다 | 5절 |
-| **안 잰 것** | 검사 시간 · 실제 코드베이스의 진단 비율 | **재지 않았다** · 탐침 한 장의 수만 |
+| **안 잰 것** | 검사 시간 · 실제 코드베이스의 진단 비율 | **재지 않았다** · probe 한 장의 수만 |
 
 ## 언제 쓰고 언제 안 쓰나
 
@@ -499,11 +499,11 @@ exactOptionalPropertyTypes   2    22:TS2375 25:TS2412
 
 ## 핵심 문장
 
-1. **`noUncheckedIndexedAccess` 는 개수가 정해지지 않은 인덱스 접근에 `| undefined` 를 붙인다** — 꼴 열하나 중 일곱이 갈렸고, 튜플·키가 정해진 `Record`·`for…of` 는 그대로다.
+1. **`noUncheckedIndexedAccess` 는 개수가 정해지지 않은 인덱스 접근에 `| undefined` 를 붙인다** — 꼴 열하나 중 일곱이 달라졌고, 튜플·키가 정해진 `Record`·`for…of` 는 그대로다.
 2. **그 `| undefined` 는 길이 검사로 좁혀지지 않는다** — 루프 안의 `arr[i]` 도 붙는다.
 3. **`exactOptionalPropertyTypes` 는 선택 프로퍼티에 `undefined` 를 쓰는 것을 막는다** — 리터럴은 `TS2375`, 대입은 `TS2412`, 읽기는 그대로다.
 4. **`{ a: undefined }` 와 `{}` 는 `in`·`Object.keys`·스프레드에서 다르다** — 스프레드에서 `undefined` 가 기본값을 덮는데 타입은 `number` 라고 말한다. 켜면 그 값을 만들 수 없다.
-5. **비용은 코드의 모양에 달린다** — 탐침 한 장에서 5건과 2건, 겹치지 않았다.
+5. **비용은 코드의 모양에 달린다** — probe 한 장에서 5건과 2건, 겹치지 않았다.
 
 ## 관련 자료
 
@@ -544,5 +544,5 @@ exactOptionalPropertyTypes   2    22:TS2375 25:TS2412
 
 **기준 소스** — [TSConfig — `noUncheckedIndexedAccess`](https://www.typescriptlang.org/tsconfig/#noUncheckedIndexedAccess)(「Turning on `noUncheckedIndexedAccess` will add `undefined` to any un-declared field in the type」 · 4.1) ·
 [`exactOptionalPropertyTypes`](https://www.typescriptlang.org/tsconfig/#exactOptionalPropertyTypes)(「Without this flag enabled, there are three values which you can set an optional property to: the declared type, `undefined`, or it can be missing.」 · 4.4).
-위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·방출물·출력은 **전부 직접 던져 받은 것**이다.
+위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·방출물·출력은 **전부 직접 실행해 받은 것**이다.
 **실행 검증** — 본판은 맨 위 블록이다. 5절의 도움말 대조에만 **`tsc` 5.9.3 · 4.9.5** 를 환경변수(`TSC_OLD`·`TSC_49`)로 받아 **읽기만** 했다.

@@ -106,7 +106,7 @@ fun main() {
 
 - `kotlinc moda.kt` → `kotlinc modb.kt -cp omoda` 로 **나눠** 던지면 무엇이 나오는가?
 - 같은 두 파일을 `kotlinc moda.kt modb.kt` 로 **한 번에** 던지면 무엇이 나오는가?
-- 소스가 한 글자도 안 바뀌었는데 결과가 갈린다면, **모듈 경계는 무엇인가**?
+- 소스가 한 글자도 안 바뀌었는데 결과가 달라진다면, **모듈 경계는 무엇인가**?
 - `modaOpen()` 은 왜 모듈 밖에서 보이는가 — 그 몸통이 `internal` 을 부르는데도?
 
 ### 5. ★★★ `javap` 로 본 `internal` 은 무엇으로 되어 있나 (예측)
@@ -213,7 +213,7 @@ fun outside(b: Box2) = b.hidden
 Java 의 네 단계는 [`../../../java/syntax/10-access-modifiers/`](../../../java/syntax/10-access-modifiers/)가 정본이다 — 여기는 **그 자리에 `internal` 을 끼운 결과**만 묻는다.
 
 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
-이 주제의 모든 답은 **kotlinc 2.4.20 · JRE 21.0.5** 에서 실제로 던져 받은 것이다.
+이 주제의 모든 답은 **kotlinc 2.4.20 · JRE 21.0.5** 에서 실제로 실행해 받은 것이다.
 
 ## 복습 기록
 

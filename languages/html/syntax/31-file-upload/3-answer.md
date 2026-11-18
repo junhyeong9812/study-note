@@ -138,8 +138,8 @@ $ python3 html29b-form.py 시도 html29b-31-multiple.html
 
 ### 6. `image/png` 를 받는다 · 형식은 내용(바이트)을 읽어 가른다
 
-- A1 — 글자 파일 `t2.png` 가 **`부분 Content-Type: image/png`** 로 갔다. 이 판의 Chrome 은 형식을 **이름의 확장자**에서 붙였다(관찰 — `File` 의 형식을 정하는 규칙은 [web-api 31번](../../../web-api/31-blob-file-and-object-url/2-summary.md) 쪽이다).
-- 사용자는 이름을 마음대로 바꾼다 — **이름도 `Content-Type` 도 사용자의 입력**이다. 서버는 **내용의 첫 바이트**(PNG 는 `89 50 4E 47`)처럼 **파일 자체**를 봐야 한다(해석 — 이 판은 서버 쪽 판별기를 안 만들었다).
+- A1 — 글자 파일 `t2.png` 가 **`부분 Content-Type: image/png`** 로 갔다. 이 버전의 Chrome 은 형식을 **이름의 확장자**에서 붙였다(관찰 — `File` 의 형식을 정하는 규칙은 [web-api 31번](../../../web-api/31-blob-file-and-object-url/2-summary.md) 쪽이다).
+- 사용자는 이름을 마음대로 바꾼다 — **이름도 `Content-Type` 도 사용자의 입력**이다. 서버는 **내용의 첫 바이트**(PNG 는 `89 50 4E 47`)처럼 **파일 자체**를 봐야 한다(해석 — 이 버전은 서버 쪽 판별기를 안 만들었다).
 
 ### 7. 스크립트 길 — 첫째 하나만 · 끌어다 놓기 — 하나도 안 넣음 · 「`multiple` 이 없으면 파일은 하나를 넘으면 안 된다(must)」
 
@@ -148,21 +148,21 @@ $ python3 html29b-form.py 시도 html29b-31-multiple.html
 
 ### 8. 잰 것 — 데스크톱 Chrome 에 IDL 이 없다 · 고르기 창이 같다 / 못 잰 것 — 휴대폰의 카메라 / WHATWG HTML 에서 `capture` 0 건
 
-- **잰 것** — `'capture' in HTMLInputElement.prototype=false` · `.capture` 는 `undefined` · 고르기 창 `mode` 가 `capture` 없는 칸과 **같다**(A3). 이 판의 Chrome 은 그 속성을 **인식하지 않았다.**
+- **잰 것** — `'capture' in HTMLInputElement.prototype=false` · `.capture` 는 `undefined` · 고르기 창 `mode` 가 `capture` 없는 칸과 **같다**(A3). 이 버전의 Chrome 은 그 속성을 **인식하지 않았다.**
 - **못 잰 것** — 모바일에서 `capture="user"` 가 **전면 카메라를 바로 여나.** 기기가 없다.
 - **명세** — 받아 둔 WHATWG HTML `input` 절 전문에 `capture` 가 **0 건**이다. 정의는 W3C 의 HTML Media Capture 에 있고 **이 배치는 그 문서를 열지 않았다.** 그래서 「명세가 데스크톱에서 무시하라고 한다」고 **적지 않는다.**
 
 ### 9. 어느 쪽도 말할 수 없다 — 가로챈 창은 목록을 보여 주지 않는다
 
-- `chooser` 길은 **진짜 클릭으로 창을 열게 한 뒤** CDP 가 그 창을 가로채 파일을 넣는다. **운영체제 창의 필터 목록**은 화면에 없다. 명세의 「고르지 못하게 해야 한다」가 지켜지는 곳이 **바로 그 창**이라, 이 판은 **「못 잰 것」** 으로 남긴다.
+- `chooser` 길은 **진짜 클릭으로 창을 열게 한 뒤** CDP 가 그 창을 가로채 파일을 넣는다. **운영체제 창의 필터 목록**은 화면에 없다. 명세의 「고르지 못하게 해야 한다」가 지켜지는 곳이 **바로 그 창**이라, 이 버전은 **「못 잰 것」** 으로 남긴다.
 - 말할 수 있는 것은 **「창을 지난 파일을 칸·검증·서버가 다시 거르지 않는다」**(A1)까지다.
 
-### 10. 끌어다 놓기의 통째 거절 — 구현 · 빈 칸의 `application/octet-stream` — 명세 · 형식이 확장자에서 — 구현(관찰) · 거부 0 / 27 — 이 판의 관찰
+### 10. 끌어다 놓기의 통째 거절 — 구현 · 빈 칸의 `application/octet-stream` — 명세 · 형식이 확장자에서 — 구현(관찰) · 거부 0 / 27 — 이 버전의 관찰
 
 - **통째 거절** — 명세는 「하나를 넘으면 안 된다」만 적는다 → 방법은 **구현**(A7).
 - **`application/octet-stream`** — 항목 목록 만들기의 「고른 파일이 없으면 **이름 빈 `File`, `application/octet-stream`**」 → **명세**.
 - **형식이 확장자에서** — HTML 명세가 정하지 않는다 → **구현**.
-- **거부 0 / 27** — should 인 필터를 이 판의 세 길이 **아무도 적용하지 않은 결과** → **관찰**(실제 창은 못 봤다).
+- **거부 0 / 27** — should 인 필터를 이 버전의 세 길이 **아무도 적용하지 않은 결과** → **관찰**(실제 창은 못 봤다).
 
 ### 11. 정본 경계
 
@@ -177,7 +177,7 @@ $ python3 html29b-form.py 시도 html29b-31-multiple.html
 ★ **`drop`** — 칸 한가운데에 `Input.dispatchDragEvent` 로 `dragEnter` → `dragOver` → `drop` 을 보냈다(`data.files` 에 파일 경로 · `dragOperationsMask=1`). **운영체제의 끌기가 아니라 CDP 가 합성한 끌기**다.\
 ★ **`chooser`** — `Page.setInterceptFileChooserDialog(enabled)` 뒤 진짜 마우스로 칸을 누르고, `Page.fileChooserOpened` 의 `backendNodeId` 에 `DOM.setFileInputFiles`.
 
-**흔들림 확인** — 캡처 세 판의 재대조는 [29번](../29-constraint-validation/3-answer.md)의 `## 실행 검증` 에 있다.
+**재현성 확인** — 캡처 세 번의 재대조는 [29번](../29-constraint-validation/3-answer.md)의 `## 실행 검증` 에 있다.
 
 | 무엇을 | 몇 번 | 결과가 쓰인 곳 |
 |---|---|---|
@@ -187,23 +187,23 @@ $ python3 html29b-form.py 시도 html29b-31-multiple.html
 
 **구현에 달린 항목**
 
-| 항목 | 이 판의 값 | 왜 다시 찍나 |
+| 항목 | 이 버전의 값 | 왜 다시 찍나 |
 |---|---|---|
 | `multiple` 없는 칸에 둘 | 스크립트 — 첫째 · 끌어다 놓기 — 거절 | 명세는 방법을 정하지 않는다 |
 | 부분 형식 | 이름의 확장자 | HTML 명세 밖 |
-| `capture` IDL | 없음 | 모바일 판·다른 판에서 달라질 수 있다 |
+| `capture` IDL | 없음 | 모바일 판·다른 버전에서 달라질 수 있다 |
 
 **안 돌려 본 것** — ① **`accept` 토큰의 대소문자·중복.** ② **`webkitdirectory`.** ③ **큰 파일.** ④ **`required` 인 파일 칸**(명세 문장만 — 「비었으면 missing」).
 
 **못 잰 것** — ① **운영체제 고르기 창의 필터.** ② **모바일의 카메라·사진첩.** ③ **운영체제의 실제 끌기.**
 
-**부적용인 창** — **창 ① · ③ · ④ · ⑥** · **창 ⑦ 은 24번 인용**.
+**해당 없는 창** — **창 ① · ③ · ④ · ⑥** · **창 ⑦ 은 24번 인용**.
 
 ## 용어 풀이
 
 - **고르기 창(picker)** — 파일 칸이 여는 창. `multiple` 이면 여러 개 고르기로 열린다.
 - **이름·값 쌍으로 바꾸기** — urlencoded·`text/plain` 이 쓰는 변환. `File` 은 이름이 된다.
-- **부분 `Content-Type`** — multipart 의 파일 부분에 붙는 형식. 이 판은 확장자에서.
+- **부분 `Content-Type`** — multipart 의 파일 부분에 붙는 형식. 이 버전은 확장자에서.
 
 ## 실행 환경
 

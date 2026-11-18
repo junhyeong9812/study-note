@@ -277,7 +277,7 @@ Chrome 151 — 같은 ESM 두 파일을 로컬 서버로.
 
 - ★★★ **ESM — `n = 0 → 1 → 2`, `ns.n` 도 같다.** `import { n }` 은 값을 복사하지 않고 **`counter42a.mjs` 의 `n` 바인딩을 가리킨다.** 명세의 `CreateImportBinding` 이 「**저쪽 모듈의 바인딩을 가리키는** 불변 간접 바인딩」을 만든다.
 - ★★★ **CommonJS — 세 줄 다 `0`**. `module.exports = { n, inc }` 는 그 순간의 `n`(0)을 **새 객체의 속성으로 복사**했다. 모듈 안의 `n++` 는 **지역 변수**만 바꾼다 — `m.n` 도 안 바뀐다.
-- ★★ 두 node 판과 Chrome 151 이 ESM 쪽을 한 글자도 같게 냈다. **CommonJS 쪽의 더 긴 격자**(`exports.n` 을 다시 써 넣으면 · ESM 이 CJS 를 가져오면)는 [43번](../43-cjs-and-esm-interop/2-summary.md) 동작 (3)이다.
+- ★★ 두 node 버전과 Chrome 151 이 ESM 쪽을 한 글자도 같게 냈다. **CommonJS 쪽의 더 긴 격자**(`exports.n` 을 다시 써 넣으면 · ESM 이 CJS 를 가져오면)는 [43번](../43-cjs-and-esm-interop/2-summary.md) 동작 (3)이다.
 
 ### (2) ★★★ 가져온 이름에 대입하면 — 그리고 이름공간 객체의 브랜드
 
@@ -520,7 +520,7 @@ cells that did not read "A": 6 / 32
 - ★★★ **`export function X` 와 `export default function` 은 `a first` 최상위에서도 `A`** — 순환에서도 쓸 수 있다. 명세의 `InitializeEnvironment` 가 **함수 선언만은 `InstantiateFunctionObject` 로 곧바로 초기화**하고(모듈 본문이 돌기 전), `var` 는 **`undefined` 로 초기화**하고, 나머지 렉시컬 선언은 **바인딩만 만든다**(초기화 전 = TDZ).
 - ★★★ **`b first` 열과 「나중에 읽기」 열은 16칸 전부 `A`** — 읽는 **때**가 `a` 의 본문이 끝난 뒤면 모양과 상관없다. **05번의 「TDZ 는 줄이 아니라 시간이다」가 모듈 사이로 넓어진 것**이다.
 - ★★ **`export default "A"` 도 TDZ** 이고, 문구는 **가져온 쪽의 이름**(`'X'`)을 댄다. `export default class` 도 TDZ 인데 `export default function` 은 멀쩡하다 — **「default 냐」가 아니라 「함수 선언이냐」가 갈랐다.**
-- ★★ 두 node 판과 Chrome 151 이 **32칸을 한 글자도 같게** 냈다(node 18 대조 동일 · Chrome 도 `6 / 32`).
+- ★★ 두 node 버전과 Chrome 151 이 **32칸을 한 글자도 같게** 냈다(node 18 대조 동일 · Chrome 도 `6 / 32`).
 
 **파이썬 42번 격자와 나란히** — 두 격자는 **축이 다르다**(파이썬은 「어떻게 import 했나」, 여기는 「어떻게 export 했나」). 수를 견주지 말고 **깨지는 모양**을 견준다.
 
@@ -821,7 +821,7 @@ missing file: rejected with TypeError · code undefined
 
 ### (2) ★★★ 순환 의존에서 「그냥 `undefined` 가 나온다」
 
-**모양에 따라 셋으로 갈린다** — `let`/`const`/`class`/`default` 식/`default class` 는 **`ReferenceError`**, `var` 는 **`undefined`**, `function` 선언은 **멀쩡**(동작 (3)). 그리고 **가져오는 순서**와 **읽는 때**가 바뀌면 전부 멀쩡하다.
+**모양에 따라 셋으로 나뉜다** — `let`/`const`/`class`/`default` 식/`default class` 는 **`ReferenceError`**, `var` 는 **`undefined`**, `function` 선언은 **멀쩡**(동작 (3)). 그리고 **가져오는 순서**와 **읽는 때**가 바뀌면 전부 멀쩡하다.
 
 ### (3) ★★★ 순환을 풀려고 `var` 로 바꾼다
 
@@ -862,10 +862,10 @@ missing file: rejected with TypeError · code undefined
 - ★★ **없는 파일의 `import()` 거부 모양** — node `ERR_MODULE_NOT_FOUND` · Chrome `TypeError`.
 - ★ 모듈 본문이 이벤트 루프의 어디서 도나 — 36번의 `nextTick` 4위 대 9위(node 의 것).
 
-### 구현(V8) · 이 판의 관찰
+### 구현(V8) · 이 버전의 관찰
 
 - ★ 문구 — `Cannot access 'X' before initialization` · `Assignment to constant variable.` · 이름공간 쓰기 문구는 **Chrome 151 과 node 가 달랐다.**
-- ★ 32칸 격자는 세 판이 같았다.
+- ★ 32칸 격자는 세 버전이 같았다.
 
 ### 그래서 이렇게 적으면 틀린다
 
@@ -916,7 +916,7 @@ missing file: rejected with TypeError · code undefined
 
 ## 실행 환경
 
-★★★ **이 주제의 본체는 ② 전수 격자다** — `a.mjs` ↔ `b.mjs` 순환에서 **`a` 가 내보내는 모양 8가지 × `main` 이 가져오는 순서 2 × `b` 가 읽는 때 2 = 32칸**을 칸마다 **새 디렉토리 · 새 프로세스**로 돌리고, 마지막 줄에 「**`"A"` 를 못 읽은 칸 N / M**」을 스크립트가 찍는다(동작 (3)).
+★★★ **이 주제의 핵심은 ② 전수 격자다** — `a.mjs` ↔ `b.mjs` 순환에서 **`a` 가 내보내는 모양 8가지 × `main` 이 가져오는 순서 2 × `b` 가 읽는 때 2 = 32칸**을 칸마다 **새 디렉토리 · 새 프로세스**로 돌리고, 마지막 줄에 「**`"A"` 를 못 읽은 칸 N / M**」을 스크립트가 찍는다(동작 (3)).
 ★★ 보조로 **① 추상 연산에 로그 심기**(모듈 본문의 첫 줄 · `import` 뒤의 줄 · 평가 순서 — 동작 (4)) · **③ 브랜드 태그**(모듈 이름공간 객체의 `[object Module]` — 동작 (2)) · **④ 예외의 `constructor.name` + `message`**(가져온 이름에 대입 → `TypeError` · 연결 단계의 `SyntaxError` — 동작 (2)·(5))를 쓴다.
 
 **기준 소스** — 열어서 확인한 것만.
@@ -937,29 +937,29 @@ missing file: rejected with TypeError · code undefined
 
 | 무엇 | 판 | 이 머신에서 |
 |---|---|---|
-| `import`/`export` 문 · 라이브 바인딩 · 모듈은 늘 엄격 | **ES2015** | 세 판 다 |
-| 동적 `import()` | **ES2020** | 세 판 다(판별 블록 · 동작 (5)) |
-| `import.meta` | **ES2020** | 세 판 다 — 그 **속성**은 호스트가 채운다(43번) |
+| `import`/`export` 문 · 라이브 바인딩 · 모듈은 늘 엄격 | **ES2015** | 세 버전 다 |
+| 동적 `import()` | **ES2020** | 세 버전 다(판별 블록 · 동작 (5)) |
+| `import.meta` | **ES2020** | 세 버전 다 — 그 **속성**은 호스트가 채운다(43번) |
 | 최상위 `await` | **ES2022** | 39번 동작 (7) |
 
 ★★ **판 경계는 TC39 finished proposals 표와 이 목록의 README 를 대조했다.** README 42행은 판을 적지 않는다.
 
-**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+**★★★ 이 주제가 쓰는 창 — 그리고 해당 없는 창**
 
 | 창 | 이 주제에서 무엇을 보나 |
 |---|---|
-| ★★★ **② 전수 격자**(본체) | 순환 32칸 — `A` / `undefined` / `ReferenceError` · 마지막 줄 「`did not read "A": N / 32`」(동작 (3)) |
+| ★★★ **② 전수 격자**(핵심) | 순환 32칸 — `A` / `undefined` / `ReferenceError` · 마지막 줄 「`did not read "A": N / 32`」(동작 (3)) |
 | ★★ **① 추상 연산에 로그 심기** | 모듈 본문의 첫 줄 · `import` 뒤의 줄 · 여러 모듈의 평가 순서(동작 (4)) · 라이브 바인딩의 전후 값(동작 (1)) |
 | ★★ **③ 브랜드 태그** | 이름공간 객체 — `Object.prototype.toString` 이 `[object Module]` · 프로토타입 `null` · 확장 불가(동작 (2)) |
 | ★★ **④ 예외의 `constructor.name` + `message`** | 가져온 이름에 대입 → `TypeError` · 블록 안 `import` · 없는 이름 `import` → `SyntaxError`(동작 (2)·(5)) |
 | ★ **안 쟀다 — 성능·번들 크기** | 정적 구조가 **도구에게** 무엇을 허락하나는 연혁 문서의 몫이다. 이 문서는 **실행이 보이는 것**만 적는다 |
 
-**★ 흔들리는 칸 / 안 흔들리는 칸**
+**★ 실행마다 달라지는 항목 / 달라지지 않는 항목**
 
-| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+| 실행마다 달라진다(근거로 쓰지 않는다) | 달라지지 않는다(근거로 쓴다) |
 |---|---|
 | 판별 블록의 판 문자열 · 에러 첫 줄의 **절대 경로**(블록 안에서 `<dir>` 로 지웠다) | ★★★ 격자의 모든 칸 · 로그의 **줄 순서** · 종료 코드 · `standard output had N lines` · 에러의 **종류와 문구** |
-| ★ **이 주제의 탐침에는 재실행에서 흔들린 칸이 없다**(재대조 동일) | ★★ **판 사이의 문구 차이**(Chrome 의 `Cannot assign to property …`)는 흔들림이 아니라 **판의 차이**다 |
+| ★ **이 주제의 probe에는 재실행에서 달라진 항목이 없다**(재대조 동일) | ★★ **판 사이의 문구 차이**(Chrome 의 `Cannot assign to property …`)는 실행 간 차이가 아니라 **판의 차이**다 |
 
 **층** — `import`/`export` 의 **연결(Link)·평가(Evaluate)·바인딩 규칙**은 **언어(ECMA-262)** 다. **「이 글자가 어느 파일인가」(모듈 지정자 해석)·「어느 파일이 모듈인가」·파일을 읽어 오는 일은 호스트**(HTML · node)다 — 명세의 `HostLoadImportedModule` 이 그 문이다. CommonJS 는 **명세 밖**이다(43번).
 

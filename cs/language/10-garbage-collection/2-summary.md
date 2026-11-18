@@ -131,7 +131,7 @@ WeakSet에만 담긴 b   : 회수됨
 | G1 | `-XX:+UseG1GC`(서버급 기계 기본) | 영역 단위 복사, STW | 동시 마킹 + mixed 수집, 최후엔 Full GC | 목표 200ms(soft) |
 | ZGC | `-XX:+UseZGC`(+`-XX:+ZGenerational`로 세대형) | 동시 | 동시 | `java` 문서 "max pause times of a few milliseconds" |
 
-- 기본 수집기는 기계에 따라 다르다. CPU 2개 이상·메모리 1792MB 이상이면 G1, 아니면 Serial(Oracle GC 튜닝 가이드 2장, OpenJDK `os::is_server_class_machine`). 컨테이너에서 이 경계가 실제로 갈리는 모습은 [11](../11-gc-tuning-and-gc-logs/2-summary.md) 실험 1.
+- 기본 수집기는 기계에 따라 다르다. CPU 2개 이상·메모리 1792MB 이상이면 G1, 아니면 Serial(Oracle GC 튜닝 가이드 2장, OpenJDK `os::is_server_class_machine`). 컨테이너에서 이 경계가 실제로 나뉘는 모습은 [11](../11-gc-tuning-and-gc-logs/2-summary.md) 실험 1.
 - JDK 21의 ZGC는 `-XX:+UseZGC`만 주면 비세대형이고, 세대형은 `-XX:+ZGenerational`을 더한다(JEP 439, Release 21). 이후 버전에서 기본값이 바뀌었다(JEP 474).
 - G1 세부(영역·humongous·evacuation failure)와 튜닝은 [11](../11-gc-tuning-and-gc-logs/2-summary.md).
 
@@ -154,10 +154,10 @@ if ((allocated & 0xFFFF) < 300) live[r.nextInt(live.length)] = new byte[1024];
 | ZGC(세대형) | 4.7~5.4s | 0.24~0.74ms | 3.2~13.9ms | 11.9~30.1ms | 7.2~9.1ms (256~307회, 별도 2회 `gc+phases`) | 0.063~0.145ms | 0 |
 
 - 로그 한 줄 읽기: `GC(15) Pause Young (Normal) (G1 Evacuation Pause) 474M->231M(512M) 16.929ms` = 15번째 수집, 젊은 세대 STW, 힙 사용 474MB → 231MB(전체 512MB), 16.9ms 멈춤.
-- STW 최대는 Serial·Parallel이 가장 길다. 시작 직후 200MB 살아 있는 데이터를 처음 옮기는 Young GC(Serial 128~157ms·Parallel 108~190ms)와 Full GC에서 나왔다. 같은 설정에서도 회차마다 최대값이 2배 가까이 갈렸다 — 꼬리 지연은 여러 번 돌려 범위로 본다.
+- STW 최대는 Serial·Parallel이 가장 길다. 시작 직후 200MB 살아 있는 데이터를 처음 옮기는 Young GC(Serial 128~157ms·Parallel 108~190ms)와 Full GC에서 나왔다. 같은 설정에서도 회차마다 최대값이 2배 가까이 달라졌다 — 테일 레이턴시는 여러 번 돌려 범위로 본다.
 - G1은 이 부하에서 `Evacuation Failure`(8~11회)와 `Pause Full (G1 Compaction Pause)`를 겪었다. 힙 512MB에 산 데이터 200MB + 큰 Young이 겹친 결과다. 원인과 처방은 [11](../11-gc-tuning-and-gc-logs/2-summary.md) 실험 2.
 - ZGC의 STW는 모두 0.15ms 이하였다(`Pause Mark Start`·`Pause Mark End`·`Pause Relocate Start`, 2회 중 최대 0.063ms·0.145ms). 그런데 앱 지연 최대는 12~30ms였다. STW가 아니라 CPU 2개를 수집기 스레드와 나눠 쓴 결과일 가능성이 있다는 해석이다. 이 실험은 CPU 사용을 따로 재지 않았고, 재실행 때의 높은 호스트 부하로 인한 스케줄링 지연도 배제하지 못한다(로그에 `Allocation Stall`은 없었다).
-- 총 시간은 수집기 사이 차이가 작았다(4.7~6.4s). 이 부하에서는 "어느 수집기가 빠르다"보다 "멈춤이 어떻게 분포하나"가 갈렸다. 다른 부하에서는 순위가 바뀔 수 있다.
+- 총 시간은 수집기 사이 차이가 작았다(4.7~6.4s). 이 부하에서는 "어느 수집기가 빠르다"보다 "멈춤이 어떻게 분포하나"가 달라졌다. 다른 부하에서는 순위가 바뀔 수 있다.
 
 ## 쓰이는 자료구조·알고리즘
 
@@ -239,7 +239,7 @@ for (;; i++) {
             Pause Full 33회 / 22회 / 29회, 로그 마지막: "GC Overhead Limit exceeded too often (5)."
 ```
 
-- 같은 누수인데 메시지가 갈렸다. Parallel은 문서대로 `GC overhead limit exceeded`를 던졌다.
+- 같은 누수인데 메시지가 달라졌다. Parallel은 문서대로 `GC overhead limit exceeded`를 던졌다.
 - G1(21.0.12)도 같은 검사 코드가 있다(OpenJDK jdk21u `g1CollectedHeap.cpp` `update_gc_overhead_counter`). 로그에는 한도 초과가 찍혔지만 이 실행이 던진 메시지는 `Java heap space`였다. `java` 문서(21)는 이 정책을 parallel GC에 대해서만 설명한다.
 - 어느 쪽이든 죽기 전 수 초~수십 초 동안 Full GC가 반복되며 거의 일을 못 했다. 알림은 OOM보다 "Full GC 빈도·GC 시간 비율"에 거는 것이 빠르다.
 

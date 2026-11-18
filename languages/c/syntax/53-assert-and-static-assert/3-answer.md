@@ -84,9 +84,9 @@ clang  -O2  -DNDEBUG     | 0                    | run exit=136 · stdout start/ 
 - ★★★ **메시지의 네 칸(식 · 파일 · 줄 · 함수)은 표준이 요구한다** — 양식은 구현 정의다. glibc 는 앞에 **프로그램 이름** `x:` 를 붙인다.
 - ★★ **함수 칸** — gcc 는 `take`, clang 은 `int take(int)`. 같은 glibc 매크로인데 **컴파일러가 채운 이름**이 다르다.
 - ★★★ **134 = `SIGABRT`** — `abort()`. **`NDEBUG` 판의 136 = `SIGFPE`** — 단언이 사라져 `100 / 0` 이 실행됐다. 단언이 **막고 있던 UB** 가 드러났다.
-- ★★ **재배치** — `NDEBUG` 판은 0, gcc 두 판과 clang `-O0` 은 1, clang `-O2` 는 2(8번).
+- ★★ **재배치** — `NDEBUG` 판은 0, gcc 두 버전과 clang `-O0` 은 1, clang `-O2` 는 2(8번).
 
-### 3. `static_assert` 격자 — **갈린 줄 7 / 12 · `s53c5.c` 는 gcc `ok` · clang `warning` · gcc 첫 진단은 「expected declaration specifiers or '...' before 'sizeof'」** ★★★
+### 3. `static_assert` 격자 — **달라진 줄 7 / 12 · `s53c5.c` 는 gcc `ok` · clang `warning` · gcc 첫 진단은 「expected declaration specifiers or '...' before 'sizeof'」** ★★★
 
 **출력**
 
@@ -136,7 +136,7 @@ s53c5.c:2:31: warning: '_Static_assert' with no message is a C23 extension [-Wc2
 
 - ★★★ **C11·C17 에서 `static_assert` 는 `<assert.h>` 의 매크로**다 — 헤더 없이 쓰면 **없는 이름**이고, 컴파일러는 그것을 **함수 선언**으로 읽으려다 엉뚱한 에러를 낸다. C23 에서는 **키워드**라 헤더 없이도 된다.
 - ★★ **메시지 생략은 C23 부터** — C11·C17 의 `_Static_assert(e)` 는 `-Wpedantic`(gcc) · `-Wc23-extensions`(clang) 경고.
-- ★★ **`s53c5.c` 에서 두 컴파일러가 갈렸다** — gcc 는 헤더 매크로를 거친 생략을 **말하지 않는다**(`-pedantic-errors` 에서도 `cc exit=0` — 요약 (5)절). clang 은 짚는다.
+- ★★ **`s53c5.c` 에서 두 컴파일러가 달라졌다** — gcc 는 헤더 매크로를 거친 생략을 **말하지 않는다**(`-pedantic-errors` 에서도 `cc exit=0` — 요약 (5)절). clang 은 짚는다.
 
 ### 4. 레이아웃 가정 검사 — **셋째 단언(`sizeof == 7`)이 멈춘다 · clang 은 식과 값(`12 == 7`)까지 · `f` 안은 「상수가 아니다」 에러** ★★
 
@@ -212,7 +212,7 @@ s53e.c:4:12: error: incompatible function pointer types initializing 'void (*)(i
 - ★★ **함수형 매크로는 `(` 가 뒤따를 때만 펼쳐진다** — `= assert;` 의 `assert` 는 매크로가 아니라 **선언 안 된 이름**이다. 표준도 「실제 함수로 구현하지 말라」고 적는다.
 - ★★ **gcc 는 「`<assert.h>` 를 포함하라」**(이미 포함했다) · **clang 은 「`__assert` 인가」**(glibc 내부 함수 — 서명이 안 맞아 둘째 에러). **제안을 따르면 안 된다.**
 
-### 6. 쉼표가 든 단언 — **`-std=c17` · `-std=c2x` 둘 다 에러 · 표준(C23)은 `assert(...)` 를 요구 · 이 판의 glibc 와 맞지 않는다** ★★
+### 6. 쉼표가 든 단언 — **`-std=c17` · `-std=c2x` 둘 다 에러 · 표준(C23)은 `assert(...)` 를 요구 · 이 버전의 glibc 와 맞지 않는다** ★★
 
 **출력**
 
@@ -288,7 +288,7 @@ s53f.c:6:5: note: parentheses are required around macro argument containing brac
 **왜 그런가**
 
 - ★★ **`{ 1, 2 }` 의 쉼표**가 매크로 인자를 가른다 — 중괄호는 쉼표를 보호하지 않는다.
-- ★★ **C23 의 해법은 가변 인자 `assert(...)`** — 표준이 「ellipsis parameter 가 있는 매크로로」라고 적는다. 그런데 **이 판의 glibc 는 `define assert(expr)`** — 인자 하나뿐이라 `-std=c2x` 에서도 같은 에러다. clang 의 제안(한 겹 더 괄호)이 이 판의 해법이다.
+- ★★ **C23 의 해법은 가변 인자 `assert(...)`** — 표준이 「ellipsis parameter 가 있는 매크로로」라고 적는다. 그런데 **이 버전의 glibc 는 `define assert(expr)`** — 인자 하나뿐이라 `-std=c2x` 에서도 같은 에러다. clang 의 제안(한 겹 더 괄호)이 이 버전의 해법이다.
 
 ### 7. `#define NDEBUG` 를 `#include` 뒤에 — **사라지지 않는다 · 「included 되는 자리에서」 · 「포함될 때마다 다시 정의」** ★★
 
@@ -359,7 +359,7 @@ x: s53g.c:8: main: Assertion `x == 1' failed.
 **왜 그런가**
 
 - ★★★ 표준 — 「writes information about the particular invocation that failed (**including the text of the argument, the name of the source file, the source line number, and the name of the enclosing function**) … **in an implementation-defined format**. It then calls the abort function.」
-- ★★ **`static_assert` 키워드 · 메시지 생략은 컴파일러의 일** — 두 컴파일러 다 `-std=c2x` 에서 받았다. **가변 인자 `assert` 는 `<assert.h>` — 곧 C 라이브러리의 일** — 이 판의 glibc 2.39 가 아직 안 했다. 같은 「C23 지원」이 **두 주체에 나뉘어** 있다.
+- ★★ **`static_assert` 키워드 · 메시지 생략은 컴파일러의 일** — 두 컴파일러 다 `-std=c2x` 에서 받았다. **가변 인자 `assert` 는 `<assert.h>` — 곧 C 라이브러리의 일** — 이 버전의 glibc 2.39 가 아직 안 했다. 같은 「C23 지원」이 **두 주체에 나뉘어** 있다.
 
 ### 10. 41 · 42 · 43번 형제와 이어서 — **없으면 삼항식 + `__assert_fail("x++ > 0", …)` · 있으면 `((void) (0));` · 메시지 글자는 `#` 문자열화** ★★
 
@@ -411,7 +411,7 @@ x: s53g.c:8: main: Assertion `x == 1' failed.
 | `s53f.c` | ★★ 쉼표 · c17 · c2x · 헤더 | 진단 3 · `grep` 1 |
 | `s53g.c` | ★★ 뒤늦은 `NDEBUG` | `-E` 1 · 실행 1 |
 
-**재대조** — 제출 전 캡처를 처음부터 다시 돌려 `normalize-shaky.py`(기본 규칙만)로 대조했다. 이 편은 흔들린 칸이 없어야 하고, 그랬다.
+**재대조** — 제출 전 캡처를 처음부터 다시 돌려 `normalize-shaky.py`(기본 규칙만)로 대조했다. 이 편은 달라진 항목이 없어야 하고, 그랬다.
 
 **구현 의존 항목** — 다음은 **이 환경에서만** 그렇다.
 
@@ -425,7 +425,7 @@ x: s53g.c:8: main: Assertion `x == 1' failed.
 **안 돌려 본 것 / 못 잰 것**
 
 - **안 돌려 본 것** — 구조체 안의 `static_assert` · `NDEBUG` 판의 `-Wunused-variable` · clang 의 `-E` 결과 · 한 겹 더 괄호로 감싼 6번.
-- ★ **부적용** — sanitizer · 시간 측정.
+- ★ **해당 없음** — sanitizer · 시간 측정.
 
 **버전이 올랐을 때 다시 돌려야 하는 것**
 
@@ -437,5 +437,5 @@ x: s53g.c:8: main: Assertion `x == 1' failed.
 
 이 파일의 모든 출력·진단은 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** · **clang 18.1.3** · **glibc 2.39** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
 소스는 `s53a.c` · `s53b.c` · `s53c1.c`\~`s53c6.c` · `s53d.c`\~`s53g.c` 이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮긴 출력이 없다).\
-★★★ **본체 창은 `NDEBUG` 격자** — 컴파일러 2 × 최적화 2 × `NDEBUG` 2.
-★★ **흔들리는 칸** — 없다.
+★★★ **핵심 창은 `NDEBUG` 격자** — 컴파일러 2 × 최적화 2 × `NDEBUG` 2.
+★★ **실행마다 달라지는 항목** — 없다.

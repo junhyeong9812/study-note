@@ -143,7 +143,7 @@ const val computed: Int get() = 1
 - `const val` 을 쓸 수 있는 자리는 어디어디인가?
 - `const val` 과 일반 `val` 은 **필드 가시성**이 어떻게 다른가?
 
-### 6. ★ `field = …` 절이 이 판에서 되는가 (예측)
+### 6. ★ `field = …` 절이 이 버전에서 되는가 (예측)
 
 ```kotlin
 // ebf.kt

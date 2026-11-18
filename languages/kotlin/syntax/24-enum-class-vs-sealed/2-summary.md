@@ -1,8 +1,8 @@
 # kotlin/syntax/24 — `enum class` 와 `sealed` 선택 기준 — 정리 (힌트)
 
-★ **흔들리는 칸 / 안 흔들리는 칸** — 제출 전 재대조에서 「고칠 것」과 「설계상 다른 것」을 가르는 선언이다.
+★ **실행마다 달라지는 항목 / 달라지지 않는 항목** — 제출 전 재대조에서 「고칠 것」과 「설계상 다른 것」을 가르는 선언이다.
 
-| 흔들린다 | 안 흔들린다 |
+| 실행마다 달라진다 | 달라지지 않는다 |
 |---|---|
 | 스택트레이스의 **JDK 내부 프레임 줄 번호**(`Enum.java:293`) — 이 JDK 판의 것이다 | 예외 **타입과 메시지**(`No enum constant Status.PENDING`) |
 | `sealedSubclasses` 의 **원소 순서** — 5판 모두 같았지만 **관찰이지 보장이 아니다** | 첫 프레임 · `javap` 출력 **전체** · 종료 코드 |
@@ -161,7 +161,7 @@ I RED BLUE
 
 ### (3) ★★★ 같은 문제를 둘로 모델링하면 — 부족함이 **`null` 의 개수**로 드러난다
 
-**언제 쓰나** — 「상태 + 그 상태에만 있는 데이터」를 설계할 때. **이 주제의 본체다.**
+**언제 쓰나** — 「상태 + 그 상태에만 있는 데이터」를 설계할 때. **이 주제의 핵심이다.**
 
 **① `enum` 으로 모델링한 쪽**
 
@@ -443,7 +443,7 @@ Exception in thread "main" java.lang.IllegalArgumentException: No enum constant 
 
 - 예외 타입과 메시지가 정확하다 — 「`java.lang.IllegalArgumentException: No enum constant Status.PENDING`」.
 - ★ **마커를 `System.err.println` 으로 찍었다.** 스택트레이스도 표준 오류라 **한 블록 안에서 순서가 고정**된다. `println` 으로 찍었다면 파이프로 받을 때 순서가 뒤집혔을 것이다.
-- ★ `at java.base/java.lang.Enum.valueOf(Enum.java:293)` 의 **줄 번호는 이 JDK 판의 것**이다(맨 위 부분의 흔들리는 칸). **첫 프레임과 메시지가 근거**다.
+- ★ `at java.base/java.lang.Enum.valueOf(Enum.java:293)` 의 **줄 번호는 이 JDK 판의 것**이다(맨 위 부분의 실행마다 달라지는 항목). **첫 프레임과 메시지가 근거**다.
 
 **안 터뜨리는 길**
 

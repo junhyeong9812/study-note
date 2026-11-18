@@ -60,7 +60,7 @@ DB 앞에 캐시(cache-aside)를 두면 읽기가 빨라진다. 패턴·무효�
 - **Jackson JSON**: `DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES`의 기본값은 `true`다(jackson-databind 소스).
   - Spring Data Redis의 `GenericJackson2JsonRedisSerializer` 기본 생성자는 자체 `new ObjectMapper()`를 쓴다. 그래서 이 기본값을 그대로 받는다. 구버전이 새 필드를 만나면 실패한다.
   - 값에 `@class` 타입 힌트를 넣으므로, 클래스 이름·패키지를 바꾸면 옛 값을 못 읽는다.
-  - Spring의 `Jackson2ObjectMapperBuilder`는 이 기능을 끈다(소스 주석). "어느 ObjectMapper인가"에 따라 동작이 갈린다.
+  - Spring의 `Jackson2ObjectMapperBuilder`는 이 기능을 끈다(소스 주석). "어느 ObjectMapper인가"에 따라 동작이 달라진다.
   - Spring Data Redis 4.0부터 Jackson 2 기반 직렬화기(`GenericJackson2JsonRedisSerializer`·`Jackson2JsonRedisSerializer`)는 deprecated다(Jackson 3 기반으로 이동). 이 절은 3.x 기준이다.
 
 ### 3. 버전을 어디에 두나

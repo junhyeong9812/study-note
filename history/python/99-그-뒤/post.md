@@ -94,7 +94,7 @@ Phase III(기본값)는 아직 오지 않았다.\
 조건을 그대로 옮기면 이렇다.
 
 - 잰 대상: 표준 `pyperformance` 벤치마크 스위트의 **기하평균**
-- 비교 기준선: **같은 3.14 를 Clang 19 로 빌드하되 이 인터프리터를 뺀 것**
+- 비교 베이스라인: **같은 3.14 를 Clang 19 로 빌드하되 이 인터프리터를 뺀 것**
 - 전제: **Clang 19 이상**, **x86-64 · AArch64** 에서만 동작. GCC 지원은 "a future release of GCC is expected to support this as well" 로 적힌 예정
 - 상태: **"This feature is opt-in for now"** — 기본이 아니다.\
   문서는 PGO(프로파일 기반 최적화)를 함께 켤 것을 강력히 권한다("the only configuration that has been tested and validated")

@@ -190,7 +190,7 @@ static double quantileInclusive(double[] sorted, double p) {
 - 원인: 오른쪽 치우침. 평균이 꼬리에 끌려 "가운데"도 "꼬리"도 대표하지 못한다.
 - 대처: 체감 지표는 중앙값과 상위 백분위(p95·p99)로, 비용·용량 같은 합계 질문만 평균으로. 백분위 운영은 data-analysis 05, SLO 정의는 [reliability/02-slo-sli-error-budget](../../reliability/02-slo-sli-error-budget/2-summary.md).
 
-### 2. 소득·주문 금액 평균으로 기준선 설정
+### 2. 소득·주문 금액 평균으로 베이스라인 설정
 
 - 현상: "평균 주문 금액 이상이면 VIP 쿠폰" → 쿠폰 대상이 고객의 10%(예시)도 안 된다.
 - 원인: 대량 구매 몇 건이 평균을 끌어올렸다. 평균은 "보통 고객"이 아니다.

@@ -120,7 +120,7 @@
   이 환경의 `int` 가 그 값들을 전부 담기 때문이다. 16비트 `int` 환경이면 `unsigned short` 는 `unsigned int` 가 된다.
 - `char + char` 가 `int` 인 것이 1단계의 결과다. **`char` 끼리 더해도 `char` 가 아니다.**
 - `int + unsigned` → `unsigned`(②-3, rank 같음) 인데 `unsigned + long` → `long`(②-4, `long` 이 8바이트라 담는다)이다.\
-  **한 줄 차이로 규칙이 갈린다.**
+  **한 줄 차이로 규칙이 달라진다.**
 - `long long + unsigned long` → **`unsigned long long`**(②-5). 둘 다 64비트라 `long long` 이 `unsigned long` 을 못 담고,\
   그래서 rank 높은 쪽의 부호 없는 판이 된다. **어느 쪽도 원래 타입이 아니다.**
 - `unsigned long + double` → `double`. 정수는 ①에서 통째로 밀린다 — 정밀도 손실이 있어도 그렇다\

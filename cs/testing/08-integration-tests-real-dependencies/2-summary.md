@@ -129,7 +129,7 @@ text-vs-int-compare    PG17  SQLException 42883: ERROR: operator does not exist:
 | NULL 정렬(권장 URL) | 같음 | 기준 | 설정으로 맞춤 |
 | `ON CONFLICT DO UPDATE` | 문법 오류 | 동작 | 방언 — 테스트가 그 경로를 못 탄다 |
 | 오류 뒤 같은 트랜잭션 계속 | 커밋됨 `[1, 2]` | `25P02`로 거부 | **트랜잭션 의미** — 가장 위험 |
-| `FOR UPDATE SKIP LOCKED` | 같음 | 기준 | 이 판에서는 같음 |
+| `FOR UPDATE SKIP LOCKED` | 같음 | 기준 | 이 버전에서는 같음 |
 | `FOR UPDATE NOWAIT` 실패 | `HYT00`(타임아웃) | `55P03`(lock_not_available) | 예외 분류가 다르다 |
 | `jsonb`·`->>` | 문법 오류 | 동작 | 방언 |
 | `varchar > 5` | 암묵 변환, `[10, 9]` | `42883` 오류 | 타입 규칙 |

@@ -5,7 +5,7 @@
 - ★★ **예측형 여섯 문항(1 · 2 · 3 · 4 · 5 · 6)은 소스만 보고 출력을 적어 본 뒤** 답을 연다.
 - ★★★ **1번은 줄마다 `skips`/`reads` 를 적고, 통설 열과 어긋나는 줄을 직접 세어 본다.** 판 이름만 보고 짐작하지 마라.
 - ★★ **5번·6번은 「되는 것」과 「터지는 것」을 갈라서** 적어라. 터지면 종류와 문구까지.
-- ★ 각 문항 끝에서 스스로 물어라 — 「**이것은 명세인가, 이 엔진(V8)의 사정인가, 이 판의 관찰인가**」.
+- ★ 각 문항 끝에서 스스로 물어라 — 「**이것은 명세인가, 이 엔진(V8)의 사정인가, 이 버전의 관찰인가**」.
 - ★★★ **속도에 관한 답은 하나도 없다.** 「`find` 가 `filter` 보다 빠르다」가 떠오르면 「**호출 횟수는 셌고 시간은 안 쟀다**」라고 적어라.
 
 ## 질문
@@ -429,14 +429,14 @@ const later = (ms, v, log, tag) => new Promise((res) => setTimeout(() => { log.p
 ## 실행 환경
 
 **환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · Google Chrome 151.0.7922.173(헤드리스) · x86-64 Linux.
-배너의 `node20` 은 v20.19.6 이다. ★ **8번(`Array.fromAsync`)은 Chrome 에서만** 돌렸다 — 두 node 판에서 되는지는 7번이 묻는다.
+배너의 `node20` 은 v20.19.6 이다. ★ **8번(`Array.fromAsync`)은 Chrome 에서만** 돌렸다 — 두 node 버전에서 되는지는 7번이 묻는다.
 
-★★★ **이 주제의 본체는 ② 전수 격자다.**
+★★★ **이 주제의 핵심은 ② 전수 격자다.**
 구멍 하나짜리 배열 `[, 1]` 을 **배열 연산 스물아홉 줄**에 들이대고, 「ES5 까지의 메서드는 건너뛰고 ES2015 부터는 `undefined` 로 읽는다」는 **통설과 어긋난 줄을 스크립트가 센다.** **1번 문항이 이 주제의 중심이다.**
 
 ★★ **예외는 타입과 메시지로만 답한다.** ★ 메시지는 엔진의 문구다 — 종류만 명세가 정한다.
 
-**선행** — [23 — `Map`·`Set` 과 약한 컬렉션](../23-map-set-and-weak-collections/2-summary.md)(★★★ `indexOf` 와 `includes` 가 `NaN` 에서 갈리는 것은 거기서 이미 쟀다) ·
+**선행** — [23 — `Map`·`Set` 과 약한 컬렉션](../23-map-set-and-weak-collections/2-summary.md)(★★★ `indexOf` 와 `includes` 가 `NaN` 에서 달라지는 것은 거기서 이미 쟀다) ·
 [21 — 이터레이터 헬퍼](../21-iterator-helpers/2-summary.md) · [19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md) ·
 [18 — `for...in` 과 열거](../18-for-in-and-enumeration/2-summary.md) · [11 — 스프레드와 나머지](../11-spread-and-rest/2-summary.md) ·
 [24 — 배열 변형 메서드](../24-array-mutating-methods/2-summary.md).
