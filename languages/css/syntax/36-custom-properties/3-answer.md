@@ -315,13 +315,13 @@
 - **보장된 무효(guaranteed-invalid)** — 커스텀 속성의 초기값이자 순환에 걸린 변수의 상태. 이 상태를 `var()` 로 꺼내면 **대체값이 쓰인다**.
 - **순환 참조** — 변수 둘 이상이 서로를 가리키는 것. 예: `--a: var(--b); --b: var(--a)` 의 계산값이 둘 다 빈 문자열이었다.
 - **이산 보간(discrete interpolation)** — 중간값 없이 50% 지점에서 한 번에 바뀌는 보간. 예: `--w` 가 40% 까지 `0px`, 60% 부터 `200px` 이었다.
-- **진단 3창** — `cssRules` · `querySelectorAll` · `getComputedStyle`. 커스텀 속성에서는 **변수 값을 읽는 창 두 개**를 더 연다(A1).
+- **진단 3종** — `cssRules` · `querySelectorAll` · `getComputedStyle`. 커스텀 속성에서는 **변수 값을 읽는 창 두 개**를 더 연다(A1).
 
 ## 실행 검증
 
 | 무엇을 | 어떻게 | 결과 |
 |---|---|---|
-| IACVT 의 네 창 | Chrome 151 headless · `cssRules[i].style` + `getComputedStyle` | 목록 `[--x, color, background-color]` · `--x` `"redd"` · color 는 부모 green |
+| IACVT 의 네 확인 방법 | Chrome 151 headless · `cssRules[i].style` + `getComputedStyle` | 목록 `[--x, color, background-color]` · `--x` `"redd"` · color 는 부모 green |
 | IACVT = `unset` 인 것 | 같은 부모 아래 `unset`·`initial` 대조군 | unset 과 일치(green), initial 과 불일치(검정) |
 | 비상속 속성의 IACVT | 부모 background green 아래 `background-color: var(--x)` 대 `unset` | 둘 다 `rgba(0,0,0,0)` |
 | 앞선 선언으로 안 돌아가는 것 | `color: red; color: var(--x)`(`--x` 무효) | 검정(상속) — red 아님 |
@@ -353,7 +353,7 @@
 
 ## 실행 환경
 
-이 파일의 **모든 값은 Google Chrome 151.0.7922.173 headless 에서 실제로 렌더해 네 창으로 읽은 것**이다 —
+이 파일의 **모든 값은 Google Chrome 151.0.7922.173 headless 에서 실제로 렌더해 네 확인 방법으로 읽은 것**이다 —
 `cssRules[i].style`(담긴 선언 목록) · `cssRules[i].style.getPropertyValue('--x')`(담긴 변수 값) ·
 `getComputedStyle(el).getPropertyValue('--x')`(변수의 계산값) · `getComputedStyle(el).<속성>`(쓰는 쪽의 계산값).\
 **손으로 계산해 유도한 값은 없다.** 규칙은 [css-variables-1](https://drafts.csswg.org/css-variables-1/) 과 [css-cascade-5](https://drafts.csswg.org/css-cascade-5/) 로 접지했다.

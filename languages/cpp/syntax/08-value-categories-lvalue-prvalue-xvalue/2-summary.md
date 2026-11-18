@@ -51,7 +51,7 @@
 
 ## 동작 방식
 
-### (0) 이 주제가 쓰는 네 창
+### (0) 이 주제가 쓰는 확인 방법 네 가지
 
 같은 「범주」를 네 가지 방법으로 본다. **하나만 쓰면 답이 안 달라진다.**
 
@@ -62,9 +62,9 @@
 ④ 생성자·소멸자 로그                   임시가 언제 생기고 언제 죽는지 센다        (6)(7)
 ```
 
-- ★★★ **네 번째 창은 ①이다** — `decltype(e)` 가 `T` 면 prvalue, `T&` 면 lvalue, `T&&` 면 xvalue다.\
+- ★★★ **네 번째 확인 방법은 ①이다** — `decltype(e)` 가 `T` 면 prvalue, `T&` 면 lvalue, `T&&` 면 xvalue다.\
   **이 대응이 곧 범주의 정의를 타입으로 옮긴 것**이라 지어낼 여지가 없다.
-- ★ 그 창을 만든 것은 형제 [`05번`](../05-auto-and-decltype-type-deduction/)이다 — **여기서는 창만 빌려 쓰고 `decltype` 규칙 자체는 거기서 읽는다.**
+- ★ 그 확인 방법을 만든 것은 형제 [`05번`](../05-auto-and-decltype-type-deduction/)이다 — **여기서는 창만 빌려 쓰고 `decltype` 규칙 자체는 거기서 읽는다.**
 
 ### (1) 세 범주 — 격자로 한 번
 
@@ -1078,7 +1078,7 @@ C++17 부터 **안 난다**((6)의 `[1]`: `ctor` 하나).\
 
 ## 관련 자료
 
-- 형제 [`05-auto-and-decltype-type-deduction/`](../05-auto-and-decltype-type-deduction/) — **`decltype` 이 이름과 식을 가르는 규칙**이 거기 정본이다. 여기는 **그 창으로 범주를 묻는 것**부터.
+- 형제 [`05-auto-and-decltype-type-deduction/`](../05-auto-and-decltype-type-deduction/) — **`decltype` 이 이름과 식을 가르는 규칙**이 거기 정본이다. 여기는 **그 확인 방법으로 범주를 묻는 것**부터.
 - 형제 [`07-references-vs-pointers/`](../07-references-vs-pointers/) — **참조가 무엇인가**가 거기. 여기는 **어떤 식에 참조가 묶이나**부터.
 - 형제 [`01-function-overloading-and-overload-resolution/`](../01-function-overloading-and-overload-resolution/) — **오버로드 해석의 전체 순서**가 거기. 여기는 **범주가 후보를 가르는 한 겹**만.
 - 형제 [`04-brace-initialization-narrowing-and-initializer-list/`](../04-brace-initialization-narrowing-and-initializer-list/) — `S{}` 라는 **임시를 만드는 문법**이 거기.

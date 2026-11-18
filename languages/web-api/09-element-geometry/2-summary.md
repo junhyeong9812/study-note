@@ -65,9 +65,9 @@ Google Chrome 151.0.7922.173
 2. **`offsetParent` 는 무엇이 되나.** 그리고 **`null` 이 되는 자리는 어디인가.**
 3. **같은 상자를 재는데 왜 수가 다른가** — 테두리·스크롤바·`transform`·소수점.
 
-## 이 갈래의 관측 창 — ★ 창 4 는 `elementFromPoint()`
+## 이 갈래의 확인 방법 — ★ 창 4 는 `elementFromPoint()`
 
-[01번 주제](../01-document-and-node-tree/2-summary.md)가 세운 창 셋에 이 주제의 창을 하나 더 얹는다.
+[01번 주제](../01-document-and-node-tree/2-summary.md)가 세운 창 셋에 이 주제의 확인 방법을 하나 더 얹는다.
 
 ```text
   창 1  --dump-dom             스크립트가 다 돈 뒤의 트리를 글자로
@@ -440,7 +440,7 @@ elementFromPoint 가 받는 것은 뷰포트 좌표이기 때문이다 — offse
 - **스크롤 전에는 두 좌표가 똑같이 `#t` 를 가리킨다.** 여기서 멈추면 **틀린 코드가 통과한다.**
 - **250 을 굴리자 달라진다** — `rect` 중심은 여전히 `#t` 인데 **offset 누적 좌표는 `#tail`**(문서 아래쪽 채움)을 가리킨다.
 - ★ **`elementFromPoint` 가 받는 것은 뷰포트 좌표**다. offset 누적값은 **문서 좌표**라서, 굴린 만큼 어긋난다. **빼 주면 다시 맞는다**(`누적 − scrollX/scrollY`).
-- ★ **이것이 이 주제의 창 ④ 인 이유** — 값을 읽기만 하면 두 수가 같은지 다른지밖에 못 본다. **넣어 보면 「무엇을 가리키는 수인가」가 드러난다.**
+- ★ **이것이 이 주제의 확인 방법 ④ 인 이유** — 값을 읽기만 하면 두 수가 같은지 다른지밖에 못 본다. **넣어 보면 「무엇을 가리키는 수인가」가 드러난다.**
 
 **뷰포트 밖으로 나가면.**
 
@@ -825,7 +825,7 @@ r.left;                                         // 옛 값이다
 - [08번 주제](../08-getcomputedstyle/2-summary.md) — `getComputedStyle`. **그쪽은 「무엇이 선언됐나」, 여기는 「그래서 어떤 상자가 놓였나」**. 08 의 창 ④ 가 이 주제를 미리 빌려 갔다
 - [10번 주제](../10-layout-thrashing/2-summary.md) — 이 주제의 읽기가 **얼마나 비싼가**. 고치는 법은 그쪽이 정본
 - [11번 주제](../11-scroll-control/2-summary.md) — `scrollTop` 을 **읽는 것**까지가 여기, **굴리는 것**은 그쪽
-- [01번 주제](../01-document-and-node-tree/2-summary.md) — 관측 3창의 정본
+- [01번 주제](../01-document-and-node-tree/2-summary.md) — 관측 3번 확인 방법의 정본
 - [목록의 **35번 주제**](../35-intersection-observer/)(IntersectionObserver) — 「보이나」를 **폴링 없이** 묻는 법. 이 주제의 좌표 계산을 대신한다
 - 목록의 **36번 주제**(ResizeObserver) — 치수가 **언제 바뀌었나**를 묻는 법
 - [CSS 15번 주제](../../css/syntax/15-box-model-and-box-sizing/2-summary.md) — ★ **이 주제의 정본 이웃.** 네 겹 상자와 `box-sizing`, `rect.width` 가 재는 칸의 정의가 거기다. **여기서 다시 쓰지 않는다**

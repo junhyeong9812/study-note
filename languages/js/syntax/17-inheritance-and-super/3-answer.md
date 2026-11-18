@@ -337,7 +337,7 @@ identical 22  ·  differs 1  ·  total 23
   `Derived constructors may only return object or undefined` · `'super' keyword unexpected here`.
 - ★★ **`e.stack` 은 ECMA-262 에 없다** — 엔진/호스트 칸. own 키 중 **`stack` 만** 명세 밖이다.
 - ★★ **문구가 원인을 틀리게 말하는 두 곳** — `Super constructor null of N`(사슬은 `Function.prototype`) · `#label` 의 「class did not declare it」(선언했고 설치 전).
-- ★ **창을 바꿔 물은 자리** — 부모 생성자 안의 `#label`(값 창이 `TypeError` 로 닫혀 `#label in this` 로 물었다).
+- ★ **확인 방법을 바꿔 물은 자리** — 부모 생성자 안의 `#label`(값 창이 `TypeError` 로 닫혀 `#label in this` 로 물었다).
   **해당 없음** — 진단의 `(행,열)`(묻는 것이 「컴파일되나」라 가를 열이 없다) · 파이썬 MRO 창(단일 상속).
 
 ### 12. 경계 — 어디까지가 이 주제인가 ★★
@@ -370,14 +370,14 @@ identical 22  ·  differs 1  ·  total 23
 
 **두 사슬 · `super()` 규칙과 예외의 종류 · HomeObject 와 수신자 · 필드가 `super()` 뒤 정의로 설치되는 것 · 내장 상속의 브랜드와 `Symbol.species` · `Error.prototype.name` 은 구현 의존이 아니다.**
 
-**안 돌려 본 것 / 못 잰 것 / 해당 없는 창**
+**안 돌려 본 것 / 못 잰 것 / 해당 없는 확인 방법**
 
 - **안 돌려 본 것** — 브라우저 · 다른 엔진의 문구 · **`setPrototypeOf(B, X)` 뒤 `new B()` 의 `super()` 목적지** ·
   클래스를 만드는 함수 꼴의 믹스인 · `super()` 두 번째 호출에서 부모 생성자가 도는지 · `Promise`/`RegExp` 의 `Symbol.species` · C# 쪽 「부모 생성자 중 넣은 값」 칸.
 - ★ **못 잰 것** — **없다.**
 - ★★★ **안 쟀다** — **성능 전부.**
 - ★★ **해당 없음** — 진단의 `(행,열)` · 파이썬 MRO 창.
-- ★★ **창을 바꿔 물은 자리** — 부모 생성자 안의 `#label`(값 창 대신 `#label in this`).
+- ★★ **확인 방법을 바꿔 물은 자리** — 부모 생성자 안의 `#label`(값 창 대신 `#label in this`).
 
 **버전이 올랐을 때 다시 돌려야 하는 것**
 

@@ -97,7 +97,7 @@ class NestGrid$JInner {
 
 - ★★★ **`this$0` 이 있는 것은 `Outer$Inner`(Kotlin `inner`)와 `NestGrid$JInner`(Java 비정적)** 다. 같은 JVM 장치를 **정반대 기본값**으로 쓴다.
 - ★★ 그런 클래스의 생성자는 **바깥을 인자로 받는다** — `Outer$Inner(Outer)` · `NestGrid$JInner(NestGrid)`.
-- 출력 네 줄은 **차이를 하나도 안 보인다** — 셋째 창(`javap`)이 본체인 이유다.
+- 출력 네 줄은 **차이를 하나도 안 보인다** — 셋째 확인 방법(`javap`)이 본체인 이유다.
 
 ### 2. ★★ 에러 네 줄 — 바깥을 수신자로 못 씀 · 인터페이스 · `standalone object` · `companion object`
 

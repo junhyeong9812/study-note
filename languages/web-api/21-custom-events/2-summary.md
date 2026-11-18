@@ -19,7 +19,7 @@ Google Chrome 151.0.7922.173
 
 - 재대조에서 정규화하는 칸은 없다. **위 표에 없는 차이는 전부 고칠 것**이다.
 
-### 이 주제가 쓰는 창 / 해당 없는 창
+### 이 주제가 쓰는 확인 방법 / 해당 없는 확인 방법
 
 | 창 | 이 주제에서 | 무엇을 답하나 |
 |---|---|---|
@@ -29,7 +29,7 @@ Google Chrome 151.0.7922.173
 | **창 ④ 디스패치 계수기 → 닿은 자리 격자 + 호출 순서 로그** | ★★★ **핵심** | 어느 자리에서 불렸나 · 그 자리의 `target`·경로 길이((1)) · 누가 먼저 찍혔나((2)·(5)) |
 | 창 ⑤ 콘솔 → `window` 의 `error` 이벤트 | ★ **쓴다 — 제5의 상태** | 리스너가 던진 예외는 **콘솔로 간다.** 콘솔 대신 **`error` 이벤트로 물었다**((3)) |
 
-- ★★ **제5의 상태 — 「예외가 어디로 갔나」를 콘솔이 아니라 `window` 의 `error` 이벤트로 물었다.** DOM 이 리스너 예외를 **report exception** 으로 넘기고, 그것이 `error` 이벤트로 온다. ★ 바꾼 창이 못 보는 것 — **콘솔에 찍힌 스택 트레이스**는 이 창에 없다(`message` 만 온다).
+- ★★ **제5의 상태 — 「예외가 어디로 갔나」를 콘솔이 아니라 `window` 의 `error` 이벤트로 물었다.** DOM 이 리스너 예외를 **report exception** 으로 넘기고, 그것이 `error` 이벤트로 온다. ★ 바꾼 확인 방법이 못 보는 것 — **콘솔에 찍힌 스택 트레이스**는 이 창에 없다(`message` 만 온다).
 
 ### 도구가 못 보는 것
 
@@ -544,7 +544,7 @@ $ python3 wa20b-cdp.py page wa20b-21-sync.html | sed -n '32,33p'
 
 ## 실행 환경
 
-★★★ **이 편의 핵심은 창 ④ 를 늘린 「닿은 자리 격자」다** — 그림자 안에서 던진 `CustomEvent` 가 **어느 자리에서 불렸나**와 그 자리에서 본 **`target` · `composedPath().length`** 를 `bubbles` × `composed` × `open`/`closed` 로 센다. 여기에 **「디스패치가 동기」를 호출 순서 로그로** 얹는다.\
+★★★ **이 편의 핵심은 확인 방법 ④ 를 늘린 「닿은 자리 격자」다** — 그림자 안에서 던진 `CustomEvent` 가 **어느 자리에서 불렸나**와 그 자리에서 본 **`target` · `composedPath().length`** 를 `bubbles` × `composed` × `open`/`closed` 로 센다. 여기에 **「디스패치가 동기」를 호출 순서 로그로** 얹는다.\
 **기준 소스** — [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 `CustomEvent`(「`detail` 은 초기화된 값을 돌려준다」) · `dispatchEvent()`(「dispatch flag 가 서 있거나 initialized flag 가 없으면 `InvalidStateError`」 · `isTrusted` 를 `false` 로) · 「dispatch」·「inner invoke」(리스너가 던지면 **report exception**) 절. 열어서 확인한 것만 적었다(기준일 2026-09-26).\
 **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. 대부분 스크립트가 던진 합성 이벤트이고, (5)의 견줌 한 줄만 **CDP 로 넣은 진짜 클릭**이다. 하네스는 [20번 주제](../20-listener-lifetime/2-summary.md)의 (1)에 있다.\
 **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\

@@ -19,7 +19,7 @@ Google Chrome 151.0.7922.173
 
 - 재대조에서 정규화하는 칸은 없다. **위 표에 없는 차이는 전부 고칠 것**이다.
 
-### 이 주제가 쓰는 창 / 해당 없는 창
+### 이 주제가 쓰는 확인 방법 / 해당 없는 확인 방법
 
 | 창 | 이 주제에서 | 무엇을 답하나 |
 |---|---|---|
@@ -27,8 +27,8 @@ Google Chrome 151.0.7922.173
 | 창 ② 노드 프로브 | ★ **쓴다** | `sendBeacon` 의 반환값 · `fetch` 의 `then`/`catch` · 던진 예외 |
 | 창 ③ 같은 것을 두 번 읽기 | **해당 없음** | — |
 | **창 ④ 서버 요청 로그 → 떠날 때 전송 격자** | ★★★ **핵심** | 닿았나(5판 중 몇 판) · 응답을 놓을 때 연결이 살아 있었나 · 메서드 · `Content-Type` · 본문 길이 · 프리플라이트 |
-| ★ **「잘렸나」를 서버 쪽 소켓으로** | ★★ **제5의 상태 — 같은 질문을 다른 창으로** | 떠난 페이지는 **`then` 도 `catch` 도 적지 못한다**(문서가 없다). 그래서 **서버가 응답을 놓는 순간 소켓이 닫혔나**로 물었다. ★ 바꾼 창이 못 보는 것 — **브라우저가 응답을 받아 어디에 버렸나** |
-| ★ **동기 결과를 다른 탭에서** | ★ **같은 질문을 다른 창으로** | 떠나는 페이지가 **localStorage 에 적어 두고**, 하네스가 **같은 출처의 다른 탭에서** 읽는다(24편의 기록기와 같은 수) |
+| ★ **「잘렸나」를 서버 쪽 소켓으로** | ★★ **제5의 상태 — 같은 질문을 다른 확인 방법으로** | 떠난 페이지는 **`then` 도 `catch` 도 적지 못한다**(문서가 없다). 그래서 **서버가 응답을 놓는 순간 소켓이 닫혔나**로 물었다. ★ 바꾼 확인 방법이 못 보는 것 — **브라우저가 응답을 받아 어디에 버렸나** |
+| ★ **동기 결과를 다른 탭에서** | ★ **같은 질문을 다른 확인 방법으로** | 떠나는 페이지가 **localStorage 에 적어 두고**, 하네스가 **같은 출처의 다른 탭에서** 읽는다(24편의 기록기와 같은 수) |
 | 콘솔(Log 도메인) | ★ **쓴다** | 교차 출처 프리플라이트 거부 |
 
 ### 도구가 못 보는 것
@@ -554,7 +554,7 @@ B OPTIONS /beacon?body=keepalive-json  Origin=http://127.0.0.1:<A> · Access-Con
 
 ## 실행 환경
 
-★★★ **이 편의 핵심은 창 ④ 「서버 요청 로그」로 [24번 주제](../24-document-lifecycle-events/2-summary.md)의 「떠날 때」 격자에 열을 더한 「떠날 때 전송 격자」다.** 24편은 **떠날 때 어느 이벤트가 불리나**를 쟀다. 여기서는 그 이벤트 안에서 **한 번 보낸 요청이 서버에 닿았나**, 그리고 서버가 응답을 붙잡았다가 놓는 순간 **그 연결이 아직 살아 있었나**를 잰다. 전송 수단 5(`fetch` · `fetch keepalive` · `sendBeacon` · `img.src` · 동기 XHR) × 부르는 자리 4(`visibilitychange → hidden` · `pagehide` · `beforeunload` · `unload`) × 떠나는 방식 2(링크 · 탭 닫기) = **40칸을 5판** 돌려 **칸마다 「5판 중 몇 판」** 으로 적는다.\
+★★★ **이 편의 핵심은 확인 방법 ④ 「서버 요청 로그」로 [24번 주제](../24-document-lifecycle-events/2-summary.md)의 「떠날 때」 격자에 열을 더한 「떠날 때 전송 격자」다.** 24편은 **떠날 때 어느 이벤트가 불리나**를 쟀다. 여기서는 그 이벤트 안에서 **한 번 보낸 요청이 서버에 닿았나**, 그리고 서버가 응답을 붙잡았다가 놓는 순간 **그 연결이 아직 살아 있었나**를 잰다. 전송 수단 5(`fetch` · `fetch keepalive` · `sendBeacon` · `img.src` · 동기 XHR) × 부르는 자리 4(`visibilitychange → hidden` · `pagehide` · `beforeunload` · `unload`) × 떠나는 방식 2(링크 · 탭 닫기) = **40칸을 5판** 돌려 **칸마다 「5판 중 몇 판」** 으로 적는다.\
 **기준 소스** — [WHATWG Fetch](https://fetch.spec.whatwg.org/)(앞 배치가 받아 둔 사본에서 열었다) — request 의 **keepalive**(「요청이 **environment settings object 보다 오래 살게** 하는 데 쓸 수 있다 — 예: **`navigator.sendBeacon()` 과 HTML `img` 요소가 이것을 쓴다**」) · **fetch group 이 terminated 될 때**(「fetch record 마다 — controller 가 있고 **done 이 아니고 keepalive 가 false 면 그 controller 를 terminate 한다**」) · HTTP-network-or-cache fetch 의 **한도**(「contentLength 와 **아직 안 끝난 keepalive 요청들의 본문 길이 합**이 **64 kibibytes 보다 크면 network error**」) · 본문 추출(「본문이 `ReadableStream` 이고 **keepalive 가 true 면 `TypeError` 를 던진다**」). ★ **[W3C Beacon](https://w3c.github.io/beacon/) 과 HTML 명세의 「page dismissal 중 동기 XHR」 문장은 이 버전에서 열지 못했다**(외부 네트워크를 쓰지 않았고 사본이 없다) — 그쪽 서술은 **관찰**로만 적는다. 열어서 확인한 것만 명세로 적었다(기준일 2026-09-26).\
 **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. 링크는 **CDP 로 넣은 진짜 마우스**로 누르고, 탭 닫기는 **`Page.close`** 다(24편 (3) — `Target.closeTarget` 은 `beforeunload` 를 안 부른다). 서버는 [32번 주제](../32-server-sent-events/2-summary.md)의 (1) `/beacon`·`/big` 이다.\
 **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.** ★★ **서버는 같은 기계(localhost)다** — 요청이 선에 오르는 데 걸리는 시간이 거의 0 이다. 먼 서버 · 느린 선에서의 「닿았나」는 이 버전이 말하지 않는다.\

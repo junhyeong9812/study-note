@@ -1,6 +1,6 @@
 # kotlin/syntax/52 — 코루틴 기초 — `suspend`·`CoroutineScope`·`launch`/`async`/`await` — 정리 (힌트)
 
-★★★ **핵심은 첫째 창이다** — 「**`javap` — `suspend fun f(x: Int): Int` 가 JVM 에서 `f(int, Continuation): Object` 가 되고 상태 기계 클래스가 생기는 것**」. 둘째 본체는 **호출 규칙 격자**(어디서 부르면 막히나)다. 「스레드가 아니다」는 **스레드 수를 세는** 로그로만 말한다 — 가볍다·빠르다는 재지 않았다.
+★★★ **핵심은 첫째 확인 방법이다** — 「**`javap` — `suspend fun f(x: Int): Int` 가 JVM 에서 `f(int, Continuation): Object` 가 되고 상태 기계 클래스가 생기는 것**」. 둘째 본체는 **호출 규칙 격자**(어디서 부르면 막히나)다. 「스레드가 아니다」는 **스레드 수를 세는** 로그로만 말한다 — 가볍다·빠르다는 재지 않았다.
 
 ## 이 주제가 쓰는 세 층
 
@@ -79,11 +79,11 @@ Implementation-Version: 1.11.0
 
 ## 동작 방식
 
-### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「해당 없는 창」
+### (0) ★★★ 이 주제가 쓰는 확인 방법 — 그리고 「해당 없는 확인 방법」
 
 | 창 | 무엇을 보여 주나 | 어디서 왔나 |
 |---|---|---|
-| ★★★ **`javap -p` · `javap -c`(발췌)** | CPS 서명 · 상태 기계 클래스 · `label` · `tableswitch` · `COROUTINE_SUSPENDED`((1)) | ★ **핵심 창** — 지어낼 수 없는 컴파일러의 일 |
+| ★★★ **`javap -p` · `javap -c`(발췌)** | CPS 서명 · 상태 기계 클래스 · `label` · `tableswitch` · `COROUTINE_SUSPENDED`((1)) | ★ **핵심 확인 방법** — 지어낼 수 없는 컴파일러의 일 |
 | ★★★ **호출 규칙 격자(컴파일)** | 어디서 부르면 막히나 · 진단 두 종((2)) | 49편의 격자와 같은 꼴 |
 | ★★ **계수 로그** | 스레드 id 집합 크기 · `Thread.activeCount()`((3)) | 성능이 아니라 **개수**만 |
 | ★★ **순서 로그(단일 스레드)** | 끼어들기 · 부른 순간 무엇이 도나 · 예외가 어디서 나오나((3)(4)) | 실행 간 차이 없이 결정적으로 만들었다 |
@@ -663,7 +663,7 @@ two direct calls took at least 200ms: true
 
 > **코루틴 빌더** — `launch`·`async`·`runBlocking` 처럼 **새 코루틴을 여는** 함수. kotlinx-coroutines 의 것이다.
 
-> **`Job` / `Deferred<T>`** — `launch` 가 돌려주는 「작업 손잡이」 / `async` 가 돌려주는 「나중에 값이 올 손잡이」(`await()`).
+> **`Job` / `Deferred<T>`** — `launch` 가 돌려주는 「작업 핸들」 / `async` 가 돌려주는 「나중에 값이 올 핸들」(`await()`).
 
 ## 더 들어가면
 

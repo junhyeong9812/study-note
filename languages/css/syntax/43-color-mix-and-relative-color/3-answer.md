@@ -45,7 +45,7 @@ color-mix(in hsl,         #ff0000, #00ffff)  color(srgb 0.5 1 0)              rg
 화면 — .a 는 배경 없는 상자로 보인다. 콘솔에 아무 말도 없다.
 ```
 
-**진단 3창 중 창 1**(`cssRules[j].style.cssText`)로 잡힌다.
+**진단 3종 중 창 1**(`cssRules[j].style.cssText`)로 잡힌다.
 
 **왜 그런가**
 

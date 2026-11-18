@@ -43,10 +43,10 @@
 > **코루틴(coroutine)** — 코루틴 함수를 불러 얻은 객체. **`send` 로 한 걸음씩 돌릴 수 있고**, `await` 자리에서 멈췄다가 이어 간다.\
 > 예: `c = f()` 의 `c` — 이 시점에 `f` 의 몸통은 한 줄도 안 돌았다.
 
-### ★★ 이 주제가 쓰는 창 / 해당 없는 창
+### ★★ 이 주제가 쓰는 확인 방법 / 해당 없는 확인 방법
 
 **핵심은 ① 로그 창(「몸통이 돌았나」를 표준 출력 줄로)과 ② 경고 창(never awaited — 표준 오류 · `catch_warnings`) 두 짝이다.**
-★★★ **네 번째 창은 ④ `send` 창이다** — 루프 없이 **손으로 한 걸음씩** 돌려, `await` 가 **무엇을 바깥으로 내보내는지**를 본다. 로그 창만으로는 「멈췄다」와 「안 돌았다」가 같은 모양(줄 없음)이다.
+★★★ **네 번째 확인 방법은 ④ `send` 창이다** — 루프 없이 **손으로 한 걸음씩** 돌려, `await` 가 **무엇을 바깥으로 내보내는지**를 본다. 로그 창만으로는 「멈췄다」와 「안 돌았다」가 같은 모양(줄 없음)이다.
 
 | 창 | 무엇을 말해 주나 | 못 보는 것 |
 |---|---|---|
@@ -400,16 +400,16 @@ after close, state              : CORO_CLOSED
 그림 해설.
 
 * ★★ **`type(c).__name__` 은 `coroutine`**, `types.CoroutineType` 이고 **`GeneratorType` 과 다른 타입**이다. `inspect.isgenerator(c)` 도 `False`.
-* ★★ **`send`·`throw`·`close` 는 있다** — 문서 — *"Coroutines also have the methods listed below, which are analogous to those of generators"*. [17번](../17-generators-yield/2-summary.md)의 조종 손잡이를 그대로 물려받았다.
+* ★★ **`send`·`throw`·`close` 는 있다** — 문서 — *"Coroutines also have the methods listed below, which are analogous to those of generators"*. [17번](../17-generators-yield/2-summary.md)의 조종 핸들을 그대로 물려받았다.
 * ★★★ **`__next__` 가 없다** — `next(c)` 는 `'coroutine' object is not an iterator`, `iter(c)`·`list(c)` 는 `'coroutine' object is not iterable`. 문서 — *"unlike generators, coroutines do not directly support iteration."*
 * ★ **`getcoroutinestate(c)` 가 `CORO_CREATED`** — 동작 1 의 「몸통이 안 돌았다」를 **로그 없이** 물은 창이다(제5의 상태). `close()` 뒤에는 `CORO_CLOSED`.
 * ★ **`c.__await__()` 는 `coroutine_wrapper`** — `await` 가 실제로 붙잡는 이터레이터다. 그 이름은 CPython 의 것이다.
 
-★ [history 06번 §5.5](../../../../history/python/06-핵심-개념-진화.md)는 *「내부적으로 코루틴은 여전히 특수한 제너레이터이며」* 라고 적는다 — **이 버전의 타입으로는 별개**(`CoroutineType is GeneratorType` 이 `False`)이고, 닮은 것은 **조종 손잡이와 멈춤·재개 기계**다. 그 문장은 **구현의 계보**로 읽어라.
+★ [history 06번 §5.5](../../../../history/python/06-핵심-개념-진화.md)는 *「내부적으로 코루틴은 여전히 특수한 제너레이터이며」* 라고 적는다 — **이 버전의 타입으로는 별개**(`CoroutineType is GeneratorType` 이 `False`)이고, 닮은 것은 **조종 핸들과 멈춤·재개 기계**다. 그 문장은 **구현의 계보**로 읽어라.
 
 ### 5. ★★★ `send(None)` 으로 손으로 돌리기 — 루프 없이
 
-**언제 쓰나** — 「`await` 는 무엇을 하나」를 루프라는 상자 없이 볼 때. 이 주제의 **네 번째 창**이다.
+**언제 쓰나** — 「`await` 는 무엇을 하나」를 루프라는 상자 없이 볼 때. 이 주제의 **네 번째 확인 방법**이다.
 
 ```text
    Pause("p1") 의 __await__ 는 yield 를 한 번 한다 — 그 값이 바깥으로 나간다
@@ -1036,7 +1036,7 @@ rows that differ between the two versions: 0 / 8
 
 ### (4) ★★ 「코루틴은 제너레이터다」로 외워 `for`·`next` 를 쓴다
 
-손잡이(`send`·`throw`·`close`)는 같지만 **이터레이터가 아니다**(동작 4). 타입도 별개다.
+핸들(`send`·`throw`·`close`)는 같지만 **이터레이터가 아니다**(동작 4). 타입도 별개다.
 
 ### (5) ★★ 끝난 코루틴을 다시 `await` 한다
 
@@ -1108,7 +1108,7 @@ rows that differ between the two versions: 0 / 8
 * ✗ 「코루틴은 부르면 첫 `await` 까지 돈다」\
   ○ 그건 **JS** 다. 파이썬은 **0 줄**.
 * ✗ 「코루틴은 제너레이터다」\
-  ○ **이 버전에서 타입이 다르고 이터레이터가 아니다.** 같은 것은 손잡이와 멈춤·재개 기계다.
+  ○ **이 버전에서 타입이 다르고 이터레이터가 아니다.** 같은 것은 핸들과 멈춤·재개 기계다.
 * ✗ 「이벤트 루프가 코루틴을 멈춘다」\
   ○ 코루틴은 **스스로** `await` 에서 멈춘다(팻말을 내민다). 루프는 **다시 불러 주는 쪽**이다 — 루프 없이 손으로도 돌았다(동작 5).
 

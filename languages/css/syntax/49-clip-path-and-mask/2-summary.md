@@ -410,7 +410,7 @@
 }
 ```
 
-★ 「진단 3창」으로 물었다.
+★ 「진단 3종」으로 물었다.
 
 ```text
   창 1  cssRules  → .x { mask-image: url("#nope"); }   나머지 둘은 사라졌다
@@ -421,7 +421,7 @@
     깨진 data URI 를 마스크로 줘도 같았다.
 ```
 
-- 이것이 이 주제의 **제4의 상태**다: **세 창을 전부 통과하는데 요소가 안 보인다.**
+- 이것이 이 주제의 **제4의 상태**다: **세 확인 방법을 전부 통과하는데 요소가 안 보인다.**
 - 참조가 안 풀리는 마스크는 「마스크 없음」이 아니라 「**전부 가리는 마스크**」처럼 동작했다.
 
 ## 구현 세부사항 대 언어 보장
@@ -526,8 +526,8 @@
 - **`mask-composite`** — 마스크 레이어 여럿을 합치는 규칙. `add`(기본)·`subtract`·`intersect`·`exclude`.
 - **히트 테스트(hit testing)** — 어느 좌표를 눌렀을 때 어느 요소가 잡히는지 정하는 계산.\
   예: `document.elementFromPoint(x, y)` 가 돌려주는 요소. `clip-path` 로 잘린 밖에서는 그 아래 요소가 나온다.
-- **제4의 상태** — 「진단 3창」을 전부 통과하는데 화면이 다른 상태. 이 주제에서는 **깨진 마스크 참조**가 그렇다.
-- **진단 3창** — `cssRules` → `querySelectorAll` → `getComputedStyle`. 정본은 [07번](../07-syntax-and-error-recovery/2-summary.md).
+- **제4의 상태** — 「진단 3종」을 전부 통과하는데 화면이 다른 상태. 이 주제에서는 **깨진 마스크 참조**가 그렇다.
+- **진단 3종** — `cssRules` → `querySelectorAll` → `getComputedStyle`. 정본은 [07번](../07-syntax-and-error-recovery/2-summary.md).
 
 ## 더 들어가면
 
@@ -541,7 +541,7 @@
 
 **기준 소스** — [CSS Masking Module Level 1](https://drafts.csswg.org/css-masking-1/) (`clip-path`·`mask-*`·`<geometry-box>` 의 정본) · [CSS Shapes Level 1](https://drafts.csswg.org/css-shapes-1/#basic-shape-functions) (`inset`·`circle`·`ellipse`·`polygon`·`path` 도형 함수). 열어서 확인한 것만 적었다.
 **실행 검증** — 이 문서의 `demo` 블록 **4개 전부**와 본문의 모든 수치를 **Google Chrome 151.0.7922.173** headless 에서 실제로 렌더해 확인했다.\
-★ **이 주제는 `getComputedStyle` 로 거의 아무것도 증명하지 못한다.** `mask-image: url(#nope)` 는 계산값이 멀쩡한데 **요소가 통째로 사라진다**(본문 「진단 3창」).\
+★ **이 주제는 `getComputedStyle` 로 거의 아무것도 증명하지 못한다.** `mask-image: url(#nope)` 는 계산값이 멀쩡한데 **요소가 통째로 사라진다**(본문 「진단 3종」).\
 그래서 **스크린샷 PNG 를 파이썬 표준 라이브러리(`zlib`)로 디코드해 좌표별 `(r,g,b)` 를 읽는 것**이 주 근거다 — **잘린 자리가 페이지 배경색으로 돌아오는지**로 판정한다. 이벤트는 `document.elementFromPoint()` 로 확인했다.
 **버전** — CSS 에 언어 버전이 없으므로 Baseline 으로 읽는다. webstatus.dev 조회(2026-09-23): `clip-path` **widely**(2021-01-21 → 2023-07-21) · `masks`(Masks) **widely**(2023-12-07 → 2026-06-07, Chrome 120·Firefox 53·Safari 15.4).
 **여기서 다루지 않는 것** — **모서리 넷을 깎는 것**(`border-radius`)은 [46번](../46-borders-radius-outline-shadow/2-summary.md)이 정본이다. 여기는 그것을 **임의의 도형으로 일반화한 것**부터다.\

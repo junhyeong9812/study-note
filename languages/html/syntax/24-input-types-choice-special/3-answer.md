@@ -238,7 +238,7 @@ $ python3 html21b-form.py 시도 html21b-24-radio.html
 
 **못 잰 것** — ① **파일·색 선택 창.** ② **스크린리더의 라디오 그룹 읽기.**
 
-**해당 없는 창** — **창 ③ · ④ · ⑥.** — **잴 것이 없다.**
+**해당 없는 확인 방법** — **창 ③ · ④ · ⑥.** — **잴 것이 없다.**
 
 ## 용어 풀이
 
@@ -253,4 +253,4 @@ $ python3 html21b-form.py 시도 html21b-24-radio.html
 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스는 [21번 주제](../21-form-submission-model/3-answer.md)의 `## 실행 검증` 절에 있다.\
 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 「Constructing the entry list」·「The input element」 절과 [HTML-AAM](https://w3c.github.io/html-aam/) 으로 접지했다.\
 ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-★★★ **본체는 창 ⑤ 다** — 「안 실린다」는 서버가 받은 필드 목록에서 **찾아보고 없었다**로만 선다(A2).
+★★★ **핵심은 확인 방법 ⑤ 다** — 「안 실린다」는 서버가 받은 필드 목록에서 **찾아보고 없었다**로만 선다(A2).

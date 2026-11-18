@@ -18,7 +18,7 @@ Google Chrome 151.0.7922.173
 
 - 재대조 정규화 규칙은 **0개** — 실행마다 달라지는 항목은 하네스가 **출력 전에** 가렸다(위 표). **위 표에 없는 차이는 전부 고칠 것**이다.
 
-### 이 주제가 쓰는 창 / 해당 없는 창
+### 이 주제가 쓰는 확인 방법 / 해당 없는 확인 방법
 
 | 창 | 이 주제에서 | 무엇을 답하나 |
 |---|---|---|
@@ -26,7 +26,7 @@ Google Chrome 151.0.7922.173
 | 창 ② 노드 프로브 | ★ **쓴다** | `FormData.get()` 이 돌려주는 것의 종류·이름·`type`((3)) |
 | 창 ③ 같은 것을 두 번 읽기 | ★★★ **쓴다** | **같은 `FormData` 를 두 번** — 헤더만 다르게((2)) · **같은 폼을 두 길로** — `fetch` 와 진짜 제출((4)) |
 | **창 ④ 서버 요청 로그 — 받은 `Content-Type` · 원문 · 파싱** | ★★★ **핵심** | 무엇이 **실렸나**(원문) · 서버가 **무엇으로 읽었나**(파싱) |
-| ★ **「무엇이 실렸나」를 페이지 대신 서버에게** | ★★ **같은 질문을 다른 창으로(제5의 상태)** | 페이지는 **서버에 실제로 닿은 `Content-Type` 을 볼 수 없다.** 그래서 서버에게 `/note` 로 물었다. ★ 바꾼 창이 못 보는 것 — **HTTP 층에서 바뀌는 것**(압축·청크)은 이 서버가 풀어서 받으므로 안 보인다 |
+| ★ **「무엇이 실렸나」를 페이지 대신 서버에게** | ★★ **같은 질문을 다른 확인 방법으로(제5의 상태)** | 페이지는 **서버에 실제로 닿은 `Content-Type` 을 볼 수 없다.** 그래서 서버에게 `/note` 로 물었다. ★ 바꾼 확인 방법이 못 보는 것 — **HTTP 층에서 바뀌는 것**(압축·청크)은 이 서버가 풀어서 받으므로 안 보인다 |
 | 파이썬 `urllib`·`requests` | ★ **대비** | 다른 클라이언트는 **무엇을 자동으로 붙이나**((5)) |
 
 ### 도구가 못 보는 것
@@ -473,7 +473,7 @@ A POST /echo?id=py  Content-Type=multipart/form-data · 본문 248바이트
 
 ## 실행 환경
 
-★★★ **이 편의 핵심은 창 ④ 「서버 요청 로그」 — 서버가 받은 `Content-Type` 과 **그것으로 고른 파서의 결과**를 칸마다 서버에게 묻는 「자동 `Content-Type` 격자」다.** 본문 일곱 × `Content-Type` 을 직접 쓰나(안 씀 / 씀) = 14칸, 마지막 줄을 스크립트가 **「직접 써서 서버 파싱이 깨진 본문 N / 7」** 로 찍는다. 그 옆에 **원문(본문 바이트)** 을 서버 로그째 싣는다.\
+★★★ **이 편의 핵심은 확인 방법 ④ 「서버 요청 로그」 — 서버가 받은 `Content-Type` 과 **그것으로 고른 파서의 결과**를 칸마다 서버에게 묻는 「자동 `Content-Type` 격자」다.** 본문 일곱 × `Content-Type` 을 직접 쓰나(안 씀 / 씀) = 14칸, 마지막 줄을 스크립트가 **「직접 써서 서버 파싱이 깨진 본문 N / 7」** 로 찍는다. 그 옆에 **원문(본문 바이트)** 을 서버 로그째 싣는다.\
 **기준 소스** — [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 「extract a body」(**`Blob` — `type` 이 빈 바이트열이 아니면 그 값** · `BufferSource` — 타입 없음 · **`FormData` — `multipart/form-data; boundary=` + multipart/form-data 인코딩 알고리즘이 만든 boundary 문자열** · **`URLSearchParams` — `application/x-www-form-urlencoded;charset=UTF-8`** · **문자열 — `text/plain;charset=UTF-8`**) · Request 생성자(「type 이 null 이 아니고 **headers 에 `Content-Type` 이 없으면** 그때만 붙인다」) · [WHATWG HTML](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html) 의 「create an entry」(**`File` 이 아닌 `Blob` 은 이름이 `"blob"` 인 새 `File` 로** · filename 을 주면 그 이름으로) · 「constructing the entry list」(**체크 안 된 체크박스는 건너뛴다**) · 「multipart/form-data encoding algorithm」(**RFC 7578** 을 따르고, **파일이 아닌 칸에는 `Content-Type` 을 붙이지 않는다** · boundary 는 알고리즘이 만든다) · [WHATWG XHR](https://xhr.spec.whatwg.org/) 의 `FormData(form)` 생성자(form 이 주어지면 **constructing the entry list** 의 결과를 쓴다). 열어서 확인한 것만 적었다(기준일 2026-09-26).\
 **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. 요청은 **같은 출처 A 의 `/echo`** 로 보냈다 — CORS 를 빼고 본문만 고립시키려고. 서버는 받은 **`Content-Type` · 원문 · 직접 짠 파서의 결과**를 적는다(파이썬 `email`·`cgi` 를 안 쓰고 **boundary 로 직접 가른다** — 파서가 대신 고쳐 주는 일을 없애려고). 하네스는 [28번 주제](../28-cors-simple-and-preflight/2-summary.md)의 (1)이다.\
 **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\

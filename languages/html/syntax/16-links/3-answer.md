@@ -484,7 +484,7 @@ if __name__ == "__main__":
 
 **못 잰 것** — ① **검색 엔진의 `nofollow` 처리** — 이 머신에 없다. ② **스크린리더가 「새 창」·「내려받기」를 알리는지** — 보조 기술이 없다. ③ **다른 엔진의 동작 전부.**
 
-**해당 없는 창** — **창 ①(`--dump-dom`) · 창 ③(`innerText` 대 `textContent`) · 창 ④(`compatMode`) · 창 ⑥(`renderBlockingStatus`).** 링크는 파서가 고칠 것도, 렌더된 글자가 트리와 갈릴 것도, 문서 모드도, 렌더 차단도 없다 — **잴 것이 없다.**
+**해당 없는 확인 방법** — **창 ①(`--dump-dom`) · 창 ③(`innerText` 대 `textContent`) · 창 ④(`compatMode`) · 창 ⑥(`renderBlockingStatus`).** 링크는 파서가 고칠 것도, 렌더된 글자가 트리와 갈릴 것도, 문서 모드도, 렌더 차단도 없다 — **잴 것이 없다.**
 
 ## 용어 풀이
 
@@ -501,4 +501,4 @@ if __name__ == "__main__":
 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스는 맨 아래 `## 실행 검증` 절에 있다.\
 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 「Links」 절·[Referrer Policy](https://w3c.github.io/webappsec-referrer-policy/)·[HTML-AAM](https://w3c.github.io/html-aam/) 으로 접지했다.\
 ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-★★★ **이 주제의 핵심은 창 ⑤(서버 요청 로그)와 새 창 쪽 프로브다.** `rel` 이 바꾸는 것은 화면에 하나도 없다(A3·A4).
+★★★ **이 주제의 핵심은 확인 방법 ⑤(서버 요청 로그)와 새 창 쪽 프로브다.** `rel` 이 바꾸는 것은 화면에 하나도 없다(A3·A4).

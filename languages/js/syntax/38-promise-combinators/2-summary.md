@@ -612,7 +612,7 @@ rejected with RangeError 「guard: stopped at next #100000」
 
 ★★ **판 경계는 TC39 finished proposals 표와 이 목록의 README 를 대조했다** — 38행의 `withResolvers`(ES2024)·`try`(ES2025)는 **표와 같다.** README 의 판 표(`ES2024`·`ES2025` 행)에도 같은 번호로 올라 있다. `allSettled`(2020)·`any`(2021)는 README 38행에 판이 없다.
 
-**★★★ 이 주제가 쓰는 창 — 그리고 해당 없는 창**
+**★★★ 이 주제가 쓰는 확인 방법 — 그리고 해당 없는 확인 방법**
 
 | 창 | 이 주제에서 무엇을 보나 |
 |---|---|

@@ -68,7 +68,7 @@
   - 밀린 compaction 바이트가 `hard_pending_compaction_bytes_limit`(256GB).
   - flush 대기 memtable이 `max_write_buffer_number`에 닿음.
   - 한 column family가 걸려도 DB 전체 쓰기가 멈춘다.
-- 손잡이(위키 Write Stalls): `max_background_jobs` 증가, `write_buffer_size` 증가(쓰기 증폭 감소), `min_write_buffer_number_to_merge` 증가, 지연 민감한 쓰기와 배치 쓰기 분리.
+- 조절 수단(위키 Write Stalls): `max_background_jobs` 증가, `write_buffer_size` 증가(쓰기 증폭 감소), `min_write_buffer_number_to_merge` 증가, 지연 민감한 쓰기와 배치 쓰기 분리.
 - 트리거를 크게 올리면: 쓰기는 안 막히지만 L0 파일과 밀린 병합이 쌓인다. 읽기 증폭과 공간 증폭이 폭주한다. stall은 그것을 막으려는 안전장치다.
 
 ### 8. B+트리 vs LSM

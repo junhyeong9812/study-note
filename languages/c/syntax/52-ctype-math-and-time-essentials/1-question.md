@@ -219,7 +219,7 @@ int main(void) {
 ### 11. 다섯 층과 도구가 못 보는 것 (연결) ★★★
 
 - 이 주제에서 **표준 / 조건부 표준 / 구현(로케일·glibc·컴파일러) / 미명시 / UB** 칸에 각각 무엇이 들어가는가?
-- ★★★ 이 편의 **네 번째 창**은 무엇이고, 그 창이 **못 보는 것**은?
+- ★★★ 이 편의 **네 번째 확인 방법**은 무엇이고, 그 확인 방법이 **못 보는 것**은?
 
 ### 12. 다른 갈래와 (연결) ★
 
@@ -230,7 +230,7 @@ int main(void) {
 
 **환경** — gcc 13.3.0 · clang 18.1.3 · glibc 2.39 · x86-64 Linux · 기본 `-std=c17 -Wall -Wextra -pedantic` · 캡처 셸 `LC_ALL=C` · 시각은 **고정 `time_t`** 와 **`TZ=` 지정**으로만 찍었다.
 
-★★★ **핵심 창은 ctype 격자** — 1번은 **로케일 × `char` 부호마다 두 호출이 달라지는지**를 적어야 답이다.
+★★★ **핵심 확인 방법은 ctype 격자** — 1번은 **로케일 × `char` 부호마다 두 호출이 달라지는지**를 적어야 답이다.
 ★★ **`0.1 + 0.2` · `DBL_EPSILON` · `-ffast-math` 의 기본 사실은 묻지 않는다** — [04번 형제](../04-floating-point-types-and-conversions/)가 정본이다.
 선행 — [04번 형제](../04-floating-point-types-and-conversions/) · [20번 형제](../20-null-terminated-strings-and-string-literals/).
 

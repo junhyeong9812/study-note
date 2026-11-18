@@ -212,7 +212,7 @@ class Program {
 ★★★ 이 주제의 질문은 「**record class 와 record struct 를 갈라 답하라**」가 절반이다 — 「record 는 ~다」로 뭉개지 마라.
 **환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
 Roslyn `csc` 를 직접 부른다 · `-langversion:latest` · `-preferreduilang:en-US`. 대비는 **javac 21.0.5 · 25.0.1** 이다.
-★★★ **핵심 창은 ③ 리플렉션이다** — 생성 멤버는 **소스에 한 글자도 없다.** ① IL 이 짝이다(「무엇을 한다」).
+★★★ **핵심 확인 방법은 ③ 리플렉션이다** — 생성 멤버는 **소스에 한 글자도 없다.** ① IL 이 짝이다(「무엇을 한다」).
 ★★ **④ 할당 바이트는 적용이다** — 2×2 판 격자로 쟀고 **시간은 안 쟀다.**
 ★★★ **생성 멤버의 목록은 명세, 그 IL 모양은 구현이다** — 답할 때 둘을 갈라라.
 선행 — [13번](../13-properties-init-required-field/)(`init`)·[02번](../02-struct-vs-class-choosing/)(`record struct` 고르기). 다음 — 목록의 **19번 주제**(동등성 규칙).

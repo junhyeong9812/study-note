@@ -303,7 +303,7 @@ $ echo "콘솔 줄 수 = $(google-chrome --headless --disable-gpu --no-sandbox -
 
 **못 잰 것** — ① **스크린리더가 따옴표를 읽는지·인용을 알려 주는지.** ② **`datetime` 이 유효한지** — 검증기가 없다. ③ **플랫폼 API 의 `datetime`·`AXURL`** — CDP 트리 밖이다. ④ **달력 앱·검색 엔진이 `time` 을 쓰는지.**
 
-**해당 없는 창** — **창 ④(`compatMode`) · 창 ⑤(요청 로그) · 창 ⑥(`renderBlockingStatus`).** ★ 창 ⑤ 는 `cite` 가 URL 인데도 해당 없음이다 — **요청을 안 일으키는 속성**이라 잴 동작이 없다.
+**해당 없는 확인 방법** — **창 ④(`compatMode`) · 창 ⑤(요청 로그) · 창 ⑥(`renderBlockingStatus`).** ★ 창 ⑤ 는 `cite` 가 URL 인데도 해당 없음이다 — **요청을 안 일으키는 속성**이라 잴 동작이 없다.
 
 ## 용어 풀이
 

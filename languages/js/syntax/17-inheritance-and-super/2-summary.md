@@ -614,7 +614,7 @@ console.log("  after construction: pb.describe()  " + pb.describe());
   ★★ **`note;` 처럼 초기자가 없는 필드도 `undefined` 로 덮는다.** 필드 선언은 「없으면 만든다」가 아니라 **「이 값으로 정의한다」** 이기 때문이다 —
   명세의 `DefineField` 가 공개 필드를 `CreateDataPropertyOrThrow(receiver, fieldName, initValue)` 로 놓는다(16번의 define 대 set).
   명세의 기본 생성자도 `Construct(func, args, NewTarget)` **다음에** 필드를 설치한다(`InitializeInstanceElements`).
-- ★★★ **`[2]` — `#private` 필드는 「없다」가 더 날카롭다.** 값 창(`this.#label`)은 `TypeError` 로 닫혀서, **창을 바꿔** `#label in this` 로 물었다 — `false`.
+- ★★★ **`[2]` — `#private` 필드는 「없다」가 더 날카롭다.** 값 창(`this.#label`)은 `TypeError` 로 닫혀서, **확인 방법을 바꿔** `#label in this` 로 물었다 — `false`.
   문구는 `Cannot read private member #label from an object whose class did not declare it` 인데, ★ **클래스는 분명히 선언했다** — 아직 **설치되지 않았을 뿐**이다.
   **V8 문구가 원인을 잘못 짚는 자리**라 문구를 근거로 쓰지 않는다. 생성이 끝난 뒤에는 `#label in this=true  value=OK` 다.
 
@@ -1007,7 +1007,7 @@ Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.m
 | 공개/`#private` 필드 · `#x in obj` · `Object.hasOwn` · `Error` 의 `cause` 옵션 | **ES2022** |
 | `__proto__:` 리터럴(동작 (3)의 객체 리터럴 예) | **Annex B**([13번](../13-object-literals-and-properties/2-summary.md)이 정본) |
 
-**★★★ 이 주제가 쓰는 창 — 그리고 해당 없는 창**
+**★★★ 이 주제가 쓰는 확인 방법 — 그리고 해당 없는 확인 방법**
 
 | 창 | 이 주제에서 무엇을 보나 |
 |---|---|
@@ -1016,7 +1016,7 @@ Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.m
 | ★★ **④ 예외의 `constructor.name` + `message`** | `ReferenceError` 두 문구(`super()` 전 `this` · 두 번 호출) · `TypeError` 넷(원시 반환 · `extends null` · `#private` 미설치 · 추상 클래스 흉내) · `SyntaxError` 한 문구(`super` 를 못 쓰는 자리) |
 | ★ **② 전수 격자** | 작게만 쓴다 — `super()` 를 **전에 / 안 / 두 번** 부르는 것과 **무엇을 반환하나** 의 칸을 한 블록에 모았다 |
 | ★ **⑤ 두 판 대조기** | 이 주제의 블록은 **두 버전에서 전부 identical** 이다 |
-| ★★ **창을 바꿔 물었다**(제5의 상태) | 부모 생성자 안에서 자식의 `#label` 을 읽으면 **값 창이 `TypeError` 로 닫힌다.** 그래서 [16번](../16-class-syntax/2-summary.md)의 브랜드 검사 `#label in this` 로 바꿔 물었다 — `false`, 즉 「`undefined` 인 칸」이 아니라 「**칸이 아직 없다**」 |
+| ★★ **확인 방법을 바꿔 물었다**(제5의 상태) | 부모 생성자 안에서 자식의 `#label` 을 읽으면 **값 창이 `TypeError` 로 닫힌다.** 그래서 [16번](../16-class-syntax/2-summary.md)의 브랜드 검사 `#label in this` 로 바꿔 물었다 — `false`, 즉 「`undefined` 인 칸」이 아니라 「**칸이 아직 없다**」 |
 | ★ **해당 없음 — 진단의 `(행,열)`**(18-C) | `SyntaxError` 는 두 줄 있지만 묻는 것이 「**어디에 묶이나**」가 아니라 「**컴파일되나**」다. `compiles` 와 `SyntaxError` 한 단어로 답이 나서 **가를 열이 없다** |
 | ★ **해당 없음 — 파이썬 MRO 창** | JS 는 **단일 상속**이다. 조상을 한 줄로 세울 일이 없어 `__mro__` 에 해당하는 물건이 **없다** — 잴 것이 없다(동작 (6)) |
 | ★ **안 쟀다 — 성능** | 「`super` 호출은 느리다」·「내장 상속은 느리다」 같은 말을 **한 줄도 쓰지 않는다** |

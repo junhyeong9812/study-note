@@ -1,9 +1,9 @@
 # c/syntax/52 — `<ctype.h>` · `<math.h>` · `<time.h>` 핵심: 「**`isalpha` 는 `unsigned char` 의 값을 기다리고, NaN 검사는 옵션 하나에 지워지며, `localtime` 은 하나뿐인 칸을 돌려준다**」 — 정리 (힌트)
 
-★★★ **핵심은 둘째 창 — 실행 출력의 ctype 격자다.** 로케일 다섯 × `char` 부호 둘 × 바이트 둘(`0xE9` · `0xFF`)에서 `isalpha(c)` 와 `isalpha((unsigned char)c)` 를 나란히 찍고, **스크립트가 두 호출이 달라진 항목을 센다.**
+★★★ **핵심은 둘째 확인 방법 — 실행 출력의 ctype 격자다.** 로케일 다섯 × `char` 부호 둘 × 바이트 둘(`0xE9` · `0xFF`)에서 `isalpha(c)` 와 `isalpha((unsigned char)c)` 를 나란히 찍고, **스크립트가 두 호출이 달라진 항목을 센다.**
 ★★★ 그 격자에서 **달라진 항목 1 / 20** — 그런데 그 한 칸은 **UB 칸이 아니라 정의된 칸**이다. UB 인 다섯 칸은 **glibc 가 표를 음수 쪽으로 늘려 둔 덕에** 전부 멀쩡한 값을 냈다.
 
-## 이 주제가 쓰는 창
+## 이 주제가 쓰는 확인 방법
 
 | 창 | 이 주제에서 | 상태 |
 |---|---|---|
@@ -12,9 +12,9 @@
 | ③ sanitizer | ★★ **glibc `isalpha` 에 음수를 넣어도 ASan+UBSan 침묵** · 자작 표는 ASan `heap-buffer-overflow` | 씀 |
 | ④ 어셈블리 | ★★ `-ffast-math` 판의 `check_isnan` 이 **`xor eax,eax` · `ret`** 두 줄이 된다((5)) | 씀 |
 | 시간 측정 | — | 해당 없음(성능 주제가 아니다) · ★ **벽시계 시각도 해당 없음** — 현재 시각을 찍지 않았다 |
-| ★ 제5의 상태 | 「음수를 넘기는 것이 왜 UB 인가」는 **glibc 에서는 물을 수 없다**(표가 음수 쪽으로 늘려져 있어 **증상이 없다**) — **256 칸짜리 표를 직접 만들어 ASan 으로** 물었다((2)). ★ 그리고 「`EOF` 와 겹치는 바이트」는 **이 머신에 없는 Latin-1 로케일을 `localedef` 로 만들어서야** 보였다 | 창을 바꿔 답함 |
+| ★ 제5의 상태 | 「음수를 넘기는 것이 왜 UB 인가」는 **glibc 에서는 물을 수 없다**(표가 음수 쪽으로 늘려져 있어 **증상이 없다**) — **256 칸짜리 표를 직접 만들어 ASan 으로** 물었다((2)). ★ 그리고 「`EOF` 와 겹치는 바이트」는 **이 머신에 없는 Latin-1 로케일을 `localedef` 로 만들어서야** 보였다 | 확인 방법을 바꿔 답함 |
 
-★ **바꾼 창(자작 표 + ASan)이 못 보는 것** — **glibc 의 실제 동작**은 말하지 않는다. 「표준을 따르는 **다른** 구현에서는 이렇게 될 수 있다」는 **가능성의 시연**이다.
+★ **바꾼 확인 방법(자작 표 + ASan)이 못 보는 것** — **glibc 의 실제 동작**은 말하지 않는다. 「표준을 따르는 **다른** 구현에서는 이렇게 될 수 있다」는 **가능성의 시연**이다.
 
 ## 이 판
 
@@ -238,7 +238,7 @@ SUMMARY: AddressSanitizer: heap-buffer-overflow s52b.c:6:39 in my_isalpha
 
 - ★★★ **첫 줄(`'A'`)만 찍히고 둘째 줄에서 ASan 이 멈춘다** — `heap-buffer-overflow` · **`23 bytes before 256-byte region`**. `-23` 이 **표의 23 칸 앞**을 읽었다.
 - ★★ **표준을 따르는 구현이 256 칸 표를 써도 된다** — 표준은 음수를 **요구하지 않으니까.** 그런 구현에서 `isalpha(c)` 는 **표 밖을 읽는다.** glibc 의 멀쩡함은 **이식되지 않는다.**
-- ★ 그래서 이 블록은 **glibc 의 동작이 아니라 「UB 가 무엇일 수 있나」의 시연**이다(규칙 18-B 제5의 상태 — 창을 바꿔 답함).
+- ★ 그래서 이 블록은 **glibc 의 동작이 아니라 「UB 가 무엇일 수 있나」의 시연**이다(규칙 18-B 제5의 상태 — 확인 방법을 바꿔 답함).
 
 ### (3) ★★ 네 쌍의 「같은가」 — 절대 오차는 양쪽으로 틀린다
 
@@ -619,7 +619,7 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 - [20번 형제 — 널 종단 문자열](../20-null-terminated-strings-and-string-literals/) — 문자열이 바이트의 나열이라는 것.
 - [JS 갈래 52번 — `switch` 레이블](../../../js/syntax/52-switch-labels-and-control-flow/) — ★ `case NaN:` 은 **절대 안 걸린다**(`NaN === NaN` 이 거짓 — 그쪽 실측). C 의 `x != x` 와 **같은 IEEE 754 규칙**이다.
 - [JS 갈래 49번 — `Date` 와 Temporal](../../../js/syntax/49-date-and-temporal/) — ★ `Date` 도 **월이 0 부터이고 넘치면 넘긴다**(`new Date(2026, 1, 31)` → 3 월 3 일 — 그쪽 실측). C 의 `tm_mon` · `mktime` 과 같은 설계다. Temporal 은 1 기반이다.
-- [Python 갈래 50번 — `decimal`·float 정밀도](../../../python/syntax/50-decimal-float-precision-and-round/) — `0.1 + 0.2` 가 **바로 옆 눈금(1 ulp)** 이라는 것을 세 창으로 봤다.
+- [Python 갈래 50번 — `decimal`·float 정밀도](../../../python/syntax/50-decimal-float-precision-and-round/) — `0.1 + 0.2` 가 **바로 옆 눈금(1 ulp)** 이라는 것을 세 확인 방법으로 봤다.
 - [Go 갈래 48번 — `time`](../../../go/syntax/48-time-monotonic-clock-duration-timer-and-ticker/) — Go 의 시각 API. ★ 그쪽의 주제는 **단조 시계와 벽시계**이고, 「공용 칠판」 같은 정적 칸 문제는 **이 편이 Go 쪽에서 재지 않았다.**
 
 ## 용어 풀이

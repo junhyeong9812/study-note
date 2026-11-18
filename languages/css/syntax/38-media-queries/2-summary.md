@@ -534,7 +534,7 @@ document.styleSheets[0].cssRules[3].conditionText     // 같은 문자열
 - **중단점(breakpoint)** — 레이아웃을 바꾸는 폭의 경계.
 - **범위 구문(range syntax)** — `(width <= 600px)` 처럼 비교 연산자를 직접 쓰는 MQ4 표기.
 - **`only`** — CSS2 시대 파서를 속이려던 접두. 오늘 의미가 없다.
-- **`matchMedia()`** — 조건만 따로 평가하는 JS API. at-rule 진단의 네 번째 창.
+- **`matchMedia()`** — 조건만 따로 평가하는 JS API. at-rule 진단의 네 번째 확인 방법.
 - **`conditionText` / `media.mediaText`** — 파서가 이해한 조건 문자열. 내가 쓴 글자와 다를 수 있다.
 - **등장 순서(order of appearance)** — 캐스케이드 6단계의 마지막. `@media` 가 작용하는 유일한 자리.
 - **점진적 향상(progressive enhancement)** — 모르는 조건이 거짓이 되어 기본 화면이 살아남는 방식.

@@ -79,7 +79,7 @@ span { transform: translateX(60px) scale(2); }
 
 - `getComputedStyle(span).transform` 은 무엇을 돌려주는가?
 - `getBoundingClientRect()` 는 변환 없는 `<span>` 과 같은가 다른가?
-- 이 증상은 진단 3창 중 어디에서 잡히는가?
+- 이 증상은 진단 3종 중 어디에서 잡히는가?
 - `display: inline-block` 으로 바꾸면 어떻게 되는가?
 - 같은 인라인인데 `<img>` 는 왜 움직이는가?
 

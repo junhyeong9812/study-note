@@ -267,7 +267,7 @@ int main(void) {
 
 **환경** — gcc 13.3.0 · gcc-12 12.4.0 · clang 18.1.3 · x86-64 Linux · 기본 `-std=c17 -Wall -Wextra -pedantic`.
 
-★★★ **핵심 창은 승격 격자** — 2번은 **칸마다 경고 · 종료 코드 · 값이 같나**를 적어야 답이다.
+★★★ **핵심 확인 방법은 승격 격자** — 2번은 **칸마다 경고 · 종료 코드 · 값이 같나**를 적어야 답이다.
 ★★ **UB 의 값은 「같나」 참/거짓으로만** 적어라 — 쓰레기 값 자체를 맞히는 문항이 아니다.
 선행 — [03번 형제](../03-integer-promotion-and-usual-arithmetic-conversions/) · [34번 형제](../34-function-declarations-definitions-and-prototypes/).
 

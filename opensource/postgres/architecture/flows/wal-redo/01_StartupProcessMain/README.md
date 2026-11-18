@@ -80,7 +80,7 @@ StartupProcessMain(const void *startup_data, size_t startup_data_len)
  L264  proc_exit(0)
 ```
 
-startup 프로세스가 받는 시그널은 복구를 바깥에서 조종하는 손잡이다.
+startup 프로세스가 받는 시그널은 복구를 바깥에서 조종하는 조절 수단이다.
 
 ```text
  signal   handler                      effect

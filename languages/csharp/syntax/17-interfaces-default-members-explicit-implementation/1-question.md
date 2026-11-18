@@ -224,8 +224,8 @@ class Program {
 ★★★ 이 주제의 질문은 「**다시 컴파일했나 안 했나**」를 늘 갈라 묻는다 — 같은 사고를 **컴파일러와 런타임이 각각** 말한다.
 **환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
 Roslyn `csc` 를 직접 부른다 · `-langversion:latest` · `-preferreduilang:en-US`. 대비는 **javac 21.0.5** 다.
-★★★ **핵심 창은 ② 진단이다** — 그런데 **다시 컴파일 안 한 바이너리**는 진단이 원리상 못 본다.
-그 칸은 **실행 출력의 예외 타입**으로 물었다(**제5의 상태 — 창을 바꿔 답한 것**).
+★★★ **핵심 확인 방법은 ② 진단이다** — 그런데 **다시 컴파일 안 한 바이너리**는 진단이 원리상 못 본다.
+그 칸은 **실행 출력의 예외 타입**으로 물었다(**제5의 상태 — 확인 방법을 바꿔 답한 것**).
 ★★ **④ 할당 바이트는 적용이다**(16편에서는 해당 없음이었다) — 2×2 판 격자로 쟀고 **시간은 안 쟀다.**
 선행 — [16번](../16-inheritance-virtual-override-abstract-sealed-new/)(★★★ **기본 구현이 클래스로 안 내려오는 것**은 거기서 쟀다)·[03번](../03-boxing-and-unboxing/)(박싱).
 대비 — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **11번**([`11-interfaces-default-methods/`](../../../java/syntax/11-interfaces-default-methods/)).

@@ -18,7 +18,7 @@ Google Chrome 151.0.7922.173
 
 - 재대조에서 정규화하는 칸은 **없다.** 위 표에 없는 차이는 전부 고칠 것이다.
 
-### 이 주제가 쓰는 창 / 해당 없는 창
+### 이 주제가 쓰는 확인 방법 / 해당 없는 확인 방법
 
 | 창 | 이 주제에서 | 무엇을 답하나 |
 |---|---|---|
@@ -26,7 +26,7 @@ Google Chrome 151.0.7922.173
 | 창 ② 노드 프로브 | ★ **쓴다** | `ResizeObserverEntry` 의 `contentBoxSize` · `borderBoxSize` · `devicePixelContentBoxSize` · `ErrorEvent` 의 칸들 |
 | 창 ③ 같은 것을 두 번 읽기 | ★ **쓴다** | 같은 요소를 **상자 셋**으로 · 같은 격자를 **배율 1 과 배율 2** 두 브라우저로 · 같은 대상을 **RO 와 IO** 로 |
 | **창 ④ 디스패치 계수기 → 상자 격자** | ★★★ **핵심** | 변화마다 콜백이 **불렸나 · 무엇을 들고** · 틀마다 **몇 번 · 오류가 몇 번** |
-| ★★ **`devicePixelRatio` 에뮬레이션** | ★★ **제5의 상태 — 기준만 다른 것** | CDP 로 `devicePixelRatio` 를 2 로 바꾸니 **값은 2 가 됐는데 장치 픽셀 상자는 안 움직였다.** 그래서 같은 질문을 **다른 창**(브라우저를 처음부터 배율 2 로 띄우기)으로 물었다 — (2). ★ 바꾼 창이 못 보는 것 — **한 문서가 사는 동안 배율이 바뀌는 순간**(창을 다른 모니터로 옮기기 · 확대) |
+| ★★ **`devicePixelRatio` 에뮬레이션** | ★★ **제5의 상태 — 기준만 다른 것** | CDP 로 `devicePixelRatio` 를 2 로 바꾸니 **값은 2 가 됐는데 장치 픽셀 상자는 안 움직였다.** 그래서 같은 질문을 **다른 창**(브라우저를 처음부터 배율 2 로 띄우기)으로 물었다 — (2). ★ 바꾼 확인 방법이 못 보는 것 — **한 문서가 사는 동안 배율이 바뀌는 순간**(창을 다른 모니터로 옮기기 · 확대) |
 | 콘솔(Log · `Runtime.exceptionThrown`) | ★ **쓴다 — 침묵이 결론** | 루프 오류가 콘솔로도 가나 — **물은 곳 둘, 루프 오류에 답한 곳 0**. 대조로 던진 보통 예외는 받았다 — (4) |
 
 ### 도구가 못 보는 것
@@ -438,7 +438,7 @@ Runtime.exceptionThrown · Uncaught · Error: 대조용 예외
 
 ## 실행 환경
 
-★★★ **이 편의 핵심은 창 ④ 「디스패치 계수기」([24번 주제](../24-document-lifecycle-events/2-summary.md)의 창 ④)를 변화마다 돌린 「상자 격자」다** — 관측 상자(`content-box` · `border-box` · `device-pixel-content-box`) × 변화 일곱(`width` · `padding` · `border` · `transform: scale` · 부모 폭 · 뷰포트 폭 · `devicePixelRatio`) = **21칸**마다 **콜백이 불렸나 · 받은 크기**를 적고, 같은 변화에서 **`window` 의 `resize` 이벤트 수**를 옆줄에 센다. 스크립트가 **「콜백이 불린 칸 N / M」** 을 마지막 줄로 찍는다.\
+★★★ **이 편의 핵심은 확인 방법 ④ 「디스패치 계수기」([24번 주제](../24-document-lifecycle-events/2-summary.md)의 창 ④)를 변화마다 돌린 「상자 격자」다** — 관측 상자(`content-box` · `border-box` · `device-pixel-content-box`) × 변화 일곱(`width` · `padding` · `border` · `transform: scale` · 부모 폭 · 뷰포트 폭 · `devicePixelRatio`) = **21칸**마다 **콜백이 불렸나 · 받은 크기**를 적고, 같은 변화에서 **`window` 의 `resize` 이벤트 수**를 옆줄에 센다. 스크립트가 **「콜백이 불린 칸 N / M」** 을 마지막 줄로 찍는다.\
 **기준 소스** — ① [W3C Resize Observer](https://www.w3.org/TR/resize-observer/) — **받은 사본은 2020-02-11 First Public Working Draft** 다(「Latest published version」이 그 판이다). §3.1 `ResizeObservation`(`lastReportedSizes` 를 `[(0,0)]` 으로 시작) · §3.4.6 「Deliver Resize Loop Error」(메시지 문자열) · §3.6.1 깊이로 루프를 끊는 단계. ② [HTML — update the rendering](https://html.spec.whatwg.org/multipage/webappapis.html#update-the-rendering) — 지금은 **HTML 쪽이** 「Gather active resize observations at depth」 · 「deliver resize loop error」를 렌더링 단계 안에 직접 적는다. ③ HTML 「report an exception」 — 콘솔은 「**may** report exception to a developer console」. 받아서 읽은 것만 적었다(기준일 2026-09-26). ★ **편집자 초안(drafts.csswg.org)은 받지 않았다** — 이번 배치가 받기로 한 곳(WHATWG · w3c.github.io · wicg.github.io · W3C TR)에 없다. 그래서 **(3)의 이탈은 「2020 WD 사본과 다르다」까지만 말한다.**\
 **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless(`--window-size=1000,800`)에서 받은 것이다. 하네스는 [32번 주제](../32-server-sent-events/2-summary.md)가 빌려 쓴 24편의 `wa24b-net.py` 에 **「페이지가 CDP 일을 부탁하는 창구」** 하나를 더한 `wa36b-net.py` 다(전문은 [3-answer.md](3-answer.md)의 `## 실행 검증`). 뷰포트 폭과 `devicePixelRatio` 는 그 창구로 **CDP `Emulation.setDeviceMetricsOverride`** 를 불러 바꿨다. `--virtual-time-budget` 은 쓰지 않았다.\
 **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\

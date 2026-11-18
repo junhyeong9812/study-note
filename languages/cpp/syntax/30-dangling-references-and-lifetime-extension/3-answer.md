@@ -43,7 +43,7 @@ SUMMARY: AddressSanitizer: stack-use-after-scope dang01.cpp:58 in probe()
 
 - ★★★ **경고는 「모양」을 본다** — g++ 의 `-Wdangling-reference` 는 **「참조를 받아 참조를 돌려주는 호출에 임시를 넘김」**(2 · 3 · 6)을, clang 의 `-Wdangling-gsl`·`-Wreturn-stack-address` 는 **뷰·람다 캡처**(4 · 5)를 본다. **probe 7(생성자를 거쳐 참조 멤버에 임시)은 어느 모양에도 안 걸렸다.**
 - ★★★ **ASan 은 「실행이 그 메모리를 실제로 읽었나」를 본다** — `-O0` 에서는 읽기가 그대로 남아 전부 잡혔다. clang `-O2` 에서는 스택 probe 다섯의 읽기가 ASan 이 볼 수 없는 모양이 되어 **힙 probe 둘(3 · 4)만** 남았다.
-- ★★ **probe 7 을 clang `-O2` 로 빌드한 판은 네 창이 전부 빈다** — 경고 0 · ASan 침묵.
+- ★★ **probe 7 을 clang `-O2` 로 빌드한 판은 네 확인 방법이 전부 빈다** — 경고 0 · ASan 침묵.
 
 ### 2. ★★★ **이미 잡혔다**(환경 변수 없음 = 켜진 상태) · `=0` 이면 **probe 5 는 두 컴파일러 다, probe 1 은 clang 이 놓치고 `42 인가 1`** · g++ probe 1 은 **옵션과 무관하게 `SEGV`**
 
@@ -402,7 +402,7 @@ _Z9local_refv:
 
 - **못 잰 것** — ★★ **P2718 이 구현된 판(GCC 15 · Clang 19)의 동작**(이 머신에 없다) · ★ **clang `-O2` 가 스택 probe의 읽기를 어떻게 바꿨는지**(칸만 셌다).
 - **안 돌려 본 것** — ★ **`return` 에서 임시에 묶기 · `new` 식 초기화자의 임시**(cppreference 예외 목록의 나머지 둘) · ★ **`[[clang::lifetimebound]]`** · ★ **C++20 init-statement 우회.**
-- ★ **「해당 없는 창」** — `<type_traits>`(수명은 타입에 없다).
+- ★ **「해당 없는 확인 방법」** — `<type_traits>`(수명은 타입에 없다).
 
 **버전이 올랐을 때 다시 돌려야 하는 것**
 

@@ -550,7 +550,7 @@ after close, state              : CORO_CLOSED
 
 **왜 그런가**
 
-* ★★ 문서 — *"Coroutines also have the methods listed below, which are analogous to those of generators … However, unlike generators, coroutines do not directly support iteration."* 손잡이는 같고 **이터레이터가 아니다.**
+* ★★ 문서 — *"Coroutines also have the methods listed below, which are analogous to those of generators … However, unlike generators, coroutines do not directly support iteration."* 핸들은 같고 **이터레이터가 아니다.**
 * ★ 「특수한 제너레이터」는 **구현의 계보**로 읽는다 — 이 버전의 타입은 별개다.
 
 ### 9. `await 42`·`await f` 는 실행 중 `TypeError` · `def` 안·모듈 맨 위의 `await` 는 컴파일 때 `SyntaxError` · `async def` + `yield` 는 비동기 제너레이터, `yield from`·값 있는 `return` 은 `SyntaxError`

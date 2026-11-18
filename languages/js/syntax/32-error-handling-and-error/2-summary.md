@@ -570,7 +570,7 @@ row("walk with a seen-set", walk.join(" -> "));
 - ★★ **`[3]` 생성자는 `options` 에 두 번 묻는다 — `has cause > get cause`.** 명세의 `InstallErrorCause` 가 「**`HasProperty` 가 참이면 `Get`**」이기 때문이다. `has` 가 먼저라서 **키의 존재**와 **값**이 따로 판정된다(위의 `{ cause: undefined }` 가 그 결과다).
 - ★★ **`[4]` `cause` 에는 아무 값이나 들어간다** — 문자열이면 `typeof s.cause` 가 `string`. 사슬을 걷는 코드가 `e.cause.message` 를 믿으면 거기서 멈춘다.
   ★★ **사슬은 고리가 될 수 있다** — `a.cause = b` 로 되감으면 **`seen` 집합 없이 걷는 루프는 끝나지 않는다.** 위 걷기는 `b -> a -> (seen before: b)` 에서 멈췄다.
-- ★ **Go 의 래핑과 같은 일, 다른 모양** — Go 는 `fmt.Errorf("…: %w", err)` 로 감싸고 `errors.Unwrap` 을 `nil` 까지 돈다. [Go 24](../../../go/syntax/24-error-wrapping-and-errors-is-as-join/2-summary.md)의 핵심 창이 바로 「`Unwrap` 을 `nil` 까지 돌며 층마다 찍는 창」이다. **JS 의 `for (e = top; e; e = e.cause)` 가 그 짝**이다. 다른 점은 아래 표.
+- ★ **Go 의 래핑과 같은 일, 다른 모양** — Go 는 `fmt.Errorf("…: %w", err)` 로 감싸고 `errors.Unwrap` 을 `nil` 까지 돈다. [Go 24](../../../go/syntax/24-error-wrapping-and-errors-is-as-join/2-summary.md)의 핵심 확인 방법이 바로 「`Unwrap` 을 `nil` 까지 돌며 층마다 찍는 창」이다. **JS 의 `for (e = top; e; e = e.cause)` 가 그 짝**이다. 다른 점은 아래 표.
 
 | | Go `%w` | JS `cause` |
 |---|---|---|
@@ -1109,7 +1109,7 @@ python3.11: Python 3.11.15
 
 ★★ **판 경계는 TC39 finished proposals 표와 이 목록의 README 를 대조했다** — 32행의 `cause`(ES2022)·`Error.isError`(ES2026)는 표와 같다. README 에 `AggregateError` 의 판은 적혀 있지 않다(표에서 `Promise.any` 가 2021).
 
-**★★★ 이 주제가 쓰는 창 — 그리고 해당 없는 창**
+**★★★ 이 주제가 쓰는 확인 방법 — 그리고 해당 없는 확인 방법**
 
 | 창 | 이 주제에서 무엇을 보나 |
 |---|---|
@@ -1117,7 +1117,7 @@ python3.11: Python 3.11.15
 | ★★ **④ 예외의 `constructor.name` + `message`** | 언어가 스스로 고르는 생성자(동작 (3)) · `cause` 사슬의 층마다의 이름(동작 (4)) · **바꿔치기된 예외에 원래 예외의 흔적이 있나**(동작 (2)) |
 | ★★ **① 추상 연산에 로그 심기** | `new RangeError(m, options)` 가 `options` 에 **`has cause` → `get cause`** 순으로 묻는 것(동작 (4)의 `[3]`) |
 | ★ **③ 브랜드 태그** | 보조 — 하위 생성자 일곱이 **전부 `[object Error]`** 인 것(동작 (3)) · 다른 realm 의 오류도 `[object Error]` 인 것(동작 (7)). ★ 판정의 정본은 34번이다 |
-| ★ **창을 바꿔 물었다**(제5의 상태) | node 에는 `Error.isError` 가 없어서, **같은 질문(「다른 realm 의 오류도 오류로 보나」)을 node 의 호스트 함수 `util.types.isNativeError` 로** 물었다(동작 (7)). 그 함수는 ECMA-262 가 아니다 |
+| ★ **확인 방법을 바꿔 물었다**(제5의 상태) | node 에는 `Error.isError` 가 없어서, **같은 질문(「다른 realm 의 오류도 오류로 보나」)을 node 의 호스트 함수 `util.types.isNativeError` 로** 물었다(동작 (7)). 그 함수는 ECMA-262 가 아니다 |
 | ★ **해당 없음 — 두 번 컴파일**(엄격/비엄격) | 이 주제의 규칙은 모드를 안 탄다. 엄격 모드가 바꾸는 규칙은 35번이 정본이다 |
 | ★ **안 쟀다 — 성능** | ★★★ **「`try`/`catch` 는 느리다」를 한 줄도 쓰지 않는다.** 시간을 안 쟀다 |
 

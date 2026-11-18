@@ -18,7 +18,7 @@ Google Chrome 151.0.7922.173
 
 - 재대조에서 정규화하는 칸은 **없다.**
 
-### 이 주제가 쓰는 창 / 해당 없는 창
+### 이 주제가 쓰는 확인 방법 / 해당 없는 확인 방법
 
 | 창 | 이 주제에서 | 무엇을 답하나 |
 |---|---|---|
@@ -26,7 +26,7 @@ Google Chrome 151.0.7922.173
 | 창 ② 노드 프로브 | ★ **쓴다** | rAF 가 받은 `timestamp` 인자 · `visibilityState` · `offsetWidth` |
 | 창 ③ 같은 것을 두 번 읽기 | ★ **쓴다** | 같은 방아쇠를 **읽기 없이 / 읽고** 두 판 · 같은 쓰기 20번을 **네 모양**으로 |
 | **창 ④ 디스패치 계수기 → 위치 로그 · 간격 격자** | ★★★ **핵심** | 콜백이 **어느 순서로** · **몇 틀 간격으로** · 숨었을 때 **몇 번** |
-| ★★ **Tracing 이벤트 이름 · `LayoutCount`** | ★★ **제5의 상태 — 같은 질문을 다른 창으로** | 「레이아웃이 **언제 · 몇 번** 돌았나」를 스크립트는 못 본다. 브라우저의 **자기 기록**(Tracing 의 `UpdateLayoutTree` · `Layout` · `Paint`, `Performance.getMetrics` 의 `LayoutCount`)으로 물었다. ★ 바꾼 창이 못 보는 것 — **합성 스레드의 일**(Tracing 은 렌더러 주 스레드만 걸렀다) · 화면에 **실제로 나간 틀** |
+| ★★ **Tracing 이벤트 이름 · `LayoutCount`** | ★★ **제5의 상태 — 같은 질문을 다른 확인 방법으로** | 「레이아웃이 **언제 · 몇 번** 돌았나」를 스크립트는 못 본다. 브라우저의 **자기 기록**(Tracing 의 `UpdateLayoutTree` · `Layout` · `Paint`, `Performance.getMetrics` 의 `LayoutCount`)으로 물었다. ★ 바꾼 확인 방법이 못 보는 것 — **합성 스레드의 일**(Tracing 은 렌더러 주 스레드만 걸렀다) · 화면에 **실제로 나간 틀** |
 
 ### 도구가 못 보는 것
 
@@ -392,7 +392,7 @@ rAF 는 **레이아웃 전**이다((1)). 앞 틀의 쓰기가 남아 있으면 *
 
 ## 실행 환경
 
-★★★ **이 편의 핵심은 창 ④ 「디스패치 계수기」를 시간 축에 세운 두 장이다** — ① **렌더 단계 안 위치 로그**(한 태스크에서 `scrollTo` · 폭 쓰기 · rAF 등록을 한꺼번에 하고, 다음 렌더링 단계에서 누가 어느 순서로 불리나를 **콜백의 `console.timeStamp` 자국 + CDP Tracing 이벤트 이름**을 한 줄에 섞어 읽는다)와 ② **rAF 간격 격자**(콜백 안의 바쁨 0 · 10 · 20 · 30 · 100ms × 다섯 판 — 칸 = 그 판에서 가장 많았던 **간격 범주**). ★ **시간은 찍지 않는다** — 간격은 「16.7ms 의 몇 배 근처였나」 범주로만, 나머지는 **순서 · 참/거짓 · 횟수**다(가이드 규칙 24).\
+★★★ **이 편의 핵심은 확인 방법 ④ 「디스패치 계수기」를 시간 축에 세운 두 장이다** — ① **렌더 단계 안 위치 로그**(한 태스크에서 `scrollTo` · 폭 쓰기 · rAF 등록을 한꺼번에 하고, 다음 렌더링 단계에서 누가 어느 순서로 불리나를 **콜백의 `console.timeStamp` 자국 + CDP Tracing 이벤트 이름**을 한 줄에 섞어 읽는다)와 ② **rAF 간격 격자**(콜백 안의 바쁨 0 · 10 · 20 · 30 · 100ms × 다섯 판 — 칸 = 그 판에서 가장 많았던 **간격 범주**). ★ **시간은 찍지 않는다** — 간격은 「16.7ms 의 몇 배 근처였나」 범주로만, 나머지는 **순서 · 참/거짓 · 횟수**다(가이드 규칙 24).\
 **기준 소스** — [HTML — update the rendering](https://html.spec.whatwg.org/multipage/webappapis.html#update-the-rendering)(렌더링 단계의 순서 · 「Filter non-renderable documents」 · 「rendering opportunity」 · 60Hz 예의 「about 16.7ms」) · [HTML — animation frames](https://html.spec.whatwg.org/multipage/imagebitmap-and-animations.html#animation-frames)(「run the animation frame callbacks」 — **시작할 때의 핸들 목록**만 돈다) · [W3C Intersection Observer](https://w3c.github.io/IntersectionObserver/) §3.2.4(IO 알림은 **태스크**로 건다). 받아서 읽은 것만 적었다(기준일 2026-09-26).\
 **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless(`--window-size=1000,800`)에서 받은 것이다. 하네스는 [36번 주제](../36-resize-observer/3-answer.md)의 `wa36b-net.py` — 부탁 창구로 **Tracing**(`devtools.timeline`) · **`Performance.getMetrics`** · **새 탭 띄우기**를 불렀다. ★★★ **`--virtual-time-budget` 을 쓰지 않았다** — 가상 시간에서는 rAF 간격이 실제가 아니다. 이 버전의 프레임은 **실제 시간**으로 돈다.\
 **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.** ★ **헤드리스에는 모니터가 없다** — 이 편의 프레임 간격은 **화면 주사율이 아니라 헤드리스 Chrome 이 스스로 만든 박자**다.\

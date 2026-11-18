@@ -150,7 +150,7 @@
           끝에서 아무도 안 받으면 → 어디에도 안 찍힌다
 ```
 
-- *Future*: 아직 안 끝난 계산의 결과를 나중에 받는 손잡이. *Promise*: 그 결과를 채우는 쪽. Java `CompletableFuture`는 둘을 겸한다.
+- *Future*: 아직 안 끝난 계산의 결과를 나중에 받는 핸들. *Promise*: 그 결과를 채우는 쪽. Java `CompletableFuture`는 둘을 겸한다.
 - 구현: `CompletableFuture`는 뒤에 매달린 작업들을 Treiber 스택(CAS로 쌓는 연결 스택)으로 들고 있다가, 완료 순간에 꺼내 실행한다(OpenJDK 21 `CompletableFuture.java` 필드 `stack` 주석).
 - **기본 실행기**: executor를 안 받는 `*Async` 메서드는 `ForkJoinPool.commonPool()`에서 돈다. `thenApply` 같은 비동기형이 아닌 단계는 앞 단계를 완료한 스레드나 완료 메서드를 부른 스레드에서 돌 수 있다. 단, 공용 풀 병렬도가 2 미만이면 **작업마다 새 스레드**를 만든다(Java 21 `CompletableFuture` 문서, 소스 `USE_COMMON_POOL = getCommonPoolParallelism() > 1`).
 - 공용 풀 병렬도 기본값 = `availableProcessors() - 1`, 최소 1(OpenJDK 21 `ForkJoinPool.java`).

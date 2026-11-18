@@ -234,7 +234,7 @@ console.log(copy.level, runtimeTag, describe("가나"), describe(3), ctorTag);
 
 ### 12. 세 층 가르기 (연결)
 
-- 이 주제에서 **언어 보장** · **이 버전(7.0.2)의 관찰** · **해당 없는 창**에 해당하는 항목을 하나씩 댈 수 있는가?
+- 이 주제에서 **언어 보장** · **이 버전(7.0.2)의 관찰** · **해당 없는 확인 방법**에 해당하는 항목을 하나씩 댈 수 있는가?
   ★ 그리고 이 주제의 **`--strict` 결과가 [21번 주제](../21-inference-control-const-and-noinfer/)와 어떻게 달랐는가**?
 
 ## 실행 환경
@@ -242,7 +242,7 @@ console.log(copy.level, runtimeTag, describe("가나"), describe(3), ctorTag);
 ★★★ 이 주제의 축은 「**값 공간 / 타입 공간**」이다 —
 [**22번 주제**](../22-keyof-and-indexed-access-types/) → [**24번 주제**](../24-conditional-types-and-distribution/) → [**25번 주제**](../25-infer-and-recursive-conditional-types/) 사슬과는 **다른 축**이다.
 **「이 이름이 어느 공간에 사나」를 먼저 물으면 대부분 풀린다.**
-★★★ **핵심 창은 3창(방출된 `.js` + `node` 실행)이다** — 6번이 그 문항이다.
+★★★ **핵심 확인 방법은 3번 확인 방법(방출된 `.js` + `node` 실행)이다** — 6번이 그 문항이다.
 실행 환경: `tsc` **7.0.2** · `node` **v18.19.1** · `javac` **21.0.5**.
 옵션은 **배너에 적힌 것만** 줬고 `-t es2022 --strict` 를 전부 명시했다.
 **버전** — 타입 질의(`typeof x`)는 **TS 1.0**, `typeof import(…)` 는 **2.9**, `InstanceType` 은 **2.8** 이다.

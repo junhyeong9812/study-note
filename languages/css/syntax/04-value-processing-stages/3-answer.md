@@ -383,8 +383,8 @@ google-chrome --headless --disable-gpu --no-sandbox --dump-dom /tmp/doc.html 2>/
 | `line-height` 4형태(`1.5`·`normal`·`1.5em`·`display:none`) | 1 | 동작 방식 (3) · A4 · A10 |
 | `transform` × (렌더됨 / `display:none` / `visibility:hidden`) | 2 | 동작 방식 (3) · A9 |
 | `border-width` `thin/medium/thick` · `0.3px/0.6px/1px` | 2 | 동작 방식 (3)(4) |
-| `box-sizing` 두 모드 × 4창구 | 1 | 문법 절 · A6 |
-| `transform: scale(2)` × 3창구 | 1 | A6 |
+| `box-sizing` 두 모드 × 4번 확인 방법구 | 1 | 문법 절 · A6 |
+| `transform: scale(2)` × 3번 확인 방법구 | 1 | A6 |
 | `33.333%` 셋의 합 · `padding-top: 56.25%` | 2 | 동작 방식 (4) · A7 · A8 |
 | demo 2개(`em` 중첩 목록 · `letter-spacing` 상속) — 값 + 스크린샷 | 각 1 | 2-summary 의 demo |
 | demo 의 「바꿔 볼 것」 단언 2개(`1.5rem` 셋 다 24px · 자식에서 재선언 시 4px) | 각 1 | 2-summary 의 demo |

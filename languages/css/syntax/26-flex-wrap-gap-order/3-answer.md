@@ -118,7 +118,7 @@ flex-wrap: nowrap (선언 없음)                                  -> y=0    계
 **`getComputedStyle` 로 진단되는가**
 
 - ★★ **안 된다.** 다섯 판 모두 계산값이 **선언한 값 그대로** 남는다(`center` 준 판은 전부 `center`).
-- 「담겼나(`cssRules`) → 잡혔나(`querySelectorAll`) → 이겼나(`getComputedStyle`)」 **세 창을 다 통과하고도 결과만 다르다.** `getBoundingClientRect()` 로 재야 안다.
+- 「담겼나(`cssRules`) → 잡혔나(`querySelectorAll`) → 이겼나(`getComputedStyle`)」 **세 확인 방법을 다 통과하고도 결과만 다르다.** `getBoundingClientRect()` 로 재야 안다.
 
 **한 줄에서 세로 가운데를 맞추려면**
 
@@ -273,7 +273,7 @@ Tab 키 3회 (CDP Input.dispatchKeyEvent) -> A -> B -> C
 
 ### 10. 유효하지 않은 값
 
-**실행 결과** (Chrome 151 headless — 진단 3창의 첫째 창 `cssRules`)
+**실행 결과** (Chrome 151 headless — 진단 3종의 첫째 확인 방법 `cssRules`)
 
 ```text
 #g1 { }                <- gap: -10px          (버려짐)
@@ -364,7 +364,7 @@ Tab 키 3회 (CDP Input.dispatchKeyEvent) -> A -> B -> C
 - **order-modified document order** — `order` 오름차순, 같으면 DOM 순서. **레이아웃과 그리기가 이것을 쓴다.**
 - **순차 포커스 탐색(sequential focus navigation)** — `Tab` 키가 도는 순서. DOM 순서를 따르고 `order` 를 **보지 않는다**.
 - **자유 공간(free space)** — 컨테이너 크기 − (항목 크기 합 + `gap` + 마진). 줄바꿈이 켜지면 **줄마다 따로** 계산된다.
-- **진단 3창** — `cssRules`(담겼나) → `querySelectorAll`(잡혔나) → `getComputedStyle`(이겼나). 4번은 **셋을 다 통과하고도 결과가 달라지는** 자리다.
+- **진단 3종** — `cssRules`(담겼나) → `querySelectorAll`(잡혔나) → `getComputedStyle`(이겼나). 4번은 **셋을 다 통과하고도 결과가 달라지는** 자리다.
 
 ## 실행 환경
 

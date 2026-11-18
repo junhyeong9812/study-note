@@ -144,7 +144,7 @@ LSM은 제자리를 고치지 않는다. 쓰기를 메모리에 모았다가 **�
   iostat 디스크 쓰기량 ÷ 앱 쓰기량 = 쓰기 증폭
 ```
 
-**3) write stall을 줄이는 손잡이 (위키 Write Stalls).**
+**3) write stall을 줄이는 조절 수단 (위키 Write Stalls).**
 - flush가 밀리면: `max_background_jobs` 증가, `max_write_buffer_number` 증가.
 - L0·밀린 compaction이 원인이면: `max_background_jobs` 증가, `write_buffer_size` 증가(쓰기 증폭 감소), `min_write_buffer_number_to_merge` 증가.
 - 대량 적재라면 위키 Write Stalls가 FAQ의 "가장 빠른 적재 방법"을 보라고 안내한다. 일반 쓰기 경로로 밀어 넣지 않는다.

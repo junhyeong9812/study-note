@@ -201,7 +201,7 @@ class Program {
 
 **환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
 Roslyn `csc` 를 직접 부른다 · `-langversion:latest` · `-preferreduilang:en-US`. 대비는 **javac 21.0.5** 다.
-★★★ **핵심 창은 ② 진단 격자다** — 격자는 **스크립트가 칸을 센다.** IL 은 **한 블록**만 찍었다(2번).
+★★★ **핵심 확인 방법은 ② 진단 격자다** — 격자는 **스크립트가 칸을 센다.** IL 은 **한 블록**만 찍었다(2번).
 ★ **`enum` 의 완전성**(`CS8509`·`CS8524`)은 [20번](../20-enum-and-flags/)이 먼저 쟀다 — 여기서는 묻지 않는다.
 선행 — [21번](../21-pattern-matching-type-property-relational-list/)(패턴).
 

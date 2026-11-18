@@ -295,7 +295,7 @@ int main() {
 **환경** — g++ 13.3.0 · clang 18.1.3 · x86-64 Linux · `nm`(GNU Binutils 2.42).
 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex`.
 ★★★ **「`const` 니까 안 바뀐다」를 먼저 의심해라** — 3번과 4번이 그 반례다.
-★ **네 번째 창**은 「**같은 UB 를 네 버전으로 돌리는 것**」이다(4번) — 최적화 수준·컴파일러·UBSan 을 갈라 본다.
+★ **네 번째 확인 방법**은 「**같은 UB 를 네 버전으로 돌리는 것**」이다(4번) — 최적화 수준·컴파일러·UBSan 을 갈라 본다.
 선행 — 형제 [`03번`](../03-four-cast-operators/)(`const_cast`) · [`07번`](../07-references-vs-pointers/)(참조) ·
 C 갈래 [`14번`](../../../c/syntax/14-pointers-address-dereference-and-pointer-types/)(포인터) ·
 C 갈래 목록([`c/syntax/README.md`](../../../c/syntax/README.md))의 **31번**(`const` 위치를 읽는 순서).

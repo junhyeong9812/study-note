@@ -18,7 +18,7 @@ Google Chrome 151.0.7922.173
 | **달라지지 않는다** | 로드 전후의 상자 크기 · `aspect-ratio` 계산값 · 「움직인 칸 N / M」 · 요청이 `DOMContentLoaded`·`load`·스크롤보다 먼저 왔나 · CDP 의 처음 우선순위 · 접근성 역할·이름 | 캡처 세 번이 한 글자도 같았다([33번 정답](../33-output-progress-meter/3-answer.md)의 재대조) |
 | **달라지지 않는다(이 머신)** | 깨진 이미지 `alt` 글자 상자의 폭 `94.09375` | **글꼴에 달린 칸**이다 — 다른 머신에서는 다를 수 있다 |
 
-### 이 주제가 쓰는 창 / 해당 없는 창
+### 이 주제가 쓰는 확인 방법 / 해당 없는 확인 방법
 
 | 창 | 이 주제에서 | 무엇을 답하나 |
 |---|---|---|
@@ -597,4 +597,4 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 **선행** — [05번 주제](../05-content-categories-and-models/2-summary.md)(★ `img` 는 **흐름·구절·임베디드** — 문단 안에 섞인다).
 **경계** — **`aspect-ratio` 속성 자체**는 [CSS 31번](../../../css/syntax/31-intrinsic-sizing-and-aspect-ratio/2-summary.md)(★ 「`auto <ratio>` — 원래 비율이 있으면 그것을, 없으면 이 비율을」), **`object-fit` 으로 상자 안에 맞추기**는 [CSS 44번](../../../css/syntax/44-backgrounds-and-object-fit/2-summary.md) · **`srcset`/`sizes`** 는 [35번 주제](../35-srcset-and-sizes/2-summary.md) · **`DOMContentLoaded`/`load` 의 정의**는 [08번](../08-script-loading/2-summary.md) · **`IntersectionObserver` 로 직접 지연 로딩하기**는 [web-api 35번](../../../web-api/35-intersection-observer/2-summary.md) — 여기는 **`img` 속성이 상자와 요청에 무엇을 하나**까지.
 
-★★★ **이 주제의 핵심은 창 ⑤(서버 요청 로그)와 레이아웃 창(`getBoundingClientRect`)이다** — 이미지를 서버가 **`/go` 까지 붙잡아 두고** 로드 **전**과 **뒤**를 같은 탭에서 잰다. `alt` 는 창 ⑦ 로.
+★★★ **이 주제의 핵심은 확인 방법 ⑤(서버 요청 로그)와 레이아웃 창(`getBoundingClientRect`)이다** — 이미지를 서버가 **`/go` 까지 붙잡아 두고** 로드 **전**과 **뒤**를 같은 탭에서 잰다. `alt` 는 창 ⑦ 로.

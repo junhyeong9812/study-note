@@ -233,7 +233,7 @@ int read_errno(void) { return errno; }
 
 **환경** — gcc 13.3.0 · clang 18.1.3 · glibc 2.39 · x86-64 Linux. `strerror` 문구는 **`LC_ALL=C`** 로 고정했다(3번은 로케일을 일부러 바꾼다).
 
-★★★ **핵심 창은 둘째 창 — 실행 결과의 판정 격자**다. 1번은 **줄마다 「반환 · `errno` · 두 판정법이 맞았나」** 를 적어야 답이다.
+★★★ **핵심 확인 방법은 둘째 확인 방법 — 실행 결과의 판정 격자**다. 1번은 **줄마다 「반환 · `errno` · 두 판정법이 맞았나」** 를 적어야 답이다.
 ★★ **`malloc` 실패의 반환·`errno` 격자**(probe 7 × 빌드 8)는 [37번 형제](../37-malloc-calloc-realloc-free/)가 이미 쟀다 — 여기는 그 격자의 **clang `-O2` 칸**을 원인까지 판다.
 선행 — [34번 형제](../34-function-declarations-definitions-and-prototypes/) · [37번 형제](../37-malloc-calloc-realloc-free/).
 

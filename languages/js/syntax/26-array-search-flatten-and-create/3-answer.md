@@ -610,12 +610,12 @@ document.write('<script src="' + location.search.slice(1) + '"><\/script>');
 **격자의 `skips`/`reads` · 비교 규칙 · 방문 범위 · `at` 의 깎기 · `flat` 의 깊이와 `IsArray` · `Array` 생성자의 `RangeError` 조건 · `Array.from` 의 경로 순서와 매핑 인자 · `fromAsync` 의 한 값씩 `Await` 와 거부 뒤 닫기는 구현 의존이 아니다.**
 어느 엔진에서도 같아야 한다.
 
-**안 돌려 본 것 / 못 잰 것 / 해당 없는 창**
+**안 돌려 본 것 / 못 잰 것 / 해당 없는 확인 방법**
 
 - **안 돌려 본 것** — **구멍이 프로토타입에서 값을 얻는 경우**(10번) · 다른 엔진(SpiderMonkey·JavaScriptCore)의 문구 · 다른 스택 크기에서 `flat(Infinity)` 가 터지는 깊이.
 - ★ **못 잰 것** — **`Array.fromAsync` 의 node 버전 동작.** 두 node 버전에 메서드가 없다(7번) — Chrome 151 로 창을 바꿨다.
 - ★★★ **안 쟀다** — **성능 전부.** 「`find` 가 `filter` 보다 빠르다」·「`includes` 가 느리다」·「`flat` 이 비싸다」를 **한 줄도 쓰지 않았다.** 콜백 호출 수만 셌다.
-- ★★ **해당 없는 창** — **③ 브랜드 태그**(`flat` 의 `IsArray` 는 결과로 보인다) · **진단의 `(행,열)`**(`SyntaxError` 가 없다). **「잴 것이 없다」는 뜻**이다.
+- ★★ **해당 없는 확인 방법** — **③ 브랜드 태그**(`flat` 의 `IsArray` 는 결과로 보인다) · **진단의 `(행,열)`**(`SyntaxError` 가 없다). **「잴 것이 없다」는 뜻**이다.
 
 **버전이 올랐을 때 다시 돌려야 하는 것**
 

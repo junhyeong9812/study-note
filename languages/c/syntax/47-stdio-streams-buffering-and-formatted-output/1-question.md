@@ -196,7 +196,7 @@ stdout 을 **파일**로 받고 stderr 은 버린다.
 
 **환경** — gcc 13.3.0 · clang 18.1.3 · glibc 2.39 · strace 6.8 · x86-64 Linux. 터미널은 **`script -qc`** 가 만든 의사 터미널로 흉내 냈다.
 
-★★★ **핵심 창은 둘** — 지정자는 **① 컴파일 진단**(틀린 지정자의 출력은 미정의라 싣지 않는다), 버퍼링은 **`strace` 가 센 `write` 호출 수**다.
+★★★ **핵심 확인 방법은 둘** — 지정자는 **① 컴파일 진단**(틀린 지정자의 출력은 미정의라 싣지 않는다), 버퍼링은 **`strace` 가 센 `write` 호출 수**다.
 ★★ **「`printf` 는 가변 인자 함수라 컴파일러가 형식 문자열을 대조해 준다」** 는 [36번 형제](../36-variadic-functions-stdarg/)가 이미 보였다 — 여기는 **타입별 지정자 표**를 세운다.
 선행 — [02번 형제](../02-basic-types-sizes-and-fixed-width-integers/) · [46번 형제](../46-errno-and-error-return-conventions/).
 

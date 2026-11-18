@@ -39,7 +39,7 @@ ft  x=106  y=106  w=256  h=32      <- x 가 106 = 왼쪽 칸이 비었다
 
 ### 2. 도면이 무효가 되는 세 조건
 
-**결과** (Chrome 151 headless — 진단 3창)
+**결과** (Chrome 151 headless — 진단 3종)
 
 ```text
 도면                  ① rule.style.gridTemplateAreas   ③ 계산값     판정
@@ -67,7 +67,7 @@ ft  x=106  y=106  w=256  h=32      <- x 가 106 = 왼쪽 칸이 비었다
 - **두 자리** — ① `cssRules[i].style.gridTemplateAreas` 가 **빈 문자열**인가, ③ `getComputedStyle(el).gridTemplateAreas` 가 **`none`** 인가.
 - ①은 「파싱 단계에서 버려졌다」를, ③은 「최종 값이 없다」를 말한다.
 
-**진단 3창**
+**진단 3종**
 
 ```text
 ① cssRules[i].style.gridTemplateAreas   -> "" 이면 파싱 단계에서 버려짐
@@ -327,7 +327,7 @@ grid-area: main  인 항목  ->  x=52  y=32  w=200  h=40
 - **이름 붙은 라인(named grid line)** — `[이름]` 으로 이름을 준 라인. 하나에 여럿 붙일 수 있다.
 - **암묵 라인 이름** — 도면이 자동으로 만들어 주는 `<이름>-start`/`<이름>-end`.
 - **`-start`/`-end` 접미사 규칙** — 짝이 맞는 두 라인 이름이 영역을 만들고, 영역이 두 라인 이름을 만든다. 양방향이다.
-- **진단 3창** — `cssRules`(담겼나) → 매치(잡혔나) → `getComputedStyle`(이겼나).
+- **진단 3종** — `cssRules`(담겼나) → 매치(잡혔나) → `getComputedStyle`(이겼나).
 - **명시 격자 / 암묵 격자** — 내가 정의한 트랙 / 엔진이 만든 트랙. 이름을 못 찾은 항목이 뒤로 밀려난다(28번).
 
 ## 실행 검증
@@ -358,7 +358,7 @@ grid-area: main  인 항목  ->  x=52  y=32  w=200  h=40
 
 ## 실행 환경
 
-이 파일의 **판정은 「진단 3창」으로** 냈다 — `cssRules[i].style.gridTemplateAreas`(담겼나) → 매치(잡혔나) → `getComputedStyle(el).gridTemplateAreas`(이겼나).\
+이 파일의 **판정은 「진단 3종」으로** 냈다 — `cssRules[i].style.gridTemplateAreas`(담겼나) → 매치(잡혔나) → `getComputedStyle(el).gridTemplateAreas`(이겼나).\
 **항목 좌표는 `getBoundingClientRect()` 로 따로** 쟀다. 전부 **Google Chrome 151.0.7922.173** headless 에서 실제로 렌더한 값이다.\
 좌표는 별말이 없으면 **컨테이너의 바깥 왼쪽 위 모서리를 원점**으로 한 값이고, 테두리 2px 을 포함하므로 내용 영역의 왼쪽 위는 x=2, y=2 다.\
 규칙은 [CSS Grid Layout Level 1](https://drafts.csswg.org/css-grid-1/) 로 접지했다.

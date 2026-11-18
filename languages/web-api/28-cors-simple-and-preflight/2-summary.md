@@ -24,7 +24,7 @@ go version go1.27.1 linux/amd64
 
 - 재대조에서 정규화하는 칸은 없다. **위 표에 없는 차이는 전부 고칠 것**이다.
 
-### 이 주제가 쓰는 창 / 해당 없는 창
+### 이 주제가 쓰는 확인 방법 / 해당 없는 확인 방법
 
 | 창 | 이 주제에서 | 무엇을 답하나 |
 |---|---|---|
@@ -32,7 +32,7 @@ go version go1.27.1 linux/amd64
 | 창 ② 노드 프로브 | ★ **쓴다** | `res.status` · `res.type` · `res.headers.get()` · 오류 이름 |
 | 창 ③ 같은 것을 두 번 읽기 | ★★ **쓴다** | **같은 주소에 같은 PUT 두 번** — 두 번째에 OPTIONS 가 또 오나((5)) |
 | **창 ④ 서버 요청 로그 — 서버가 받은 순서** | ★★★ **핵심** | OPTIONS 가 **먼저 왔나** · 본 요청이 **왔나** · `Access-Control-Request-*` 에 무엇이 실렸나 |
-| ★ **「프리플라이트가 났나」를 페이지 대신 서버에게** | ★★ **같은 질문을 다른 창으로(제5의 상태)** | 페이지는 프리플라이트를 **볼 수 없다** — `then`/`catch` 만 받는다. 그래서 칸마다 **서버 B 에게 `/seen` 으로 물었다.** ★ 바꾼 창이 못 보는 것 — **브라우저 캐시가 답한 프리플라이트는 서버에 안 온다.** 「OPTIONS 가 안 왔다」가 **「안 보냈다」인지 「캐시가 답했다」인지**는 서버 창만으로는 못 가른다((5)은 같은 주소의 첫 번째가 왔다는 것으로 가른다) |
+| ★ **「프리플라이트가 났나」를 페이지 대신 서버에게** | ★★ **같은 질문을 다른 확인 방법으로(제5의 상태)** | 페이지는 프리플라이트를 **볼 수 없다** — `then`/`catch` 만 받는다. 그래서 칸마다 **서버 B 에게 `/seen` 으로 물었다.** ★ 바꾼 확인 방법이 못 보는 것 — **브라우저 캐시가 답한 프리플라이트는 서버에 안 온다.** 「OPTIONS 가 안 왔다」가 **「안 보냈다」인지 「캐시가 답했다」인지**는 서버 창만으로는 못 가른다((5)은 같은 주소의 첫 번째가 왔다는 것으로 가른다) |
 | 콘솔(CDP Log 도메인) | ★★ **쓴다** | `catch` 가 **말해 주지 않는** 거부 이유 |
 | Go `net/http` 클라이언트 | ★ **대비** | 브라우저가 아닌 클라이언트는 **CORS 를 모른다**((9)) |
 
@@ -1265,7 +1265,7 @@ B POST /cors?acao=none&id=go  Origin=(없음) · Content-Type=text/plain · X-A=
 
 ## 실행 환경
 
-★★★ **이 편의 핵심은 창 ④ 「서버 요청 로그」 — 서버 B 가 받은 순서(OPTIONS 가 먼저 왔나)를 칸마다 서버에게 묻는 「프리플라이트 격자」다.** 메서드 4 × `Content-Type` 4 × 커스텀 헤더 2 = 32칸을 다른 출처로 던지고, 마지막 줄을 스크립트가 「OPTIONS 가 먼저 온 칸 N / 32」로 찍는다. 그 옆에 **프리플라이트가 거부되면 본 요청이 서버에 가나**를 서버 로그로 싣는다.\
+★★★ **이 편의 핵심은 확인 방법 ④ 「서버 요청 로그」 — 서버 B 가 받은 순서(OPTIONS 가 먼저 왔나)를 칸마다 서버에게 묻는 「프리플라이트 격자」다.** 메서드 4 × `Content-Type` 4 × 커스텀 헤더 2 = 32칸을 다른 출처로 던지고, 마지막 줄을 스크립트가 「OPTIONS 가 먼저 온 칸 N / 32」로 찍는다. 그 옆에 **프리플라이트가 거부되면 본 요청이 서버에 가나**를 서버 로그로 싣는다.\
 **기준 소스** — [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 「CORS-safelisted method」(**`GET`·`HEAD`·`POST`**) · 「CORS-safelisted request-header」(값이 **128바이트를 넘으면 거짓** · `content-type` 은 파싱한 MIME 의 본질이 **`application/x-www-form-urlencoded`·`multipart/form-data`·`text/plain`** 일 때만) · main fetch 의 프리플라이트 조건(「**use-CORS-preflight flag** 가 켜졌거나, unsafe-request flag 가 켜졌고 메서드가 안전 목록이 아니거나 **CORS-unsafe request-header names 가 비지 않았을 때**」) · 요청 절(「use-CORS-preflight flag 는 … **`ReadableStream` 을 요청에 쓰면** 켜진다」) · HTTP fetch 의 「**If preflightResponse is a network error, then return** preflightResponse」 · CORS-preflight fetch(OPTIONS 에 `Access-Control-Request-Method`·`-Headers` 를 싣는다 · 「CORS check 가 성공하고 **status 가 ok status** 여야」 · 메서드·헤더 목록 검사) · CORS-preflight cache(「max-age 가 없으면 **5**」 · 「imposed limit」) · 「CORS-safelisted response-header name」 · 「opaque filtered response」(**status 0 · header list 비움 · body null**) · Request 생성자(「mode 가 `no-cors` 인데 메서드가 안전 목록이 아니면 **TypeError**」 · 스트림 본문에 「`duplex` 가 없으면 TypeError」·「mode 가 `same-origin`·`cors` 가 아니면 TypeError」) · 요청 출처 직렬화(「redirect-taint 가 `same-origin` 이 아니면 **`"null"`**」). 열어서 확인한 것만 적었다(기준일 2026-09-26).\
 **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. 페이지는 **서버 A**(`http://127.0.0.1`)에서 열었고 다른 출처는 **같은 기계의 다른 포트인 서버 B** 다. **바깥 인터넷으로는 한 번도 요청하지 않았다.** 하네스의 Chrome·CDP 쪽은 [24번 주제](../24-document-lifecycle-events/2-summary.md)의 (1)을 그대로 빌려 쓰고, **서버만 새로 세웠다**((1)).\
 **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\

@@ -97,7 +97,7 @@ VERSION(): 8.4.10
 | 자동 커밋 | **서버 설정이 아니다** (`ERROR: unrecognized configuration parameter`) — 클라이언트(`psql` 의 `:AUTOCOMMIT`)가 `on` | **서버 세션 변수** `@@autocommit = 1` |
 | 잠금 대기 제한 | `lock_timeout = 0` (무제한) | `innodb_lock_wait_timeout = 50` (초) |
 
-★ **두 엔진 다 「기본은 자동 커밋」이 맞다.** 다만 **그것을 끌 수 있는 손잡이가 서로 다른 층에 있다** —\
+★ **두 엔진 다 「기본은 자동 커밋」이 맞다.** 다만 **그것을 끌 수 있는 조절 수단이 서로 다른 층에 있다** —\
 PG 에서 「자동 커밋을 껐다」는 말은 **드라이버·클라이언트 이야기**이고, MySQL 에서는 **서버에 물어볼 수 있는 값**이다.\
 격리 수준 기본값이 다른 것은 [56번](../56-isolation-levels-read-phenomena-mvcc/)의 주제다.
 

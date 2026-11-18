@@ -216,7 +216,7 @@ rootWebArea             htmlTag=#document language=ko textDirection=ltr
   - **L2** — 수준 1 이상 덩어리 `이름 : ␠ 3` 을 뒤집는다 → 화면 `3 ␠ : (이름 거꾸로)`, 그 오른쪽에 `개`.
   - ★ **`3` 은 수준 2** 다.
 - **`bdi` 로 감싸면** — 격리된 이름은 바깥 계산에서 **중립 한 글자**(격리 시작·끝 표시)로 보인다. `3` 의 W7 은 이름을 건너 **문단 시작(sos, ltr)** 까지 가서 **L** 을 만나 `3` 이 **L** 이 된다. `: ␠` 는 L 사이 중립이라 L. 전부 수준 0 — **쓴 순서 그대로** 선다.
-- ★★★ **DOM·`textContent`·`innerText` 는 저장된(논리) 순서를 돌려준다** — 양방향 알고리즘은 **그리는 단계**에서 돈다. 그래서 **글자마다 `Range.getClientRects()` 의 x 를 찍어** 화면 순서를 복원했다 — **제5의 상태**(같은 질문을 다른 창으로 물었다)다.
+- ★★★ **DOM·`textContent`·`innerText` 는 저장된(논리) 순서를 돌려준다** — 양방향 알고리즘은 **그리는 단계**에서 돈다. 그래서 **글자마다 `Range.getClientRects()` 의 x 를 찍어** 화면 순서를 복원했다 — **제5의 상태**(같은 질문을 다른 확인 방법으로 물었다)다.
 
 ### 8. 순서는 UAX #9 의 보장, px 는 관찰 — 불일치는 `lang=""` 하나이고 그것이 브라우저 안에서 달라졌다
 
@@ -299,7 +299,7 @@ $ google-chrome --headless --disable-gpu --no-sandbox --window-size=1000,800 --d
 
 **못 잰 것**(「안 돌려 본 것」과 다르다) — ① **`lang` 에 따른 음성 합성**(A9). ② **스크린리더가 RTL 이름을 읽는 순서**.
 
-**해당 없는 창** — **창 ③**(`innerText`·`textContent` 는 둘 다 논리 순서 — 그래서 창 ② 좌표로 바꿨다) · **창 ④·⑤·⑥**(잴 것이 없다). ★ **창 ① 과 CDP `ax` 모드는 해당 없음이 아니라 원고 규칙 때문에 고르지 않은 창**이다.
+**해당 없는 확인 방법** — **창 ③**(`innerText`·`textContent` 는 둘 다 논리 순서 — 그래서 창 ② 좌표로 바꿨다) · **창 ④·⑤·⑥**(잴 것이 없다). ★ **창 ① 과 CDP `ax` 모드는 해당 없음이 아니라 원고 규칙 때문에 고르지 않은 창**이다.
 
 ## 용어 풀이
 
@@ -308,11 +308,11 @@ $ google-chrome --headless --disable-gpu --no-sandbox --window-size=1000,800 --d
 - **수준(embedding level)** — UAX #9 가 글자마다 매기는 숫자. 홀수는 오→왼. L2 가 높은 수준부터 뒤집는다.
 - **격리 / 재정의** — `bdi`·`[dir]` 의 `isolate` / `bdo` 의 `isolate-override`.
 - **하이픈 사전** — 언어별 끊는 자리 자료. 없으면 `hyphens: auto` 가 아무것도 안 한다.
-- **제5의 상태** — 같은 질문을 다른 창으로 물은 것. 이 주제는 글자 순서를 좌표로 물었다.
+- **제5의 상태** — 같은 질문을 다른 확인 방법으로 물은 것. 이 주제는 글자 순서를 좌표로 물었다.
 
 ## 실행 환경
 
 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스(`html17b-cdp.py`·`capture.sh`)는 [17번 주제의 3-answer.md](../17-table-structure/3-answer.md) `## 실행 검증` 절에 있다.\
 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/dom.html#the-dir-attribute) 와 [UAX #9](https://www.unicode.org/reports/tr9/), [HTML-AAM](https://w3c.github.io/html-aam/) 으로 접지했다.\
 ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-★★★ **본체는 창 ② 의 글자 x 좌표다**(A1·A7). ★★ **RTL 글자는 이 파일에 없다** — 출력은 코드 포인트 이름뿐이다.
+★★★ **핵심은 확인 방법 ② 의 글자 x 좌표다**(A1·A7). ★★ **RTL 글자는 이 파일에 없다** — 출력은 코드 포인트 이름뿐이다.

@@ -30,7 +30,7 @@ Google Chrome 151.0.7922.173
 
 - 재대조에서 정규화하는 칸은 없다. **위 표에 없는 차이는 전부 고칠 것**이다.
 
-### 이 주제가 쓰는 창 / 해당 없는 창
+### 이 주제가 쓰는 확인 방법 / 해당 없는 확인 방법
 
 | 창 | 이 주제에서 | 무엇을 답하나 |
 |---|---|---|
@@ -39,7 +39,7 @@ Google Chrome 151.0.7922.173
 | 창 ③ 같은 것을 두 번 읽기 | ★ **쓴다 — 하네스 안에서** | 문서마다 심은 표(`window.__문서`)를 떠나기 전과 뒤에 읽어 **같은 문서가 되살아났나**를 가른다 |
 | **창 ④ 디스패치 계수기 → 「떠날 때」 격자** | ★★★ **핵심** | 어느 떠남에서 어느 이벤트가 · `persisted` 가 무엇으로 |
 | **CDP `Page.backForwardCacheNotUsed`** | ★★ **쓴다 — bfcache 창** | **왜** 못 들어갔나 |
-| ★ **페이지의 `notRestoredReasons`** | ★ **같은 질문을 다른 창으로(제5의 상태)** | 같은 「왜」를 페이지가 물으면 무엇을 받나 — **`masked`** 만 받았다((4)) |
+| ★ **페이지의 `notRestoredReasons`** | ★ **같은 질문을 다른 확인 방법으로(제5의 상태)** | 같은 「왜」를 페이지가 물으면 무엇을 받나 — **`masked`** 만 받았다((4)) |
 | 서버 요청 로그 | ★ **쓴다** | 이미지를 **붙잡았다가 놓은 때**((6)) |
 
 ### 도구가 못 보는 것
@@ -880,7 +880,7 @@ $ python3 wa24b-net.py life wa24b-24-grid.html | sed -n '16,29p'
 - ★★★ **`unload` 를 단 쪽은 링크로 떠날 때 `pagehide persisted=false`** 이고 **`unload` 가 불렸다.** 뒤로 돌아오면 **`DOMContentLoaded → load → pageshow(persisted=false)`** — 처음부터 다시 만들었다.
 - ★★★ **CDP 가 이유를 말한다** — 뒤로(첫쪽u 로 돌아옴): **`UnloadHandlerExistsInMainFrame(PageSupportNeeded)`** 와 `BrowsingInstanceNotSwapped(Circumstantial)`.
 - ★★ **옆 쪽까지 빠졌다** — `unload` 가 없는 **둘째쪽도** 앞으로 올 때 되살아나지 못했다(`BrowsingInstanceNotSwapped` 하나). 뒤로 떠날 때 둘째쪽의 `pagehide` 도 `persisted=false` 다. 이 편은 그 이유를 **CDP 가 준 이름 이상으로 풀지 않았다.**
-- ★★ **페이지에게 같은 것을 물으면 `[{"reason":"masked"}]`** — `performance.getEntriesByType("navigation")[0].notRestoredReasons` 가 **이유를 가렸다.** CDP 는 두 이름을 줬다. **같은 질문을 다른 창으로 물었더니 답의 세기가 달랐다**(제5의 상태).
+- ★★ **페이지에게 같은 것을 물으면 `[{"reason":"masked"}]`** — `performance.getEntriesByType("navigation")[0].notRestoredReasons` 가 **이유를 가렸다.** CDP 는 두 이름을 줬다. **같은 질문을 다른 확인 방법으로 물었더니 답의 세기가 달랐다**(제5의 상태).
 - **`unload` 열을 빼고 두 버전이 달라진 항목 7 / 40** — 아래 (5)의 집계 줄.
 
 ```text
@@ -1107,7 +1107,7 @@ A   go 를 받고 이미지를 보냈다
 
 ## 실행 환경
 
-★★★ **이 편의 핵심은 창 ④ 를 늘린 「떠날 때」 격자다** — 떠나는 방법 여덟 가지(링크 · 새로 고침 · 탭 닫기 두 가지 · 뒤로 · 앞으로 · 다른 탭이 앞으로 · 돌아옴) × 이벤트 여섯(`beforeunload` · `pagehide` · `unload` · `visibilitychange` · `pageshow` · `load`)을 **리스너 없는 쪽과 `unload` 리스너 하나 단 쪽** 두 버전으로 채우고, bfcache 에 못 들어간 이유는 **CDP 의 `Page.backForwardCacheNotUsed`** 로 받는다.\
+★★★ **이 편의 핵심은 확인 방법 ④ 를 늘린 「떠날 때」 격자다** — 떠나는 방법 여덟 가지(링크 · 새로 고침 · 탭 닫기 두 가지 · 뒤로 · 앞으로 · 다른 탭이 앞으로 · 돌아옴) × 이벤트 여섯(`beforeunload` · `pagehide` · `unload` · `visibilitychange` · `pageshow` · `load`)을 **리스너 없는 쪽과 `unload` 리스너 하나 단 쪽** 두 버전으로 채우고, bfcache 에 못 들어간 이유는 **CDP 의 `Page.backForwardCacheNotUsed`** 로 받는다.\
 **기준 소스** — [WHATWG HTML — Document lifecycle](https://html.spec.whatwg.org/multipage/document-lifecycle.html) 의 「unload a document」(page showing 이면 **`pagehide`** → 가시성을 **`hidden` 으로** → salvageable 이 거짓이면 **`unload`**) · 크롬 쪽 설명은 [Deprecating the unload event](https://developer.chrome.com/docs/web-platform/deprecating-unload)(Chrome 115 부터 `Permissions-Policy: unload` · 2026 년 v146\~v154 사이 모든 출처로 단계적 확대). ★ **HTML 명세에서 「`unload` 리스너가 있으면 bfcache 에 못 들어간다」는 문장은 찾지 못했다** — 그 조건은 **브라우저 구현**이다(본문 「구현 세부사항 대 언어 보장」). 열어서 확인한 것만 적었다(기준일 2026-09-26).\
 **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. 페이지는 **로컬 서버 A(`http://127.0.0.1`)** 에서 열었다(`file://` 는 오류가 muted 되고 `fetch` 가 막힌다). 링크는 **CDP 로 넣은 진짜 마우스**로 누르고, 뒤로·앞으로는 `Page.navigateToHistoryEntry`, 탭 닫기는 `Target.closeTarget` 과 `Page.close`, 탭 전환은 `Target.createTarget`·`Target.activateTarget` 로 했다.\
 **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\

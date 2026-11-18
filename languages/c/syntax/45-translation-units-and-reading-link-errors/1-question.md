@@ -230,7 +230,7 @@ int hook(void) { return 5; }
 
 **환경** — gcc 13.3.0 · clang 18.1.3 · g++ 13.3.0 · GNU ld 2.42(ld.bfd) · ld.gold · x86-64 Linux · glibc 2.39.
 
-★★★ **핵심 창은 넷째 창 — 링크 결과 + `nm`** 이다. 1번은 **칸마다 「링크 성공 / `undefined reference` / `multiple definition`」**, 2번은 **파일마다 글자**를 적어야 답이다.
+★★★ **핵심 확인 방법은 넷째 확인 방법 — 링크 결과 + `nm`** 이다. 1번은 **칸마다 「링크 성공 / `undefined reference` / `multiple definition`」**, 2번은 **파일마다 글자**를 적어야 답이다.
 ★★ **헤더에 무엇을 두면 깨지나**(헤더 내용 14 × 빌드 5 격자)는 [44번 형제](../44-headers-and-separate-compilation/)가 이미 쟀다 — 여기는 그 에러를 **받아서 거꾸로 읽는** 쪽이다.
 선행 — [44번 형제](../44-headers-and-separate-compilation/) · [29번 형제](../29-scope-and-linkage-static-extern/) · [34번 형제](../34-function-declarations-definitions-and-prototypes/).
 

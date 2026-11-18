@@ -38,7 +38,7 @@ Google Chrome 151.0.7922.173
 | 리모컨은 **본체 라벨만** 본다 | `el.style` 은 스타일시트를 못 본다 — 그 창은 [08번 주제](../08-getcomputedstyle/2-summary.md) |
 
 - **셋은 서로 다른 세 가지가 아니라 「속성 칸을 보는 세 창**」이다. 그래서 진단도 하나로 통한다 — **쓰고 나서 속성을 되읽어라.**
-- **실패 방식이 셋이다** — 담겼다 / **조용히 버려졌다** / 예외. 가운데 것이 가장 나쁘고, 그것만 보는 창이 이 주제의 창 ④ 다.
+- **실패 방식이 셋이다** — 담겼다 / **조용히 버려졌다** / 예외. 가운데 것이 가장 나쁘고, 그것만 보는 창이 이 주제의 확인 방법 ④ 다.
 
 ```text
                   요소 하나
@@ -59,9 +59,9 @@ Google Chrome 151.0.7922.173
 2. **`classList.toggle` 의 두 번째 인자는 무엇을 바꾸나.** 그리고 다섯 메서드 중 **무엇이 값을 돌려주나**.
 3. **잘못 쓴 스타일 선언은 어디로 가나** — 예외인가, 조용히 사라지나. **무엇으로 가르나.**
 
-## 이 갈래의 관측 창 — ★ 창 4 는 「담겼나」
+## 이 갈래의 확인 방법 — ★ 창 4 는 「담겼나」
 
-[01번 주제](../01-document-and-node-tree/2-summary.md)가 세운 창 셋에 이 주제의 창을 하나 더 얹는다.
+[01번 주제](../01-document-and-node-tree/2-summary.md)가 세운 창 셋에 이 주제의 확인 방법을 하나 더 얹는다.
 
 ```text
   창 1  --dump-dom             스크립트가 다 돈 뒤의 트리를 글자로
@@ -787,7 +787,7 @@ if (getComputedStyle(el).color === 'rgb(255, 0, 0)') { }   // 08번 주제
 - [02번 주제](../02-element-queries-and-live-collections/2-summary.md) — **라이브**라는 성질. `classList` 가 그 성질을 갖는다
 - [목록의 **12번 주제**](../12-shadow-dom/)(Shadow DOM) — 그림자 경계 안의 `class` 는 바깥 시트가 못 본다. 표면은 같고 **범위**가 다르다
 - 목록의 **54번 주제**(Web Animations) — 인라인 `style` 보다 **더 강한** 자리에서 값을 쓰는 방법
-- [CSS 07번 주제](../../css/syntax/07-syntax-and-error-recovery/2-summary.md) — **「에러가 없는 언어」와 진단 3창의 정본.** 이 주제의 창 ④ 가 거기서 왔다
+- [CSS 07번 주제](../../css/syntax/07-syntax-and-error-recovery/2-summary.md) — **「에러가 없는 언어」와 진단 3종의 정본.** 이 주제의 확인 방법 ④ 가 거기서 왔다
 - [CSS 01번 주제](../../css/syntax/01-cascade-and-priority/2-summary.md) — 인라인 `style` 이 캐스케이드에서 **어디에 서나**
 - [CSS 36번 주제](../../css/syntax/36-custom-properties/2-summary.md) — 커스텀 속성의 **값 처리**. 여기는 **`setProperty` 라는 표면**까지만
 - HTML 갈래 목록([`html/syntax/README.md`](../../html/syntax/README.md))의 **02번**([요소와 속성 문법](../../html/syntax/02-elements-and-attributes/2-summary.md)) — **속성 이름이 소문자로 맞춰지는 것**의 정본. `data-fooBar` 가 왜 안 되는지의 근거

@@ -154,7 +154,7 @@ grid 항목    min-width = auto   min-height = auto
 **어느 단계에서 실패하나**
 
 - **가장 앞 단계 — 파싱이다.** 규칙 상자가 비어 있으므로 **선언이 아예 안 담겼다.**
-- 진단 3창 중 **첫째 창(`cssRules`)** 이 답한다. 둘째·셋째 창은 볼 필요도 없다.
+- 진단 3종 중 **첫째 확인 방법(`cssRules`)** 이 답한다. 둘째·셋째 확인 방법은 볼 필요도 없다.
 - ★ **존재하지 않는 값 `bogus-content` 와 구분되지 않는다.** 「미지원」이 아니라 「모르는 값」으로 처리된 것이다.
 
 **`getComputedStyle` 로 진단되는가**
@@ -404,7 +404,7 @@ overflow-wrap: break-word  80.00  (높이 72)    <- 안 줄인다
 - **내용 기반 최소 크기(content-based minimum size)** — 비율로 정해지는 축에 걸리는 바닥. 8번에서 비율을 깨는 범인.
 - **`aspect-ratio`** — 한 축이 정해지면 다른 축을 비율로 만든다. 두 축이 다 지정되면 **담기되 무시된다.**
 - **퇴화한 비율(degenerate ratio)** — `0 / 1` 처럼 어느 한쪽이 0 인 비율. 담기지만 레이아웃에서 쓰이지 않는다.
-- **진단 3창** — `cssRules`(담겼나) → `querySelectorAll`(잡혔나) → `getComputedStyle`(이겼나). 5번은 첫째 창에서, 8·9번은 셋을 다 통과하고 `getBoundingClientRect()` 에서 달라졌다.
+- **진단 3종** — `cssRules`(담겼나) → `querySelectorAll`(잡혔나) → `getComputedStyle`(이겼나). 5번은 첫째 확인 방법에서, 8·9번은 셋을 다 통과하고 `getBoundingClientRect()` 에서 달라졌다.
 
 ## 실행 환경
 

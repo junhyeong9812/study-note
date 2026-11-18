@@ -575,7 +575,7 @@ throwing cells 5 / 6
 ### (4) ★★★ `Symbol.toStringTag` — 브랜드 태그 창 ③이 얼마나 믿을 만한가
 
 **언제 쓰나** — `Object.prototype.toString.call(v) === "[object Array]"` 같은 **타입 검사 관용구**를 믿어도 되나를 물을 때.
-★ 이 갈래는 **③ 브랜드 태그**를 판별 창으로 써 왔다. 여기서는 **그 창을 과녁으로** 놓는다.
+★ 이 갈래는 **③ 브랜드 태그**를 판별 창으로 써 왔다. 여기서는 **그 확인 방법을 과녁으로** 놓는다.
 
 ```text
    Object.prototype.toString.call(v)                     -- 명세 그대로
@@ -1100,7 +1100,7 @@ symbol kinds accepted as a WeakMap key 2 / 3
 - ★★ **`[2]` — `keyFor` 는 장부 심볼에만 이름을 돌려준다.** 잘 알려진 심볼도 `undefined` — **`Symbol.iterator` 는 장부에 없다**(`Symbol.for('Symbol.iterator')` 와 다르다).
   심볼이 아닌 것을 넣으면 `TypeError 「app is not a symbol」`.
 - ★★ **`[3]` — `node:vm` 의 새 realm 에서 만든 `Symbol.for('app')` 도, 거기서 읽은 `Symbol.iterator` 도 이쪽 것과 `===`** 이고, `Symbol('app')` 은 아니다.
-  ★ **창을 바꿔 물은 자리다**(제5의 상태) — 브라우저의 iframe 대신 Node 호스트의 `vm` 으로 물었다. `vm` 이 만든 것이 명세의 realm 과 같은 것인지는 **이 문서가 확인하지 않았다.**
+  ★ **확인 방법을 바꿔 물은 자리다**(제5의 상태) — 브라우저의 iframe 대신 Node 호스트의 `vm` 으로 물었다. `vm` 이 만든 것이 명세의 realm 과 같은 것인지는 **이 문서가 확인하지 않았다.**
 - ★★★ **`[4]` — 집계 줄이 node20 은 `2 / 3`, node18 은 `0 / 3`** 이다. **판이 달라진 블록**이다(ES2023 이 node18 에 없다 — 판별 블록의 `symbols as WeakMap keys` 줄과 같다).
   node20 에서 **장부 심볼만 거절된다**(`Invalid value used as weak map key`). 명세 `CanBeHeldWeakly` 의 둘째 줄 그대로이고, 그 note 가 이유를 적는다 —
   "A Symbol value produced by Symbol.for, unlike other Symbol values, does not have language identity and is unsuitable for use as a weak reference."
@@ -1326,16 +1326,16 @@ node20 에서 **`TypeError`** 다. 약한 키가 될 수 있는 심볼은 **장�
 | 심볼을 `WeakMap` 키·`WeakRef` 대상으로(Symbols as WeakMap keys) | **ES2023** | ★ **node18 에 없다**(판별 블록 · 동작 (6)) |
 | `Symbol.dispose`·`Symbol.asyncDispose` · `using` 선언(Explicit Resource Management) | **ES2027**(finished proposals 표) | ★ 심볼은 **세 버전 다** 있는데 `using` 문법은 **Chrome 151 만** 컴파일한다(더 들어가면) |
 
-**★★★ 이 주제가 쓰는 창 — 그리고 해당 없는 창**
+**★★★ 이 주제가 쓰는 확인 방법 — 그리고 해당 없는 확인 방법**
 
 | 창 | 이 주제에서 무엇을 보나 |
 |---|---|
 | ★★★ **① 추상 연산에 로그 심기**(핵심) | `[Symbol.toPrimitive](hint)` 가 받는 **hint** 를 연산 24가지에서 · `static [Symbol.hasInstance](v)` 가 받는 인자 · `static get [Symbol.species]()` 를 **읽은 메서드** 14가지 · `Date` 의 자체 `toPrimitive` 를 감싸서 |
 | ★★★ **② 전수 격자** | 키 종류 5 × 키를 늘어놓는 문법 10 — 「**달라진 항목 N / M**」을 스크립트가 센다 · 변환 여섯 가지 중 던지는 칸 · 「브랜드 태그 대 슬롯 판별」이 어긋나는 칸 |
-| ★★★ **③ 브랜드 태그** — ★ **이 주제에서는 창 자체가 과녁이다** | `Object.prototype.toString.call(v)` 가 **`Symbol.toStringTag` 한 프로퍼티로 바꿔치기된다.** 이 창을 다른 편에서 판별 도구로 썼다면, 여기서 그 창이 **어디까지 믿을 만한지**를 잰다(동작 (4)) |
+| ★★★ **③ 브랜드 태그** — ★ **이 주제에서는 창 자체가 과녁이다** | `Object.prototype.toString.call(v)` 가 **`Symbol.toStringTag` 한 프로퍼티로 바꿔치기된다.** 이 확인 방법을 다른 편에서 판별 도구로 썼다면, 여기서 그 확인 방법이 **어디까지 믿을 만한지**를 잰다(동작 (4)) |
 | ★★ **④ 예외의 `constructor.name` + `message`** | 심볼의 암묵 변환 · `new Symbol` · `instanceof` 우변 · species 가 생성자가 아닐 때 · 레지스트리 심볼을 `WeakMap` 키로 |
 | ★★ **⑤ 두 판 대조기** | 이 주제의 probe 넷이 **두 버전에서 달라진다** — 전부 **ES2023 기능의 유무**와 문구 한 줄이다(실행 검증 표) |
-| ★ **창을 바꿔 물었다**(제5의 상태) | 「레지스트리 심볼은 판 경계를 넘나?」 — 브라우저 iframe 을 쓰는 대신 **`node:vm` 의 새 realm** 으로 물었다(동작 (6) `[3]`). ★ **`vm` 은 호스트 API** 라 ECMA-262 가 보장하는 「realm」 과 같은 것인지는 이 문서가 확인하지 않았다 |
+| ★ **확인 방법을 바꿔 물었다**(제5의 상태) | 「레지스트리 심볼은 판 경계를 넘나?」 — 브라우저 iframe 을 쓰는 대신 **`node:vm` 의 새 realm** 으로 물었다(동작 (6) `[3]`). ★ **`vm` 은 호스트 API** 라 ECMA-262 가 보장하는 「realm」 과 같은 것인지는 이 문서가 확인하지 않았다 |
 | ★ **해당 없음 — 진단의 `(행,열)`**(18-C) | `SyntaxError` 는 두 줄(`with`·`using`)뿐이고 **어느 쪽으로 묶이나**를 가를 일이 없다 — 잴 것이 없다 |
 | ★ **반쯤 해당 없음 — `Symbol.unscopables`** | 그 심볼이 바꾸는 것은 **`with` 문 하나**인데 `with` 는 **엄격 모드에서 컴파일조차 안 된다**(동작 (5) `[5]`). 비엄격 한 줄로 동작만 확인하고 문항은 (경계) 하나로 줄였다 |
 | ★ **안 쟀다 — 성능** | 「심볼 키는 느리다/빠르다」류의 말을 **한 줄도 쓰지 않는다.** 안 쟀다 |

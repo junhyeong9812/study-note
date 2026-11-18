@@ -258,7 +258,7 @@ class Node { public int X; public int Y; }
 진단은 **영어로 고정**했다(`DOTNET_CLI_UI_LANGUAGE=en` + `csc -preferreduilang:en-US`).
 기본 명령은 `csc -out:ex.dll <파일>.cs && dotnet exec ex.dll` 이고, `csc` 는 Roslyn 을 직접 부르는 셸 함수다(서머리 「실행 환경」).
 ★★★ **「값 타입은 스택에 있다」를 먼저 의심해라** — 7번에서 **할당 바이트**로 직접 잰다.
-★ **이 주제의 다섯 번째 창은 `GC.GetAllocatedBytesForCurrentThread()`** 다. 네 번째는 **IL** 이다(9번).
+★ **이 주제의 다섯 번째 확인 방법은 `GC.GetAllocatedBytesForCurrentThread()`** 다. 네 번째는 **IL** 이다(9번).
 선행 — 없음. 뒤따르는 것은 [02번](../02-struct-vs-class-choosing/)·[03번](../03-boxing-and-unboxing/)·[04번](../04-var-and-target-typed-new/)이다.
 
 ## 복습 기록

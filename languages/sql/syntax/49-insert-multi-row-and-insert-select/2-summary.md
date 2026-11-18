@@ -176,7 +176,7 @@ ERROR 1062 (23000) at line 1: Duplicate entry '1' for key 't49_a.PRIMARY'
 비용 — 「어디까지 들어갔나」를 물을 필요가 없다. **재시도가 안전하다.**\
 ★ 이 성질은 **행 단위 처리에 비해 비싼 대신 정확**하다 — 5만 행 중 하나가 틀리면 5만 행이 되돌아간다.
 
-★ **그런데 두 엔진 다 이 성질을 깨는 손잡이가 있다.** PG 는 [`ON CONFLICT DO NOTHING`](../52-upsert/), MySQL 은 `INSERT IGNORE` 다(7번).
+★ **그런데 두 엔진 다 이 성질을 깨는 조절 수단이 있다.** PG 는 [`ON CONFLICT DO NOTHING`](../52-upsert/), MySQL 은 `INSERT IGNORE` 다(7번).
 
 ```text
 ### SQL: INSERT INTO t49_a (id,name) VALUES (20,'v20'),(1,'dup'),(21,'v21') ON CONFLICT DO NOTHING;
@@ -719,7 +719,7 @@ INSERT INTO t VALUES ROW(1,'x'), ROW(2,'y');   -- MySQL. PG 는 구문 오류
 | 길이 초과 | — | **MySQL 은 `sql_mode` 에 달렸다** |
 | `IGNORE` | — | **MySQL 전용. 삼키는 범위도 MySQL 이 정한다** |
 
-- **「문 하나가 원자 단위」는 두 엔진에서 같았지만, 그것을 깨는 손잡이가 양쪽에 다 있다** — PG 의 `ON CONFLICT DO NOTHING`, MySQL 의 `IGNORE`.
+- **「문 하나가 원자 단위」는 두 엔진에서 같았지만, 그것을 깨는 조절 수단이 양쪽에 다 있다** — PG 의 `ON CONFLICT DO NOTHING`, MySQL 의 `IGNORE`.
 - **`t49_a_pkey` 대 `t49_a.PRIMARY` 같은 제약 이름 표기**는 구현 세부다. 외울 것은 「**중복 키에서 문 전체가 취소된다**」는 성질이다.
 
 ## 언제 쓰고 언제 안 쓰나

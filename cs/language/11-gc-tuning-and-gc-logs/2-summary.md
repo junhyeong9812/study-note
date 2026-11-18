@@ -195,9 +195,9 @@ java -XX:MaxRAMPercentage=70 -XX:+PrintFlagsFinal -version | grep -E " MaxHeapSi
 - `-Xms` = `-Xmx`로 두면 실행 중 힙 크기를 늘리고 줄이는 조정이 빠진다. 비교 실험의 변수를 줄이려고 이 노트의 실험(실험 1 제외)은 `-Xms` = `-Xmx`로 돌렸다.
 - 힙을 limit 가까이 올리면 힙 밖 메모리 몫이 모자라 `OOMKilled`가 된다. 계산은 [os/13 §3·장애 2](../../os/13-oom-and-memory-limits/2-summary.md).
 
-### 3. 증상별 첫 손잡이
+### 3. 증상별 첫 조절 수단
 
-| 증상 (로그) | 첫 손잡이 |
+| 증상 (로그) | 첫 조절 수단 |
 |---|---|
 | `(Evacuation Failure)` 뒤 `Pause Full (G1 Compaction Pause)` | 힙↑, 마킹 일찍(`G1ReservePercent`↑ / IHOP 고정), 할당·승격 줄이기 |
 | `G1 Humongous Allocation` 원인이 많음, `Humongous regions` 큼 | `G1HeapRegionSize`↑, 큰 배열 재사용 |

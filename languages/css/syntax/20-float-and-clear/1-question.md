@@ -84,7 +84,7 @@ span { float: left; width: 200px; height: 44px; }
 - `.a` 의 `rect.x`·`rect.width` 는 float 를 안 걸었을 때와 다른가?
 - `getComputedStyle(.a).float` 는 무엇을 돌려주는가?
 - 그 계산값으로 「먹었다」를 판정할 수 있는가?
-- 이 사실은 진단 3창 중 **어느 창의 한계**인가?
+- 이 사실은 진단 3종 중 **어느 창의 한계**인가?
 
 ### 8. 여럿을 띄우면 (예측)
 

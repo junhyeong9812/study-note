@@ -187,10 +187,10 @@ CSS 에는 언어 버전이 없다(「CSS3」는 2000년대에 버려진 표현�
 ## 실행 환경
 
 **본문의 모든 수치는 Chrome 151.0.7922.173 headless 실측이다.** CSS 는 SQL 과 근거의 성질이 정반대다 —
-**에러가 없는 언어**라 무효한 선언·선택자가 조용히 버려진다. 그래서 「진단 3창」으로 잰다:
+**에러가 없는 언어**라 무효한 선언·선택자가 조용히 버려진다. 그래서 「진단 3종」으로 잰다:
 `cssRules`(담겼나) → `querySelectorAll`(잡혔나) → `getComputedStyle`(이겼나).
-★★ **그런데 셋으로 안 끝났다.** 주제마다 네 번째 창이 하나씩 더 필요했다 —
-**`getAnimations()`**(애니메이션: `@keyframes` 이름 오타가 세 창을 전부 통과한다) ·
+★★ **그런데 셋으로 안 끝났다.** 주제마다 네 번째 확인 방법이 하나씩 더 필요했다 —
+**`getAnimations()`**(애니메이션: `@keyframes` 이름 오타가 세 확인 방법을 전부 통과한다) ·
 **`matchMedia`/`conditionText`**(at-rule: 「담겼는데 조건이 거짓」) ·
 **`cssRules[i].style.getPropertyValue('--x')`**(커스텀 속성: 담긴 값과 계산값이 다르다) ·
 **`getBoundingClientRect()`**(레이아웃·3D: `transform-style` 계산값이 34벌 전부 `preserve-3d` 인데 실제로 깨진 것이 12벌) ·

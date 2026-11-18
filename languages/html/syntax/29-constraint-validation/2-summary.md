@@ -17,7 +17,7 @@ Google Chrome 151.0.7922.173
 | **실행마다 달라진다** | `validationMessage` 문구 · 검증 풍선 | 구현이다 — **근거로 쓰지 않는다**(이 편은 문구를 한 번도 찍지 않았다) |
 | **달라지지 않는다** | `matches()` 의 참·거짓 · `change`·`invalid`·`submit` 기록 · 서버가 받은 필드 · 「달라진 항목 N / M」 | 시도마다 페이지를 새로 연다 · 같은 판이면 결정적이다 |
 
-### 이 주제가 쓰는 창 / 해당 없는 창
+### 이 주제가 쓰는 확인 방법 / 해당 없는 확인 방법
 
 | 창 | 이 주제에서 | 무엇을 답하나 |
 |---|---|---|
@@ -551,4 +551,4 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 **선행** — [28번 주제](../28-validation-attributes/2-summary.md)(속성이 **어느 깃발**을 켜나 — 이 편은 그 깃발을 **CSS·제출 쪽에서 읽는다**).
 **경계** — ★★★ **속성 × 타입 격자와 `validity` 깃발**은 [28번](../28-validation-attributes/2-summary.md)이 쟀다 — 다시 재지 않는다. **검증이 언제 도나**(`form.submit()` 은 건너뛴다)와 **`curl` 우회**는 [21번](../21-form-submission-model/2-summary.md)의 (2)·(5) 다. **`:invalid` 가 로드 직후부터 켜지고 `:user-invalid` 는 blur 뒤에 켜지는 것**은 [CSS 10번](../../../css/syntax/10-state-and-form-pseudo-classes/2-summary.md)의 (4)·(5) 가 **이메일 칸 하나**로 쟀다 — 여기는 그 열을 **칸 셋 × 시점 여섯**으로 늘리고 **제출 시도·`reset()`** 을 더한다. **스크립트로 읽고 덮어쓰는 표면**(`checkValidity`·`reportValidity`·`setCustomValidity`)의 정본은 web-api 갈래 목록([`web-api/README.md`](../../../web-api/README.md))의 **60번**이다 — 여기는 **그것이 제출·의사 클래스와 만나는 자리**만 (3) 에서 잰다.
 
-★★★ **이 주제의 핵심은 창 ②(노드 프로브)다 — `element.matches(':user-invalid')` 로 묻는 의사 클래스 격자.** 짝으로 **창 ⑤(서버 요청 로그)** 가 「검증을 건너면 서버가 무엇을 받나」를 한 쌍으로 보인다.
+★★★ **이 주제의 핵심은 확인 방법 ②(노드 프로브)다 — `element.matches(':user-invalid')` 로 묻는 의사 클래스 격자.** 짝으로 **창 ⑤(서버 요청 로그)** 가 「검증을 건너면 서버가 무엇을 받나」를 한 쌍으로 보인다.

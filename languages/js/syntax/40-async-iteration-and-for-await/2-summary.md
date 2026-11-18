@@ -630,7 +630,7 @@ const measure = (label, loop) => new Promise((done) => {
 
 ★★ **판 경계는 TC39 finished proposals 표와 이 목록의 README 를 대조했다** — Asynchronous Iteration **2018**. README 40행은 판을 적지 않는다.
 
-**★★★ 이 주제가 쓰는 창 — 그리고 해당 없는 창**
+**★★★ 이 주제가 쓰는 확인 방법 — 그리고 해당 없는 확인 방법**
 
 | 창 | 이 주제에서 무엇을 보나 |
 |---|---|

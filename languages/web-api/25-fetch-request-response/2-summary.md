@@ -18,7 +18,7 @@ Google Chrome 151.0.7922.173
 
 - 재대조에서 정규화하는 칸은 없다. **위 표에 없는 차이는 전부 고칠 것**이다.
 
-### 이 주제가 쓰는 창 / 해당 없는 창
+### 이 주제가 쓰는 확인 방법 / 해당 없는 확인 방법
 
 | 창 | 이 주제에서 | 무엇을 답하나 |
 |---|---|---|
@@ -490,7 +490,7 @@ A GET /status?code=500  → 500 응답을 끝까지 보냈다
 
 ## 실행 환경
 
-★★★ **이 편의 핵심은 창 ④ 「서버 요청 로그」 — 페이지가 본 것과 서버가 한 일을 나란히 놓는 「`catch` 로 간 칸」 격자다.** 200 · 404 · 500 · 아무도 안 듣는 포트 · 다른 출처의 허용 없는 POST · 허용 있는 POST 여섯 요청을 던지고, 칸마다 **`then`/`catch` · `res.ok` · `res.status` · 오류 이름**을 적은 뒤 **서버 두 대의 로그와 콘솔**을 같이 싣는다.\
+★★★ **이 편의 핵심은 확인 방법 ④ 「서버 요청 로그」 — 페이지가 본 것과 서버가 한 일을 나란히 놓는 「`catch` 로 간 칸」 격자다.** 200 · 404 · 500 · 아무도 안 듣는 포트 · 다른 출처의 허용 없는 POST · 허용 있는 POST 여섯 요청을 던지고, 칸마다 **`then`/`catch` · `res.ok` · `res.status` · 오류 이름**을 적은 뒤 **서버 두 대의 로그와 콘솔**을 같이 싣는다.\
 **기준 소스** — [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 「ok status」(**200\~299** 범위의 상태) · fetch() 메서드 단계(「**If response is a network error, then reject p with a TypeError**」) · HTTP fetch 의 「response tainting 이 cors 이고 **CORS check 가 실패하면 network error 를 돌려준다**」 · 「forbidden request-header」(`Host` · `Cookie` · `Origin` · `Referer` · `Content-Length` · `Connection` 등, 그리고 `proxy-`·`sec-` 로 시작하는 이름) · 「forbidden response-header name」(`Set-Cookie`·`Set-Cookie2`) · `Response`/`Request` 의 `clone()`(「unusable 이면 TypeError」). 열어서 확인한 것만 적었다(기준일 2026-09-26).\
 **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. 페이지는 **서버 A**(`http://127.0.0.1`)에서 열었고, 다른 출처는 **같은 기계의 다른 포트인 서버 B** 다. **바깥 인터넷으로는 한 번도 요청하지 않았다.** 하네스는 [24번 주제](../24-document-lifecycle-events/2-summary.md)의 (1)에 있다.\
 **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\

@@ -260,7 +260,7 @@ flex: 0 0 100px + padding: 0 20px
 
 ### 8. `getComputedStyle` 은 무엇을 돌려주는가
 
-**실행 결과** (Chrome 151 headless — 컨테이너 400px, 항목 넷을 한 화면에서 세 창으로 읽었다)
+**실행 결과** (Chrome 151 headless — 컨테이너 400px, 항목 넷을 한 화면에서 세 확인 방법으로 읽었다)
 
 ```text
 항목  선언                                flex-basis(계산값)   width(계산값)   rect().width
@@ -325,7 +325,7 @@ i { flex: 0.2 / 0.3 / 0 1 0 } (grow 합 0.5), 컨테이너 900px
 
 ### 10. 유효하지 않은 값
 
-**실행 결과** (Chrome 151 headless — 진단 3창의 첫째 창)
+**실행 결과** (Chrome 151 headless — 진단 3종의 첫째 확인 방법)
 
 ```text
 document.styleSheets 의 cssRules 로 읽은 결과
@@ -347,7 +347,7 @@ overflow 만 바꾼 판 (5번과 같은 문서, 컨테이너 300 / side 100)
 
 **어떻게 확인하는가**
 
-- **첫째 창 `cssRules`** 다. 규칙 상자가 `{ }` 로 비어 있으면 파싱 단계에서 버려진 것이다.
+- **첫째 확인 방법 `cssRules`** 다. 규칙 상자가 `{ }` 로 비어 있으면 파싱 단계에서 버려진 것이다.
 - `getComputedStyle` 로 보면 초기값(`0`/`1`)이 돌아와서 **「내가 안 썼나」와 「썼는데 버려졌나」가 구분되지 않는다.**
 
 **`overflow: hidden` 을 준 flex 항목은 사고가 나는가**
@@ -358,7 +358,7 @@ overflow 만 바꾼 판 (5번과 같은 문서, 컨테이너 300 / side 100)
 **그때 `minWidth` 는**
 
 - ★ **세 판 모두 `auto` 다.** 계산값이 똑같은데 결과가 다르다.
-- 「담겼나(`cssRules`)·잡혔나(`querySelectorAll`)·이겼나(`getComputedStyle`)」 **세 창 어디에도 안 잡히는 자리**이고, `getBoundingClientRect()` 로만 드러난다.
+- 「담겼나(`cssRules`)·잡혔나(`querySelectorAll`)·이겼나(`getComputedStyle`)」 **세 확인 방법 어디에도 안 잡히는 자리**이고, `getBoundingClientRect()` 로만 드러난다.
 - 실무적 함의 — `min-width: 0` 없이 잘 돌던 코드가 **누군가 `overflow` 를 지우는 순간 터진다.**
 
 ### 11. 다른 주제와 잇기
@@ -392,7 +392,7 @@ overflow 만 바꾼 판 (5번과 같은 문서, 컨테이너 300 / side 100)
 | `min-width: auto` 사고와 고침 | 같은 문서에 두 버전을 나란히 + 스크린샷 | 2 | 5번 표 |
 | `overflow` 가 바닥을 치우는가 | `visible`/`hidden`/`auto` 세 판 | 1 | 10번 표 |
 | `flex-basis` 대 `width`·`box-sizing` | 항목별 조합 | 2 | 7번 표 |
-| 세 창(`flexBasis`/`width`/`rect`) 대조 | 한 화면에서 동시에 읽음 | 1 | 8번 표 |
+| 세 확인 방법(`flexBasis`/`width`/`rect`) 대조 | 한 화면에서 동시에 읽음 | 1 | 8번 표 |
 | `max-width` 로 얼어붙는 재분배 | 컨테이너 600px | 1 | 9번 표 |
 | 음수 값의 파싱 | `cssRules` 로 규칙 본문 확인 | 1 | 10번 표 |
 | `demo` 블록 3개 | 완성된 문서에서 `extract-demo-blocks.py --render` 로 재추출해 재실행 | 1 | 수치 일치 |
@@ -424,7 +424,7 @@ overflow 만 바꾼 판 (5번과 같은 문서, 컨테이너 300 / side 100)
 - **얼어붙음(freeze)** — 해결 중 `min-*`/`max-*` 에 걸린 항목을 고정하고 나머지끼리 다시 나누는 것.
 - **단축(shorthand)** — 여러 롱핸드를 한 줄로 쓰는 속성. 생략 자리에 채워지는 값이 롱핸드 초기값과 다를 수 있다.
 - **계산값(computed value) / 사용값(used value)** — 상속에 쓰이는 값 / 레이아웃이 끝난 뒤 확정된 값. `flex-basis` 는 앞엣것만 읽히고 크기는 뒤엣것이다.
-- **진단 3창** — `cssRules`(담겼나) → `querySelectorAll`(잡혔나) → `getComputedStyle`(이겼나). 10번은 **셋 다 통과하고도 결과가 달라지는** 제4의 자리다.
+- **진단 3종** — `cssRules`(담겼나) → `querySelectorAll`(잡혔나) → `getComputedStyle`(이겼나). 10번은 **셋 다 통과하고도 결과가 달라지는** 제4의 자리다.
 
 ## 실행 환경
 

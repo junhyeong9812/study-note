@@ -288,7 +288,7 @@ data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
 - [04번 형제](../04-floating-point-types-and-conversions/) (5)절 — **gcc `-O2 -ffast-math`** 에서 `isnan=0` · `0.0/0.0 = 1.000000` · `nan == nan` 참 · `__STDC_IEC_559__` 미정의. ★★ **이 편이 더한 칸** — **clang 대비**(`-O0` 에서는 산다 · 경고를 낸다) · **`-ffinite-math-only` 가 범인**이라는 분리 · **검사 방법 넷**(비트 검사만 생존) · **어셈블리**(`xor eax,eax`).
 - ★ [02번 형제](../02-basic-types-sizes-and-fixed-width-integers/) — `-funsigned-char` 로 `(char)200` 이 `-56` 에서 `200` 이 되는 것을 쟀고 「`isalpha` 에 `char` 를 넘기는 것이 같은 사고」라고 적었다. 1번 격자가 **그 사고의 실측**이다 — `-funsigned-char` 판은 열 칸 다 안전했다.
 
-### 11. 다섯 층과 네 번째 창 ★★★
+### 11. 다섯 층과 네 번째 확인 방법 ★★★
 
 **왜 그런가**
 
@@ -297,7 +297,7 @@ data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
 - **구현** — `char` 의 부호 · 로케일 데이터 · glibc 384 칸 표 · `localtime`/`gmtime` 공유 · `-ffinite-math-only` 의 접기 · clang 의 경고와 `-O0` 생존.
 - **미명시** — 해당 없음.
 - **UB** — `EOF` 가 아닌 음수를 `<ctype.h>` 에.
-- ★★★ **네 번째 창 = 만든 로케일과 만든 표.** 이 머신에 없는 **Latin-1** 을 `localedef` 로 만들어서야 `EOF` 충돌이 보였고, **256 칸 표**를 만들어서야 UB 가 증상으로 보였다. 못 보는 것 — **다른 C 라이브러리의 실제 동작**(musl 등은 이 머신에 없다 — ★ 돌리지 않았다).
+- ★★★ **네 번째 확인 방법 = 만든 로케일과 만든 표.** 이 머신에 없는 **Latin-1** 을 `localedef` 로 만들어서야 `EOF` 충돌이 보였고, **256 칸 표**를 만들어서야 UB 가 증상으로 보였다. 못 보는 것 — **다른 C 라이브러리의 실제 동작**(musl 등은 이 머신에 없다 — ★ 돌리지 않았다).
 
 ### 12. 다른 갈래와 ★
 
@@ -344,5 +344,5 @@ data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
 
 이 파일의 모든 출력·진단은 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** · **clang 18.1.3** · **glibc 2.39** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
 소스는 `s52a.c`\~`s52g.c` 이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮긴 출력이 없다). 시각은 **고정 `time_t` + `TZ=`** 로만 찍었다.\
-★★★ **핵심 창은 ctype 격자** — 로케일 5 × 부호 2 × 바이트 2.
+★★★ **핵심 확인 방법은 ctype 격자** — 로케일 5 × 부호 2 × 바이트 2.
 ★★ **실행마다 달라지는 항목** — ASan 리포트의 PID · 주소 · `BuildId`(정규화 기본 규칙).

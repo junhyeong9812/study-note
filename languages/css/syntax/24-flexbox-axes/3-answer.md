@@ -316,7 +316,7 @@ writing-mode: vertical-rl + row          1: T1     2: T16     (세로로 쌓인�
 | (2) `row` 대 `column` | 창 804 | row `L88 T2`·`L120 T2` / col `L2 T88`·`L2 T120` (컨테이너 왼쪽 위 기준, 둘 다 `W32 H32`) |
 | (3) `row-reverse` + `flex-start` | 창 804 | `1: L762  2: L722  3: L683` — 아이템 1 의 오른쪽이 794 |
 | (4) `align-self: flex-end` | 창 804 | `1: L10 T10` · `2(.odd): L50 T98` · `3: L90 T10` |
-| ★ `justify-self: end` | demo (6) 과 같은 판에 `.odd { justify-self: end }` 를 얹고 좌표와 계산값을 같이 읽었다 · 1판 | **`left` 는 50 그대로**인데 **계산값은 `end`** — 세 창이 전부 정상인데 배치만 안 바뀐다 |
+| ★ `justify-self: end` | demo (6) 과 같은 판에 `.odd { justify-self: end }` 를 얹고 좌표와 계산값을 같이 읽었다 · 1판 | **`left` 는 50 그대로**인데 **계산값은 `end`** — 세 확인 방법이 전부 정상인데 배치만 안 바뀐다 |
 | ★ `align-content` 의 경계 | 200×200 컨테이너에 높이 20 짜리 항목 하나, `align-content: center` 를 `wrap`/`nowrap` 두 판 · 1판 | `wrap` → **y = 90** · `nowrap` → **y = 0** · **계산값은 두 버전 다 `center`** |
 | `align-items: space-between` | 계산값 + `cssRules[i].style.cssText` · 1판 | 계산값 `normal` · **`cssText` 에서 선언이 통째로 사라졌다**(버려졌다) |
 | `justify-content: stretch` | 계산값 + 아이템 rect · 1판 | 계산값 `stretch` · 아이템은 `left 0` 으로 `flex-start` 와 같고 **안 늘어났다**(버려지지 않았다) |

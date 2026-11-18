@@ -724,7 +724,7 @@ C2 setTimeout 0, scheduled second
 
 ★★ **판 경계는 TC39 finished proposals 표와 이 목록의 README 를 대조했다** — Async functions 가 **2017**. README 36행은 판을 적지 않는다(적을 것이 호스트 API 뿐이다).
 
-**★★★ 이 주제가 쓰는 창 — 그리고 해당 없는 창**
+**★★★ 이 주제가 쓰는 확인 방법 — 그리고 해당 없는 확인 방법**
 
 | 창 | 이 주제에서 무엇을 보나 |
 |---|---|

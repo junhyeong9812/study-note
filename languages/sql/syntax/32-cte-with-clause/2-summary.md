@@ -327,7 +327,7 @@ ERROR 1064 (42000) at line 1: You have an error in your SQL syntax; check the ma
 ```
 
 그림 해설 — **`Index Cond` 와 `Filter` 의 차이가 벽의 유무다.** `Index Cond` 는 인덱스가 걸러 준 것이고, `Filter` 는 이미 만들어진 행을 하나씩 본 것이다.\
-MySQL 은 **`MATERIALIZED`·`NOT MATERIALIZED` 를 둘 다 문법 오류로 거부**한다 — 이 손잡이가 아예 없다.\
+MySQL 은 **`MATERIALIZED`·`NOT MATERIALIZED` 를 둘 다 문법 오류로 거부**한다 — 이 조절 수단이 아예 없다.\
 비용 — ★ **계획은 관찰이지 보장이 아니다.** 위 계획은 **이 데이터·이 통계·이 버전에서 이 옵티마이저가 고른 것**이다. 통계가 바뀌면 달라질 수 있다(「구현 세부사항 대 언어 보장」 절).
 
 ---
@@ -439,7 +439,7 @@ PG 문서의 조건은 「**비재귀 + 부작용 없음**」이 먼저다. 그 
 
 ---
 
-### 9. MySQL 쪽의 손잡이 — **옵티마이저 힌트**
+### 9. MySQL 쪽의 조절 수단 — **옵티마이저 힌트**
 
 **언제 쓰나** — MySQL 에서 CTE 를 물질화시키고 싶을 때. `MATERIALIZED` 키워드가 없으니 힌트로 한다.
 

@@ -258,7 +258,7 @@ Console.WriteLine(string.Join(",", new[] { 1, 2, 3, 4 }.AsQueryable().Where(buil
 ★★★ 이 주제의 질문은 「**`Func` 은 실행 파일, `Expression` 은 설계도 — `IQueryable` 은 설계도를 쌓다가 결과를 요구받을 때 공급자에게 통째로 넘긴다**」 한 줄로 거의 다 풀린다. **공급자에게 언제 무엇이 닿나**를 세라.
 **환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
 Roslyn `csc` 를 직접 부른다 · `-langversion:latest` · `-preferreduilang:en-US`. ★ ORM 은 **설치하지 않았다** — 3번의 공급자는 **직접 짠 장난감**이다.
-★★★ **핵심 창은 ① IL + ⑤ 장난감 공급자 로그다.**
+★★★ **핵심 확인 방법은 ① IL + ⑤ 장난감 공급자 로그다.**
 선행 — [35번](../35-linq-grouping-joins-and-aggregation/) · [33번](../33-linq-method-syntax-and-deferred-execution/)(`AsEnumerable` · 캡처) · [28번](../28-lambdas-and-closure-capture/)(람다의 IL).
 
 ## 복습 기록

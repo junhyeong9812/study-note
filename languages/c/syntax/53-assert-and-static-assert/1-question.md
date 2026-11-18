@@ -180,13 +180,13 @@ int main(void) {
 ### 12. 다섯 층과 도구가 못 보는 것 (연결) ★★★
 
 - 이 주제에서 **표준 / 구현 정의 / 컴파일러·glibc 구현 / 미명시 / UB** 칸에 각각 무엇이 들어가는가?
-- ★★★ 이 편의 **네 번째 창**은 무엇이고, 그 창이 **못 보는 것**은?
+- ★★★ 이 편의 **네 번째 확인 방법**은 무엇이고, 그 확인 방법이 **못 보는 것**은?
 
 ## 실행 환경
 
 **환경** — gcc 13.3.0 · clang 18.1.3 · glibc 2.39 · x86-64 Linux · 기본 `-std=c17 -Wall -Wextra -pedantic` · 캡처 셸 `LC_ALL=C`.
 
-★★★ **핵심 창은 `NDEBUG` 격자** — 1번은 **칸마다 `x` 의 값**을 적어야 답이다.
+★★★ **핵심 확인 방법은 `NDEBUG` 격자** — 1번은 **칸마다 `x` 의 값**을 적어야 답이다.
 ★★ **전처리기 자체는 묻지 않는다** — [41번 형제](../41-preprocessor-directives-and-conditional-compilation/)가 정본이다.
 선행 — [41번 형제](../41-preprocessor-directives-and-conditional-compilation/).
 

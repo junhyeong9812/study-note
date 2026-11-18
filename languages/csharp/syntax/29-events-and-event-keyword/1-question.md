@@ -258,7 +258,7 @@ class Program {
 ★★★ 이 주제의 질문은 「**`event` 는 멀티캐스트 델리게이트 필드를 숨기고 `add`/`remove` 두 메서드만 밖에 연다**」 한 줄로 거의 다 풀린다. **밖에서 무엇을 부를 수 있나**와 **누가 누구를 붙드나**를 세라.
 **환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
 Roslyn `csc` 를 직접 부른다 · `-langversion:latest` · `-preferreduilang:en-US`.
-★★★ **핵심 창은 ② 진단 격자다**(「`event` 가 막는 것」). 누수는 **`WeakReference` 의 「회수됐나」** 로 물었다(2×2 판 격자).
+★★★ **핵심 확인 방법은 ② 진단 격자다**(「`event` 가 막는 것」). 누수는 **`WeakReference` 의 「회수됐나」** 로 물었다(2×2 판 격자).
 선행 — [27번](../27-delegates-and-func-action/)(멀티캐스트 — 반환값·중간 예외·`-=`) · [28번](../28-lambdas-and-closure-capture/)(캡처가 수명을 늘린다).
 
 ## 복습 기록

@@ -516,7 +516,7 @@ Chrome 151 실측 — #js { --j: 5px; width: var(--j) }
 
 그림 해설 (한 단계씩):
 
-- **읽을 때는 두 창을 구분한다** — `getComputedStyle` 은 **상속까지 반영한 값**, `el.style` 은 **그 요소의 인라인 선언만**이다.
+- **읽을 때는 두 확인 방법을 구분한다** — `getComputedStyle` 은 **상속까지 반영한 값**, `el.style` 은 **그 요소의 인라인 선언만**이다.
 - ★ **쓸 때는 `setProperty` 만 통한다.** `el.style['--j'] = …` 는 **조용히 무시됐다** — 카멜케이스 프로퍼티 접근이 커스텀 속성에는 안 매핑된다.
 - **JS 로 넣은 오타도 똑같이 IACVT** 가 된다 — 값은 `"oops"` 로 담기고 `width` 만 `auto` 가 됐다((2)).
 - **테마 전환의 실무 패턴**은 루트에 한 줄 쓰는 것이다. 상속 덕에 그 한 줄이 문서 전체에 퍼진다((8)).
@@ -716,7 +716,7 @@ Chrome 151 실측 — 10초 linear 애니메이션을 네 시점에서 샘플링
 - **`unset`** — 상속되는 속성이면 `inherit`, 아니면 `initial` 로 되돌리는 전역 키워드. 정본은 [03번](../03-inheritance-and-global-keywords/2-summary.md).
 - **보장된 무효(guaranteed-invalid)** — 커스텀 속성의 초기값이자, 순환에 걸린 변수가 되는 상태. 이 상태의 변수를 `var()` 로 꺼내면 **대체값이 쓰인다**.
 - **순환 참조** — 변수 둘 이상이 서로를 가리키는 것. 예: 실측에서 `--a: var(--b); --b: var(--a)` 의 계산값이 둘 다 빈 문자열이었다.
-- **진단 3창** — `cssRules` · `querySelectorAll` · `getComputedStyle`. 커스텀 속성에서는 **변수 값을 읽는 창 두 개**를 더 연다((1)).
+- **진단 3종** — `cssRules` · `querySelectorAll` · `getComputedStyle`. 커스텀 속성에서는 **변수 값을 읽는 창 두 개**를 더 연다((1)).
 - **이산 보간(discrete interpolation)** — 중간값 없이 50% 지점에서 한 번에 바뀌는 보간. 예: 실측에서 `--w` 가 40% 까지 `0px`, 60% 부터 `200px` 이었다.
 
 ---
@@ -741,7 +741,7 @@ Chrome 151 실측 — 10초 linear 애니메이션을 네 시점에서 샘플링
 ## 실행 환경
 
 **기준 소스** — [CSS Custom Properties for Cascading Variables Level 1](https://drafts.csswg.org/css-variables-1/) 의 「Defining Custom Properties」·「Using Cascading Variables」·「Invalid Variables」 절과 [CSS Cascading and Inheritance Level 5](https://drafts.csswg.org/css-cascade-5/) 의 「invalid at computed-value time」 정의. 열어서 확인한 것만 적었다.
-**실행 검증** — 이 문서의 모든 값은 **Google Chrome 151.0.7922.173** headless 에 띄워 **네 창**으로 읽은 것이다 — `cssRules[i].style`(**무엇이 담겼나**) · `cssRules[i].style.getPropertyValue('--x')`(**변수에 무엇이 담겼나**) · `getComputedStyle(el).getPropertyValue('--x')`(**변수의 계산값**) · `getComputedStyle(el).color`(**쓰는 쪽이 무엇이 됐나**). **넷이 다른 자리가 이 주제의 값이다.** **손으로 계산해 유도한 수치는 없다.**\
+**실행 검증** — 이 문서의 모든 값은 **Google Chrome 151.0.7922.173** headless 에 띄워 **네 확인 방법**으로 읽은 것이다 — `cssRules[i].style`(**무엇이 담겼나**) · `cssRules[i].style.getPropertyValue('--x')`(**변수에 무엇이 담겼나**) · `getComputedStyle(el).getPropertyValue('--x')`(**변수의 계산값**) · `getComputedStyle(el).color`(**쓰는 쪽이 무엇이 됐나**). **넷이 다른 자리가 이 주제의 값이다.** **손으로 계산해 유도한 수치는 없다.**\
 **엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 이 머신에 없다. 「두 엔진에서 확인했다」고 적지 않는다.
 **버전** — CSS 에 언어 버전은 없다. 커스텀 속성은 오래전에 자리잡아 [목록 README](../README.md) 의 지원 표에 별도 행이 없을 만큼 보편적이다. 도입 경위는 [`history/web/03-HTML-CSS-진화.md`](../../../../history/web/03-HTML-CSS-진화.md) §2.7 이 정본이다.
 **여기서 다루지 않는 것** — **`@property` 로 등록했을 때 달라지는 것**(타입·초기값·상속 여부·애니메이션 가능성)은 [목록의 **37번 주제**](../37-at-property/)가 정본이다. 여기는 **등록하지 않은 커스텀 속성**까지다. 상속 일반은 [03번](../03-inheritance-and-global-keywords/2-summary.md), 무효한 선언이 버려지는 규칙은 [07번](../07-syntax-and-error-recovery/2-summary.md)이 정본이다.

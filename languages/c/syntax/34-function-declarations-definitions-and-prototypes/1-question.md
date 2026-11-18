@@ -193,7 +193,7 @@ double via_p(float v)  { return take_p(v); }
 **환경** — gcc 13.3.0 · **gcc-12 12.4.0** · clang 18.1.3 · x86-64 Linux · 기본 `-Wall -Wextra -pedantic`. C23 은 **`-std=c2x`** 로 부른다.
 
 ③ **선언 없이 부르기**가 판마다 무엇이 되나.
-★★★ **핵심 창은 판 격자의 `cc exit`** — 1·2·4번은 **칸마다 `exit` 를** 적어야 답이다.
+★★★ **핵심 확인 방법은 판 격자의 `cc exit`** — 1·2·4번은 **칸마다 `exit` 를** 적어야 답이다.
 ★★ **「경고냐 에러냐」를 가르는 것은 컴파일러 · 판 · 강도(`-pedantic` / `-pedantic-errors`) 셋**이다.
 선행 — [01번 형제](../01-declaration-syntax-and-reading/).
 

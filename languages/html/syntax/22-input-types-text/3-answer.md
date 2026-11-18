@@ -188,7 +188,7 @@ document.body.append(Object.assign(document.createElement("pre"), {
 
 **못 잰 것** — ① **모바일 가상 키보드**. ② **자동완성·비밀번호 관리자**. ③ **스크린리더의 `password` 읽기.**
 
-**해당 없는 창** — **창 ③ · ④ · ⑥.** 입력의 값은 자식 글자도, 문서 모드도, 렌더 차단도 아니다 — **잴 것이 없다.**
+**해당 없는 확인 방법** — **창 ③ · ④ · ⑥.** 입력의 값은 자식 글자도, 문서 모드도, 렌더 차단도 아니다 — **잴 것이 없다.**
 
 ## 용어 풀이
 
@@ -203,4 +203,4 @@ document.body.append(Object.assign(document.createElement("pre"), {
 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스는 [21번 주제](../21-form-submission-model/3-answer.md)의 `## 실행 검증` 절에 있다.\
 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 「The input element」 절과 [HTML-AAM](https://w3c.github.io/html-aam/) 으로 접지했다.\
 ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-★★★ **본체는 창 ② 다** — 근거는 `typeMismatch` 깃발이고 문구가 아니다(A1·A2).
+★★★ **핵심은 확인 방법 ② 다** — 근거는 `typeMismatch` 깃발이고 문구가 아니다(A1·A2).

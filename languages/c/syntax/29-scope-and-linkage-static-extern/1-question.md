@@ -285,7 +285,7 @@ int main(void) { return 0; }
 
 **환경** — gcc 13.3.0 · gcc-12 12.4.0 · clang 18.1.3 · x86-64 Linux · 기본 `-std=c17 -Wall -Wextra -pedantic`.
 
-★★★ **핵심 창은 `nm`** 이다 — 2·4·5·6번은 **심볼의 글자**까지 적어야 답이다.
+★★★ **핵심 확인 방법은 `nm`** 이다 — 2·4·5·6번은 **심볼의 글자**까지 적어야 답이다.
 ★★★ **4번과 6번은 판 격자**다 — 한 칸으로 답하지 마라.
 ★ **종료 코드는 단계별로** 적어라 — 「컴파일 `exit` / 링크 `exit`」.
 선행 — [28번 형제](../28-choosing-among-four-storage-durations/) · [25번 형제](../25-incomplete-types-and-opaque-struct/).

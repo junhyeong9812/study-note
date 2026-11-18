@@ -260,7 +260,7 @@ class Reuse33 {
 ★★★ 이 주제의 질문은 「**지연 실행은 언어가 아니라 `System.Linq` 가 연산자마다 짠 것이고, 「지연」은 「부를 때 안 돈다」까지만 말한다**」 한 줄로 거의 다 풀린다. **소스가 언제 · 몇 줄 로그를 남기나**를 세라.
 **환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
 Roslyn `csc` 를 직접 부른다 · `-langversion:latest` · `-preferreduilang:en-US`. 대비는 **javac/java 21.0.5** 다.
-★★★ **핵심 창은 ⑤ 실행 로그 격자다.** 시간은 묻지 않는다.
+★★★ **핵심 확인 방법은 ⑤ 실행 로그 격자다.** 시간은 묻지 않는다.
 선행 — [30번](../30-extension-methods-and-extension-members/)(LINQ 는 확장 메서드) · [32번](../32-yield-return-iterators-and-deferred-execution/)(사슬은 0 줄 · 두 번 열거하면 두 번) · [28번](../28-lambdas-and-closure-capture/)(람다는 변수를 잡는다).
 
 ## 복습 기록

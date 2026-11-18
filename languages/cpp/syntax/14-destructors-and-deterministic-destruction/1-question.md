@@ -274,8 +274,8 @@ int main() {
 **어느 줄 다음에 어느 줄이 오는지**를 적어라.
 **환경** — g++ 13.3.0 · clang 18.1.3 · x86-64 Linux.
 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex`.
-★★ **네 번째 창은 「종료 코드」다**(4·5번). `cc exit` 과 `run exit` 을 갈라서 답해야 한다.
-★ **「해당 없는 창」이 있다** — 진단의 `(행,열)`. 파괴 순서는 **소스의 열이 아니라 실행 시점**이 정해
+★★ **네 번째 확인 방법은 「종료 코드」다**(4·5번). `cc exit` 과 `run exit` 을 갈라서 답해야 한다.
+★ **「해당 없는 확인 방법」이 있다** — 진단의 `(행,열)`. 파괴 순서는 **소스의 열이 아니라 실행 시점**이 정해
 열로 가를 것이 없다. **「안 쟀다」가 아니라 「잴 것이 없다」다.**
 선행 — [12번](../12-class-basics-members-access-and-this/)·[13번](../13-constructors-member-init-list-and-delegating/)이 이 주제의 바로 앞이고,
 형제 [`09번`](../09-rvalue-references-move-and-forward/)·[`11번`](../11-choosing-parameter-passing/)이 로그·계수 방식의 뿌리다.

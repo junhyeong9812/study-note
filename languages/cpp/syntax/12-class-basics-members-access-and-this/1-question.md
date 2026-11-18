@@ -217,8 +217,8 @@ int main() {
 **환경** — g++ 13.3.0 · clang 18.1.3 · GNU nm (binutils 2.42) · x86-64 Linux.
 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex`.
 ★ 이 주제의 답은 **대부분 컴파일러 진단**이다 — 「막히나 통과하나」를 먼저 답하고, 그다음 **왜**를 답한다.
-★★ **네 번째 창은 `nm` 의 심볼 개수**다(3번). `sizeof` 가 못 끝내는 자리를 그것만 끝낸다.
-★ **「해당 없는 창」이 있다** — 런타임 sanitizer. 접근 지정은 컴파일이 끝나면 사라져 **잴 것이 없다**.
+★★ **네 번째 확인 방법은 `nm` 의 심볼 개수**다(3번). `sizeof` 가 못 끝내는 자리를 그것만 끝낸다.
+★ **「해당 없는 확인 방법」이 있다** — 런타임 sanitizer. 접근 지정은 컴파일이 끝나면 사라져 **잴 것이 없다**.
 선행 — 형제 [`07번`](../07-references-vs-pointers/)(참조와 포인터)과 형제 [`10번`](../10-const-correctness/)(`const`)이 이 주제의 바로 옆이다.
 이어지는 것 — [13번](../13-constructors-member-init-list-and-delegating/) · [14번](../14-destructors-and-deterministic-destruction/) · [15번](../15-raii-resources-as-types/)이 한 사슬이다.
 

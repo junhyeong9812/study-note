@@ -423,7 +423,7 @@ flex-wrap: nowrap  -> 항목 y = 0    (계산값은 똑같이 center 인데 아�
 | ★ 아이템의 `W41`·`W32`·`H40` 같은 치수 | ★ **관찰일 뿐이다.** `system-ui` 가 이 머신에서 어느 글꼴로 풀리느냐에 달렸다 — 글꼴이 다르면 padding 바깥의 글자 폭이 달라진다 |
 | `align-content: center` 의 계산값이 `nowrap` 에서도 `center` 로 남는 것 | **명세**(계산값은 지정한 키워드 그대로). 실측도 그랬다 — **버려진 게 아니라 할 일이 없었던 것** |
 
-★★ **「계산값 단계 이후에서 달라지는」 자리가 이 주제에 둘 있다.** 세 창(`cssRules` · `querySelectorAll` · `getComputedStyle`)이 **전부 정상인데 결과만 다르다.**
+★★ **「계산값 단계 이후에서 달라지는」 자리가 이 주제에 둘 있다.** 세 확인 방법(`cssRules` · `querySelectorAll` · `getComputedStyle`)이 **전부 정상인데 결과만 다르다.**
 
 - `justify-self: end` 를 flex 아이템에 주면 **계산값은 `end` 로 멀쩡히 남는데** 아이템의 `left` 는 한 픽셀도 안 움직인다(실측: 준 판과 안 준 판이 똑같이 50).
 - `align-content: center` 를 `flex-wrap: nowrap` 컨테이너에 주면 **계산값은 `center` 인데** 아이템 `y` 는 0 이다(`wrap` 으로 바꾸면 같은 계산값으로 90 이 된다).

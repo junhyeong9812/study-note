@@ -388,7 +388,7 @@ x: s53g.c:8: main: Assertion `x == 1' failed.
 - ★★ [Rust 갈래 23번](../../../rust/syntax/23-panic-vs-result/) (7)절 — 기본 빌드에서 `debug_assert!` 가 터져 **종료 코드 101**, `-O` 에서는 **검사가 사라져 0**. `assert!` 는 `-O` 에서도 남는다. C 의 `assert` 는 **릴리스(`NDEBUG`)에서 사라지는 쪽** — `debug_assert!` 에 해당하고, `assert!` 에 해당하는 표준 매크로는 없다.
 - ★ [Kotlin 갈래 51번](../../../kotlin/syntax/51-preconditions-require-check-error-todo/) — `assert` KDoc 「runtime assertions have been enabled on the JVM using the **-ea** JVM option」. **기본이 꺼짐 · 켜는 스위치**다. C 는 **기본이 켜짐 · 끄는 스위치(`NDEBUG`)** 다. 늘 켜진 검사는 Kotlin 의 `require`·`check`, C 의 `if` 다.
 
-### 12. 다섯 층과 네 번째 창 ★★★
+### 12. 다섯 층과 네 번째 확인 방법 ★★★
 
 **왜 그런가**
 
@@ -397,7 +397,7 @@ x: s53g.c:8: main: Assertion `x == 1' failed.
 - **컴파일러·glibc 구현** — 함수 칸 · 실패 경로 분리 · glibc 2.39 의 인자 하나 · gcc 의 헤더 매크로 진단 억제 · 엉뚱한 진단 문구.
 - **미명시** — 해당 없음.
 - **UB** — 매크로를 억눌러 함수에 닿기 · `NDEBUG` 판에서 드러난 `100 / 0`.
-- ★★★ **네 번째 창 = 전처리 결과(`gcc -E -P`).** 「사라졌나」를 **실행도 어셈블리도 아닌 글자**로 답한다. 못 보는 것 — **그 뒤에 컴파일러가 한 일**(인라인 · 실패 경로 분리)은 안 보인다 — 그것은 재배치 창(8번)의 몫이다.
+- ★★★ **네 번째 확인 방법 = 전처리 결과(`gcc -E -P`).** 「사라졌나」를 **실행도 어셈블리도 아닌 글자**로 답한다. 못 보는 것 — **그 뒤에 컴파일러가 한 일**(인라인 · 실패 경로 분리)은 안 보인다 — 그것은 재배치 창(8번)의 몫이다.
 
 ## 실행 검증
 
@@ -437,5 +437,5 @@ x: s53g.c:8: main: Assertion `x == 1' failed.
 
 이 파일의 모든 출력·진단은 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** · **clang 18.1.3** · **glibc 2.39** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
 소스는 `s53a.c` · `s53b.c` · `s53c1.c`\~`s53c6.c` · `s53d.c`\~`s53g.c` 이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮긴 출력이 없다).\
-★★★ **핵심 창은 `NDEBUG` 격자** — 컴파일러 2 × 최적화 2 × `NDEBUG` 2.
+★★★ **핵심 확인 방법은 `NDEBUG` 격자** — 컴파일러 2 × 최적화 2 × `NDEBUG` 2.
 ★★ **실행마다 달라지는 항목** — 없다.

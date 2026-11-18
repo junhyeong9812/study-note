@@ -41,16 +41,16 @@ typeof 가 돌려줄 수 있는 문자열은 이 여덟 가지뿐이다:
 
 **왜 그런가**
 
-- ★★★ **두 창이 어긋나는 줄은 다섯**이다 —
+- ★★★ **두 확인 방법이 어긋나는 줄은 다섯**이다 —
   `null`(`object` 대 `[object Null]`) · `function f(){}` · `() => {}` · `class C {}`(셋 다 `function` 대 `[object Function]`) ·
   그리고 **`Object.create(null)`**(`object` 대 `[object Object]` — 프로토타입이 없는데도 같은 태그).
-  ★ 앞의 넷이 「**`typeof` 의 답과 실제 종류가 다른**」 칸이고, 마지막 하나는 「**둘째 창도 못 가르는**」 칸이다.
+  ★ 앞의 넷이 「**`typeof` 의 답과 실제 종류가 다른**」 칸이고, 마지막 하나는 「**둘째 확인 방법도 못 가르는**」 칸이다.
 - ★★★ **`typeof` 가 돌려준 문자열은 여덟 가지**다 — `bigint boolean function number object string symbol undefined`.
   값의 종류도 여덟(원시 일곱 + 객체)인데 **짝이 안 맞는다.** `null` 이 객체 칸으로 가고, 객체의 일부가 `function` 칸으로 나간다.
 - ★★ **`class C {}` 도 `() => {}` 도 `"function"`** 이다. `typeof` 가 보는 것은 문법이 아니라 「**부를 수 있나**」 하나다.
   ★ `class` 는 `new` 없이 부르면 `TypeError` 지만 그것은 **호출 시점**의 일이고 `typeof` 의 답은 바뀌지 않는다.
 - ★★ **`Object.create(null)` 의 둘째 칸이 `{}` 와 같다.** 브랜드 태그는 프로토타입 체인이 아니라 **값의 내부 성질**을 본다.
-  ★ 그래서 **둘째 창으로도 「프로토타입 없는 객체」를 가릴 수 없다.**
+  ★ 그래서 **둘째 확인 방법으로도 「프로토타입 없는 객체」를 가릴 수 없다.**
 - ★ **`Math` 와 `JSON` 은 `[object Math]`·`[object JSON]`** 이다. 둘은 생성자가 없는 **하나뿐인 객체**라 전용 태그를 받는다.
   ★ 이 태그는 `Symbol.toStringTag` 로 그 객체에 박혀 있는 것이고, **바꿀 수 있는 축**이다(34번 주제).
 - ★ `new Number(42)` 가 `object` / `[object Number]` 인 것이 **래퍼 객체가 원시 값과 다른 물건**이라는 증거다(3번).
@@ -201,14 +201,14 @@ js01b-01c-boxing.js                같다 (한 글자도)
 
 - ★★★ **`typeof` 의 `"object"` 는 너무 넓다.** `null`·배열·`Date`·`Map`·정규식·`Math`·프로토타입 없는 객체가 **전부 같은 답**을 받는다.
   값이 무엇인지 알려면 **한 칸 더 들어가야** 한다.
-- ★★ **둘째 창은 `Object.prototype.toString.call(x)`** 이고 `[object Null]`·`[object Array]`·`[object Date]` 처럼 **브랜드 태그**를 준다.
+- ★★ **둘째 확인 방법은 `Object.prototype.toString.call(x)`** 이고 `[object Null]`·`[object Array]`·`[object Date]` 처럼 **브랜드 태그**를 준다.
   1번의 출력에서 `null`·`Date`·`RegExp`·`Map`·`Math`·`JSON` 이 전부 달라졌다.
-- ★★ **둘째 창도 속일 수 있다** — `Symbol.toStringTag` 를 객체에 박으면 그 문자열이 바뀐다.
+- ★★ **둘째 확인 방법도 속일 수 있다** — `Symbol.toStringTag` 를 객체에 박으면 그 문자열이 바뀐다.
   ★ 「무엇이 언제 깨지나」는 [목록의 **34번 주제**](../34-type-checking-idioms/)가 정본이다.
 - ★ **다섯을 가르는 법** — `null` 은 `x === null` · 배열은 `Array.isArray(x)` ·
   `Date`·`Map` 은 브랜드 태그나 `instanceof` · `Math` 는 값 비교(`x === Math`)다.
-- ★★ **세 창으로 못 푸는 질문**이 있다 — 「**이 객체가 다른 realm(다른 창·다른 워커)에서 왔나**」.
-  `instanceof` 는 realm 을 건너면 깨지고 브랜드 태그는 안 깨진다 — 세 창 중 어느 것도 **realm 을 직접 보여 주지 않는다**(34번 주제).
+- ★★ **세 확인 방법으로 못 푸는 질문**이 있다 — 「**이 객체가 다른 realm(다른 창·다른 워커)에서 왔나**」.
+  `instanceof` 는 realm 을 건너면 깨지고 브랜드 태그는 안 깨진다 — 세 확인 방법 중 어느 것도 **realm 을 직접 보여 주지 않는다**(34번 주제).
 
 ### 7. 세 가지 「없음」 — **서로 다른 세 상태다** ★★
 
@@ -260,7 +260,7 @@ js01b-01c-boxing.js                같다 (한 글자도)
 - ★ **메모리 표현은 이 주제가 아니다.** 표준에 관찰할 방법이 없고, 관찰하더라도 **명세 보장이 아니다** —
   그것을 적으면 「구현 사정을 언어 사실로」 적는 사고가 된다.
 
-### 10. 이 갈래의 창 ★★
+### 10. 이 갈래의 확인 방법 ★★
 
 - ★★★ **이 주제에서 쓴 창은 다섯**이다 —
   ① **`typeof`** ② **`Object.prototype.toString.call`**(브랜드 태그) ③ **실행 출력(값)**

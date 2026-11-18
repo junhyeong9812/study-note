@@ -168,7 +168,7 @@ getComputedStyle(sh).color
 
 - [06번 주제](../06-attribute-vs-property/2-summary.md)가 이 주제에 **넘긴 셋**은 각각 무엇인가?
 - [02번 주제](../02-element-queries-and-live-collections/2-summary.md)의 「라이브」가 이 주제의 어느 객체에 걸리는가?
-- [CSS 07번 주제](../../css/syntax/07-syntax-and-error-recovery/2-summary.md)의 진단 3창 중 **어느 창**이 이 주제의 창 ④ 와 같은 일을 하는가?
+- [CSS 07번 주제](../../css/syntax/07-syntax-and-error-recovery/2-summary.md)의 진단 3종 중 **어느 창**이 이 주제의 확인 방법 ④ 와 같은 일을 하는가?
 - [08번 주제](../08-getcomputedstyle/2-summary.md)가 이 주제에서 넘겨받는 질문을 한 문장으로 적어라.
 
 ## 실행 환경

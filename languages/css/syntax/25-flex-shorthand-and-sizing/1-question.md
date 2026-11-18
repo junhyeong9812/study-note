@@ -124,7 +124,7 @@ i:nth-child(1) { max-width: 50px; }
 ```
 
 - 이 선언들은 어떻게 되는가 — 에러가 나는가?
-- 그것을 어떻게 확인하는가(진단 3창 중 어느 창인가)?
+- 그것을 어떻게 확인하는가(진단 3종 중 어느 창인가)?
 - `overflow: hidden` 을 준 flex 항목은 5번의 사고가 나는가?
 - 그때 `getComputedStyle(el).minWidth` 는 무엇을 돌려주는가?
 

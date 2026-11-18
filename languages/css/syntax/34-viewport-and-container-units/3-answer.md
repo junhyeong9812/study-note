@@ -106,7 +106,7 @@
 - **`.t` 의 폭은 400px 다** — 카드(300)가 아니라 **뷰포트**를 봤다.
 - 명세가 그렇게 정했다 — **적격한 컨테이너를 못 찾으면 작은 뷰포트(small viewport)로 떨어진다.**
 - **에러도 경고도 나오지 않는다.** CSS 는 에러가 없는 언어라 이런 자리가 조용히 지나간다.
-- **진단 3창** 중 세 번째, **`getComputedStyle` 창**으로만 잡힌다 —
+- **진단 3종** 중 세 번째, **`getComputedStyle` 창**으로만 잡힌다 —
   - `cssRules` 에는 `width: 50cqw` 가 **멀쩡히 담겨 있고**,
   - `querySelectorAll` 은 **잡히고**,
   - **계산값만 엉뚱하다.**
@@ -231,7 +231,7 @@
 - **`cqw`/`cqh`/`cqi`/`cqb`** — 컨테이너의 폭/높이/인라인/블록 크기의 1%. 가로쓰기에서 `cqi`=`cqw`, `cqb`=`cqh` 였다.
 - **`cqmin`/`cqmax`** — 컨테이너의 두 축 중 짧은/긴 쪽의 1%. 예: `inline-size` 판에서 한 축이 뷰포트라 값이 섞였다(150 대 256.5).
 - **컨테인먼트(containment)** — 상자 안의 레이아웃 계산을 밖과 끊는 것. 끊겨 있어야 「컨테이너 → 안쪽」이 순환 없이 풀린다.
-- **진단 3창** — `cssRules`(담겼나) · `querySelectorAll`(잡혔나) · `getComputedStyle`(이겼나). 정본은 [07번](../07-syntax-and-error-recovery/2-summary.md).
+- **진단 3종** — `cssRules`(담겼나) · `querySelectorAll`(잡혔나) · `getComputedStyle`(이겼나). 정본은 [07번](../07-syntax-and-error-recovery/2-summary.md).
 
 ## 실행 검증
 

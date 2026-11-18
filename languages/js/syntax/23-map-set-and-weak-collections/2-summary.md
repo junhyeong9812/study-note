@@ -542,7 +542,7 @@ row("JSON.stringify(new WeakMap([[t, 1]]))", JSON.stringify(new WeakMap([[t, 1]]
 ### (5) ★★★ 수명 — `gc()` 를 부르고 「불렸나」를 20판씩 센다
 
 **언제 쓰나** — 「`WeakMap` 에 넣었으니 새지 않겠지」·「`Map` 에 넣은 키도 결국 치워지겠지」를 확인하고 싶을 때.
-★★★ **값으로는 원리상 못 본다** — 동작 (4)에서 봤듯 `WeakMap` 에는 들여다볼 창이 없다. 그래서 **창을 바꿔 물었다**: 대상 객체에 `FinalizationRegistry` 와 `WeakRef` 를 같이 걸고, `node --expose-gc` 가 여는 `gc()` 를 직접 부른다.
+★★★ **값으로는 원리상 못 본다** — 동작 (4)에서 봤듯 `WeakMap` 에는 들여다볼 창이 없다. 그래서 **확인 방법을 바꿔 물었다**: 대상 객체에 `FinalizationRegistry` 와 `WeakRef` 를 같이 걸고, `node --expose-gc` 가 여는 `gc()` 를 직접 부른다.
 
 ```js
 // js20b-23e-reclaim-gc.js
@@ -629,7 +629,7 @@ unregistered before gc                        0/20      object 0/20    object 20
 - ★★★ **「key of a WeakMap」 행 — 콜백 `20/20`, `deref()` 는 `0/20`.** `WeakMap` 에 들어간 것이 **대상을 살리지 못했다.**
 - ★★★ **「WeakMap key whose value points back at it」 행도 `20/20`** 이다. 값 `{ back: o }` 가 키를 가리키는데도 수거됐다 —
   **값은 키가 살아 있는 동안만 살아 있고, 키를 살리지는 못한다**(에피머론 — 이 관계를 가리키는 이름). 보통 `Map` 이었다면 순환이 서로를 살렸을 자리다.
-- ★★ **「unregistered before gc」 행** — 콜백 `0/20`, `deref()` 도 `0/20`. **수거는 됐는데 콜백만 취소된 것**이다. 「콜백이 안 불렸다」를 「안 수거됐다」로 읽으면 이 행에서 틀린다 — **두 창을 같이 봐야 달라진다.**
+- ★★ **「unregistered before gc」 행** — 콜백 `0/20`, `deref()` 도 `0/20`. **수거는 됐는데 콜백만 취소된 것**이다. 「콜백이 안 불렸다」를 「안 수거됐다」로 읽으면 이 행에서 틀린다 — **두 확인 방법을 같이 봐야 달라진다.**
 - ★★★ **맨 오른쪽 열이 여섯 행 전부 `20/20`** 이다 — **같은 동기 실행 안에서는 `gc()` 를 불러도 `deref()` 가 대상을 돌려준다.**
   ★ 명세 보장이다. `new WeakRef(t)` 와 `deref()` 가 대상을 `[[KeptAlive]]` 목록에 넣고(`AddToKeptObjects`), 그 목록은
   "when a synchronous sequence of ECMAScript executions completes" 에야 비워진다(`ClearKeptObjects`). 그래서 probe는 **`await tick()` 으로 잡을 넘긴 뒤** 다시 `gc()` 를 부른다.
@@ -1054,7 +1054,7 @@ row("getOrInsert(...).push          -> calls", J(calls));
 
 ### (6) ★★ 「콜백이 안 불렸으니 안 수거됐다」 로 읽는다
 
-`unregister` 한 행은 **수거는 됐는데(`deref` 0/20) 콜백만 없다**(동작 (5)). 콜백과 `deref()` 두 창을 같이 봐야 한다.
+`unregister` 한 행은 **수거는 됐는데(`deref` 0/20) 콜백만 없다**(동작 (5)). 콜백과 `deref()` 두 확인 방법을 같이 봐야 한다.
 
 ### (7) ★★ `WeakMap` 의 크기나 목록을 찍어 디버깅하려 한다
 
@@ -1191,7 +1191,7 @@ row("getOrInsert(...).push          -> calls", J(calls));
 | 집합 연산 일곱 개(`union` · `intersection` · `difference` · `symmetricDifference` · `isSubsetOf` · `isSupersetOf` · `isDisjointFrom`) | **ES2025** | ★ **두 node 버전에 없다** — Chrome 151 로만 돌렸다 |
 | Upsert(`getOrInsert` · `getOrInsertComputed`, `Map` 과 `WeakMap`) | **ES2026** | ★ **두 node 버전에 없다** — Chrome 151 로만 돌렸다 |
 
-**★★★ 이 주제가 쓰는 창 — 그리고 해당 없는 창**
+**★★★ 이 주제가 쓰는 확인 방법 — 그리고 해당 없는 확인 방법**
 
 | 창 | 이 주제에서 무엇을 보나 |
 |---|---|
@@ -1199,7 +1199,7 @@ row("getOrInsert(...).push          -> calls", J(calls));
 | ★★★ **① 추상 연산에 로그 심기** | 집합 연산이 인자의 `size` · `has` · `keys` 중 **무엇을 부르나**(동작 (7)) · `getOrInsertComputed` 가 콜백을 **언제 부르나**(동작 (8)) |
 | ★★ **④ 예외의 `constructor.name` + `message`** | 약한 키 거부 문구 · 집합 연산 인자 검사 · ★ **`getOrInsertComputed` 의 문구가 사실과 다른 자리**(동작 (8)의 `[4]`) |
 | ★★ **⑤ 두 판 대조기** | 이 주제에서 달라진 probe는 **`js20b-23d-weak-keys.js` 하나** — 심볼 키(ES2023)와 `WeakRef` 문구다 |
-| ★★★ **창을 바꿔 물었다**(제5의 상태) | `WeakMap` 에는 **키를 꺼내 볼 창이 하나도 없다**(`size`·순회 없음 — 동작 (4)의 `[3]`). 그래서 「이 키가 아직 살아 있나」는 **`FinalizationRegistry` 콜백과 `WeakRef.deref()`** 로 바꿔 물었다. ★ 바꾼 창이 못 보는 것 — **`WeakMap` 안의 항목 자체**는 끝까지 못 본다. 대상 객체가 수거됐다는 것까지만 본다 |
+| ★★★ **확인 방법을 바꿔 물었다**(제5의 상태) | `WeakMap` 에는 **키를 꺼내 볼 창이 하나도 없다**(`size`·순회 없음 — 동작 (4)의 `[3]`). 그래서 「이 키가 아직 살아 있나」는 **`FinalizationRegistry` 콜백과 `WeakRef.deref()`** 로 바꿔 물었다. ★ 바꾼 확인 방법이 못 보는 것 — **`WeakMap` 안의 항목 자체**는 끝까지 못 본다. 대상 객체가 수거됐다는 것까지만 본다 |
 | ★ **해당 없음 — ③ 브랜드 태그** | 「이것이 `Map` 인가」는 이 주제의 질문이 아니다. 집합 연산의 인자조차 **브랜드가 아니라 `size`·`has`·`keys` 세 프로퍼티**로 판정된다(동작 (7)의 `[2]` — `Map` 이 인자로 통과한다). **잴 것이 없다** |
 | ★ **해당 없음 — 진단의 `(행,열)`**(18-C) | `SyntaxError` 가 한 줄도 없다. 전부 런타임 의미다 — **잴 것이 없다** |
 | ★ **안 쟀다 — 성능** | 「`Map` 이 객체보다 빠르다」·「`WeakMap` 이 메모리를 아낀다」를 **한 줄도 쓰지 않는다.** 시간도 바이트도 안 쟀다 |

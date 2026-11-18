@@ -272,7 +272,7 @@ class Program {
 ★★★ 이 주제는 **계약형**이다 — 「조항 세기」보다 「**어기면 무엇이 출력되나**」를 묻는다. 예외는 **안 난다** — 값만 틀린다.
 **환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
 Roslyn `csc` 를 직접 부른다 · `-langversion:latest` · `-preferreduilang:en-US`.
-★★★ **핵심 창은 실행 출력 격자다**(계약 위반 × 자료구조) — ② 진단이 짝이고, ① IL 이 `==` 의 정체를 보인다.
+★★★ **핵심 확인 방법은 실행 출력 격자다**(계약 위반 × 자료구조) — ② 진단이 짝이고, ① IL 이 `==` 의 정체를 보인다.
 ★★ **④ 할당 바이트는 2×2 판 격자**로 쟀고 **시간은 안 쟀다.**
 ★★ **해시 값은 한 번도 찍지 않았다** — 「같나 다르나」와 **가짓수**만 찍었다.
 선행 — [18번](../18-record-value-equality-and-with/)(★★★ record 가 만드는 `==`·`Equals` 의 IL)·[10번](../10-collection-choosing-list-dictionary-hashset-queue-stack/)(`CS0659` · `Count = 3`)·[02번](../02-struct-vs-class-choosing/)(구조체 `Equals` 의 박싱).

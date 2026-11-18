@@ -434,7 +434,7 @@ euc-kr 로   : UnicodeDecodeError 'euc_kr' codec can't decode byte 0x80 in posit
 > **조용한 실패(silent failure)** — 에러 없이 정상처럼 끝나는데 결과만 틀린 것.\
 > 여기서는 `latin-1` 로 읽은 깨진 글자가 그것이다. 사람이 화면을 보기 전에는 아무도 모른다.
 
-**에러 핸들러 — 「터뜨릴까 넘길까」를 고르는 손잡이**
+**에러 핸들러 — 「터뜨릴까 넘길까」를 고르는 조절 수단**
 
 ```python
 t = "가nb👍"

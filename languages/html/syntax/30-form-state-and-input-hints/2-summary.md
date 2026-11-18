@@ -17,7 +17,7 @@ Google Chrome 151.0.7922.173
 | **달라지지 않는다** | 서버가 받은 필드 · Tab 이 닿은 순서 · `willValidate` · IDL 값 · 접근성 노드의 속성 이름 · 「달라진 항목 N / M」 | 시도마다 페이지를 새로 연다 · 같은 판이면 결정적이다 |
 | **달라지지 않는다** | `document.hasFocus()` = `true` | headless 창이 포커스를 가진 판이다 — ★ `autofocus` 의 결과는 **이 줄이 참일 때만** 뜻이 있다((3)) |
 
-### 이 주제가 쓰는 창 / 해당 없는 창
+### 이 주제가 쓰는 확인 방법 / 해당 없는 확인 방법
 
 | 창 | 이 주제에서 | 무엇을 답하나 |
 |---|---|---|
@@ -636,4 +636,4 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 **선행** — [24번 주제](../24-input-types-choice-special/2-summary.md)(★ `disabled` 칸은 **안 실리고** `readonly` 칸은 **실린다** — (1) 격자의 `text` 줄) · [27번 주제](../27-fieldset-and-legend/2-summary.md)(★ **비활성 묶음 안의 `required` 빈 칸이 제출을 막지 않았다** — `fieldset[disabled]` 는 거기서 쟀다).
 **경계** — **포커스 순서·`tabindex`·`inert`** 는 목록의 **45번 주제**, **`dialog` 를 여는 동작과 포커스 트랩**은 목록의 **47번 주제**다 — 여기는 **`autofocus` 가 어느 칸을 고르나**까지. **`:disabled`·`:read-only` 로 칠하는 것**은 [CSS 10번](../../../css/syntax/10-state-and-form-pseudo-classes/2-summary.md). **제약 검증 상태 자체**는 [29번](../29-constraint-validation/2-summary.md).
 
-★★★ **이 주제의 핵심은 창 ⑤ + 창 ② + 진짜 Tab 의 「세 지점 격자」다** — 제출(서버가 받은 필드) · 포커스(Tab 이 닿은 곳) · 검증(`willValidate`). `autocomplete`·`inputmode` 는 **창 ② 의 IDL 값과 창 ⑦ 의 침묵**으로 묻는다.
+★★★ **이 주제의 핵심은 확인 방법 ⑤ + 창 ② + 진짜 Tab 의 「세 지점 격자」다** — 제출(서버가 받은 필드) · 포커스(Tab 이 닿은 곳) · 검증(`willValidate`). `autocomplete`·`inputmode` 는 **창 ② 의 IDL 값과 창 ⑦ 의 침묵**으로 묻는다.

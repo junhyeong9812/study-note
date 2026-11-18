@@ -287,7 +287,7 @@ int main() {
 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex`.
 ★★★ **이 주제의 핵심은 「호출 로그」다**(1번) — `shared_ptr` 대 `unique_ptr` 에 같은 객체를 맡긴다.
 ★★ **짝은 `<type_traits>` 격자다**(4번) — [18번](../18-rule-of-zero-three-five-default-delete/)의 형식 그대로.
-★ **「해당 없는 창」이 있다** — `-O2` 어셈블리 세기. 이 주제에는 **잴 비용이 없다.**
+★ **「해당 없는 확인 방법」이 있다** — `-O2` 어셈블리 세기. 이 주제에는 **잴 비용이 없다.**
 ★★★ **[19번](../19-inheritance-virtual-functions-override-final/)이 잰 것은 다시 묻지 않는다** — `~DerNV` 0회 · 128바이트 · `new-delete-type-mismatch`(16 대 8) · 「경고의 스위치는 기반이 다형적인가」.
 여기서 묻는 것은 **「무엇이 미정의인가」의 층**과 **「언제 가상으로 둘까」의 판단**이다.
 

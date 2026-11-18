@@ -161,7 +161,7 @@ badby2.kt:8:23: error: type 'ReadOnly' has no method 'setValue(Screen, KMutableP
 
 ### (2) ★★★ 필드는 `x$delegate` 가 되고 **`KProperty` 는 미리 만들어 둔다**
 
-**언제 쓰나** — 「`by` 를 쓰면 비용이 얼마나 드나」가 궁금할 때. **이 주제의 네 번째 창이다.**
+**언제 쓰나** — 「`by` 를 쓰면 비용이 얼마나 드나」가 궁금할 때. **이 주제의 네 번째 확인 방법이다.**
 
 ```text
 ===== 소스: dcode.kt =====

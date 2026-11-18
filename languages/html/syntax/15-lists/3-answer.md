@@ -235,7 +235,7 @@ RootWebArea    이름=''
 
 **못 잰 것** — ① **스크린리더가 「목록, 항목 N개」를 알리는지.** ② **WebKit 의 `list-style: none` 동작.** ③ **플랫폼 층의 `aria-setsize`·`aria-posinset`.**
 
-**해당 없는 창** — **창 ④(`compatMode`) · 창 ⑤(요청 로그) · 창 ⑥(`renderBlockingStatus`).** 목록은 문서 모드·요청·렌더 차단을 바꾸지 않는다 — **잴 것이 없다.**
+**해당 없는 확인 방법** — **창 ④(`compatMode`) · 창 ⑤(요청 로그) · 창 ⑥(`renderBlockingStatus`).** 목록은 문서 모드·요청·렌더 차단을 바꾸지 않는다 — **잴 것이 없다.**
 
 ## 용어 풀이
 

@@ -205,7 +205,7 @@ class Program {
 ★★★ 이 주제의 질문은 「**`foreach` 는 인터페이스가 아니라 `GetEnumerator`·`MoveNext`·`Current` 라는 이름을 찾고, 찾은 타입 그대로 부른다**」 한 줄로 거의 다 풀린다. **그 타입이 구조체인가 인터페이스인가**를 세라.
 **환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
 Roslyn `csc` 를 직접 부른다 · `-langversion:latest`(판 문항만 판을 바꾼다) · `-preferreduilang:en-US`. 대비는 **javac 21.0.5** 다.
-★★★ **핵심 창은 ① IL 덤프다**(「`foreach` 가 무엇으로 풀리나」). 할당은 **2×2 판 격자**로 쟀다.
+★★★ **핵심 확인 방법은 ① IL 덤프다**(「`foreach` 가 무엇으로 풀리나」). 할당은 **2×2 판 격자**로 쟀다.
 선행 — [10번](../10-collection-choosing-list-dictionary-hashset-queue-stack/)(컬렉션) · [24번](../24-generics-and-type-parameters/)(제네릭) · [30번](../30-extension-methods-and-extension-members/)(확장 메서드).
 
 ## 복습 기록

@@ -407,7 +407,7 @@ symbol kinds accepted as a WeakMap key 0 / 3
   명세 **`CanBeHeldWeakly`**: 객체이거나, **심볼이면서 `KeyForSymbol` 이 `undefined`** 일 때만 참이다.
   장부 심볼은 **누구나 같은 문자열로 다시 만들 수 있어서** 「이제 아무도 못 가리킨다」가 성립하지 않는다(명세 note: "does not have language identity").
   잘 알려진 심볼은 **허용된다**(명세 note).
-- ★ **`vm` 은 창을 바꿔 물은 것**이다 — 브라우저 iframe 대신 Node 호스트 API 로 realm 을 만들었다.
+- ★ **`vm` 은 확인 방법을 바꿔 물은 것**이다 — 브라우저 iframe 대신 Node 호스트 API 로 realm 을 만들었다.
 
 ### 9. `null` 은 「없음」, `1` 은 「잘못 있음」 — **명세의 `GetMethod`** (왜)
 
@@ -672,14 +672,14 @@ identical 18  ·  differs 6  ·  total 24
 `instanceof` 의 `ToBoolean` · `Function.prototype[Symbol.hasInstance]` 의 `writable: false` · 태그가 슬롯을 덮는 것 · species 를 쓰는 메서드 목록 · 장부 심볼이 약한 키가 될 수 없는 것은 구현 의존이 아니다.**
 어느 엔진에서도 같아야 한다.
 
-**안 돌려 본 것 / 못 잰 것 / 해당 없는 창**
+**안 돌려 본 것 / 못 잰 것 / 해당 없는 확인 방법**
 
 - **안 돌려 본 것** — Chrome 에서 22a\~22h(브라우저는 목록·`using` 한 블록만) · 브라우저 **iframe realm**(대신 `vm`) · `Symbol.asyncIterator`(40번) ·
   `Symbol.matchAll`·`replace`·`search`·`split`(정규식 29·30번) · `RegExp` 의 species · 다른 엔진(SpiderMonkey·JavaScriptCore)의 문구.
 - ★ **못 잰 것** — **없다.**
 - ★★★ **안 쟀다** — **성능 전부.** 심볼 키 접근이 빠르다/느리다는 말을 **한 줄도 쓰지 않았다.**
-- ★★ **해당 없는 창** — **진단의 `(행,열)`**(`SyntaxError` 두 줄은 결합 방향을 가를 일이 없다). **`Symbol.unscopables` 는 반쯤 해당 없음** — 엄격 모드에 `with` 가 없다.
-- ★★ **창을 바꿔 물은 자리** — realm 을 넘는 같음을 **`vm`** 으로(8번).
+- ★★ **해당 없는 확인 방법** — **진단의 `(행,열)`**(`SyntaxError` 두 줄은 결합 방향을 가를 일이 없다). **`Symbol.unscopables` 는 반쯤 해당 없음** — 엄격 모드에 `with` 가 없다.
+- ★★ **확인 방법을 바꿔 물은 자리** — realm 을 넘는 같음을 **`vm`** 으로(8번).
 
 **버전이 올랐을 때 다시 돌려야 하는 것**
 

@@ -445,7 +445,7 @@ typeof document.body             : object</pre>
 - ★★★ **`typeof document.all` 이 `"undefined"` 인데 `document.all === undefined` 는 `false` 다.**
   객체이면서 `typeof` 가 `"undefined"` 를 답하는 **유일한 값**이다.
 - ★★★ **`Object.prototype.toString.call` 은 `[object HTMLAllCollection]` 이라고 정직하게 답한다.**
-  ★ **첫째 창(`typeof`)이 거짓말을 하고 둘째 창이 참말을 하는 자리**다 — 창이 둘 필요한 이유가 여기 있다.
+  ★ **첫째 확인 방법(`typeof`)이 거짓말을 하고 둘째 확인 방법이 참말을 하는 자리**다 — 창이 둘 필요한 이유가 여기 있다.
 - ★★ **`Boolean(document.all)` 이 `false` 다.** 객체인데 falsy 다 — 이것도 이 값 하나뿐이다.
 - ★★ **`document.all == undefined` 는 `true`, `== null` 도 `true`** 다. 느슨한 비교까지 예외로 만들어 두었다.
 - ★ **왜 이런 것이 명세에 있나** — 옛 IE 전용 코드가 `if (document.all)` 로 브라우저를 갈랐다.
@@ -660,7 +660,7 @@ String(x);                // 이것이 문자열로 바꾸는 법
 - **함수는 부를 수 있는 객체**이고 `typeof` 만 따로 답한다.
 - **`typeof` 는 선언 안 된 이름에 안 터지는 유일한 연산자**이고, **TDZ 에서는 그 특권이 없다.**
 - **원시 값에 점을 찍으면 임시 래퍼가 생겼다 버려진다** — 엄격 모드에서는 그마저 안 생긴다.
-- **창이 하나로는 모자란다.** `typeof` 가 `"object"` 라고 답한 자리에서는 `Object.prototype.toString.call` 이 둘째 창이다.
+- **창이 하나로는 모자란다.** `typeof` 가 `"object"` 라고 답한 자리에서는 `Object.prototype.toString.call` 이 둘째 확인 방법이다.
 - **`document.all` 은 명세가 만든 거짓말**이다 — 객체인데 `typeof` 가 `"undefined"` 이고 falsy 다.
 
 ## 관련 자료
@@ -697,7 +697,7 @@ String(x);                // 이것이 문자열로 바꾸는 법
 - **`typeof` 의 답이 아홉 번째로 늘어난 적은 없다.** 마지막으로 늘어난 것이 `bigint`(ES2020)이고,
   그 전이 `symbol`(ES2015)이다. **새 원시 타입이 들어올 때만** 늘어난다.
 - **`Symbol.toStringTag` 로 브랜드 태그를 바꿀 수 있다.** 그래서 `Object.prototype.toString` 도 「믿을 수 있는 검사」가 아니다 —
-  둘째 창은 첫째 창보다 넓게 보지만 **여전히 속일 수 있다**(34번 주제).
+  둘째 확인 방법은 첫째 확인 방법보다 넓게 보지만 **여전히 속일 수 있다**(34번 주제).
 - **`typeof` 는 프록시를 통과한다** — `new Proxy(function(){}, {})` 는 `"function"` 이고 `new Proxy({}, {})` 는 `"object"` 다.
   대상의 `[[Call]]` 유무를 그대로 따른다(45번 주제). 이 문서에서는 던지지 않았다.
 - **엔진 안에서 값이 어떻게 담기는가**(포인터 태깅·Smi·NaN 박싱)는 **이 주제가 아니다.**

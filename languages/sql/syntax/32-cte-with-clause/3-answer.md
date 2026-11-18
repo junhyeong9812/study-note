@@ -304,7 +304,7 @@ ERROR 1064 (42000) at line 1: You have an error in your SQL syntax; check the ma
 ERROR 1064 (42000) at line 1: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'NOT MATERIALIZED (SELECT * FROM emp) SELECT * FROM c WHERE id = 1' at line 1
 ```
 
-MySQL 쪽 손잡이는 `/*+ NO_MERGE(…) */` 힌트다.
+MySQL 쪽 조절 수단은 `/*+ NO_MERGE(…) */` 힌트다.
 
 ```text
 ### SQL: EXPLAIN FORMAT=TREE WITH c AS (SELECT * FROM emp) SELECT /*+ NO_MERGE(c) */ * FROM c WHERE salary >= 400;
@@ -403,7 +403,7 @@ PG 의 `MATERIALIZED` 는 조건을 못 내려가게 하는데(6번의 `Filter` 
 | 이름은 앞→뒤로만 보이고 문장 하나만 산다 | `cost=0.55 rows=3` 같은 수치 |
 | PG 12+ 는 **참조 1회 + 비재귀 + 부작용 없음**이면 편다 | "PG 는 항상 편다" / "MySQL 은 항상 편다" |
 | 휘발성이 있으면 `NOT MATERIALIZED` 를 적어도 안 편다 | `Materialize CTE s if needed` 가 항상 뜬다는 것 |
-| `MATERIALIZED` 는 PG 전용, MySQL 은 힌트 | 두 손잡이가 같은 물건이라는 것(9번에서 깨졌다) |
+| `MATERIALIZED` 는 PG 전용, MySQL 은 힌트 | 두 조절 수단이 같은 물건이라는 것(9번에서 깨졌다) |
 
 ★ **실측** — 이 주제의 모든 `EXPLAIN` 을 **작성 중 한 번, 제출 직전 한 번** 같은 서버·같은 버전·같은 데이터에서 찍었다.\
 **두 번의 출력이 한 글자도 달라지지 않았다.** 그것은 "이 서버의 통계가 안 흔들렸다"는 뜻이지 **"다음에도 같다"는 뜻이 아니다.**\
@@ -429,7 +429,7 @@ PG 의 `MATERIALIZED` 는 조건을 못 내려가게 하는데(6번의 `Filter` 
 | 계획 재확인 (12번) | PG 18.6 · MySQL 8.4.10 | **전 계획 2회씩** | 작성 중 1회 + 제출 직전 1회 — **드리프트 없음** |
 
 **구현 의존 항목** — 6·8·9·10번의 계획 전부. `CTE Scan`·`Materialize CTE … if needed`·`Index range scan … (re-planned for each iteration)` 은 **그 엔진의 표기**이고, 실제로 무엇을 고르는지는 옵티마이저의 선택이다.\
-★ **한쪽에서만 결론이 서는 실험이 하나 있다** — **6번(`MATERIALIZED`)은 PG 출력만 근거가 된다.** MySQL 쪽은 문법이 없어 `ERROR 1064` 이므로, 그 에러는 **"MySQL 에 이 손잡이가 없다"의 근거일 뿐 "벽이 서나 안 서나"의 근거가 아니다.**\
+★ **한쪽에서만 결론이 서는 실험이 하나 있다** — **6번(`MATERIALIZED`)은 PG 출력만 근거가 된다.** MySQL 쪽은 문법이 없어 `ERROR 1064` 이므로, 그 에러는 **"MySQL 에 이 조절 수단이 없다"의 근거일 뿐 "벽이 서나 안 서나"의 근거가 아니다.**\
 MySQL 쪽 벽 유무의 근거는 **8번·9번의 `EXPLAIN FORMAT=TREE`** 다.
 
 **언어 보장 항목** — 1~5·11번. 결과의 동일성, 가시성 규칙, 이름 수명, 이름 가리기, 열 이름 재지정은 두 엔진에서 같았다.\

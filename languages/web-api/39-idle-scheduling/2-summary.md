@@ -17,7 +17,7 @@ Google Chrome 151.0.7922.173
 | ★ **판에 매일 수 있는 항목** | 입력 막힘 판의 「끝난 조각 1」 | 클릭이 렌더러에 닿는 데 걸리는 시간이 50ms 조각 하나보다 짧다는 전제 위에 선다 |
 | **실행마다 달라진다** | Chrome 판 번호 · 포트 | 출력에 안 나온다 |
 
-### 이 주제가 쓰는 창 / 해당 없는 창
+### 이 주제가 쓰는 확인 방법 / 해당 없는 확인 방법
 
 | 창 | 이 주제에서 | 무엇을 답하나 |
 |---|---|---|
@@ -25,7 +25,7 @@ Google Chrome 151.0.7922.173
 | 창 ② 노드 프로브 | ★ **쓴다** | `typeof` · `deadline.timeRemaining()` · `didTimeout` · `event.timeStamp` |
 | 창 ③ 같은 것을 두 번 읽기 | ★ **쓴다** | 같은 200ms 를 **세 방식**으로 · 같은 세 조각을 **양보 둘**로 · 같은 물음을 **Chrome 과 node 두 판**에 |
 | **창 ④ 디스패치 계수기 → 입력 막힘 판 · 이어가기 순서** | ★★★ **핵심** | 핸들러가 **언제** 불렸나 · 누가 **먼저** 돌았나 |
-| ★★ **「응답성」을 「끼어들었나」로** | ★★ **제5의 상태 — 같은 질문을 다른 창으로** | 「입력이 빨리 처리되나」를 ms 로 재지 않고 **「핸들러가 작업 중간에 불렸나 · 몇 조각 뒤였나」** 로 물었다. ★ 바꾼 창이 못 보는 것 — **얼마나 빨리**(지연 ms · INP) · 화면에 결과가 **언제 그려졌나** |
+| ★★ **「응답성」을 「끼어들었나」로** | ★★ **제5의 상태 — 같은 질문을 다른 확인 방법으로** | 「입력이 빨리 처리되나」를 ms 로 재지 않고 **「핸들러가 작업 중간에 불렸나 · 몇 조각 뒤였나」** 로 물었다. ★ 바꾼 확인 방법이 못 보는 것 — **얼마나 빨리**(지연 ms · INP) · 화면에 결과가 **언제 그려졌나** |
 | 서버 요청 로그 | **해당 없음** | 네트워크를 안 쓴다 |
 
 ### 도구가 못 보는 것
@@ -451,7 +451,7 @@ $ python3 wa36b-net.py page wa36b-39-idle.html | sed -n '5p'
 
 ## 실행 환경
 
-★★★ **이 편의 핵심은 창 ④ 「디스패치 계수기」로 잰 「입력 막힘 판」이다** — 200ms 어치 작업을 **한 덩어리 · `scheduler.yield()` 로 네 조각 · `setTimeout 0` 으로 네 조각** 세 방식으로 돌리며, 작업을 시작하자마자 하네스가 **CDP `Input.dispatchMouseEvent`** 로 버튼을 누른다. 판마다 **클릭이 작업 중에 일어났나**(`event.timeStamp`) · **핸들러가 불린 때 끝난 조각 수** · **핸들러가 작업 끝 뒤였나**(참/거짓)를 적고, 다섯 판 중 몇 판인지를 스크립트가 센다. 둘째 축이 **이어가기 순서 로그**(yield 대 setTimeout · `postTask` 우선순위)다. ★ **시간은 찍지 않는다** — 참/거짓 · 순서 · 범주 · 판 수다.\
+★★★ **이 편의 핵심은 확인 방법 ④ 「디스패치 계수기」로 잰 「입력 막힘 판」이다** — 200ms 어치 작업을 **한 덩어리 · `scheduler.yield()` 로 네 조각 · `setTimeout 0` 으로 네 조각** 세 방식으로 돌리며, 작업을 시작하자마자 하네스가 **CDP `Input.dispatchMouseEvent`** 로 버튼을 누른다. 판마다 **클릭이 작업 중에 일어났나**(`event.timeStamp`) · **핸들러가 불린 때 끝난 조각 수** · **핸들러가 작업 끝 뒤였나**(참/거짓)를 적고, 다섯 판 중 몇 판인지를 스크립트가 센다. 둘째 축이 **이어가기 순서 로그**(yield 대 setTimeout · `postTask` 우선순위)다. ★ **시간은 찍지 않는다** — 참/거짓 · 순서 · 범주 · 판 수다.\
 **기준 소스** — ① [HTML — event loop processing model](https://html.spec.whatwg.org/multipage/webappapis.html#event-loop-processing-model) 의 유휴 단계 — 「**Let deadline be this event loop's last idle period start time plus 50.**」 · 「**The cap of 50ms in the future is to ensure responsiveness to new user input within the threshold of human perception.**」 · 활성 타이머와 다음 렌더링이 마감을 **당긴다.** ② [W3C requestIdleCallback](https://w3c.github.io/requestidlecallback/) — 「start an idle period」 · 「invoke idle callback timeout」(`didTimeout`) · 숨은 문서의 유휴 기간은 **조절할 수 있다**. ③ [WICG Prioritized Task Scheduling](https://wicg.github.io/scheduling-apis/)(Draft Community Group Report, 2025-05-30) — 우선순위 셋 · **이어가기(continuation)의 유효 우선순위 표** · 스케줄러 태스크와 다른 태스크 사이의 선택은 「**implementation-defined**」. 받아서 읽은 것만 적었다(기준일 2026-09-26).\
 **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다(실제 시간 · `--virtual-time-budget` 없음). 하네스는 [36번 주제](../36-resize-observer/3-answer.md)의 `wa36b-net.py` — 부탁 창구의 「누르기」는 **응답을 기다리지 않고** 보낸다(기다리면 페이지가 한가해질 때까지 하네스가 막힌다). node 는 **v18.19.1 · v20.19.6** 두 판에 지원만 물었다.\
 **버전 · 지원** — README 의 Baseline 조회: `requestIdleCallback` 은 **limited**(Chrome 2015 · Firefox 2017 · **Safari 미구현**), Scheduler API(`postTask`/`yield`)는 **limited**(Chrome 2024-09 · Firefox 2025-08 · **Safari 없음**). **Safari 는 이 머신에 없어 미실행**이다.\

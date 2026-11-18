@@ -327,7 +327,7 @@ mediaText 정규화
 
 - **`@supports`** 다([41번 주제](../41-supports-feature-queries/2-summary.md)). `@media` 로는 지원 여부를 못 묻는다 — 모르는 기능은 그냥 거짓이 될 뿐 **아는지 모르는지를 구별해 주지 않는다.**
 
-**진단 3창에 더할 것**
+**진단 3종에 더할 것**
 
 - **`matchMedia(조건).matches`** 다. 규칙이 담겼는지(`cssRules`)와 **조건이 참인지**는 별개의 질문이고, at-rule 에서는 뒤엣것이 원인인 경우가 훨씬 많다.
 - 함께 **`conditionText` / `media.mediaText`** 를 읽어 **파서가 무엇으로 이해했는지**를 확인한다.
@@ -420,7 +420,7 @@ google-chrome --headless --disable-gpu --no-sandbox --dump-dom http://127.0.0.1:
 - **중단점(breakpoint)** — 레이아웃이 바뀌는 폭의 경계. 겹치면 등장 순서가 동작을 정한다.
 - **범위 구문** — `(width <= 600px)` 표기. 배타 연산자 `<`·`>` 가 여기에만 있다.
 - **`only`** — CSS2 파서 회피용 유물. 평가에 영향이 없다.
-- **`matchMedia()`** — 조건만 따로 평가하는 JS API. at-rule 진단의 네 번째 창.
+- **`matchMedia()`** — 조건만 따로 평가하는 JS API. at-rule 진단의 네 번째 확인 방법.
 - **`conditionText` / `media.mediaText`** — 파서가 이해한 조건 문자열.
 - **등장 순서** — 캐스케이드 6단계의 마지막. `@media` 가 작용하는 유일한 자리(정본은 01번).
 - **너그러운 목록** — 한 항이 무효여도 나머지가 사는 목록. 미디어 쿼리의 쉼표가 그렇고, 선택자의 쉼표는 **반대**다.

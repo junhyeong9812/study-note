@@ -329,7 +329,7 @@ ctad06.cpp:14:7: note: in instantiation of member function 'Box<int>::odd' reque
 **안 돌려 본 것 / 못 잰 것**
 
 - **안 돌려 본 것** — ★ **템플릿인 추론 가이드 · `explicit` 가이드 · 별칭 템플릿 CTAD(C++20)** · ★ **libc++ 로 표준 컨테이너 행**.
-- ★ **「해당 없는 창」** — ASan · 경고 격자.
+- ★ **「해당 없는 확인 방법」** — ASan · 경고 격자.
 
 **버전이 올랐을 때 다시 돌려야 하는 것**
 

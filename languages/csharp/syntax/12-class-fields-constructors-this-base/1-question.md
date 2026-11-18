@@ -229,8 +229,8 @@ class Classic {
 **환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
 Roslyn `csc` 를 직접 부른다 · `-langversion:latest` · `-preferreduilang:en-US` · **`-debug` 없음**.
 C++ 대비는 **g++ 13.3.0 · `-std=c++20`** 이다.
-★★ **네 번째 창은 「예외 전문」이다**(5번) — 스택 프레임이 **누가 누구를 불렀나**를 적는다.
-★ **「해당 없는 창」이 있다** — **할당 바이트**. 필드 초기자를 쓰든 본문에서 대입하든
+★★ **네 번째 확인 방법은 「예외 전문」이다**(5번) — 스택 프레임이 **누가 누구를 불렀나**를 적는다.
+★ **「해당 없는 확인 방법」이 있다** — **할당 바이트**. 필드 초기자를 쓰든 본문에서 대입하든
 **같은 객체 하나**가 만들어진다. **「안 쟀다」가 아니라 「잴 것이 없다」다.**
 선행 — [01번](../01-value-types-and-reference-types/)(값/참조)·[11번](../11-collection-initializers-and-collection-expressions/)(객체 초기화자는 생성자 뒤).
 대비 — C++ 갈래 목록([`cpp/syntax/README.md`](../../../cpp/syntax/README.md))의 **13번**([`13-constructors-member-init-list-and-delegating/`](../../../cpp/syntax/13-constructors-member-init-list-and-delegating/))·**14번**([`14-destructors-and-deterministic-destruction/`](../../../cpp/syntax/14-destructors-and-deterministic-destruction/)).

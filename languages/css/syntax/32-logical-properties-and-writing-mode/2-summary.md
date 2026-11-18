@@ -390,7 +390,7 @@ CSS 는 문법 표면이 단순하므로 이 절은 **어디서 헷갈리나**�
 
 *(Chrome 151 + CDP 실측 — `transitionProperty` 는 `"writing-mode, width"` 로 **선언을 받아들인다.** 그런데 두 값을 동시에 바꾸고 재 보면 **0.1초 시점에 `writing-mode` 는 이미 `vertical-rl`** 이고 `width` 만 210px 로 보간 중이다(0.5s 250px · 0.8s 279.984px). 키워드 값에는 중간값이 없기 때문이다 — 「전환이 걸린 것처럼 보이는데 안 걸린」 전형이다. 정본은 [52번](../52-transition/).)*
 
-*(Chrome 151 headless 실측 — 진단 3창의 첫째 창(`cssRules`)으로 읽은 결과.\
+*(Chrome 151 headless 실측 — 진단 3종의 첫째 확인 방법(`cssRules`)으로 읽은 결과.\
 `#L1 { }` ← `margin-inline-top: 4px`(**그런 속성이 없어** 버려짐) · `#L2 { margin-inline-start: 20px; }` ← 정상 ·\
 `#L3 { }` ← `inline-size: auto-ish`(모르는 값) · `#L4 { writing-mode: sideways-rl; }` ← **담긴다**(이 Chrome 이 아는 값이다) ·\
 `#L5 { inset-inline: 5px; }` · `#L6 { inset: 10px; }` ← 둘 다 유효하고, **이름만 봐서는 어느 쪽이 논리인지 구분되지 않는다**(`inset-inline` 이 논리, `inset` 이 물리).)*

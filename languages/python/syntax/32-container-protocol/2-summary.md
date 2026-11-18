@@ -898,7 +898,7 @@ print("   그런데 for 는 돈다          :", [v for v in Old()])
   `Iterable` 에는 참이지만 `Container`·`Sized`·`Sequence` 에는 **거짓**이다.
   즉 **한 메서드짜리 ABC 만 오리 판정을 한다.** `Sequence` 처럼 여러 개가 필요한 ABC 는 **등록하거나 상속해야** 참이 된다.
   그래서 `isinstance((1,), MutableSequence)` 도 거짓이다 — 튜플은 쓰기를 지원하지 않으니 맞는 답이다.
-- ★★★ **그리고 마지막 두 줄이 이 주제의 네 번째 창이다**(⑤).
+- ★★★ **그리고 마지막 두 줄이 이 주제의 네 번째 확인 방법이다**(⑤).
   `__getitem__` 만 가진 옛 객체는 **`isinstance(o, Iterable)` 이 `False` 인데 `for` 는 돈다.**
   창 ①(정의된 메서드)·②(호출 로그)·③(예외 없음)이 전부 「된다」고 말하는데 **창 ④만 「아니다」라고 답한다.**
   ★ [16번](../16-iterator-protocol/2-summary.md) 이 「`hasattr(x, '__iter__')` 로 검사하면 틀린 답을 얻는다」고 한 자리의 **ABC 판**이다.

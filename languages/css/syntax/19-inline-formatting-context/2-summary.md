@@ -173,7 +173,7 @@
 
 *(Chrome 151 headless 실측 — 같은 `<span>` 을 네 가지로 재 봤다. 보통: `rect` 24 높이, 부모 줄 높이 **24**. `padding: 20px 6px`: `rect` **64** 높이인데 부모 줄 높이는 여전히 **24** — 행 상자가 한 픽셀도 안 늘었다. `border: 10px`: `rect` **44**, 부모 **24**. `margin: 20px 6px`: `rect` **24**, 위치도 그대로 — **세로 마진이 통째로 무시됐다.** `width:200px; height:80px`: `rect` **73.61 × 24** 로 안 먹었다.)*
 
-- ★ **`getComputedStyle` 은 `width: 200px` / `height: 80px` 을 그대로 돌려줬다.** **값은 담겼는데 레이아웃이 안 쓴 것**이다 — 진단 3창의 셋째 창(`getComputedStyle`)만 보면 **「먹었다」로 오진한다.**
+- ★ **`getComputedStyle` 은 `width: 200px` / `height: 80px` 을 그대로 돌려줬다.** **값은 담겼는데 레이아웃이 안 쓴 것**이다 — 진단 3종의 셋째 확인 방법(`getComputedStyle`)만 보면 **「먹었다」로 오진한다.**
 - **가로는 먹고 세로는 안 먹는다.** 인라인 상자는 줄 안에서 가로로만 자리를 차지하기로 돼 있기 때문이다.
 - 치수를 주고 싶으면 안쪽 값을 `flow-root` 로 바꾼다(= `inline-block` — [16번](../16-display-inner-outer/2-summary.md)).
 
@@ -348,7 +348,7 @@ span  { height: 40px; }                /* 아무 일도 안 일어난다 (4) */
 ### 3. `<span>` 에 `height` 를 주고 「안 먹네」 하고 넘어간다
 
 에러가 없어서 그냥 지나간다. **`getComputedStyle` 은 `80px` 이라고 대답까지 한다.**\
-`rect` 를 재야 안 먹은 것이 드러난다 — 진단 3창의 셋째 창만 믿으면 안 되는 대표 사례다.
+`rect` 를 재야 안 먹은 것이 드러난다 — 진단 3종의 셋째 확인 방법만 믿으면 안 되는 대표 사례다.
 
 ### 4. `vertical-align: middle` 을 가운데 정렬로 쓴다
 

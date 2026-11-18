@@ -208,7 +208,7 @@ linear-gradient(to right,transparent,#000)  (249,250,254) → … → (34,82,217
 
 ### 7. `-webkit-mask-` 는 아직 필요한가
 
-**실행 결과** (Chrome 151 headless — 「진단 3창」의 창 1·3)
+**실행 결과** (Chrome 151 headless — 「진단 3종」의 창 1·3)
 
 ```text
 던진 것                                          cssRules 에 남은 것
@@ -271,7 +271,7 @@ linear-gradient(to right,transparent,#000)  (249,250,254) → … → (34,82,217
 
 ### 9. 계산값이 멀쩡한데 안 보인다
 
-**실행 결과** (Chrome 151 headless — 「진단 3창」)
+**실행 결과** (Chrome 151 headless — 「진단 3종」)
 
 ```text
 입력  .x { clip-path: polygon(50%, 100% 100%); mask-mode: alpha-zz; mask-image: url(#nope); }
@@ -300,7 +300,7 @@ linear-gradient(to right,transparent,#000)  (249,250,254) → … → (34,82,217
 
 **이름과 대책**
 
-- **제4의 상태**다 — 「진단 3창」을 전부 통과하는데 화면이 다른 경우.
+- **제4의 상태**다 — 「진단 3종」을 전부 통과하는데 화면이 다른 경우.
 - 대책은 **깨진 참조를 남기지 않는 것**이다. 마스크를 지울 때는 `mask-image: none` 으로 지운다.
 - ★ 이 동작은 **Chrome 151 에서 관찰한 것**이다. 「마스크 없음으로 취급」하는 구현이 있을 수 있으므로 더더욱 남기면 안 된다.
 
@@ -337,8 +337,8 @@ linear-gradient(to right,transparent,#000)  (249,250,254) → … → (34,82,217
 - **히트 테스트(hit testing)** — 어느 좌표를 눌렀을 때 어느 요소가 잡히는지 정하는 계산.\
   예: `document.elementFromPoint(x, y)`. `clip-path` 로 잘린 밖에서는 그 아래 요소가 나온다.
 - **BFC(블록 서식 맥락)** — 마진 상쇄·부동 겹침을 그 안에 가두는 독립 구역. `overflow: hidden` 은 만들고 `clip-path` 는 안 만든다. 정본은 [17번](../17-block-formatting-context/2-summary.md).
-- **제4의 상태** — 「진단 3창」을 전부 통과하는데 화면이 다른 상태. 여기서는 **깨진 마스크 참조**다.
-- **진단 3창** — `cssRules` → `querySelectorAll` → `getComputedStyle`. 정본은 [07번](../07-syntax-and-error-recovery/2-summary.md).
+- **제4의 상태** — 「진단 3종」을 전부 통과하는데 화면이 다른 상태. 여기서는 **깨진 마스크 참조**다.
+- **진단 3종** — `cssRules` → `querySelectorAll` → `getComputedStyle`. 정본은 [07번](../07-syntax-and-error-recovery/2-summary.md).
 
 ## 실행 검증
 
@@ -360,7 +360,7 @@ linear-gradient(to right,transparent,#000)  (249,250,254) → … → (34,82,217
 | `-webkit-mask-` | 두 규칙을 던져 `cssRules` 대조 | **별칭** — 접두사가 무접두사로 직렬화되고 순서로 덮임 |
 | 단축 `mask` 의 리셋 | 순서를 바꾼 두 규칙 | 앞의 `mask-mode` 가 `match-source` 로 되돌아감 |
 | 깨진 마스크 참조 | `url(#nope)`·깨진 data URI 두 판 | 계산값 정상인데 **픽셀이 페이지 배경** |
-| 무효 값 | 「진단 3창」 | `polygon(50%, …)`·`alpha-zz` 가 `cssRules` 에서 사라짐 |
+| 무효 값 | 「진단 3종」 | `polygon(50%, …)`·`alpha-zz` 가 `cssRules` 에서 사라짐 |
 | demo 4개 | 각 블록을 `<!doctype>`·`<body>` 래퍼에 넣어 렌더 + 픽셀 대조 | 「보이는 것」·「바꿔 볼 것」 단언 전부 화면과 일치 |
 
 **구현 의존 항목** — ①깨진 참조 마스크에서 **요소가 통째로 사라지는** 것 ②`-webkit-mask-*` 가 **별칭**이라 순서로 덮이는 것 ③`clip-path` 가 포함 블록을 안 가로채는 것(명세의 포함 블록 목록까지 대조하지는 않았다) ④각 픽셀의 정확한 값과 경계 안티앨리어싱 — `--disable-gpu` **소프트웨어 렌더링** 결과다.\

@@ -1,6 +1,6 @@
 # kotlin/syntax/45 — 정렬·부분 연산 — `sortedBy`/`take`/`drop`/`chunked`/`windowed` — 정리 (힌트)
 
-★★★ **핵심은 첫째 창이다** — 「**제자리 대 새 리스트 격자 — 정렬 9연산 × (`MutableList` · `List` · `Array`) → 컴파일되나 · 반환 타입 · 원본이 바뀌나**」. 제자리인지는 **이름의 꼴**(`sort` 대 `sorted`)로 나뉘는데, 그 규칙이 **정말 예외가 없는지**는 스물일곱 칸을 다 던져 봐야 안다.
+★★★ **핵심은 첫째 확인 방법이다** — 「**제자리 대 새 리스트 격자 — 정렬 9연산 × (`MutableList` · `List` · `Array`) → 컴파일되나 · 반환 타입 · 원본이 바뀌나**」. 제자리인지는 **이름의 꼴**(`sort` 대 `sorted`)로 나뉘는데, 그 규칙이 **정말 예외가 없는지**는 스물일곱 칸을 다 던져 봐야 안다.
 
 ## 이 주제가 쓰는 세 층
 
@@ -67,11 +67,11 @@ info: kotlinc-jvm 2.4.20 (JRE 21.0.5+11-LTS)
 
 ## 동작 방식
 
-### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「해당 없는 창」
+### (0) ★★★ 이 주제가 쓰는 확인 방법 — 그리고 「해당 없는 확인 방법」
 
 | 창 | 무엇을 보여 주나 | 어디서 왔나 |
 |---|---|---|
-| ★★★ **제자리 격자(서명 진단 + 실행)** | 9연산 × 3받는 쪽 → 컴파일되나 · 반환 타입 · 원본 변화((1)) | ★ **핵심 창** — [42번 주제](../42-transformations-map-flatmap-associate-zip/) (1)의 「의도적 타입 불일치」 창 + 실행 창 |
+| ★★★ **제자리 격자(서명 진단 + 실행)** | 9연산 × 3받는 쪽 → 컴파일되나 · 반환 타입 · 원본 변화((1)) | ★ **핵심 확인 방법** — [42번 주제](../42-transformations-map-flatmap-associate-zip/) (1)의 「의도적 타입 불일치」 창 + 실행 창 |
 | ★★ **안정성 관찰 + KDoc** | 같은 키의 순서 · 「The sort is _stable_」((2)) | — |
 | ★★ **stdlib 소스 jar 발췌** | `sorted()` 의 구현 · `chunked` 가 `windowed` 인 것 · 예외 문장의 출처((2)(3)(4)) | [41번 주제](../41-collection-creation-and-copying/) (2)와 같은 창 |
 | ★ **경계 probe** | `take(-1)`·`take(100)`·`windowed(0)`·`partialWindows`((3)(4)) | — |
@@ -518,7 +518,7 @@ public fun <T> Iterable<T>.take(n: Int): List<T> {
 - ★★ **`windowed(0)` 은 `IllegalArgumentException: Both size 0 and step 1 must be greater than zero.`** · **`chunked(0)` 은 `size 0 must be greater than zero.`** — 같은 검사 함수(`checkWindowSizeStep`)가 **`size != step` 이냐로 문장을 고른다.** `chunked` 는 `size == step` 이라 짧은 문장이다.
 - ★★ **`windowed(10)` 은 `[]`** — 창이 입력보다 커도 **던지지 않는다.** KDoc 도 「``Both [size] and [step] must be positive and can be greater than the number of elements in this collection.``」이라고 한다(위 발췌 3755행).
 - ★ **`zipWithNext()` 는 `windowed(2)` 의 `Pair` 판**이다 — 여섯 쌍.
-- ★ **여기까지가 이 문서의 몫이다** — 창을 밀며 합을 **O(1) 로 갱신하는** 슬라이딩 윈도우 기법은 [`cs/algorithm/09-sliding-window/`](../../../../cs/algorithm/09-sliding-window/) 다. `windowed` 는 **창마다 새 리스트**를 만든다 — 그것이 그 기법과 같은 비용인지는 **재지 않았다.**
+- ★ **여기까지가 이 문서의 몫이다** — 창을 밀며 합을 **O(1) 로 갱신하는** 슬라이딩 윈도우 기법은 [`cs/algorithm/09-sliding-window/`](../../../../cs/algorithm/09-sliding-window/) 다. `windowed` 는 **확인 방법마다 새 리스트**를 만든다 — 그것이 그 기법과 같은 비용인지는 **재지 않았다.**
 
 ## 문법 — 형태와 규칙
 
@@ -641,7 +641,7 @@ pairs    [1, -1, 1]
 
 - **`sortedArray()`·`sortedDescending()`·`sortWith`** — 격자에 넣지 않았다.
 - **`sortWith` 가 JVM 에서 무엇을 부르나** — 안정성을 실제로 주는 정렬 알고리즘을 **따라가지 않았다.**
-- **`windowed` 의 `transform` 판** — 창마다 리스트를 만들지 않고 변환하는 오버로드가 있다(소스 3804행). 던지지 않았다.
+- **`windowed` 의 `transform` 판** — 확인 방법마다 리스트를 만들지 않고 변환하는 오버로드가 있다(소스 3804행). 던지지 않았다.
 
 ## 실행 환경
 

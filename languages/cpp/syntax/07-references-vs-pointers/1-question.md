@@ -213,7 +213,7 @@ int main() {
 **환경** — g++ 13.3.0 · clang 18.1.3 · x86-64 Linux · `objdump`/`nm`(GNU Binutils 2.42).
 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex`.
 ★★★ **「참조는 포인터보다 빠르다/느리다」를 먼저 의심해라** — 3번에서 **기계어를 직접 대조**한다.
-★ **네 번째 창은 생성된 기계어**(`objdump -d`)다. 타입 체계와 코드 생성을 **갈라서** 본다.
+★ **네 번째 확인 방법은 생성된 기계어**(`objdump -d`)다. 타입 체계와 코드 생성을 **갈라서** 본다.
 선행 — C 갈래 [`14-pointers-address-dereference-and-pointer-types/`](../../../c/syntax/14-pointers-address-dereference-and-pointer-types/)(포인터).
 형제 [`05번`](../05-auto-and-decltype-type-deduction/)의 `auto&`·`auto&&` 가 여기서 온다.
 

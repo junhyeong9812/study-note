@@ -219,7 +219,7 @@ filter: blur(0)          0 ~ 255       그대로다
 
 ### 8. 함수 목록의 문법
 
-**실행 결과** (Chrome 151 headless — 「진단 3창」의 창 1·3)
+**실행 결과** (Chrome 151 headless — 「진단 3종」의 창 1·3)
 
 ```text
 입력                                  cssRules 에 남은 것            계산값
@@ -302,7 +302,7 @@ filter: hue-rotate(0.25turn)         .f { filter: hue-rotate(0.25turn); } hue-ro
 - **`drop-shadow()`** — 입력의 알파 채널로 모양을 떠서 그리는 그림자. `spread`·`inset` 이 없다.
 - **`backdrop-filter`** — 요소 뒤에 이미 그려진 것에 거는 필터. Baseline **newly**(2024-09-16).
 - **backdrop root** — `backdrop-filter` 가 읽을 수 있는 「뒤」의 범위. 조상의 `opacity`(<1)·`filter` 가 여기를 끊는다.
-- **진단 3창** — `cssRules` → `querySelectorAll` → `getComputedStyle`. 정본은 [07번](../07-syntax-and-error-recovery/2-summary.md).
+- **진단 3종** — `cssRules` → `querySelectorAll` → `getComputedStyle`. 정본은 [07번](../07-syntax-and-error-recovery/2-summary.md).
 
 ## 실행 검증
 
@@ -318,7 +318,7 @@ filter: hue-rotate(0.25turn)         .f { filter: hue-rotate(0.25turn); } hue-ro
 | `drop-shadow` 대 `box-shadow` | 투명 삼각형 PNG(data URI) 두 버전의 그림자 자리 픽셀 | 투명부 `(220,38,38)` 대 `(255,255,255)` |
 | `backdrop-filter` | 줄무늬 위 유리판 안팎 행의 채널 범위 | 안 126 대 밖 224 (대조판 192) |
 | backdrop root | 조상에 `isolation`/`opacity`/`filter` 를 각각 붙여 네 판 | `opacity`·`filter` 만 흐림을 껐다 |
-| 무효 문법 | 「진단 3창」으로 일곱 줄 | `blur(4)`·`hue-rotate(90)`·쉼표·오타 전부 `cssRules` 에서 사라짐 |
+| 무효 문법 | 「진단 3종」으로 일곱 줄 | `blur(4)`·`hue-rotate(90)`·쉼표·오타 전부 `cssRules` 에서 사라짐 |
 | demo 4개 | 각 블록을 `<!doctype>`·`<body>` 래퍼에 넣어 렌더 + 픽셀 대조 | 「보이는 것」·「바꿔 볼 것」 단언 전부 화면과 일치 |
 
 **구현 의존 항목** — ①흐림 띠 폭이 선언 길이의 **약 4배**인 것 ②각 필터 함수의 **정확한 결과 RGB** ③`isolation: isolate` 가 backdrop root 를 **안 만드는** 것. 셋 다 Chrome 151 에서 관찰한 것이고, ①②는 `--disable-gpu` **소프트웨어 렌더링** 결과라 GPU 합성과 미세하게 다를 수 있다.\

@@ -20,7 +20,7 @@ Google Chrome 151.0.7922.173
 
 - 재대조 정규화 규칙은 **두 줄** — `서버에 도착한 판 = N / 100` 과 `도착한 번호 = […]`. **그 밖의 차이는 전부 고칠 것**이다.
 
-### 이 주제가 쓰는 창 / 해당 없는 창
+### 이 주제가 쓰는 확인 방법 / 해당 없는 확인 방법
 
 | 창 | 이 주제에서 | 무엇을 답하나 |
 |---|---|---|
@@ -523,7 +523,7 @@ AbortError 로 거부된 판 = 100 / 100
 
 ## 실행 환경
 
-★★★ **이 편의 핵심은 창 ④ 「서버 요청 로그」 — 페이지가 받은 것과 서버가 한 일을 칸마다 나란히 놓는 「취소 격자」다.** 서버의 `/work` 는 도착하면 「처리 시작」, 페이지가 `/go` 를 줄 때 「처리 끝(주문을 기록했다)」, 그다음 응답을 쓴다. 페이지는 **취소를 받은 뒤 서버가 연결 닫힘을 알아챌 때까지 기다렸다가** `/go` 를 준다 — 그래서 「취소한 뒤에도 서버는 처리를 끝냈나」가 시간 없이 칸마다 달라진다.\
+★★★ **이 편의 핵심은 확인 방법 ④ 「서버 요청 로그」 — 페이지가 받은 것과 서버가 한 일을 칸마다 나란히 놓는 「취소 격자」다.** 서버의 `/work` 는 도착하면 「처리 시작」, 페이지가 `/go` 를 줄 때 「처리 끝(주문을 기록했다)」, 그다음 응답을 쓴다. 페이지는 **취소를 받은 뒤 서버가 연결 닫힘을 알아챌 때까지 기다렸다가** `/go` 를 준다 — 그래서 「취소한 뒤에도 서버는 처리를 끝냈나」가 시간 없이 칸마다 달라진다.\
 **기준 소스** — [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 fetch() 메서드 단계(「signal 이 이미 abort 됐으면 **abort the fetch() call** … signal 의 abort reason 으로」 · signal 에 다는 abort 단계 — 「**controller 를 abort** 하고 **abort the fetch() call**」) · 「To abort a fetch() call」(**① 프라미스를 error 로 거부** · 요청 본문이 읽히는 중이면 취소 · **응답 본문이 읽히는 중이면 error 로 error**) · [WHATWG DOM](https://dom.spec.whatwg.org/) 의 `abort(reason)`(「reason 이 없으면 **`AbortError` DOMException**」) · `AbortSignal.timeout()`(「타이머 태스크로 **`TimeoutError` DOMException**」) · `AbortSignal.any()`(「dependent abort signal — **원인이 된 신호의 reason**」). ★ **명세 어디에도 「서버에게 취소를 알린다」는 단계는 없다** — 페이지 쪽 프라미스와 스트림만 끝낸다. 열어서 확인한 것만 적었다(기준일 2026-09-26).\
 **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. 서버는 로컬 서버 A 다. 하네스는 [24번 주제](../24-document-lifecycle-events/2-summary.md)의 (1)에 있다.\
 **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\

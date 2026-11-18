@@ -254,8 +254,8 @@ int main() {
 **생성자·대입 호출 횟수**를 숫자로 맞혀야 한다.
 **환경** — g++ 13.3.0 · clang 18.1.3 · x86-64 Linux.
 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex`.
-★★ **네 번째 창은 「경고를 플래그·컴파일러별로 센 개수」다**(8번). 같은 사건에 개수가 다르다.
-★ **「해당 없는 창」이 있다** — `sizeof`. 초기화 방식이 달라도 객체 크기는 같아 **잴 것이 없다**.
+★★ **네 번째 확인 방법은 「경고를 플래그·컴파일러별로 센 개수」다**(8번). 같은 사건에 개수가 다르다.
+★ **「해당 없는 확인 방법」이 있다** — `sizeof`. 초기화 방식이 달라도 객체 크기는 같아 **잴 것이 없다**.
 선행 — [12번](../12-class-basics-members-access-and-this/)(클래스 기본)과 형제 [`04번`](../04-brace-initialization-narrowing-and-initializer-list/)·[`09번`](../09-rvalue-references-move-and-forward/)·[`11번`](../11-choosing-parameter-passing/)이 이 주제의 바로 앞이다.
 이어지는 것 — [14번](../14-destructors-and-deterministic-destruction/)이 **그 역순**을, [15번](../15-raii-resources-as-types/)이 **그 시점의 쓸모**를 답한다.
 

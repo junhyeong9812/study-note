@@ -355,5 +355,5 @@ s43e.c:13:15: warning: ISO C99 requires at least one argument for the "..." in a
 이 파일의 모든 출력·진단은 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** · **gcc-12 12.4.0** · **clang 18.1.3** ·
 x86-64 Linux 에서 실제로 돌려 얻은 것이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
 소스는 `s43a.c`\~`s43g.c` 이고, 블록은 **전부 캡처 파일에서 조립**했다.\
-★★★ **핵심 창은 전처리 결과** — 감싸기 격자는 인자 9 × `STR`/`XSTR`.
+★★★ **핵심 확인 방법은 전처리 결과** — 감싸기 격자는 인자 9 × `STR`/`XSTR`.
 ★★ **실행마다 달라지는 항목** — 없다. 정규화 규칙은 기본 넷뿐이다.

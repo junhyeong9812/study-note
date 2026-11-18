@@ -223,7 +223,7 @@ flex-wrap: nowrap (선언 없음)                ->  항목 y = 0
 ```
 
 - ★ **가르는 것은 실제 줄 수가 아니라 `flex-wrap` 값이다.** 명세가 `nowrap` 컨테이너를 「단일 줄(single-line) flex 컨테이너」로 정의하고 그 경우에만 `align-content` 를 배제한다.
-- ★★ **계산값으로는 이 차이가 안 보인다.** 네 판 모두 `alignContent` 가 선언한 값 그대로 남는다 — 진단 3창(`cssRules` → `querySelectorAll` → `getComputedStyle`)을 다 통과하고도 **결과만 다른** 자리다. `getBoundingClientRect()` 로 재야 안다.
+- ★★ **계산값으로는 이 차이가 안 보인다.** 네 판 모두 `alignContent` 가 선언한 값 그대로 남는다 — 진단 3종(`cssRules` → `querySelectorAll` → `getComputedStyle`)을 다 통과하고도 **결과만 다른** 자리다. `getBoundingClientRect()` 로 재야 안다.
 - [24번](../24-flexbox-axes/)의 「`align-content` 는 줄이 둘 이상일 때만」이라는 설명은 **실무에서 거의 맞지만 경계가 정확하지 않다.** 정확한 경계는 여기다.
 
 비용 — 없다. 다만 **`flex-wrap` 을 안 쓴 컨테이너에서 `align-content` 로 세로 가운데를 맞추려는 시도는 무조건 실패한다.** 그때 쓸 것은 `align-items` 다.
@@ -450,7 +450,7 @@ CSS 는 문법 표면이 단순하므로 이 절은 **어디서 헷갈리나**�
 .c > .item { gap: 10px; }                            /* 그 항목이 또 컨테이너가 아니면 무의미 */
 ```
 
-*(Chrome 151 headless 실측 — 진단 3창의 첫째 창(`cssRules`)으로 읽은 결과: `#g1 { }` ← `gap: -10px` · `#g2 { gap: 10px; }` ← 정상 · `#g3 { }` ← `order: 1.5` · `#g4 { order: -1; }` ← 음수 정수는 **유효하다**. `gap` 음수와 `order` 소수는 파싱에서 버려졌고 에러도 경고도 없다.)*
+*(Chrome 151 headless 실측 — 진단 3종의 첫째 확인 방법(`cssRules`)으로 읽은 결과: `#g1 { }` ← `gap: -10px` · `#g2 { gap: 10px; }` ← 정상 · `#g3 { }` ← `order: 1.5` · `#g4 { order: -1; }` ← 음수 정수는 **유효하다**. `gap` 음수와 `order` 소수는 파싱에서 버려졌고 에러도 경고도 없다.)*
 
 ## 구현 세부사항 대 언어 보장
 
@@ -476,7 +476,7 @@ CSS 는 문법 표면이 단순하므로 이 절은 **어디서 헷갈리나**�
 
 ### 2. `nowrap` 에서 `align-content` 로 세로 가운데를 맞추려 한다
 
-**절대 안 된다**((5)). 계산값은 `center` 로 멀쩡히 남아서 **진단 3창으로도 안 잡힌다.**\
+**절대 안 된다**((5)). 계산값은 `center` 로 멀쩡히 남아서 **진단 3종으로도 안 잡힌다.**\
 `flex-wrap: wrap` 을 켜면 줄이 하나여도 먹는다 — 하지만 세로 가운데가 목적이면 **`align-items: center` 가 정답**이다.
 
 ### 3. 「줄이 하나면 `align-content` 가 안 먹는다」로 외운다

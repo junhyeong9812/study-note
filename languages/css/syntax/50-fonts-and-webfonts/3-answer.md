@@ -386,7 +386,7 @@
 
 **진단하는 창구**
 
-- **두 번째 창**(`document.fonts`)이다.\
+- **두 번째 확인 방법**(`document.fonts`)이다.\
   `cssRules` 에는 `@font-face` 규칙이 그대로 보일 수 있고, `getComputedStyle` 은 늘 선언 목록을 돌려준다 —\
   **face 가 등록됐나**를 묻는 창은 `document.fonts` 뿐이다.
 

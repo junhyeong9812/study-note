@@ -277,7 +277,7 @@ pack01.cpp:21:21: note: in instantiation of function template specialization 'ce
 **안 돌려 본 것 / 못 잰 것**
 
 - **안 돌려 본 것** — ★ **람다 팩 캡처** · **libc++**.
-- ★ **「해당 없는 창」** — ASan · 어셈블리 · 경고 격자.
+- ★ **「해당 없는 확인 방법」** — ASan · 어셈블리 · 경고 격자.
 
 **버전이 올랐을 때 다시 돌려야 하는 것**
 

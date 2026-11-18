@@ -1190,7 +1190,7 @@ show("json.loads('[1,]')", lambda: json.loads("[1,]"))
 | `structuredClone` | — **호스트 API**(HTML) | 세 버전 다 있다 |
 | `JSON.rawJSON` · `JSON.isRawJSON` · `reviver` 의 `context.source`(JSON.parse source text access) | **ES2026** | ★ **두 node 버전에 없다** — Chrome 151 로만 돌렸다 |
 
-**★★★ 이 주제가 쓰는 창 — 그리고 해당 없는 창**
+**★★★ 이 주제가 쓰는 확인 방법 — 그리고 해당 없는 확인 방법**
 
 | 창 | 이 주제에서 무엇을 보나 |
 |---|---|

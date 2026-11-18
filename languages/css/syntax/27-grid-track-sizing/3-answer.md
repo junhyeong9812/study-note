@@ -169,7 +169,7 @@ repeat(2, 100px 50px)                          "repeat(…)"  100px 50px 100px 5
 - **없다.** 에러도 경고도 없고, 화면에는 「앞서 이긴 값」이 그대로 그려진다.
 - CSS 는 에러가 없는 언어라 **버려진 것과 안 먹는 것의 증상이 똑같다.**
 
-**진단 3창**
+**진단 3종**
 
 ```text
 ① document.styleSheets[i].cssRules[j].style.gridTemplateColumns
@@ -409,7 +409,7 @@ min-content                    max-content
 - **`min-content` / `max-content`** — 줄바꿈을 최대한 한 폭 / 줄바꿈 없는 폭. 정본은 31번.
 - **`fit-content(x)`** — 내용만큼이되 `x` 에서 멈춘다.
 - **계산값(resolved value)** — `getComputedStyle` 이 돌려주는 값. 이 속성에서는 **px 로 푼 사용값**이다.
-- **진단 3창** — `cssRules`(담겼나) → `querySelectorAll`(잡혔나) → `getComputedStyle`(이겼나). CSS 에 에러가 없어 증상이 같기 때문에 필요하다.
+- **진단 3종** — `cssRules`(담겼나) → `querySelectorAll`(잡혔나) → `getComputedStyle`(이겼나). CSS 에 에러가 없어 증상이 같기 때문에 필요하다.
 
 ## 실행 검증
 

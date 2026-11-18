@@ -704,10 +704,10 @@ print("   Protocol : ProtoBroken() 이 만들어졌다 ->", type(ProtoBroken()).
   ★ 그런데 `isinstance(p, Sequence)` 는 **거짓**이다. `Sequence` 에는 `__subclasshook__` 이 없기 때문이다(5번 답의 ②).
 * ★ **③ — MRO 의 길이가 곧 물려받은 것의 양**이다.
   `AbcSeq` 는 여덟 개짜리 줄이고 `ProtoSeq` 는 `['ProtoSeq', 'object']` 다.
-* ★★ **④가 [32번](../32-container-protocol/2-summary.md)의 네 번째 창을 다시 건다.**
+* ★★ **④가 [32번](../32-container-protocol/2-summary.md)의 네 번째 확인 방법을 다시 건다.**
   `__getitem__` 만 가진 낡은 객체는 **양쪽 다 거짓인데 `for` 는 돈다**(`['a', 'b']`).
   ★ `SeqLike` 가 거짓인 이유는 **`__len__` 이 없어서**다 — 이름만 보기 때문이다.
-  ★★ 즉 **「돈다」를 물으려면 여전히 `iter(x)` 를 걸어 봐야 한다.** `Protocol` 도 그 창이 아니다.
+  ★★ 즉 **「돈다」를 물으려면 여전히 `iter(x)` 를 걸어 봐야 한다.** `Protocol` 도 그 확인 방법이 아니다.
 * ★★★ **⑤가 세 갈래를 한 블록에 요약한다.**
   같은 「안 채운 하위 클래스」인데 **ABC 는 `TypeError`, `Protocol` 은 그냥 만들어진다.**
 
@@ -743,7 +743,7 @@ print("   Protocol : ProtoBroken() 이 만들어졌다 ->", type(ProtoBroken()).
 | `issubclass(C, ABC)` | 위와 같다 | 비메서드 멤버 프로토콜에서는 **아예 막힌다**(4번 답) |
 | `ABC.__subclasses__()` | ★ **진짜 상속만** | `register` 한 것 · 갈고리로 걸린 것 |
 
-* ★★★ **세 창 어디에도 「이 ABC 를 만족하는 것 전부」는 없다.**
+* ★★★ **세 확인 방법 어디에도 「이 ABC 를 만족하는 것 전부」는 없다.**
   Go 20번이 「그 목록은 **원리상 못 만든다**」고 적은 것과 같은 자리다(10번 답).
 
 ### 9. 셋을 안 본다 — 그리고 서명을 보려면 `inspect` 로 직접 봐야 한다

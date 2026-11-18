@@ -267,7 +267,7 @@ int main(void) {
 
 **환경** — gcc 13.3.0 · clang 18.1.3 · g++/clang++ 같은 판 · x86-64 Linux · 기본 `-std=c17 -Wall -Wextra -pedantic`.
 
-★★★ **핵심 창은 `-O2` 어셈블리** — 4번은 **명령 수**까지 적어야 답이다. ★ **시간은 묻지 않는다** — 이 편은 재지 않았다.
+★★★ **핵심 확인 방법은 `-O2` 어셈블리** — 4번은 **명령 수**까지 적어야 답이다. ★ **시간은 묻지 않는다** — 이 편은 재지 않았다.
 ★★★ **5번은 판 격자**다 — 네 벌을 다 적어라.
 선행 — [14번 형제](../14-pointers-address-dereference-and-pointer-types/) · [29번 형제](../29-scope-and-linkage-static-extern/).
 

@@ -321,7 +321,7 @@ CSS 의 `font-family` 는 **그 이름**을 찾는다. `fc-match "Nanum Gothic"`
                                          size 와 family 가 없으면 선언째 버려진다
 ```
 
-실측 — `cssText` 로 **담겼나**를 본 것이다(07번의 「진단 3창」 첫 창).
+실측 — `cssText` 로 **담겼나**를 본 것이다(07번의 「진단 3종」 첫 창).
 
 | 쓴 것 | `cssRules` 의 `cssText` | 결과 |
 |---|---|---|

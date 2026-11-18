@@ -74,7 +74,7 @@ grid-template-columns:                         getComputedStyle(el)
 > **계산값(resolved value)** — `getComputedStyle` 이 돌려주는 값. 속성에 따라 계산값이거나 사용값이다.\
 > 예: `grid-template-columns` 는 **사용값**이 와서 `1fr` 이 `150px` 로 풀려 있다. 어느 단계 값이 오는지의 정본은 [목록의 **04번 주제**](../04-value-processing-stages/)다.
 
-### (1) 진단 3창 — 무효한 트랙 정의는 소리 없이 버려진다
+### (1) 진단 3종 — 무효한 트랙 정의는 소리 없이 버려진다
 
 **언제 쓰나** — 「트랙을 줬는데 안 먹는다」가 나왔을 때. CSS 는 에러가 없는 언어다.
 

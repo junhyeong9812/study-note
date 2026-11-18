@@ -117,8 +117,8 @@
 - `cssRules` 에 악보가 담겨 있는가?
 - `getComputedStyle(#b).animationName` 은 무엇을 돌려주는가?
 - `getComputedStyle(#b).width` 는 무엇인가?
-- 이 증상은 진단 3창(`cssRules` → `querySelectorAll` → `getComputedStyle`) 중 어디에서 잡히는가?
-- 잡히지 않는다면 **네 번째 창**으로 무엇을 쓰는가?
+- 이 증상은 진단 3종(`cssRules` → `querySelectorAll` → `getComputedStyle`) 중 어디에서 잡히는가?
+- 잡히지 않는다면 **네 번째 확인 방법**으로 무엇을 쓰는가?
 
 ### 10. 진행률을 고정해 재는 법 (왜)
 

@@ -442,7 +442,7 @@ For more information about this error, try `rustc --explain E0277`.
 - ★★ **`` AssertParamIsEq `` 는 `derive(Eq)` 가 만들어 넣는 내부 타입**이다.
   `Eq` 는 **메서드가 없는 표식**이라 「필드가 정말 `Eq` 인가」를 검사할 자리가 따로 필요했고,
   파생 코드가 그 이름의 보조 타입을 하나 만들어 경계를 건다. `` note: required by a bound in `AssertParamIsEq` `` 가
-  **생성 코드의 조각을 이름으로 흘린 것**이다(7번 답의 셋째 창).
+  **생성 코드의 조각을 이름으로 흘린 것**이다(7번 답의 셋째 확인 방법).
 - `Hash` 쪽에는 그 note 가 없다 — `Hash` 는 진짜 메서드가 있어서 보조 타입이 필요 없다.
 
 ### 4. ★★★ `PhantomData<T>` 인데 `T: Clone` 이 필요해진다
@@ -542,7 +542,7 @@ For more information about an error, try `rustc --explain E0277`.
 - ★★★ **두 진단 모두 `#[derive(Clone)]` 줄을 가리키며 같은 말을 한다** —
   `` unsatisfied trait bound introduced in this `derive` macro ``.
   「**이 경계는 네가 쓴 게 아니라 `derive` 가 붙인 것이다**」라고 컴파일러가 직접 말해 준다.
-  ★ 이것이 **생성 결과를 보는 둘째 창**이다(7번 답).
+  ★ 이것이 **생성 결과를 보는 둘째 확인 방법**이다(7번 답).
 - ★★★ **왜 과한가** — `Tagged<T>` 의 필드는 `i64` 와 `PhantomData<T>` 뿐이고
   `PhantomData<T>` 는 **`T` 값을 하나도 안 들고 크기도 0** 이다. 복제에 `T: Clone` 이 **필요하지 않다.**
   그런데 `derive` 는 「**제네릭 파라미터마다 같은 경계를 붙인다**」는 한 가지 규칙만 따르므로 붙인다.

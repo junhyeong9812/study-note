@@ -256,7 +256,7 @@ JVM 바이트코드에 동적 메서드 호출을 위한 새 명령 `invokedynam
 > **바이트코드(bytecode)와 명령(instruction)** — 자바 소스를 컴파일하면 나오는, JVM이 읽는 중간 형태의 코드와 그 한 단위.\
 > 예: 원문이 이 자리에 "새 명령"으로 추가됐다고 적은 것이 `invokedynamic`이다.
 
-> **`MethodHandle`(`java.lang.invoke`)** — 어떤 메서드를 가리켜 두었다가 나중에 불러 쓰게 해 주는 손잡이.\
+> **`MethodHandle`(`java.lang.invoke`)** — 어떤 메서드를 가리켜 두었다가 나중에 불러 쓰게 해 주는 핸들.\
 > 예: 원문은 이 API가 `invokedynamic` 명령과 함께 추가됐다고만 적고, 사용 코드는 이 편에 없다.
 
 > **재서술자 주:** 이 문장은 람다를 다루는 같은 시리즈 `java-8.md`를 읽을 때 함께 볼 자리다. 이 편은 `invokedynamic`이 "Java 8 람다 구현의 기반이 되었다"고 적는데, `java-8.md`의 람다 절은 그 구현 방식을 다시 적지 않고 익명 클래스와의 코드 비교만 보여 준다.
@@ -304,7 +304,7 @@ JVM 바이트코드에 동적 메서드 호출을 위한 새 명령 `invokedynam
 - **분할 정복(divide-and-conquer)** — 큰 일을 쪼개 따로 풀고 답을 합치는 방식. 원문이 Fork/Join이 다루는 작업의 성격으로 든 말이다.
 - **작업 훔치기(work-stealing)** — 원문이 Fork/Join의 스케줄링 방식으로 든 이름. 동작은 원문에 없다.
 - **바이트코드(bytecode) / 명령(instruction)** — JVM이 읽는 중간 형태의 코드 / 그 한 단위. `invokedynamic`이 이 층에 새로 생긴 명령이다.
-- **`MethodHandle`(`java.lang.invoke`)** — 메서드를 가리켜 두었다가 나중에 불러 쓰게 해 주는 손잡이. `invokedynamic`과 함께 추가됐다.
+- **`MethodHandle`(`java.lang.invoke`)** — 메서드를 가리켜 두었다가 나중에 불러 쓰게 해 주는 핸들. `invokedynamic`과 함께 추가됐다.
 - **experimental(실험적)** — 들어 있으나 아직 정식 지원을 보증하지 않는 상태. 원문이 Java 7 GA 시점의 G1을 이렇게 적는다.
 - **가비지 컬렉터(GC)** — 쓰지 않는 객체의 메모리를 자동으로 거둬 가는 장치. 원문은 G1을 "CMS를 잇는 차세대 GC"라 적는다.
 

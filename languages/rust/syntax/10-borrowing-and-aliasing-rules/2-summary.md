@@ -70,7 +70,7 @@ error[E0499]: cannot borrow `s` as mutable more than once at a time
 
 ## 동작 방식
 
-### (0) 이 주제가 쓰는 네 창
+### (0) 이 주제가 쓰는 확인 방법 네 가지
 
 **언제 쓰나** — 아래 모든 절이 이 넷 중 하나로 접지한다.
 
@@ -81,7 +81,7 @@ error[E0499]: cannot borrow `s` as mutable more than once at a time
 | **`let _: () = 식;`** | 어떤 식이 **무슨 타입인지** 컴파일러에게 묻기 | [**04번 주제**](../04-expressions-and-semicolons/) |
 | ★★ **같은 코드의 순서만 바꿔 던지기** | **NLL** — 마지막 사용 위치가 통과/거부를 가른다 | 이 주제가 세운다 |
 
-★ 네 번째가 이 주제의 고유 창이다. **빌림이 언제 끝나는지는 에러 메시지 자체가 말해 준다** —
+★ 네 번째가 이 주제의 고유 확인 방법이다. **빌림이 언제 끝나는지는 에러 메시지 자체가 말해 준다** —
 `immutable borrow later used here` 가 가리키는 줄이 곧 **대출 만료일**이다.
 
 비용 — 없음. 전부 컴파일 타임이다.

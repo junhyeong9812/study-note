@@ -92,7 +92,7 @@ SRE 책 3장은 가용성을 재는 식 두 개를 준다.
 - 9가 하나 늘면 허용 비가용 시간이 10분의 1이 된다(SRE 3장 "Each additional nine corresponds to an order of magnitude improvement toward 100%").
 - 참고: 원본 §1의 "9가 하나 늘 때마다 비용은 대략 한 자릿수씩 는다"는 SRE 책 표현과 다르다. SRE 3장의 "한 자릿수"(order of magnitude)는 비용이 아니라 비가용성이 10분의 1로 준다는 뜻이다. 비용은 SRE 3장 「Managing Risk」 절이 "신뢰성을 한 단계 올리는 데 앞 단계보다 100배가 들 수도 있다"(may cost 100x more than the previous increment)고 쓴다 — 고정 배수가 아니라 "선형으로 늘지 않는다"는 경험적 말이다(<https://sre.google/sre-book/embracing-risk/>).
 
-### 4. MTTF·MTBF·MTTR — 가용성을 두 손잡이로 나누기
+### 4. MTTF·MTBF·MTTR — 가용성을 두 조절 수단으로 나누기
 
 ```text
  시간 ─▶  [── 가동 ──][고장][────── 가동 ──────][고장][── 가동 ──] …

@@ -81,9 +81,9 @@ OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sha
 
 ## 동작 방식
 
-### (0) 이 주제가 쓰는 창
+### (0) 이 주제가 쓰는 확인 방법
 
-★★★ **핵심 창은 ⑤ 실행 로그 격자다.**
+★★★ **핵심 확인 방법은 ⑤ 실행 로그 격자다.**
 
 | 창 | 무엇을 보여 주나 | 이 주제에서 |
 |---|---|---|
@@ -92,7 +92,7 @@ OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sha
 | ★ **② 진단** | ★ `-langversion:2` 의 `CS8023`(람다) — 판 경계 | (6) |
 | **① IL 덤프** | ★ **이 주제는 안 쓴다** — `xs.Where(f)` 가 `call Enumerable::Where` 인 것은 [30번](../30-extension-methods-and-extension-members/) (1)이 찍었다(인용) | — |
 | **④ 할당 바이트** | ★ **안 쟀다** — 이 주제의 질문(「언제 읽나」)은 할당이 아니라 **로그 줄 수**가 답한다. 반복자 객체의 할당은 [32번](../32-yield-return-iterators-and-deferred-execution/) (8)이 쟀다 | — |
-| **해당 없는 창** | 없다 | — |
+| **해당 없는 확인 방법** | 없다 | — |
 
 ```text
 ===== cd packs/Microsoft.NETCore.App.Ref/10.0.12/ref/net10.0 && echo "deferred $(grep -c -i deferred System.Linq.xml) · lazy $(grep -c -i lazy System.Linq.xml) · member $(grep -c "<member " System.Linq.xml)" (exit=0) =====
@@ -101,7 +101,7 @@ deferred 0 · lazy 0 · member 244
 
 ★★ 위 블록은 **dotnet 설치 디렉토리에서** 돌린 것이다(배너의 `cd` 는 그 아래 상대 경로). **`<member ` 줄 244 개 중 `deferred`·`lazy` 0 줄** — XML 문서는 **예외 조항과 반환값**만 말하고 **「언제 읽나」는 말하지 않는다.** 그래서 이 주제는 로그로만 답한다.
 
-★ **제5의 상태 — 같은 질문을 다른 창으로 물었다.** 「`Count()` 가 열거했나」는 성능 계측으로 물을 수도 있지만 **재지 않았다.** 대신 **소스 타입이 `GetEnumerator` 를 불렸는지 스스로 적게** 했다((2)). 이 창은 **「불렸나」만 보고 「얼마나 걸렸나」는 못 본다.**
+★ **제5의 상태 — 같은 질문을 다른 확인 방법으로 물었다.** 「`Count()` 가 열거했나」는 성능 계측으로 물을 수도 있지만 **재지 않았다.** 대신 **소스 타입이 `GetEnumerator` 를 불렸는지 스스로 적게** 했다((2)). 이 확인 방법은 **「불렸나」만 보고 「얼마나 걸렸나」는 못 본다.**
 
 ### (1) ★★★ 본체 — 즉시 대 지연 격자: 연산자 16 × 두 시점
 
@@ -586,7 +586,7 @@ choi kim lee park
 **버전** — ★★ **언어 쪽 경계는 쟀다** — `-langversion:2` 가 **람다**와 **확장 메서드 선언**에 `CS8023 … 3 or greater` 를 냈고, **확장 메서드 호출 `xs.Where(delegate …)` 는 막지 않았다**((6)). ★ 라이브러리 쪽(`Chunk`·`TryGetNonEnumeratedCount` 가 들어온 .NET 판)은 이 머신에 참조 팩이 **10.0.12 하나뿐**이라 **확인하지 못했다.**
 **경계** — ★★★ **「호출하면 0 줄 · `ToList()` 하면 돈다 · 사슬이 `4 · 4`」 는 [32번](../32-yield-return-iterators-and-deferred-execution/) (6)(7)이 이미 쟀다** — 여기서는 **다시 재지 않고 인용한다.** 여기는 그 다음 두 칸이다 — ① **연산자 16개를 「호출 즉시」와 「첫 `MoveNext`」 두 시점으로 가른 격자** · ② **「지연인데 한 개씩이 아닌」 연산자**(`OrderBy`·`Reverse`·`GroupBy`).\
 ★★ LINQ 가 **`System.Linq.Enumerable` 의 확장 메서드 묶음**인 것은 [30번](../30-extension-methods-and-extension-members/) (1)이 정본이다(`Where` 오버로드 2개가 전부 `static` · `[Extension]`). ★★ 캡처한 변수를 고치면 양쪽이 본다는 것은 [28번](../28-lambdas-and-closure-capture/) (6)이 정본이다 — 여기서는 **그것이 쿼리에서 어떻게 보이나** 한 칸((3)).
-★★★ **핵심 창은 ⑤ 실행 로그 격자다** — 「즉시냐 지연이냐」는 **소스가 로그를 몇 줄 남겼나**로만 보인다. 반환 타입으로는 안 보인다((1) — `ToList` 도 `IEnumerable<T>` 를 구현한다).
+★★★ **핵심 확인 방법은 ⑤ 실행 로그 격자다** — 「즉시냐 지연이냐」는 **소스가 로그를 몇 줄 남겼나**로만 보인다. 반환 타입으로는 안 보인다((1) — `ToList` 도 `IEnumerable<T>` 를 구현한다).
 
 ★★ **실행마다 달라지는 항목 / 달라지지 않는 항목**
 

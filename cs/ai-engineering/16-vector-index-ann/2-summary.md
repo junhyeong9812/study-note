@@ -317,7 +317,7 @@ CREATE INDEX ON items USING hnsw (embedding vector_cosine_ops) WHERE (cat = 3);
 ## 핵심 문장
 
 - 전수 탐색은 recall 1.0이고 비용이 N에 비례한다. 근사 인덱스는 빠른 대신 결과가 바뀐다.
-- HNSW는 `ef_search`, IVFFlat은 `probes`가 recall과 지연을 함께 움직이는 손잡이다. 기본값부터 시작해 recall을 재고 바꾼다.
+- HNSW는 `ef_search`, IVFFlat은 `probes`가 recall과 지연을 함께 움직이는 조절 수단이다. 기본값부터 시작해 recall을 재고 바꾼다.
 - 필터는 인덱스 탐색 뒤에 적용된다. 선택도 10% + ef_search 40이면 평균 4행이다. 반복 스캔·부분 인덱스·파티션으로 푼다.
 - IVFFlat은 k-평균으로 목록을 만들므로 데이터를 넣은 뒤 만든다. HNSW는 학습 단계가 없다.
 - recall은 표본 질의로 근사 결과와 정확 결과를 비교해 운영 지표로 둔다.

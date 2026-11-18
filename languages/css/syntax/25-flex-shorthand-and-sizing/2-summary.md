@@ -353,7 +353,7 @@ grow 가 전부 1 일 때                      grow 가 1 / 2 / 3 일 때
 
 **언제 쓰나** — 콘솔에서 「왜 이 폭이 나왔나」를 조사할 때. **틀린 창으로 보면 답이 안 나온다.**
 
-400px 컨테이너에 항목 넷을 넣고 세 창을 **같이** 읽었다.
+400px 컨테이너에 항목 넷을 넣고 세 확인 방법을 **같이** 읽었다.
 
 ```text
 항목      flex-basis(계산값)   width(계산값)    getBoundingClientRect().width
@@ -475,7 +475,7 @@ flex: <키워드>
 .item { flex-shrink: 999; }                 /* (6) 을 보라 */
 ```
 
-*(Chrome 151 headless 실측 — 진단 3창의 첫째 창(`cssRules`)으로 읽은 결과.\
+*(Chrome 151 headless 실측 — 진단 3종의 첫째 확인 방법(`cssRules`)으로 읽은 결과.\
 `#n1 { }` ← `flex-grow: -1` · `#n2 { flex-grow: 1; }` ← 정상 · `#n3 { }` ← `flex: 1 1 -10px` · `#n4 { }` ← `flex-shrink: -1`.\
 음수를 쓴 셋은 **규칙 상자가 비어 있다** — 선언이 파싱 단계에서 버려졌고 에러도 경고도 없다. 오류 복구의 정본은 [07번](../07-syntax-and-error-recovery/).)*
 
@@ -606,7 +606,7 @@ flex: <키워드>
 - ★ **`overflow` 를 `visible` 이 아닌 값으로 줘도 (6)의 바닥이 사라진다.** (6)과 같은 문서에서 `.main` 의 `overflow` 만 바꿔 쟀다.\
   *(실측: `overflow: visible` → 폭 280.02 · 오른끝 380.02(뚫는다) / `overflow: hidden` → 200.00 · 300.00 / `overflow: auto` → 200.00 · 300.00.)*\
   ★★ **그런데 세 판 모두 `getComputedStyle(main).minWidth` 는 `auto` 그대로였다.** 계산값만 보면 셋이 구분되지 않는다 —
-  「담겼나·잡혔나·이겼나」의 세 창 어디에도 안 잡히고 **`getBoundingClientRect()` 로만 드러나는 자리**다.
+  「담겼나·잡혔나·이겼나」의 세 확인 방법 어디에도 안 잡히고 **`getBoundingClientRect()` 로만 드러나는 자리**다.
   그래서 **`min-width: 0`을 안 썼는데 안 터지는 코드**가 있고, 나중에 누가 `overflow` 를 지우면 그때 터진다.
 - **`flex-basis` 에도 내재적 크기 키워드를 쓸 수 있다** — `flex: 1 1 min-content` 처럼. (9)의 항목4 가 그 판이고 계산값이 `min-content` 로 남았다. 키워드의 뜻은 [31번](../31-intrinsic-sizing-and-aspect-ratio/)이 정본이다.
 

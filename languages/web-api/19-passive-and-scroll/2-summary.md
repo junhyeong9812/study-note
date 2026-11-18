@@ -20,7 +20,7 @@ Google Chrome 151.0.7922.173
 - 재대조에서 정규화하는 칸은 없다. **위 표에 없는 차이는 전부 고칠 것**이다.
 - ★ **스크롤이 끝났나**는 시간 상수로 기다리지 않았다 — **`scrollend` 이벤트**가 오면 끝, 안 오면(막힌 경우) **animation frame 30장**을 넘긴 뒤 끝이다. 이 편이 읽는 것은 **거리가 아니라 「0 인가 아닌가」** 라서 30장 안에 끝나지 않은 스크롤도 판정이 같다.
 
-### 이 주제가 쓰는 창 / 해당 없는 창
+### 이 주제가 쓰는 확인 방법 / 해당 없는 확인 방법
 
 | 창 | 이 주제에서 | 무엇을 답하나 |
 |---|---|---|
@@ -31,7 +31,7 @@ Google Chrome 151.0.7922.173
 | **진짜 입력(CDP)** | ★ **쓴다 — 입력 쪽** | 진짜 휠 · 진짜 터치 끌기 |
 | **창 ⑤ 콘솔(CDP `Log` 도메인)** | ★ **쓴다** | 막으려다 무시된 호출마다 **몇 줄이 남나**((6)) |
 
-- ★★ **제5의 상태 — 「이 리스너가 passive 인가」를 옵션값이 아니라 행동으로 물었다.** 표준에 등록된 리스너의 옵션을 **읽는 표면이 없다**([15번 주제](../15-listener-registration/2-summary.md) — `EventTarget` 의 표면은 세 메서드뿐). 그래서 **리스너 안에서 `preventDefault()` 를 불러 보고 `defaultPrevented` 로 판정**했다. ★ 바꾼 창이 못 보는 것 — **`cancelable: false` 인 이벤트**에서는 passive 든 아니든 `defaultPrevented` 가 `false` 다. 그래서 격자는 **`cancelable: true` 로 만든 합성 이벤트**로만 실행했다.
+- ★★ **제5의 상태 — 「이 리스너가 passive 인가」를 옵션값이 아니라 행동으로 물었다.** 표준에 등록된 리스너의 옵션을 **읽는 표면이 없다**([15번 주제](../15-listener-registration/2-summary.md) — `EventTarget` 의 표면은 세 메서드뿐). 그래서 **리스너 안에서 `preventDefault()` 를 불러 보고 `defaultPrevented` 로 판정**했다. ★ 바꾼 확인 방법이 못 보는 것 — **`cancelable: false` 인 이벤트**에서는 passive 든 아니든 `defaultPrevented` 가 `false` 다. 그래서 격자는 **`cancelable: true` 로 만든 합성 이벤트**로만 실행했다.
 
 ### 도구가 못 보는 것
 

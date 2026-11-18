@@ -167,7 +167,7 @@ int use(void) { return count_calls() + read_hidden(); }
 
 **환경** — gcc 13.3.0 · clang 18.1.3 · g++ 13.3.0 · clang++ 18.1.3 · x86-64 Linux.
 
-★★★ **핵심 창은 링크 격자** — 1번은 **칸마다 「링크 성공 / `undefined reference` / `multiple definition`」** 을 적어야 답이다.
+★★★ **핵심 확인 방법은 링크 격자** — 1번은 **칸마다 「링크 성공 / `undefined reference` / `multiple definition`」** 을 적어야 답이다.
 ★★ **한 번역 단위 안의 세 형태**는 [29번 형제](../29-scope-and-linkage-static-extern/) (8)에서 이미 풀었다 — 여기는 **헤더를 두 파일이 include** 한다.
 선행 — [29번 형제](../29-scope-and-linkage-static-extern/) · [목록의 **44번 주제**](../44-headers-and-separate-compilation/).
 

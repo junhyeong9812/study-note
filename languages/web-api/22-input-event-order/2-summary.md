@@ -20,7 +20,7 @@ Google Chrome 151.0.7922.173
 
 - 재대조에서 정규화하는 칸은 없다. **위 표에 없는 차이는 전부 고칠 것**이다.
 
-### 이 주제가 쓰는 창 / 해당 없는 창
+### 이 주제가 쓰는 확인 방법 / 해당 없는 확인 방법
 
 | 창 | 이 주제에서 | 무엇을 답하나 |
 |---|---|---|
@@ -31,7 +31,7 @@ Google Chrome 151.0.7922.173
 | **진짜 키 입력(CDP)** | ★ **쓴다 — 입력 쪽** | 글자 · Backspace · Enter · Ctrl+C/V |
 | ★★ **CDP 의 조합 흉내** | ★ **쓴다 — 단 제5의 상태** | 실제 입력기 대신 **CDP 가 만든 조합**으로 물었다 |
 
-- ★★★ **제5의 상태 — 「조합 중에 무엇이 오나」를 진짜 입력기가 아니라 CDP 의 흉내로 물었다.** ★ **바꾼 창이 못 보는 것** — ① CDP 의 조합 호출은 **키 이벤트를 하나도 만들지 않는다**((4) — 키 이벤트는 따로 넣어야 한다). ② 그래서 **조합 중 `keydown` 의 `key`·`keyCode` 는 이 편이 넣은 값이 그대로 보일 뿐**이다 — `"Process"`/`229` 를 **Chrome 이 만든 것인지 이 편이 넣은 것인지 구분할 수 없다**((6)). ③ 실제 입력기가 조합을 **언제 확정하고 몇 번 갱신하는지**도 CDP 가 정한 것이다.
+- ★★★ **제5의 상태 — 「조합 중에 무엇이 오나」를 진짜 입력기가 아니라 CDP 의 흉내로 물었다.** ★ **바꾼 확인 방법이 못 보는 것** — ① CDP 의 조합 호출은 **키 이벤트를 하나도 만들지 않는다**((4) — 키 이벤트는 따로 넣어야 한다). ② 그래서 **조합 중 `keydown` 의 `key`·`keyCode` 는 이 편이 넣은 값이 그대로 보일 뿐**이다 — `"Process"`/`229` 를 **Chrome 이 만든 것인지 이 편이 넣은 것인지 구분할 수 없다**((6)). ③ 실제 입력기가 조합을 **언제 확정하고 몇 번 갱신하는지**도 CDP 가 정한 것이다.
 
 ### 도구가 못 보는 것
 
@@ -741,7 +741,7 @@ $ python3 wa20b-cdp.py page wa20b-22-enter.html | sed -n '19,23p'
 
 ## 실행 환경
 
-★★★ **이 편의 핵심은 창 ④ 를 늘린 「한 번 타이핑의 시간선」이다** — 진짜 키 입력 한 번이 부르는 이벤트를 **한 줄씩, 그때의 `value` 와 함께** 적는다. 이벤트가 **값을 바꾸기 전인가 뒤인가**가 이 시간선에서만 보인다.\
+★★★ **이 편의 핵심은 확인 방법 ④ 를 늘린 「한 번 타이핑의 시간선」이다** — 진짜 키 입력 한 번이 부르는 이벤트를 **한 줄씩, 그때의 `value` 와 함께** 적는다. 이벤트가 **값을 바꾸기 전인가 뒤인가**가 이 시간선에서만 보인다.\
 ★★★ **IME 조합은 CDP 의 흉내다 — 진짜 입력기가 아니다.** `Input.imeSetComposition`·`Input.insertText` 는 CDP 문서 스스로 **experimental** 이고 「IME 를 **흉내 낸다**(emulates)」고 적는다. 이 편이 조합에 대해 적는 것은 전부 **「CDP 가 조합을 흉내 냈을 때 Chrome 151 이 낸 이벤트」** 이고, **실제 한글·일본어 입력기가 같은 순서를 내는지는 못 쟀다**(맨 위 「도구가 못 보는 것」).\
 **기준 소스** — [W3C UI Events](https://w3c.github.io/uievents/) 의 「3.6.5 Key Events During Composition」·「3.6.6 Input Events During Composition」·「7.3.1 How to determine keyCode for keydown and keyup events」(비규범 절 — 입력기가 처리 중이면 **229**) · [W3C Input Events Level 2](https://w3c.github.io/input-events/) 의 `inputType` 표(`insertCompositionText` 는 **「beforeinput cancelable: No」**) · [HTML Living Standard — The input element](https://html.spec.whatwg.org/multipage/input.html) 의 「Common event behaviors」 절(「`change` 는 값이 **확정될 때**, 그게 말이 안 되면 **포커스를 잃을 때**」) · CDP 는 [devtools-protocol 의 `browser_protocol.json`](https://github.com/ChromeDevTools/devtools-protocol/blob/master/json/browser_protocol.json) 의 `Input` 도메인. 열어서 확인한 것만 적었다(기준일 2026-09-26).\
 **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. **키는 CDP `Input.dispatchKeyEvent` 로 넣은 진짜 입력**(렌더러가 사용자 키처럼 처리한다), 붙여넣기는 같은 키에 **편집 명령 `copy`·`paste`** 를 실은 것, **조합은 CDP 의 흉내**다. 하네스는 [20번 주제](../20-listener-lifetime/2-summary.md)의 (1)에 있다.\

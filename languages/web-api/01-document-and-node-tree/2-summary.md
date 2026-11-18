@@ -59,9 +59,9 @@
 2. **`childNodes` 와 `children` 은 왜 둘인가.** 무엇이 한쪽에만 보이고, 그 차이가 어디서 사고가 되나.
 3. **탐색 프로퍼티가 왜 쌍으로 있나.** `parentNode`/`parentElement` 처럼 짝지어진 것들이 **어디서 갈리나.**
 
-## 이 갈래의 관측 창 — 보이지 않는 나무를 글자로 만든다
+## 이 갈래의 확인 방법 — 보이지 않는 나무를 글자로 만든다
 
-CSS 갈래에는 「무효한 선언이 조용히 버려진다」를 가르는 **진단 3창**이 있었다([CSS 07번 주제](../../css/syntax/07-syntax-and-error-recovery/2-summary.md)).\
+CSS 갈래에는 「무효한 선언이 조용히 버려진다」를 가르는 **진단 3종**이 있었다([CSS 07번 주제](../../css/syntax/07-syntax-and-error-recovery/2-summary.md)).\
 이 갈래의 문제는 다르다 — **버려지는 것이 아니라 「내가 상상한 나무」와 「실제 나무」가 다른 것**이다. 그래서 창도 다르다.
 
 ```text
@@ -596,7 +596,7 @@ HTML 문서의 HTML 요소는 **대문자**다. `n.nodeName === 'p'` 는 영원�
 - HTML 갈래 목록([`html/syntax/README.md`](../../html/syntax/README.md))의 **04번**(공백·텍스트·문자 참조) — **공백이 화면에서 축약되는 규칙의 정본.**\
   그쪽은 **공백이 어떻게 보이나**까지, 여기는 **그 공백이 노드로 몇 개 남나**부터다. 화면에서 하나로 합쳐 보이는 공백도 `childNodes` 에는 노드로 남아 있다
 - JS 갈래 목록([`js/syntax/README.md`](../../js/syntax/README.md))의 **15번**(프로토타입 체인) — `Node`·`Element` 는 **JS 프로토타입 사슬**로 노출된다. 「`instanceof` 가 무엇을 보나」는 그쪽, 「어떤 인터페이스가 무엇을 주나」는 여기다
-- [CSS 07번 주제](../../css/syntax/07-syntax-and-error-recovery/2-summary.md) — 이 갈래의 「관측 창」이 본뜬 **진단 3창**의 원본
+- [CSS 07번 주제](../../css/syntax/07-syntax-and-error-recovery/2-summary.md) — 이 갈래의 「관측 창」이 본뜬 **진단 3종**의 원본
 - [`../../../history/web/05-웹플랫폼-API.md`](../../../history/web/05-웹플랫폼-API.md) — DOM 이 **언제 어떻게 표준이 됐나**. 여기는 오늘의 계약만
 
 ## 용어 풀이

@@ -391,7 +391,7 @@
 }
 ```
 
-★ 「진단 3창」으로 물으면 이렇게 나온다.
+★ 「진단 3종」으로 물으면 이렇게 나온다.
 
 ```text
   창 1  cssRules  → 그 선언이 규칙 텍스트에 아예 없다
@@ -504,7 +504,7 @@
 - **backdrop root** — `backdrop-filter` 가 읽을 수 있는 「뒤」의 범위. 조상에 `opacity`(<1)·`filter` 가 있으면 거기서 잘린다.
 - **표준편차(standard deviation)** — 가우시안 흐림이 얼마나 넓게 퍼지는지를 정하는 값. `blur(4px)` 의 `4px` 가 이것이다.\
   예: 이 문서의 실측에서 `blur(4px)` 의 번진 띠는 16px 이었다(대략 4배).
-- **진단 3창** — `cssRules` → `querySelectorAll` → `getComputedStyle`. 정본은 [07번](../07-syntax-and-error-recovery/2-summary.md).
+- **진단 3종** — `cssRules` → `querySelectorAll` → `getComputedStyle`. 정본은 [07번](../07-syntax-and-error-recovery/2-summary.md).
 
 ## 더 들어가면
 

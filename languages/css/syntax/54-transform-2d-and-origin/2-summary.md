@@ -298,7 +298,7 @@ CSS Transforms Level 2 는 세 속성을 따로 둔다. 그리고 **합성 순�
 그림 해설 (한 단계씩):
 
 - ★★ **계산값에는 `matrix(2,0,0,2,60,0)` 이 버젓이 들어 있는데 화면은 안 움직인다.**\
-  진단 3창이 전부 정상인데 결과만 다른 **제4의 상태**다 — `getBoundingClientRect()` 로만 잡힌다.
+  진단 3종이 전부 정상인데 결과만 다른 **제4의 상태**다 — `getBoundingClientRect()` 로만 잡힌다.
 - **`display: inline-block` 이나 `block` 으로 바꾸면 먹는다.** `display` 의 안/바깥 값은 [16번 주제](../16-display-inner-outer/2-summary.md)가 정본이다.
 - **`<img>` 는 인라인인데도 먹는다** — 대체 요소(replaced element)라 변환 가능한 요소에 들기 때문이다(폭이 8px → 16px 로 커졌다).
 

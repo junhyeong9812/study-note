@@ -962,7 +962,7 @@ row("b.filter(() => false)", b.filter(() => false));
 「이 메서드는 원본을 안 바꾼다」는 결과 배열을 봐서는 반만 증명된다 — **도중에 썼다가 되돌렸을 수도** 있기 때문이다.
 그래서 원본을 `Proxy` 로 감싸 **`set` · `defineProperty` · `deleteProperty` 트랩이 몇 번 불리나**를 메서드마다 세고,
 마지막 줄의 「쓰기 트랩 0 으로 돌아온 메서드 N / M」을 **스크립트가 직접 센다**(동작 (1)).
-★ **이 창 하나가 24편(변형)과 25편(복사)을 한 줄로 가른다** — 변형 메서드는 같은 격자에서 트랩이 불린다.
+★ **이 확인 방법 하나가 24편(변형)과 25편(복사)을 한 줄로 가른다** — 변형 메서드는 같은 격자에서 트랩이 불린다.
 
 **기준 소스** — 열어서 확인한 것만.
 - [ECMA-262 2025(16판)](https://262.ecma-international.org/16.0/) — `Array.prototype.sort` · `toSorted` · `toReversed` · `toSpliced` · `with` · `reduce` · `map` 의 단계와 note ·
@@ -984,7 +984,7 @@ row("b.filter(() => false)", b.filter(() => false));
 | `Symbol.species` · `Symbol.isConcatSpreadable` | **ES2015** | 세 버전 다 있다 — [22번](../22-symbol-and-well-known-symbols/2-summary.md)이 정본 |
 | ★★★ `toSorted` · `toReversed` · `toSpliced` · `with`(Change Array by Copy) | ★★★ **ES2023** — [README](../README.md) 는 「ES2024」라 적었다. **finished proposals 표가 2023 이다**(목록 쪽이 틀렸다 — 이 편은 고치지 않고 보고만 한다) | ★ **node 18 에 없고** node 20 · Chrome 에 있다 |
 
-**★★★ 이 주제가 쓰는 창 — 그리고 해당 없는 창**
+**★★★ 이 주제가 쓰는 확인 방법 — 그리고 해당 없는 확인 방법**
 
 | 창 | 이 주제에서 무엇을 보나 |
 |---|---|

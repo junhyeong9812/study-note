@@ -210,7 +210,7 @@ int main(void) {
 
 **환경** — gcc 13.3.0 · clang 18.1.3 · g++ 13.3.0 · rustc 1.92.0 · x86-64 Linux · 기본 `-std=c17 -Wall -Wextra -pedantic`.
 
-★★★ **핵심 창은 함정 격자** — 1번은 **칸마다 값**과 **함수와 다른 칸의 수**를 적어야 답이다.
+★★★ **핵심 확인 방법은 함정 격자** — 1번은 **칸마다 값**과 **함수와 다른 칸의 수**를 적어야 답이다.
 선행 — [41번 형제](../41-preprocessor-directives-and-conditional-compilation/).
 
 ## 복습 기록

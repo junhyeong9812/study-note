@@ -289,7 +289,7 @@ style.minWidth = '0'          "0px"               "visible"     100.00 / 100.00
 - flex 항목의 **`min-width: auto`** 는 「내용보다 작아지지 마라」를 뜻한다. 그래서 **긴 라틴 낱말**(줄바꿈이 안 되는 것)이 든 항목이 307.19 를 차지하고 옆 항목이 35.09 로 밀렸다.
 - ★ **`overflow: hidden` 을 주면 그 규칙이 꺼진다** — 상자가 **100 / 100** 으로 균등해진다. 그런데 **`cs.minWidth` 는 여전히 `"auto"`** 다. **계산값이 바뀌지 않는 단계가 둘째 단계**다.
 - **왜 한쪽만 흔적이 남나** — `min-width: 0` 은 **그 속성의 값을 직접 바꾸는 것**이라 계산값이 `"0px"` 이 된다. `overflow: hidden` 은 **`min-width` 를 건드리지 않고** 「`auto` 가 무슨 뜻인지」를 바꾼다. **계산값은 「무엇이 선언됐나」를 말하지 「무엇이 일어나나」를 말하지 않는다.**
-- ★ **그래서 이 주제의 창 ④ 를 `getBoundingClientRect` 로 정했다.** CSS 갈래가 같은 모양을 여러 번 만나고 전부 그 창으로 잡았다(정본: [CSS 07번 주제](../../css/syntax/07-syntax-and-error-recovery/2-summary.md)의 진단 3창 주변 논의).
+- ★ **그래서 이 주제의 확인 방법 ④ 를 `getBoundingClientRect` 로 정했다.** CSS 갈래가 같은 모양을 여러 번 만나고 전부 그 창으로 잡았다(정본: [CSS 07번 주제](../../css/syntax/07-syntax-and-error-recovery/2-summary.md)의 진단 3종 주변 논의).
 - 마지막 블록은 **창 ④ 가 새 정보를 안 주는 자리**다 — 트리 밖에서는 두 창이 함께 침묵한다.
 
 ```text
@@ -364,8 +364,8 @@ $ google-chrome --headless --disable-gpu --no-sandbox --dump-dom wa06b-08-tree.h
 
 **왜 그런가**
 
-- CSS 갈래의 진단 3창에서 `getComputedStyle` 은 **셋째 창**이고 「**이겼나**」를 묻는다 — `cssRules`(담겼나) → `querySelectorAll`(잡혔나) → `getComputedStyle`(이겼나). 정본은 [CSS 07번 주제](../../css/syntax/07-syntax-and-error-recovery/2-summary.md)다.
-- **이 주제에서는 그 셋째 창 자체가 주인공**이다. 주인공을 주인공으로 검사할 수는 없으므로 **그 창을 검사할 창**이 필요하다 — 그것이 `getBoundingClientRect()` 다.
+- CSS 갈래의 진단 3종에서 `getComputedStyle` 은 **셋째 확인 방법**이고 「**이겼나**」를 묻는다 — `cssRules`(담겼나) → `querySelectorAll`(잡혔나) → `getComputedStyle`(이겼나). 정본은 [CSS 07번 주제](../../css/syntax/07-syntax-and-error-recovery/2-summary.md)다.
+- **이 주제에서는 그 셋째 확인 방법 자체가 주인공**이다. 주인공을 주인공으로 검사할 수는 없으므로 **그 창을 검사할 창**이 필요하다 — 그것이 `getBoundingClientRect()` 다.
 - **창 ① 은 아무것도 안 보여 준다** — 위 트리의 `<p id="p">` 에는 **아무 속성도 없다.** 계산값을 읽어도 트리에 자국이 안 남고, 시트가 칠한 초록은 `<style>` 안의 **규칙 글자로만** 있다. **「이 요소가 지금 무슨 색인가」는 창 ① 으로 영영 못 묻는다.**
 - **한 실측으로 뒷받침** — A8 의 둘째 단계다. **`cs.minWidth` 가 `"auto"` 로 한 글자도 안 바뀌었는데 상자가 307.19 에서 100 으로 바뀌었다.** 계산값은 「`min-width` 가 `auto` 로 선언됐다」를 말할 뿐이고, 「그 `auto` 가 지금 무슨 뜻인지」는 말하지 않는다.
 

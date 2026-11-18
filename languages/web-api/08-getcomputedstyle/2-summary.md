@@ -61,9 +61,9 @@ Google Chrome 151.0.7922.173
 2. **상자가 없는 요소**(`display: none`·트리 밖)에 물으면 무엇이 오나. **둘이 같은가.**
 3. **이 읽기는 얼마나 비싼가.** 그리고 **무엇이 비싸게 만드나** — 읽기 자체인가, 섞는 것인가.
 
-## 이 갈래의 관측 창 — ★ 창 4 는 `getBoundingClientRect()`
+## 이 갈래의 확인 방법 — ★ 창 4 는 `getBoundingClientRect()`
 
-[01번 주제](../01-document-and-node-tree/2-summary.md)가 세운 창 셋에 이 주제의 창을 하나 더 얹는다.
+[01번 주제](../01-document-and-node-tree/2-summary.md)가 세운 창 셋에 이 주제의 확인 방법을 하나 더 얹는다.
 
 ```text
   창 1  --dump-dom             스크립트가 다 돈 뒤의 트리를 글자로
@@ -80,8 +80,8 @@ Google Chrome 151.0.7922.173
                       ★ 분해능 100마이크로초. 0.10 은 '공짜' 가 아니라 '못 잰다' 이다
 ```
 
-- **왜 창 ④ 가 필요한가** — CSS 갈래에서 `getComputedStyle` 은 **진단 3창의 셋째 창**(이겼나)이었다. 그런데 **이 주제에서는 그 창 자체가 주인공**이므로, **그 창을 검사할 창**이 따로 필요하다.
-- ★ **CSS 갈래가 이미 경고했다** — **셋째 창은 거짓 안심을 준다.** 「값은 담겼는데 레이아웃이 안 쓴 것」·「계산값은 그대로인데 배치만 바뀐 것」이 그쪽 실측에 여럿 있고, 전부 **`getBoundingClientRect()` 로만** 잡혔다(정본: [CSS 07번 주제](../../css/syntax/07-syntax-and-error-recovery/2-summary.md)의 진단 3창과 [CSS 04번 주제](../../css/syntax/04-value-processing-stages/2-summary.md)의 네 단계).
+- **왜 창 ④ 가 필요한가** — CSS 갈래에서 `getComputedStyle` 은 **진단 3종의 셋째 확인 방법**(이겼나)이었다. 그런데 **이 주제에서는 그 창 자체가 주인공**이므로, **그 창을 검사할 창**이 따로 필요하다.
+- ★ **CSS 갈래가 이미 경고했다** — **셋째 확인 방법은 거짓 안심을 준다.** 「값은 담겼는데 레이아웃이 안 쓴 것」·「계산값은 그대로인데 배치만 바뀐 것」이 그쪽 실측에 여럿 있고, 전부 **`getBoundingClientRect()` 로만** 잡혔다(정본: [CSS 07번 주제](../../css/syntax/07-syntax-and-error-recovery/2-summary.md)의 진단 3종과 [CSS 04번 주제](../../css/syntax/04-value-processing-stages/2-summary.md)의 네 단계).
 - **창 ④ 는 [목록의 09번 주제](../09-element-geometry/)(요소 기하)를 미리 빌려 오는 것**이다. 여기서는 **판정 도구**로만 쓰고, 좌표계·`offset*`/`client*`/`scroll*` 의 규칙은 그쪽 몫이다.
 
 ## 동작 방식
@@ -930,7 +930,7 @@ for (const d of rows) { d.style.paddingLeft = '1px'; sink += getComputedStyle(d)
 
 ### 1. `el.style` 을 찍어 보고 「스타일이 없다」고 오진한다
 
-시트로 칠한 요소의 `el.style.length` 는 **0** 이다. 「지금 무슨 값인가」는 이 주제의 창구로 물어야 한다.
+시트로 칠한 요소의 `el.style.length` 는 **0** 이다. 「지금 무슨 값인가」는 이 주제의 확인 방법구로 물어야 한다.
 
 ### 2. 계산값 문자열을 내가 쓴 글자와 비교한다
 
@@ -1016,7 +1016,7 @@ for (const d of rows) { d.style.paddingLeft = '1px'; sink += getComputedStyle(d)
 - [CSS 33번 주제](../../css/syntax/33-length-units/2-summary.md) — `em`·`%` 가 **무엇의 몇 %인가**. 절대화의 기준은 그쪽
 - [CSS 13번 주제](../../css/syntax/13-pseudo-elements-and-generated-content/2-summary.md) — 의사 요소. **`content` 가 `none` 으로 계산되는 것**과 「계산값이 나와도 존재하는 게 아니다」가 거기다
 - [CSS 36번 주제](../../css/syntax/36-custom-properties/2-summary.md) — 커스텀 속성의 값 처리. 여기는 **`getPropertyValue` 라는 창구**까지만
-- [CSS 07번 주제](../../css/syntax/07-syntax-and-error-recovery/2-summary.md) — **진단 3창의 정본.** 이 주제의 주인공이 그 셋째 창(이겼나)이다
+- [CSS 07번 주제](../../css/syntax/07-syntax-and-error-recovery/2-summary.md) — **진단 3종의 정본.** 이 주제의 주인공이 그 셋째 확인 방법(이겼나)이다
 
 ## 용어 풀이
 

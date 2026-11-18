@@ -90,7 +90,7 @@ div { background-size: cover; background-image: url(같은이미지); }
 
 ### 9. `object-fit` 을 `<div>` 에 주면 (경계)
 
-아무 일도 안 일어난다. **진단 3창으로 이 사고를 잡을 수 있나** — 세 창이 각각 무엇을 보여 주는지 답해라.
+아무 일도 안 일어난다. **진단 3종으로 이 사고를 잡을 수 있나** — 세 확인 방법이 각각 무엇을 보여 주는지 답해라.
 
 ### 10. `background-attachment: fixed` 가 바꾸는 것 (예측)
 

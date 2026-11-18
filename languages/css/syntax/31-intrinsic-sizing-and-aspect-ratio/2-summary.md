@@ -385,7 +385,7 @@ CSS 는 문법 표면이 단순하므로 이 절은 **어디서 헷갈리나**�
 .w { aspect-ratio: -1; }
 ```
 
-*(Chrome 151 headless 실측 — 진단 3창의 첫째 창(`cssRules`)으로 읽은 결과.\
+*(Chrome 151 headless 실측 — 진단 3종의 첫째 확인 방법(`cssRules`)으로 읽은 결과.\
 `#a1 { aspect-ratio: 0 / 1; }` ← **담긴다** · `#a2 { }` ← `aspect-ratio: -1`(버려짐) · `#a3 { aspect-ratio: 16 / 9; }` · `#a4 { aspect-ratio: 1.5 / 1; }` ← **한 값을 써도 `/ 1` 이 붙어 저장된다** · `#a5 { }` ← `width: fit-content(150px)` · `#a6 { }` ← `width: bogus-content`.\
 ★ `fit-content(150px)` 와 **존재하지 않는 값 `bogus-content` 가 똑같이 빈 상자**로 나온다.\
 ★ ①의 `aspect-ratio: 0 / 1` 은 **담기고도 아무 일을 안 한다** — 그 상자는 120.00 × **24.00**(글 한 줄 높이)이었고 계산값은 `0 / 1` 로 남았다. **담기는 것과 먹는 것이 다르다**는 대조군이다.\
@@ -497,7 +497,7 @@ Chrome 151 에서 **선언이 담기지도 않는다**((5)). `getComputedStyle` 
 - **자동 최소 크기(automatic minimum size)** — flex·grid 항목의 `min-*: auto` 가 풀리는 값. 대개 `min-content`.
 - **`aspect-ratio`** — 한 축이 정해지면 다른 축을 비율로 만든다. 두 축이 다 지정되면 무시된다.
 - **내용 기반 최소 크기(content-based minimum size)** — 비율로 정해지는 축에 걸리는 바닥. (8)에서 비율을 깨는 범인.
-- **진단 3창** — `cssRules`(담겼나) → `querySelectorAll`(잡혔나) → `getComputedStyle`(이겼나). (5)는 **첫째 창에서 이미 탈락**한 경우다.
+- **진단 3종** — `cssRules`(담겼나) → `querySelectorAll`(잡혔나) → `getComputedStyle`(이겼나). (5)는 **첫째 확인 방법에서 이미 탈락**한 경우다.
 
 ---
 
@@ -518,7 +518,7 @@ Chrome 151 에서 **선언이 담기지도 않는다**((5)). `getComputedStyle` 
 ## 실행 환경
 
 **기준 소스** — [CSS Box Sizing Level 3](https://drafts.csswg.org/css-sizing-3/) (내재적 크기 키워드·`min-width: auto`) · [CSS Box Sizing Level 4](https://drafts.csswg.org/css-sizing-4/) (`aspect-ratio`·`fit-content()`). 열어서 확인한 것만 적었다.
-**실행 검증** — 이 문서의 모든 치수는 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getBoundingClientRect()` 로 잰 값이다. 선언이 **담겼는지**는 `document.styleSheets[…].cssRules` 로 따로 확인했다(진단 3창의 첫째 창).\
+**실행 검증** — 이 문서의 모든 치수는 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getBoundingClientRect()` 로 잰 값이다. 선언이 **담겼는지**는 `document.styleSheets[…].cssRules` 로 따로 확인했다(진단 3종의 첫째 확인 방법).\
 **WebKit(Safari)은 이 머신에 없고 Firefox 는 이 환경에서 headless 스크린샷이 산출되지 않는다** — 엔진 차이는 주장하지 않는다.
 **버전** — `min-content`/`max-content` 는 Baseline **widely**(newly 2020-01-15 → widely 2022-07-15) · `fit-content` **키워드**는 **widely**(2021-11-02 → 2024-05-02) · `aspect-ratio` 는 **widely**(2021-09-20 → 2024-03-20) · ★ **`fit-content()` 함수는 `width`/`height` 에서 Baseline `limited` 다**(본문 (5)에서 실측으로도 확인했다). 전부 `api.webstatus.dev` 조회값이다.
 **여기서 다루지 않는 것** — Grid 의 `fr`·`minmax()` 는 [목록의 **27번 주제**](../27-grid-track-sizing/)다. 여기서는 **내재적 크기 키워드**까지만 다룬다. 박스 모델과 `box-sizing` 은 [15번](../15-box-model-and-box-sizing/), flex 항목 크기 해결은 [25번](../25-flex-shorthand-and-sizing/)이 정본이다.

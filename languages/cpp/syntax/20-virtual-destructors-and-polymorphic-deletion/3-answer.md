@@ -843,7 +843,7 @@ vdtor10.cpp:26:27: note: in instantiation of member function 'std::unique_ptr<Po
 
 - ★★ **`delete[]` 의 소멸자를 가상으로 부를지(g++) 직접 부를지(clang)는 미명시**다 — 정적/동적 타입이 같은 **올바른 프로그램에서는 결과가 같기** 때문이다.\
   ★ 둘이 다른 증상을 낸 것은 **UB 인 프로그램에서만**이다.
-- ★★ **19편 (11)은 `-fdump-lang-class`·`-fdump-vtable-layouts` 로 두 칸을 찍었다.** 이 편 (7)은 **같은 질문을 `-O0` 어셈블리(`D0` 의 본체)와 클래스별 `operator delete` 로그**로 다시 물었다 — **제5의 상태**(창을 바꿔 답한 것)다.
+- ★★ **19편 (11)은 `-fdump-lang-class`·`-fdump-vtable-layouts` 로 두 칸을 찍었다.** 이 편 (7)은 **같은 질문을 `-O0` 어셈블리(`D0` 의 본체)와 클래스별 `operator delete` 로그**로 다시 물었다 — **제5의 상태**(확인 방법을 바꿔 답한 것)다.
 - ★ **이동이 사라지는 규칙의 정본은 [18번](../18-rule-of-zero-three-five-default-delete/)** 이다.
 - ★ **[15번](../15-raii-resources-as-types/) (5)** 가 `unique_ptr` 에 함수 포인터 삭제자를 달면 **16바이트**가 되는 것을 먼저 찍었다 — **삭제자를 기억할 자리**의 대가다.
 
@@ -884,7 +884,7 @@ vdtor10.cpp:26:27: note: in instantiation of member function 'std::unique_ptr<Po
 **안 돌려 본 것 / 못 잰 것**
 
 - **안 돌려 본 것** — ★ **clang + ASan 으로 `vdtor02` 의 `s`·`r`**(`u` 만 던졌다) · ★ **`std::destroying_delete_t`** · ★ **가상 상속 판**(`D1`·`D2` 가 달라지는 자리) · ★ **`-std=c++98` 판.**
-- ★ **「해당 없는 창」** — `-O2` 어셈블리 세기. 이 주제에는 잴 비용이 없다. **「안 쟀다」가 아니라 「여기서 잴 것이 아니다」다.**
+- ★ **「해당 없는 확인 방법」** — `-O2` 어셈블리 세기. 이 주제에는 잴 비용이 없다. **「안 쟀다」가 아니라 「여기서 잴 것이 아니다」다.**
 - ★ **「인용한 창」** — vtable 덤프. [19번](../19-inheritance-virtual-functions-override-final/) (11)이 찍었다.
 
 **버전이 올랐을 때 다시 돌려야 하는 것**

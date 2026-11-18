@@ -393,7 +393,7 @@
 ### 2. `container-type` 을 안 쓰고 `cqi` 를 쓴다
 
 **에러도 경고도 없이** 창 기준으로 계산된다(실측: `50cqw` 가 400 — 뷰포트 800 의 절반).\
-증상이 「값이 이상하다」뿐이라 **진단 3창** 중 `getComputedStyle` 창으로만 잡힌다 — `cssRules` 에는 멀쩡히 담겨 있다([07번](../07-syntax-and-error-recovery/2-summary.md)).
+증상이 「값이 이상하다」뿐이라 **진단 3종** 중 `getComputedStyle` 창으로만 잡힌다 — `cssRules` 에는 멀쩡히 담겨 있다([07번](../07-syntax-and-error-recovery/2-summary.md)).
 
 ### 3. `container-type: inline-size` 로 `cqb`·`cqh` 를 쓴다
 

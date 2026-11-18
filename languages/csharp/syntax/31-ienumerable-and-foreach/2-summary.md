@@ -69,9 +69,9 @@ javac 21.0.5
 
 ## 동작 방식
 
-### (0) 이 주제가 쓰는 창
+### (0) 이 주제가 쓰는 확인 방법
 
-★★★ **핵심 창은 ① IL 덤프다.**
+★★★ **핵심 확인 방법은 ① IL 덤프다.**
 
 | 창 | 무엇을 보여 주나 | 이 주제에서 |
 |---|---|---|
@@ -79,7 +79,7 @@ javac 21.0.5
 | ★★★ **④ 할당 바이트** | ★★★ 같은 `List<int>` 가 받는 타입에 따라 **0 대 40000** · 배열 **0 대 32000** — 2×2 판 격자 | (5) |
 | ★★ **③ 리플렉션** | ★★ 인터페이스 **0 개** · 세 인터페이스의 **자기 멤버** · `List<int>.GetEnumerator()` 가 **구조체** · `_version` 필드 | (1)(3)(6) |
 | ★★ **② 진단 격자** | ★ `CS8400`(C# 8 의 확장 `GetEnumerator`) · `CS1579`(`GetEnumerator` 없음) | (2) |
-| **해당 없는 창** | 없다 — 네 창을 다 썼다 | — |
+| **해당 없는 확인 방법** | 없다 — 네 확인 방법을 다 썼다 | — |
 
 ### (1) ★★★ 본체 — 인터페이스 없이 `foreach` 된다
 
@@ -637,7 +637,7 @@ bac · x=1 · bac
 **경계** — ★★★ **컬렉션을 무엇으로 고르나**는 [10번](../10-collection-choosing-list-dictionary-hashset-queue-stack/) 이 정본이다 — 여기는 **`foreach` 가 그 컬렉션을 어떻게 도나**만.\
 ★★ **열거자를 손으로 안 쓰고 만드는 법(`yield return`)** 은 [32번](../32-yield-return-iterators-and-deferred-execution/) · ★ **목록 패턴 `[1, .., 3]`** 은 [21번](../21-pattern-matching-type-property-relational-list/) — 그쪽은 `GetEnumerator` 가 아니라 **`Length`/`Count` + 인덱서**를 찾는다(21번 (2)) — **`foreach` 와 무관**하다.\
 ★★ **순회 중 수정의 교차 갈래 대비는 인용한다** — [Java 43번](../../../java/syntax/43-iterator-and-fail-fast/)(`ConcurrentModificationException` · **끝에서 두 번째를 지우면 안 터진다**) · [Rust 38번](../../../rust/syntax/38-vec-api-capacity-retain-and-drain/)(**`E0502` — 컴파일 에러**).
-★★★ **핵심 창은 ① IL 덤프다** — 「패턴으로 풀린다」는 **`call Bag+Walker::MoveNext`**(인터페이스 호출이 아니다)로만 보인다.
+★★★ **핵심 확인 방법은 ① IL 덤프다** — 「패턴으로 풀린다」는 **`call Bag+Walker::MoveNext`**(인터페이스 호출이 아니다)로만 보인다.
 
 ★★ **실행마다 달라지는 항목 / 달라지지 않는 항목**
 

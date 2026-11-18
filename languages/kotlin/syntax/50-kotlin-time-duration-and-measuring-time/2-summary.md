@@ -1,6 +1,6 @@
 # kotlin/syntax/50 — `kotlin.time` — `Duration`·시간 측정 — 정리 (힌트)
 
-★★★ **핵심은 첫째 창이다** — 「**단위 실수 격자 — 단위를 `Long` 으로 받는 API 와 `Duration` 으로 받는 API 에 같은 실수를 던져 → 컴파일되나 · 값**」. 이 주제의 결론은 값이 아니라 **「어느 칸에서 컴파일러가 막았나」** 다.
+★★★ **핵심은 첫째 확인 방법이다** — 「**단위 실수 격자 — 단위를 `Long` 으로 받는 API 와 `Duration` 으로 받는 API 에 같은 실수를 던져 → 컴파일되나 · 값**」. 이 주제의 결론은 값이 아니라 **「어느 칸에서 컴파일러가 막았나」** 다.
 
 ## 이 주제가 쓰는 세 층
 
@@ -63,16 +63,16 @@ info: kotlinc-jvm 2.4.20 (JRE 21.0.5+11-LTS)
 
 ## 동작 방식
 
-### (0) ★★★ 이 주제가 쓰는 창 — 그리고 「해당 없는 창」
+### (0) ★★★ 이 주제가 쓰는 확인 방법 — 그리고 「해당 없는 확인 방법」
 
 | 창 | 무엇을 보여 주나 | 어디서 왔나 |
 |---|---|---|
-| ★★★ **단위 격자(컴파일 → 남은 칸만 실행)** | 컴파일되나 · 값((1)) | ★ **핵심 창** — 막힌 줄을 지운 사본을 다시 컴파일해 **나머지 칸의 값**까지 한 블록에 받는다 |
+| ★★★ **단위 격자(컴파일 → 남은 칸만 실행)** | 컴파일되나 · 값((1)) | ★ **핵심 확인 방법** — 막힌 줄을 지운 사본을 다시 컴파일해 **나머지 칸의 값**까지 한 블록에 받는다 |
 | ★★ **`javap -p`** | `Duration` 이 `long` 으로 다니나 · 이름이 뭉개지나((2)) | [26번 주제](../26-value-class-and-boxing/)와 같은 창 |
 | ★★ **참/거짓 측정 로그** | `measureTime` · 단조 마크((3)) | 절대 시간은 **안 찍는다** |
 | ★★ **판 격자(`-language-version`·`-api-version` × 파일)** | `Instant` 가 opt-in 을 요구하나((4)) | 49편의 판 격자와 같은 꼴 |
 | ★★ **stdlib 소스 jar 발췌** | 선언·KDoc 계약((5)) | — |
-| ★ **제5의 상태** | 「`Instant` 가 **2.1 에 들어왔나**」를 **2.1 로 컴파일해 물으면** 답이 안 나온다 — `@WasExperimental` 때문에 2.0 도 2.1 도 같은 진단이다. **소스의 주석(annotation)** 으로 창을 바꿨다((4)(5)) | 그 창은 「**언제 Stable 이 됐나**」(2.3)만 말하고 「**언제 들어왔나**」는 **못 본다** |
+| ★ **제5의 상태** | 「`Instant` 가 **2.1 에 들어왔나**」를 **2.1 로 컴파일해 물으면** 답이 안 나온다 — `@WasExperimental` 때문에 2.0 도 2.1 도 같은 진단이다. **소스의 주석(annotation)** 으로 창을 바꿨다((4)(5)) | 그 확인 방법은 「**언제 Stable 이 됐나**」(2.3)만 말하고 「**언제 들어왔나**」는 **못 본다** |
 | **인용 — 다시 안 잰다** | `Int`→`Long` 암묵 변환 없음 | [01번 주제](../01-val-var-and-basic-types/) |
 | **해당 없음 — 실행 시간 비교** | 「`Duration` 은 비용 0」은 **재지 않았다** — `javap` 의 `long` 까지만 말한다 | (2) |
 
@@ -329,7 +329,7 @@ public final class kotlin.time.Duration implements java.lang.Comparable<kotlin.t
 - ★★ **`makeTimeout(): Duration` 은 `long makeTimeout()`** — 반환에는 해시가 안 붙는다(26번 주제와 같은 관찰). **`TimeSource.Monotonic.markNow()` 가 돌려주는 `ValueTimeMark` 도 `long`**(`long mark()`)이다 — 마크도 `value class` 다.
 - ★★ **박싱되는 자리** — `Duration?` 을 받는 `maybe-BwNAW2A(kotlin.time.Duration)` 과 `List<Duration>` 은 **`kotlin.time.Duration` 객체**다. 26번 주제의 「널 가능 · 제네릭이면 포장이 산다」와 같다.
 - ★ `kotlin.time.Duration` 클래스에는 `private final long rawValue` 하나와 `box-impl(long)` · `unbox-impl()` 이 있다.
-- ★★ **「비용 0」이라고 적지 않는다** — 이 창이 보여 주는 것은 **서명에 `long` 이 다닌다**는 것까지다. 실행 시간은 재지 않았다(규칙 4).
+- ★★ **「비용 0」이라고 적지 않는다** — 이 확인 방법이 보여 주는 것은 **서명에 `long` 이 다닌다**는 것까지다. 실행 시간은 재지 않았다(규칙 4).
 
 ### (3) ★★ 시간 재기 — 단조 시계와 참/거짓 로그
 
@@ -443,7 +443,7 @@ blocked cells: 3 / 10
 ```
 
 - ★★★ **opt-in 없는 파일은 2.0·2.1·2.2 에서 막히고 2.3·2.4 에서 통과한다** — 막힌 항목의 진단은 **「없다」가 아니라 「opt-in 이 필요하다」**(`this declaration needs opt-in. Its usage must be marked with '@kotlin.time.ExperimentalTime' …`) 다.
-- ★★★ **opt-in 을 단 파일은 다섯 판 모두 통과한다** — **2.0 에서도**. 그래서 「2.1.0 에 들어왔다」는 이 격자로는 **안 보인다**. `@WasExperimental(ExperimentalTime::class)` 가 붙은 선언은 **Stable 이 된 판(2.3) 이전의 `-api-version` 에서 「실험적」으로 보일 뿐 「없음」으로 보이지 않는다** — 그 판 경계는 이 창 밖이다(제5의 상태).
+- ★★★ **opt-in 을 단 파일은 다섯 판 모두 통과한다** — **2.0 에서도**. 그래서 「2.1.0 에 들어왔다」는 이 격자로는 **안 보인다**. `@WasExperimental(ExperimentalTime::class)` 가 붙은 선언은 **Stable 이 된 판(2.3) 이전의 `-api-version` 에서 「실험적」으로 보일 뿐 「없음」으로 보이지 않는다** — 그 판 경계는 이 확인 방법 밖이다(제5의 상태).
 - ★ 막힌 항목의 **오류 개수가 21** 인 것은 `Instant`·`Clock`·`toJavaInstant`·`toKotlinInstant` 를 쓰는 **자리마다** 진단이 나서다 — 한 파일이 한 번 막히는 것이 아니다.
 
 ```text

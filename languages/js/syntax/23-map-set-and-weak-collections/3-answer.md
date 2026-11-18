@@ -221,7 +221,7 @@ unregistered before gc                        0/20      object 0/20    object 20
 - ★★★ **「key of a Map」 — 콜백 `0/20`, `deref()` 객체 `20/20`.** `Map` 은 키를 강하게 잡는다. 다른 곳에서 전부 잊혀도 산다.
 - ★★★ **「key of a WeakMap」 — `20/20` 수거.** `WeakMap` 은 키를 살리지 않는다.
   ★★★ **값이 키를 되가리켜도 `20/20`** — 값은 키에 **매달려** 있을 뿐 키를 못 살린다(에피머론).
-- ★★ **「unregistered before gc」** — 콜백 `0/20` 인데 `deref()` 도 `0/20`. **수거는 됐고 콜백만 취소**됐다. 두 창을 같이 봐야 「안 수거」와 달라진다.
+- ★★ **「unregistered before gc」** — 콜백 `0/20` 인데 `deref()` 도 `0/20`. **수거는 됐고 콜백만 취소**됐다. 두 확인 방법을 같이 봐야 「안 수거」와 달라진다.
 - ★★★ **맨 오른쪽 열 `20/20` × 6** — 같은 동기 실행 안에서는 `WeakRef` 를 만들 때(그리고 `deref()` 할 때) 대상이 **`[[KeptAlive]]`** 에 들어가고,
   `ClearKeptObjects` 는 "when a synchronous sequence of ECMAScript executions completes" 에 돈다. 그래서 probe는 **`await tick()` 으로 잡을 넘긴 뒤** `gc()` 를 다시 부른다.
 - ★★★ **명세가 보장하는 칸** — 「붙잡힌 것은 안 죽는다」(`keep` · `Map` 키 행의 0/20 · 20/20) · 맨 오른쪽 열(KeptAlive).
@@ -390,7 +390,7 @@ unregistered before gc                        0/20      object 0/20    object 20
 - ★★★ 명세 — "an ECMAScript implementation must not provide any means to observe a key of a WeakMap that does not require the observer to present the observed key."
 - ★★ 그 앞 문장이 이유다 — 구현은 키가 쓸모없어진 때와 항목이 치워지는 때 사이에 **임의의 지연**을 둘 수 있고, "If this latency was observable to ECMAScript program, it would be a source of indeterminacy that could impact program execution."
   `size` 하나만 있어도 **GC 시점이 값으로 새어 나온다.**
-- ★ 그래서 이 문서는 **`FinalizationRegistry` 콜백과 `WeakRef.deref()`** 로 바꿔 물었다(5번 — 제5의 상태). ★ **바꾼 창이 못 보는 것** — `WeakMap` **안의 항목 자체**. 대상이 수거됐다는 것까지만 보인다.
+- ★ 그래서 이 문서는 **`FinalizationRegistry` 콜백과 `WeakRef.deref()`** 로 바꿔 물었다(5번 — 제5의 상태). ★ **바꾼 확인 방법이 못 보는 것** — `WeakMap` **안의 항목 자체**. 대상이 수거됐다는 것까지만 보인다.
 
 ### 11. 고르는 기준 — **레코드는 객체, 키가 데이터인 사전은 `Map`. 해시의 원리는 `05-hashmap` 이 정본** ★★
 
@@ -612,13 +612,13 @@ document.getElementById("o").textContent = "==" + "=OUT===\n" + __lines.join("\n
 **격자의 비교 규칙 · `-0` 접기 · 삽입 순서 · `CanBeHeldWeakly` · `WeakMap` 에 창이 없는 것 · 강하게 붙잡힌 것이 안 죽는 것 · KeptAlive · `GetSetRecord` 검사 순서 · `intersection` 의 크기 가지 · Upsert 의 콜백 시점과 덮어쓰기는 구현 의존이 아니다.**
 어느 엔진에서도 같아야 한다.
 
-**안 돌려 본 것 / 못 잰 것 / 해당 없는 창**
+**안 돌려 본 것 / 못 잰 것 / 해당 없는 확인 방법**
 
 - **안 돌려 본 것** — **브라우저의 GC**(`FinalizationRegistry` 는 node 에서만) · **파이썬 쪽 재실행**(12번 문서 인용) · 다른 엔진(SpiderMonkey·JavaScriptCore)의 문구.
 - ★ **못 잰 것** — **집합 연산·Upsert 의 node 버전 동작.** 두 node 버전에 메서드가 없다(판별 블록) — Chrome 151 로 창을 바꿨다.
 - ★★★ **안 쟀다** — **성능 전부.** 「`Map` 이 객체보다 빠르다」·「`WeakMap` 이 메모리를 아낀다」를 **한 줄도 쓰지 않았다.**
-- ★★ **해당 없는 창** — **③ 브랜드 태그**(집합 연산 인자조차 프로퍼티 셋으로 판정된다) · **진단의 `(행,열)`**(`SyntaxError` 가 없다). **「잴 것이 없다」는 뜻**이다.
-- ★★★ **창을 바꿔 물은 자리** — `WeakMap` 안의 수명. 들여다볼 창이 없어 **`FinalizationRegistry` 와 `WeakRef`** 로 물었다(5번 · 10번).
+- ★★ **해당 없는 확인 방법** — **③ 브랜드 태그**(집합 연산 인자조차 프로퍼티 셋으로 판정된다) · **진단의 `(행,열)`**(`SyntaxError` 가 없다). **「잴 것이 없다」는 뜻**이다.
+- ★★★ **확인 방법을 바꿔 물은 자리** — `WeakMap` 안의 수명. 들여다볼 창이 없어 **`FinalizationRegistry` 와 `WeakRef`** 로 물었다(5번 · 10번).
 
 **버전이 올랐을 때 다시 돌려야 하는 것**
 
