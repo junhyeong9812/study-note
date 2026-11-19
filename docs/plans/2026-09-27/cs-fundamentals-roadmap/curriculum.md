@@ -984,10 +984,10 @@ Part 7  AI를 의존성으로 쓰는 법  ai-engineering
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 05-timeouts-and-deadline-propagation | 타임아웃 계층 정렬·데드라인 전파. gRPC는 절대 시각 대신 경과 시간을 뺀 타임아웃으로 전파(시계 어긋남 회피)하고, 서버는 취소를 주기적으로 확인할 책임이 있다(심화는 08·09) | distributed/03-partial-failure-and-timeouts | 하류 타임아웃 > 상류 → 이미 포기한 요청을 계속 처리(헛일); 타임아웃 없음 → 스레드 고갈 | 남은 예산 전파 | gRPC deadline 문서 · SRE 22장 | 필수 | `ops-patterns/deadline-propagation` · `systems/server-design/06-resilience.md` (분할 — 타임아웃 절) |
+| 05-timeouts-and-deadline-propagation | 타임아웃 계층 정렬·데드라인 전파. gRPC는 절대 시각 대신 경과 시간을 뺀 타임아웃으로 전파(클럭 스큐 회피)하고, 서버는 취소를 주기적으로 확인할 책임이 있다(심화는 08·09) | distributed/03-partial-failure-and-timeouts | 하류 타임아웃 > 상류 → 이미 포기한 요청을 계속 처리(헛일); 타임아웃 없음 → 스레드 고갈 | 남은 예산 전파 | gRPC deadline 문서 · SRE 22장 | 필수 | `ops-patterns/deadline-propagation` · `systems/server-design/06-resilience.md` (분할 — 타임아웃 절) |
 | 06-retry-backoff-jitter | 지수 백오프·지터·재시도 예산 — 구체형: Finagle 기본(요청의 20% + 초당 최소 10회, 토큰 10초 만료), gRPC `retryThrottling`(maxTokens·tokenRatio — 토큰이 절반 미만이면 재시도·헤지 중단) | 05, math/12-randomness-and-prng | 지터 없는 재시도 → 동기화된 재시도 폭풍; 계층마다 재시도 → 곱셈 증폭 | 지수 백오프, 토큰 버킷(재시도 예산) | AWS Architecture Blog "Exponential Backoff and Jitter" 2015 · Finagle 블로그 "Retry Budgets" 2016-02-08 · gRFC A6 Client Retries | 필수 | `ops-patterns/01-retry-backoff` |
 | 10-circuit-breaker | 닫힘·열림·반열림 | 06 | 임계값 과민 → 정상 서비스 차단 flapping; 폴백 없음 → 즉시 에러 전파 | 상태 기계, 슬라이딩 윈도 실패율 | Nygard 『Release It!』 5장 [?] | 필수 | `ops-patterns/02-circuit-breaker` |
-| 28-bulkhead | 자원 격벽(스레드풀·커넥션 분리) | 10 | 공유 풀 하나 → 느린 의존성 하나가 전체 스레드 점유 | 세마포어(os/18) | Nygard 『Release It!』 [?] | 권장 | `ops-patterns/03-bulkhead` |
+| 28-bulkhead | 자원 벌크헤드(스레드풀·커넥션 분리) | 10 | 공유 풀 하나 → 느린 의존성 하나가 전체 스레드 점유 | 세마포어(os/18) | Nygard 『Release It!』 [?] | 권장 | `ops-patterns/03-bulkhead` |
 | 11-rate-limiter | 토큰 버킷·리키 버킷·고정/슬라이딩 윈도·분산 제한 | 06, algorithm/15-sliding-window | 고정 윈도 경계에서 2배 버스트; 분산 카운터 경합 → 초과 허용 | **토큰 버킷**, 슬라이딩 로그/카운터 | RFC 6585 (429) · Stripe 블로그 2017 [?] | 필수 | `ops-patterns/04-rate-limiter` |
 | 12-backpressure-and-load-shedding | 역압·큐 한도·우선순위 셰딩 | 11, math/10-queueing-and-littles-law | 무한 큐 → 지연 폭증 후 OOM; 셰딩 없음 → 과부하 시 처리량 0으로 붕괴 | 유계 큐, CoDel | SRE 21장 | 필수 | `ops-patterns/05-backpressure` · `systems/server-design/06-resilience.md` (분할 — 백프레셔·로드 셰딩 절) |
 | 13-idempotency | 멱등 키 저장소·중복 억제·결과 재생 | 06 | 재시도 → 중복 결제·이중 적립; 멱등 키 저장과 처리의 비원자성 | 키-결과 맵(TTL) | Stripe "Idempotent requests" | 필수 | `ops-patterns/06-idempotency-store` |
@@ -995,7 +995,7 @@ Part 7  AI를 의존성으로 쓰는 법  ai-engineering
 | 14-graceful-shutdown | SIGTERM → 준비 해제 → 드레이닝 → 종료 | os/06-signals, network/46-load-balancers-and-proxies | 배포 때마다 502 순간 증가(LB 해제 전 종료); 진행 중 작업 유실 | 진행 중 요청 카운터 | k8s Pod lifecycle 문서 | 필수 | `ops-patterns/19-graceful-shutdown` · `systems/server-design/02-request-path.md` (분할 — graceful shutdown 절) |
 | 30-scheduler-and-cron-ha | 스케줄러 이중화·중복 실행 방지·미실행 보정 | distributed/12-coordination-and-fencing | 두 인스턴스가 같은 배치 실행 → 이중 정산; 장애 중 놓친 실행 | 타이머 휠·리스 | 기존 노트 원고 | 권장 | `ops-patterns/10-scheduler` |
 | 33-hysteresis-and-flapping | 방향별 임계값 분리로 진동 방지 | 10 | 오토스케일·알람·서킷 임계값 flapping | hysteresis band | 기존 노트 원고 | 권장 | `systems/Hysteresis` |
-| 34-tail-latency-and-stragglers | 팬아웃에서 꼬리 지연 증폭, hedged request | math/08-expectation-variance-tails | 100개 팬아웃 → p99가 사실상 중앙값 경험; hedging 과다 → 부하 2배 | 백분위 추정 | Dean–Barroso CACM 2013 | 권장 | `systems/straggler` |
+| 34-tail-latency-and-stragglers | 팬아웃에서 테일 레이턴시 증폭, hedged request | math/08-expectation-variance-tails | 100개 팬아웃 → p99가 사실상 중앙값 경험; hedging 과다 → 부하 2배 | 백분위 추정 | Dean–Barroso CACM 2013 | 권장 | `systems/straggler` |
 | 48-performance-and-stability-antipatterns-in-code | 코드 수준 안티패턴 — Chatty I/O·Extraneous Fetching·Improper Instantiation(요청마다 HTTP 클라이언트·커넥션 생성)·Synchronous I/O·Busy Database·Busy Front End·Monolithic Persistence, Nygard의 Integration Points·Blocked Threads·Unbounded Result Sets·Self-Denial·Dogpile | 47-server-design-antipatterns, database/21-connection-pooling | 요청마다 `new HttpClient` → 소켓 고갈 `TIME_WAIT` 폭증·`EADDRNOTAVAIL`; `LIMIT` 없는 조회 → 데이터가 커진 어느 날 OOM; 스레드 풀 전부 느린 외부 호출에 묶임(Blocked Threads) → 헬스체크까지 실패; 자정 배치·쿠폰 공지 → 자기 트래픽이 DoS(Self-Denial·Dogpile) | 풀링(공유 인스턴스), 배치·페이지네이션 | Azure 성능 안티패턴 카탈로그 · Nygard 『Release It!』 2판 4장 "Stability Antipatterns" [?] | 필수 | 신규 (32와 구분 — 32는 구조·운영, 이쪽은 코드 수준) |
 | 50-sidecar-ambassador-and-service-mesh | Sidecar·Ambassador, 서비스 메시(데이터·컨트롤 플레인, mTLS·재시도·관측 위임), Microservice Chassis(라이브러리) vs 메시, 서비스 디스커버리(클라이언트·서버 측, 레지스트리, 자기·제3자 등록) | network/46-load-balancers-and-proxies, os/28-containers-namespaces-cgroups, 06-retry-backoff-jitter | 앱 재시도 + 메시 재시도 중복 → **곱셈 증폭**; 사이드카 준비 전 앱 시작 → 기동 직후 연결 실패; 레지스트리에 죽은 인스턴스 잔존 → 간헐적 연결 거부; 메시 설정 오류 하나가 전 서비스 장애 | 서비스 레지스트리(키-값 + TTL 하트비트), 프록시 체인 | Azure Sidecar·Ambassador · microservices.io Service discovery·Microservice chassis · Burns–Oppenheimer "Design Patterns for Container-based Distributed Systems" HotCloud 2016 [?] | 권장 | 신규 |
 | 49-steady-state-fail-fast-and-supervision | Steady State(무한 증가 자원 정리 — 로그·세션·캐시·테이블), Fail Fast(입구 검증), Let It Crash + 감독 트리, Handshaking, Governor(자동화 속도 제한), Test Harness | 12-backpressure-and-load-shedding, 14-graceful-shutdown | 정리 작업 없음 → 수개월 뒤 디스크 풀·테이블 비대로 서서히 느려짐; 자원 부족을 끝까지 가서야 발견 → 이미 부분 처리된 작업 롤백; 손상된 상태로 계속 실행 → 오염 전파(재시작이 나았음); 자동 스케일-인·정리 스크립트 폭주 → 전 인스턴스 삭제(Governor 부재) | 감독 트리(재시작 전략 one_for_one 등), 보존 정책(TTL·링 버퍼) | Nygard 『Release It!』 2판 5장 "Stability Patterns" · Armstrong 박사논문 2003 (Erlang 감독) [?] | 권장 | 신규 (연결: `language/14-concurrency-models` 액터) |
@@ -1256,7 +1256,7 @@ Part 7  AI를 의존성으로 쓰는 법  ai-engineering
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 27-dm-symptom-index | 역색인: 불법 상태 데이터, 1원 정산 차이, 같은 규칙 N벌, 거대 트랜잭션 락, 팀 간 모델 충돌, 미래 예약 1시간 어긋남·DST 알람 누락/중복, 1원 배분 소실, 과거 금액 재계산 불일치, 잔액 원인 불명, 504인데 결제됨(대사) | 전체 | — | — | 이 영역 leaf | 필수 | 신규 |
+| 27-dm-symptom-index | 역색인: 불법 상태 데이터, 1원 정산 차이, 같은 규칙 N벌, 거대 트랜잭션 락, 팀 간 모델 충돌, 미래 예약 1시간 불일치·DST 알람 누락/중복, 1원 배분 소실, 과거 금액 재계산 불일치, 잔액 원인 불명, 504인데 결제됨(대사) | 전체 | — | — | 이 영역 leaf | 필수 | 신규 |
 | 28-dm-incidents | 실사건: Mars Climate Orbiter 단위 불일치(1999, 파운드·초 vs 뉴턴·초) · 영국 Post Office Horizon 회계 불일치(2000~) | 27 | — | — | NASA MCO 사고조사보고서 1999 · Bates v Post Office [2019] EWHC 3408 (QB) | 권장 | 신규 |
 
 ---
@@ -1571,7 +1571,7 @@ Part 7  AI를 의존성으로 쓰는 법  ai-engineering
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 27-da-symptom-index | 역색인: 실험 비율 틀어짐(SRM), 합계가 안 맞음, 너무 좋은 결과, 부분군 반전, 날짜 경계 어긋남, 백분위 병합 오류 | 전체 | — | — | 이 영역 leaf | 필수 | 신규 |
+| 27-da-symptom-index | 역색인: 실험 비율 틀어짐(SRM), 합계가 안 맞음, 너무 좋은 결과, 부분군 반전, 날짜 경계 불일치, 백분위 병합 오류 | 전체 | — | — | 이 영역 leaf | 필수 | 신규 |
 | 28-da-incidents | 실사건: Literary Digest 표본 편향(1936) · Google Flu Trends 과대 추정(2011-08~2013-09, 보도 2013-02) · Reinhart–Rogoff 엑셀 범위 오류(2013) · 영국 COVID 확진 15,841건 누락 — 구형 XLS 행 제한(2020) | 27 | — | — | Squire 1988 · Lazer 외 Science 2014 · Herndon 외 2013 · 영국 PHE 발표 2020-10 | 권장 | 신규 |
 
 ---
