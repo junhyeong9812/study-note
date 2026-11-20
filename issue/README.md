@@ -3,7 +3,7 @@
 여러 프로젝트에서 실제로 겪은 이슈를 **원리 단위로 추상화**해 모은 곳이다.\
 이슈 하나가 카드 하나가 아니다 — 같은 근본원인·같은 대응을 공유하는 이슈들을 **패턴 카드 하나**로 묶고, 각 사건 유형은 카드 안에서 **추상화 코드**(일반 이름·축약 로직)로 보인다.\
 카드에는 출처(프로젝트명·파일·라인)를 적지 않는다 — 문제 코드의 구조 자체가 문서에 드러나므로 그것으로 충분하다.\
-현재 카드 184개.
+현재 카드 185개.
 
 ## 분류 두 축
 
@@ -42,12 +42,12 @@
 숫자 = 그 폴더 아래 패턴 카드 수.
 
 ```
-issue/  (184)
-├─ cross-cutting/               131
+issue/  (185)
+├─ cross-cutting/               132
 │  ├─ concurrency/               11
 │  ├─ data/                      20
 │  ├─ database/                  11
-│  ├─ distributed/                2
+│  ├─ distributed/                3
 │  ├─ document-rendering/         2
 │  ├─ gui-platform/               2
 │  ├─ infra/                     14
@@ -137,6 +137,7 @@ issue/  (184)
 
 #### [cross-cutting/distributed/](cross-cutting/distributed/) — 원격 결과와 권리의 단조성
 
+- [active-instance-from-routing-truth](cross-cutting/distributed/active-instance-from-routing-truth/) — 무중단 교체로 두 인스턴스가 겹쳐 뜰 때 주기 작업의 소유권은 "신호를 받았는가"가 아니라 "프록시가 지금 누구에게 보내는가"로 정한다 — 신호는 힌트로만 쓰고, 이어받을 상태는 맡는 순간 공유 저장소에서 읽으며, 대기 인스턴스는 헬스에 역할을 드러낸다.
 - [monotonic-fencing](cross-cutting/distributed/monotonic-fencing/) — 권리(lease·fencing token)의 최고수위는 단조 증가만 해야 하며 검증은 자원(sink) 측에서 단일 시계로 한다 — 유일성 제약은 단조성을 보장하지 않는다.
 - [three-state-rpc-outcome](cross-cutting/distributed/three-state-rpc-outcome/) — 원격 호출의 타임아웃·유실은 "실패"가 아니라 "결과 모름"이다 — 미실행 보증·UNKNOWN·성공의 3상태로 다루고 늦은 성공 신호를 버리지 않는다.
 
@@ -540,8 +541,9 @@ issue/  (184)
 
 ### single-source-of-truth
 
-같은 사실은 한 곳에서 파생 — 3개
+같은 사실은 한 곳에서 파생 — 4개
 
+- [active-instance-from-routing-truth](cross-cutting/distributed/active-instance-from-routing-truth/) · `cross-cutting/distributed`
 - [denormalized-counter-drift](cross-cutting/data/denormalized-counter-drift/) · `cross-cutting/data`
 - [single-source-of-truth-routing](typescript/next/single-source-of-truth-routing/) · `typescript/next`
 - [theming-token-reach](typescript/react/theming-token-reach/) · `typescript/react`
