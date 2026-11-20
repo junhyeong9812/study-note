@@ -3,7 +3,7 @@
 여러 프로젝트에서 실제로 겪은 이슈를 **원리 단위로 추상화**해 모은 곳이다.\
 이슈 하나가 카드 하나가 아니다 — 같은 근본원인·같은 대응을 공유하는 이슈들을 **패턴 카드 하나**로 묶고, 각 사건 유형은 카드 안에서 **추상화 코드**(일반 이름·축약 로직)로 보인다.\
 카드에는 출처(프로젝트명·파일·라인)를 적지 않는다 — 문제 코드의 구조 자체가 문서에 드러나므로 그것으로 충분하다.\
-현재 카드 183개.
+현재 카드 184개.
 
 ## 분류 두 축
 
@@ -18,9 +18,9 @@
 | [`resource-bounding`](#resource-bounding) | 입력에 비례해 커지는 자원의 상한 | 31 |
 | [`least-privilege`](#least-privilege) | 최소 권한·최소 노출·비밀 관리 | 14 |
 | [`fail-closed`](#fail-closed) | 판정 불가·조회 실패를 거부로 처리 | 4 |
-| [`race-condition`](#race-condition) | 순서·동시성에 따라 결과가 달라짐 | 10 |
+| [`race-condition`](#race-condition) | 순서·동시성에 따라 결과가 달라짐 | 11 |
 | [`contract-drift`](#contract-drift) | 선언한 계약과 실제 동작의 불일치 | 7 |
-| [`test-reliability`](#test-reliability) | 초록불이 결함 유무를 말해 주는가 | 8 |
+| [`test-reliability`](#test-reliability) | 초록불이 결함 유무를 말해 주는가 | 9 |
 | [`parser-differential`](#parser-differential) | 검사하는 쪽과 실행하는 쪽의 해석 차이 | 3 |
 | [`environment-drift`](#environment-drift) | 실행 환경·채널마다 값·동작이 달라짐 | 8 |
 | [`encoding`](#encoding) | 바이트·문자·인코딩 경계 | 3 |
@@ -42,9 +42,9 @@
 숫자 = 그 폴더 아래 패턴 카드 수.
 
 ```
-issue/  (183)
-├─ cross-cutting/               130
-│  ├─ concurrency/               10
+issue/  (184)
+├─ cross-cutting/               131
+│  ├─ concurrency/               11
 │  ├─ data/                      20
 │  ├─ database/                  11
 │  ├─ distributed/                2
@@ -91,6 +91,7 @@ issue/  (183)
 - [capture-context-at-request-time](cross-cutting/concurrency/capture-context-at-request-time/) — 대상·출처·귀속을 실행 시점의 전역 "현재" 상태에서 다시 읽으면 발행~실행 사이 상태 변화에 오염된다 — 요청 시점에 값으로 캡처해 메시지와 함께 운반한다.
 - [critical-section-design](cross-cutting/concurrency/critical-section-design/) — 하나의 불변식은 하나의 임계구역에서 원자적으로 갱신하고(check-then-act 금지), 락 안에서는 느린 I/O·join을 하지 않으며, 중복 작업은 single-flight로 합친다.
 - [event-loop-head-of-line-blocking](cross-cutting/concurrency/event-loop-head-of-line-blocking/) — 단일 수신 루프에서 처리·송신을 직접 await하면 가장 느린 작업·구독자가 루프 전체를 막아(HOL) 무관한 메시지까지 지연·타임아웃된다.
+- [lost-wakeup-on-flag-clear](cross-cutting/concurrency/lost-wakeup-on-flag-clear/) — 깨움 플래그를 "조건 확인 → (양보 지점) → clear → 대기" 순서로 쓰면 그 사이 온 신호가 지워져 이미 참이 된 조건을 모른 채 잠든다 — clear 뒤에 조건을 다시 보고 기다리며, 시간 제한 재확인(하트비트)이 이 결함을 지연으로 바꿔 테스트를 초록으로 가리므로 시간 상한을 재확인 주기보다 짧게 둔다.
 - [out-of-order-completion](cross-cutting/concurrency/out-of-order-completion/) — 비동기 응답·이벤트의 완료 순서는 발행 순서와 무관하다 — 세대 토큰·CAS·단조 전이로 늦게 도착한 옛 결과가 최신 상태를 덮지 못하게 한다.
 - [single-slot-handoff-loss](cross-cutting/concurrency/single-slot-handoff-loss/) — 용량 1 슬롯·전역 요청 버스에 요청을 두면 동시·버스트 생산자가 서로를 덮어 조용한 유실된다 — 큐·id 맵·ACK 후 소비·소비자 단일화로 정확히 1회 전달한다.
 - [single-writer-ownership](cross-cutting/concurrency/single-writer-ownership/) — 여러 writer가 락 없이 같은 저장 단위를 read-modify-write하면 lost update가 난다 — 저장소를 writer별로 분리하거나 원자 갱신(조건부 UPDATE·upsert·CAS)으로 단일 소유를 강제한다.
@@ -461,11 +462,12 @@ issue/  (183)
 
 ### race-condition
 
-순서·동시성에 따라 결과가 달라짐 — 10개
+순서·동시성에 따라 결과가 달라짐 — 11개
 
 - [aba-reusable-identifier](cross-cutting/concurrency/aba-reusable-identifier/) · `cross-cutting/concurrency`
 - [capture-context-at-request-time](cross-cutting/concurrency/capture-context-at-request-time/) · `cross-cutting/concurrency`
 - [critical-section-design](cross-cutting/concurrency/critical-section-design/) · `cross-cutting/concurrency`
+- [lost-wakeup-on-flag-clear](cross-cutting/concurrency/lost-wakeup-on-flag-clear/) · `cross-cutting/concurrency`
 - [out-of-order-completion](cross-cutting/concurrency/out-of-order-completion/) · `cross-cutting/concurrency`
 - [single-writer-ownership](cross-cutting/concurrency/single-writer-ownership/) · `cross-cutting/concurrency`
 - [snapshot-stream-cursor](cross-cutting/concurrency/snapshot-stream-cursor/) · `cross-cutting/concurrency`
@@ -488,8 +490,9 @@ issue/  (183)
 
 ### test-reliability
 
-초록불이 결함 유무를 말해 주는가 — 8개
+초록불이 결함 유무를 말해 주는가 — 9개
 
+- [lost-wakeup-on-flag-clear](cross-cutting/concurrency/lost-wakeup-on-flag-clear/) · `cross-cutting/concurrency`
 - [green-masking](cross-cutting/testing/green-masking/) · `cross-cutting/testing`
 - [performance-measurement-validity](cross-cutting/testing/performance-measurement-validity/) · `cross-cutting/testing`
 - [test-isolation-and-determinism](cross-cutting/testing/test-isolation-and-determinism/) · `cross-cutting/testing`

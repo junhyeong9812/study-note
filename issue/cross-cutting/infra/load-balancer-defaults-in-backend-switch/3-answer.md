@@ -99,3 +99,58 @@ for ev in reload_events:
 - [nginx-broadband-defense-friendly-fire](../nginx-broadband-defense-friendly-fire/) — 같은 프록시의 다른 기본 보호(레이트리밋·UA 차단)가 자기 트래픽을 막는 경우.
 - [performance-measurement-validity](../../testing/performance-measurement-validity/) — 측정값이 유효하려면 측정 도구 자신의 몫을 갈라야 한다 — 부하 생성기의 자원 한계와 같은 축.
 - [half-open-liveness-watchdog](../../network/half-open-liveness-watchdog/) — 연결이 살아 있다고 믿는 쪽과 이미 닫은 쪽의 불일치 — keepalive 경합과 같은 계열.
+
+## 방안 비교 — 닫히는 keepalive 연결에 실린 요청: 따로 세기 vs 호출하는 쪽이 한 번 다시 보내기
+
+변형 C와 같은 원리(reload 때 옛 작업자는 쉬고 있는 keepalive 연결을 닫고 내려가므로, 그 연결에 막 실린 요청은 응답 없이 연결 오류로 끝난다)다.\
+변형 C는 측정 맥락이라 고치지 않고 따로 셌다 — 이 사례는 운영 경로라 셀 수 없고, 호출하는 쪽이 살려야 했다.
+
+```text
+서비스 A (클라이언트, 연결 풀 사용) ──keepalive──▶ [프록시 옛 작업자] ──▶ 옛 인스턴스
+                                                      │ 전환(reload) 뒤 옛 작업자는 종료 중
+   ① 첫 요청 POST /chat  ─────────────────────────────▶ 옛 인스턴스가 대기자에게 {"type":"retry"} (새 쪽으로 다시 보내라)
+                                                      │ 응답을 마친 뒤 옛 작업자가 그 연결을 닫는다
+   ② 곧바로 같은 POST 재전송 ── 풀에서 방금 그 연결을 꺼냄 ──▶ ✗ 연결 닫힘 → IOException
+        클라이언트 라이브러리는 비멱등(POST) 요청을 자동으로 다시 보내지 않는다
+        → "서버 꺼짐"으로 처리되어 재전송이 실패로 끝남
+```
+이 경합은 설계·구현 리뷰에서 지적됐다 — "재전송은 방금 응답을 마친 연결을 재사용할 가능성이 가장 높은 요청"이라는 것이 요지다.
+
+### 방안 2 — 재전송 요청에 한해, 연결 단계에서 끊기면 잠깐 쉬고 한 번 더 보낸다 (이 사례에서 적용)
+```kotlin
+fun relay(request: Req, onEvent: (Event) -> Unit) {
+    repeat(MAX_RESENDS + 1) { attempt ->
+        if (!relayOnce(request, onEvent, isResend = attempt > 0)) return   // retry를 받았으면 true
+        if (attempt == MAX_RESENDS) onEvent(Event.Failed)
+    }
+}
+
+private fun relayOnce(request: Req, onEvent: (Event) -> Unit, isResend: Boolean): Boolean {
+    val response = try {
+        try {
+            client.send(post(request), ofInputStream())
+        } catch (error: IOException) {
+            if (!isResend) throw error            // 첫 요청의 연결 실패 = 서버가 꺼진 것 — 다시 보내지 않는다
+            Thread.sleep(200)                   // 닫히는 연결이 풀에서 빠질 틈
+            client.send(post(request), ofInputStream())   // 한 번만
+        }
+    } catch (error: IOException) {
+        throw UpstreamDown(error)
+    }
+    // ... 이벤트 읽기: start 전에 retry를 받으면 true ...
+}
+```
+단위 재현은 원시 소켓 가짜 서버로 했다 — 첫 연결은 `retry`를 주고 닫고, 두 번째 연결은 요청을 받자마자 응답 없이 리셋(`SO_LINGER 0`)하고, 세 번째 연결에서 정상 응답한다 → 클라이언트는 `start`·`done`을 받고 연결은 3번 열렸다.\
+"첫 요청의 연결 실패는 다시 보내지 않고 즉시 서버 꺼짐으로 본다"도 함께 시험했다.\
+서버 배포 시험에서는 넘겨진 대기자 7건·2건이 모두 재전송 로그(`resending (1/2)`)와 함께 오류 없이 이어졌다 — 다만 이 경합 자체가 서버에서 일어난 것을 관측하지는 못했다.
+
+| | 변형 C 따로 세기 | 방안 2 재전송에 한해 1회 다시 보내기 |
+|---|---|---|
+| 전제 | 측정용 경로라 실패를 결과에서 분리만 하면 된다 | 다시 보내는 이유(상대가 "아직 시작 안 함"으로 넘겼다)를 클라이언트가 알고, 같은 요청을 한 번 더 받아도 상대에게 해가 없다 |
+| 비용 | 사건 창 계산·결과 표 열 | 클라이언트 코드 몇 줄 · 재전송마다 최대 200ms 지연 |
+| 실패 모드 | 운영 경로에는 쓸 수 없다(사용자 요청이 실제로 실패) | 연결이 닫히기 전에 요청이 상대에게 닿았다면 같은 요청이 두 번 처리될 수 있다(이 사례에서 검증하지 않음) · 두 번째도 같은 이유로 끊기면 실패(상한 1회) |
+| 맞는 조건 | 전환 절차 비교처럼 프록시 몫을 측정에서 빼야 할 때 | 프로토콜이 "다시 보내라"를 명시하는 인계·재시도 경로에서, 재사용 연결 경합을 클라이언트가 흡수해야 할 때 |
+
+**결론**: keepalive 경합은 프록시를 고쳐 없앨 수 있는 것이 아니라 연결 재사용의 성질이다 — 측정이면 창으로 갈라 세고(변형 C), 운영이면 그 요청을 다시 보내도 되는 조건을 좁혀서(재전송 요청·연결 단계 실패·1회) 호출하는 쪽이 흡수한다.\
+첫 요청까지 같은 규칙으로 다시 보내면 "서버가 정말 꺼졌다"를 늦게 알게 되므로, 재사용 연결 경합이 생길 만한 요청(방금 같은 상대에게서 응답을 받은 직후의 재전송)으로 범위를 한정했다.\
+검증 기록: 2026-11-20 사건 기록·수정 diff·서버 시험 기록 대조·추상화(Claude 초안). 경합 기제는 리뷰 지적과 단위 재현이고, "클라이언트가 비멱등 요청을 자동 재전송하지 않는다"는 이 사례 클라이언트(JDK HttpClient)에 대한 기록의 판단이다.
