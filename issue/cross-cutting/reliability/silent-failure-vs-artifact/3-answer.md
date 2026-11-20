@@ -599,3 +599,106 @@ last_reason=$reason
 근본 처방은 실행기 쪽이다 — 같은 사유가 되풀이되면 확정 실패로 끊는다(3, → [retry-policy-design](../retry-policy-design/)의 "영구 실패를 재시도하면 무한 루프").\
 2는 사람의 시간을, 3은 실행기의 시간을 지킨다 — 둘 다 없으면 확정 실패가 회차 길이 × 재시도 수만큼 조용히 시간을 먹는다.\
 검증 기록: 2026-10-17 사건 기록 대조·추상화(Claude 초안) — "약 4시간"은 기록된 시각(앞 캠페인 끝 → 수동 정지)으로 계산한 값, 방안 3은 일반 원리(사례는 감시 쪽 2만 적용).
+
+## 방안 비교 — 비동기 접수(202) 뒤의 완료: 호출자는 무엇을 기다려야 하나
+
+변형 E의 "202를 배포 완료로 오해"가 **호출자 쪽**에서 다시 나타난 사례.\
+CI 워크플로는 배포 관리 서버에 "이 커밋을 배포하라"를 한 번 보내고 끝났다.\
+호출은 `curl -sS ... -w "http:%{http_code}"`로 상태 코드를 **출력만** 했다 — `-f`가 없는 curl은 4xx/5xx에도 종료 코드 0이다.\
+엣지 프록시가 집 쪽 서버 연결에 실패해 504를 돌려줬는데 워크플로는 초록불로 끝났다(같은 모양의 기록이 이전에도 한 번 있었다).\
+진단 순서: 워크플로 로그의 `http:504` → 배포 관리 서버 이력에 그 요청 없음 → 운영 서버의 소스 커밋·컨테이너 이미지가 이전 것 그대로 → 엣지 오류 로그 같은 시각에 upstream connect 시간 초과.\
+게다가 504를 잡아도 절반이다 — 이 서버는 202(접수)를 즉시 돌려주고 테스트·빌드·교체를 뒤에서 하므로, 202만 보는 호출자는 그 뒤의 실패를 모른다.
+
+```
+[전]  CI ── POST 배포 ──▶ 엣지 ──✕ connect 시간 초과
+      CI ◀── 504 ─────── 엣지
+      curl 종료 0 ─▶ 초록불            ← 배포는 일어나지 않았다
+
+[전'] CI ── POST 배포 ─────────────────▶ 관리 서버: 기록 → 202 accepted
+      202 ─▶ 초록불                      └─ 뒤에서: 테스트·빌드 ─✕ 실패   ← 호출자는 모른다
+
+[후]  CI ── POST(요청 번호) ─▶ 504·연결 실패면 상한 있는 재시도, 409면 대기
+         ── GET /deploys/<요청 번호> 반복 ─▶ accepted → integrating → delivering → succeeded | failed(단계)
+         succeeded + 배포된 커밋 == 요청 커밋 일 때만 초록불
+```
+
+### 방안 1 — 상태 코드를 출력만 한다 (문제 코드)
+```sh
+curl -sS -X POST "$DEPLOY_URL" -d "$body" -w "\nhttp:%{http_code}\n"
+# 504·401 이어도 curl 종료 코드 0 → 단계 성공 → 초록불
+```
+
+### 방안 2 — 접수 응답 코드를 판정한다
+```sh
+code=$(curl -sS -o resp.json -w '%{http_code}' -X POST "$DEPLOY_URL" -d "$body") || true
+[ "${code:0:1}" = "2" ] || exit 1     # 504 는 빨간불이 된다 — 202 뒤의 실패는 여전히 못 본다
+```
+
+### 방안 3 — 요청 번호로 멱등 접수 + 종단 상태까지 조회 (이 사례에서 적용)
+```sh
+REQUEST_ID="run-$RUN_ID-$RUN_ATTEMPT"     # 같은 실행의 재전송 = 같은 번호, 수동 재실행 = 새 번호
+# 접수: 2xx 수락 · 409(같은 대상 배포 중) 대기 · 그 외(504·연결 실패 등) 5회까지 20초 간격 재시도
+while true; do
+  code=$(curl -sS --max-time 30 -o resp.json -w '%{http_code}' -X POST "$DEPLOY_URL" -d "$body") || true
+  case "$code" in
+    2??) break ;;
+    409) busy=$((busy + 1)); [ "$busy" -ge 40 ] && exit 1; sleep 30 ;;
+    *)   transient=$((transient + 1)); [ "$transient" -ge 5 ] && exit 1; sleep 20 ;;
+  esac
+done
+# 대기: 전체 기한(20분) 안에서 10초 간격 조회, 종단 상태에서만 끝낸다
+while [ "$SECONDS" -lt "$deadline" ]; do
+  code=$(curl -sS --max-time 20 -o status.json -w '%{http_code}' "$DEPLOY_URL/$REQUEST_ID") || true
+  if [ "$code" = "200" ]; then
+    state=$(jq -r '.data.state // "unknown"' status.json) || state=unreadable   # 깨진 본문은 다음 조회로
+    if [ "$state" = "succeeded" ]; then
+      [ "$(jq -r '.data.commit_sha' status.json)" = "$COMMIT" ] || exit 1      # 이 커밋이 배포됐나
+      exit 0
+    elif [ "$state" = "failed" ]; then
+      echo "실패 단계: $(jq -r '.data.failed_stage' status.json)"; jq -r '.data.detail' status.json
+      exit 1
+    fi
+  elif [ "$code" = "404" ]; then
+    missing=$((missing + 1)); [ "$missing" -ge 3 ] && exit 1    # 접수했는데 모른다 = 일시 오류가 아니다
+  fi                                                            # 그 외(조회 중 504 등)는 다음 조회로
+  sleep 10
+done
+exit 1                                                          # 기한 초과도 빨간불
+```
+```go
+// 서버: 같은 요청 번호의 재전송은 새 작업을 만들지 않는다 (응답 유실 뒤 재시도 = 이중 배포 방지)
+if rec, found := store.Find(id); found {
+    if rec.Target != req.Target || rec.Commit != req.Commit {
+        return fail(409, "request_id_conflict")         // 같은 번호, 다른 내용
+    }
+    return accepted(rec.State, duplicate=true)
+}
+if inFlight[req.Target] { return fail(409, "in_progress") }
+if err := store.Insert(id, StateAccepted); err != nil { return fail(500) }   // 기록 못 하는 작업은 받지 않는다
+go advance(id)      // accepted → integrating → delivering → succeeded | failed(단계 + 출력 끝부분)
+return accepted(StateAccepted)
+```
+적용 뒤 관측:\
+실제 장애 중 접수가 504를 4번 연속 받고 5번째(약 2분 뒤)에 202 → 배포 성공·초록불.\
+일부러 실패하는 테스트를 넣은 커밋 → 빨간불, 로그에 실패 단계(테스트)와 실패한 테스트 이름, 운영 컨테이너 생성 시각 불변.\
+가짜 서버로 경우별 종료 코드: 504 2회 뒤 성공 0 · 접수 5회 실패 1 · 401 1 · 409 대기 뒤 테스트 실패 1 · 조회 404 유실 1 · 시간 초과 1 · 커밋 불일치 1.
+
+### 방안 4 — 동기 호출: 요청 하나가 완료까지 응답을 붙잡는다 (선택하지 않은 방법)
+```sh
+curl -f --max-time 1200 -X POST "$DEPLOY_URL/sync" -d "$body"   # 완료 후에야 응답
+```
+선택하지 않은 이유: 이 경로의 엣지 프록시는 응답 대기 제한이 60초인데, 이전 방식의 배포 한 건은 400초를 넘긴 적이 있다.\
+연결이 중간에 끊기면 결과도 함께 잃고(배포가 계속되는지 호출자는 모른다 → [three-state-rpc-outcome](../../distributed/three-state-rpc-outcome/)), 명세가 "진행 주체 = 서버, 호출자와 엣지 사이가 끊겨도 배포는 끝까지 간다"로 정했다.
+
+| 방안 | 전제 | 비용 | 실패 모드 | 맞는 조건 |
+|------|------|------|-----------|-----------|
+| 1. 출력만 | 사람이 매번 로그를 읽는다 | 없음 | 실패가 초록불로 위장 | 없음 |
+| 2. 접수 코드 판정 | 작업이 요청 안에서 끝난다 | 한 줄 | 202 뒤 비동기 실패를 놓침, 일시 장애(504) 한 번에 바로 빨간불 | 동기 API |
+| 3. 멱등 접수 + 상태 조회 | 서버가 요청 번호로 상태를 내주고 접수가 멱등 | 상태 API·이력 저장·러너가 기다리는 시간 | 재시도 상한(약 2분)보다 긴 장애·조회 경로 단절은 빨간불(수동 재실행) | 수 분짜리 비동기 작업, 중간에 프록시가 있는 경로 |
+| 4. 동기 호출 | 경로의 모든 타임아웃 > 작업 시간 | 연결 하나 | 중간 프록시 제한에 잘리면 결과 모름 | 짧은 작업, 직접 연결 |
+
+**결론**: 호출자가 응답으로 아는 것은 "접수됐다"까지다 — 완료를 초록불의 조건으로 삼으려면 서버가 완료를 물어볼 수단(요청 번호 + 상태 조회)을 내주고, 호출자는 종단 상태와 "이 커밋"까지 확인해야 한다(3).\
+재시도를 붙이는 순간 "응답만 유실된 요청의 재전송"이 생기므로 접수는 요청 번호로 멱등이어야 한다 — 같은 실행의 재전송과 사람의 재실행은 번호를 달리해 구분한다([idempotent-retry-design](../idempotent-retry-design/) 변형 E와 같은 원리).\
+작업이 짧고 경로의 모든 타임아웃이 작업 시간보다 길면 동기 호출(4)이 가장 단순하다.
+
+검증 기록: 2026-11-20 사건 기록·실험 기록·코드(수정 전후) 대조·추상화(Claude 초안) — 방안 4는 실행하지 않은 방법이며, 근거 수치(응답 대기 제한·이전 배포 시간)는 경로 설정과 배포 기록에서 가져왔다.

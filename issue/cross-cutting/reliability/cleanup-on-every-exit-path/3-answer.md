@@ -273,3 +273,73 @@ trap - EXIT INT TERM                 # 성공 경로에서 해제 — 안 하면
 **결론**: 자원을 한 스코프가 소유하면 **RAII·finally**로 충분하다.\
 정리가 스코프를 벗어나 **시간·다른 프로세스·재시작**에 걸쳐 있으면 "누가 종료를 관측하는가"를 먼저 정한다 — 관측 주체(watch·기동 시 무장)를 두고, 정리 호출 자체는 취소 전파와 분리한다.\
 셸처럼 정리 도구가 재진입하는 환경에서는 **정리 핸들러가 스스로를 해제**해 정확히 한 번을 지킨다.
+
+## 방안 비교 — 비동기 제너레이터의 finally는 "닫힐 때" 돈다: 겹쳐 있으면 안쪽은 언제 닫히나
+
+기본 방안("정리를 스코프 소멸에 묶는다")이 **정리 코드는 제대로 있는데도** 늦게 도는 사례 — 정리를 품은 객체 자체의 수명이 스코프에 묶여 있지 않았다.\
+대기열이 있는 스트리밍 서버(Python asyncio)에서 이벤트 스트림은 비동기 제너레이터 두 겹이었다.\
+바깥(이벤트 스트림)은 자리가 없으면 안쪽(대기열 대기) 제너레이터를 `async for`로 돌리며 순번 이벤트를 흘리고, 안쪽의 `finally`가 대기 자리를 반납하고 받아 둔 슬롯을 돌려준다.\
+명세에서 먼저 쓴 테스트(대기 중 연결 끊김 → 자리 반납)가 이 결함을 잡았다 — 바깥 제너레이터를 `aclose()`한 직후 확인한 대기 자리가 아직 반납되지 않았다.
+
+원인: `aclose()`는 바깥 제너레이터가 멈춰 있던 `yield`에 `GeneratorExit`를 던질 뿐이다.\
+바깥이 `async for`로 돌던 안쪽 제너레이터는 닫히지 않고 멈춘 채 남는다 — 비동기 제너레이터의 정리는 await가 필요해 참조가 사라지는 순간 동기적으로 돌 수 없다.\
+asyncio는 그런 제너레이터를 회수할 때 finalizer 훅으로 `aclose()`를 **루프의 나중 차례에 예약**하고, 참조가 남아 있으면 그마저 회수 때까지 미뤄진다.\
+그래서 `finally`는 결국 돌지만, "언제"가 바깥의 종료와 묶여 있지 않다 — 그 사이 대기 자리·슬롯이 유령으로 남는다.
+
+```
+outer.aclose()
+  └─ outer: yield 지점에서 GeneratorExit  (async for e in inner 안)
+       └─ outer 종료 ─ inner 는? 멈춘 채 남음
+            └─ 회수 시 finalizer 훅이 inner.aclose() 를 나중 차례에 예약
+                 └─ finally: 자리 반납            ← 호출자가 확인하는 시점보다 늦다
+
+async with aclosing(inner) as turn:   → outer 가 닫히는 그 흐름 안에서 inner.aclose() 를 await
+                                        → finally 즉시
+```
+
+### 방안 1 — 안쪽 제너레이터의 정리를 회수 시점에 맡긴다 (문제 코드)
+```python
+async def wait_turn(queue):
+    ticket = queue.enter()
+    try:
+        while not acquired():
+            yield {"type": "queued", "position": queue.position(ticket)}
+            # ...
+    finally:
+        queue.leave(ticket)                      # 닫혀야 돈다
+
+async def events(queue):
+    if queue.saturated():
+        async for event in wait_turn(queue):     # 바깥이 닫혀도 안쪽은 바로 닫히지 않는다
+            yield event
+    # ...
+```
+
+### 방안 2 — `aclosing`으로 안쪽의 수명을 바깥 스코프에 묶는다 (이 사례에서 적용)
+```python
+from contextlib import aclosing                  # Python 3.10+
+
+async def events(queue):
+    if queue.saturated():
+        async with aclosing(wait_turn(queue)) as turn:
+            async for event in turn:
+                yield event
+    # ...
+
+async def response_lines(queue):                 # 그 위 겹(HTTP 응답 생성기)도 같다 — 리뷰에서 누락 지적
+    async with aclosing(events(queue)) as stream:
+        async for event in stream:
+            yield encode(event)
+```
+고친 뒤 `aclose()` 직후의 반납 확인이 통과했다.
+
+| 방안 | 전제 | 비용 | 실패 모드 | 맞는 조건 |
+|------|------|------|-----------|-----------|
+| 1. 회수 시점에 맡김 | 정리가 늦어도 무해하다(메모리 정도) | 없음 | 대기 자리·세마포어처럼 다른 요청이 기다리는 자원이 루프의 나중 차례나 회수 때까지 묶인다, 테스트는 단언 시점에 따라 간헐적으로만 잡는다 | 안쪽 제너레이터가 공유 자원을 쥐지 않을 때 |
+| 2. `aclosing` | 비동기 제너레이터를 소비하는 겹마다 감싼다 | 겹마다 한 줄 | 한 겹이라도 빠지면 그 아래가 다시 늦어진다 | 안쪽 제너레이터의 finally가 공유 자원을 반납할 때 |
+
+**결론**: 제너레이터 안의 `try/finally`는 "제너레이터가 닫힐 때"에 묶여 있을 뿐, 제너레이터를 부른 쪽의 스코프에 묶여 있지 않다.\
+안쪽 제너레이터가 다른 요청이 기다리는 자원을 쥐면, 소비하는 겹마다 `aclosing`으로 감싸 닫힘을 위에서 아래로 즉시 전파한다(2).\
+그 위에서 "닫으라는 신호" 자체가 오지 않는 문제는 별개다 — [cancellation-reachability](../../concurrency/cancellation-reachability/)의 "서버가 연결 끊김을 스트리밍 응답 생성기에 전하지 않는다" 방안 비교.
+
+검증 기록: 2026-11-20 사건 기록·코드 대조·추상화(Claude 초안) — 회수 시 `aclose()`를 예약하는 동작은 asyncio의 비동기 제너레이터 finalizer 훅 일반 동작이며, 사건에서는 "aclose 직후 자리 미반납"으로만 관측했다.

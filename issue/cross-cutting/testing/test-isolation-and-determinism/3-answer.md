@@ -208,3 +208,76 @@ class TestClock(now: Instant) : Clock() {
 어느 쪽이든 "테스트 도구도 동시성 코드다" — 운영 코드만 리뷰하고 더블을 빼면 그린의 근거가 스케줄러 운이 된다.
 
 검증 기록: 2026-10-15 사건 기록·코드(수정 전후) 대조·추상화(Claude 초안).
+
+## 방안 비교 — 순서가 정해진 두 사건 중 무엇을 기다리나, 그리고 실패한 테스트가 붙잡아 둔 요청
+
+변형 E(관측 시점에 상태가 확정되지 않음)가 **비동기 단계 진행 검증**에서 나타나고, 그 실패가 정리 단계의 정지로 번진 사례(Go).\
+배포 관리자는 단계마다 "상태 기록(cd_running) → 실행기에 HTTP 호출" 순서로 진행한다.\
+상태 전이 테스트는 가짜 실행기(`httptest` 서버)가 단계별 채널이 닫힐 때까지 요청을 붙잡게 해 두고, 각 단계에서 상태와 호출 기록을 함께 확인했다.\
+테스트가 간헐적으로 실패했다 — 상태가 cd_running이 될 때까지 기다린 뒤 **곧바로** "가짜 실행기에 교체 호출이 기록됐나"를 단언했는데, 관리자는 상태를 먼저 쓰고 그다음에 요청을 보내므로 상태가 보이는 순간 요청은 아직 도착 전일 수 있다.\
+게다가 실패(`t.Fatalf`)로 테스트가 끝나면 붙잡힌 요청을 풀어 주는 `close(hold)`에 도달하지 않는다.\
+정리 단계의 `httptest.Server.Close`는 진행 중인 요청이 끝나기를 기다리므로, 영영 안 닫히는 채널을 기다리는 핸들러 때문에 테스트 실행이 약 5분 멈췄다 — 실패 메시지 대신 정지가 먼저 보였다.
+
+```
+관리자 고루틴 :  store(state=cd_running) ─────────▶ POST /deliver ──▶ 가짜 실행기: calls += /deliver, <-hold 대기
+테스트        :  poll state == cd_running ✓ ─▶ assert calls ∋ /deliver ✗ (아직 도착 전)
+                                                   └─ t.Fatalf → close(hold) 에 도달 못 함
+정리          :  server.Close() ── 진행 중 요청(<-hold) 이 끝나기를 기다림 ── 멈춤
+
+고친 뒤       :  close(holdIntegrate)
+                 poll calls == "/integrate,/deliver"  (뒤 사건을 기다림)
+                 assert state == cd_running            (앞 사건은 그때 이미 참이어야 함)
+                 t.Cleanup: 실패해도 hold 를 닫음 → Close 가 바로 끝남
+```
+
+### 방안 1 — 앞 사건을 기다리고 뒤 사건을 즉시 단언 + 해제는 정상 경로에만 (문제 코드)
+```go
+agent.holds = map[string]chan struct{}{"/integrate": holdIntegrate, "/deliver": holdDeliver}
+// ...
+close(holdIntegrate)
+waitState(t, master, id, StateDelivering)                  // 앞 사건(상태 기록)
+if !strings.Contains(agent.called(), "/deliver") {         // 뒤 사건(요청 도착)을 바로 단언 → 경합
+    t.Fatalf("CD 호출 전")                                  // 여기서 끝나면 아래 close 에 못 온다
+}
+close(holdDeliver)
+```
+
+### 방안 2 — 뒤 사건을 유계 폴링으로 기다리고, 해제를 Cleanup에 둔다 (이 사례에서 적용)
+```go
+released := false
+t.Cleanup(func() {            // 나중에 등록한 Cleanup 이 먼저 돈다 → 가짜 서버 Close 보다 앞서 해제
+    if !released {
+        agent.mutex.Lock(); agent.holds = nil; agent.mutex.Unlock()
+        for _, hold := range []chan struct{}{holdIntegrate, holdDeliver} {
+            select {
+            case <-hold:      // 이미 닫힘
+            default:
+                close(hold)
+            }
+        }
+    }
+})
+// ...
+close(holdIntegrate)
+deadline := time.Now().Add(5 * time.Second)
+for agent.called() != "/integrate,/deliver" && time.Now().Before(deadline) {   // 뒤 사건을 기다린다
+    time.Sleep(5 * time.Millisecond)
+}
+if agent.called() != "/integrate,/deliver" || lookup(t, master, id).State != StateDelivering {
+    t.Fatalf("CD 진행 중 상태는 cd_running 이어야 한다")    // 이 시점엔 앞 사건이 반드시 참
+}
+close(holdDeliver)
+released = true
+```
+고친 뒤 3회 연속 통과, 이후 `-race -count=3`도 통과했다.
+
+| 방안 | 전제 | 비용 | 실패 모드 | 맞는 조건 |
+|------|------|------|-----------|-----------|
+| 1. 앞 사건 확인 → 뒤 사건 즉시 단언 | 두 사건이 원자적으로 함께 보인다 | 없음 | 스케줄링에 따라 간헐 실패, 해제가 정상 경로에만 있으면 실패 한 번이 정리 정지로 번진다 | 두 값이 같은 임계구역에서 함께 바뀔 때 |
+| sleep 마진 (선택하지 않은 방법, 변형 C) | 사건 간격이 마진보다 짧다 | 테스트마다 고정 대기 | 느린 환경에서 다시 깨진다, 테스트가 느려진다 | 없음 |
+| 2. 뒤 사건을 유계 폴링 + Cleanup 해제 | 코드가 "앞 → 뒤" 순서를 보장한다 | 폴링 기한·해제 코드 | 뒤 사건이 영영 안 오면 기한까지 기다린 뒤 실패(명확한 메시지), 해제 순서(Cleanup LIFO)를 틀리면 다시 정지 | 비동기 단계 진행을 검증하고 테스트 더블이 요청을 붙잡는 테스트 |
+
+**결론**: 순서가 정해진 두 사건을 함께 확인할 때는 **나중에 일어나는 사건을 기다리고, 그때 앞 사건이 이미 참인지**를 단언한다 — 앞 사건을 보고 뒤 사건을 단언하면 그 사이의 창이 간헐 실패가 된다(2).\
+테스트 더블이 요청을 붙잡게 했다면 그 해제는 정상 경로가 아니라 `t.Cleanup`(또는 `defer`)에 두어, 실패한 테스트가 정리 단계를 멈추지 않게 한다 — 정리가 진행 중인 요청을 기다리는 도구(`httptest.Server.Close` 등)라면 더 그렇다([cleanup-on-every-exit-path](../../reliability/cleanup-on-every-exit-path/)의 원리가 테스트 하네스에도 적용된다).
+
+검증 기록: 2026-11-20 사건 기록·코드(고친 테스트)·관리자 진행 코드 대조·추상화(Claude 초안) — 문제 코드는 커밋되지 않은 중간 상태라 사건 기록("상태 변경 직후 호출 기록을 바로 확인")에서 구조만 재구성했다.

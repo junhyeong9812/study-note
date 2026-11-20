@@ -155,3 +155,113 @@ teardown
 **결론**: 스크립트가 신호를 "받는다"(trap이 있다)와 신호가 **지금의 대기 지점에 닿는다**는 다르다 — 오래 걸리는 자식은 배경으로 띄우고 `wait`로 기다려 대기 자체를 신호에 깨어나게 하고, trap은 자식과 원격 작업을 직접 멈춘다.\
 짧은 `sleep`도 같은 이유로 `sleep N & wait $!`로 바꾼다 — 중단 시험(신호를 보내고 정리까지 걸린 시간을 재는 것)으로 확인한다.\
 검증 기록: 2026-10-11 사건 기록 대조·추상화(Claude 초안) — 표의 "프로세스 그룹"·"배경 자식의 stdin" 항목은 일반 원리(사건에서 관측하지 않음).
+
+## 방안 비교 — 서버가 연결 끊김을 스트리밍 응답 생성기에 전하지 않는다
+
+같은 원리(정답 7번 — "포기 신호가 작업이 멈춰 있는 지점까지 닿아야 한다")가 **HTTP 스트리밍 응답**에서 나타난 사례.\
+모델 래퍼 서버(Python ASGI)는 생성 슬롯 2개를 세마포어로 나누고, 넘치는 요청은 대기열에 세워 "대기 순번" 이벤트를 스트림으로 흘렸다. 앞에는 중계 서버(JVM, SSE)가 있다.\
+E2E에서 대기 중인 요청 하나를 6초에 끊었다.\
+중계 서버는 약 10초 뒤 이탈을 알아챘지만, 래퍼는 그 요청의 대기 자리를 놓지 않았고 차례가 오자 응답을 끝까지 생성했다(토큰 약 971개) — 뒤 요청은 그만큼 더 기다렸다.\
+진단 순서: 중계 서버 로그에 이탈 기록 있음 → 래퍼 로그에는 그 요청의 정상 완료 → 중계를 빼고 래퍼에 직접 붙어 소켓만 닫는 격리 실험에서도 같은 현상 → 래퍼 쪽 원인 확정.
+
+원인(uvicorn 0.30.6 + Starlette 0.46.2 조합에서 확인):\
+서버는 ASGI `spec_version` 2.4를 알린다.\
+Starlette의 `StreamingResponse`는 2.4 이상이면 별도의 끊김 감시 태스크를 돌리지 않고, "끊긴 연결에 `send` 하면 `OSError`가 난다"에 기대어 그때 스트림을 끝낸다.\
+그런데 이 서버의 `send`는 연결이 끊긴 뒤 불리면 **예외 없이 그냥 반환**한다.\
+결과: 대기 중에는 보낼 것이 없어 `send` 자체가 없고, 생성 중에는 `send`가 조용히 성공한다 — 끊김(`http.disconnect`)은 아무도 읽지 않는 receive 채널에만 도착한다.
+
+```
+클라이언트 ──✕ 소켓 종료
+                └─▶ receive 채널: http.disconnect   ← 아무도 읽지 않음
+서버 send():  if disconnected: return              ← 예외 없음
+응답 생성기:  [대기열 대기] ─▶ 차례 ─▶ [생성 … 끝까지] ─▶ finally: 자리·슬롯 반납
+                    ↑ 끊김이 닿는 지점이 없다
+
+고친 뒤:     [끊김 감시 태스크] ─┐
+             [다음 이벤트 대기] ─┴─ 먼저 끝나는 쪽 ─▶ 끊김이면 이벤트 대기를 취소 ─▶ finally 즉시
+```
+
+### 방안 1 — 끊김 처리를 프레임워크에 맡긴다 (문제 코드)
+```python
+async def event_lines(body):
+    async with aclosing(events(body)) as stream:   # 이 제너레이터가 닫히면 자리·슬롯 반납
+        async for event in stream:
+            yield encode(event)                    # 끊긴 뒤의 send 는 조용히 무시 → 생성기가 닫히지 않는다
+
+return StreamingResponse(event_lines(body))
+```
+
+### 방안 2 — 끊김을 직접 감시해 작업과 경주시킨다 (래퍼에 적용)
+```python
+async def wait_disconnect(request):
+    while not await request.is_disconnected():    # receive 채널을 직접 확인
+        await asyncio.sleep(0.5)
+
+async def event_lines(body, request):
+    gone = asyncio.ensure_future(wait_disconnect(request))
+    try:
+        async with aclosing(events(body)) as stream:
+            next_event = None
+            try:
+                while True:
+                    next_event = asyncio.ensure_future(anext(stream))
+                    await asyncio.wait({next_event, gone}, return_when=asyncio.FIRST_COMPLETED)
+                    if gone.done():               # 동시에 와도 이탈 우선 — 떠난 상대에게 보내지 않는다
+                        return
+                    try:
+                        event = next_event.result()
+                    except StopAsyncIteration:
+                        return
+                    yield encode(event)
+            finally:
+                # 어느 경로로 나가든 기다리던 next 를 먼저 취소·회수한 뒤 stream 을 닫는다
+                # (실행 중인 채로 닫으면 닫기가 실패해 반납이 미뤄진다) — 취소가 대기·생성 지점의 finally 를 돌린다
+                if next_event is not None:
+                    next_event.cancel()
+                    with suppress(asyncio.CancelledError, StopAsyncIteration, Exception):
+                        await next_event
+    finally:
+        gone.cancel()
+```
+정리 순서(먼저 next 회수, 그다음 stream 닫기)와 동시 완료 시 이탈 우선은 첫 수정 뒤 리뷰 재점검에서 지적돼 반영했다.\
+기존 테스트는 생성기를 직접 `aclose()`했기 때문에 "서버가 끊김을 어떻게 전하는가"를 검증하지 못했다 — 실제 서버를 띄워 소켓을 닫는 테스트를 추가했고, **수정 전 코드에서 실패·수정 후 통과**를 확인했다.\
+배포 뒤 재실험: 래퍼에 직접 붙어 대기 중인 요청을 끊자 뒤 요청의 순번이 그 즉시 당겨졌고, 끊긴 요청은 생성되지 않았다.
+
+### 방안 3 — 주기적 쓰기의 실패로 감지한다 (앞단 중계 서버에 적용)
+중계 서버는 프록시 무응답 제한(60초) 때문에 15초마다 SSE 주석 줄(keep-alive)을 보낸다 — 토큰이 오지 않는 구간에 이탈을 알 기회는 이 쓰기의 실패뿐이다.\
+리뷰에서 두 결함이 나왔다: (a) keep-alive 전송 실패를 삼켜 이탈 뒤에도 스트림 작업이 상류 읽기를 계속했다, (b) 이탈 신호가 작업 스레드 등록보다 먼저 오면 깨울 대상이 없어 신호가 사라졌다.
+```kotlin
+// ① 문제
+keepAlive = scheduler.scheduleAtFixedRate({ runCatching { emitter.send(comment("keep-alive")) } }, 15, 15, SECONDS)
+executor.execute { relay(upstream, emitter) }      // 이탈해도 상류 읽기가 끝까지 간다
+
+// ② 고침
+val worker = AtomicReference<Thread>()
+val gone = AtomicBoolean(false)
+fun stopWorker() { gone.set(true); worker.get()?.interrupt() }   // 아직 등록 전이어도 흔적을 남긴다
+keepAlive = scheduler.scheduleAtFixedRate({
+    try { emitter.send(comment("keep-alive")) }
+    catch (e: Exception) { stopWorker(); throw CancellationException("client gone") }   // 예외로 끝내 주기 작업도 멈춘다
+}, 15, 15, SECONDS)
+emitter.onError { keepAlive.cancel(false); stopWorker() }
+emitter.onTimeout { keepAlive.cancel(false); stopWorker() }
+executor.execute {
+    worker.set(Thread.currentThread())
+    if (gone.get()) Thread.currentThread().interrupt()          // 등록 전에 온 이탈 신호를 놓치지 않는다
+    try { relay(upstream, emitter) }                            // 깨우면 상류 읽기가 끊기며 자리·슬롯이 반납된다
+    finally { worker.set(null); Thread.interrupted() }          // 끝난 뒤 늦게 온 신호가 다음 작업을 깨우지 않게
+}
+```
+배포 뒤 엣지를 거친 재실험: 대기 중 이탈에서 뒤 요청의 순번이 약 10초 뒤 당겨졌다 — 감지 간격의 상한은 keep-alive 주기(15초)다.
+
+| 방안 | 전제 | 비용 | 실패 모드 | 맞는 조건 |
+|------|------|------|-----------|-----------|
+| 1. 프레임워크에 맡김 | 서버가 끊김을 `send` 예외나 취소로 작업에 전달한다 | 없음 | 이 조합처럼 `send`가 조용히 무시되면 끊김이 영영 닿지 않는다 — 대기 자리·슬롯을 끝까지 점유 | 서버·프레임워크 조합의 전달 경로를 실제 소켓 테스트로 확인한 뒤 |
+| 2. 끊김 조회 + 경주 | 끊김을 물어볼 API가 있다(receive 채널) | 감시 태스크(0.5초 폴링), 취소·정리 순서 코드 | 정리 순서를 틀리면 닫기 실패로 반납 지연, 폴링 간격만큼 지연 | 비동기 서버의 긴 대기·생성 스트림 |
+| 3. 주기 쓰기 실패로 감지 | 끊긴 연결에 쓰면 예외가 올라온다 | 하트비트 트래픽 | 감지 지연 ≤ 하트비트 주기, 실패를 삼키면 0, 작업 등록 전 신호는 플래그 없이는 유실 | 스레드 기반 서버, 프록시 무응답 제한 때문에 어차피 하트비트가 필요한 경로 |
+
+**결론**: "연결이 끊기면 작업도 멈추겠지"는 서버·프레임워크 조합이 끊김을 작업의 대기 지점까지 전달할 때만 참이다 — 먼저 실제 서버에 붙어 소켓을 닫는 테스트로 도달 여부를 확인한다(정답 6번의 "멈춘 상대 재현"과 같은 요구).\
+끊김을 물어볼 수 있으면 작업과 경주시켜 즉시 취소하고(2), 쓰기 실패로만 알 수 있으면 주기 쓰기를 두되 실패를 삼키지 말고 작업 등록 전에 온 신호를 플래그로 남긴다(3).\
+여러 홉이 이어진 경로에서는 홉마다 따로 확인해야 한다 — 이 사례에서도 앞단은 이탈을 알았는데 뒷단이 몰랐다.
+
+검증 기록: 2026-11-20 사건 기록·코드(수정 전후)·사용 중인 서버·프레임워크 버전의 소스 대조·추상화(Claude 초안) — 방안 3의 두 결함은 운영 사고가 아니라 리뷰에서 발견한 것이다.
