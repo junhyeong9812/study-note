@@ -3,7 +3,7 @@
 여러 프로젝트에서 실제로 겪은 이슈를 **원리 단위로 추상화**해 모은 곳이다.\
 이슈 하나가 카드 하나가 아니다 — 같은 근본원인·같은 대응을 공유하는 이슈들을 **패턴 카드 하나**로 묶고, 각 사건 유형은 카드 안에서 **추상화 코드**(일반 이름·축약 로직)로 보인다.\
 카드에는 출처(프로젝트명·파일·라인)를 적지 않는다 — 문제 코드의 구조 자체가 문서에 드러나므로 그것으로 충분하다.\
-현재 카드 186개.
+현재 카드 187개.
 
 ## 분류 두 축
 
@@ -27,7 +27,7 @@
 | [`identity`](#identity) | 같은 대상인가 — 식별자·정체성 판정 | 2 |
 | [`single-source-of-truth`](#single-source-of-truth) | 같은 사실은 한 곳에서 파생 |4 |
 
-태그는 선택이다 — 12종 어느 주제에도 해당하지 않는 카드(63개)는 폴더 축으로만 분류한다.
+태그는 선택이다 — 12종 어느 주제에도 해당하지 않는 카드(64개)는 폴더 축으로만 분류한다.
 
 ## 포맷
 
@@ -42,7 +42,7 @@
 숫자 = 그 폴더 아래 패턴 카드 수.
 
 ```
-issue/  (186)
+issue/  (187)
 ├─ cross-cutting/               133
 │  ├─ concurrency/               11
 │  ├─ data/                      20
@@ -72,7 +72,7 @@ issue/  (186)
 │  ├─ tauri/                      2
 │  ├─ tokio/                      1
 │  └─ (언어 레벨 카드)            5
-├─ shell/                         4
+├─ shell/                         5
 └─ typescript/                   19
    ├─ browser/                    1
    ├─ next/                       4
@@ -322,6 +322,7 @@ issue/  (186)
 ### [shell/](shell/) — 셸 스크립트
 
 - [argument-size-limit](shell/argument-size-limit/) — 명령행 인수에는 커널 상한(인수 하나 128KB·전체 ARG_MAX)이 있어 자라는 데이터를 `--argjson`·`$(cat …)`로 넘기면 어느 날 `execve`가 거부한다 — 리다이렉트가 만든 빈 파일과 먼저 써 둔 "ok" 상태가 실패를 숨기므로, 데이터는 파일로 넘기고(`--slurpfile`) 임시 파일 검증 뒤 교체하며 상태는 산출물 뒤에 쓴다.
+- [closed-pipe-sigpipe](shell/closed-pipe-sigpipe/) — 읽는 쪽이 끝난 파이프에 쓰면 쓰기 명령이 실패하는 대신 쓰던 프로세스가 SIGPIPE 로 죽어(exit 141) `|| 처리`가 돌지 않고, stdout·stderr 가 함께 끊기면 실패를 알리는 경고가 그 죽음을 만든다 — 출력 실패를 rc 로 받을 서브셸에만 `trap '' PIPE` 를 걸고, 경고는 `( … ) || true` 서브셸로 감싸며, 어느 줄이 실제 방어선인지 변형 실험으로 가린다.
 - [exit-status-semantics](shell/exit-status-semantics/) — 파이프라인·그룹 리다이렉트·`&&`의 종료 코드는 마지막 명령의 것이고 errexit·명령별 비0 의미(grep 1·iconv)가 계약을 흔든다 — pipefail과 단계별 rc를 명시한다.
 - [quoting-expansion-layers](shell/quoting-expansion-layers/) — 셸은 텍스트를 인용·확장·word-split·glob·heredoc 계층마다 다시 해석한다 — 중첩 인용·dotenv source·빈 매칭 glob·heredoc 종료 태그가 의도와 다른 명령을 만든다.
 - [script-modified-while-running](shell/script-modified-while-running/) — bash는 스크립트를 실행하면서 읽는다 — 실행 중 제자리 편집은 어긋난 바이트 위치에서 다음 명령을 읽게 해 문법 오류·정리 누락을 만든다, 진입점·입력 전체를 동결 사본으로 실행하고 실행 코드 = 기록 커밋을 시작 시 한 번 확인한다.
