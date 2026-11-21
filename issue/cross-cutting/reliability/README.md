@@ -24,6 +24,7 @@
 - [change-detection-key-design](change-detection-key-design/) — 변경 감지·캐시 키는 결과에 영향을 주는 입력 전부를 반영해야 하고(mtime·길이·합산값은 불완전), 잠금·정체성 키에는 가변값을 넣지 않는다 — 한쪽이면 갱신 누락, 반대면 무한 루프.
 - [cleanup-on-every-exit-path](cleanup-on-every-exit-path/) — 종료 경로가 여럿이면 경로마다 정리를 흩어 두지 말고 스코프 소멸(RAII·try/finally·trap)에 묶어 모든 경로(에러·취소·spawn 실패·예외)에서 정확히 한 번 해제한다.
 - [closed-state-model](closed-state-model/) — 상태 공간을 타입·전이 규칙으로 닫아라 — 불법 상태·누락된 조합·종단 재전이·검사 없는 set·비단조 guard는 오보고와 교착을 만든다.
+- [consumer-group-state-loss](consumer-group-state-loss/) — 소비자 그룹의 서버 쪽 상태(그룹·미확인 항목의 내용)는 소비자가 만들었지만 브로커가 가진다 — 디스크에 저장하지 않는 브로커의 재시작과 길이 상한이 소비자 모르게 지우므로, "준비됨"은 실패할 때마다 버리고 다시 확인하며, 내용이 밀려난 미확인 항목은 저장하지 않고 확인하되 잃은 건수를 남긴다.
 - [debounce-trailing-contract](debounce-trailing-contract/) — 디바운스·보류 전송은 "마지막 변경 뒤 반드시 한 번 더"와 종결 이벤트와의 순서라는 새 계약을 만든다 — 지키지 못하면 마지막 변경이 조용한 유실되거나 순서가 뒤집힌다.
 - [derived-cache-staleness](derived-cache-staleness/) — 파생 캐시·사본·비동기 로그는 원본보다 늦으며 실패 결과를 캐시하면 일시 장애가 영구화된다 — 완결성·최신성이 필요한 판정은 정본(이벤트 페이로드·원본)을 직접 읽는다.
 - [deserialization-trust-boundary](deserialization-trust-boundary/) — 역직렬화 경계에서 타입 보장이 끊긴다 — 영속·외부 데이터는 로드 시 검증·정규화하고, 부분 손상은 격리하되 드롭은 관측하며, 모르는 값·깊이 공격·스키마 진화를 명시 처리한다.
@@ -44,4 +45,4 @@
 - [silent-truncation-marker](silent-truncation-marker/) — 상한·예산·링버퍼로 자른 결과를 완전한 결과와 같은 모양으로 반환하면 호출자는 절단을 모른다 — 절단 표식을 동반하고, 절단은 표시 경계에서만 하며, 단계 간 상한을 정렬한다.
 - [value-binding-time](value-binding-time/) — 값은 해석·고정되는 시점(빌드·import·컨테이너 생성·프로세스 기동·작업 생성)에 박제된다 — 이후 변경은 그 시점을 다시 거치지 않으면 반영되지 않는다.
 
-> 이 폴더의 메타 태그: `silent-failure`(7) · `resource-bounding`(6) · `fail-closed`(1) · `environment-drift`(1) — 태그별 전체 목록은 [issue 태그 역인덱스](../../README.md#태그-역인덱스).
+> 이 폴더의 메타 태그: `silent-failure`(8) · `resource-bounding`(6) · `fail-closed`(1) · `environment-drift`(1) — 태그별 전체 목록은 [issue 태그 역인덱스](../../README.md#태그-역인덱스).

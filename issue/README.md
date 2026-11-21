@@ -3,7 +3,7 @@
 여러 프로젝트에서 실제로 겪은 이슈를 **원리 단위로 추상화**해 모은 곳이다.\
 이슈 하나가 카드 하나가 아니다 — 같은 근본원인·같은 대응을 공유하는 이슈들을 **패턴 카드 하나**로 묶고, 각 사건 유형은 카드 안에서 **추상화 코드**(일반 이름·축약 로직)로 보인다.\
 카드에는 출처(프로젝트명·파일·라인)를 적지 않는다 — 문제 코드의 구조 자체가 문서에 드러나므로 그것으로 충분하다.\
-현재 카드 185개.
+현재 카드 186개.
 
 ## 분류 두 축
 
@@ -14,7 +14,7 @@
 
 | 태그 | 뜻 | 카드 수 |
 |------|----|---------|
-| [`silent-failure`](#silent-failure) | 성공 표시 ≠ 산출물 — 실패가 정상처럼 보인다 | 32 |
+| [`silent-failure`](#silent-failure) | 성공 표시 ≠ 산출물 — 실패가 정상처럼 보인다 | 33 |
 | [`resource-bounding`](#resource-bounding) | 입력에 비례해 커지는 자원의 상한 | 31 |
 | [`least-privilege`](#least-privilege) | 최소 권한·최소 노출·비밀 관리 | 14 |
 | [`fail-closed`](#fail-closed) | 판정 불가·조회 실패를 거부로 처리 | 4 |
@@ -42,8 +42,8 @@
 숫자 = 그 폴더 아래 패턴 카드 수.
 
 ```
-issue/  (185)
-├─ cross-cutting/               132
+issue/  (186)
+├─ cross-cutting/               133
 │  ├─ concurrency/               11
 │  ├─ data/                      20
 │  ├─ database/                  11
@@ -53,7 +53,7 @@ issue/  (185)
 │  ├─ infra/                     14
 │  ├─ network/                   11
 │  ├─ os/                         8
-│  ├─ reliability/               24
+│  ├─ reliability/               25
 │  ├─ search-engine/              8
 │  ├─ security/                  12
 │  └─ testing/                    6
@@ -200,6 +200,7 @@ issue/  (185)
 - [change-detection-key-design](cross-cutting/reliability/change-detection-key-design/) — 변경 감지·캐시 키는 결과에 영향을 주는 입력 전부를 반영해야 하고(mtime·길이·합산값은 불완전), 잠금·정체성 키에는 가변값을 넣지 않는다 — 한쪽이면 갱신 누락, 반대면 무한 루프.
 - [cleanup-on-every-exit-path](cross-cutting/reliability/cleanup-on-every-exit-path/) — 종료 경로가 여럿이면 경로마다 정리를 흩어 두지 말고 스코프 소멸(RAII·try/finally·trap)에 묶어 모든 경로(에러·취소·spawn 실패·예외)에서 정확히 한 번 해제한다.
 - [closed-state-model](cross-cutting/reliability/closed-state-model/) — 상태 공간을 타입·전이 규칙으로 닫아라 — 불법 상태·누락된 조합·종단 재전이·검사 없는 set·비단조 guard는 오보고와 교착을 만든다.
+- [consumer-group-state-loss](cross-cutting/reliability/consumer-group-state-loss/) — 소비자 그룹의 서버 쪽 상태(그룹·미확인 항목의 내용)는 소비자가 만들었지만 브로커가 가진다 — 디스크에 저장하지 않는 브로커의 재시작과 길이 상한이 소비자 모르게 지우므로, "준비됨"은 실패할 때마다 버리고 다시 확인하며, 내용이 밀려난 미확인 항목은 저장하지 않고 확인하되 잃은 건수를 남긴다.
 - [debounce-trailing-contract](cross-cutting/reliability/debounce-trailing-contract/) — 디바운스·보류 전송은 "마지막 변경 뒤 반드시 한 번 더"와 종결 이벤트와의 순서라는 새 계약을 만든다 — 지키지 못하면 마지막 변경이 조용한 유실되거나 순서가 뒤집힌다.
 - [derived-cache-staleness](cross-cutting/reliability/derived-cache-staleness/) — 파생 캐시·사본·비동기 로그는 원본보다 늦으며 실패 결과를 캐시하면 일시 장애가 영구화된다 — 완결성·최신성이 필요한 판정은 정본(이벤트 페이로드·원본)을 직접 읽는다.
 - [deserialization-trust-boundary](cross-cutting/reliability/deserialization-trust-boundary/) — 역직렬화 경계에서 타입 보장이 끊긴다 — 영속·외부 데이터는 로드 시 검증·정규화하고, 부분 손상은 격리하되 드롭은 관측하며, 모르는 값·깊이 공격·스키마 진화를 명시 처리한다.
@@ -362,7 +363,7 @@ issue/  (185)
 
 ### silent-failure
 
-성공 표시 ≠ 산출물 — 실패가 정상처럼 보인다 — 32개
+성공 표시 ≠ 산출물 — 실패가 정상처럼 보인다 — 33개
 
 - [nested-sandbox-capability](cross-cutting/os/nested-sandbox-capability/) · `cross-cutting/os`
 - [single-slot-handoff-loss](cross-cutting/concurrency/single-slot-handoff-loss/) · `cross-cutting/concurrency`
@@ -384,6 +385,7 @@ issue/  (185)
 - [job-lifetime-bound-to-user-session](cross-cutting/os/job-lifetime-bound-to-user-session/) · `cross-cutting/os`
 - [pty-semantics](cross-cutting/os/pty-semantics/) · `cross-cutting/os`
 - [change-detection-key-design](cross-cutting/reliability/change-detection-key-design/) · `cross-cutting/reliability`
+- [consumer-group-state-loss](cross-cutting/reliability/consumer-group-state-loss/) · `cross-cutting/reliability`
 - [debounce-trailing-contract](cross-cutting/reliability/debounce-trailing-contract/) · `cross-cutting/reliability`
 - [deserialization-trust-boundary](cross-cutting/reliability/deserialization-trust-boundary/) · `cross-cutting/reliability`
 - [event-before-subscriber-loss](cross-cutting/reliability/event-before-subscriber-loss/) · `cross-cutting/reliability`
