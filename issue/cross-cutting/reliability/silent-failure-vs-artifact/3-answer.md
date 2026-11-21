@@ -702,3 +702,85 @@ curl -f --max-time 1200 -X POST "$DEPLOY_URL/sync" -d "$body"   # 완료 후에�
 작업이 짧고 경로의 모든 타임아웃이 작업 시간보다 길면 동기 호출(4)이 가장 단순하다.
 
 검증 기록: 2026-11-20 사건 기록·실험 기록·코드(수정 전후) 대조·추상화(Claude 초안) — 방안 4는 실행하지 않은 방법이며, 근거 수치(응답 대기 제한·이전 배포 시간)는 경로 설정과 배포 기록에서 가져왔다.
+
+## 방안 비교 — 헬스가 "정상"이라 말하는 근거: 작업 바퀴에서 추론하기 vs 물을 때 직접 확인하기
+
+같은 원리(상태 신호는 "떴음"이 아니라 "일하나"를 말해야 한다 — 변형 G)의 다른 입구다.\
+대상은 주기적으로 큐를 읽어 DB 에 저장하는 수집기이고, 헬스는 배포 게이트(첫 200 에서 통과)와 밖의 감시자가 함께 본다.\
+처음 헬스는 같은 자리에서 세 가지로 틀렸다.
+
+```
+                 헬스가 본 것                     실제                        결과
+(a) 오류 뭉갬    "DB 조회 실패" = 닿지 못함        닿았고, 표가 아직 없다       진짜 원인(스키마 생성 실패)이 "DB 불통"으로 가려짐
+(b) 시작 중      첫 바퀴 전 = "starting" 200       한 번도 일하지 못했다        배포 게이트가 첫 200 에서 통과 → 일 못 하는 인스턴스로 전환
+(c) 조용한 큐    마지막 바퀴 성공 = 정상           할 일이 없어 DB 에 안 닿음   DB 가 죽었는데 200
+```
+
+(c)는 처음 초안의 결함이라 원문이 남아 있지 않다 — 아래 문제 코드는 기록된 증상("조용한 큐에서 DB 가 죽어도 200")에서 구조를 재구성했다.
+
+### 방안 1 — 작업 바퀴의 결과로 판정하고, 실패는 한 종류로 본다 (처음 형태)
+```kotlin
+fun report(now: Instant): Report {
+    val failure = collector.lastFailure                   // 바퀴가 남긴 결과
+    val database = runCatching { store.latestStoredAt() } // 실패 = 무엇이든 "닿지 못함"
+    val status = when {
+        database.isFailure -> "unreachable"
+        failure != null -> "failing"
+        collector.lastLoopAt?.let { between(it, now) < stallAfter } == true -> "ok"   // (c) 할 일이 없던 바퀴도 성공
+        collector.lastLoopAt == null && between(startedAt, now) < stallAfter -> "starting"
+        else -> "stalled"
+    }
+    return Report(healthy = status == "ok" || status == "starting", body(status))   // (b) 시작 중도 200
+}
+```
+
+### 방안 2 — 물을 때 의존 서비스에 직접 묻고, 오류 종류를 가르고, 첫 성공 전에는 503 (이 사례의 선택)
+```kotlin
+fun report(now: Instant): Report {
+    val failure = collector.lastFailure
+    val pending = runCatching { queue.unacknowledgedCount() }         // (c) 헬스가 물을 때마다 큐에 직접
+    val stored = runCatching { store.latestStoredAt() }               // (c) DB 에도 직접 — 결과를 담아 두지 않는다
+        .recoverCatching { if (isTableMissing(it)) null else throw it }   // (a) 표 없음 = 닿았다. 판정은 바퀴 결과에 맡긴다
+    val problems = listOfNotNull(pending.exceptionOrNull()?.let { "queue" to it },
+                                 stored.exceptionOrNull()?.let { "database" to it })
+    val status = when {
+        problems.isNotEmpty() -> "unreachable"
+        failure != null -> "failing"                                  // 스키마 생성 실패는 여기로: "schema <예외 종류>"
+        collector.lastLoopAt?.let { between(it, now) < stallAfter } == true -> "ok"
+        collector.lastLoopAt == null && between(startedAt, now) < stallAfter -> "starting"
+        else -> "stalled"
+    }
+    return Report(healthy = status == "ok", body(status, problems.map { (where, e) -> "$where ${e.javaClass.simpleName}" }))
+}
+
+fun isTableMissing(error: Throwable) =                                // 원인 사슬에서 "relation does not exist" 를 찾는다
+    generateSequence(error) { it.cause }.any { it is SQLException && it.sqlState == "42P01" }
+```
+```kotlin
+// 헬스 전용 연결 풀 — 인증 없는 헬스가 몰려도 헬스끼리만 기다린다. 수집 풀은 비어 있다
+val healthPool = pool("health", size = 1, statementTimeoutMs = 2_000, connectionTimeoutMs = 2_000)
+```
+세 고침이 각각 막는 것:\
+(a) 오류 종류를 가르면 "닿지 못함"은 정말 닿지 못한 경우만 남고, 스키마 생성 실패는 `failing` 으로 제 이름을 단다.\
+(b) 200 을 `ok` 하나로 좁히면 배포 게이트는 첫 바퀴가 성공한 인스턴스만 통과시킨다.\
+(c) 바퀴 결과는 "그 바퀴가 닿은 것"만 말한다 — 할 일이 없던 바퀴는 DB 에 닿지 않으므로, 헬스가 물을 때 직접 묻는다.\
+직접 확인한 결과를 몇 초 담아 두는 안도 나왔지만 선택하지 않았다 — 담아 두면 끊긴 직후에도 200 이 나간다.\
+헬스 본문의 실패 사유는 예외 **종류 이름**만 낸다 — 헬스는 인증이 없어, 예외 문구는 서버 로그에만 남긴다.
+
+(b)와 반대처럼 보이는 경우: 무중단 교체에서 **대기** 인스턴스는 200 이어야 한다 — 배포 게이트가 전환 **전에** 그 인스턴스가 떴는지 봐야 하기 때문이다([active-instance-from-routing-truth](../../distributed/active-instance-from-routing-truth/) 7번).\
+둘을 가르는 것은 "게이트가 이 200 을 보고 무엇을 하나"다 — 이 사례의 게이트는 200 을 보면 곧바로 트래픽을 넘기므로, 일한 적 없는 인스턴스가 200 을 내면 안 된다.
+
+실측(같은 기록): 기동부터 첫 200 까지 약 11초(게이트의 대기 한도 90초 안).\
+DB 를 멈추자 다음 헬스 요청에서 503 `unreachable`, DB 가 돌아오고 6.9초 뒤 회복.\
+(a)는 실제 PostgreSQL 에서 표를 만들 권한이 없는 계정으로 스키마 생성 실패를 만들어 확인했다 — 처음 테스트는 가짜 저장소가 늘 성공해 이 경우를 놓쳤고, 수정 뒤 재점검에서 드러났다.
+
+| 방안 | 전제 | 비용 | 실패 모드 | 맞는 조건 |
+|------|------|------|-----------|-----------|
+| 1. 바퀴 결과로 추론 · 실패 한 종류 · 시작 중 200 | 바퀴가 매번 모든 의존 서비스에 닿는다 | 없음(헬스가 아무것도 묻지 않는다) | 할 일이 없으면 의존 장애가 숨는다 · 원인이 "불통"으로 뭉개진다 · 게이트가 일 못 하는 인스턴스를 통과시킨다 | 바퀴가 늘 같은 일을 하는 작업(할 일 없음이 없을 때) |
+| 2. 물을 때 직접 · 오류 종류 구별 · 200 은 `ok` 만 | 의존 서비스에 싸게 물을 수 있다(건수·최신 행 하나) | 헬스 요청마다 의존 서비스 왕복 몇 번, 전용 연결 하나 | 헬스가 몰리면 헬스끼리 기다리다 503 — 거짓 장애 쪽으로 실패한다 | 할 일이 들쭉날쭉한 수집·소비 작업 · 첫 200 에서 통과하는 게이트 |
+
+**결론**: 헬스의 200 은 "이 인스턴스가 지금 제 일을 할 수 있다"의 **양성 증거**여야 한다 — 바퀴 결과는 그 바퀴가 닿은 범위만 증명하므로, 닿지 않았을 수 있는 의존 서비스는 헬스가 직접 묻는다(2).\
+"아직 모름"(시작 중)은 정상이 아니라 정상이 아닌 쪽에 둔다 — 그 200 을 누가 무엇에 쓰는지(배포 게이트)를 보고 정한다.\
+실패의 이름은 종류를 갈라 붙인다 — "닿지 못함" 하나로 뭉개면 헬스가 진짜 원인을 가리는 쪽으로 일한다.
+
+검증 기록: 2026-11-21 사건 기록·수정 전후 코드 대조·추상화(Claude 초안).
