@@ -25,7 +25,7 @@
 | [`environment-drift`](#environment-drift) | 실행 환경·채널마다 값·동작이 달라짐 | 8 |
 | [`encoding`](#encoding) | 바이트·문자·인코딩 경계 | 3 |
 | [`identity`](#identity) | 같은 대상인가 — 식별자·정체성 판정 | 2 |
-| [`single-source-of-truth`](#single-source-of-truth) | 같은 사실은 한 곳에서 파생 | 3 |
+| [`single-source-of-truth`](#single-source-of-truth) | 같은 사실은 한 곳에서 파생 |4 |
 
 태그는 선택이다 — 12종 어느 주제에도 해당하지 않는 카드(63개)는 폴더 축으로만 분류한다.
 
