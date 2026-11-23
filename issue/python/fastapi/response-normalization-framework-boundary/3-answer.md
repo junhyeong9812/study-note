@@ -202,3 +202,66 @@ fun badRequest(...) = ...
 전역 핸들러가 닿지 않는 층(필터·컨테이너)이 있으면 그 층에서 직접 같은 봉투를 쓰고, 예외 루트를 하나로 모은다(2).\
 특정 외부 호출의 특수 예외는 호출 지점에서 계약된 오류로 바꾸는 편이 의미를 가장 잘 보존한다(1).\
 어느 방안이든 포괄 catch는 **마지막 5xx 그물**로만 둔다 — 넓게 잡을수록 "누구 잘못인가·없는 것인가 고장인가"의 구분이 사라진다(3).
+
+## 방안 비교 — 프레임워크의 본문 해석이 인증보다 먼저 돈다: 응답 모양을 고치기 vs 해석 순서를 되찾기
+
+같은 원리(프레임워크가 핸들러 진입 전에 만드는 응답은 핸들러 안의 규칙을 거치지 않는다 — 질문 2·7)가, Kotlin/Spring 서버의 **인증 순서**에서 나온 사례다.\
+서버의 두 POST 경로는 공유 비밀 헤더로 인증하고, 계약은 "비밀값이 없거나 틀리면 401, 본문 꼴이 틀리면 422"였다.\
+핸들러가 본문을 `@RequestBody` 인자로 받으면, Spring 은 핸들러를 부르기 **전에** 본문을 해석한다 — 비밀값 검사는 핸들러 안에 있으니 해석보다 뒤다.
+
+```
+요청 ──▶ [프레임워크: Content-Type 확인 · JSON 해석 → 인자 바인딩] ──▶ 핸들러 { 비밀값 검사 → 처리 }
+              │ 실패                                                       ▲
+              └─▶ 400(깨진 JSON) · 415(JSON 아닌 Content-Type)              │ 여기까지 오지 않는다
+                  비밀값 없는 요청도 받는다 — 인증보다 본문 검증이 먼저 답한다
+방안 4  전역 예외 처리로 400·415 를 422 봉투로 바꾼다   → 모양은 맞지만 순서는 그대로(해석이 먼저)
+방안 5  인자 바인딩을 빼고 원문을 직접 읽는다          → 비밀값 → Content-Type · 크기 · JSON 꼴 → 422
+```
+
+### 방안 4 — 전역 예외 처리로 프레임워크 오류를 계약 모양으로 (선택하지 않은 방법)
+```kotlin
+@RestControllerAdvice
+class ParseErrorAdvice {
+    @ExceptionHandler(HttpMessageNotReadableException::class)
+    fun unreadable() = ResponseEntity.status(422).body(envelopeError("invalid_request"))
+}
+```
+이 카드의 기본 방안(전역 핸들러로 정규화)과 같은 길이다. 응답 모양은 맞출 수 있지만, 해석이 인증보다 먼저 도는 순서는 바뀌지 않는다 — 비밀값 없는 깨진 요청은 여전히 401 이 아니라 해석 오류를 받는다.\
+게다가 같은 서버의 다른 경로(로그 조회 등)는 자기 해석 규칙을 쓰고 있어, 전역 처리가 그 경로들로 번질 수 있었다 — 이것이 선택하지 않은 이유로 기록됐다.
+
+### 방안 5 — 원문을 직접 읽어, 인증 → 본문 검증 순서를 핸들러가 정한다 (이 사례의 선택)
+```kotlin
+@PostMapping("/attempts")
+fun record(request: HttpServletRequest): ResponseEntity<out Any> = guarded(request) { body -> handle(body) }
+
+private fun guarded(request: HttpServletRequest, handle: (Map<String, Any?>) -> ResponseEntity<out Any>): ResponseEntity<out Any> {
+    if (!hasValidKey(request)) return status401()                      // 1. 비밀값 먼저(상수 시간 비교)
+    val body = try { parseJsonObject(request) } catch (e: BadBody) { return status422(e.detail) }   // 2. 그다음 본문 → 422
+    return handle(body)
+}
+
+private fun parseJsonObject(request: HttpServletRequest): Map<String, Any?> {
+    val type = parseMediaTypeOrNull(request.contentType)
+    if (type == null || !(APPLICATION_JSON.isCompatibleWith(type) || type.subtype.endsWith("+json"))) throw BadBody("Content-Type")
+    if (request.contentLengthLong > BODY_LIMIT) throw BadBody("too large")
+    val bytes = request.inputStream.use { it.readNBytes(BODY_LIMIT + 1) }   // 길이 머리글이 없거나 거짓이어도 상한까지만
+    if (bytes.size > BODY_LIMIT || bytes.isEmpty()) throw BadBody("size")
+    val node = strictJson.readTree(bytes)                                // 뒤에 남는 토큰도 오류
+    if (node == null || !node.isObject) throw BadBody("object required")
+    return strictJson.treeToValue(node, Map::class.java) as Map<String, Any?>
+}
+```
+테스트는 해석할 수 없는 본문 11가지 × 두 POST 경로 × (비밀값 없음·틀림 → 401 / 맞음 → 422, 기록 없음)이었고, 고치기 전 구현에서 Spring 기본 400 이 나가는 것을 확인했다.\
+변형 실험: 본문 해석을 인증 앞으로 옮기면 실제 HTTP 를 쓰는 테스트가 빨강이 됐다. 배포 뒤 서버에서도 새 경로들이 깨진 본문을 포함해 비밀값 없이 401 이었다.\
+인증을 필터·인터셉터로 옮겨 바인딩보다 앞에 두는 방법도 있다 — 이 사례 기록에는 그 비교가 없다.
+
+| 방안 | 응답 모양 | 인증과 해석의 순서 | 영향 범위 | 맞는 조건 |
+|------|-----------|--------------------|-----------|-----------|
+| 4. 전역 예외 처리 | 계약 모양으로 맞춤 | 해석이 먼저 — 비인증 요청도 본문 검증 결과를 받는다 | 서버 전체 경로 | 순서가 계약이 아니고, 모든 경로가 같은 오류 규약을 쓸 때 |
+| 5. 원문 직접 읽기 | 핸들러가 정함 | 인증이 먼저 | 그 경로만 | 인증 전에 아무것도 해석하지 않아야 하는 경로, 다른 경로의 규칙을 건드리면 안 될 때 |
+
+**결론**: 프레임워크의 편의 기능(인자 바인딩)은 핸들러보다 먼저 돈다 — 핸들러 안에 둔 인증은 그보다 늦다.\
+응답 **모양**만 문제라면 전역 처리로 충분하지만(4), 인증과 해석의 **순서**가 계약이면 모양을 고쳐서는 풀리지 않는다.\
+그때는 그 경로에서 바인딩을 빼고 원문을 직접 읽어 순서를 되찾는다(5). 직접 읽을 때는 프레임워크가 해 주던 것(Content-Type·크기 상한·엄격한 JSON)을 빠짐없이 다시 한다 — 길이 머리글을 믿지 않고 상한까지만 읽는 것까지.
+
+검증 기록: 2026-11-23 — 사건 기록·리뷰 기록·수정 코드 대조·추상화(경로·헤더 이름은 일반화했다). 테스트 구성(11가지 × 2 경로)·변형 실험·서버 확인(비밀값 없는 깨진 본문 401)은 사건 기록의 값이다. 방안 4 의 코드는 선택하지 않은 방법을 보이려고 쓴 일반형이다.
