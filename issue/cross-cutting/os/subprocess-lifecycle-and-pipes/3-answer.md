@@ -257,3 +257,65 @@ aggregate
 어느 쪽이든 방안 4를 함께 둔다 — 루프가 "정상 종료"로 일찍 끝나는 결함은 종료 코드로 드러나지 않으므로, **계획한 자리가 모두 실행됐는지**를 산출물로 확인해야 한다(→ [silent-failure-vs-artifact](../../reliability/silent-failure-vs-artifact/)).\
 스모크·dry-run이 실제 경로(루프 + 자식 호출)를 함께 밟지 않으면 이런 결함은 본 실행에서야 나온다.\
 검증 기록: 2026-10-26 사건 기록·수정 기록 대조·추상화(Claude 초안) — 방안 2·3은 일반 원리(사례는 방안 1 + 4).
+
+## 방안 비교 — 기한으로 자식을 죽였는데 손자가 파이프를 쥐고 있다: 기다림에 상한을 거는 곳
+
+같은 원리(파이프 EOF 는 모든 write-end 가 닫혀야 온다 — 질문 3·변형 B)를 Go 서비스에서 다시 겪은 사례다.\
+서비스는 요청마다 git 을 자식으로 띄우고 컨텍스트 기한(3초)을 건다. 기한이 지나면 `exec.CommandContext` 가 자식을 죽인다.\
+기한의 합도 계약이었다: 이 서비스의 기한 + 정리 대기 < 앞단 중계 서버의 기한(4초) — 그래야 앞단이 "뒤 서버가 늦었다"와 "git 이 늦었다"를 섞지 않는다.\
+테스트는 실행 파일 자리에 "손자 `sleep 8 &` 를 띄우고 자신은 `exec sleep 8`" 하는 스크립트를 넣어, 손자가 stdout 의 write-end 를 쥔 채 남는 가장 나쁜 경우를 만들었다.
+
+```
+기한 3초 ──▶ CommandContext 가 자식을 죽임 ── 손자는 살아서 stdout write-end 를 쥠
+                                                │
+방안 2  StdoutPipe 를 직접 끝까지 읽은 뒤 Wait   → 읽기가 손자의 수명(8초)까지 막힘 → 8.0초
+방안 3  Stdout = io.Writer + WaitDelay           → Wait 가 정리 대기 뒤 파이프를 닫고 돌아옴 → 기한 + 0.5초
+```
+
+### 방안 1 — 드레인을 채널로 받고 타임아웃 있는 수신 (변형 B 의 방식)
+```rust
+let text = orx.recv_timeout(3s).unwrap_or_default();   // 기다림에는 상한, 드레인 스레드는 손자가 끝날 때까지 남는다
+```
+
+### 방안 2 — 파이프를 직접 끝까지 읽고 나서 Wait 한다 (리뷰 전 형태)
+```go
+cmd := exec.CommandContext(ctx, program, args...)
+cmd.WaitDelay = time.Second              // 넣어 두었지만 이 흐름에서는 듣지 않는다
+stdout, _ := cmd.StdoutPipe()
+cmd.Start()
+out, _ := io.ReadAll(io.LimitReader(stdout, limit+1))   // 손자가 write-end 를 쥔 동안 EOF 가 오지 않는다
+err := cmd.Wait()                         // 여기까지 오지 못한다
+```
+테스트가 이 코드에서 8.0초를 쟀다(기한 3초). `WaitDelay` 는 이미 1초로 들어 있었는데도 효과가 없었다.\
+`WaitDelay` 는 `Wait` 가 자기 손으로 관리하는 복사 고루틴·파이프를 정리하는 장치다. `StdoutPipe` 를 호출한 쪽이 `Wait` 전에 직접 읽으면, 읽기가 먼저 막혀 `Wait` 에 도달하지 못한다.
+
+### 방안 3 — 출력을 io.Writer 로 넘기고, 정리 대기를 기한의 합에 맞춘다 (이 사례의 선택)
+```go
+const pipeCloseGrace = 500 * time.Millisecond   // 기한 3초 + 0.5초 < 앞단 4초
+
+cmd := exec.CommandContext(ctx, program, args...)
+cmd.WaitDelay = pipeCloseGrace
+out := &limitedWriter{limit: outputLimit}          // 상한을 넘으면 overflowed 표시
+cmd.Stdout = out                                    // 복사는 Wait 가 관리 — WaitDelay 가 이 파이프를 닫을 수 있다
+if err := cmd.Start(); err != nil { /* ... */ }
+waitErr := cmd.Wait()                              // 기한 → 죽임 → 최대 0.5초 뒤 파이프를 닫고 돌아온다
+if waitErr != nil && ctx.Err() != nil { return errTimeout }
+```
+```go
+// 테스트: 기본 기한이 3초인지, 손자가 남아도 응답(시간 초과)이 4초 안에 오는지 — 그리고 3초보다 일찍 끊지 않는지
+if elapsed >= 4*time.Second || elapsed < 3*time.Second-100*time.Millisecond { t.Fatal(elapsed) }
+```
+직접 확인(Go 1.27, 기한 1초 · 손자 `sleep 6 &`): `StdoutPipe` + `ReadAll` 은 6초, `Stdout` 을 Writer 로 + `WaitDelay` 0.5초는 1.5초, Writer 로 넘기되 `WaitDelay` 가 없으면 6초.
+
+| 방안 | 기다림의 상한 | 남는 것 | 맞는 조건 |
+|------|---------------|---------|-----------|
+| 1. 채널 + 타임아웃 수신 | 수신 타임아웃 | 드레인 스레드가 손자의 수명만큼 남는다 | 언어 런타임이 파이프 정리를 제공하지 않을 때 |
+| 2. 직접 읽기 후 Wait | 없음 — `WaitDelay` 가 듣지 않는다 | 응답이 손자의 수명만큼 늦는다 | 자식이 손자를 띄우지 않는다고 보장될 때만 |
+| 3. Writer + `WaitDelay` | 기한 + 정리 대기 | 손자 프로세스 자체는 살아 있다(파이프만 닫힘) | Go 1.20 이상, 출력을 메모리 버퍼로 받아도 되는 크기 |
+
+**결론**: 기한이 자식을 죽여도 "기다림"은 파이프 EOF 에 묶여 있으므로, 기다림에 따로 상한을 건다.\
+Go 에서는 `WaitDelay` 가 그 상한이지만 `Wait` 가 관리하는 파이프에만 듣는다 — 출력을 `io.Writer` 로 넘겨 복사를 `Wait` 에 맡겨야 한다(3). `StdoutPipe` 를 직접 끝까지 읽는 흐름에서는 상한이 없다(2).\
+정리 대기는 기한에 더해지므로, 앞단의 기한과 합을 맞추고 그 합을 테스트로 고정한다.\
+손자 자체를 끝내는 것은 여전히 프로세스 그룹 종료의 몫이다([process-group-and-tree-termination](../process-group-and-tree-termination/)) — 방안 3 은 응답이 늦지 않게 할 뿐이다.
+
+검증 기록: 2026-11-23 — 사건 기록·리뷰 기록·수정 전후 코드 대조·추상화. 8.0초는 리뷰 전 코드에서 테스트가 잰 값이다. 세 흐름의 시간 비교는 Go 1.27.1 에서 직접 확인했다.
