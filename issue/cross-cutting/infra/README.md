@@ -30,7 +30,8 @@
 - [load-balancer-defaults-in-backend-switch](load-balancer-defaults-in-backend-switch/) — 로드밸런서는 전환 경로의 일부다 — 작업자 기술자 한도(컨테이너 soft 1024) < worker_connections면 백엔드가 느려지는 순간 앱에 닿지도 못한 500이, 기본 수동 장애 판정(max_fails=1 · 10초)은 구성원 1대 구간에서 전면 502가, reload는 닫히는 keepalive 연결 위 요청의 연결 오류가 생기므로, 한도를 올리고 판정은 끄고 생존을 구성원 관리로 옮기며 고칠 수 없는 reload 몫은 보낸 시각 기준 창으로 따로 센다.
 - [nginx-broadband-defense-friendly-fire](nginx-broadband-defense-friendly-fire/) — 출처를 구분하지 않는 광역 방어(UA 차단·단일 버킷 레이트리밋)는 자기 자동화·검증 트래픽·정상 사용자를 오사한다 — allowlist·정확한 키로 범위를 좁힌다.
 - [path-derived-key-on-move](path-derived-key-on-move/) — 가변 속성(절대 경로)에서 파생한 키·캐시는 폴더 이동 순간 고아가 된다 — 이동은 키 재계산·캐시 무효화를 동반해야 한다.
+- [shallow-clone-history-boundary](shallow-clone-history-boundary/) — 얕은 clone 의 경계 커밋은 부모가 로컬에 없어 diff 는 파일 전체를 "추가"로, 조상 판정은 끊긴 길을 "조상 아님"으로 200 과 함께 답한다 — 경계 목록(`.git/shallow`)에 닿았는지 먼저 보고 "부모 없음"·"알 수 없음"을 따로 낸다.
 - [state-drift-delete-propagation](state-drift-delete-propagation/) — 같은 사실의 사본(설정·배포본·파생 상태·인덱스)은 삭제·변경이 전파되지 않으면 원본과 어긋난다 — 정본 단일 채널과 명시적 삭제(tombstone)로 수렴시킨다.
 - [sustained-sync-write-degradation](sustained-sync-write-degradation/) — 저장 경로의 쓰기 성능은 정상 상태가 아니다 — 지속 동기화 쓰기는 일정량 뒤 flush 지연이 커지며 꺾이고, 모든 비교 대상이 같은 벽에 닿으면 처리량 비교가 가려진다 — 상관·단독 재현·층 제거로 원인 층을 확정하고 flush 수·지연으로 판정한다.
 
-> 이 폴더의 메타 태그: `silent-failure`(1) · `resource-bounding`(4) · `least-privilege`(2) · `environment-drift`(2) — 태그별 전체 목록은 [issue 태그 역인덱스](../../README.md#태그-역인덱스).
+> 이 폴더의 메타 태그: `silent-failure`(2) · `resource-bounding`(4) · `least-privilege`(2) · `environment-drift`(2) — 태그별 전체 목록은 [issue 태그 역인덱스](../../README.md#태그-역인덱스).

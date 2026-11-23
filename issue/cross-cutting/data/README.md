@@ -35,9 +35,10 @@
 - [in-band-signaling-collision](in-band-signaling-collision/) — 구분자·마커·센티널을 데이터와 같은 채널에 두면 데이터에 등장하는 순간 경계·의미가 깨진다 — NUL 구분·이스케이프 왕복 계약·nonce·별도 채널을 쓴다.
 - [input-format-detection](input-format-detection/) — 수집·렌더 대상의 형식(RSS vs Atom·구분자·다중값·코드 vs 마크다운)을 가정하지 말고 판정해야 한다 — 틀린 가정은 예외 없이 그럴듯한 잘못된 결과를 낸다.
 - [key-normalization-consistency](key-normalization-consistency/) — 검사·저장·조회·조인이 같은 값을 다룰 때 정규화 규칙(대소문자·trim·콜레이션·유니코드 정규형·표기)이 한 곳이라도 다르면 매칭이 조용히 실패하거나 검사가 우회된다.
+- [line-terminator-not-separator](line-terminator-not-separator/) — 텍스트의 줄바꿈은 종결자인데 `split("\n")` 은 구분자로 다뤄 끝에 빈 조각을 하나 더 만든다 — 줄 수가 하나 늘어 상한 경계에서 거짓 "더 있음"이 나오므로, 줄 나누기 규칙을 한 함수로 모아 모든 소비처가 쓰고 테스트 더블도 실제 꼴(끝 줄바꿈)로 둔다.
 - [lookup-cost-and-indexing](lookup-cost-and-indexing/) — 조회 비용은 자료구조·인덱스가 결정한다 — 인덱스 없는 조인·upsert·선행 와일드카드·역방향 선형 탐색·해시 군집화는 입력 크기에 따라 O(n²)로 붕괴한다.
 - [ordering-total-order](ordering-total-order/) — 결과 순서는 ORDER BY·전순서 키가 없으면 보장되지 않는다(동점·Set 순회·사전식 비교·분할 컷) — 결정성이 필요하면 전순서를 명시한다.
 - [pagination-cursor-integrity](pagination-cursor-integrity/) — 커서 페이징은 이어받기 쿼리가 첫 쿼리와 같은 집합을 가리키고 종료·전진이 스캔한 키 윈도우에서 나와야 한다 — 아니면 가지·꼬리가 조용한 유실된다.
 - [time-semantics](time-semantics/) — 벽시계는 단조 ID가 아니고 날짜는 타임존에 종속되며 구간 경계는 반열린이어야 한다 — 서로 다른 시계·타임존·해상도를 섞으면 조용히 틀린다.
 
-> 이 폴더의 메타 태그: `silent-failure`(9) · `resource-bounding`(3) · `identity`(1) · `single-source-of-truth`(1) — 태그별 전체 목록은 [issue 태그 역인덱스](../../README.md#태그-역인덱스).
+> 이 폴더의 메타 태그: `silent-failure`(9) · `resource-bounding`(3) · `identity`(1) · `single-source-of-truth`(2) — 태그별 전체 목록은 [issue 태그 역인덱스](../../README.md#태그-역인덱스).

@@ -23,5 +23,6 @@ Kotlin 언어와 그 위 Spring 계층에 뿌리내린 패턴이다.\
 
 - [charset-and-length-defaults](charset-and-length-defaults/) — 언어·런타임·클라이언트의 기본 인코딩과 길이 단위(바이트·UTF-16 코드유닛·코드포인트)가 값을 조용히 왜곡한다 — charset과 길이 단위를 명시한다.
 - [language-semantics-traps](language-semantics-traps/) — Kotlin 언어 규칙(블록 주석 중첩·backtick 식별자 제약·배열 참조 동등성·코루틴 취소 예외)이 Java 직관과 달라 컴파일 오류·취소 파괴를 만든다.
+- [scope-function-receiver-shadowing](scope-function-receiver-shadowing/) — `apply` 같은 수신자 람다 안에서는 수신자의 멤버(Java get/set 이 만든 합성 프로퍼티 포함)가 바깥 클래스의 같은 이름보다 먼저 잡혀 문자열 템플릿이 조용히 null 을 읽는다 — `this@바깥클래스` 로 한정한다.
 
 > 이 폴더의 메타 태그: `least-privilege`(1) · `contract-drift`(1) · `encoding`(1) — 태그별 전체 목록은 [issue 태그 역인덱스](../README.md#태그-역인덱스).

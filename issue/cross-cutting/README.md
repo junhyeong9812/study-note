@@ -23,13 +23,13 @@
 
 | 폴더 | 카드 수 | 무엇 |
 |------|---------|------|
-| [concurrency/](concurrency/) | 11 | 순서·공유·취소 |
-| [data/](data/) | 20 | 값의 표현·해석·키 |
+| [concurrency/](concurrency/) | 12 | 순서·공유·취소 |
+| [data/](data/) | 21 | 값의 표현·해석·키 |
 | [database/](database/) | 11 | 스키마 이력·방언·트랜잭션 |
 | [distributed/](distributed/) | 3 | 원격 결과와 권리의 단조성 |
 | [document-rendering/](document-rendering/) | 2 | 텍스트·인쇄 레이아웃 |
 | [gui-platform/](gui-platform/) | 2 | 좌표계·웹뷰 엔진 |
-| [infra/](infra/) | 14 | 플랫폼·툴·배포 |
+| [infra/](infra/) | 15 | 플랫폼·툴·배포 |
 | [network/](network/) | 11 | 프로토콜·연결·프록시 |
 | [os/](os/) | 8 | 프로세스·경로·터미널 |
 | [reliability/](reliability/) | 25 | 실패가 삼켜지는 곳 |

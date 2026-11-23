@@ -3,7 +3,7 @@
 여러 프로젝트에서 실제로 겪은 이슈를 **원리 단위로 추상화**해 모은 곳이다.\
 이슈 하나가 카드 하나가 아니다 — 같은 근본원인·같은 대응을 공유하는 이슈들을 **패턴 카드 하나**로 묶고, 각 사건 유형은 카드 안에서 **추상화 코드**(일반 이름·축약 로직)로 보인다.\
 카드에는 출처(프로젝트명·파일·라인)를 적지 않는다 — 문제 코드의 구조 자체가 문서에 드러나므로 그것으로 충분하다.\
-현재 카드 187개.
+현재 카드 191개.
 
 ## 분류 두 축
 
@@ -14,20 +14,20 @@
 
 | 태그 | 뜻 | 카드 수 |
 |------|----|---------|
-| [`silent-failure`](#silent-failure) | 성공 표시 ≠ 산출물 — 실패가 정상처럼 보인다 | 33 |
+| [`silent-failure`](#silent-failure) | 성공 표시 ≠ 산출물 — 실패가 정상처럼 보인다 | 34 |
 | [`resource-bounding`](#resource-bounding) | 입력에 비례해 커지는 자원의 상한 | 31 |
 | [`least-privilege`](#least-privilege) | 최소 권한·최소 노출·비밀 관리 | 14 |
 | [`fail-closed`](#fail-closed) | 판정 불가·조회 실패를 거부로 처리 | 4 |
-| [`race-condition`](#race-condition) | 순서·동시성에 따라 결과가 달라짐 | 11 |
+| [`race-condition`](#race-condition) | 순서·동시성에 따라 결과가 달라짐 | 12 |
 | [`contract-drift`](#contract-drift) | 선언한 계약과 실제 동작의 불일치 | 7 |
 | [`test-reliability`](#test-reliability) | 초록불이 결함 유무를 말해 주는가 | 9 |
 | [`parser-differential`](#parser-differential) | 검사하는 쪽과 실행하는 쪽의 해석 차이 | 3 |
 | [`environment-drift`](#environment-drift) | 실행 환경·채널마다 값·동작이 달라짐 | 8 |
 | [`encoding`](#encoding) | 바이트·문자·인코딩 경계 | 3 |
 | [`identity`](#identity) | 같은 대상인가 — 식별자·정체성 판정 | 2 |
-| [`single-source-of-truth`](#single-source-of-truth) | 같은 사실은 한 곳에서 파생 |4 |
+| [`single-source-of-truth`](#single-source-of-truth) | 같은 사실은 한 곳에서 파생 |5 |
 
-태그는 선택이다 — 12종 어느 주제에도 해당하지 않는 카드(64개)는 폴더 축으로만 분류한다.
+태그는 선택이다 — 12종 어느 주제에도 해당하지 않는 카드(65개)는 폴더 축으로만 분류한다.
 
 ## 포맷
 
@@ -42,15 +42,15 @@
 숫자 = 그 폴더 아래 패턴 카드 수.
 
 ```
-issue/  (187)
-├─ cross-cutting/               133
-│  ├─ concurrency/               11
-│  ├─ data/                      20
+issue/  (191)
+├─ cross-cutting/               136
+│  ├─ concurrency/               12
+│  ├─ data/                      21
 │  ├─ database/                  11
 │  ├─ distributed/                3
 │  ├─ document-rendering/         2
 │  ├─ gui-platform/               2
-│  ├─ infra/                     14
+│  ├─ infra/                     15
 │  ├─ network/                   11
 │  ├─ os/                         8
 │  ├─ reliability/               25
@@ -60,9 +60,9 @@ issue/  (187)
 ├─ java/                          5
 │  ├─ spring/                     1
 │  └─ (언어 레벨 카드)            4
-├─ kotlin/                        9
+├─ kotlin/                       10
 │  ├─ spring/                     7
-│  └─ (언어 레벨 카드)            2
+│  └─ (언어 레벨 카드)            3
 ├─ python/                        6
 │  ├─ fastapi/                    4
 │  └─ (언어 레벨 카드)            2
@@ -92,6 +92,7 @@ issue/  (187)
 - [critical-section-design](cross-cutting/concurrency/critical-section-design/) — 하나의 불변식은 하나의 임계구역에서 원자적으로 갱신하고(check-then-act 금지), 락 안에서는 느린 I/O·join을 하지 않으며, 중복 작업은 single-flight로 합친다.
 - [event-loop-head-of-line-blocking](cross-cutting/concurrency/event-loop-head-of-line-blocking/) — 단일 수신 루프에서 처리·송신을 직접 await하면 가장 느린 작업·구독자가 루프 전체를 막아(HOL) 무관한 메시지까지 지연·타임아웃된다.
 - [lost-wakeup-on-flag-clear](cross-cutting/concurrency/lost-wakeup-on-flag-clear/) — 깨움 플래그를 "조건 확인 → (양보 지점) → clear → 대기" 순서로 쓰면 그 사이 온 신호가 지워져 이미 참이 된 조건을 모른 채 잠든다 — clear 뒤에 조건을 다시 보고 기다리며, 시간 제한 재확인(하트비트)이 이 결함을 지연으로 바꿔 테스트를 초록으로 가리므로 시간 상한을 재확인 주기보다 짧게 둔다.
+- [optimistic-read-validation](cross-cutting/concurrency/optimistic-read-validation/) — 잠금 없이 여러 명령으로 한 답을 만들면 그 사이 다른 프로세스의 쓰기가 섞인다 — 명령마다 방어를 붙이지 말고 버전 값을 읽기 앞뒤로 비교해 같을 때만 답하고, 다르면 한 번 다시, 계속 다르면 "바뀌는 중"으로 답하며 재시도는 기한 하나 안에서만 한다.
 - [out-of-order-completion](cross-cutting/concurrency/out-of-order-completion/) — 비동기 응답·이벤트의 완료 순서는 발행 순서와 무관하다 — 세대 토큰·CAS·단조 전이로 늦게 도착한 옛 결과가 최신 상태를 덮지 못하게 한다.
 - [single-slot-handoff-loss](cross-cutting/concurrency/single-slot-handoff-loss/) — 용량 1 슬롯·전역 요청 버스에 요청을 두면 동시·버스트 생산자가 서로를 덮어 조용한 유실된다 — 큐·id 맵·ACK 후 소비·소비자 단일화로 정확히 1회 전달한다.
 - [single-writer-ownership](cross-cutting/concurrency/single-writer-ownership/) — 여러 writer가 락 없이 같은 저장 단위를 read-modify-write하면 lost update가 난다 — 저장소를 writer별로 분리하거나 원자 갱신(조건부 UPDATE·upsert·CAS)으로 단일 소유를 강제한다.
@@ -116,6 +117,7 @@ issue/  (187)
 - [in-band-signaling-collision](cross-cutting/data/in-band-signaling-collision/) — 구분자·마커·센티널을 데이터와 같은 채널에 두면 데이터에 등장하는 순간 경계·의미가 깨진다 — NUL 구분·이스케이프 왕복 계약·nonce·별도 채널을 쓴다.
 - [input-format-detection](cross-cutting/data/input-format-detection/) — 수집·렌더 대상의 형식(RSS vs Atom·구분자·다중값·코드 vs 마크다운)을 가정하지 말고 판정해야 한다 — 틀린 가정은 예외 없이 그럴듯한 잘못된 결과를 낸다.
 - [key-normalization-consistency](cross-cutting/data/key-normalization-consistency/) — 검사·저장·조회·조인이 같은 값을 다룰 때 정규화 규칙(대소문자·trim·콜레이션·유니코드 정규형·표기)이 한 곳이라도 다르면 매칭이 조용히 실패하거나 검사가 우회된다.
+- [line-terminator-not-separator](cross-cutting/data/line-terminator-not-separator/) — 텍스트의 줄바꿈은 종결자인데 `split("\n")` 은 구분자로 다뤄 끝에 빈 조각을 하나 더 만든다 — 줄 수가 하나 늘어 상한 경계에서 거짓 "더 있음"이 나오므로, 줄 나누기 규칙을 한 함수로 모아 모든 소비처가 쓰고 테스트 더블도 실제 꼴(끝 줄바꿈)로 둔다.
 - [lookup-cost-and-indexing](cross-cutting/data/lookup-cost-and-indexing/) — 조회 비용은 자료구조·인덱스가 결정한다 — 인덱스 없는 조인·upsert·선행 와일드카드·역방향 선형 탐색·해시 군집화는 입력 크기에 따라 O(n²)로 붕괴한다.
 - [ordering-total-order](cross-cutting/data/ordering-total-order/) — 결과 순서는 ORDER BY·전순서 키가 없으면 보장되지 않는다(동점·Set 순회·사전식 비교·분할 컷) — 결정성이 필요하면 전순서를 명시한다.
 - [pagination-cursor-integrity](cross-cutting/data/pagination-cursor-integrity/) — 커서 페이징은 이어받기 쿼리가 첫 쿼리와 같은 집합을 가리키고 종료·전진이 스캔한 키 윈도우에서 나와야 한다 — 아니면 가지·꼬리가 조용한 유실된다.
@@ -165,6 +167,7 @@ issue/  (187)
 - [load-balancer-defaults-in-backend-switch](cross-cutting/infra/load-balancer-defaults-in-backend-switch/) — 로드밸런서는 전환 경로의 일부다 — 작업자 기술자 한도(컨테이너 soft 1024) < worker_connections면 백엔드가 느려지는 순간 앱에 닿지도 못한 500이, 기본 수동 장애 판정(max_fails=1 · 10초)은 구성원 1대 구간에서 전면 502가, reload는 닫히는 keepalive 연결 위 요청의 연결 오류가 생기므로, 한도를 올리고 판정은 끄고 생존을 구성원 관리로 옮기며 고칠 수 없는 reload 몫은 보낸 시각 기준 창으로 따로 센다.
 - [nginx-broadband-defense-friendly-fire](cross-cutting/infra/nginx-broadband-defense-friendly-fire/) — 출처를 구분하지 않는 광역 방어(UA 차단·단일 버킷 레이트리밋)는 자기 자동화·검증 트래픽·정상 사용자를 오사한다 — allowlist·정확한 키로 범위를 좁힌다.
 - [path-derived-key-on-move](cross-cutting/infra/path-derived-key-on-move/) — 가변 속성(절대 경로)에서 파생한 키·캐시는 폴더 이동 순간 고아가 된다 — 이동은 키 재계산·캐시 무효화를 동반해야 한다.
+- [shallow-clone-history-boundary](cross-cutting/infra/shallow-clone-history-boundary/) — 얕은 clone 의 경계 커밋은 부모가 로컬에 없어 diff 는 파일 전체를 "추가"로, 조상 판정은 끊긴 길을 "조상 아님"으로 200 과 함께 답한다 — 경계 목록(`.git/shallow`)에 닿았는지 먼저 보고 "부모 없음"·"알 수 없음"을 따로 낸다.
 - [state-drift-delete-propagation](cross-cutting/infra/state-drift-delete-propagation/) — 같은 사실의 사본(설정·배포본·파생 상태·인덱스)은 삭제·변경이 전파되지 않으면 원본과 어긋난다 — 정본 단일 채널과 명시적 삭제(tombstone)로 수렴시킨다.
 - [sustained-sync-write-degradation](cross-cutting/infra/sustained-sync-write-degradation/) — 저장 경로의 쓰기 성능은 정상 상태가 아니다 — 지속 동기화 쓰기는 일정량 뒤 flush 지연이 커지며 꺾이고, 모든 비교 대상이 같은 벽에 닿으면 처리량 비교가 가려진다 — 상관·단독 재현·층 제거로 원인 층을 확정하고 flush 수·지연으로 판정한다.
 
@@ -271,6 +274,7 @@ issue/  (187)
 
 - [charset-and-length-defaults](kotlin/charset-and-length-defaults/) — 언어·런타임·클라이언트의 기본 인코딩과 길이 단위(바이트·UTF-16 코드유닛·코드포인트)가 값을 조용히 왜곡한다 — charset과 길이 단위를 명시한다.
 - [language-semantics-traps](kotlin/language-semantics-traps/) — Kotlin 언어 규칙(블록 주석 중첩·backtick 식별자 제약·배열 참조 동등성·코루틴 취소 예외)이 Java 직관과 달라 컴파일 오류·취소 파괴를 만든다.
+- [scope-function-receiver-shadowing](kotlin/scope-function-receiver-shadowing/) — `apply` 같은 수신자 람다 안에서는 수신자의 멤버(Java get/set 이 만든 합성 프로퍼티 포함)가 바깥 클래스의 같은 이름보다 먼저 잡혀 문자열 템플릿이 조용히 null 을 읽는다 — `this@바깥클래스` 로 한정한다.
 
 #### [kotlin/spring/](kotlin/spring/) — Spring·Jackson·아키텍처
 
@@ -364,7 +368,7 @@ issue/  (187)
 
 ### silent-failure
 
-성공 표시 ≠ 산출물 — 실패가 정상처럼 보인다 — 33개
+성공 표시 ≠ 산출물 — 실패가 정상처럼 보인다 — 34개
 
 - [nested-sandbox-capability](cross-cutting/os/nested-sandbox-capability/) · `cross-cutting/os`
 - [single-slot-handoff-loss](cross-cutting/concurrency/single-slot-handoff-loss/) · `cross-cutting/concurrency`
@@ -379,6 +383,7 @@ issue/  (187)
 - [pagination-cursor-integrity](cross-cutting/data/pagination-cursor-integrity/) · `cross-cutting/data`
 - [catalog-presence-vs-enabled](cross-cutting/database/catalog-presence-vs-enabled/) · `cross-cutting/database`
 - [print-layout-traps](cross-cutting/document-rendering/print-layout-traps/) · `cross-cutting/document-rendering`
+- [shallow-clone-history-boundary](cross-cutting/infra/shallow-clone-history-boundary/) · `cross-cutting/infra`
 - [state-drift-delete-propagation](cross-cutting/infra/state-drift-delete-propagation/) · `cross-cutting/infra`
 - [chunked-vs-content-length](cross-cutting/network/chunked-vs-content-length/) · `cross-cutting/network`
 - [half-open-liveness-watchdog](cross-cutting/network/half-open-liveness-watchdog/) · `cross-cutting/network`
@@ -466,12 +471,13 @@ issue/  (187)
 
 ### race-condition
 
-순서·동시성에 따라 결과가 달라짐 — 11개
+순서·동시성에 따라 결과가 달라짐 — 12개
 
 - [aba-reusable-identifier](cross-cutting/concurrency/aba-reusable-identifier/) · `cross-cutting/concurrency`
 - [capture-context-at-request-time](cross-cutting/concurrency/capture-context-at-request-time/) · `cross-cutting/concurrency`
 - [critical-section-design](cross-cutting/concurrency/critical-section-design/) · `cross-cutting/concurrency`
 - [lost-wakeup-on-flag-clear](cross-cutting/concurrency/lost-wakeup-on-flag-clear/) · `cross-cutting/concurrency`
+- [optimistic-read-validation](cross-cutting/concurrency/optimistic-read-validation/) · `cross-cutting/concurrency`
 - [out-of-order-completion](cross-cutting/concurrency/out-of-order-completion/) · `cross-cutting/concurrency`
 - [single-writer-ownership](cross-cutting/concurrency/single-writer-ownership/) · `cross-cutting/concurrency`
 - [snapshot-stream-cursor](cross-cutting/concurrency/snapshot-stream-cursor/) · `cross-cutting/concurrency`
@@ -544,9 +550,10 @@ issue/  (187)
 
 ### single-source-of-truth
 
-같은 사실은 한 곳에서 파생 — 4개
+같은 사실은 한 곳에서 파생 — 5개
 
 - [active-instance-from-routing-truth](cross-cutting/distributed/active-instance-from-routing-truth/) · `cross-cutting/distributed`
 - [denormalized-counter-drift](cross-cutting/data/denormalized-counter-drift/) · `cross-cutting/data`
+- [line-terminator-not-separator](cross-cutting/data/line-terminator-not-separator/) · `cross-cutting/data`
 - [single-source-of-truth-routing](typescript/next/single-source-of-truth-routing/) · `typescript/next`
 - [theming-token-reach](typescript/react/theming-token-reach/) · `typescript/react`
